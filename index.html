@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Colosseum & Ludus</title>
+  <style>
+    :root { --wine:#651611; --dark:#260806; --gold:#d9a849; --cream:#f6ead5; --ink:#2c160e; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-width:740px; color:var(--ink); font-family:Georgia,serif; background:#3a100b; }
+    .rotate { display:none; }
+    .game { min-height:100vh; display:grid; grid-template-columns:158px 1fr; background:linear-gradient(120deg,rgba(48,10,6,.78),rgba(118,43,23,.18)),radial-gradient(circle at 75% 18%,#ffe0a0 0 3%,transparent 31%),linear-gradient(135deg,#78301f,#e2b56f 48%,#79301e); }
+    .sidebar { position:sticky; top:0; height:100vh; background:linear-gradient(90deg,#2d0705,#651a11 48%,#310805); border-right:2px solid var(--gold); box-shadow:4px 0 20px #1c0604; display:flex; flex-direction:column; }
+    .crest { height:84px; display:grid; place-items:center; color:#f5d987; font-size:40px; border-bottom:1px solid #9e6932; }
+    .crest::before { content:'❧'; transform:rotate(180deg); }
+    nav { flex:1; padding-top:4px; }
+    .nav { width:100%; height:61px; padding:0 12px; display:flex; gap:14px; align-items:center; border:0; border-bottom:1px solid #803925; color:#f8dfaf; background:transparent; font:16px Georgia,serif; text-align:left; cursor:pointer; }
+    .nav:hover { background:#7d2819; }
+    .nav.active { color:#35160a; font-weight:bold; background:linear-gradient(90deg,#fff0b9,#d8a84a 66%,#8b301c); box-shadow:inset 0 0 0 1px #ffe0a0; }
+    .icon { width:31px; color:#e2b656; font-size:24px; text-align:center; }.active .icon { color:#6e2616; }
+    .foot { height:72px; display:grid; place-items:center; border-top:1px solid #803925; color:#d9aa53; font-size:24px; }
+    main { min-width:0; }.topbar { height:55px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; color:#ffe0a1; background:linear-gradient(90deg,#58120d,#170606 57%,#57140e); border-bottom:2px solid #c59542; }
+    .logo { font-size:27px; text-shadow:0 2px 4px #000; }.resources { display:flex; gap:22px; font-weight:bold; }.coin { color:#ffcb45; }.blue { color:#5edbff; }.red { color:#ff7881; }
+    .stage { min-height:calc(100vh - 55px); padding:43px; display:flex; align-items:center; justify-content:center; }
+    .screen { width:min(1120px,100%); min-height:560px; padding:25px 29px; position:relative; background:linear-gradient(105deg,rgba(255,250,237,.97),rgba(242,222,188,.96)); border:3px solid #7b351e; border-radius:12px; box-shadow:0 0 0 3px #d8a856,0 18px 48px #260b08; }
+    .screen::before { content:''; position:absolute; inset:8px; border:1px solid #c69b55; border-radius:7px; pointer-events:none; }.content { position:relative; z-index:1; }
+    .title { position:relative; z-index:2; width:max-content; min-width:290px; margin:-57px auto 19px; padding:8px 31px; border:2px solid #d8a849; border-radius:6px; color:#ffe5a5; background:linear-gradient(#881f18,#480a08); box-shadow:0 0 0 3px #6b150e; text-align:center; font-size:32px; text-shadow:0 2px 2px #250000; }.title::before,.title::after { content:'❧'; color:#e4ba63; margin:0 14px; }
+    .home { display:grid; grid-template-columns:1.12fr .88fr; gap:23px; margin-top:25px; }.hero { min-height:400px; padding:40px; display:flex; flex-direction:column; justify-content:flex-end; color:#ffeed0; text-shadow:0 2px 3px #240903; border:1px solid #ad7c3d; background:linear-gradient(125deg,rgba(96,24,18,.89),rgba(82,32,16,.25)),radial-gradient(circle at 76% 28%,#ffe0a2,transparent 22%),linear-gradient(145deg,#cca169,#75412e); }.hero h2 { margin:0; font-size:37px; }.hero p { margin:8px 0 0; font-size:19px; }
+    .panel,.card { border:1px solid #bc8e4d; background:rgba(255,251,241,.78); box-shadow:inset 0 0 22px rgba(159,108,47,.16); padding:18px; }.panel h3 { margin:0 0 14px; padding-bottom:10px; border-bottom:1px solid #d0ac75; text-align:center; font-size:23px; }.row { display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #dec9a6; font-size:17px; }.good { color:#257831; font-weight:bold; }
+    .button { width:100%; margin-top:20px; padding:13px; cursor:pointer; border:2px solid #d6a94c; color:#ffe5ad; background:linear-gradient(#8c211a,#4b0908); font:19px Georgia,serif; }.overview { display:grid; grid-template-columns:repeat(3,1fr); gap:17px; margin-top:18px; }.card { min-height:133px; text-align:center; }.symbol { color:#96301d; font-size:37px; }.card h3 { margin:4px 0; font-size:20px; }.card p { margin:0; color:#674931; }.placeholder { padding:78px 20px; text-align:center; }.placeholder .symbol { font-size:74px; }.placeholder h2 { margin:9px; font-size:32px; }.placeholder p { max-width:580px; margin:auto; color:#674931; font-size:18px; line-height:1.5; }
+    @media (max-width:740px) and (orientation:portrait) { .game { display:none; }.rotate { min-width:0; min-height:100vh; padding:28px; display:flex; align-items:center; justify-content:center; background:#3b100b; color:#ffe5ad; text-align:center; font:24px Georgia,serif; }.rotate div { padding:30px; border:1px solid #d2a047; }.rotate b { display:block; margin-bottom:14px; font-size:48px; } }
+    @media (max-height:520px) { .crest{height:52px}.nav{height:45px;font-size:13px}.foot{height:38px}.topbar{height:42px}.stage{min-height:calc(100vh - 42px);padding:26px}.screen{min-height:400px}.title{margin-top:-47px;font-size:24px}.home{margin-top:10px}.hero{min-height:292px}.hero h2{font-size:28px}.overview{margin-top:12px}.card{min-height:98px;padding:10px}.card .symbol{font-size:25px} }
+  </style>
+</head>
+<body>
+  <section class="rotate"><div><b>↻</b>En iyi deneyim için telefonu yatay konuma çevir.</div></section>
+  <div class="game">
+    <aside class="sidebar"><div class="crest"></div><nav id="nav"></nav><div class="foot">⚑</div></aside>
+    <main><header class="topbar"><div class="logo">Colosseum &amp; Ludus</div><div class="resources"><span class="coin">◉ 12,450</span><span class="blue">◆ 320</span><span class="blue">◆ 18</span><span class="red">◆ 25</span><span>│ ⚙</span></div></header><section class="stage"><article class="screen"><h1 class="title" id="title">Ana Sayfa</h1><div class="content" id="content"></div></article></section></main>
+  </div>
+  <script>
+    const pages=[['home','⌂','Ana Sayfa'],['gladiators','♞','Gladyatörler'],['training','↔','Antrenman'],['quests','▤','Görevler'],['inventory','▣','Envanter'],['upgrades','⚒','Geliştirmeler'],['market','⚖','Pazar'],['arena','⌂','Arena'],['guild','♟','Guild'],['ludus','▰','Ludus'],['messages','✉','Mesajlar']];
+    const info={gladiators:['♞','Gladyatörler','Ludus’undaki gladyatörleri, ekipmanlarını ve gelişimlerini buradan yönet.'],training:['↔','Antrenman','Gladyatörlerinin istatistiklerini geliştirmek için eğitim programını seç.'],quests:['▤','Görevler','Caesar’dan sana görev var. İtalya, Akdeniz ve Roma İmparatorluğu görevleri burada açılacak.'],inventory:['▣','Envanter','Silah, kalkan, zırh ve değerli taşlarını yönet.'],upgrades:['⚒','Geliştirmeler','Ludus’un, çalışanların ve üretim alanların için geliştirmeler burada.'],market:['⚖','Pazar','Oyuncular arasında gladyatör ve ekipman ticaretinin merkezi.'],arena:['⌂','Arena','5v5 Ranked Arena ve diğer mücadele modlarına buradan katıl.'],guild:['♟','Guild','30 üyeli guild yapın ve 20v20 Guild War kadron burada.'],ludus:['▰','Ludus Yönetimi','Dominus profilin, Ludus seviyesi, dekorların ve başarıların.'],messages:['✉','Mesajlar','Özel, Guild, Global sohbetlerin ve sistem bildirimlerin burada.']};
+    const nav=document.querySelector('#nav'),title=document.querySelector('#title'),content=document.querySelector('#content');
+    function home(){return `<div class="home"><section class="hero"><h2>Salve, Dominus.</h2><p>Ludus’un bugün arenaya hazır. Gladyatörlerini yönet, görevlerini tamamla ve imparatorluğun en güçlü Ludus’u ol.</p></section><section class="panel"><h3>Günün Durumu</h3><div class="row"><span>Ludus Seviyesi</span><b>12</b></div><div class="row"><span>Genel Verim</span><b class="good">+%12</b></div><div class="row"><span>Günlük Aktivlik</span><b>8 / 10</b></div><div class="row"><span>Aktif Görev</span><b>Ostia Limanı</b></div><button class="button" onclick="show('ludus')">Ludus Yönetimine Git</button></section></div><div class="overview"><div class="card"><div class="symbol">♞</div><h3>12 Gladyatör</h3><p>3 gladyatör bugün antrenmana hazır.</p></div><div class="card"><div class="symbol">⚖</div><h3>Pazar Fırsatları</h3><p>2 ekipman ilanı takipte.</p></div><div class="card"><div class="symbol">♟</div><h3>Guild War</h3><p>Kadro kilidine 2 gün kaldı.</p></div></div>`}
+    function show(id){const p=pages.find(x=>x[0]===id),d=info[id];title.textContent=p[2];[...nav.children].forEach(x=>x.classList.toggle('active',x.dataset.id===id));content.innerHTML=id==='home'?home():`<section class="placeholder"><div class="symbol">${d[0]}</div><h2>${d[1]}</h2><p>${d[2]}</p></section>`}
+    pages.forEach(([id,icon,name])=>{const b=document.createElement('button');b.className='nav';b.dataset.id=id;b.innerHTML=`<span class="icon">${icon}</span><span>${name}</span>`;b.onclick=()=>show(id);nav.append(b)});show('home');
+  </script>
+</body>
+</html>
