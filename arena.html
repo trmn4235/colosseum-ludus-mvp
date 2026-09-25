@@ -11,10 +11,21 @@
 @media(max-width:700px) and (orientation:landscape){.vitals{width:150px}.match{left:auto;right:calc(max(22px,env(safe-area-inset-right)) + 85px);transform:none;width:115px}.match strong{font-size:12px;letter-spacing:2px}.match span{font-size:8px;letter-spacing:1px}}
 @media (orientation:portrait) and (max-width:700px){#portrait{display:flex}}
 @media(max-height:480px){#netStatus{top:48px!important}.intro .features,.intro .line{display:none}.intro h1{font-size:26px}.intro p{font-size:11px}.choices{margin:5px 0}.choices select{max-width:290px}.intro .fine{font-size:8px!important}}
+/* Compact corner HUD, with match and class captions removed from play. */
+.match,.vitals>.eyebrow,#netStatus{display:none!important}
+.topright>div:first-child{left:calc(env(safe-area-inset-left) + 5px);top:4px}
+.eagle{width:58px;height:58px}.eagle svg{padding:9px}
+#directionText{font-size:7px;letter-spacing:.5px;margin-top:0;width:60px;text-align:center}
+.vitals{left:calc(env(safe-area-inset-left) + 68px);top:7px;width:170px}
+.vitals .name{font-size:18px;margin:0 0 4px}.vitals .meter{height:11px;margin:3px 0}
+.vitals .meter small,.vitals .meter label{font-size:8px;line-height:9px}
+#pickup{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 17px;border:1px solid #d9b977;border-radius:6px;background:#33291ce8;font:13px Arial;color:#ffe3a2;pointer-events:auto;touch-action:none}
+#pickup[hidden]{display:none!important}#pickup:disabled{opacity:.5}
+@media(max-height:480px){.vitals{width:145px;left:calc(env(safe-area-inset-left) + 57px);top:5px}.eagle{width:48px;height:48px}.vitals .name{font-size:15px}.vitals .meter{height:10px}#directionText{width:50px;font-size:6px}#pickup{bottom:10px;padding:10px;font-size:11px}}
 </style></head><body><main id="app"><canvas id="scene" aria-label="Üç boyutlu kolezyum arenası"></canvas><div id="vignette"></div><div id="damageWash"></div>
 <section id="hud" aria-label="Dövüş göstergeleri"><div class="vitals"><div class="eyebrow">LUDUS · GLADYATÖRÜN</div><div class="name">Cassius</div><div class="meter" role="meter" aria-label="Can" aria-valuemin="0" aria-valuemax="120" aria-valuenow="120"><span id="hpFill"></span><small>CAN</small><label id="hpText">120 / 120</label></div><div class="meter energy" role="meter" aria-label="Kondisyon" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="stFill"></span><small>KONDİSYON</small><label id="stText">100 / 100</label></div></div><div class="match"><strong>KOLEZYUM</strong><span id="roundInfo">3 RAKİP · SERBEST DÖVÜŞ</span></div><div class="topright"><div><div class="eagle" aria-label="Darbe yönü göstergesi"><svg viewBox="0 0 100 100"><path id="dir-front" d="M42 35 L42 22 L38 17 L49 10 L61 15 L65 22 L55 21 L54 34 L50 43 Z"/><path id="dir-left" d="M45 39 L34 29 L5 15 L8 27 L23 37 L10 31 L13 41 L27 47 L16 44 L20 54 L32 57 L26 57 L32 65 L42 55 L46 46 Z"/><path id="dir-right" d="M55 39 L66 29 L95 15 L92 27 L77 37 L90 31 L87 41 L73 47 L84 44 L80 54 L68 57 L74 57 L68 65 L58 55 L54 46 Z"/><path d="M43 36 L57 36 L64 55 L54 68 L46 68 L36 55 Z"/><path id="dir-back" d="M46 64 L54 64 L65 86 L52 80 L50 88 L47 80 L35 86 Z"/></svg></div><div id="directionText">DARBE YÖNÜ</div></div><div class="tools"><button class="tool" id="sound" aria-label="Sesi aç" title="Ses">♪</button><button class="tool" id="pause" aria-label="Duraklat" title="Duraklat">Ⅱ</button></div></div><div id="enemyLabels"></div><div id="floaters"></div><div id="netStatus" style="position:absolute;left:50%;top:76px;transform:translateX(-50%);font:10px Arial;color:#ead09b;text-shadow:0 1px 3px #000"></div><div id="combo"></div><div id="toast" role="status"></div></section>
-<section id="controls" aria-label="Oyun kontrolleri"><div id="stick" role="group" aria-label="Hareket çubuğu"><div id="knob"></div><span class="controlHint">HAREKET</span></div><div class="actions"><button id="target" class="action" aria-label="Hedef kilidini aç veya kapat" title="Hedef kilidi · E"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/></svg></button><button id="heavy" class="action" aria-label="Güçlü saldırı"><svg viewBox="0 0 24 24"><path d="M14 2l-9 12h7l-2 8 10-13h-8z"/></svg><small>GÜÇLÜ</small></button><button id="block" class="action" aria-label="Kalkanı tut"><svg viewBox="0 0 24 24"><path d="M4 4l8-2 8 2v8c0 5-8 10-8 10S4 17 4 12zM12 4v15"/></svg><small>BLOK</small></button><button id="attack" class="action" aria-label="Saldır"><svg viewBox="0 0 24 24"><path d="M7 17L20 3l1 5L10 19M5 13l7 7M4 21l4-5"/></svg><small>SALDIR</small></button><button id="dodge" class="action" aria-label="Kaçış"><svg viewBox="0 0 24 24"><path d="M3 12h17m-6-6l6 6-6 6M4 6h5M2 18h7"/></svg><small>KAÇIŞ</small></button></div><div class="desktopHint">WASD hareket · J saldırı · K blok · L kaçış · I güçlü · E hedef kilidi · Sürükle: kamera</div></section>
-<section id="intro" class="overlay"><div class="intro"><div class="eyebrow">COLOSSEUM & LUDUS · ARENA 0.5 · YENİ GLADYATÖR</div><h1>Kum. Çelik.<em>Ve son kalan gladyatör.</em></h1><div class="line"></div><p>Secutor veya Retiarius seç. Ağ, menzildeki rakibe 5 saniye bekleme süresiyle otomatik atılır; yakalanan 3 saniye sersemler. Kaçışla ağdan sıyrıl.</p><p class="fine">Kolezyum: <a style="color:inherit" href="https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30" target="_blank" rel="noopener">Neberkenezer</a> · <a style="color:inherit" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · Ölçek ve çizim düzeni uyarlandı.</p><p id="characterLoad" class="fine" role="status">Gladyatör yükleniyor…</p><p class="fine">Gladyatör: <a style="color:inherit" target="_blank" rel="noopener" href="https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c">huyunited</a> · CC BY 4.0 · Dokular küçültüldü; ölçek ve dövüş hareketleri uyarlandı.</p><div class="features"><span>GERÇEK ZAMANLI 3D</span><span>BOTLARA KARŞI</span></div><div class="choices"><label for="difficulty">Zorluk</label><select id="difficulty"><option value="easy">Kolay</option><option value="normal" selected>Normal</option></select><label for="quality">Görünüm</label><select id="quality"><option value="low">Akıcı</option><option value="high" selected>Detaylı</option></select></div><div class="choices"><label for="fighterType">Gladyatör</label><select id="fighterType"><option value="secutor">Secutor · Kılıç / kalkan</option><option value="retiarius">Retiarius · Üç dişli mızrak / ağ</option></select></div><p id="record" class="fine"></p><button id="start" class="start" disabled>Arena hazırlanıyor…</button><p class="fine">ARENA 0.5 · YENİ GLADYATÖR · İnsan modelleri · İskelet animasyonu · Yeni silahlar.<br>Solda hareket; sağda saldırı, blok ve kaçış. Boş alanda sürükle: kamera.</p></div></section>
+<section id="controls" aria-label="Oyun kontrolleri"><div id="stick" role="group" aria-label="Hareket çubuğu"><div id="knob"></div><span class="controlHint">HAREKET</span></div><div class="actions"><button id="target" class="action" aria-label="Hedef kilidini aç veya kapat" title="Hedef kilidi · E"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/></svg></button><button id="heavy" class="action" aria-label="Güçlü saldırı"><svg viewBox="0 0 24 24"><path d="M14 2l-9 12h7l-2 8 10-13h-8z"/></svg><small>GÜÇLÜ</small></button><button id="block" class="action" aria-label="Kalkanı tut"><svg viewBox="0 0 24 24"><path d="M4 4l8-2 8 2v8c0 5-8 10-8 10S4 17 4 12zM12 4v15"/></svg><small>BLOK</small></button><button id="attack" class="action" aria-label="Saldır"><svg viewBox="0 0 24 24"><path d="M7 17L20 3l1 5L10 19M5 13l7 7M4 21l4-5"/></svg><small>SALDIR</small></button><button id="dodge" class="action" aria-label="Kaçış"><svg viewBox="0 0 24 24"><path d="M3 12h17m-6-6l6 6-6 6M4 6h5M2 18h7"/></svg><small>KAÇIŞ</small></button></div><button id="pickup" hidden aria-label="Yerdeki silahı al">Silahı al</button><div class="desktopHint">WASD hareket · J saldırı · K blok · L kaçış · I güçlü · E hedef kilidi · F silah al · Sürükle: kamera</div></section>
+<section id="intro" class="overlay"><div class="intro"><div class="eyebrow">COLOSSEUM & LUDUS · ARENA 0.6 · 20 GLADYATÖR</div><h1>Kum. Çelik.<em>Ve son kalan gladyatör.</em></h1><div class="line"></div><p>20 gladyatör arasından son kalan ol. Secutor veya Retiarius seç. Ağ, menzildeki rakibe 5 saniye bekleme süresiyle otomatik atılır; yakalanan 3 saniye sersemler. Kaçışla ağdan sıyrıl.</p><p class="fine">Kolezyum: <a style="color:inherit" href="https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30" target="_blank" rel="noopener">Neberkenezer</a> · <a style="color:inherit" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · Ölçek ve çizim düzeni uyarlandı.</p><p id="characterLoad" class="fine" role="status">Gladyatör yükleniyor…</p><p class="fine">Gladyatör: <a style="color:inherit" target="_blank" rel="noopener" href="https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c">huyunited</a> · CC BY 4.0 · Dokular küçültüldü; ölçek ve dövüş hareketleri uyarlandı.</p><div class="features"><span>GERÇEK ZAMANLI 3D</span><span>BOTLARA KARŞI</span></div><div class="choices"><label for="difficulty">Zorluk</label><select id="difficulty"><option value="easy">Kolay</option><option value="normal" selected>Normal</option></select><label for="quality">Görünüm</label><select id="quality"><option value="low">Akıcı</option><option value="high" selected>Detaylı</option></select></div><div class="choices"><label for="fighterType">Gladyatör</label><select id="fighterType"><option value="secutor">Secutor · Kılıç / kalkan</option><option value="retiarius">Retiarius · Üç dişli mızrak / ağ</option></select></div><p id="record" class="fine"></p><button id="start" class="start" disabled>Arena hazırlanıyor…</button><p class="fine">ARENA 0.6 · 20 GLADYATÖR · İnsan modelleri · İskelet animasyonu · Yeni silahlar.<br>Solda hareket; sağda saldırı, blok ve kaçış. Boş alanda sürükle: kamera.</p></div></section>
 <section id="pauseMenu" class="overlay" hidden><div class="intro"><div class="eyebrow">COLOSSEUM & LUDUS</div><h1>Dövüş duraklatıldı.</h1><p>Üç hızlı saldırıyı zincirle: son vuruş yere düşürür. Darbeden hemen önce blokla: rakibi sersemlet. Hedef kilidi açıkken rakibe dönük hareket edersin. Kalkan arkadan korumaz.</p><button id="resume" class="start">Devam et</button><br><button id="restart" class="start secondary">Yeniden başla</button><button id="menu" class="start secondary">Ana ekran</button></div></section>
 <section id="result" class="overlay" hidden><div class="intro"><div class="eyebrow">DÖVÜŞ TAMAMLANDI</div><h1 id="resultTitle">Zafer.</h1><p id="resultDescription"></p><div id="resultStats"></div><button id="again" class="start">Tekrar dövüş</button><button id="resultMenu" class="start secondary">Ana ekran</button><p class="fine">Bu arena ayrı bir prototiptir; Ludus ekonomisine bağlı değildir.</p></div></section>
 <div id="portrait"><div><strong>Telefonunu yatay çevir.</strong><p>Arena yatay ekran için hazırlandı.<br>Dövüş, ekranı çevirene kadar durur.</p></div></div><div id="fatal" role="alert"></div></main>
@@ -6149,12 +6160,23 @@ const delta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 class ArenaCombat {
  constructor(random=Math.random){this.random=random;this.reset();}
- reset(difficulty='normal',playerType='secutor'){
+ reset(difficulty='normal',playerType='secutor',count=20){
   this.difficulty=difficulty;this.time=0;this.events=[];this.finished=false;this.result=null;this.combo=0;this.comboUntil=0;this.lockedTarget=null;
-  this.stats={hits:0,blocks:0,dodges:0,damage:0,parries:0,knockdowns:0,nets:0};this.nets=[];this.netSequence=0;
-  this.fighters=[['Cassius',0,5,Math.PI],['Varro',-4,-1,1],['Felix',4,-3,-1],['Drusus',0,-6,0]].map((a,i)=>({id:i,name:a[0],x:a[1],z:a[2],angle:a[3],hp:i?80:120,maxHp:i?80:120,stamina:100,action:'idle',timer:0,duration:0,hitDone:false,cooldown:i*.5,think:0,target:0,blocking:false,blockAge:99,chain:0,lastAttack:-99,regenDelay:0,move:0,walk:0,flash:0,deadTime:0,dx:0,dz:0,attackKind:'light'}));
-  for(const f of this.fighters){f.type=f.id===0?playerType:f.id===2?'retiarius':'secutor';f.nextNet=5;f.stunUntil=0;f.netBusy=false;}
+  this.stats={hits:0,blocks:0,dodges:0,damage:0,parries:0,knockdowns:0,nets:0};this.nets=[];this.netSequence=0;this.drops=[];this.dropSequence=0;
+  const names=['Cassius','Varro','Felix','Drusus','Marcus','Titus','Lucius','Cato','Brutus','Aulus','Flavius','Decimus','Gaius','Quintus','Severus','Nero','Octavius','Rufus','Maximus','Silvanus'];
+  const spawns=Array.from({length:Math.max(4,Math.min(20,count))},(_,i)=>{if(i===0)return [names[i],0,11,Math.PI];const a=(i-1)*2.399963229728653,r=4+9*Math.sqrt((i-1)/18);return [names[i],Math.sin(a)*r,Math.cos(a)*r,Math.atan2(-Math.sin(a),-Math.cos(a))];});
+  this.fighters=spawns.map((a,i)=>({id:i,name:a[0],x:a[1],z:a[2],angle:a[3],hp:i?80:120,maxHp:i?80:120,stamina:100,action:'idle',timer:0,duration:0,hitDone:false,cooldown:i*.5,think:0,target:0,blocking:false,blockAge:99,chain:0,lastAttack:-99,regenDelay:0,move:0,walk:0,flash:0,deadTime:0,dx:0,dz:0,attackKind:'light'}));
+  for(const f of this.fighters){f.type=f.id===0?playerType:f.id%5===2?'retiarius':'secutor';f.weapon=f.type==='retiarius'?'trident':'mace';f.nextNet=5;f.stunUntil=0;f.netBusy=false;}
   return this;
+ }
+ dropWeapon(f){
+  if(!f.weapon)return null;const drop={id:++this.dropSequence,kind:f.weapon,x:clamp(f.x+.55,-16.5,16.5),z:clamp(f.z,-16.5,16.5)};this.drops.push(drop);f.weapon=null;this.emit('weapondrop',{id:f.id,drop:drop.id});return drop;
+ }
+ nearestDrop(id=0){const f=this.fighters[id];if(!f||f.hp<=0)return null;let best=null,d=1.8;for(const w of this.drops){const k=distance(f,w);if(k<d){d=k;best=w;}}return best;}
+ pickup(id,dropId){
+  const f=this.fighters[id],i=this.drops.findIndex(w=>w.id===dropId);
+  if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stunUntil>this.time||i<0||distance(f,this.drops[i])>1.8)return false;
+  const picked=this.drops.splice(i,1)[0];this.dropWeapon(f);f.weapon=picked.kind;this.emit('pickup',{id,kind:picked.kind,drop:dropId});return true;
  }
  emit(type,data={}){this.events.push({type,time:this.time,...data});}
  throwNet(id,targetId){
@@ -6197,12 +6219,13 @@ class ArenaCombat {
   f.dx=x/length;f.dz=z/length;this.emit('dodge',{id});return true;
  }
  hit(attacker,victim){
-  if(victim.hp<=0||(victim.action==='knocked'&&victim.timer<.8)||distance(attacker,victim)>(attacker.type==='retiarius'?2.75:2.25))return;
+  if(victim.hp<=0||(victim.action==='knocked'&&victim.timer<.8)||distance(attacker,victim)>(attacker.weapon==='trident'?2.75:2.25))return;
   const aim=Math.atan2(victim.x-attacker.x,victim.z-attacker.z);
   if(Math.abs(delta(aim,attacker.angle))>1.05)return;
   if(victim.action==='dodge'&&victim.timer<.37){if(victim.id===0)this.stats.dodges++;this.emit('evade',{id:victim.id});return;}
   const source=Math.atan2(attacker.x-victim.x,attacker.z-victim.z),front=Math.abs(delta(source,victim.angle))<1.35;
   let damage=attacker.id===0?(attacker.attackKind==='heavy'?34:20+(attacker.chain===3?8:0)):(this.difficulty==='easy'?9:14);
+  if(attacker.weapon==='trident')damage=Math.round(damage*.9);
   if(victim.blocking&&front){const cost=attacker.attackKind==='heavy'?34:20;
    if(victim.stamina>=cost){const parry=victim.id===0&&victim.blockAge<.18;victim.stamina-=parry?6:cost;victim.regenDelay=.9;if(victim.id===0)this.stats.blocks++;if(parry){attacker.action='hurt';attacker.timer=0;attacker.duration=.7;this.stats.parries++;this.emit('parry',{id:victim.id,source:attacker.id});}else this.emit('block',{id:victim.id,source:attacker.id});return;}
    victim.stamina=0;victim.blocking=false;this.emit('break',{id:victim.id});
@@ -6210,7 +6233,7 @@ class ArenaCombat {
   if(attacker.id===0){this.combo=this.time<this.comboUntil?this.combo+1:1;this.comboUntil=this.time+2.6;damage+=Math.min(3,this.combo-1)*2;this.stats.hits++;this.stats.damage+=Math.min(victim.hp,damage);}
   victim.hp=Math.max(0,victim.hp-damage);victim.flash=.25;victim.regenDelay=.8;
   victim.x+=Math.sin(aim)*.25;victim.z+=Math.cos(aim)*.25;
-  if(victim.hp===0){victim.action='down';victim.timer=0;victim.blocking=false;this.emit('down',{id:victim.id,killer:attacker.id});}
+  if(victim.hp===0){this.dropWeapon(victim);victim.action='down';victim.timer=0;victim.blocking=false;this.emit('down',{id:victim.id,killer:attacker.id});}
   else if(victim.stunUntil>this.time){victim.action='stunned';victim.blocking=false;}
   else if(victim.action!=='dodge'){const knock=attacker.attackKind==='heavy'||attacker.chain===3;victim.action=knock?'knocked':'hurt';victim.timer=0;victim.duration=knock?1.25:.24;victim.blocking=false;if(knock){if(attacker.id===0)this.stats.knockdowns++;this.emit('knockdown',{id:victim.id});}}
   this.emit('hit',{id:victim.id,source:attacker.id,damage,direction:delta(source,victim.angle)});
@@ -6255,7 +6278,7 @@ class ArenaCombat {
    f.walk+=dt*f.move*9;
    const radius=Math.hypot(f.x,f.z);if(radius>17.4){f.x*=17.4/radius;f.z*=17.4/radius;}
   }
-  for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){
+  for(let i=0;i<this.fighters.length;i++)for(let j=i+1;j<this.fighters.length;j++){
    const a=this.fighters[i],b=this.fighters[j];if(a.hp<=0||b.hp<=0)continue;
    const d=distance(a,b);if(d<.88){const ax=d>.001?(a.x-b.x)/d:1,az=d>.001?(a.z-b.z)/d:0,k=(.88-d)*.5;a.x+=ax*k;a.z+=az*k;b.x-=ax*k;b.z-=az*k;}
   }
@@ -6310,7 +6333,7 @@ function human(indexNumber,type='secutor'){
  const boneList=[],bones={},heads={};A.bones.forEach(b=>{const bone=new T.Bone();bone.name=b.name;boneList.push(bone);bones[b.name]=bone;heads[b.name]=new T.Vector3(...b.head);});
  A.bones.forEach((b,i)=>{boneList[i].position.copy(heads[b.name]);if(b.parent>=0){boneList[i].position.sub(heads[A.bones[b.parent].name]);boneList[b.parent].add(boneList[i]);}else body.add(boneList[i]);});
  const skeleton=new T.Skeleton(boneList);body.updateMatrixWorld(true);
- const skin=new T.MeshStandardMaterial({map:skinTexture,color:['#f4d4b9','#ddc2a6','#b49171','#eac8ac'][indexNumber],roughness:.67,metalness:0});skin.userData.humanSkin=true;
+ const skin=new T.MeshStandardMaterial({map:skinTexture,color:['#f4d4b9','#ddc2a6','#b49171','#eac8ac'][indexNumber%4],roughness:.67,metalness:0});skin.userData.humanSkin=true;
  const surface=new T.SkinnedMesh(base,skin);surface.name='CC0 anatomical human';surface.castShadow=true;surface.receiveShadow=true;surface.frustumCulled=false;body.add(surface);surface.bind(skeleton);surface.normalizeSkinWeights();
  function anchor(name,world){const group=new T.Group();group.position.copy(new T.Vector3(...world).sub(heads[name]));bones[name].add(group);return group;}
  function segment(name,end){const g=new T.Group();bones[name].add(g);g.quaternion.setFromUnitVectors(new T.Vector3(0,-1,0),heads[end].clone().sub(heads[name]).normalize());return g;}
@@ -6426,7 +6449,7 @@ var ImportedGladiator=(function(){
    const r=await fetch(new URL('gladiator-mobile.glb',document.baseURI),{signal:abort.signal});
    if(!r.ok)throw new Error('gladiator-mobile.glb bulunamadı. Dosyayı arena.html ile aynı klasöre yükle.');
    const data=await r.arrayBuffer();status('Gladyatör hazırlanıyor…');
-   const g=await new T.GLTFLoader().parseAsync(data,'');template=g.scene;status('Gladyatör hazır · 11,9 MB');
+   const g=await new T.GLTFLoader().parseAsync(data,'');g.scene.traverse(o=>{if(o.isMesh){const a=g.parser.associations.get(o);const name=a&&a.meshes!==undefined?g.parser.json.meshes[a.meshes].name:'';o.userData.isWeapon=/^weapon_geo/.test(name||'');}});template=g.scene;status('Gladyatör hazır · 11,9 MB');
   }catch(e){throw new Error(e.name==='AbortError'?'Gladyatör yüklemesi zaman aşımına uğradı. Tekrar dene.':e.message);}
   finally{clearTimeout(timeout);}
  }
@@ -6528,10 +6551,11 @@ const arenaReady=ColosseumEnvironment.load(scene,renderer,progress=>{
  $('start').textContent=progress;
 }).then(()=>{ground.position.y=-.025;});
 const gladiatorReady=ImportedGladiator.load(text=>{$('characterLoad').textContent=text;});
-function createCharacter(i,type){return type==='secutor'&&ImportedGladiator.loaded?ImportedGladiator.create(i):HumanVisuals.create(i,type);}
+function createCharacter(i,type){const m=type==='secutor'&&ImportedGladiator.loaded?ImportedGladiator.create(i):HumanVisuals.create(i,type);m.shadowMeshes=[];m.root.traverse(o=>{if(o.isMesh&&o.castShadow)m.shadowMeshes.push(o);});return m;}
 function disposeCharacter(m){if(m.imported)ImportedGladiator.dispose(m);else HumanVisuals.dispose(m);}
 // Preserve Retiarius while replacing sword-and-shield fighters with the uploaded rig.
-const models=[0,1,2,3].map(i=>{const m=createCharacter(i,i===2?'retiarius':'secutor');scene.add(m.root);return m;}),combat=new ArenaCombat();
+const combat=new ArenaCombat();
+const models=combat.fighters.map(f=>{const m=createCharacter(f.id,f.type);scene.add(m.root);return m;});
 // Target ring stays on the sand, below the selected rival.
 const ring=mesh(new THREE.RingGeometry(.67,.73,48),new THREE.MeshBasicMaterial({color:0xf8d37b,side:THREE.DoubleSide,transparent:true,opacity:.8}),scene);ring.rotation.x=-Math.PI/2;ring.position.y=.035;ring.castShadow=false;
 const labels=combat.fighters.slice(1).map(f=>{const el=document.createElement('div');el.className='enemy';el.innerHTML='<div class="intent"></div><div class="enemyname">'+f.name+'</div><div class="bar"><i></i></div>';$('enemyLabels').appendChild(el);return el;});
@@ -6553,9 +6577,9 @@ function setPaused(value){if(!started||combat.finished)return;paused=value;clear
 function strike(heavy=false){if(!active())return;if(combat.attack(0,heavy)){queuedAttack=null;return;}if(combat.fighters[0].stamina<(heavy?27:13)){toast('Kondisyonun dolmasını bekle.');return;}queuedAttack={heavy,until:performance.now()+550};}
 function escape(){if(!active())return;const v=worldInput();if(!combat.dodge(0,v.x,v.z)&&combat.fighters[0].stamina<25)toast('Kaçış için 25 kondisyon gerekiyor.');}
 function faceTarget(){if(combat.lockedTarget!==null){combat.lockedTarget=null;$('target').classList.remove('pressed');toast('Hedef kilidi kapalı.');return;}const p=combat.fighters[0],t=combat.nearest(p);if(t){selectedTarget=t.id;combat.lockedTarget=t.id;p.angle=Math.atan2(t.x-p.x,t.z-p.z);cameraYaw=p.angle;$('target').classList.add('pressed');toast(t.name+' kilitlendi · hareket ederken rakibe dönük kalırsın.');}}
-function begin(){combat.reset($('difficulty').value,$('fighterType').value);if(models[0].type!==combat.fighters[0].type){scene.remove(models[0].root);disposeCharacter(models[0]);models[0]=createCharacter(0,combat.fighters[0].type);scene.add(models[0].root);}resultRecorded=false;started=true;paused=false;resultAt=0;accumulator=0;hitStop=0;shake=0;cameraYaw=Math.PI;cameraPitch=.36;clearInput();$('target').classList.remove('pressed');for(const f of floaters)f.el.remove();floaters.length=0;for(const s of sparks)scene.remove(s.m);sparks.length=0;for(const d of dust){scene.remove(d.m);d.m.material.dispose();}dust.length=0;$('intro').hidden=true;$('pauseMenu').hidden=true;$('result').hidden=true;$('combo').textContent='';$('damageWash').style.opacity=0;camera.position.set(0,3.45,10.8);$('hud').style.display='';$('controls').style.display='';toast('Hedefi kilitle · 3 vuruşla kombo yap · son anda blokla karşıla.');audio('start');}
+function begin(){clearWeaponViews();combat.reset($('difficulty').value,$('fighterType').value);if(models[0].type!==combat.fighters[0].type){scene.remove(models[0].root);disposeCharacter(models[0]);models[0]=createCharacter(0,combat.fighters[0].type);scene.add(models[0].root);}resultRecorded=false;started=true;paused=false;resultAt=0;accumulator=0;hitStop=0;shake=0;cameraYaw=Math.PI;cameraPitch=.36;clearInput();$('target').classList.remove('pressed');for(const f of floaters)f.el.remove();floaters.length=0;for(const s of sparks)scene.remove(s.m);sparks.length=0;for(const d of dust){scene.remove(d.m);d.m.material.dispose();}dust.length=0;$('intro').hidden=true;$('pauseMenu').hidden=true;$('result').hidden=true;$('combo').textContent='';$('damageWash').style.opacity=0;camera.position.set(0,3.45,10.8);$('hud').style.display='';$('controls').style.display='';toast('Hedefi kilitle · 3 vuruşla kombo yap · son anda blokla karşıla.');audio('start');}
 $('start').onclick=begin;$('again').onclick=begin;$('restart').onclick=begin;$('resume').onclick=()=>setPaused(false);$('pause').onclick=()=>setPaused(!paused);
-function mainMenu(){started=false;paused=false;resultAt=0;clearInput();$('intro').hidden=false;$('pauseMenu').hidden=true;$('result').hidden=true;combat.reset();$('hud').style.display='none';$('controls').style.display='none';renderRecord();}
+function mainMenu(){clearWeaponViews();started=false;paused=false;resultAt=0;clearInput();$('intro').hidden=false;$('pauseMenu').hidden=true;$('result').hidden=true;combat.reset();$('hud').style.display='none';$('controls').style.display='none';renderRecord();}
 $('menu').onclick=mainMenu;$('resultMenu').onclick=mainMenu;
 $('sound').onclick=()=>{soundOn=!soundOn;$('sound').setAttribute('aria-label',soundOn?'Sesi kapat':'Sesi aç');$('sound').style.color=soundOn?'#ffe2a0':'#aaa';audio('block');toast(soundOn?'Ses açık':'Ses kapalı');};
 $('quality').onchange=()=>{const high=$('quality').value==='high';renderer.setPixelRatio(Math.min(devicePixelRatio,high?1.6:1));renderer.shadowMap.enabled=high;resize();};
@@ -6569,9 +6593,9 @@ for(const ev of ['pointerup','pointercancel','lostpointercapture'])stick.addEven
 canvas.addEventListener('pointerdown',e=>{if(!active())return;cameraDrag={id:e.pointerId,x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(cameraDrag?.id!==e.pointerId)return;cameraYaw-=(e.clientX-cameraDrag.x)*.006;cameraPitch=Math.max(.2,Math.min(.85,cameraPitch+(e.clientY-cameraDrag.y)*.003));cameraDrag.x=e.clientX;cameraDrag.y=e.clientY;});
 for(const ev of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(ev,e=>{if(cameraDrag?.id===e.pointerId)cameraDrag=null;});
-window.addEventListener('keydown',e=>{if(/^(Key[WASDJKLIE]|Arrow.*|Space|ShiftLeft|Escape)$/.test(e.code)&&started){e.preventDefault();if(e.code==='Escape'){if(!e.repeat)setPaused(!paused);return;}keys.add(e.code);if(!e.repeat){if(e.code==='KeyJ'||e.code==='Space')strike();if(e.code==='KeyI')strike(true);if(e.code==='KeyL')escape();if(e.code==='KeyE'&&active())faceTarget();}}});window.addEventListener('keyup',e=>keys.delete(e.code));
+window.addEventListener('keydown',e=>{if(/^(Key[WASDJKLIEF]|Arrow.*|Space|ShiftLeft|Escape)$/.test(e.code)&&started){e.preventDefault();if(e.code==='Escape'){if(!e.repeat)setPaused(!paused);return;}keys.add(e.code);if(!e.repeat){if(e.code==='KeyF')pickupWeapon();if(e.code==='KeyJ'||e.code==='Space')strike();if(e.code==='KeyI')strike(true);if(e.code==='KeyL')escape();if(e.code==='KeyE'&&active())faceTarget();}}});window.addEventListener('keyup',e=>keys.delete(e.code));
 window.addEventListener('blur',()=>{clearInput();setPaused(true);});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();setPaused(true);}});document.addEventListener('contextmenu',e=>e.preventDefault());
-function animateCharacter(f,m,t,dt){if(m.imported)ImportedGladiator.animate(f,m,t,dt);else HumanVisuals.animate(f,m,t,dt);}
+function animateCharacter(f,m,t,dt){const near=f.id===0||Math.hypot(f.x-combat.fighters[0].x,f.z-combat.fighters[0].z)<7;for(const o of m.shadowMeshes)o.castShadow=near; m.poseDelta=(m.poseDelta||0)+dt;if(!near&&m.poseDelta<1/30)return;dt=m.poseDelta;m.poseDelta=0;if(m.imported)ImportedGladiator.animate(f,m,t,dt);else HumanVisuals.animate(f,m,t,dt);}
 
 // Reusable rope geometry: spreading net, weighted edge, retrieval line and capture wrap.
 const netViews=new Map(),ropeMaterial=new THREE.MeshStandardMaterial({color:0xa88a55,roughness:1});
@@ -6592,6 +6616,42 @@ function renderNets(){
   attr.setXYZ(0,hand.x,hand.y,hand.z);attr.setXYZ(1,(hand.x+n.x)/2,.65,(hand.z+n.z)/2);attr.setXYZ(2,n.x,holding?1.2:v.disk.position.y,n.z);attr.needsUpdate=true;v.line.geometry.computeBoundingSphere();v.line.visible=n.age>=.3;
  }
 }
+// Shared low-cost dropped/held weapon meshes; picking up changes weapon, not class.
+const weaponViews=new Map(),heldViews=new Map();
+const weaponTemplates={};
+function weaponTemplate(kind){
+ if(weaponTemplates[kind])return weaponTemplates[kind];
+ const group=new THREE.Group(),metal=new THREE.MeshStandardMaterial({color:0x858a82,metalness:.75,roughness:.4}),wood=new THREE.MeshStandardMaterial({color:0x493625,roughness:.9});
+ const part=(g,m,x,y,z)=>{const o=new THREE.Mesh(g,m);o.position.set(x,y,z);group.add(o);return o;};
+ if(kind==='trident'){
+  part(new THREE.CylinderGeometry(.026,.032,1.9,8),wood,0,.55,0);
+  part(new THREE.BoxGeometry(.42,.055,.05),metal,0,1.47,0);
+  for(const x of [-.19,0,.19]){part(new THREE.CylinderGeometry(.018,.025,.3,6),metal,x,1.62,0);part(new THREE.ConeGeometry(.032,.15,6),metal,x,1.84,0);}
+ }else{
+  part(new THREE.CylinderGeometry(.032,.042,.55,8),wood,0,.16,0);
+  for(let i=0;i<6;i++){const ring=part(new THREE.TorusGeometry(.034,.009,4,8),metal,0,.48+i*.045,0);ring.rotation.y=i%2*Math.PI/2;}
+  part(new THREE.IcosahedronGeometry(.12,1),metal,0,.82,0);
+  for(let i=0;i<6;i++){const a=i*Math.PI/3,o=part(new THREE.ConeGeometry(.038,.13,5),metal,Math.cos(a)*.14,.82,Math.sin(a)*.14);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(Math.cos(a),0,Math.sin(a)));}
+ }
+ weaponTemplates[kind]=group;return group;
+}
+function clearWeaponViews(){for(const o of weaponViews.values())scene.remove(o);for(const o of heldViews.values())scene.remove(o);weaponViews.clear();heldViews.clear();}
+function pickupWeapon(){if(!active())return;const drop=combat.nearestDrop();if(drop)combat.pickup(0,drop.id);}
+$('pickup').onclick=pickupWeapon;
+function renderWeapons(){
+ const ids=new Set(combat.drops.map(d=>d.id));
+ for(const [id,o] of weaponViews)if(!ids.has(id)){scene.remove(o);weaponViews.delete(id);}
+ for(const d of combat.drops){let o=weaponViews.get(d.id);if(!o){o=weaponTemplate(d.kind).clone();o.rotation.set(Math.PI/2,d.id*.71,0);o.position.set(d.x,.16,d.z);scene.add(o);weaponViews.set(d.id,o);}o.visible=started;}
+ for(const f of combat.fighters){const m=models[f.id],native=f.type==='retiarius'?'trident':'mace';
+  if(!m.nativeWeaponNodes){m.nativeWeaponNodes=[];if(m.imported)m.visual.traverse(o=>{if(o.isMesh&&o.userData.isWeapon)m.nativeWeaponNodes.push(o);});else if(m.weapon)m.nativeWeaponNodes.push(m.weapon);}
+  const own=!!f.weapon&&f.weapon===native;for(const o of m.nativeWeaponNodes)o.visible=own;
+  let held=heldViews.get(f.id);if(held&&held.userData.kind!==f.weapon){scene.remove(held);heldViews.delete(f.id);held=null;}
+  if(f.weapon&&!own){if(!held){held=weaponTemplate(f.weapon).clone();held.userData.kind=f.weapon;scene.add(held);heldViews.set(f.id,held);}
+   const hand=m.imported?m.bones.RightHand:m.bones['wrist.R'];if(hand){hand.getWorldPosition(held.position);const swing=f.action==='attack'?Math.sin(Math.PI*Math.min(1,f.timer/f.duration))*1.9:0;held.rotation.set(.12+swing,f.angle,0);held.visible=started;}
+  }else if(held){scene.remove(held);heldViews.delete(f.id);}
+ }
+ const d=started&&!combat.finished?combat.nearestDrop():null,p=combat.fighters[0];$('pickup').hidden=!d;$('pickup').disabled=!active()||p.action!=='idle';if(d)$('pickup').textContent='Silahı al · '+(d.kind==='trident'?'Üç dişli mızrak':'Gürz');
+}
 const projected=new THREE.Vector3();
 function project(x,y,z){projected.set(x,y,z).project(camera);return{x:(projected.x*.5+.5)*width,y:(-.5*projected.y+.5)*height,visible:projected.z<1&&projected.z>-1&&Math.abs(projected.x)<1.15&&Math.abs(projected.y)<1.15};}
 function floating(f,text,color='#ffe6a7'){const el=document.createElement('div');el.className='float';el.textContent=text;el.style.color=color;$('floaters').appendChild(el);floaters.push({el,x:f.x,z:f.z,age:0});}
@@ -6611,14 +6671,15 @@ function events(){for(const e of combat.drain()){
  if(e.type==='break'){floating(f,'SAVUNMA KIRILDI','#ffac75');if(e.id===0)toast('Kondisyon bitti, savunman kırıldı.');}
  if(e.type==='evade')floating(f,'SIYRILDI','#9fe5e0');
  if(e.type==='swing'&&e.id===0)audio('swing');
+ if(e.type==='pickup'&&e.id===0)toast(e.kind==='trident'?'Üç dişli mızrak alındı.':'Gürz alındı.');
  if(e.type==='down')toast(f.name+' yere düştü.');
  if(e.type==='finish'){resultAt=performance.now()+1200;clearInput();}
  }}
-function showResult(){if(!resultRecorded){resultRecorded=true;record.matches++;if(combat.result==='win'){record.wins++;const seconds=Math.max(1,Math.round(combat.time));record.best=record.best?Math.min(record.best,seconds):seconds;}try{localStorage.setItem('ludus-arena-record-v02',JSON.stringify(record));}catch(e){toast('Tarayıcı kaydı kapalı; rekor bu oturumda kalacak.');}}paused=true;$('result').hidden=false;$('resultTitle').textContent=combat.result==='win'?'Arena senin.':'Bu kez olmadı.';$('resultDescription').textContent=combat.result==='win'?'Üç rakibin de yerde. Kolezyumda ayakta kalan sensin.':'Gladyatörün yenildi. Blok ve kaçışı kullan; saldırılar arasında kondisyonunu toparla.';$('resultStats').innerHTML='<div><b>'+Math.round(combat.time)+' sn</b>Dövüş süresi</div><div><b>'+combat.stats.hits+'</b>İsabetli darbe</div><div><b>'+combat.stats.blocks+'</b>Blok · '+combat.stats.parries+' mükemmel</div><div><b>'+combat.stats.damage+'</b>Hasar · '+combat.stats.knockdowns+' yere düşürme</div>';}
+function showResult(){if(!resultRecorded){resultRecorded=true;record.matches++;if(combat.result==='win'){record.wins++;const seconds=Math.max(1,Math.round(combat.time));record.best=record.best?Math.min(record.best,seconds):seconds;}try{localStorage.setItem('ludus-arena-record-v02',JSON.stringify(record));}catch(e){toast('Tarayıcı kaydı kapalı; rekor bu oturumda kalacak.');}}paused=true;$('result').hidden=false;$('resultTitle').textContent=combat.result==='win'?'Arena senin.':'Bu kez olmadı.';$('resultDescription').textContent=combat.result==='win'?'Bütün rakiplerin yerde. Kolezyumda ayakta kalan sensin.':'Gladyatörün yenildi. Blok ve kaçışı kullan; saldırılar arasında kondisyonunu toparla.';$('resultStats').innerHTML='<div><b>'+Math.round(combat.time)+' sn</b>Dövüş süresi</div><div><b>'+combat.stats.hits+'</b>İsabetli darbe</div><div><b>'+combat.stats.blocks+'</b>Blok · '+combat.stats.parries+' mükemmel</div><div><b>'+combat.stats.damage+'</b>Hasar · '+combat.stats.knockdowns+' yere düşürme</div>';}
 function hud(now){const p=combat.fighters[0];$('hpFill').style.width=p.hp/p.maxHp*100+'%';$('hpText').textContent=p.hp+' / '+p.maxHp;$('stFill').style.width=p.stamina+'%';$('stText').textContent=Math.floor(p.stamina)+' / 100';$('hpFill').parentElement.setAttribute('aria-valuenow',p.hp);$('stFill').parentElement.setAttribute('aria-valuenow',Math.floor(p.stamina));$('roundInfo').textContent=combat.fighters.slice(1).filter(f=>f.hp>0).length+' RAKİP · '+Math.floor(combat.time/60)+':'+String(Math.floor(combat.time%60)).padStart(2,'0');
  for(const [id,cost] of [['attack',13],['heavy',27],['dodge',25]]){$(id).classList.toggle('exhausted',p.stamina<cost);$(id).setAttribute('aria-disabled',p.stamina<cost?'true':'false');}
  let locked=combat.fighters[combat.lockedTarget];if(locked&&locked.hp<=0){combat.lockedTarget=null;$('target').classList.remove('pressed');locked=null;}const target=locked||combat.nearest(p);if(target)selectedTarget=target.id;ring.visible=!!target&&started&&!combat.finished;if(target)ring.position.set(target.x,.035,target.z);ring.material.opacity=locked?.9:.4;
- for(let i=1;i<4;i++){const f=combat.fighters[i],el=labels[i-1],pos=project(f.x,2.7,f.z);el.style.display=f.hp>0&&pos.visible?'block':'none';el.style.left=pos.x+'px';el.style.top=pos.y+'px';el.querySelector('i').style.width=f.hp/f.maxHp*100+'%';el.querySelector('.intent').textContent=f.action==='attack'&&f.timer<f.hitTime?'! SALDIRI':f.blocking?'BLOK':'';el.classList.toggle('target',i===selectedTarget);}
+ for(let i=1;i<combat.fighters.length;i++){const f=combat.fighters[i],el=labels[i-1],pos=project(f.x,2.7,f.z);el.style.display=f.hp>0&&pos.visible&&started&&(i===selectedTarget||Math.hypot(f.x-p.x,f.z-p.z)<7)?'block':'none';el.style.left=pos.x+'px';el.style.top=pos.y+'px';el.querySelector('i').style.width=f.hp/f.maxHp*100+'%';el.querySelector('.intent').textContent=f.action==='attack'&&f.timer<f.hitTime?'! SALDIRI':f.blocking?'BLOK':'';el.classList.toggle('target',i===selectedTarget);}
  $('combo').textContent=p.stunUntil>combat.time?'SERSEMLEDİN · '+(p.stunUntil-combat.time).toFixed(1)+' sn':combat.time<combat.comboUntil&&combat.combo>1?combat.combo+' İSABET · KOMBO':'';
  $('netStatus').textContent=p.type==='retiarius'?(p.netBusy?'AĞ · GERİ ÇEKİLİYOR':p.nextNet>combat.time?'AĞ · '+(p.nextNet-combat.time).toFixed(1)+' sn':'AĞ HAZIR · OTOMATİK'):'SECUTOR · KILIÇ VE KALKAN';
  if(now>toastUntil)$('toast').style.opacity=0;$('damageWash').style.opacity=now<hitUntil?.5:0;if(now>hitUntil){document.querySelectorAll('.eagle .lit').forEach(n=>n.classList.remove('lit'));$('directionText').textContent='DARBE YÖNÜ';}
@@ -6627,8 +6688,8 @@ let hudClock=0;
 function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;
  if(active()){if(hitStop>0)hitStop=Math.max(0,hitStop-dt);else{if(queuedAttack){if(now>queuedAttack.until)queuedAttack=null;else if(combat.attack(0,queuedAttack.heavy))queuedAttack=null;}accumulator+=dt;while(accumulator>=1/60){combat.tick(1/60,worldInput());accumulator-=1/60;}events();}}
  else if(combat.finished&&!paused){for(const f of combat.fighters)if(f.hp<=0)f.deadTime+=dt;}
- for(let i=0;i<4;i++)animateCharacter(combat.fighters[i],models[i],combat.time,paused?0:dt);
- renderNets();
+ for(let i=0;i<combat.fighters.length;i++)animateCharacter(combat.fighters[i],models[i],combat.time,paused?0:dt);
+ renderNets();renderWeapons();
  const p=combat.fighters[0];let tx,tz,ty;
  if(started){const locked=combat.fighters[combat.lockedTarget];if(locked&&locked.hp>0&&!cameraDrag&&!paused){const a=Math.atan2(locked.x-p.x,locked.z-p.z);cameraYaw+=Math.atan2(Math.sin(a-cameraYaw),Math.cos(a-cameraYaw))*Math.min(1,dt*4);}const radius=5.6;tx=p.x-Math.sin(cameraYaw)*radius;tz=p.z-Math.cos(cameraYaw)*radius;ty=1.25+Math.sin(cameraPitch)*5.6;const r=Math.hypot(tx,tz);if(r>18){tx*=18/r;tz*=18/r;}camera.position.lerp(new THREE.Vector3(tx,ty,tz),1-Math.exp(-dt*8));camera.lookAt(p.x+Math.sin(cameraYaw)*1.1,1.35,p.z+Math.cos(cameraYaw)*1.1);if(shake>0&&!paused){shake=Math.max(0,shake-dt);camera.position.x+=Math.sin(now*.1)*shake*.3;camera.position.y+=Math.cos(now*.09)*shake*.2;}}
  else{const a=-.5+Math.sin(now*.00009)*.12;camera.position.set(9*Math.sin(a),4.0,5+9*Math.cos(a));camera.lookAt(0,1,1);}
@@ -6636,7 +6697,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
  for(let i=sparks.length-1;i>=0;i--){const s=sparks[i];if(!paused){s.life-=dt;s.y-=dt*8;s.m.position.x+=s.x*dt;s.m.position.y+=s.y*dt;s.m.position.z+=s.z*dt;}if(s.life<=0){scene.remove(s.m);sparks.splice(i,1);}}
  if(!paused){for(let i=0;i<flags.length;i++){const a=flags[i].geometry.attributes.position;for(let v=0;v<a.count;v++){const y=a.getY(v),x=a.getX(v);a.setZ(v,Math.sin(x*3+now*.0018+i+y)*.075*(1.55-y));}a.needsUpdate=true;}}
  for(let i=dust.length-1;i>=0;i--){const d=dust[i];if(!paused){d.age+=dt;d.m.position.x+=d.dx*dt;d.m.position.z+=d.dz*dt;d.m.position.y+=dt*.12;d.m.scale.setScalar(1+d.age*3);d.m.material.opacity=Math.max(0,.2-d.age*.25);}if(d.age>.8){scene.remove(d.m);d.m.material.dispose();dust.splice(i,1);}}
- hudClock+=dt;if(hudClock>.06){hud(now);if(active())for(const f of combat.fighters)if(f.move>.2&&Math.sin(f.walk)>.8)dustPuff(f);hudClock=0;}if(resultAt&&now>resultAt){resultAt=0;showResult();}
+ hudClock+=dt;if(hudClock>.06){hud(now);if(active())for(const f of combat.fighters)if(Math.hypot(f.x-p.x,f.z-p.z)<8&&f.move>.2&&Math.sin(f.walk)>.8)dustPuff(f);hudClock=0;}if(resultAt&&now>resultAt){resultAt=0;showResult();}
  renderer.render(scene,camera);
 }
 mainMenu();Promise.all([HumanVisuals.ready,arenaReady,gladiatorReady,...environmentLoads]).then(()=>{for(let i=0;i<models.length;i++){if(models[i].type==='secutor'){scene.remove(models[i].root);disposeCharacter(models[i]);models[i]=createCharacter(i,'secutor');scene.add(models[i].root);}}$('start').disabled=false;$('start').textContent='Arenaya gir';}).catch(e=>fatal(e.message));requestAnimationFrame(frame);
