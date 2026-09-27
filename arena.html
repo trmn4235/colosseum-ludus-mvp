@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#2a2119"><meta name="apple-mobile-web-app-capable" content="yes"><title>Colosseum & Ludus · Arena</title>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#2a2119"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum"><title>Colosseum & Ludus · Arena</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:#191712;color:#f6ead0;font-family:Georgia,'Times New Roman',serif}button,select{font:inherit}button{cursor:pointer;color:inherit;touch-action:none}button:focus-visible{outline:3px solid #f6ce6e;outline-offset:4px}#app{position:fixed;inset:0;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}#scene{position:absolute;inset:0;width:100%;height:100%;display:block}#vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,#160e0850 100%)}#damageWash{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 80px #ba291d;opacity:0;transition:opacity .12s}#hud{position:absolute;inset:0;pointer-events:none;padding: max(16px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left))}.vitals{position:absolute;left:max(22px,env(safe-area-inset-left));top:18px;width:clamp(170px,25vw,320px);filter:drop-shadow(0 2px 3px #0008)}.eyebrow{font:10px Arial,sans-serif;letter-spacing:3px;color:#e7cd8b}.name{font-size:24px;margin:4px 0 10px}.meter{height:15px;background:#211d1cc9;border:1px solid #9b8052;box-shadow:0 1px 0 #0009;padding:2px;position:relative;margin:6px 0}.meter span{display:block;height:100%;width:100%;transition:width .12s;background:linear-gradient(#b13a35,#7c201f)}.meter.energy span{background:linear-gradient(#69bdb3,#28756c)}.meter label{position:absolute;right:5px;top:-1px;font:bold 10px/15px Arial;text-shadow:0 1px #000}.meter small{position:absolute;left:6px;top:0;font:9px/13px Arial;letter-spacing:1px}.match{position:absolute;top:20px;left:50%;transform:translateX(-50%);text-align:center;text-shadow:0 2px 4px #000}.match strong{display:block;font-size:19px;letter-spacing:4px}.match span{display:block;margin-top:5px;font:11px Arial;letter-spacing:2px}.topright{position:absolute;right:max(20px,env(safe-area-inset-right));top:12px;display:flex;gap:12px;align-items:start;pointer-events:auto}.tools{display:flex;gap:6px;padding-top:7px}.tool{width:36px;height:36px;background:#211a16ae;border:1px solid #b99a63;border-radius:3px;font:18px Arial}.eagle{width:94px;height:94px;background:radial-gradient(circle,#233f39 0,#183029 56%,#9d7a42 59%,#e1bc71 64%,#33291b 69%,transparent 70%);filter:drop-shadow(0 2px 4px #0008)}.eagle svg{width:100%;height:100%;padding:15px;fill:#81b78c;stroke:#182b22;stroke-width:2}.eagle .lit{fill:#ff553a;filter:drop-shadow(0 0 4px #fa3)}#directionText{text-align:center;font:9px Arial;letter-spacing:1px;text-shadow:0 1px 3px #000}.enemy{position:absolute;width:104px;text-align:center;transform:translate(-50%,-100%);pointer-events:none;text-shadow:0 1px 3px #000}.enemy .enemyname{font:11px Arial;color:#fff7db}.enemy .bar{height:6px;border:1px solid #241d15;background:#29251dbf;margin-top:4px;box-shadow:0 0 0 1px #c8ab7280}.enemy i{display:block;height:100%;background:#af3d2a;width:100%}.enemy .intent{height:16px;font:bold 10px Arial;color:#ffd888;letter-spacing:1px}.enemy.target .enemyname{color:#ffd478}.float{position:absolute;pointer-events:none;color:#ffe5a9;font:bold 22px Georgia;text-shadow:0 2px 3px #36180e;transform:translate(-50%,-50%)}#combo{position:absolute;left:50%;top:100px;transform:translateX(-50%);font-size:22px;color:#ffe0a0;text-shadow:0 2px 4px #000;text-align:center}#toast{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);background:#241b14d9;border:1px solid #bda476;padding:9px 18px;font:12px Arial;opacity:0;transition:opacity .2s;white-space:nowrap}#controls{position:absolute;inset:0;pointer-events:none}#stick{position:absolute;left:max(30px,env(safe-area-inset-left));bottom:max(27px,env(safe-area-inset-bottom));width:126px;height:126px;border:1px solid #edd39775;border-radius:50%;background:radial-gradient(circle,#29251b25,#25201850);box-shadow:inset 0 0 0 12px #dfc1870c;pointer-events:auto;touch-action:none}#stick:before,#stick:after{content:'';position:absolute;background:#f4d89b30;left:50%;top:14%;width:1px;height:72%}#stick:after{transform:rotate(90deg)}#knob{position:absolute;left:39px;top:39px;width:46px;height:46px;border-radius:50%;border:1px solid #f4dca3b0;background:radial-gradient(circle at 40% 30%,#cab18375,#4036228a);box-shadow:0 3px 12px #0003}.controlHint{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);white-space:nowrap;font:9px Arial;letter-spacing:1px;color:#f1dbb0a6}.actions{position:absolute;right:max(28px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));display:grid;grid-template-columns:64px 78px 64px;grid-template-rows:62px 78px;gap:8px;align-items:center;justify-items:center;pointer-events:auto}.action{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:50%;width:64px;height:64px;border:1px solid #ddbc79a6;background:linear-gradient(135deg,#423422bb,#171914c9);box-shadow:0 3px 10px #0003;gap:3px}.action svg{width:23px;height:23px;fill:none;stroke:#f0d899;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.action small{font:9px Arial;letter-spacing:.5px}.action:active,.action.pressed{background:#89723ad0;border-color:#fff0bf;transform:scale(.95)}#attack{grid-column:2;grid-row:2;width:78px;height:78px;background:linear-gradient(140deg,#953529e0,#4c1715e0);border:2px solid #e1bb70}#attack svg{width:31px;height:31px}#block{grid-column:1;grid-row:2}#dodge{grid-column:3;grid-row:2}#heavy{grid-column:2;grid-row:1;width:57px;height:57px}#target{grid-column:1;grid-row:1;width:44px;height:44px}.desktopHint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font:10px Arial;color:#fff2d2a0;white-space:nowrap;pointer-events:none}.overlay{position:absolute;inset:0;background:linear-gradient(90deg,#141512ed,#1a191877 53%,#1117);display:flex;align-items:center;justify-content:flex-start;padding:5vh max(7vw,24px);z-index:10;backdrop-filter:blur(3px)}.overlay[hidden]{display:none}.intro{width:440px;max-width:90vw}.intro .eyebrow{color:#d4b16c;font-size:11px;letter-spacing:4px}.intro h1{font-size:clamp(34px,5.5vw,62px);font-weight:400;line-height:1.02;margin:20px 0 13px}.intro h1 em{font-size:.66em;display:block;color:#d2b273;font-style:normal;margin-top:10px}.line{width:64px;height:2px;background:#c79f58;margin:22px 0}.intro p{color:#d3c6b0;font:14px/1.6 Arial;max-width:390px}.intro .features{display:flex;gap:20px;font:11px Arial;color:#d6b77d;margin:20px 0}.start{padding:14px 28px;min-width:215px;background:linear-gradient(120deg,#943e2e,#65231c);border:1px solid #d6b679;box-shadow:inset 0 0 0 3px #0002;color:#fff1d4;font-size:18px}.secondary{background:#292923;margin:8px 5px 0 0;padding:10px 16px;min-width:0;font:12px Arial}.choices{display:flex;gap:10px;margin:14px 0;align-items:center;font:12px Arial}.choices select{background:#2d2c25;color:#eeddba;border:1px solid #82704f;padding:8px}.fine{font:10px/1.5 Arial!important;color:#a69981!important;margin-top:15px}.loading{color:#e8c989;font:13px Arial}#portrait{display:none;position:absolute;inset:0;background:#1b1c18ee;z-index:20;align-items:center;justify-content:center;text-align:center;padding:30px}#portrait strong{font-size:29px;color:#ead2a0}#portrait p{font:14px/1.7 Arial;color:#cfc3ab}#resultStats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;font:13px Arial;color:#d1bd99}#resultStats b{display:block;color:#ffe7b4;font:26px Georgia;margin-bottom:4px}#fatal{position:absolute;inset:0;display:none;background:#211d17;z-index:40;padding:12vh 10vw;font:16px/1.7 Arial}#fatal strong{display:block;font:30px Georgia;color:#e6c48a}
 @media (max-height:480px){.vitals{top:10px;width:180px}.name{font-size:18px;margin:3px 0 6px}.meter{height:12px;margin:4px 0}.meter label{font-size:9px;line-height:12px}.meter small{font-size:8px;line-height:10px}.eyebrow{font-size:8px}.match{top:12px}.match strong{font-size:14px}.match span{font-size:9px}.eagle{width:64px;height:64px}.eagle svg{padding:10px}.topright{top:7px;gap:8px}.tool{width:30px;height:30px;font-size:15px}#directionText{font-size:8px}#stick{width:96px;height:96px;bottom:16px;left:max(22px,env(safe-area-inset-left))}#knob{width:38px;height:38px;top:28px;left:28px}.actions{grid-template-columns:52px 64px 52px;grid-template-rows:44px 62px;gap:5px;bottom:14px;right:max(22px,env(safe-area-inset-right))}.action{width:52px;height:52px}.action small{font-size:8px}.action svg{width:19px;height:19px}#attack{width:62px;height:62px}#heavy{width:43px;height:43px}#heavy svg{width:16px;height:16px}#target{width:34px;height:34px}#combo{top:65px;font-size:17px}.desktopHint{display:none}#toast{bottom:16px;max-width:45vw;font-size:10px;padding:6px 9px;white-space:normal;text-align:center}.overlay{padding:16px 7vw}.intro{width:450px}.intro h1{font-size:34px;margin:8px 0}.intro p{font-size:12px;line-height:1.45;margin:8px 0}.intro .features{margin:9px 0}.line{margin:10px 0}.start{padding:10px 24px;font-size:16px}.fine{font-size:9px!important;margin-top:8px!important}.choices{margin:8px 0}.choices select{padding:5px}#resultStats{margin:12px 0}.intro h1 em{margin-top:3px}}
@@ -31,12 +31,14 @@ html,body{touch-action:none}.float{font-size:12px;text-shadow:0 1px 2px #29170c}
 @media(max-height:480px){.float{font-size:10px}.enemy{width:48px}.enemy .enemyname{font-size:7px}.enemy .bar{height:3px}.enemy .intent{font-size:7px;height:8px}#combo{font-size:11px}.vitals{width:130px}.vitals .meter{height:9px}.vitals .name{font-size:14px}}
 #perfToggle{font:10px Arial}#perfPanel{position:absolute;right:max(22px,env(safe-area-inset-right));top:58px;z-index:12;padding:9px 11px;max-width:min(310px,65vw);background:#191b1eef;border:1px solid #9b855d;border-radius:6px;color:#ece3cf;pointer-events:auto;touch-action:none}#perfPanel[hidden]{display:none}#perfText{font:10px/1.55 monospace;white-space:pre-wrap;margin:0 0 7px}#perfPanel button{font:10px Arial;padding:7px 10px;background:#393b35;border:1px solid #8e7955;border-radius:3px;margin-right:7px;min-height:30px}@media(max-height:480px){#perfPanel{top:44px;padding:7px 9px}#perfText{font-size:9px;line-height:1.4}}
 </style></head><body><main id="app"><canvas id="scene" aria-label="Üç boyutlu kolezyum arenası"></canvas><div id="vignette"></div><div id="damageWash"></div>
-<section id="hud" aria-label="Dövüş göstergeleri"><div class="vitals"><div class="eyebrow">LUDUS · GLADYATÖRÜN</div><div class="name">Cassius</div><div class="meter" role="meter" aria-label="Can" aria-valuemin="0" aria-valuemax="120" aria-valuenow="120"><span id="hpFill"></span><small>CAN</small><label id="hpText">120 / 120</label></div><div class="meter energy" role="meter" aria-label="Kondisyon" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="stFill"></span><small>KONDİSYON</small><label id="stText">100 / 100</label></div></div><div class="match"><strong>KOLEZYUM</strong><span id="roundInfo">3 RAKİP · SERBEST DÖVÜŞ</span></div><div class="topright"><div><div class="eagle" aria-label="Baş, gövde, kollar ve bacakların durumu"><svg viewBox="0 0 100 100"><path id="dir-front" d="M42 35 L42 22 L38 17 L49 10 L61 15 L65 22 L55 21 L54 34 L50 43 Z"/><path id="dir-left" d="M45 39 L34 29 L5 15 L8 27 L23 37 L10 31 L13 41 L27 47 L16 44 L20 54 L32 57 L26 57 L32 65 L42 55 L46 46 Z"/><path id="dir-right" d="M55 39 L66 29 L95 15 L92 27 L77 37 L90 31 L87 41 L73 47 L84 44 L80 54 L68 57 L74 57 L68 65 L58 55 L54 46 Z"/><path id="dir-chest" d="M43 36 L57 36 L64 55 L54 68 L46 68 L36 55 Z"/><path id="dir-back" d="M46 64 L54 64 L65 86 L52 80 L50 88 L47 80 L35 86 Z"/></svg></div><div id="directionText">VÜCUT DURUMU</div></div><div class="tools"><button class="tool" id="perfToggle" aria-label="Performans ölçümünü aç veya kapat" aria-expanded="false">FPS</button><button class="tool" id="sound" aria-label="Sesi aç" title="Ses">♪</button><button class="tool" id="pause" aria-label="Duraklat" title="Duraklat">Ⅱ</button></div></div><div id="teamScore" aria-label="Ayakta kalan takım üyeleri"></div><div id="enemyLabels"></div><div id="floaters"></div><div id="netStatus" style="position:absolute;left:50%;top:76px;transform:translateX(-50%);font:10px Arial;color:#ead09b;text-shadow:0 1px 3px #000"></div><div id="combo"></div><div id="toast" role="status"></div></section>
+<section id="hud" aria-label="Dövüş göstergeleri"><div class="vitals"><div class="eyebrow">LUDUS · GLADYATÖRÜN</div><div class="name">Cassius</div><div class="meter" role="meter" aria-label="Can" aria-valuemin="0" aria-valuemax="120" aria-valuenow="120"><span id="hpFill"></span><small>CAN</small><label id="hpText">120 / 120</label></div><div class="meter energy" role="meter" aria-label="Kondisyon" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="stFill"></span><small>KONDİSYON</small><label id="stText">100 / 100</label></div></div><div class="match"><strong>KOLEZYUM</strong><span id="roundInfo">3 RAKİP · SERBEST DÖVÜŞ</span></div><div class="topright"><div><div class="eagle" aria-label="Baş, gövde, kollar ve bacakların durumu"><svg viewBox="0 0 100 100"><path id="dir-front" d="M42 35 L42 22 L38 17 L49 10 L61 15 L65 22 L55 21 L54 34 L50 43 Z"/><path id="dir-left" d="M45 39 L34 29 L5 15 L8 27 L23 37 L10 31 L13 41 L27 47 L16 44 L20 54 L32 57 L26 57 L32 65 L42 55 L46 46 Z"/><path id="dir-right" d="M55 39 L66 29 L95 15 L92 27 L77 37 L90 31 L87 41 L73 47 L84 44 L80 54 L68 57 L74 57 L68 65 L58 55 L54 46 Z"/><path id="dir-chest" d="M43 36 L57 36 L64 55 L54 68 L46 68 L36 55 Z"/><path id="dir-back" d="M46 64 L54 64 L65 86 L52 80 L50 88 L47 80 L35 86 Z"/></svg></div><div id="directionText">VÜCUT DURUMU</div></div><div class="tools"><button class="tool" id="fullscreen" aria-label="Tam ekran" title="Tam ekran">⛶</button><button class="tool" id="perfToggle" aria-label="Performans ölçümünü aç veya kapat" aria-expanded="false">FPS</button><button class="tool" id="sound" aria-label="Sesi aç" title="Ses">♪</button><button class="tool" id="pause" aria-label="Duraklat" title="Duraklat">Ⅱ</button></div></div><div id="teamScore" aria-label="Ayakta kalan takım üyeleri"></div><div id="enemyLabels"></div><div id="floaters"></div><div id="netStatus" style="position:absolute;left:50%;top:76px;transform:translateX(-50%);font:10px Arial;color:#ead09b;text-shadow:0 1px 3px #000"></div><div id="combo"></div><div id="toast" role="status"></div></section>
 <section id="controls" aria-label="Oyun kontrolleri"><div id="stick" role="group" aria-label="Hareket çubuğu"><div id="knob"></div><span class="controlHint">HAREKET</span></div><div class="actions"><button id="target" class="action" aria-label="Hedef kilidini aç veya kapat" title="Hedef kilidi · E"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/></svg></button><button id="heavy" class="action" aria-label="Güçlü saldırı"><svg viewBox="0 0 24 24"><path d="M14 2l-9 12h7l-2 8 10-13h-8z"/></svg><small>GÜÇLÜ</small></button><button id="block" class="action" aria-label="Kalkanı tut"><svg viewBox="0 0 24 24"><path d="M4 4l8-2 8 2v8c0 5-8 10-8 10S4 17 4 12zM12 4v15"/></svg><small>BLOK</small></button><button id="attack" class="action" aria-label="Saldır"><svg viewBox="0 0 24 24"><path d="M7 17L20 3l1 5L10 19M5 13l7 7M4 21l4-5"/></svg><small>SALDIR</small></button><button id="special" class="action" aria-label="Özel yetenek"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg><small id="specialLabel">ÖZEL</small></button><button id="dodge" class="action" aria-label="Kaçış"><svg viewBox="0 0 24 24"><path d="M3 12h17m-6-6l6 6-6 6M4 6h5M2 18h7"/></svg><small>KAÇIŞ</small></button></div><div id="regionHint" hidden></div><button id="hand" aria-label="El seç; çift silah için basılı tut" title="Dokun: el seç. Basılı tut: çift silah.">EL: SOL</button><button id="pickup" hidden aria-label="Yerdeki silahı al">Silahı al</button><div class="desktopHint">WASD hareket · J saldırı · K blok · L kaçış · I güçlü · E hedef kilidi · F silah al · Q özel · H el · 1–5 bölge · Sürükle: kamera</div></section>
-<section id="intro" class="overlay"><div class="intro"><div class="eyebrow">COLOSSEUM & LUDUS · ARENA 0.16 · 10’A 10 TAKIM SAVAŞI</div><h1>Kum. Çelik.<em>Mavi takımınla kazan.</em></h1><div class="line"></div><p>Mavi takımda 10’a 10 savaş. Saldırıyı kaydır: ↑ baş, ↓ bacak, ← / → kollar; dokun: gövde. Özel hareket eldeki ekipmana göre değişir.</p><p class="fine">Kolezyum: <a style="color:inherit" href="https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30" target="_blank" rel="noopener">Neberkenezer</a> · <a style="color:inherit" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · Ölçek ve çizim düzeni uyarlandı.</p><p id="characterLoad" class="fine" role="status">Gladyatör yükleniyor…</p><p class="fine">Gladyatör: <a style="color:inherit" target="_blank" rel="noopener" href="https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c">huyunited</a> · CC BY 4.0 · Dokular küçültüldü; ölçek ve dövüş hareketleri uyarlandı.</p><div class="features"><span>GERÇEK ZAMANLI 3D</span><span>BOTLARA KARŞI</span></div><div class="choices"><label for="difficulty">Zorluk</label><select id="difficulty"><option value="easy">Kolay</option><option value="normal" selected>Normal</option></select><label for="quality">Görünüm</label><select id="quality"><option value="low">Akıcı</option><option value="high" selected>Detaylı</option></select></div><div class="choices"><label for="fighterType">Gladyatör</label><select id="fighterType"><option value="murmillo">Murmillo · Kılıç / büyük kalkan</option><option value="thraex">Thraex · Eğri kılıç / küçük kalkan</option><option value="hoplomachus">Hoplomachus · Mızrak / yuvarlak kalkan</option><option value="secutor" selected>Secutor · Kapalı miğfer / kılıç</option><option value="retiarius">Retiarius · Üç dişli mızrak / ağ</option><option value="provocator">Provocator · Kılıç / büyük kalkan</option><option value="scissor">Scissor · Kılıç / kol bıçağı</option></select></div><button id="cloudProfile" type="button" style="color:#ead09b;background:transparent;border:0;font:12px Arial;padding:8px">Misafir profili bağlanıyor…</button><p id="record" class="fine"></p><button id="start" class="start" disabled>Arena hazırlanıyor…</button><p class="fine">ARENA 0.16 · 10’A 10 TAKIM SAVAŞI · İnsan modelleri · İskelet animasyonu · Yeni silahlar.<br>Solda hareket; sağda saldırı, blok ve kaçış. Boş alanda sürükle: kamera.</p></div></section>
+<section id="intro" class="overlay"><div class="intro"><div class="eyebrow">COLOSSEUM & LUDUS · ARENA 0.17 · 10’A 10 TAKIM SAVAŞI</div><h1>Kum. Çelik.<em>Mavi takımınla kazan.</em></h1><div class="line"></div><p>Mavi takımda 10’a 10 savaş. Saldırıyı kaydır: ↑ baş, ↓ bacak, ← / → kollar; dokun: gövde. Özel hareket eldeki ekipmana göre değişir.</p><p class="fine">Kolezyum: <a style="color:inherit" href="https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30" target="_blank" rel="noopener">Neberkenezer</a> · <a style="color:inherit" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · Ölçek ve çizim düzeni uyarlandı.</p><p id="equipmentLoad" class="fine" role="status">Yeni ekipmanlar hazırlanıyor…</p><p id="characterLoad" class="fine" role="status">Gladyatör yükleniyor…</p><p class="fine">Gladyatör: <a style="color:inherit" target="_blank" rel="noopener" href="https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c">huyunited</a> · CC BY 4.0 · Dokular küçültüldü; ölçek ve dövüş hareketleri uyarlandı.</p><div class="features"><span>GERÇEK ZAMANLI 3D</span><span>BOTLARA KARŞI</span></div><div class="choices"><label for="difficulty">Zorluk</label><select id="difficulty"><option value="easy">Kolay</option><option value="normal" selected>Normal</option></select><label for="quality">Görünüm</label><select id="quality"><option value="low">Akıcı</option><option value="high" selected>Detaylı</option></select></div><div class="choices"><label for="fighterType">Gladyatör</label><select id="fighterType"><option value="murmillo">Murmillo · Kılıç / büyük kalkan</option><option value="thraex">Thraex · Eğri kılıç / küçük kalkan</option><option value="hoplomachus">Hoplomachus · Mızrak / yuvarlak kalkan</option><option value="secutor" selected>Secutor · Kapalı miğfer / kılıç</option><option value="retiarius">Retiarius · Üç dişli mızrak / ağ</option><option value="provocator">Provocator · Kılıç / büyük kalkan</option><option value="scissor">Scissor · Kılıç / kol bıçağı</option></select></div><button id="cloudProfile" type="button" style="color:#ead09b;background:transparent;border:0;font:12px Arial;padding:8px">Misafir profili bağlanıyor…</button><p id="record" class="fine"></p><button id="fullscreenIntro" class="start" style="padding:10px 16px;font-size:14px" aria-label="Tam ekran">⛶ Tam ekran</button> <button id="start" class="start" disabled>Arena hazırlanıyor…</button><p class="fine">ARENA 0.17 · 10’A 10 TAKIM SAVAŞI · İnsan modelleri · İskelet animasyonu · Yeni silahlar.<br>Solda hareket; sağda saldırı, blok ve kaçış. Boş alanda sürükle: kamera.</p></div></section>
 <section id="pauseMenu" class="overlay" hidden><div class="intro"><div class="eyebrow">COLOSSEUM & LUDUS</div><h1>Dövüş duraklatıldı.</h1><p>Mavi daireler takımın, kırmızı elmaslar rakip. Saldırıyı kaydırarak bölge seç; güçlü saldırı seçili bölgeye vurur. EL tuşuna dokun: sağ/sol eli seç. EL tuşuna basılı tut: yedek kılıcı çek. Özel ve silah alımı seçili eli kullanır. Miğfer ve kalkan düşerse yerden alabilirsin.</p><button id="resume" class="start">Devam et</button><br><button id="restart" class="start secondary">Yeniden başla</button><button id="menu" class="start secondary">Ana ekran</button></div></section>
 <section id="result" class="overlay" hidden><div class="intro"><div class="eyebrow">DÖVÜŞ TAMAMLANDI</div><h1 id="resultTitle">Zafer.</h1><p id="resultDescription"></p><div id="resultStats"></div><button id="again" class="start">Tekrar dövüş</button><button id="resultMenu" class="start secondary">Ana ekran</button><p class="fine">Bu arena ayrı bir prototiptir; Ludus ekonomisine bağlı değildir.</p></div></section>
 <aside id="perfPanel" hidden aria-label="Yerel performans ölçümü"><pre id="perfText">Ölçüm bekleniyor…</pre><div><button id="perfCopy">Kopyala</button><button id="perfReset">Sıfırla</button></div></aside><div id="portrait"><div><strong>Telefonunu yatay çevir.</strong><p>Arena yatay ekran için hazırlandı.<br>Dövüş, ekranı çevirene kadar durur.</p></div></div><div id="fatal" role="alert"></div></main>
+<section id="fullscreenHelp" hidden role="dialog" aria-modal="true" aria-label="Tam ekran" style="position:fixed;inset:0;z-index:100;background:#191712f5;padding:24px;overflow:auto;text-align:center">
+<h2>Tam ekran aç</h2><p>iPhone Safari: Paylaş → Ana Ekrana Ekle → varsa “Web uygulaması olarak aç” seçeneğini aç → Ekle.</p><p>Oyunu ana ekrandaki simgesinden aç ve telefonu yatay çevir.</p><p>Başka tarayıcıdaysan oyunu ayrı sekmede açıp Tam ekran düğmesini tekrar dene.</p><button id="fullscreenClose" class="start">Tamam</button></section>
 <script>
 // Public asset origin only: never place storage credentials in browser code.
 var ARENA_ASSET_BASE='https://pub-6910705f63a54355a6ec8cb2acbc2223.r2.dev/';
@@ -6555,7 +6557,7 @@ var ArenaAnimations=(function(){
  async function load(){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),4000);
   try{
-   const response=await fetch(new URL('arena-animations-v1.json',ARENA_ASSET_BASE),{signal:controller.signal});
+   const response=await fetch(new URL('arena-animations-v2.json',ARENA_ASSET_BASE),{signal:controller.signal});
    if(!response.ok)throw Error('Animation HTTP');
    pack=validate(await response.json());source='r2';cache=null;
   }catch(e){/* Embedded identical pack keeps the demo playable without an upload. */}
@@ -6598,6 +6600,65 @@ var ArenaAnimations=(function(){
  return {load,pose,validate,get source(){return source;}};
 })();
 
+/* User supplied GLB equipment; source geometry and textures are retained.
+   Flatten rigid transforms once, share templates between fighters and drops. */
+var ImportedEquipment=(function(){
+ const T=THREE,templates={},helmets={},grayMaps=new Map();let pending;
+ const files={helmet:'roman_legionnaire_helmet.glb',scutum:'roman_scutum_shield.glb',shield:'roman_shield.glb',sword:'roman_spatha.glb'};
+ function prepare(scene,kind){
+  const wrapper=new T.Group();wrapper.add(scene);
+  if(kind==='sword')wrapper.rotation.x=Math.PI/2;
+  if(kind==='shield')wrapper.rotation.y=Math.PI;
+  wrapper.updateMatrixWorld(true);
+  const bounds=new T.Box3().setFromObject(wrapper),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
+  if(!Number.isFinite(size.y)||size.y<=0)throw Error('Ekipman ölçüsü geçersiz');
+  const height={helmet:.36,scutum:1.1,shield:.74,sword:.96}[kind],scale=height/size.y;
+  const transform=new T.Matrix4().makeTranslation(-center.x*scale,kind==='sword'?.78-bounds.max.y*scale:-center.y*scale,-center.z*scale).multiply(new T.Matrix4().makeScale(scale,scale,scale));
+  const g=new T.Group(),groups=new Map();g.userData.asset=files[kind];
+  wrapper.traverse(o=>{if(!o.isMesh)return;
+   const geometry=o.geometry.clone().applyMatrix4(new T.Matrix4().multiplyMatrices(transform,o.matrixWorld));
+   const key=o.material.uuid+':'+Object.keys(geometry.attributes).sort().join(',')+':'+!!geometry.index;
+   if(!groups.has(key))groups.set(key,{material:o.material,geometries:[]});groups.get(key).geometries.push(geometry);
+  });
+  for(const {material,geometries} of groups.values()){
+   const merged=typeof ArenaGeometryUtils!=='undefined'&&geometries.length>1?ArenaGeometryUtils.mergeGeometries(geometries,false):null;
+   for(const geometry of merged?[merged]:geometries){geometry.computeBoundingBox();geometry.computeBoundingSphere();const mesh=new T.Mesh(geometry,material);mesh.castShadow=true;mesh.receiveShadow=true;g.add(mesh);}
+   if(merged)geometries.forEach(g=>g.dispose());
+  }
+  return g;
+ }
+ function gray(texture){
+  if(!texture?.image||typeof document==='undefined')return texture;
+  if(grayMaps.has(texture))return grayMaps.get(texture);
+  try{
+   const canvas=document.createElement('canvas'),im=texture.image;canvas.width=im.width;canvas.height=im.height;
+   const ctx=canvas.getContext('2d');ctx.drawImage(im,0,0);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
+   for(let i=0;i<pixels.data.length;i+=4){const value=pixels.data[i]*.2126+pixels.data[i+1]*.7152+pixels.data[i+2]*.0722;pixels.data[i]=pixels.data[i+1]=pixels.data[i+2]=value;}
+   ctx.putImageData(pixels,0,0);const result=texture.clone();result.image=canvas;result.needsUpdate=true;grayMaps.set(texture,result);return result;
+  }catch(e){return texture;}
+ }
+ function helmet(team=0){
+  if(!templates.helmet)return null;team=team===1?1:0;
+  if(!helmets[team]){const group=templates.helmet.clone(true),materials=new Map();group.traverse(o=>{if(!o.isMesh)return;
+   if(!materials.has(o.material)){const mat=o.material.clone();mat.map=gray(mat.map);mat.color.setHex(team?0xc8d1db:0xe1b955);mat.metalness=.8;mat.roughness=.4;materials.set(o.material,mat);}o.material=materials.get(o.material);
+  });helmets[team]=group;}return helmets[team];
+ }
+ async function load(status=()=>{}){
+  if(pending)return pending;
+  pending=(async()=>{let done=0,failed=0;await Promise.all(Object.entries(files).map(async([kind,file])=>{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
+   try{
+    // These four assets were uploaded to GitHub. Avoid needless R2 404 requests.
+    const response=await fetch(new URL(file,document.baseURI),{signal:controller.signal});
+    if(!response.ok)throw Error('HTTP '+response.status);const bytes=await response.arrayBuffer();
+    if(bytes.byteLength<12||new DataView(bytes).getUint32(0,true)!==0x46546c67)throw Error('Boş/geçersiz GLB');
+    const model=await new T.GLTFLoader().parseAsync(bytes,'');templates[kind]=prepare(model.scene,kind);
+   }catch(e){failed++;}finally{clearTimeout(timer);done++;status(done<4?'Yeni ekipmanlar yükleniyor… '+done+'/4':failed?'Yeni ekipman: '+(4-failed)+'/4 · Yüklenemeyenlerde eski görünüm kullanılıyor.':'Yeni ekipmanlar hazır · 4/4');}
+  }));})();return pending;
+ }
+ return {load,prepare,helmet,weapon:kind=>['gladius','sica'].includes(kind)?templates.sword:null,shield:type=>templates[['murmillo','secutor','provocator'].includes(type)?'scutum':'shield'],get loaded(){return Object.keys(templates).length;}};
+})();
+
 /* Shared procedural equipment inspired by the supplied seven class references. */
 var ClassEquipment=(function(){
  const T=THREE,cache={},weapons={};
@@ -6627,7 +6688,7 @@ var ClassEquipment=(function(){
  function mesh(g,geo,mat,x=0,y=0,z=0){const o=new T.Mesh(geo,mat);o.position.set(x,y,z);o.castShadow=true;g.add(o);return o;}
  function box(g,w,h,d,m,x=0,y=0,z=0){return mesh(g,new T.BoxGeometry(w,h,d),m,x,y,z);}
  function sphere(g,r,m,x=0,y=0,z=0,s=[1,1,1]){const o=mesh(g,new T.SphereGeometry(r,12,8),m,x,y,z);o.scale.set(...s);return o;}
- function weapon(kind){if(weapons[kind])return weapons[kind];const g=new T.Group();g.userData.kind=kind;
+ function weapon(kind){const imported=typeof ImportedEquipment!=='undefined'&&ImportedEquipment.weapon(kind);if(imported)return imported;if(weapons[kind])return weapons[kind];const g=new T.Group();g.userData.kind=kind;
   mesh(g,new T.CylinderGeometry(.024,.03,.24,8),dark);
   if(kind==='spear'||kind==='trident'){
    mesh(g,new T.CylinderGeometry(.022,.026,1.8,8),dark,0,.4);
@@ -6666,9 +6727,10 @@ var ClassEquipment=(function(){
   anchor.quaternion.copy(q).invert();anchor.scale.set(1/s.x,1/s.y,1/s.z);bone.add(anchor);
   const group=template.clone(true);group.position.set(...offset);group.rotation.set(...rotation);anchor.add(group);return {anchor,group};
  }
+ function shield(type){return (typeof ImportedEquipment!=='undefined'&&ImportedEquipment.shield(type))||parts(type).shield;}
  function equip(m){const p=parts(m.type);m.gear={};
-  m.gear.helmet=attach(m,'Head',p.helmet,[0,.12,0]);
-  m.gear.shield=attach(m,'LeftHand',parts(ArenaClasses[m.type].shield?m.type:'secutor').shield,[0,.12,.1]);
+  m.gear.helmet=attach(m,'Head',teamHelmet(m.type,0),[0,.12,0]);
+  m.gear.shield=attach(m,'LeftHand',shield(ArenaClasses[m.type].shield?m.type:'secutor'),[0,.12,.1]);
   m.gear.chest=attach(m,'Spine2',parts('murmillo').chest,[0,-.08,0]);
   m.gear.left=attach(m,'LeftHand',new T.Group());
   m.gear.shoulder=attach(m,'RightArm',p.shoulder,[0,.035,0]);
@@ -6687,21 +6749,21 @@ var ClassEquipment=(function(){
  const bandGeo=new T.CylinderGeometry(.245,.245,.115,12),teamRings=[new T.RingGeometry(.47,.51,28),new T.RingGeometry(.47,.52,4)];
  function replacePart(slot,template){const old=slot.group,group=template.clone(true);group.position.copy(old.position);group.rotation.copy(old.rotation);slot.anchor.remove(old);slot.anchor.add(group);slot.group=group;}
  const helmetCache={},helmetMetals=[new T.MeshStandardMaterial({color:0xc99d42,metalness:.85,roughness:.35}),new T.MeshStandardMaterial({color:0xc8d1db,metalness:.85,roughness:.35})];
- function teamHelmet(style,team=0){const key=style+':'+team;if(!helmetCache[key]){const g=parts(style).helmet.clone(true);g.traverse(o=>{if(o.isMesh&&o.material.metalness>.5)o.material=helmetMetals[team||0];});helmetCache[key]=g;}return helmetCache[key];}
+ function teamHelmet(style,team=0){const imported=typeof ImportedEquipment!=='undefined'&&ImportedEquipment.helmet(team);if(imported)return imported;const key=style+':'+team;if(!helmetCache[key]){const g=parts(style).helmet.clone(true);g.traverse(o=>{if(o.isMesh&&o.material.metalness>.5)o.material=helmetMetals[team||0];});helmetCache[key]=g;}return helmetCache[key];}
  function sync(m,f){
   setWeapon(m,f.weapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
   m.gear.left.group.visible=!!f.leftGear&&!(f.leftGear==='net'&&f.netBusy);
-  if(m.shieldStyle!==f.shieldStyle){m.shieldStyle=f.shieldStyle;replacePart(m.gear.shield,parts(f.shieldStyle||'secutor').shield);}
+  if(m.shieldStyle!==f.shieldStyle){m.shieldStyle=f.shieldStyle;replacePart(m.gear.shield,shield(f.shieldStyle||'secutor'));}
   if(m.helmetStyle!==f.helmetStyle||m.helmetTeam!==f.team){m.helmetStyle=f.helmetStyle;m.helmetTeam=f.team;replacePart(m.gear.helmet,teamHelmet(f.helmetStyle||m.type,f.team));}
   m.gear.shield.group.visible=!!f.shield;m.gear.helmet.group.visible=f.helmet!==false;m.gear.chest.group.visible=!!f.chest;
   for(const side of ['Left','Right'])m.gear[side+'greave'].group.visible=f.greaves!==false;for(const key of ['shoulder','otherShoulder'])if(m.gear[key])m.gear[key].group.visible=f.shoulders!==false;
   if(m.team!==f.team){m.team=f.team;const team=f.team||0;m.teamBand.group.clear();const band=new T.Mesh(bandGeo,teamMaterials[team]);band.scale.z=.68;m.teamBand.group.add(band);m.teamMark.clear();const ring=new T.Mesh(teamRings[team],ringMaterials[team]);ring.rotation.x=-Math.PI/2;ring.position.y=.035;m.teamMark.add(ring);}
   m.teamMark.visible=f.hp>0;
  }
- function item(d){if(d.kind==='helmet')return teamHelmet(d.style||'secutor',d.team||0);if(d.kind==='shoulders')return parts(d.style||'secutor').shoulder;if(d.kind==='shield')return parts(d.style||'secutor').shield;if(d.kind==='chest')return parts('murmillo').chest;if(d.kind==='greaves')return parts('murmillo').greave;if(d.kind==='net'||d.kind==='scissor')return parts(d.kind==='net'?'retiarius':'scissor').left;return weapon(d.kind);}
- return {equip,setWeapon,weapon,sync,item,shield:type=>parts(type).shield};
+ function item(d){if(d.kind==='helmet')return teamHelmet(d.style||'secutor',d.team||0);if(d.kind==='shoulders')return parts(d.style||'secutor').shoulder;if(d.kind==='shield')return shield(d.style||'secutor');if(d.kind==='chest')return parts('murmillo').chest;if(d.kind==='greaves')return parts('murmillo').greave;if(d.kind==='net'||d.kind==='scissor')return parts(d.kind==='net'?'retiarius':'scissor').left;return weapon(d.kind);}
+ return {equip,setWeapon,weapon,sync,item,shield};
 })();
 
 /* Gladiator by huyunited, CC BY 4.0. Textures resized in gladiator-mobile.glb.
@@ -6722,7 +6784,7 @@ var ImportedGladiator=(function(){
    data=await r.arrayBuffer();
    }
    status('Gladyatör hazırlanıyor…');
-   if(typeof ArenaAnimations!=='undefined')await ArenaAnimations.load();
+   await Promise.all([typeof ArenaAnimations!=='undefined'?ArenaAnimations.load():null,typeof ImportedEquipment!=='undefined'?ImportedEquipment.load(text=>{const el=document.getElementById?.('equipmentLoad');if(el)el.textContent=text;}):null]);
    const g=await new T.GLTFLoader().parseAsync(data,'');g.scene.traverse(o=>{if(o.isMesh){const a=g.parser.associations.get(o);const name=a&&a.meshes!==undefined?g.parser.json.meshes[a.meshes].name:'';o.userData.isWeapon=/^weapon_geo/.test(name||'');o.userData.replaceGear=/^(weapon|helmet|shield)_geo/.test(name||'');}});template=g.scene;status('Gladyatör hazır · 11,9 MB');
   }catch(e){throw new Error(e.name==='AbortError'?'Gladyatör yüklemesi zaman aşımına uğradı. Tekrar dene.':e.message);}
   finally{clearTimeout(timeout);}
@@ -6902,6 +6964,28 @@ var ArenaCamera={
 };
 if(typeof module!=='undefined')module.exports=ArenaCamera;
 
+function ArenaFullscreen(doc,win,onResize,onHelp){
+ const root=doc.documentElement;
+ const active=()=>!!(doc.fullscreenElement||doc.webkitFullscreenElement);
+ const standalone=()=>win.navigator?.standalone===true||win.matchMedia?.('(display-mode: standalone)').matches||win.matchMedia?.('(display-mode: fullscreen)').matches;
+ async function toggle(){
+  try{
+   if(active()){await (doc.exitFullscreen||doc.webkitExitFullscreen).call(doc);return;}
+   if(standalone()){onResize();return;}
+   const request=root.requestFullscreen||root.webkitRequestFullscreen;
+   if(!request){onHelp();return;}
+   await request.call(root,{navigationUI:'hide'});
+   try{await win.screen?.orientation?.lock?.('landscape');}catch(e){}
+   onResize();
+  }catch(e){onHelp();}
+ }
+ for(const event of ['fullscreenchange','webkitfullscreenchange'])doc.addEventListener(event,()=>{
+  for(const id of ['fullscreen','fullscreenIntro']){const el=doc.getElementById(id);if(el){el.setAttribute('aria-label',active()?'Tam ekrandan çık':'Tam ekran');el.setAttribute('aria-pressed',String(active()));}}
+  onResize();
+ });
+ return {toggle};
+}
+
 /* Original arena architecture; CC0 MakeHuman human assets and Poly Haven materials. */
 (function(){
 'use strict';
@@ -7019,6 +7103,11 @@ if(typeof ArenaProfileSync==='function'&&typeof supabase!=='undefined'){
  window.addEventListener('online',()=>cloud.connect());
  cloud.connect();
 }
+if(typeof ArenaFullscreen==='function'){
+ const fullscreen=ArenaFullscreen(document,window,resize,()=>{if(started)setPaused(true);$('fullscreenHelp').hidden=false;});
+ $('fullscreen').onclick=fullscreen.toggle;$('fullscreenIntro').onclick=fullscreen.toggle;
+ $('fullscreenClose').onclick=()=>{$('fullscreenHelp').hidden=true;};
+}
 $('special').addEventListener('pointerdown',e=>{e.preventDefault();useSpecial();});
 $('hand').addEventListener('pointerdown',e=>{e.preventDefault();if(!active()||handGesture)return;handGesture={id:e.pointerId,time:performance.now()};e.currentTarget.setPointerCapture(e.pointerId);});
 $('hand').addEventListener('pointerup',e=>{if(handGesture?.id!==e.pointerId)return;const draw=performance.now()-handGesture.time>=500;handGesture=null;changeHand(draw);});
@@ -7127,7 +7216,7 @@ function makeCameraCollider(model){const cells=new Map();model.updateMatrixWorld
 function avoidCameraWall(pos,focus){const radius=Math.hypot(pos.x,pos.z);if(radius>18){pos.x*=18/radius;pos.z*=18/radius;}if(!cameraCollider)return;const dir=pos.clone().sub(focus),length=dir.length();dir.normalize();let safe=length;const side=new THREE.Vector3(dir.z,0,-dir.x).normalize().multiplyScalar(.22);for(const offset of [-1,0,1]){const from=focus.clone().addScaledVector(side,offset);cameraRay.set(from,dir);cameraRay.near=.15;cameraRay.far=length+.25;const hit=cameraRay.intersectObject(cameraCollider,true)[0];if(hit)safe=Math.min(safe,Math.max(.35,hit.distance-.28));}if(safe<length)pos.copy(focus).addScaledVector(dir,safe);}
 function performanceText(){const s=perfMeter.snapshot();if(!s)return 'Arenaya gir; ölçüm oyun sırasında başlar.';
  const n=x=>Number.isFinite(x)?x.toFixed(1):'—',info=s.info;
- return 'ARENA 0.16 · '+info.quality+' · '+info.alive+' ayakta\n'+
+ return 'ARENA 0.17 · '+info.quality+' · '+info.alive+' ayakta\n'+
  'FPS: '+n(s.fps)+' | Kare: '+n(s.mean)+' ms\n'+
  'P95: '+n(s.p95)+' ms | En yavaş: '+n(s.worst)+' ms\n'+
  '50 ms üstü: '+s.slow+' | Pencere: '+n(s.seconds)+' sn\n'+
