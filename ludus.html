@@ -1,6 +1,9 @@
 <!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#ebe1ce"><title>Colosseum & Ludus · Avlu</title><style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#bcb09a;color:#f8edcf;font-family:Georgia,serif;overscroll-behavior:none}canvas{display:block;width:100%;height:100%;touch-action:none}button{font:inherit;color:inherit;border:1px solid #d7be83a8;background:#302b23c9;backdrop-filter:blur(8px);border-radius:4px;min-height:42px;padding:9px 16px;touch-action:manipulation}button:focus-visible{outline:2px solid #fff}header{position:absolute;left:max(22px,env(safe-area-inset-left));top:max(16px,env(safe-area-inset-top));pointer-events:none;text-shadow:0 2px 12px #362919}header small{font:9px Arial;letter-spacing:3px}h1{font-size:29px;font-weight:normal;letter-spacing:5px;margin:5px 0}header p{font:11px Arial;margin:5px 0;color:#fff1d5}.tools{position:absolute;right:max(20px,env(safe-area-inset-right));top:max(18px,env(safe-area-inset-top));display:flex;gap:8px}#hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);text-align:center;font:12px Arial;line-height:1.6;text-shadow:0 1px 5px #241c14;pointer-events:none;width:52%;color:white}#stick{position:absolute;left:max(28px,env(safe-area-inset-left));bottom:max(28px,env(safe-area-inset-bottom));width:108px;height:108px;border:1px solid #ead8ad88;border-radius:50%;background:#645c3a30;touch-action:none}#knob{position:absolute;left:33px;top:33px;width:42px;height:42px;border-radius:50%;border:1px solid #f3db9aaa;background:#f3dc9925;pointer-events:none}#look{position:absolute;right:max(26px,env(safe-area-inset-right));bottom:40px;font:10px Arial;letter-spacing:2px;pointer-events:none;color:#fff3cf;text-shadow:0 1px 4px #000}#notice{position:absolute;inset:0;z-index:10;background:#26231de8;display:grid;place-items:center;padding:30px;text-align:center}#notice div{max-width:440px;line-height:1.7}#notice[hidden],#stick[hidden],#look[hidden]{display:none}#loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:16px 24px;background:#302b23e0;font-size:16px}#vignette{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 100px #30281722}@media(max-height:450px){h1{font-size:22px}header{top:12px}header small{font-size:8px}.tools{top:12px}button{font-size:12px;min-height:36px;padding:8px 12px}#hint{bottom:16px;font-size:10px}#stick{width:94px;height:94px;bottom:20px}#knob{left:26px;top:26px}header p{font-size:10px}}
-</style></head><body><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Mimari önizleme</p></header><div class="tools"><button id="explore" disabled>Avluya gir</button><button id="full" aria-label="Tam ekran">⛶</button><button id="info" aria-label="Bilgi">ⓘ</button></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
+
+[hidden]{display:none!important}#labels{position:absolute;inset:0;pointer-events:none}.worldLabel{position:absolute;transform:translate(-50%,-100%);font:11px Arial;padding:5px 8px;min-height:30px;pointer-events:auto;white-space:nowrap}.worldLabel:disabled{border:0;background:#302b2380;color:#f4e3b6;pointer-events:none}#interact{position:absolute;bottom:78px;left:50%;transform:translateX(-50%);max-width:55%;font:13px Arial;background:#493722ed}#roomExit{position:absolute;left:22px;top:100px}#orders{position:absolute;inset:0;z-index:12;display:grid;place-items:center;background:#15110ee8;padding:20px}#orders>div{width:min(460px,95vw);max-height:90vh;overflow:auto}#orders h2{font-weight:normal}#orders p{font:13px Arial;color:#d0bea0}#orderButtons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+</style></head><body><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 2</p></header><div class="tools"><button id="explore" disabled>Avluya gir</button><button id="full" aria-label="Tam ekran">⛶</button><button id="info" aria-label="Bilgi">ⓘ</button></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
+<div id="labels"></div><button id="interact" hidden></button><button id="roomExit" hidden>← Avluya dön</button><section id="orders" hidden><div><h2 id="ordersTitle"></h2><p id="ordersText"></p><div id="orderButtons"></div><button id="ordersClose">Kapat</button></div></section>
 <script>/*The MIT License
 
 Copyright © 2010-2023 three.js authors
@@ -49,8 +52,8 @@ function part(mat,x,y,z,w,h,d,rx=0,ry=0,rz=0,geo=boxgeo){const key=mat+':'+geo.u
 function beam(a,b,width=.12){const mid=new T.Vector3().addVectors(a,b).multiplyScalar(.5),dir=new T.Vector3().subVectors(b,a),q=new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0),dir.clone().normalize());dummy.position.copy(mid);dummy.quaternion.copy(q);dummy.scale.set(width,dir.length(),width);dummy.updateMatrix();const key='wood:'+boxgeo.uuid;if(!groups.has(key))groups.set(key,{mat:materials.wood,geo:boxgeo,matrices:[]});groups.get(key).matrices.push(dummy.matrix.clone());}
 const V=(x,y,z)=>new T.Vector3(x,y,z);
 part('sand',0,-.15,0,90,.3,90);
-part('wall',-14,2.8,0,.65,5.6,25);part('wall',14,2.8,0,.65,5.6,25);part('wall',0,2.8,-12,28,5.6,.65);part('wall',0,3.7,12,28,7.4,.65);
-for(const x of [-14,14]){part('stone',x,.35,0,.78,.7,25);part('stone',x,5.65,0,.85,.2,25);for(let z=-11;z<12;z+=4){part('wall',x+(x<0?.4:-.4),2.5,z,.55,5,.55);}}
+part('wall',-14,2.8,-7.5,.65,5.6,10);part('wall',-14,2.8,7.5,.65,5.6,10);part('wall',-14,5.05,0,.65,1.1,5);part('wall',14,2.8,0,.65,5.6,25);part('wall',0,2.8,-12,28,5.6,.65);part('wall',0,3.7,12,28,7.4,.65);
+for(const x of [-14,14]){if(x>0)part('stone',x,.35,0,.78,.7,25);part('stone',x,5.65,0,.85,.2,25);}
 part('stone',0,.35,-11.8,28,.7,.55);part('stone',0,5.65,-12,28,.2,.85);
 // Door facades are intentionally closed in this first architecture pass.
 function door(x,z,angle=0){const c=Math.cos(angle),s=Math.sin(angle);const pos=(a,b,depth)=>[x+a*c+depth*s,b,z-a*s+depth*c];function p(mat,a,y,depth,w,h,d){const v=pos(a,y,depth);part(mat,...v,w,h,d,0,angle);}
@@ -61,7 +64,15 @@ function door(x,z,angle=0){const c=Math.cos(angle),s=Math.sin(angle);const pos=(
  p('iron',.42,1.13,.22,.09,.13,.08);
 }
 for(const x of [-10,-5,0,5,10])door(x,-11.62,0);
-for(const z of [-8,-3,2,7]){door(-13.6,z,Math.PI/2);door(13.6,z,-Math.PI/2);}
+// Right-hand gate when the balcony is behind the visitor.
+const arch=new T.Shape();arch.moveTo(-2.35,0);arch.lineTo(2.35,0);arch.lineTo(2.35,2.2);arch.absarc(0,2.2,2.35,0,Math.PI,false);arch.closePath();
+const gate=new T.Mesh(new T.ExtrudeGeometry(arch,{depth:.18,bevelEnabled:false,curveSegments:20}),materials.wood);gate.rotation.y=Math.PI/2;gate.position.set(-13.72,0,0);gate.castShadow=true;scene.add(gate);
+for(let z=-2.1;z<=2.1;z+=.3){const h=2.2+Math.sqrt(2.35**2-z*z);part('dark',-13.51,h/2,z,.015,h,.018);}
+for(const z of [-2.48,2.48])part('stone',-13.66,1.1,z,.55,2.2,.3);
+for(let i=0;i<20;i++){const a=(i+.5)*Math.PI/20;part('stone',-13.66,2.2+2.5*Math.sin(a),2.5*Math.cos(a),.55,.39,.29,a-Math.PI/2);}
+for(const y of [.65,1.75,2.65]){part('iron',-13.48,y,0,.08,.12,4.1);for(const z of [-1.9,-1,0,1,1.9])part('iron',-13.42,y,z,.06,.07,.07);}
+part('iron',-13.4,1.25,-.2,.12,.25,.12);part('iron',-13.4,1.25,.2,.12,.25,.12);
+
 for(const x of [-9,-4.5,0,4.5,9]){door(x,11.61,Math.PI);}
 // Shaded portico and upper gallery, shared rigid geometry.
 part('wood',0,3.28,9.9,27.4,.25,4.1);part('stone',0,3.45,11.9,28,.22,.7);
@@ -83,25 +94,21 @@ fence(-10.3,13.4,7.91);
 // Stairway at left, 18 shallow treads leading directly into gallery.
 for(let i=0;i<18;i++){const h=(i+1)*3.47/18;part('stone',-11.75,h/2,1+(i+.5)*7/18,2.5,h,7/18+.02);}
 for(const x of [-13.12,-10.38]){beam(V(x,1,1),V(x,4.5,8),.14);for(let i=0;i<5;i++){const z=1+i*1.75;part('wood',x,.5+(z-1)*3.47/7,z,.12,1,.12);}}
-// Sparse training furniture, kept out of the principal walking route.
-for(const [x,z] of [[-7,-5],[7,-5],[-6,1],[6,1]]){part('wood',x,.95,z,.15,1.9,.15,0,0,0,cylgeo);part('wood',x,.18,z,.5,.35,.5);colliders.push({x,z,half:.38});}
-part('wood',10,.5,5,3,.16,.55);for(const x of [8.8,11.2])part('wood',x,.24,5,.12,.5,.42);
-for(let i=0;i<7;i++)part('wood',8+i*.38,.13,-9, .25,.25,1.3,0,.15*i);
-for(const x of [-13,13])for(const z of [-9,4]){part('iron',x,2.8,z,.1,.7,.1);part('wood',x,3.05,z,.11,.35,.11);}
+// Training equipment and market cart are added by the activity module.
 // Distant ground forms keep the courtyard enclosed against a warm horizon.
 for(let i=0;i<12;i++){const mountain=new T.Mesh(new T.SphereGeometry(1,12,6),materials.earth);mountain.scale.set(16+rand()*9,4+rand()*4,12);mountain.position.set(-55+i*10,0,35+rand()*12);scene.add(mountain);}
 for(const {mat,geo,matrices} of groups.values()){const mesh=new T.InstancedMesh(geo,mat,matrices.length);matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));mesh.castShadow=mat!==materials.sand;mesh.receiveShadow=true;mesh.computeBoundingSphere();scene.add(mesh);}
 renderer.shadowMap.needsUpdate=true;
 const player={x:0,z:-5,y:0,yaw:Math.PI,pitch:0},joy={x:0,y:0},keys=new Set();let exploring=false,paused=false,look=null,stickPointer=null,last=performance.now();
-function floorAt(x,z,y){if(x>=-13&&x<=-10.5&&z>=1&&z<8.25)return Math.min(3.47,(z-1)*3.47/7);if(y>3&&z>=8.1&&z<=11.4&&x>=-13.4&&x<=13.4)return 3.47;return 0;}
-function allowed(x,z){if(x<-13.35||x>13.35||z<-11.3||z>11.35)return false;const target=floorAt(x,z,player.y);if(Math.abs(target-player.y)>.3)return false;if(target<3)for(const c of colliders)if(Math.abs(x-c.x)<c.half&&Math.abs(z-c.z)<c.half)return false;return true;}
+function floorAt(x,z,y){if(typeof activeRoom!=='undefined'&&activeRoom)return 0;if(x>=-13&&x<=-10.5&&z>=1&&z<8.25)return Math.min(3.47,(z-1)*3.47/7);if(y>3&&z>=8.1&&z<=11.4&&x>=-13.4&&x<=13.4)return 3.47;return 0;}
+function allowed(x,z){if(activeRoom)return x>-4.5&&x<4.5&&z>-4&&z<4;if(x<-13.35||x>13.35||z<-11.3||z>11.35)return false;const target=floorAt(x,z,player.y);if(Math.abs(target-player.y)>.3)return false;if(target<3)for(const c of colliders)if(Math.abs(x-c.x)<c.half&&Math.abs(z-c.z)<c.half)return false;return true;}
 function move(dx,dz){if(allowed(player.x+dx,player.z)){player.x+=dx;player.y=floorAt(player.x,player.z,player.y);}if(allowed(player.x,player.z+dz)){player.z+=dz;player.y=floorAt(player.x,player.z,player.y);}}
 function overview(){camera.position.set(9,7.8,-8.5);camera.lookAt(-1,2.7,8);}
 function clear(){keys.clear();joy.x=joy.y=0;look=null;stickPointer=null;$('knob').style.transform='';}
-function toggleExplore(){exploring=!exploring;clear();$('stick').hidden=$('look').hidden=!exploring;$('explore').textContent=exploring?'Genel görünüm':'Avluya gir';$('hint').textContent=exploring?'Solda hareket · Sağda sürükle: bakış · Sol merdivenden balkona çık':'Kumlu avlu · Gladyatör odaları · Üst galeri';if(!exploring)overview();}
+function toggleExplore(){if(activeRoom)leaveRoom();exploring=!exploring;clear();$('stick').hidden=$('look').hidden=!exploring;$('explore').textContent=exploring?'Genel görünüm':'Avluya gir';$('hint').textContent=exploring?'Kapıya yaklaş · Gladyatörün ismine dokun · Solda hareket, sağda bakış':'Kumlu avlu · Gladyatör odaları · Üst galeri';if(!exploring)overview();}
 $('explore').onclick=toggleExplore;
 function notice(text){clear();paused=true;$('noticeText').textContent=text;$('notice').hidden=false;$('close').focus();}
-$('close').onclick=()=>{paused=false;$('notice').hidden=true;};$('info').onclick=()=>notice('İlk mimari sürüm: avlu ve üst galeri gezilebilir. Oda kapıları bu sürümde kapalıdır. Kum ve taş dokuları: Poly Haven, CC0. Sıva: '+LUDUS_PLASTER_CREDIT+'. Ahşap deseni ve mimari bu demo için üretildi. Klavye: W A S D / yön tuşları.');
+$('close').onclick=()=>{paused=false;$('notice').hidden=true;};$('info').onclick=()=>notice('Ludus 2: kapılara yaklaşarak odalara gir; gladyatör isimlerinden antrenman emri ver. Kadro şimdilik örnektir. Antrenman stat artırmaz; görev ve hareket önizlemesidir. Kum ve taş dokuları: Poly Haven, CC0. Sıva: '+LUDUS_PLASTER_CREDIT+'. Ahşap deseni ve mimari bu demo için üretildi. Klavye: W A S D / yön tuşları.');
 $('full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else notice('Safari: Paylaş → Ana Ekrana Ekle → varsa Web uygulaması olarak aç. Ardından Ludus’u eklenen simgeden aç ve telefonu yatay çevir.');}catch(e){notice('Tam ekran açılamadı. Safari’de Paylaş → Ana Ekrana Ekle yoluyla açabilirsin.');}};
 const stick=$('stick');function joystick(e){const r=stick.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,max=r.width*.32,len=Math.hypot(dx,dy),scale=len>max?max/len:1;joy.x=dx*scale/max;joy.y=-dy*scale/max;$('knob').style.transform=`translate(${dx*scale}px,${dy*scale}px)`;}
 stick.onpointerdown=e=>{if(paused||stickPointer!==null)return;e.preventDefault();stickPointer=e.pointerId;stick.setPointerCapture(e.pointerId);joystick(e);};stick.onpointermove=e=>{if(e.pointerId===stickPointer)joystick(e);};for(const event of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(event,e=>{if(e.pointerId===stickPointer){stickPointer=null;joy.x=joy.y=0;$('knob').style.transform='';}});
@@ -110,10 +117,60 @@ window.addEventListener('keydown',e=>{if(['KeyW','KeyA','KeyS','KeyD','ArrowUp',
 function resize(){const v=window.visualViewport,w=v?.width||innerWidth,h=v?.height||innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);window.visualViewport?.addEventListener('resize',resize);document.addEventListener('fullscreenchange',resize);resize();overview();
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();paused=true;notice('Grafik bağlantısı kesildi. Sayfayı yenileyerek tekrar aç.');});
 Promise.all(ready).then(()=>{$('loading').hidden=true;$('explore').disabled=false;});
-function frame(now){requestAnimationFrame(frame);const dt=Math.min(.04,(now-last)/1000);last=now;if(document.hidden)return;if(exploring&&!paused){let x=joy.x+(keys.has('KeyD')||keys.has('ArrowRight')?1:0)-(keys.has('KeyA')||keys.has('ArrowLeft')?1:0),y=joy.y+(keys.has('KeyW')||keys.has('ArrowUp')?1:0)-(keys.has('KeyS')||keys.has('ArrowDown')?1:0),len=Math.max(1,Math.hypot(x,y));x/=len;y/=len;const c=Math.cos(player.yaw),s=Math.sin(player.yaw);move((x*c-y*s)*3.4*dt,(-x*s-y*c)*3.4*dt);camera.position.set(player.x,player.y+1.65,player.z);camera.rotation.order='YXZ';camera.rotation.set(player.pitch,player.yaw,0);$('place').textContent=player.y>3?'Üst galeri · Ludus':'Antrenman avlusu · Ludus';}renderer.render(scene,camera);}
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.04,(now-last)/1000);last=now;if(document.hidden)return;if(exploring&&!paused){let x=joy.x+(keys.has('KeyD')||keys.has('ArrowRight')?1:0)-(keys.has('KeyA')||keys.has('ArrowLeft')?1:0),y=joy.y+(keys.has('KeyW')||keys.has('ArrowUp')?1:0)-(keys.has('KeyS')||keys.has('ArrowDown')?1:0),len=Math.max(1,Math.hypot(x,y));x/=len;y/=len;const c=Math.cos(player.yaw),s=Math.sin(player.yaw);move((x*c-y*s)*3.4*dt,(-x*s-y*c)*3.4*dt);camera.position.set(player.x,player.y+1.65,player.z);camera.rotation.order='YXZ';camera.rotation.set(player.pitch,player.yaw,0);$('place').textContent=player.y>3?'Üst galeri · Ludus':'Antrenman avlusu · Ludus';}updateActivities(dt);renderer.render(activeRoom?roomScene:scene,camera);}
+let activeRoom=null,returnPose=null,nearest=null;
+const roomScene=new T.Scene();roomScene.background=new T.Color('#28231e');roomScene.add(new T.HemisphereLight(0xffefcc,0x655444,2.5));const roomLight=new T.PointLight(0xffdfad,65,20);roomLight.position.set(0,4,0);roomScene.add(roomLight);
+const roomProps=new T.Group();roomScene.add(roomProps);
+function mesh(parent,mat,x,y,z,w,h,d,geo=boxgeo){const m=new T.Mesh(geo,materials[mat]);m.position.set(x,y,z);m.scale.set(w,h,d);m.castShadow=false;m.receiveShadow=true;parent.add(m);return m;}
+mesh(roomScene,'stone',0,-.12,0,10,.24,9);mesh(roomScene,'wall',0,2.5,-4.5,10,5,.3);for(const x of [-5,5])mesh(roomScene,'wall',x,2.5,0,.3,5,9);mesh(roomScene,'wall',0,5,0,10,.2,9);mesh(roomScene,'wood',0,2,4.5,10,4,.25);
+const rooms=[];
+[-8,0,8].forEach((x,i)=>rooms.push({x,z:11.1,y:3.47,name:['Ludus Yönetim Odası','Kayıt Odası','Dinlenme Odası'][i],kind:['office','records','rest'][i]}));
+[-9,-4.5,0,4.5,9].forEach((x,i)=>rooms.push({x,z:11.1,y:0,name:['Geliştirmeler','Silahlık','Revir','Yemekhane','Depo'][i],kind:['upgrades','armory','infirmary','dining','store'][i]}));
+[-10,-5,0,5,10].forEach((x,i)=>rooms.push({x,z:-11,y:0,name:'Gladyatör Odası '+(i+1),kind:'quarters'}));
+function table(x,z){mesh(roomProps,'wood',x,1,z,2,.18,1.1);for(const a of [-.8,.8])for(const b of [-.4,.4])mesh(roomProps,'wood',x+a,.5,z+b,.12,1,.12);}
+function bed(x,z){mesh(roomProps,'wood',x,.35,z,1.5,.6,2.6);mesh(roomProps,'cloth',x,.71,z,1.45,.15,2.5);mesh(roomProps,'wall',x,.84,z-.8,1.1,.2,.5);}
+function enterRoom(r){returnPose={...player};activeRoom=r;clear();roomProps.clear();player.x=0;player.z=2.6;player.y=0;player.yaw=0;player.pitch=0;
+ if(['rest','quarters','infirmary'].includes(r.kind)){bed(-2,-1);bed(2,-1);table(0,-3);}else if(['store','armory','upgrades','records'].includes(r.kind)){for(const x of [-3,3])for(const y of [.5,1.6,2.7]){mesh(roomProps,'wood',x,y,-3,2,.15,1);for(let j=0;j<3;j++)mesh(roomProps,r.kind==='armory'?'iron':'cloth',x-.65+j*.65,y+.35,-3,.35,.55,.5);}table(0,0);}else{table(0,-1);mesh(roomProps,'cloth',0,.03,-1,3,.035,4);mesh(roomProps,'wood',0,.55,-2.3,.8,1.1,.7);}
+ $('roomExit').hidden=false;$('hint').textContent=r.kind==='upgrades'?'Geliştirme odası hazır · Satın alma sistemi henüz bağlı değil':'Ayrı oda sahnesi · Avluya dönerek diğer odaları gez';$('place').textContent=r.name;
+}
+function leaveRoom(){if(!activeRoom)return;Object.assign(player,returnPose);activeRoom=null;$('roomExit').hidden=true;$('hint').textContent='Kapıya yaklaş · Gladyatörün ismine dokun';}
+$('roomExit').onclick=leaveRoom;
+const stationDefs=[['Güç','Ağırlık',-8],['Dayanıklılık','Kum torbası',-4],['Hız','Adım parkuru',0],['Savunma','Kalkan direği',4],['Teknik','Vuruş kuklası',8]];
+const stations=stationDefs.map(([stat,name,x],i)=>({stat,name,x,z:-6,i}));
+function label(text){const el=document.createElement('button');el.className='worldLabel';el.textContent=text;$('labels').appendChild(el);return el;}
+for(const s of stations){s.label=label(s.stat);s.label.disabled=true;s.anchor=new T.Vector3(s.x,2.6,s.z);
+ if(s.i===0){mesh(scene,'iron',s.x,.4,s.z,1.7,.09,.09);for(const dx of [-.65,.65])mesh(scene,'stone',s.x+dx,.4,s.z,.35,.65,.65);}
+ else if(s.i===2){for(let j=0;j<5;j++)mesh(scene,'wood',s.x,.045,s.z-1+j*.5,1.5,.09,.1);}
+ else {mesh(scene,'wood',s.x,1.2,s.z,.14,2.4,.14);mesh(scene,'wood',s.x,2.25,s.z,1.5,.12,.12);mesh(scene,s.i===1?'cloth':'wood',s.x,1.35,s.z,s.i===1?.6:.45,1.1,.4);if(s.i===3)mesh(scene,'iron',s.x,1.4,s.z+.26,.9,1.1,.12);}
+ colliders.push({x:s.x,z:s.z,half:.75});
+}
+// Lightweight market wagon: wooden bed, iron tyres, shafts and a fabric canopy.
+const cart=new T.Group();scene.add(cart);cart.position.set(-11,0,-4);mesh(cart,'wood',0,.85,0,1.5,.18,2.3);for(const x of [-.78,.78]){mesh(cart,'wood',x,1.15,0,.12,.5,2.3);for(const z of [-.8,.8]){const wheel=mesh(cart,'iron',x,.5,z,.48,.12,.48,cylgeo);wheel.rotation.z=Math.PI/2;}}for(const x of [-.65,.65]){mesh(cart,'wood',x,.55,2,.08,.08,2);for(const z of [-1,1])mesh(cart,'wood',x,1.65,z,.07,1.5,.07);}mesh(cart,'cloth',0,2.42,0,1.7,.09,2.6);for(let i=0;i<3;i++)mesh(cart,'wood',-.45+i*.45,1.08,0,.35,.4,.7);colliders.push({x:-11,z:-4,half:1.25});
+const market={x:-10,z:-3,y:0,name:'Pazarı incele',kind:'market'},gateAction={x:-12.9,z:0,y:0,name:'Arenaya git',kind:'arena'};
+materials.skin=new T.MeshStandardMaterial({color:0xb68462,roughness:1});materials.team=new T.MeshStandardMaterial({color:0x365f83,roughness:.9});const headGeo=new T.SphereGeometry(1,10,8);
+const names=['Cassius','Marcus','Titus','Varro','Felix','Aelius','Lucius','Brutus','Gaius','Silvanus'];
+let saved={};try{saved=JSON.parse(localStorage.getItem('ludus-orders-v2')||'{}');}catch(e){}
+const roster=names.map((name,i)=>{const home={x:-8.1+i*1.8,z:4.4},body=new T.Group();scene.add(body);body.position.set(home.x,0,home.z);mesh(body,'skin',0,1.15,0,.48,.62,.25);mesh(body,'skin',0,1.68,0,.18,.22,.18,headGeo);mesh(body,'team',0,.76,0,.52,.2,.3);for(const x of [-.31,.31])mesh(body,'skin',x,1.1,0,.13,.6,.14);const legs=[-.14,.14].map(x=>mesh(body,'skin',x,.37,0,.16,.68,.18));mesh(body,'iron',0,1.85,0,.37,.08,.34);const el=label(name);const g={name,home,body,legs,label:el,order:null,path:[],phase:0};el.onclick=()=>showGladiator(g);return g;});
+function persist(){try{localStorage.setItem('ludus-orders-v2',JSON.stringify(Object.fromEntries(roster.map(g=>[g.name,g.order]))));}catch(e){$('hint').textContent='Tarayıcı kaydı kapalı; emirler bu oturumda kalır.';}}
+function assign(g,station){g.order=station?station.i:null;const index=roster.indexOf(g),target=station?{x:station.x+(index%2? .52:-.52),z:station.z+1.4+Math.floor(index/2)*.46}:g.home;g.path=[{x:g.body.position.x,z:1.4},{x:target.x,z:1.4},target];persist();}
+function showGladiator(g){clear();paused=true;$('orders').hidden=false;$('ordersTitle').textContent=g.name;$('ordersText').textContent='Örnek kadro · '+(g.order===null?'Görev: avluda bekle':stations[g.order].stat+' antrenmanı');const list=$('orderButtons');list.replaceChildren();for(const s of stations){const b=document.createElement('button');b.textContent=s.stat+' çalış';b.onclick=()=>{assign(g,s);closeOrders();};list.appendChild(b);}const b=document.createElement('button');b.textContent='Sıraya dön';b.onclick=()=>{assign(g,null);closeOrders();};list.appendChild(b);}
+function closeOrders(){paused=false;$('orders').hidden=true;}
+$('ordersClose').onclick=closeOrders;
+for(const g of roster)if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
+$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){window.location.href=new URL('arena.html',window.location.href).href;}else if(nearest.kind==='market')notice('Pazar arabası hazır. Alım-satım ve eşya stoğunu sonraki aşamada bağlayacağız.');else enterRoom(nearest);};
+function projectLabel(el,v,visible){const p=v.clone().project(camera);el.hidden=!visible||p.z<0||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;if(!el.hidden){el.style.left=((p.x+1)*50)+'%';el.style.top=((1-p.y)*50)+'%';}}
+function updateActivities(dt){if(activeRoom)$('place').textContent=activeRoom.name;
+ for(const g of roster){if(!paused&&g.path.length){const next=g.path[0],dx=next.x-g.body.position.x,dz=next.z-g.body.position.z,d=Math.hypot(dx,dz),step=Math.min(d,dt*1.7);if(d<.04){g.path.shift();if(!g.path.length){g.body.rotation.y=g.order===null?0:Math.PI;g.legs.forEach(l=>l.rotation.x=0);}}else{g.body.position.x+=dx/d*step;g.body.position.z+=dz/d*step;g.body.rotation.y=Math.atan2(dx,dz);g.phase+=dt*8;g.legs.forEach((l,i)=>l.rotation.x=Math.sin(g.phase+i*Math.PI)*.25);}}
+ const distance=Math.hypot(g.body.position.x-player.x,g.body.position.z-player.z);projectLabel(g.label,g.body.position.clone().add(new T.Vector3(0,2.12,0)),exploring&&!activeRoom&&!paused&&player.y<1&&distance<5.5);
+ }
+ for(const s of stations)projectLabel(s.label,s.anchor,!activeRoom&&!paused&&(!exploring||Math.hypot(s.x-player.x,s.z-player.z)<8));
+ nearest=null;if(exploring&&!paused&&!activeRoom){let best=2.05;for(const r of [...rooms,market,gateAction]){const d=Math.hypot(player.x-r.x,player.z-r.z);if(Math.abs(player.y-r.y)<.6&&d<best){best=d;nearest=r;}}}
+ $('interact').hidden=!nearest;if(nearest)$('interact').textContent=nearest.kind==='arena'||nearest.kind==='market'?nearest.name:nearest.name+' · Gir';
+}
+
 requestAnimationFrame(frame);
 // Read-only diagnostics for local verification, no backend or game-state changes.
-window.LudusPreview={scene,camera,player,move,floorAt,renderer};
+window.LudusPreview={scene,camera,player,move,floorAt,renderer,rooms,roster,stations,assign,enterRoom,leaveRoom,updateActivities};
 })();
 </script>
 </body></html>
