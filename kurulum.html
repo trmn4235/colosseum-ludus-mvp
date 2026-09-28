@@ -1,0 +1,177 @@
+<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Colosseum & Ludus · Üyelik kurulumu</title><style>
+body{margin:0;background:#f3ecde;color:#38271b;font:16px/1.6 system-ui,sans-serif}main{max-width:780px;margin:auto;padding:24px 20px 70px}h1,h2{font-family:Georgia,serif;color:#681b19}h1{font-size:28px}h2{font-size:21px}section{background:#fffaf0;border:1px solid #cbb58a;padding:18px;margin:20px 0;border-radius:8px}button,a.action{display:inline-block;background:#751e1d;color:#fff6d9;border:0;padding:12px 18px;border-radius:6px;font:inherit;text-decoration:none;margin:5px 0}textarea{width:100%;height:160px;box-sizing:border-box;font:12px/1.5 monospace;margin:12px 0;background:#fff;color:#222;border:1px solid #c4b18e;padding:10px}code{overflow-wrap:anywhere}small{display:block}li{margin:9px 0}a{color:#792421}.note{border-left:4px solid #b48a49;padding-left:12px}.copied{font-weight:bold;color:#29583b}</style><main>
+<h1>Colosseum & Ludus<br>Üyelik kurulumu</h1>
+<p>Bilgisayar gerektirmez. Bu sayfadaki iki kodu Supabase'e kopyalayacağız; ardından iki oyun dosyasını GitHub'a yükleyeceğiz. Sunucu ayarları tamamlanmadan yeni üyelik ekranından kayıt ve giriş çalışmaz.</p>
+<p class="note">Yeni paket: kullanıcı adıyla giriş, e-postayla doğrulama ve şifre yenileme, iki farklı rastgele başlangıç sınıfı, tek seferlik 1.000 Altın + 3 Elmas + 2 Safir, kişiye özel ekipman kayıtları ve Ludus adı değiştirme. Savaş sonucu/ödülü, ekipman değiştirme ve gerçek antrenman ilerlemesi bu pakette henüz bağlı değildir. Gladyatör temel statları şimdilik geçici başlangıç değerleridir.</p>
+<section><h2>1. Veritabanı</h2><p>Supabase'de <b>colosseum-ludus → SQL Editor → New query</b> aç. Aşağıdaki kodun tamamını yapıştır ve <b>Run</b> düğmesine bas. Bu kurulum mevcut arena tercihlerini silmez. Aynı kod yeniden çalıştırılırsa başlangıç ödülleri tekrarlanmaz.</p><button onclick="copyCode('sql',this)">SQL kodunu kopyala</button><textarea id="sql" readonly spellcheck="false">-- Colosseum &amp; Ludus / Membership v1. Run once in Supabase SQL Editor.
+-- Re-running is safe: no account, currency or equipment is reset.
+begin;
+create schema if not exists ludus_private;
+revoke all on schema ludus_private from public,anon,authenticated;
+
+create table if not exists public.ludus_accounts (
+ user_id uuid primary key references auth.users(id) on delete cascade,
+ username text not null unique check(username ~ &#x27;^[a-z0-9_]{3,24}$&#x27;),
+ ludus_name text not null check(char_length(btrim(ludus_name)) between 3 and 40),
+ gold bigint not null default 1000 check(gold&gt;=0),
+ diamonds integer not null default 3 check(diamonds&gt;=0),
+ sapphires integer not null default 2 check(sapphires&gt;=0),
+ rubies integer not null default 0 check(rubies&gt;=0),
+ wins integer not null default 0 check(wins&gt;=0),
+ losses integer not null default 0 check(losses&gt;=0),
+ created_at timestamptz not null default now()
+);
+create table if not exists public.ludus_gladiators (
+ id uuid primary key default gen_random_uuid(),
+ owner_id uuid not null references public.ludus_accounts(user_id) on delete cascade,
+ name text not null check(char_length(name) between 1 and 32),
+ class text not null check(class in (&#x27;murmillo&#x27;,&#x27;thraex&#x27;,&#x27;hoplomachus&#x27;,&#x27;secutor&#x27;,&#x27;retiarius&#x27;,&#x27;provocator&#x27;,&#x27;scissor&#x27;)),
+ level integer not null default 1 check(level&gt;0),
+ experience bigint not null default 0 check(experience&gt;=0),
+ base_stats jsonb not null default &#x27;{&quot;health&quot;:100,&quot;stamina&quot;:100,&quot;strength&quot;:10,&quot;agility&quot;:10,&quot;defense&quot;:10,&quot;technique&quot;:10}&#x27;,
+ fatigue integer not null default 0 check(fatigue between 0 and 100),
+ injury_level integer not null default 0 check(injury_level between 0 and 5),
+ injured_until timestamptz,
+ training_type text,
+ training_ends_at timestamptz,
+ status text not null default &#x27;available&#x27; check(status in (&#x27;available&#x27;,&#x27;training&#x27;,&#x27;injured&#x27;,&#x27;locked&#x27;)),
+ created_at timestamptz not null default now(),
+ unique(id,owner_id)
+);
+create index if not exists ludus_gladiators_owner_idx on public.ludus_gladiators(owner_id);
+create table if not exists public.ludus_items (
+ id uuid primary key default gen_random_uuid(),
+ owner_id uuid not null references public.ludus_accounts(user_id) on delete cascade,
+ kind text not null check(kind in (&#x27;weapon&#x27;,&#x27;shield&#x27;,&#x27;helmet&#x27;,&#x27;chest&#x27;,&#x27;gloves&#x27;,&#x27;legs&#x27;)),
+ model text not null,
+ enhancement integer not null default 0 check(enhancement&gt;=0),
+ base_stats jsonb not null default &#x27;{}&#x27;,
+ sapphires jsonb not null default &#x27;[]&#x27; check(jsonb_typeof(sapphires)=&#x27;array&#x27; and jsonb_array_length(sapphires)&lt;=4),
+ rubies jsonb not null default &#x27;[]&#x27; check(jsonb_typeof(rubies)=&#x27;array&#x27; and jsonb_array_length(rubies)&lt;=2),
+ equipped_by uuid,
+ equipped_slot text check(equipped_slot in (&#x27;main_hand&#x27;,&#x27;off_hand&#x27;,&#x27;helmet&#x27;,&#x27;chest&#x27;,&#x27;gloves&#x27;,&#x27;legs&#x27;)),
+ created_at timestamptz not null default now(),
+ foreign key(equipped_by,owner_id) references public.ludus_gladiators(id,owner_id),
+ check((equipped_by is null)=(equipped_slot is null)),
+ unique(equipped_by,equipped_slot)
+);
+create index if not exists ludus_items_owner_idx on public.ludus_items(owner_id);
+
+alter table public.ludus_accounts enable row level security;
+alter table public.ludus_gladiators enable row level security;
+alter table public.ludus_items enable row level security;
+revoke all on public.ludus_accounts,public.ludus_gladiators,public.ludus_items from public,anon,authenticated;
+grant usage on schema public to authenticated;
+grant select on public.ludus_accounts,public.ludus_gladiators,public.ludus_items to authenticated;
+grant update(ludus_name) on public.ludus_accounts to authenticated;
+drop policy if exists account_owner_read on public.ludus_accounts;
+create policy account_owner_read on public.ludus_accounts for select to authenticated using(user_id=(select auth.uid()));
+drop policy if exists account_owner_name on public.ludus_accounts;
+create policy account_owner_name on public.ludus_accounts for update to authenticated using(user_id=(select auth.uid())) with check(user_id=(select auth.uid()));
+drop policy if exists gladiator_owner_read on public.ludus_gladiators;
+create policy gladiator_owner_read on public.ludus_gladiators for select to authenticated using(owner_id=(select auth.uid()));
+drop policy if exists item_owner_read on public.ludus_items;
+create policy item_owner_read on public.ludus_items for select to authenticated using(owner_id=(select auth.uid()));
+
+create or replace function ludus_private.create_starter_account()
+returns trigger language plpgsql security definer set search_path=&#x27;&#x27; as $$
+declare uname text; lname text; cls text; gid uuid; idx integer:=0; weapon text; shield text;
+begin
+ if coalesce(new.is_anonymous,false) or new.email is null then return new; end if;
+ -- Existing non-game auth integrations may still create users without a game identity.
+ if not (coalesce(new.raw_user_meta_data,&#x27;{}&#x27;::jsonb) ? &#x27;username&#x27;) then return new; end if;
+ uname:=lower(btrim(new.raw_user_meta_data-&gt;&gt;&#x27;username&#x27;));
+ lname:=btrim(new.raw_user_meta_data-&gt;&gt;&#x27;ludus_name&#x27;);
+ if uname is null or uname !~ &#x27;^[a-z0-9_]{3,24}$&#x27; or lname is null or char_length(lname) not between 3 and 40 then
+  raise exception &#x27;Invalid game identity&#x27; using errcode=&#x27;22023&#x27;;
+ end if;
+ insert into public.ludus_accounts(user_id,username,ludus_name) values(new.id,uname,lname)
+ on conflict(user_id) do nothing;
+ if not found then return new; end if;
+ -- This auth transaction owns both the account and its exactly-once starter grant.
+ for cls in select c from unnest(array[&#x27;murmillo&#x27;,&#x27;thraex&#x27;,&#x27;hoplomachus&#x27;,&#x27;secutor&#x27;,&#x27;retiarius&#x27;,&#x27;provocator&#x27;,&#x27;scissor&#x27;]) c order by random() limit 2 loop
+  idx:=idx+1;
+  insert into public.ludus_gladiators(owner_id,name,class) values(new.id,case idx when 1 then &#x27;Cassius&#x27; else &#x27;Titus&#x27; end,cls) returning id into gid;
+  weapon:=case cls when &#x27;hoplomachus&#x27; then &#x27;spear&#x27; when &#x27;retiarius&#x27; then &#x27;trident&#x27; when &#x27;thraex&#x27; then &#x27;sica&#x27; else &#x27;gladius&#x27; end;
+  insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot) values(new.id,&#x27;weapon&#x27;,weapon,gid,&#x27;main_hand&#x27;);
+  if cls in (&#x27;murmillo&#x27;,&#x27;secutor&#x27;,&#x27;provocator&#x27;,&#x27;thraex&#x27;,&#x27;hoplomachus&#x27;) then
+   shield:=case when cls in (&#x27;murmillo&#x27;,&#x27;secutor&#x27;,&#x27;provocator&#x27;) then &#x27;large&#x27; when cls=&#x27;hoplomachus&#x27; then &#x27;round&#x27; else &#x27;small&#x27; end;
+   insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot) values(new.id,&#x27;shield&#x27;,shield,gid,&#x27;off_hand&#x27;);
+  elsif cls=&#x27;retiarius&#x27; then
+   insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot) values(new.id,&#x27;weapon&#x27;,&#x27;net&#x27;,gid,&#x27;off_hand&#x27;);
+  elsif cls=&#x27;scissor&#x27; then
+   insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot) values(new.id,&#x27;weapon&#x27;,&#x27;scissor&#x27;,gid,&#x27;off_hand&#x27;);
+  end if;
+  insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot) values
+   (new.id,&#x27;helmet&#x27;,cls,gid,&#x27;helmet&#x27;),(new.id,&#x27;gloves&#x27;,&#x27;starter&#x27;,gid,&#x27;gloves&#x27;),(new.id,&#x27;legs&#x27;,&#x27;starter&#x27;,gid,&#x27;legs&#x27;);
+  if cls in (&#x27;murmillo&#x27;,&#x27;scissor&#x27;) then
+   insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot) values(new.id,&#x27;chest&#x27;,cls,gid,&#x27;chest&#x27;);
+  end if;
+ end loop;
+ return new;
+end $$;
+revoke all on function ludus_private.create_starter_account() from public,anon,authenticated;
+drop trigger if exists ludus_create_starter_account on auth.users;
+create trigger ludus_create_starter_account after insert on auth.users for each row execute function ludus_private.create_starter_account();
+
+-- Username -&gt; email lookup is never exposed to a browser or anonymous caller.
+create or replace function public.ludus_login_email(p_username text)
+returns text language sql stable security definer set search_path=&#x27;&#x27; as $$
+ select u.email::text from public.ludus_accounts a join auth.users u on u.id=a.user_id where a.username=p_username limit 1;
+$$;
+revoke all on function public.ludus_login_email(text) from public,anon,authenticated;
+grant execute on function public.ludus_login_email(text) to service_role;
+
+create table if not exists ludus_private.login_limits(bucket text primary key, window_start timestamptz not null, attempts integer not null);
+revoke all on ludus_private.login_limits from public,anon,authenticated;
+create or replace function public.ludus_login_allow(p_bucket text,p_limit integer)
+returns boolean language plpgsql security definer set search_path=&#x27;&#x27; as $$
+declare n integer;
+begin
+ if char_length(p_bucket)&gt;100 or p_limit not between 1 and 60 then return false; end if;
+ delete from ludus_private.login_limits where window_start&lt;now()-interval &#x27;1 day&#x27;;
+ insert into ludus_private.login_limits as l(bucket,window_start,attempts) values(p_bucket,now(),1)
+ on conflict(bucket) do update set attempts=case when l.window_start&lt;now()-interval &#x27;1 minute&#x27; then 1 else l.attempts+1 end,
+ window_start=case when l.window_start&lt;now()-interval &#x27;1 minute&#x27; then now() else l.window_start end
+ returning attempts into n;
+ return n&lt;=p_limit;
+end $$;
+revoke all on function public.ludus_login_allow(text,integer) from public,anon,authenticated;
+grant execute on function public.ludus_login_allow(text,integer) to service_role;
+commit;
+</textarea><p>Kopyalama çalışmazsa kutuya dokun → Tümünü Seç → Kopyala.</p></section>
+<section><h2>2. Kullanıcı adıyla giriş</h2><p>Supabase → <b>Edge Functions</b> bölümünden yeni fonksiyon oluştur. Paneldeki tarayıcı editörünü kullan; fonksiyon adını <b>account-login</b> yap. Örnek kodu silip aşağıdaki kodu yapıştır ve <b>Deploy</b> et.</p><button onclick="copyCode('edge',this)">Fonksiyon kodunu kopyala</button><textarea id="edge" readonly spellcheck="false">// Supabase Edge Function name: account-login. Disable Verify JWT (public login endpoint).
+// Server-provided keys remain on Supabase; never paste them into the website.
+const SUPA = Deno.env.get(&#x27;SUPABASE_URL&#x27;)!;
+const SERVICE = Deno.env.get(&#x27;SUPABASE_SERVICE_ROLE_KEY&#x27;)!;
+const ANON = Deno.env.get(&#x27;SUPABASE_ANON_KEY&#x27;)!;
+const ORIGIN = &#x27;https://trmn4235.github.io&#x27;;
+const cors = {&#x27;Access-Control-Allow-Origin&#x27;:ORIGIN,&#x27;Access-Control-Allow-Headers&#x27;:&#x27;content-type,apikey&#x27;,&#x27;Access-Control-Allow-Methods&#x27;:&#x27;POST, OPTIONS&#x27;,&#x27;Vary&#x27;:&#x27;Origin&#x27;,&#x27;Cache-Control&#x27;:&#x27;no-store&#x27;};
+function reply(status:number,body:unknown){return new Response(JSON.stringify(body),{status,headers:{...cors,&#x27;Content-Type&#x27;:&#x27;application/json&#x27;}});}
+async function digest(value:string){const b=await crypto.subtle.digest(&#x27;SHA-256&#x27;,new TextEncoder().encode(SERVICE+&#x27;:&#x27;+value));return Array.from(new Uint8Array(b),v=&gt;v.toString(16).padStart(2,&#x27;0&#x27;)).join(&#x27;&#x27;);}
+async function rpc(name:string,body:unknown){const r=await fetch(SUPA+&#x27;/rest/v1/rpc/&#x27;+name,{method:&#x27;POST&#x27;,headers:{apikey:SERVICE,Authorization:&#x27;Bearer &#x27;+SERVICE,&#x27;Content-Type&#x27;:&#x27;application/json&#x27;},body:JSON.stringify(body),signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error(&#x27;Database unavailable&#x27;);return r.json();}
+export async function handle(request:Request):Promise&lt;Response&gt;{
+ if(request.headers.get(&#x27;Origin&#x27;)!==ORIGIN)return reply(403,{error:&#x27;Bu kaynaktan giriş desteklenmiyor.&#x27;});
+ if(request.method===&#x27;OPTIONS&#x27;)return new Response(null,{status:204,headers:cors});
+ if(request.method!==&#x27;POST&#x27;)return reply(405,{error:&#x27;Geçersiz istek.&#x27;});
+ if(!request.headers.get(&#x27;content-type&#x27;)?.includes(&#x27;application/json&#x27;))return reply(415,{error:&#x27;Geçersiz istek.&#x27;});
+ try{
+  const raw=await request.text();if(raw.length&gt;4096)return reply(413,{error:&#x27;Geçersiz istek.&#x27;});
+  const body=JSON.parse(raw),username=typeof body.username===&#x27;string&#x27;?body.username.trim().toLowerCase():&#x27;&#x27;,password=body.password;
+  if(!/^[a-z0-9_]{3,24}$/.test(username)||typeof password!==&#x27;string&#x27;||password.length&lt;1||password.length&gt;128)return reply(400,{error:&#x27;Kullanıcı adı veya şifre hatalı.&#x27;});
+  const ip=request.headers.get(&#x27;x-forwarded-for&#x27;)?.split(&#x27;,&#x27;)[0]?.trim()||&#x27;unknown&#x27;;
+  const [accountOK,ipOK]=await Promise.all([rpc(&#x27;ludus_login_allow&#x27;,{p_bucket:&#x27;u:&#x27;+await digest(username),p_limit:10}),rpc(&#x27;ludus_login_allow&#x27;,{p_bucket:&#x27;ip:&#x27;+await digest(ip),p_limit:30})]);
+  if(!accountOK||!ipOK)return reply(429,{error:&#x27;Çok fazla deneme. Bir dakika sonra tekrar dene.&#x27;});
+  const email=await rpc(&#x27;ludus_login_email&#x27;,{p_username:username});
+  const r=await fetch(SUPA+&#x27;/auth/v1/token?grant_type=password&#x27;,{method:&#x27;POST&#x27;,headers:{apikey:ANON,&#x27;Content-Type&#x27;:&#x27;application/json&#x27;},body:JSON.stringify({email:email||&#x27;unknown@invalid.example&#x27;,password}),signal:AbortSignal.timeout(15000)});
+  const result=await r.json();
+  if(!r.ok||!email||!result.access_token)return reply(401,{error:&#x27;Kullanıcı adı veya şifre hatalı. E-postanı doğruladığından emin ol.&#x27;});
+  return reply(200,{access_token:result.access_token,refresh_token:result.refresh_token});
+ }catch{return reply(503,{error:&#x27;Giriş şu anda tamamlanamıyor. Biraz sonra tekrar dene.&#x27;});}
+}
+Deno.serve(handle);
+</textarea><p>Bu fonksiyonun <b>Verify JWT / Enforce JWT verification</b> ayarını kapat. Bu yalnızca giriş fonksiyonu içindir: henüz oturumu olmayan oyuncuların şifresini Supabase Auth doğrular. Diğer fonksiyonları değiştirme.</p><p>Kod, sunucudaki SUPABASE_URL, SUPABASE_ANON_KEY ve SUPABASE_SERVICE_ROLE_KEY ortam değişkenlerini kullanır; gizli anahtarları GitHub dosyalarına yazma.</p></section>
+<section><h2>3. E-posta ve dönüş adresi</h2><p><b>Authentication → URL Configuration</b> bölümünde:</p><p>Site URL:</p><textarea id="site" readonly style="height:70px">https://trmn4235.github.io/colosseum-ludus-mvp/index.html</textarea><button onclick="copyCode('site',this)">Site URL kopyala</button><p>Redirect URLs listesine ekle:</p><textarea id="redirect" readonly style="height:70px">https://trmn4235.github.io/colosseum-ludus-mvp/**</textarea><button onclick="copyCode('redirect',this)">Dönüş adresini kopyala</button><p>Authentication ayarlarında <b>Email</b> sağlayıcısı, yeni kayıt ve <b>Confirm email</b> açık olsun. E-posta şablonlarında varsayılan ConfirmationURL bağlantısı korunabilir.</p><p><b>E-posta gönderimi:</b> Varsayılan Supabase servisi yalnızca proje ekibindeki e-posta adreslerine gönderir. Diğer oyuncuların doğrulama ve şifre yenileme e-postalarını alabilmesi için <b>Custom SMTP</b> kurulmalıdır. Henüz SMTP hesabın yoksa bu adımda birlikte ilerleyeceğiz.</p><a href="https://supabase.com/docs/guides/auth/auth-smtp" target="_blank" rel="noopener">Supabase'in e-posta açıklaması</a></section>
+<section><h2>4. GitHub dosyaları</h2><p>Yukarıdaki kurulum bittikten sonra verilen <b>index.html</b> ve <b>ludus.html</b> dosyalarını <b>colosseum-ludus-mvp</b> deposunun ana klasörüne, eski dosyaların üzerine yükle. index.html yeni giriş sayfasıdır. ludus.html artık giriş yapmış hesabın iki gladyatörünü yükler.</p><p>Mevcut gladiator-mobile.glb, roman_scutum_shield.glb, roman_shield.glb, roman_spatha.glb, roman_legionnaire_helmet.glb ve arena.html dosyaları aynı klasörde kalsın. R2'ye yeni dosya yüklemek gerekmiyor.</p><a class="action" href="https://trmn4235.github.io/colosseum-ludus-mvp/index.html?v=account-1">Kurulumdan sonra oyunu aç</a></section>
+<section><h2>Bir kez kontrol et</h2><ol><li>Ludus'unu Kur ile kullanıcı adı, Ludus adı, e-posta ve şifre gir.</li><li>E-posta bağlantısını aç; ardından kullanıcı adı ve şifreyle giriş yap.</li><li>Hesap ekranında iki farklı sınıf, 1.000 Altın, 3 Elmas ve 2 Safir görünmeli.</li><li>Ludus'a Gir: avluda hesaba ait iki gladyatör görünmeli.</li><li>Çıkıp tekrar girdiğinde aynı kadro kalmalı; başlangıç bakiyesi tekrar eklenmemeli.</li></ol><p>Yerel kontroller geçti: PostgreSQL sahiplik kuralları, atomik başlangıç kaydı, tekrar çalıştırma, giriş sınırlandırması, kayıt/giriş/şifre yenileme ekran akışı ve gerçek arena modelleriyle hesap kadrosu. Canlı SMTP, Supabase kurulumu ve iPhone görüntüsü henüz doğrulanmadı.</p></section>
+</main><script>async function copyCode(id,b){const t=document.getElementById(id);try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t.value);else{t.focus();t.select();t.setSelectionRange(0,t.value.length);if(!document.execCommand('copy'))throw Error();}b.textContent='Kopyalandı';}catch{t.focus();t.select();t.setSelectionRange(0,t.value.length);b.textContent='Kutudaki metni seçip kopyala';}}</script></html>
