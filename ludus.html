@@ -6,7 +6,30 @@ header,#hint,#look{display:none!important}#accountSummary{left:auto!important;ri
 #accountSummary{right:auto!important;left:max(12px,env(safe-area-inset-left))!important;top:10px!important;padding:7px 11px!important;font-size:12px!important;line-height:22px;max-width:55vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tools{top:10px!important;right:max(12px,env(safe-area-inset-right))!important;gap:5px!important}.tools button{height:37px!important;padding:6px 10px!important;font-size:12px!important;min-width:34px!important}.tools #accountLink{font-size:0!important;padding:6px 9px!important}.tools #accountLink:after{font-size:17px!important}@media(max-width:600px){#accountSummary{font-size:10px!important;padding:5px 7px!important;max-width:52vw}.tools{gap:3px!important}.tools button{font-size:10px!important;padding:4px 6px!important;height:33px!important}.tools #accountLink:after{font-size:14px!important}}
 
 #hint.restCountdown{display:block!important;background:#302b23cc;padding:8px;border-radius:4px}
-</style><style>#orders{padding:8px!important}#orders>div{max-height:100%!important;overflow:hidden!important}#orders h2{margin:4px 0;font-size:20px}#orders p{margin:6px 0;font-size:12px}#orderButtons{gap:4px;margin-bottom:6px}#notice{padding:10px!important}#notice div{max-height:100%;overflow:hidden}#roomUpgradePanel{top:auto!important;left:50%!important;bottom:max(12px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)}</style></head><body><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="tools"><button id="accountLink" hidden>Hesabım</button><button id="explore" disabled>Avluya gir</button><button id="full" aria-label="Tam ekran">⛶</button><button id="info" aria-label="Bilgi">ⓘ</button></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
+</style><script id="gameNavigation">// Tab-local return frames. State is restored only for its authenticated owner.
+var LudusNavigation=(function(){
+ const prefix='ludus-return-v12:',pages=new Set(['ludus.html','gelistirmeler.html','savas.html','pazar.html','arena.html']);
+ let owner=null,readState=()=>null;
+ const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
+ function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
+ function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','return12');url.searchParams.delete('restore');url.searchParams.delete('nav');
+  try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
+   sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
+   const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
+   saved.sort((a,b)=>b.created-a.created);for(const r of saved.slice(40))sessionStorage.removeItem(r.key);
+  }}catch{}
+  window.location.href=url.href;
+ }
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','return12');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
+ document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
+  if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
+  else if(url.pathname!==here().pathname){event.preventDefault();go(url.href);}
+ });
+ return {go,back,restore,setOwner:id=>{owner=typeof id==='string'?id:null;},register:fn=>{readState=fn;}};
+})();
+</script><style>#orders{padding:8px!important}#orders>div{max-height:100%!important;overflow:hidden!important}#orders h2{margin:4px 0;font-size:20px}#orders p{margin:6px 0;font-size:12px}#orderButtons{gap:4px;margin-bottom:6px}#notice{padding:10px!important}#notice div{max-height:100%;overflow:hidden}#roomUpgradePanel{top:auto!important;left:50%!important;bottom:max(12px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)}</style></head><body><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="tools"><button id="accountLink" hidden>Hesabım</button><button id="explore" disabled>Avluya gir</button><button id="full" aria-label="Tam ekran">⛶</button><button id="info" aria-label="Bilgi">ⓘ</button></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
 <div id="labels"></div><button id="interact" hidden></button><button id="roomExit" hidden>← Avluya dön</button><section id="orders" hidden><div><h2 id="ordersTitle"></h2><p id="ordersText"></p><div id="orderButtons"></div><button id="ordersClose">Kapat</button></div></section>
 <button id="residentStatus" style="position:absolute;left:50%;top:18px;transform:translateX(-50%);font:11px Arial;max-width:35%" disabled>Başlangıç gladyatörleri yükleniyor…</button>
 <script>/*The MIT License
@@ -6099,7 +6122,7 @@ var LudusResults=(function(){
  function acknowledge(r){memory.delete(key(r));try{localStorage.removeItem(key(r));const old=JSON.parse(localStorage.getItem(legacy));if(valid(old)&&old.owner===r.owner&&old.payload.p_battle===r.payload.p_battle)localStorage.removeItem(legacy);}catch{}}
  function send(client,r){const k=key(r);if(running.has(k))return running.get(k);
   let timer;const request=(async()=>{const auth=await client.auth.getUser();if(auth.error||auth.data.user?.id!==r.owner)throw Error('Sonuç için doğru hesaba giriş yapmalısın.');
-   const result=await client.rpc(r.rpc,r.payload);if(result.error)throw result.error;return result.data;
+   const result=await client.rpc(r.rpc,r.payload);if(result.error){if(result.error.code==='42P01'&&/ludus_battle_receipts/.test(result.error.message||'')){const error=Error('Savaş kayıt tablosu eksik. Supabase düzeltme kodunu çalıştırıp kaydı yeniden dene. Bekleyen sonuç korunuyor.');error.code=result.error.code;throw error;}throw result.error;}return result.data;
   })();
   const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Sunucu yanıtı gecikti; sonuç silinmedi.')),12000);});
   const task=Promise.race([request,timeout]).then(data=>{acknowledge(r);return data;}).finally(()=>{clearTimeout(timer);running.delete(k);});running.set(k,task);return task;
@@ -6107,6 +6130,7 @@ var LudusResults=(function(){
  async function flush(client,owner){let count=0;for(const r of read(owner)){await send(client,r);count++;}return count;}
  return {read,stage,send,flush};
 })();
+
 
 // Validated GLB cache shared by Ludus, preparation and arena. Version changes invalidate old assets.
 var ARENA_ASSET_BASE='https://pub-6910705f63a54355a6ec8cb2acbc2223.r2.dev/';
@@ -6516,8 +6540,9 @@ roomUpgradePanel.append(roomEnhanceButton,roomPouchButton);document.body.append(
 function openUpgrades(pouch=false){if(activeRoom?.kind!=='upgrades')return;
  const url=new URL('gelistirmeler.html',window.location.href);url.searchParams.set('v','items10room2');if(pouch)url.searchParams.set('pouch','1');
  try{sessionStorage.setItem('ludus-upgrade-return',JSON.stringify({owner:playerAccount?.user_id,room:activeRoom.kind,returnPose,player:{...player}}));}catch(e){}
- window.location.href=url.href;
+ openLudusPage(url.href);
 }
+function openLudusPage(url){if(globalThis.LudusNavigation){LudusNavigation.setOwner(playerAccount?.user_id);LudusNavigation.go(url);}else window.location.href=url;}
 roomEnhanceButton.onclick=()=>openUpgrades();roomPouchButton.onclick=()=>openUpgrades(true);
 [-8,0,8].forEach((x,i)=>rooms.push({x,z:11.1,y:3.47,name:['Ludus Yönetim Odası','Kayıt Odası','Dinlenme Odası'][i],kind:['office','records','rest'][i]}));
 [-9,-4.5,0,4.5,9].forEach((x,i)=>rooms.push({x,z:11.1,y:0,name:['Geliştirmeler','Silahlık','Revir','Yemekhane','Depo'][i],kind:['upgrades','armory','infirmary','dining','store'][i]}));
@@ -6556,7 +6581,7 @@ function showGladiator(g){clear();paused=true;$('orders').hidden=false;$('orders
 function closeOrders(){paused=false;$('orders').hidden=true;}
 $('ordersClose').onclick=closeOrders;
 for(const g of [])if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
-$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){window.location.href=new URL('savas.html?v=landscape11',window.location.href).href;}else if(nearest.kind==='market')window.location.href=new URL('pazar.html?v=landscape11',window.location.href).href;else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
+$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){openLudusPage(new URL('savas.html?v=return12',window.location.href).href);}else if(nearest.kind==='market')openLudusPage(new URL('pazar.html?v=return12',window.location.href).href);else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
  openUpgrades(nearest.kind==='stone-pouch');
  }else enterRoom(nearest);};
 function projectLabel(el,v,visible){const p=v.clone().project(camera);el.hidden=!visible||p.z<0||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;if(!el.hidden){el.style.left=((p.x+1)*50)+'%';el.style.top=((1-p.y)*50)+'%';}}
@@ -6569,14 +6594,21 @@ function updateActivities(dt){if(activeRoom)$('place').textContent=activeRoom.na
  $('interact').hidden=!nearest||activeRoom?.kind==='upgrades';if(nearest)$('interact').textContent=['arena','market','upgrade-table','stone-pouch'].includes(nearest.kind)?nearest.name:nearest.name+' · Gir';
 }
 
-function restoreUpgradeRoom(){
- if(new URL(window.location.href).searchParams.get('returnRoom')!=='upgrades')return;
- let saved;try{saved=JSON.parse(sessionStorage.getItem('ludus-upgrade-return')||'null');sessionStorage.removeItem('ludus-upgrade-return');}catch(e){return;}
+const ludusPose=p=>p&&Object.fromEntries(['x','z','y','yaw','pitch'].map(k=>[k,p[k]]));
+globalThis.LudusNavigation?.register(()=>({room:activeRoom?.kind||null,player:ludusPose(player),returnPose:activeRoom?ludusPose(returnPose):null,exploring}));
+function restoreLudusPlace(){
+ globalThis.LudusNavigation?.setOwner(playerAccount?.user_id);
+ let saved=globalThis.LudusNavigation?.restore();
+ if(!saved&&new URL(window.location.href).searchParams.get('returnRoom')==='upgrades'){
+  try{const old=JSON.parse(sessionStorage.getItem('ludus-upgrade-return')||'null');if(old?.owner===playerAccount?.user_id)saved={...old,exploring:true};}catch(e){}
+ }
  const pose=p=>p&&['x','z','y','yaw','pitch'].every(k=>Number.isFinite(p[k]))&&Math.abs(p.x)<14&&Math.abs(p.z)<12&&p.y>=0&&p.y<=3.5&&Math.abs(p.pitch)<=1.1;
- if(!playerAccount?.user_id||saved?.owner!==playerAccount.user_id||saved?.room!=='upgrades'||!pose(saved.player)||!pose(saved.returnPose)||Math.abs(saved.player.x)>=4.5||Math.abs(saved.player.z)>=4||saved.player.y!==0)return;
- const room=rooms.find(r=>r.kind==='upgrades');if(!exploring)toggleExplore();enterRoom(room);
- returnPose=Object.fromEntries(['x','z','y','yaw','pitch'].map(k=>[k,saved.returnPose[k]]));
- Object.assign(player,Object.fromEntries(['x','z','y','yaw','pitch'].map(k=>[k,saved.player[k]])));
+ if(!playerAccount?.user_id||!saved||!pose(saved.player))return;
+ if(saved.room){
+  const room=rooms.find(r=>r.kind===saved.room);if(!room||!pose(saved.returnPose)||Math.abs(saved.player.x)>=4.5||Math.abs(saved.player.z)>=4||saved.player.y!==0)return;
+  if(!exploring)toggleExplore();enterRoom(room);returnPose=ludusPose(saved.returnPose);
+ }else if(saved.exploring&&!exploring)toggleExplore();
+ Object.assign(player,ludusPose(saved.player));
 }
 
 // Private roster is read from Supabase under the signed-in user's RLS policies.
@@ -6586,7 +6618,7 @@ const accountReady=(async()=>{
  const {data,error}=await accountClient.auth.getUser();
  if(error||!data.user||data.user.is_anonymous){location.replace(new URL('index.html',location.href).href);throw Error('Giriş gerekiyor.');}
  const owner=data.user.id;
- try{await LudusResults.flush(accountClient,owner);}catch(e){throw Error('Önceki savaş sonucu henüz kaydedilemedi. Bağlantını kontrol edip yenile: '+e.message);}
+ try{await LudusResults.flush(accountClient,owner);}catch(e){throw Error(e.code==='42P01'?e.message:'Önceki savaş sonucu henüz kaydedilemedi. Bağlantını kontrol edip yenile: '+e.message);}
 
  const [a,g,items]=await Promise.all([
   accountClient.from('ludus_accounts').select('*').eq('user_id',owner).single(),
@@ -6652,7 +6684,7 @@ enterRoom=function(r){originalEnter(r);if(r.kind==='rest')renderResters();};
 leaveRoom=function(){for(const g of roster)if(trainingPhase(g)==='resting'){scene.add(g.body);g.body.visible=false;}originalLeave();};
 accountReady.then(()=>refreshTraining());
 
-Promise.all([...ready,accountReady]).then(()=>{$('loading').hidden=true;$('explore').disabled=false;restoreUpgradeRoom();}).catch(()=>{});
+Promise.all([...ready,accountReady]).then(()=>{$('loading').hidden=true;$('explore').disabled=false;restoreLudusPlace();}).catch(()=>{});
 requestAnimationFrame(frame);
 // Read-only diagnostics for local verification, no backend or game-state changes.
 window.LudusPreview={accountReady,residentsReady,gateAction,market,cart,scene,camera,player,move,floorAt,renderer,rooms,roster,stations,assign,enterRoom,leaveRoom,updateActivities};
