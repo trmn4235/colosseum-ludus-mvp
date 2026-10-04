@@ -6,7 +6,7 @@ header,#hint,#look{display:none!important}#accountSummary{left:auto!important;ri
 #accountSummary{right:auto!important;left:max(12px,env(safe-area-inset-left))!important;top:10px!important;padding:7px 11px!important;font-size:12px!important;line-height:22px;max-width:55vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tools{top:10px!important;right:max(12px,env(safe-area-inset-right))!important;gap:5px!important}.tools button{height:37px!important;padding:6px 10px!important;font-size:12px!important;min-width:34px!important}.tools #accountLink{font-size:0!important;padding:6px 9px!important}.tools #accountLink:after{font-size:17px!important}@media(max-width:600px){#accountSummary{font-size:10px!important;padding:5px 7px!important;max-width:52vw}.tools{gap:3px!important}.tools button{font-size:10px!important;padding:4px 6px!important;height:33px!important}.tools #accountLink:after{font-size:14px!important}}
 
 #hint.restCountdown{display:block!important;background:#302b23cc;padding:8px;border-radius:4px}
-</style></head><body><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="tools"><button id="accountLink" hidden>Hesabım</button><button id="explore" disabled>Avluya gir</button><button id="full" aria-label="Tam ekran">⛶</button><button id="info" aria-label="Bilgi">ⓘ</button></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
+</style><style>#orders{padding:8px!important}#orders>div{max-height:100%!important;overflow:hidden!important}#orders h2{margin:4px 0;font-size:20px}#orders p{margin:6px 0;font-size:12px}#orderButtons{gap:4px;margin-bottom:6px}#notice{padding:10px!important}#notice div{max-height:100%;overflow:hidden}#roomUpgradePanel{top:auto!important;left:50%!important;bottom:max(12px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)}</style></head><body><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="tools"><button id="accountLink" hidden>Hesabım</button><button id="explore" disabled>Avluya gir</button><button id="full" aria-label="Tam ekran">⛶</button><button id="info" aria-label="Bilgi">ⓘ</button></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
 <div id="labels"></div><button id="interact" hidden></button><button id="roomExit" hidden>← Avluya dön</button><section id="orders" hidden><div><h2 id="ordersTitle"></h2><p id="ordersText"></p><div id="orderButtons"></div><button id="ordersClose">Kapat</button></div></section>
 <button id="residentStatus" style="position:absolute;left:50%;top:18px;transform:translateX(-50%);font:11px Arial;max-width:35%" disabled>Başlangıç gladyatörleri yükleniyor…</button>
 <script>/*The MIT License
@@ -6556,7 +6556,7 @@ function showGladiator(g){clear();paused=true;$('orders').hidden=false;$('orders
 function closeOrders(){paused=false;$('orders').hidden=true;}
 $('ordersClose').onclick=closeOrders;
 for(const g of [])if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
-$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){window.location.href=new URL('savas.html?v=items10',window.location.href).href;}else if(nearest.kind==='market')window.location.href=new URL('pazar.html?v=items10',window.location.href).href;else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
+$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){window.location.href=new URL('savas.html?v=landscape11',window.location.href).href;}else if(nearest.kind==='market')window.location.href=new URL('pazar.html?v=landscape11',window.location.href).href;else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
  openUpgrades(nearest.kind==='stone-pouch');
  }else enterRoom(nearest);};
 function projectLabel(el,v,visible){const p=v.clone().project(camera);el.hidden=!visible||p.z<0||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;if(!el.hidden){el.style.left=((p.x+1)*50)+'%';el.style.top=((1-p.y)*50)+'%';}}
@@ -6656,6 +6656,28 @@ Promise.all([...ready,accountReady]).then(()=>{$('loading').hidden=true;$('explo
 requestAnimationFrame(frame);
 // Read-only diagnostics for local verification, no backend or game-state changes.
 window.LudusPreview={accountReady,residentsReady,gateAction,market,cart,scene,camera,player,move,floorAt,renderer,rooms,roster,stations,assign,enterRoom,leaveRoom,updateActivities};
+})();
+</script>
+<style id="gameViewportStyle">
+html,body{width:100%!important;height:var(--game-height,100dvh)!important;min-height:0!important;margin:0!important;overflow:hidden!important;overscroll-behavior:none!important}
+body{position:fixed!important;inset:0!important}
+#landscapeGate{position:fixed;inset:0;z-index:2147483646;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:30px;background:radial-gradient(ellipse at 50% 35%,#722c24,#1d100e 80%);color:#f7e4b6;text-align:center;font:17px/1.4 Georgia,serif}
+#landscapeGate[hidden]{display:none!important}#landscapeGate svg{width:104px;height:104px;color:#d5b575}#landscapeGate strong{font-size:22px;font-weight:normal}#landscapeGate p{margin:0;font:14px/1.5 Arial,sans-serif;max-width:280px}
+@media(orientation:portrait){body>:not(#landscapeGate):not(script):not(style){visibility:hidden!important}#landscapeGate{display:flex!important}}
+</style>
+<script id="gameViewport">
+(()=>{
+ 'use strict';
+ const gate=document.createElement('section');gate.id='landscapeGate';gate.hidden=true;gate.setAttribute('role','status');gate.setAttribute('aria-live','polite');
+ gate.innerHTML='<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><rect x="30" y="18" width="40" height="64" rx="6" stroke="currentColor" stroke-width="3" transform="rotate(35 50 50)"/><path d="M13 48a38 38 0 0 1 54-32M67 16l-13-1M67 16l-5 12M87 52a38 38 0 0 1-54 32M33 84l13 1M33 84l5-12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="38" cy="68" r="2" fill="currentColor"/></svg><strong>COLOSSEUM &amp; LUDUS</strong><p>Oynamak için telefonunu yatay çevir.</p>';
+ document.body.append(gate);
+ const portrait=matchMedia('(orientation: portrait)'),inertBefore=new Map();
+ function fit(){
+  const viewport=window.visualViewport;document.documentElement.style.setProperty('--game-height',(viewport?.height||window.innerHeight)+'px');document.body.dataset.compactKeyboard=String(!!viewport&&viewport.height<window.innerHeight*.75);
+  gate.hidden=!portrait.matches;
+  for(const node of document.body.children){if(node===gate||['SCRIPT','STYLE'].includes(node.tagName))continue;if(portrait.matches){if(!inertBefore.has(node))inertBefore.set(node,node.inert);node.inert=true;}else if(inertBefore.has(node)){node.inert=inertBefore.get(node);inertBefore.delete(node);}}
+ }
+ window.addEventListener('resize',fit);window.visualViewport?.addEventListener('resize',fit);portrait.addEventListener?.('change',fit);window.addEventListener('pageshow',fit);new MutationObserver(fit).observe(document.body,{childList:true});fit();
 })();
 </script>
 </body></html>
