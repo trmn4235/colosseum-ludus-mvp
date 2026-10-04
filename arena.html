@@ -6351,7 +6351,7 @@ class ArenaCombat {
    if(!n.launched){if(owner.action!=='spearcast'||owner.hp<=0){this.landProjectile(n);this.projectiles.splice(i,1);continue;}if(n.age<.27){n.x=owner.x;n.z=owner.z;continue;}n.launched=true;}
    const px=n.x,pz=n.z;n.x+=n.dx*12*dt;n.z+=n.dz*12*dt;let done=n.age>=(n.maxAge||1.02)||Math.hypot(n.x,n.z)>17;
    for(const v of this.fighters){if(!this.enemy(owner,v)||v.action==='dodge')continue;if(Motion.segmentDistance({x:px,y:1.38,z:pz},{x:n.x,y:1.38,z:n.z},Motion.target(v,'chest'))>.42)continue;
-    if(!this.guard(owner,v,false,Motion.target(v,'chest'))){const bonus=owner.attackBonus;owner.attackBonus=n.attackBonus??bonus;this.damage(owner,v,n.baseDamage??(owner.id===0?30:20),'chest',false);owner.attackBonus=bonus;}done=true;break;}
+    if(!this.guard(owner,v,false,Motion.target(v,'chest'))){const bonus=owner.attackBonus;owner.attackBonus=n.attackBonus??bonus;this.damageProjectileV10(owner,v,n,n.baseDamage??(owner.id===0?30:20),'chest',false);owner.attackBonus=bonus;}done=true;break;}
    if(done){this.landProjectile(n);this.projectiles.splice(i,1);}
   }
  }
@@ -6961,13 +6961,205 @@ LudusLoadout.initialize=function(combat,ticket){if(ticket.rule_version!==2){comb
 LudusLoadout.refresh=function(f,initial=false){if(!f.equipment||!f.gearBase)return;const damage=f.maxHp-f.hp,hp=f.hp,stamina=f.stamina,hand=f.pickupHand;const items=Object.entries(f.equipment).map(([slot,entry])=>({...entry.item,equipped_slot:this.inventorySlot(slot)}));this.apply(f,f.gearBase,items);if(!initial){f.hp=hp<=0?0:Math.max(1,f.maxHp-damage);f.stamina=Math.min(stamina,f.maxStamina);f.pickupHand=hand;}const h=items.find(i=>i.equipped_slot==='helmet');f.helmetColor=['gold','silver'].includes(h?.model)?h.model:null;};
 LudusLoadout.exitSlots=function(f){if(f.hp<=0)return {};return Object.fromEntries(Object.entries(f.equipment||{}).filter(([slot])=>f[slot]).map(([slot,entry])=>[this.inventorySlot(slot),entry.token]));};
 
+// C.docx master v1.0. Deterministic rules only: no client-side rolls or currency writes.
+var LudusItemSystem = (() => {
+ 'use strict';
+ const roman=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX'];
+ const groups={offense:['weapon','shield'],defense:['helmet','chest'],mobility:['gloves','legs']};
+ const naturalRows=[
+  ['physical_power','Physical Power','Fiziksel Güç'],
+  ['critical_rate','Critical Rate','Kritik Oranı'],
+  ['critical_damage','Critical Damage','Kritik Hasarı'],
+  ['block_rate','Block Rate','Blok Oranı'],
+  ['block_power','Block Power','Blok Gücü'],
+  ['armor_penetration','Armor Penetration','Zırh Delme'],
+  ['physical_defense','Physical Defense','Fiziksel Savunma'],
+  ['damage_reduction','Damage Reduction','Hasar Azaltma'],
+  ['critical_resistance','Critical Resistance','Kritik Direnci'],
+  ['pierce_resistance','Pierce Resistance','Delici Hasar Direnci'],
+  ['slash_resistance','Slash Resistance','Kesici Hasar Direnci'],
+  ['projectile_resistance','Projectile Resistance','Fırlatılan Silah Direnci'],
+  ['acceleration','Acceleration','Hızlanma'],
+  ['movement_speed','Movement Speed','Hareket Hızı'],
+  ['dodge_rate','Dodge Rate','Kaçınma Oranı'],
+  ['recovery_speed','Recovery Speed','Toparlanma Hızı'],
+  ['turn_speed','Turn Speed','Dönüş Hızı'],
+  ['dodge_distance','Dodge Distance','Kaçınma Mesafesi']
+ ];
+ const natural=naturalRows.map(([key,en,label],i)=>({id:i+1,key,en,label,group:['offense','defense','mobility'][Math.floor(i/6)]}));
+ const sapphires=natural.map(s=>({id:s.id,family:'sapphire',roman:roman[s.id-1],name:'Safir '+roman[s.id-1],stat:s.key,label:s.label,description:s.label+' için itemde yazılı değerin kullanılan yüzdesini belirler.',asset:'sapphire-'+s.id+'.webp'}));
+ const emeraldRows=[
+  ['max_hp','Vita','Maksimum HP'],['hp_regeneration','Sanatio','HP Yenilenmesi'],
+  ['max_stamina','Stamina','Maksimum Kondisyon'],['stamina_regeneration','Recuperatio','Kondisyon Yenilenmesi'],
+  ['physical_power','Fortitudo','Fiziksel Saldırı Gücü'],['critical_rate','Critical','Kritik Vuruş Şansı'],
+  ['critical_damage','Ferocia','Kritik Vuruş Hasarı'],['armor_penetration','Penetratio','Zırh Delme'],
+  ['minimum_damage','Strike','Minimum Hasarı Maksimuma Yaklaştırma'],['physical_defense','Defensio','Fiziksel Savunma'],
+  ['parry_rate','Parry','Silahla Savuşturma Şansı'],['block_rate','Block','Kalkanla Blok Oranı'],
+  ['critical_damage_reduction','Aegis','Alınan Kritik Hasarı Azaltma'],['movement_speed','Agilitas','Hareket Hızı'],
+  ['attack_speed','Celeritas','Saldırı Hızı']
+ ];
+ const emeralds=emeraldRows.map(([stat,title,label],i)=>({id:i+1,family:'emerald',roman:roman[i],name:'Zümrüt '+roman[i]+' · '+title,title,stat,label,description:label+' sağlar. Ekipman türü kısıtlaması yoktur; bir itemde en fazla dört farklı Zümrüt bulunur.',asset:'emerald-'+(i+1)+'.webp'}));
+ const rubies=[
+  {id:1,title:'FELIX',label:'Talih',description:'Elmasla + basarken başarı şansına +2 yüzde puan. Aynı denemede yalnızca bir tane; sonuç ne olursa olsun tüketilir.'},
+  {id:2,title:'TENAX',label:'Direnç',description:'+6 ve üzerindeki itemi patladığında yok olmaktan korur. Yalnızca patlama gerçekleştiğinde tüketilir.'},
+  {id:3,title:'VESPER',label:'Dönüş',description:'+6 ve üzerindeki item patladığında yok olmak yerine +4 seviyesine döner. Yalnızca patlama gerçekleştiğinde tüketilir.'},
+  {id:4,title:'CERTUS',label:'Kesinlik',description:'+10–+15 geliştirme bandındaki tek bir + denemesini %100 başarılı yapar. Aynı itemde yalnızca bir kez kullanılabilir.'}
+ ].map(s=>({...s,family:'ruby',roman:roman[s.id-1],name:'Yakut '+roman[s.id-1]+' · '+s.title,asset:'ruby-'+s.id+'.webp'}));
+ const diamond={id:1,family:'diamond',name:'Elmas',label:'+ Geliştirme',description:'Itemin + seviyesini artırmak için kullanılır.',asset:null};
+ const percentageChances=[[100,.1],[95,.5],[90,1],[85,3],[80,5],[75,8],[70,12],[65,16],[60,20],[50,30],[40,45],[30,60],[20,75],[10,90]].map(([value,weight])=>({value,weight,chance:weight/365.6*100}));
+ const baseProfiles={weapon:[7,3,5,3,5,3],shield:[2,1,2,8,12,1],helmet:[4,2,3,4,4,4],chest:[8,4,4,6,6,6],gloves:[4,2,2,4,5,2],legs:[6,4,3,3,3,5]};
+ const emeraldPower=[20,.5,20,3,7,3,8,5,10,5,4,4,8,4,4];
+ function enhancementScale(level){return 1+.1*Math.max(0,Number(level)||0);}
+ function baseStats(kind){return Object.fromEntries(statsFor(kind).map((s,i)=>[s.key,baseProfiles[kind][i]]));}
+ function effectiveStats(item){const result={};if(item.stat_version!==10)return result;for(const [key,v] of Object.entries(naturalValues(item)))result[key]=v.effective||0;for(const socket of item.emeralds||[]){const s=stone('emerald',socket.id);if(s)result[s.stat]=(result[s.stat]||0)+emeraldPower[s.id-1]*socket.value/100;}return result;}
+ const kinds=Object.values(groups).flat();
+ function groupFor(kind){return Object.keys(groups).find(g=>groups[g].includes(kind))||null;}
+ function statsFor(kind){const group=groupFor(kind);return natural.filter(s=>s.group===group);}
+ function stone(family,id){const rows=({sapphire:sapphires,emerald:emeralds,ruby:rubies,diamond:[diamond]})[family];return rows?.find(s=>s.id===Number(id))||null;}
+ function baseChance(level){if(!Number.isInteger(level)||level<0)throw Error('Geçersiz + seviyesi');return level<4?.70:level<6?.60:level<8?.50:level<10?.40:.30;}
+ function enhancementChance(item,rubyId=null){
+  const level=item.enhancement??0;const base=baseChance(level);
+  if(rubyId!==null&&!stone('ruby',rubyId))throw Error('Yakut tanımlı değil');
+  if(Number(rubyId)===4){if(level<10||level>=15||item.certus_used)throw Error('CERTUS bu itemde kullanılamaz');return 1;}
+  if([2,3].includes(Number(rubyId))&&level<6)throw Error('Koruma Yakutu +6 ve üzerinde kullanılır');
+  return Math.min(1,base+(Number(rubyId)===1?.02:0));
+ }
+ function validPercentage(value){return typeof value==='number'&&percentageChances.some(p=>p.value===value);}
+ function validateItem(item){
+  if(!kinds.includes(item.kind))throw Error('Geçersiz ekipman türü');
+  if(item.stat_version!==10)throw Error('Item yeni stat sistemine henüz geçirilmedi');
+  if(!Number.isInteger(item.enhancement)||item.enhancement<0)throw Error('Geçersiz + seviyesi');
+  const allowed=statsFor(item.kind).map(s=>s.key);
+  for(const [key,value] of Object.entries(item.natural_stats||{}))if(!allowed.includes(key)||typeof value!=='number'||!Number.isFinite(value)||value<0)throw Error('Doğal stat bu item grubuna uygun değil');
+  for(const [key,value] of Object.entries(item.natural_percentages||{}))if(!allowed.includes(key)||!validPercentage(value))throw Error('Safir yüzdesi geçersiz');
+  const sockets=item.emeralds||[];
+  if(!Array.isArray(sockets)||sockets.length>4)throw Error('En fazla dört Zümrüt basılabilir');
+  const ids=new Set();for(const socket of sockets){if(!stone('emerald',socket.id)||ids.has(Number(socket.id))||!validPercentage(socket.value))throw Error('Zümrütler farklı ve geçerli olmalı');ids.add(Number(socket.id));}
+  return true;
+ }
+ function canSocket(item,id){return kinds.includes(item.kind)&&!!stone('emerald',id)&&Array.isArray(item.emeralds||[])&&(item.emeralds||[]).length<4&&!(item.emeralds||[]).some(s=>Number(s.id)===Number(id));}
+ function naturalValues(item){
+  validateItem(item);
+  return Object.fromEntries(statsFor(item.kind).map(s=>{
+   const written=item.natural_stats?.[s.key],percent=item.natural_percentages?.[s.key];
+   return [s.key,{written:written!==undefined?written*enhancementScale(item.enhancement):null,percent:percent??null,effective:written!==undefined&&percent!==undefined?written*enhancementScale(item.enhancement)*percent/100:null}];
+  }));
+ }
+ function pouchSlots(family,counts={}){
+  const catalog=({diamond:[diamond],sapphire:sapphires,emerald:emeralds,ruby:rubies})[family];
+  if(!catalog)throw Error('Taş kategorisi bulunamadı');
+  return Array.from({length:20},(_,i)=>catalog[i]?{stone:catalog[i],count:Math.max(0,Number.isSafeInteger(counts[catalog[i].id])?counts[catalog[i].id]:0)}:null);
+ }
+ function freeze(value){if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
+ return freeze({version:10,source:'C.docx master v1.0',groups,natural,sapphires,emeralds,rubies,diamond,percentageChances,baseProfiles,emeraldPower,enhancementScale,baseStats,effectiveStats,groupFor,statsFor,stone,baseChance,enhancementChance,validateItem,canSocket,naturalValues,pouchSlots,
+  unresolved:['failure_and_destruction'],transactionsEnabled:true});
+})();
+if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
+
+// Item-only effects, installed after the combat and loadout modules.
+(()=>{
+ const P=ArenaCombat.prototype,clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+ const oldApply=LudusLoadout.apply;
+ LudusLoadout.apply=function(f,g,items){
+  oldApply.call(this,f,g,items.filter(i=>i.stat_version!==10));
+  // Keep the visual equipment slots from all items; exclude new items from old stat math.
+  const hp=f.hp,stamina=f.stamina,base={attack:f.attackBonus,defense:f.defenseBonus,speed:f.speedBonus,maxHp:f.maxHp,maxStamina:f.maxStamina,agility:f.agility};
+  oldApply.call(this,f,g,items.map(i=>i.stat_version===10?{...i,base_stats:{},sapphires:[],rubies:[]}:i));
+  Object.assign(f,{attackBonus:base.attack,defenseBonus:base.defense,speedBonus:base.speed,agility:base.agility});
+  const s={};for(const i of items)for(const [key,v] of Object.entries(LudusItemSystem.effectiveStats(i)))s[key]=(s[key]||0)+v;
+  f.itemStats=s;f.nativeAttackBonus=base.attack;f.itemPowerSlots=Object.fromEntries(items.filter(i=>i.stat_version===10).map(i=>[i.equipped_slot,i]));f.attackBonus+=Math.min(50,s.physical_power||0)/50;f.defenseBonus+=Math.min(50,s.physical_defense||0)/50;
+  f.speedBonus*=1+clamp((s.movement_speed||0)/100,0,.3);
+  f.maxHp=Math.round(base.maxHp+clamp(s.max_hp||0,0,120));f.hp=f.maxHp;
+  f.maxStamina=Math.round(base.maxStamina+clamp(s.max_stamina||0,0,100));f.stamina=f.maxStamina;return f;
+ };
+ const damage=P.damage;
+ P.damage=function(a,v,base,region,heavy,point){
+  if(!this.enemy(a,v))return false;const s=a.itemStats||{},t=v.itemStats||{};
+  const held=a.itemProjectile?a.projectileItemV10:a.itemPowerSlots?.[a.action==='bash'?'off_hand':a.attackLeft?'off_hand':'main_hand'];
+  if(held?.stat_version===10){const power=LudusItemSystem.effectiveStats(held).physical_power||0,reference=LudusItemSystem.baseStats(held.kind).physical_power||7;
+   // The striking item's power is multiplicative: 7 -> 14 really doubles its hit
+   // against the same defender. Other equipped power stays an additive bonus.
+   const otherPower=clamp((s.physical_power||0)-power,0,50),attack=(a.nativeAttackBonus||1)+otherPower/50;
+   base*=attack/(a.attackBonus||1)*Math.max(.01,power/reference);
+  }
+  if(v.action==='idle'&&this.random()<clamp((t.dodge_rate||0)/100,0,.2)){this.emit('evade',{id:v.id});if(v.id===0)this.stats.dodges++;return true;}
+  const critical=this.random()<clamp(((s.critical_rate||0)-(t.critical_resistance||0))/100,0,.35);
+  const piercing=['spear','trident','scissor'].includes(a.attackWeapon||a.weapon),projectile=['spearcast','swordcast','throw'].includes(a.action)||a.itemProjectile;
+  let resistance=(t.damage_reduction||0)+(projectile?t.projectile_resistance||0:piercing?t.pierce_resistance||0:t.slash_resistance||0);
+  base*=1-clamp(resistance/100,0,.55);
+  // Penetration removes item defense, never the gladiator's class defense.
+  const defense=v.defenseBonus||1,itemDefense=clamp(t.physical_defense||0,0,50)/50;
+  base*=defense/Math.max(.1,defense-itemDefense*clamp((s.armor_penetration||0)/100,0,.6));
+  base*=clamp(.8+this.random()*.2+(s.minimum_damage||0)/100,.8,1);
+  if(critical){base*=1+clamp(.5+((s.critical_damage||0)-(t.critical_damage_reduction||0))/100,.1,1.2);this.emit('critical',{id:v.id,source:a.id});}
+  return damage.call(this,a,v,base,region,heavy,point);
+ };
+ const guard=P.guard;
+ P.guard=function(a,v,heavy){
+  const s=v.itemStats||{};const facing=Math.abs(Math.atan2(Math.sin(Math.atan2(a.x-v.x,a.z-v.z)-v.angle),Math.cos(Math.atan2(a.x-v.x,a.z-v.z)-v.angle)))<1.1;
+  if(!v.blocking&&v.action==='idle'&&facing){
+   if(v.weapon&&this.random()<clamp((s.parry_rate||0)/100,0,.2)){this.emit('parry',{id:v.id,source:a.id});v.stamina=Math.max(0,v.stamina-6);return true;}
+   if(v.shield&&this.random()<clamp((s.block_rate||0)/100,0,.3)){v.blocking=true;try{return guard.call(this,a,v,heavy);}finally{v.blocking=false;}}
+  }
+  const before=v.stamina,blocked=guard.call(this,a,v,heavy);if(blocked&&v.shield){const spent=Math.max(0,before-v.stamina);v.stamina=Math.min(v.maxStamina||100,v.stamina+spent*clamp((s.block_power||0)/100,0,.4));}return blocked;
+ };
+ const attack=P.attack;
+ P.attack=function(id,...args){const ok=attack.call(this,id,...args),f=this.fighters[id];if(ok){const k=1+clamp((f.itemStats?.attack_speed||0)/100,0,.25);f.duration/=k;if(f.attackProfile){f.attackProfile={...f.attackProfile};for(const key of ['duration','wind','active','recover'])if(Number.isFinite(f.attackProfile[key]))f.attackProfile[key]/=k;}if(Number.isFinite(f.hitTime))f.hitTime/=k;}return ok;};
+ const tick=P.tick;
+ P.tick=function(dt,input){
+  const before=this.fighters.map(f=>({x:f.x,z:f.z,angle:f.angle,action:f.action,delay:f.regenDelay}));tick.call(this,dt,input);
+  if(this.finished)return;
+  for(const f of this.fighters){if(f.hp<=0)continue;const s=f.itemStats||{},b=before[f.id];
+   if(f.action==='idle'&&f.regenDelay===0){f.hp=Math.min(f.maxHp,f.hp+dt*clamp(s.hp_regeneration||0,0,2));f.stamina=Math.min(f.maxStamina||100,f.stamina+dt*clamp(s.stamina_regeneration||0,0,8));}
+   if(b.action==='dodge'&&f.action==='dodge'){const k=clamp((s.dodge_distance||0)/100,0,.25);f.x+=(f.x-b.x)*k;f.z+=(f.z-b.z)*k;}
+   if(f.action==='idle'&&b.action==='idle'){const moving=Math.hypot(f.x-b.x,f.z-b.z)>.001;f.itemAcceleration=moving?Math.min(1,(f.itemAcceleration||0)+dt*(3+clamp(s.acceleration||0,0,30)/5)):0;
+    if(moving){const k=.85+.15*f.itemAcceleration;f.x=b.x+(f.x-b.x)*k;f.z=b.z+(f.z-b.z)*k;}
+    const turn=Math.atan2(Math.sin(f.angle-b.angle),Math.cos(f.angle-b.angle));f.angle=b.angle+turn*(1+clamp((s.turn_speed||0)/100,0,.3));
+   }
+   if(['hurt','recover','stagger'].includes(f.action))f.timer+=dt*clamp((s.recovery_speed||0)/100,0,.3);
+   this.bound(f);
+  }
+ };
+ P.damageProjectileV10=function(a,v,projectile,...args){const s=a.itemStats,weapon=a.attackWeapon;try{a.itemProjectile=true;a.projectileItemV10=projectile.itemEntry?.item;a.itemStats=a.projectileItemV10?LudusItemSystem.effectiveStats(a.projectileItemV10):s;a.attackWeapon=projectile.kind;return this.damage(a,v,...args);}finally{a.itemProjectile=false;a.projectileItemV10=null;a.itemStats=s;a.attackWeapon=weapon;}};
+})();
+
+// Per-owner, per-battle outbox. Never remove a result before a server acknowledgement.
+var LudusResults=(function(){
+ const prefix='ludus-result-v9:',legacy='ludus-pending-result',memory=new Map(),running=new Map();
+ const valid=r=>r&&typeof r.owner==='string'&&r.payload&&typeof r.payload.p_battle==='string'&&['ludus_finish_battle','ludus_finish_battle_v2'].includes(r.rpc);
+ const key=r=>prefix+r.owner+':'+r.payload.p_battle;
+ function read(owner){const records=new Map();
+  try{const old=JSON.parse(localStorage.getItem(legacy));if(valid(old)&&old.owner===owner)records.set(key(old),old);
+   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k?.startsWith(prefix+owner+':'))continue;try{const r=JSON.parse(localStorage.getItem(k));if(valid(r)&&r.owner===owner&&key(r)===k)records.set(k,r);}catch{}}
+  }catch{}
+  for(const [k,r] of memory)if(r.owner===owner)records.set(k,r);
+  return [...records.values()];
+ }
+ function stage(owner,battle,won,stats,rpc){const existing=read(owner).find(r=>r.payload.p_battle===battle);if(existing)return existing;
+  const r=JSON.parse(JSON.stringify({owner,payload:{p_battle:battle,p_won:!!won,p_stats:stats},rpc}));if(!valid(r))throw Error('Sonuç kaydı geçersiz');memory.set(key(r),r);
+  try{localStorage.setItem(key(r),JSON.stringify(r));r.durable=true;}catch{r.durable=false;}return r;
+ }
+ function acknowledge(r){memory.delete(key(r));try{localStorage.removeItem(key(r));const old=JSON.parse(localStorage.getItem(legacy));if(valid(old)&&old.owner===r.owner&&old.payload.p_battle===r.payload.p_battle)localStorage.removeItem(legacy);}catch{}}
+ function send(client,r){const k=key(r);if(running.has(k))return running.get(k);
+  let timer;const request=(async()=>{const auth=await client.auth.getUser();if(auth.error||auth.data.user?.id!==r.owner)throw Error('Sonuç için doğru hesaba giriş yapmalısın.');
+   const result=await client.rpc(r.rpc,r.payload);if(result.error)throw result.error;return result.data;
+  })();
+  const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Sunucu yanıtı gecikti; sonuç silinmedi.')),12000);});
+  const task=Promise.race([request,timeout]).then(data=>{acknowledge(r);return data;}).finally(()=>{clearTimeout(timer);running.delete(k);});running.set(k,task);return task;
+ }
+ async function flush(client,owner){let count=0;for(const r of read(owner)){await send(client,r);count++;}return count;}
+ return {read,stage,send,flush};
+})();
+
 // Authenticated battle ticket and idempotent reward delivery. Combat is still a client-simulated MVP.
 var LudusBattle=(function(){
  const client=supabase.createClient(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey);let ticket=null,inflight=null;
- const pendingKey='ludus-pending-result';
- async function load(){const id=new URL(location.href).searchParams.get('battle');if(!/^[a-f0-9-]{36}$/i.test(id||'')){location.replace('savas.html?v=equipment8');throw Error('Savaş hazırlığından gladyatörünü seç.');}const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');throw Error('Giriş gerekli.');}const r=await client.from('ludus_battles').select('*').eq('id',id).eq('owner_id',u.data.user.id).single();if(r.error)throw Error('Savaş kaydı okunamadı: '+r.error.message);ticket=r.data;if(ticket.finished_at){location.replace('savas.html?v=equipment8');throw Error('Bu savaş tamamlandı. Yeni savaş seç.');}return ticket;}
- function finish(won,stats){if(inflight)return inflight;const payload={p_battle:ticket.id,p_won:won,p_stats:stats},rpc=ticket.rule_version===2?'ludus_finish_battle_v2':'ludus_finish_battle';try{localStorage.setItem(pendingKey,JSON.stringify({owner:ticket.owner_id,payload,rpc}));}catch{}inflight=client.rpc(rpc,payload).then(r=>{if(r.error)throw r.error;try{localStorage.removeItem(pendingKey);}catch{}return r.data;}).finally(()=>inflight=null);return inflight;}
- return {load,finish,get ticket(){return ticket;}};
+ async function load(){const id=new URL(location.href).searchParams.get('battle');if(!/^[a-f0-9-]{36}$/i.test(id||'')){location.replace('savas.html?v=items10');throw Error('Savaş hazırlığından gladyatörünü seç.');}const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');throw Error('Giriş gerekli.');}
+  const pending=LudusResults.read(u.data.user.id);if(pending.length){await LudusResults.flush(client,u.data.user.id);if(pending.some(r=>r.payload.p_battle===id)){location.replace('savas.html?recovered=1');throw Error('Bekleyen savaş sonucu kaydedildi.');}}
+  const r=await client.from('ludus_battles').select('*').eq('id',id).eq('owner_id',u.data.user.id).single();if(r.error)throw Error('Savaş kaydı okunamadı: '+r.error.message);ticket=r.data;if(ticket.finished_at){location.replace('savas.html?v=items10');throw Error('Bu savaş tamamlandı. Yeni savaş seç.');}return ticket;}
+ function stage(won,stats){if(!ticket)throw Error('Savaş kaydı hazır değil');return LudusResults.stage(ticket.owner_id,ticket.id,won,stats,ticket.rule_version===2?'ludus_finish_battle_v2':'ludus_finish_battle');}
+ function finish(won,stats){if(inflight)return inflight;const record=stage(won,stats);inflight=LudusResults.send(client,record).finally(()=>inflight=null);return inflight;}
+ return {load,stage,finish,get ticket(){return ticket;}};
 })();
 
 /* Poly Haven CC0: large_sandstone_blocks_01 and sandy_gravel_02. Original files embedded without modification. */
@@ -7106,9 +7298,9 @@ function changeHand(draw=false){if(active())combat.switchHand(0,draw);}
 function escape(){if(!active())return;const v=worldInput();if(!combat.dodge(0,v.x,v.z)&&combat.fighters[0].stamina<25)toast('Kaçış için 25 kondisyon gerekiyor.');}
 function faceTarget(){if(combat.lockedTarget!==null){combat.lockedTarget=null;$('target').classList.remove('pressed');toast('Hedef kilidi kapalı.');return;}const p=combat.fighters[0],t=combat.nearest(p);if(t){selectedTarget=t.id;combat.lockedTarget=t.id;p.angle=Math.atan2(t.x-p.x,t.z-p.z);cameraYaw=p.angle;$('target').classList.add('pressed');toast(t.name+' kilitlendi · hareket ederken rakibe dönük kalırsın.');}}
 function begin(){if(started)return;const ticket=LudusBattle.ticket;if(!ticket)return;perfMeter.reset();perfRefresh=0;clearWeaponViews();combat.reset('normal',ticket.snapshot.gladiator.class,ticket.mode);LudusLoadout.apply(combat.fighters[0],ticket.snapshot.gladiator,ticket.snapshot.items);LudusLoadout.initialize(combat,ticket);document.querySelector('.vitals .name').textContent=combat.fighters[0].name;for(let i=0;i<models.length;i++){scene.remove(models[i].root);disposeCharacter(models[i]);models[i]=createCharacter(i,combat.fighters[i].type);scene.add(models[i].root);}resultRecorded=false;started=true;paused=false;resultAt=0;accumulator=0;hitStop=0;shake=0;cameraYaw=Math.PI;cameraPitch=.48;clearInput();$('target').classList.remove('pressed');for(const f of floaters)f.el.remove();floaters.length=0;for(const s of sparks)scene.remove(s.m);sparks.length=0;for(const d of dust){scene.remove(d.m);d.m.material.dispose();}dust.length=0;$('intro').hidden=true;$('pauseMenu').hidden=true;$('result').hidden=true;$('combo').textContent='';$('damageWash').style.opacity=0;camera.position.set(0,3.8,15.6);$('hud').style.display='';$('controls').style.display='';toast(combat.mode==='solo20'?'Solo 20 · Son kalan kazanır.':'4x5 · Mavi takım sensin.');audio('start');}
-$('start').onclick=begin;$('again').onclick=()=>location.href='savas.html?v=equipment8';$('restart').onclick=()=>location.href='savas.html?v=equipment8';$('resume').onclick=()=>setPaused(false);$('pause').onclick=()=>setPaused(!paused);
+$('start').onclick=begin;$('again').onclick=()=>location.href='savas.html?v=items10';$('restart').onclick=()=>location.href='savas.html?v=items10';$('resume').onclick=()=>setPaused(false);$('pause').onclick=()=>setPaused(!paused);
 function mainMenu(){clearWeaponViews();started=false;paused=false;resultAt=0;clearInput();$('intro').hidden=false;$('pauseMenu').hidden=true;$('result').hidden=true;combat.reset();$('hud').style.display='none';$('controls').style.display='none';renderRecord();}
-$('menu').onclick=()=>location.href='ludus.html?v=equipment8';$('resultMenu').onclick=()=>location.href='ludus.html?v=equipment8';
+$('menu').onclick=()=>location.href='ludus.html?v=items10';$('resultMenu').onclick=()=>location.href='ludus.html?v=items10';
 $('sound').onclick=()=>{soundOn=!soundOn;$('sound').setAttribute('aria-label',soundOn?'Sesi kapat':'Sesi aç');$('sound').style.color=soundOn?'#ffe2a0':'#aaa';audio('block');toast(soundOn?'Ses açık':'Ses kapalı');};
 $('quality').onchange=()=>{perfMeter.reset();perfRefresh=0;const high=$('quality').value==='high';renderer.setPixelRatio(Math.min(devicePixelRatio,high?1.6:1));renderer.shadowMap.enabled=high;resize();};
 // Persist only preferences; combat results and rewards stay local.
@@ -7243,11 +7435,12 @@ function events(){for(const e of combat.drain()){
  if(e.type==='hands'&&e.id===0)toast(e.hand==='offhand'?'Sol el seçildi · Özel ve silah alımı bu eli kullanır.':'Sağ el seçildi · Özel ve silah alımı bu eli kullanır.');
  if(e.type==='special'&&e.kind==='pull')floating(combat.fighters[e.target],'KIRBAÇ');
  if(e.type==='down'&&e.id===0)toast('Yere düştün · Takımının mücadelesini izliyorsun.');
- if(e.type==='finish'){resultAt=performance.now()+1200;clearInput();}
+ if(e.type==='finish'){LudusBattle.stage(combat.result==='win',battleResultStats());resultAt=performance.now()+1200;clearInput();}
  }}
-let rewardSaved=false,rewardSaving=false;
-async function saveReward(){if(rewardSaving||rewardSaved)return;rewardSaving=true;$('again').disabled=true;$('resultMenu').disabled=true;$('rewardRetry').hidden=true;$('rewardStatus').textContent='Savaş sonucu hesabına kaydediliyor…';try{const reward=await LudusBattle.finish(combat.result==='win',{...combat.stats,seconds:Math.round(combat.time),alive:combat.fighters[0].hp>0,exit_slots:LudusLoadout.exitSlots(combat.fighters[0])});rewardSaved=true;const kinds={weapon:'silah',shield:'kalkan',helmet:'miğfer',gloves:'kolluk',legs:'bacaklık'};$('rewardStatus').textContent=reward.gold?'Hesabına eklendi: '+reward.gold+' denarius · '+reward.diamonds+' elmas · '+reward.sapphires+' safir + 1 '+(kinds[reward.kind]||'eşya')+(reward.extracted?' · '+reward.extracted.length+' ekipman envantere döndü.':''):'Savaş kaydedildi. Ödül yok; savaşa götürdüğün eşyalar kaybedildi.';}catch(e){$('rewardStatus').textContent='Ödül henüz kaydedilemedi: '+e.message;$('rewardRetry').hidden=false;}finally{rewardSaving=false;$('again').disabled=false;$('resultMenu').disabled=false;}}
-$('rewardRetry').onclick=saveReward;
+let rewardSaved=false,rewardSaving=false,rewardAttempts=0,rewardTimer=null;
+function battleResultStats(){return {...combat.stats,seconds:Math.round(combat.time),alive:combat.fighters[0].hp>0,exit_slots:LudusLoadout.exitSlots(combat.fighters[0])};}
+async function saveReward(){if(rewardSaving||rewardSaved)return;rewardSaving=true;clearTimeout(rewardTimer);rewardAttempts++;$('again').disabled=true;$('resultMenu').disabled=true;$('rewardRetry').hidden=true;$('rewardStatus').textContent='Savaş sonucu hesabına kaydediliyor…';try{const reward=await LudusBattle.finish(combat.result==='win',battleResultStats());rewardSaved=true;const kinds={weapon:'silah',shield:'kalkan',helmet:'miğfer',gloves:'kolluk',legs:'bacaklık'};$('rewardStatus').textContent=reward.gold?'Hesabına eklendi: '+reward.gold+' denarius · '+reward.diamonds+' elmas · '+(reward.stone?.name||(reward.sapphires||0)+' safir')+' + 1 '+(kinds[reward.kind]||'eşya')+(reward.extracted?' · '+reward.extracted.length+' ekipman envantere döndü.':''):'Savaş kaydedildi. Ödül yok; savaşa götürdüğün eşyalar kaybedildi.';}catch(e){const durable=LudusResults.read(LudusBattle.ticket.owner_id).find(r=>r.payload.p_battle===LudusBattle.ticket.id)?.durable!==false;$('rewardStatus').textContent=(durable?'Sonuç cihazda bekliyor; yeniden gönderilecek. ':'Tarayıcı kaydı kapalı; bu sayfayı kapatma. ')+e.message;$('rewardRetry').hidden=false;if(rewardAttempts<3&&!e.code)rewardTimer=setTimeout(saveReward,rewardAttempts*3000);}finally{rewardSaving=false;$('again').disabled=false;$('resultMenu').disabled=false;}}
+$('rewardRetry').onclick=()=>{rewardAttempts=0;saveReward();};window.addEventListener('online',()=>{if(combat.finished&&!rewardSaved){rewardAttempts=0;saveReward();}});
 function showResult(){paused=true;$('result').hidden=false;$('resultTitle').textContent=combat.result==='win'?'Zafer!':'Mağlubiyet.';$('resultDescription').textContent=combat.mode==='solo20'?'Solo 20 · Son kalan kazanır.':'4x5 · Dört takımın mücadelesi.';$('resultStats').innerHTML='<div><b>'+Math.round(combat.time)+' sn</b>Dövüş süresi</div><div><b>'+combat.stats.hits+'</b>İsabetli darbe</div><div><b>'+combat.stats.blocks+'</b>Blok</div><div><b>'+combat.stats.damage+'</b>Hasar</div>';if(!resultRecorded){resultRecorded=true;saveReward();}}
 
 function hud(now){const p=combat.fighters[0];$('hpFill').style.width=p.hp/p.maxHp*100+'%';$('hpText').textContent=p.hp+' / '+p.maxHp;$('stFill').style.width=p.stamina/(p.maxStamina||100)*100+'%';$('stText').textContent=Math.floor(p.stamina)+' / '+(p.maxStamina||100);$('hpFill').parentElement.setAttribute('aria-valuenow',p.hp);$('stFill').parentElement.setAttribute('aria-valuenow',Math.floor(p.stamina));$('roundInfo').textContent=combat.fighters.slice(1).filter(f=>f.hp>0).length+' RAKİP · '+Math.floor(combat.time/60)+':'+String(Math.floor(combat.time%60)).padStart(2,'0');
