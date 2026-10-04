@@ -6100,7 +6100,7 @@ var ArenaClasses={
  provocator:{name:'Provocator',weapon:'gladius',shield:'large',color:0x8b3029,crest:true},
  scissor:{name:'Scissor',weapon:'gladius',shield:null,color:0x594534,armor:true,scissor:true}
 };
-var ArenaWeapons={gladius:{name:'Kısa kılıç',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident:{name:'Üç dişli mızrak',range:2.75},mace:{name:'Gürz',range:2.25}};
+var ArenaWeapons={gladius:{name:'Kısa kılıç',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident:{name:'Üç dişli mızrak',range:2.75},mace:{name:'Zincirli gürz',range:2.25},whip:{name:'Kırbaç',range:2}};
 // Master v7: six stats total 300; Overall is their mean, not character level.
 var ArenaBasicStats={murmillo:[60,55,50,60,35,40],thraex:[45,50,60,35,60,50],hoplomachus:[50,55,50,45,45,55],secutor:[55,55,50,55,40,45],retiarius:[40,55,45,30,65,65],provocator:[65,60,45,65,30,35],scissor:[50,50,60,40,55,45]};
 for(const [key,values] of Object.entries(ArenaBasicStats))ArenaClasses[key].stats=Object.fromEntries(['health','stamina','strength','defense','agility','speed'].map((s,i)=>[s,values[i]]));
@@ -6110,7 +6110,7 @@ if(typeof module!=='undefined')module.exports={ArenaClasses,ArenaWeapons,ArenaBa
    Flatten rigid transforms once, share templates between fighters and drops. */
 var ImportedEquipment=(function(){
  const T=THREE,templates={},helmets={},grayMaps=new Map();let pending;
- const files={helmet:'roman_legionnaire_helmet.glb',scutum:'roman_scutum_shield.glb',shield:'roman_shield.glb',sword:'roman_spatha.glb'};
+ const files={scutum:'roman_scutum_shield.glb',shield:'roman_shield.glb',sword:'roman_spatha.glb'};
  function prepare(scene,kind){
   const wrapper=new T.Group();wrapper.add(scene);
   if(kind==='sword')wrapper.rotation.x=Math.PI/2;
@@ -6159,7 +6159,7 @@ var ImportedEquipment=(function(){
     if(!response.ok)throw Error('HTTP '+response.status);const bytes=await response.arrayBuffer();
     if(bytes.byteLength<12||new DataView(bytes).getUint32(0,true)!==0x46546c67)throw Error('Boş/geçersiz GLB');
     const model=await new T.GLTFLoader().parseAsync(bytes,'');templates[kind]=prepare(model.scene,kind);
-   }catch(e){failed++;}finally{clearTimeout(timer);done++;status(done<4?'Yeni ekipmanlar yükleniyor… '+done+'/4':failed?'Yeni ekipman: '+(4-failed)+'/4 · Yüklenemeyenlerde eski görünüm kullanılıyor.':'Yeni ekipmanlar hazır · 4/4');}
+   }catch(e){failed++;}finally{clearTimeout(timer);done++;status(done<3?'Yeni ekipmanlar yükleniyor… '+done+'/3':failed?'Yeni ekipman: '+(3-failed)+'/3 · Yüklenemeyenlerde eski görünüm kullanılıyor.':'Yeni ekipmanlar hazır · 3/3');}
   }));})();return pending;
  }
  return {load,prepare,helmet,weapon:kind=>['gladius','sica'].includes(kind)?templates.sword:null,shield:type=>templates[['murmillo','secutor','provocator'].includes(type)?'scutum':'shield'],get loaded(){return Object.keys(templates).length;}};
@@ -6200,7 +6200,16 @@ var ClassEquipment=(function(){
    mesh(g,new T.CylinderGeometry(.022,.026,1.8,8),dark,0,.4);
    if(kind==='trident'){box(g,.4,.045,.045,bronze,0,1.3);for(const x of [-.18,0,.18]){box(g,.026,.28,.026,steel,x,1.43);mesh(g,new T.ConeGeometry(.04,.18,6),steel,x,1.65);}}
    else mesh(g,new T.ConeGeometry(.07,.38,4),steel,0,1.48);
-  }else if(kind==='mace'){mesh(g,new T.CylinderGeometry(.025,.03,.65,8),dark,0,.2);sphere(g,.13,steel,0,.6);}
+  }else if(kind==='mace'){
+   mesh(g,new T.CylinderGeometry(.027,.035,.5,8),dark,0,.16);
+   for(let i=0;i<7;i++){const link=mesh(g,new T.TorusGeometry(.033,.009,5,8),steel,.018*i,.43+i*.065);link.rotation.y=i%2?Math.PI/2:0;}
+   const ball=new T.Group();g.add(ball);ball.position.set(.13,.95,0);sphere(ball,.115,steel);
+   for(const dir of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]){const spike=mesh(ball,new T.ConeGeometry(.04,.12,5),steel,...dir.map(v=>v*.14));spike.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),new T.Vector3(...dir));}
+  }else if(kind==='whip'){
+   mesh(g,new T.CylinderGeometry(.024,.032,.28,8),dark);
+   const points=[new T.Vector3(0,.14,0),new T.Vector3(.04,.45,0),new T.Vector3(.14,.85,0),new T.Vector3(.09,1.25,.03),new T.Vector3(-.05,1.65,.02)];
+   mesh(g,new T.TubeGeometry(new T.CatmullRomCurve3(points),16,.012,5,false),dark);
+  }
   else{box(g,.22,.045,.065,bronze,0,.14);sphere(g,.042,bronze,0,-.13);
    const shape=new T.Shape();shape.moveTo(-.045,.16);shape.lineTo(.045,.16);if(kind==='sica'){shape.quadraticCurveTo(.05,.45,.22,.69);shape.quadraticCurveTo(-.08,.54,-.045,.16);}else{shape.lineTo(.035,.6);shape.lineTo(0,.78);shape.lineTo(-.035,.6);shape.closePath();}
    mesh(g,new T.ExtrudeGeometry(shape,{depth:.025,bevelEnabled:false}),steel);
@@ -6256,7 +6265,17 @@ var ClassEquipment=(function(){
  const bandGeo=new T.CylinderGeometry(.245,.245,.115,12),teamRings=teamColors.map((_,i)=>new T.RingGeometry(.47,.51,i===0?28:4+i%3));
  function replacePart(slot,template){const old=slot.group,group=template.clone(true);group.position.copy(old.position);group.rotation.copy(old.rotation);slot.anchor.remove(old);slot.anchor.add(group);slot.group=group;}
  const helmetCache={},helmetMetals=[new T.MeshStandardMaterial({color:0xc99d42,metalness:.85,roughness:.35}),new T.MeshStandardMaterial({color:0xc8d1db,metalness:.85,roughness:.35})];
- function teamHelmet(style,team=0){team=team===0?0:1;const imported=typeof ImportedEquipment!=='undefined'&&ImportedEquipment.helmet(team);if(imported)return imported;const key=style+':'+team;if(!helmetCache[key]){const g=parts(style).helmet.clone(true);g.traverse(o=>{if(o.isMesh&&o.material.metalness>.5)o.material=helmetMetals[team||0];});helmetCache[key]=g;}return helmetCache[key];}
+ function teamHelmet(style,team=0){team=team===0?0:1;const key='reference:'+team;if(!helmetCache[key]){
+  const g=new T.Group(),metal=team?steel:bronze;g.userData.asset='reference-open-helmet';
+  const cap=mesh(g,new T.SphereGeometry(.19,20,12,0,Math.PI*2,0,Math.PI*.57),metal,0,.055);cap.scale.z=1.12;
+  // Open face, long cheek plates, nose guard and a low metal crest; no plume.
+  for(const side of [-1,1]){const plate=box(g,.055,.24,.14,metal,side*.155,-.09,.09);plate.rotation.z=-side*.12;sphere(g,.016,steel,side*.179,.02,.12);}
+  box(g,.32,.035,.035,metal,0,.025,.195);box(g,.027,.15,.029,metal,0,-.045,.206);
+  box(g,.28,.075,.065,metal,0,-.045,-.18);
+  const crest=new T.Shape();crest.moveTo(-.14,.2);crest.lineTo(-.1,.34);crest.lineTo(.07,.36);crest.lineTo(.16,.24);crest.lineTo(.12,.2);crest.closePath();
+  const fin=mesh(g,new T.ExtrudeGeometry(crest,{depth:.035,bevelEnabled:true,bevelSize:.005,bevelThickness:.005,bevelSegments:1,steps:1}),metal);fin.rotation.y=Math.PI/2;fin.position.x=-.0175;
+  helmetCache[key]=batch(g);
+ }return helmetCache[key];}
  function sync(m,f){
   setWeapon(m,f.weapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
@@ -6348,7 +6367,7 @@ var ImportedGladiator=(function(){
   m.trail.material.opacity=strike?.active?.2:0;
   if(f.action==='netcast'){poses.LeftArm=[-1.3*Math.sin(Math.PI*Math.min(1,f.timer/.75)),0,-.2];}
   if(f.action==='spearcast')poses[f.attackLeft?'LeftArm':'RightArm']=[-1.8*Math.sin(Math.PI*Math.min(1,f.timer/.55)),0,0];
-  if(f.action==='bash'||f.action==='hook'){const p=f.action==='hook'?1:Math.sin(Math.PI*Math.min(1,f.timer/.5));poses.LeftArm=[-1.2*p,0,-.2];poses.LeftForeArm=[-.2,0,0];poses.Spine2=[.18*p,0,0];}
+  if(f.action==='bash'||f.action==='hook'){const p=f.action==='hook'?1:Math.sin(Math.PI*Math.min(1,f.timer/.5)),side=f.action==='hook'&&!f.attackLeft?'Right':'Left';poses[side+'Arm']=[-1.2*p,0,-.2];poses[side+'ForeArm']=[-.2,0,0];poses.Spine2=[.18*p,0,0];}
   if(f.shieldHeldBy!==null&&f.shieldHeldBy!==undefined)poses.LeftArm=[-.75,0,-.25];
   if(f.action==='dodge'){const a=Math.sin(Math.PI*f.timer/f.duration);drop=-.23*a;lean=.3*a;poses.LeftUpLeg=[-.5*a,0,0];poses.RightUpLeg=[-.4*a,0,0];poses.LeftLeg=[a,0,0];poses.RightLeg=[.8*a,0,0];}
   if(f.reaction>0||f.action==='hurt'){const r=f.reaction||.15;poses.Spine2=[-r*.6,0,0];if(f.lastRegion==='head')poses.Head=[-r*.9,0,r*.25];if(f.lastRegion==='leftArm')poses.LeftArm=[r*.4,0,-r];if(f.lastRegion==='rightArm')poses.RightArm=[r*.4,0,r];if(f.lastRegion==='legs'){poses.LeftLeg=[r,0,0];drop=-r*.2;}}
@@ -6473,15 +6492,10 @@ $('roomExit').onclick=leaveRoom;
 const stationDefs=[['Güç','Ağırlık',-8],['Dayanıklılık','Kum torbası',-4],['Hız','Adım parkuru',0],['Savunma','Kalkan direği',4],['Teknik','Vuruş kuklası',8]];
 const stations=stationDefs.map(([stat,name,x],i)=>({stat,name,x,z:-6,i}));
 function label(text){const el=document.createElement('button');el.className='worldLabel';el.textContent=text;$('labels').appendChild(el);return el;}
-for(const s of stations){s.label=label('Antrenman');s.label.disabled=true;s.anchor=new T.Vector3(s.x,2.6,s.z);
- if(s.i===0){mesh(scene,'iron',s.x,.4,s.z,1.7,.09,.09);for(const dx of [-.65,.65])mesh(scene,'stone',s.x+dx,.4,s.z,.35,.65,.65);}
- else if(s.i===2){for(let j=0;j<5;j++)mesh(scene,'wood',s.x,.045,s.z-1+j*.5,1.5,.09,.1);}
- else {mesh(scene,'wood',s.x,1.2,s.z,.14,2.4,.14);mesh(scene,'wood',s.x,2.25,s.z,1.5,.12,.12);mesh(scene,s.i===1?'cloth':'wood',s.x,1.35,s.z,s.i===1?.6:.45,1.1,.4);if(s.i===3)mesh(scene,'iron',s.x,1.4,s.z+.26,.9,1.1,.12);}
- colliders.push({x:s.x,z:s.z,half:.75});
-}
+for(const s of stations){s.label=label('');s.label.hidden=true;s.label.disabled=true;s.anchor=new T.Vector3(s.x,2.6,s.z);}
 // Lightweight market wagon: wooden bed, iron tyres, shafts and a fabric canopy.
-const cart=new T.Group();scene.add(cart);cart.position.set(6,0,-10.4);mesh(cart,'wood',0,.85,0,1.5,.18,2.3);for(const x of [-.78,.78]){mesh(cart,'wood',x,1.15,0,.12,.5,2.3);for(const z of [-.8,.8]){const wheel=mesh(cart,'iron',x,.5,z,.48,.12,.48,cylgeo);wheel.rotation.z=Math.PI/2;}}for(const x of [-.65,.65]){mesh(cart,'wood',x,.55,2,.08,.08,2);for(const z of [-1,1])mesh(cart,'wood',x,1.65,z,.07,1.5,.07);}mesh(cart,'cloth',0,2.42,0,1.7,.09,2.6);for(let i=0;i<3;i++)mesh(cart,'wood',-.45+i*.45,1.08,0,.35,.4,.7);colliders.push({x:6,z:-10.4,half:1.25});
-const market={x:6,z:-9,y:0,name:'Pazarı incele',kind:'market'},gateAction={x:-6,z:-10.7,y:0,name:'Arenaya git',kind:'arena'};
+const cart=new T.Group();scene.add(cart);cart.position.set(-11.4,0,-10.4);cart.rotation.y=Math.PI/2;mesh(cart,'wood',0,.85,0,1.5,.18,2.3);for(const x of [-.78,.78]){mesh(cart,'wood',x,1.15,0,.12,.5,2.3);for(const z of [-.8,.8]){const wheel=mesh(cart,'iron',x,.5,z,.48,.12,.48,cylgeo);wheel.rotation.z=Math.PI/2;}}for(const x of [-.65,.65]){mesh(cart,'wood',x,.55,2,.08,.08,2);for(const z of [-1,1])mesh(cart,'wood',x,1.65,z,.07,1.5,.07);}mesh(cart,'cloth',0,2.42,0,1.7,.09,2.6);for(let i=0;i<3;i++)mesh(cart,'wood',-.45+i*.45,1.08,0,.35,.4,.7);colliders.push({x:-10.7,z:-10.4,half:1.7});
+const market={x:-10.7,z:-8.7,y:0,name:'Pazarı incele',kind:'market'},gateAction={x:-6,z:-10.7,y:0,name:'Arenaya git',kind:'arena'};
 materials.skin=new T.MeshStandardMaterial({color:0xb68462,roughness:1});materials.team=new T.MeshStandardMaterial({color:0x365f83,roughness:.9});const headGeo=new T.SphereGeometry(1,10,8);
 const starters=[{name:'Cassius',type:'hoplomachus'},{name:'Marcus',type:'murmillo'},{name:'Titus',type:'retiarius'}];
 let saved={};try{saved=JSON.parse(localStorage.getItem('ludus-starter-orders-v4')||'{}');}catch(e){}
@@ -6492,13 +6506,13 @@ function showGladiator(g){clear();paused=true;$('orders').hidden=false;$('orders
 function closeOrders(){paused=false;$('orders').hidden=true;}
 $('ordersClose').onclick=closeOrders;
 for(const g of [])if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
-$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){window.location.href=new URL('savas.html?v=master7',window.location.href).href;}else if(nearest.kind==='market')window.location.href=new URL('pazar.html?v=master7',window.location.href).href;else enterRoom(nearest);};
+$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){window.location.href=new URL('savas.html?v=equipment8',window.location.href).href;}else if(nearest.kind==='market')window.location.href=new URL('pazar.html?v=equipment8',window.location.href).href;else enterRoom(nearest);};
 function projectLabel(el,v,visible){const p=v.clone().project(camera);el.hidden=!visible||p.z<0||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;if(!el.hidden){el.style.left=((p.x+1)*50)+'%';el.style.top=((1-p.y)*50)+'%';}}
 function updateActivities(dt){if(activeRoom)$('place').textContent=activeRoom.name;else $('place').textContent='Ludus · Hesabım · v5';
  for(const g of roster){if(!paused&&g.path.length){const next=g.path[0],dx=next.x-g.body.position.x,dz=next.z-g.body.position.z,d=Math.hypot(dx,dz),step=Math.min(d,dt*1.7);if(d<.04){g.path.shift();if(!g.path.length){g.body.rotation.y=g.order===null?0:Math.PI;g.legs.forEach(l=>l.rotation.x=0);}}else{g.body.position.x+=dx/d*step;g.body.position.z+=dz/d*step;g.body.rotation.y=Math.atan2(dx,dz);g.phase+=dt*8;g.legs.forEach((l,i)=>l.rotation.x=Math.sin(g.phase+i*Math.PI)*.25);}}
  const distance=Math.hypot(g.body.position.x-player.x,g.body.position.z-player.z);projectLabel(g.label,g.body.position.clone().add(new T.Vector3(0,2.12,0)),!!g.model&&exploring&&!activeRoom&&!paused&&player.y<1&&distance<5.5);
  }
- for(const s of stations)projectLabel(s.label,s.anchor,!activeRoom&&!paused&&(!exploring||Math.hypot(s.x-player.x,s.z-player.z)<8));
+ for(const s of stations)s.label.hidden=true;
  nearest=null;if(exploring&&!paused&&!activeRoom){let best=2.05;for(const r of [...rooms,market,gateAction]){const d=Math.hypot(player.x-r.x,player.z-r.z);if(Math.abs(player.y-r.y)<.6&&d<best){best=d;nearest=r;}}}
  $('interact').hidden=!nearest;if(nearest)$('interact').textContent=nearest.kind==='arena'||nearest.kind==='market'?nearest.name:nearest.name+' · Gir';
 }
