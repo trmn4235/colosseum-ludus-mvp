@@ -6507,6 +6507,18 @@ function mesh(parent,mat,x,y,z,w,h,d,geo=boxgeo){const m=new T.Mesh(geo,material
 mesh(roomScene,'stone',0,-.12,0,10,.24,9);mesh(roomScene,'wall',0,2.5,-4.5,10,5,.3);for(const x of [-5,5])mesh(roomScene,'wall',x,2.5,0,.3,5,9);mesh(roomScene,'wall',0,5,0,10,.2,9);mesh(roomScene,'wood',0,2,4.5,10,4,.25);
 const rooms=[];
 const upgradeObjects=[{x:0,z:0,y:0,name:'GELİŞTİR',kind:'upgrade-table'},{x:2.5,z:0,y:0,name:'Taş Kesesi · Aç',kind:'stone-pouch'}];
+const roomUpgradePanel=document.createElement('div');roomUpgradePanel.id='roomUpgradePanel';roomUpgradePanel.hidden=true;
+roomUpgradePanel.style.cssText='position:absolute;left:max(22px,env(safe-area-inset-left));top:156px;display:flex;gap:8px;z-index:8;';
+const roomEnhanceButton=document.createElement('button'),roomPouchButton=document.createElement('button');
+roomEnhanceButton.textContent='GELİŞTİR';roomPouchButton.textContent='Taş Kesesi';
+roomEnhanceButton.style.background='#783b25ee';roomEnhanceButton.setAttribute('aria-label','Ekipman geliştirme ekranını aç');
+roomUpgradePanel.append(roomEnhanceButton,roomPouchButton);document.body.append(roomUpgradePanel);
+function openUpgrades(pouch=false){if(activeRoom?.kind!=='upgrades')return;
+ const url=new URL('gelistirmeler.html',window.location.href);url.searchParams.set('v','items10room2');if(pouch)url.searchParams.set('pouch','1');
+ try{sessionStorage.setItem('ludus-upgrade-return',JSON.stringify({owner:playerAccount?.user_id,room:activeRoom.kind,returnPose,player:{...player}}));}catch(e){}
+ window.location.href=url.href;
+}
+roomEnhanceButton.onclick=()=>openUpgrades();roomPouchButton.onclick=()=>openUpgrades(true);
 [-8,0,8].forEach((x,i)=>rooms.push({x,z:11.1,y:3.47,name:['Ludus Yönetim Odası','Kayıt Odası','Dinlenme Odası'][i],kind:['office','records','rest'][i]}));
 [-9,-4.5,0,4.5,9].forEach((x,i)=>rooms.push({x,z:11.1,y:0,name:['Geliştirmeler','Silahlık','Revir','Yemekhane','Depo'][i],kind:['upgrades','armory','infirmary','dining','store'][i]}));
 
@@ -6523,9 +6535,9 @@ function enterRoom(r){returnPose={...player};activeRoom=r;clear();roomProps.clea
   mesh(roomProps,'cloth',2.5,.81,0,.34,.62,.31,cylgeo);
   mesh(roomProps,'wood',2.5,1.12,0,.24,.06,.24,cylgeo);
  }
- $('roomExit').hidden=false;$('hint').textContent=r.kind==='upgrades'?'Masaya yaklaş: GELİŞTİR · Kese: Taş Kesesi':'Ayrı oda sahnesi · Avluya dönerek diğer odaları gez';$('place').textContent=r.name;
+ roomUpgradePanel.hidden=r.kind!=='upgrades';$('roomExit').hidden=false;$('hint').textContent=r.kind==='upgrades'?'GELİŞTİR veya Taş Kesesi butonuna dokun':'Ayrı oda sahnesi · Avluya dönerek diğer odaları gez';$('place').textContent=r.name;
 }
-function leaveRoom(){if(!activeRoom)return;Object.assign(player,returnPose);activeRoom=null;$('roomExit').hidden=true;$('hint').textContent='Kapıya yaklaş · Gladyatörün ismine dokun';}
+function leaveRoom(){if(!activeRoom)return;Object.assign(player,returnPose);activeRoom=null;roomUpgradePanel.hidden=true;$('roomExit').hidden=true;$('hint').textContent='Kapıya yaklaş · Gladyatörün ismine dokun';}
 $('roomExit').onclick=leaveRoom;
 const stationDefs=[['Güç','Ağırlık',-8],['Dayanıklılık','Kum torbası',-4],['Hız','Adım parkuru',0],['Savunma','Kalkan direği',4],['Teknik','Vuruş kuklası',8]];
 const stations=stationDefs.map(([stat,name,x],i)=>({stat,name,x,z:-6,i}));
@@ -6545,9 +6557,7 @@ function closeOrders(){paused=false;$('orders').hidden=true;}
 $('ordersClose').onclick=closeOrders;
 for(const g of [])if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
 $('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){window.location.href=new URL('savas.html?v=items10',window.location.href).href;}else if(nearest.kind==='market')window.location.href=new URL('pazar.html?v=items10',window.location.href).href;else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
- const url=new URL('gelistirmeler.html',window.location.href);url.searchParams.set('v','items10');if(nearest.kind==='stone-pouch')url.searchParams.set('pouch','1');
- try{sessionStorage.setItem('ludus-upgrade-return',JSON.stringify({owner:playerAccount?.user_id,room:activeRoom?.kind,returnPose,player:{...player}}));}catch(e){}
- window.location.href=url.href;
+ openUpgrades(nearest.kind==='stone-pouch');
  }else enterRoom(nearest);};
 function projectLabel(el,v,visible){const p=v.clone().project(camera);el.hidden=!visible||p.z<0||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;if(!el.hidden){el.style.left=((p.x+1)*50)+'%';el.style.top=((1-p.y)*50)+'%';}}
 function updateActivities(dt){if(activeRoom)$('place').textContent=activeRoom.name;else $('place').textContent='Ludus · Hesabım · v5';
@@ -6556,7 +6566,7 @@ function updateActivities(dt){if(activeRoom)$('place').textContent=activeRoom.na
  }
  for(const s of stations)s.label.hidden=true;
  nearest=null;if(exploring&&!paused){let best=2.05;const targets=activeRoom?(activeRoom.kind==='upgrades'?upgradeObjects:[]):[...rooms,market,gateAction];for(const r of targets){const d=Math.hypot(player.x-r.x,player.z-r.z);if(Math.abs(player.y-r.y)<.6&&d<best){best=d;nearest=r;}}}
- $('interact').hidden=!nearest;if(nearest)$('interact').textContent=['arena','market','upgrade-table','stone-pouch'].includes(nearest.kind)?nearest.name:nearest.name+' · Gir';
+ $('interact').hidden=!nearest||activeRoom?.kind==='upgrades';if(nearest)$('interact').textContent=['arena','market','upgrade-table','stone-pouch'].includes(nearest.kind)?nearest.name:nearest.name+' · Gir';
 }
 
 function restoreUpgradeRoom(){
