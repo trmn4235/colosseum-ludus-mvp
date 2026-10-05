@@ -1,0 +1,23 @@
+{
+  "id": "./",
+  "name": "Colosseum & Ludus",
+  "short_name": "Colosseum & Ludus",
+  "start_url": "./index.html?v=revision17",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "orientation": "landscape",
+  "background_color": "#eee2cb",
+  "theme_color": "#eee2cb",
+  "icons": [
+    {
+      "src": "app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
