@@ -13,7 +13,7 @@ var LudusNavigation=(function(){
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','return12');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','motion15');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -21,7 +21,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','return12');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','motion15');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -6132,16 +6132,65 @@ var LudusResults=(function(){
 })();
 
 
-// Validated GLB cache shared by Ludus, preparation and arena. Version changes invalidate old assets.
+// A single validated download per asset; the same persistent cache is used on all three pages.
 var ARENA_ASSET_BASE='https://pub-6910705f63a54355a6ec8cb2acbc2223.r2.dev/';
-async function ArenaAssetLoad(name,status=()=>{},label='Model'){
- const local=new URL(name,document.baseURI),cacheKey=new URL(local);cacheKey.searchParams.set('asset-version','models-2026-09-29');
+var ArenaAssets=(function(){
+ const pending=new Map();
  function valid(data){if(data.byteLength<12)return false;const h=new DataView(data);return h.getUint32(0,true)===0x46546c67&&h.getUint32(4,true)===2&&h.getUint32(8,true)===data.byteLength;}
- let cache;try{cache=await caches.open('ludus-models-v1');const r=await cache.match(cacheKey.href);if(r){const data=await r.arrayBuffer();if(valid(data)){status(label+' hazırlanıyor…');return data;}await cache.delete(cacheKey.href);}}catch{}
- const sources=[local,new URL(name,ARENA_ASSET_BASE)],errors=[];
- for(let i=0;i<sources.length;i++){const c=new AbortController(),timer=setTimeout(()=>c.abort(),i===0?60000:30000);try{status(label+(i?' alternatif kaynaktan yükleniyor…':' yükleniyor…'));const r=await fetch(sources[i],{signal:c.signal});if(!r.ok)throw Error('HTTP '+r.status);const data=await r.arrayBuffer();if(!valid(data))throw Error('Eksik veya geçersiz GLB');if(cache)cache.put(cacheKey.href,new Response(data,{headers:{'Content-Type':'model/gltf-binary'}})).catch(()=>{});return data;}catch(e){errors.push((i?'R2':'GitHub')+': '+(e.name==='AbortError'?'zaman aşımı':e.message));}finally{clearTimeout(timer);}}
- throw Error(errors.join(' / '));
+ function load(name,status=()=>{},label='Model'){
+  const local=new URL(name,document.baseURI),key=new URL(local);key.searchParams.set('asset-version','models-2026-09-29');
+  if(pending.has(key.href)){const job=pending.get(key.href);job.listeners.add(text=>status(label+text));return job.promise;}
+  const job={listeners:new Set([text=>status(label+text)])};pending.set(key.href,job);
+  const emit=text=>{for(const listener of job.listeners)try{listener(text);}catch{}};
+  job.promise=(async()=>{
+   let cache;try{cache=await caches.open('ludus-models-v1');const response=await cache.match(key.href);if(response){const bytes=await response.arrayBuffer();if(valid(bytes)){emit(' hazırlanıyor…');return bytes;}await cache.delete(key.href);}}catch{}
+   emit(' yükleniyor…');
+   const bytes=await new Promise((resolve,reject)=>{
+    let settled=false,started=0,failed=0,fallback=false;const errors=[],controllers=[],timers=new Set();
+    function timer(fn,ms){const id=setTimeout(()=>{timers.delete(id);fn();},ms);timers.add(id);return id;}
+    function clear(id){clearTimeout(id);timers.delete(id);}
+    function finish(error,data){if(settled)return;settled=true;timers.forEach(clearTimeout);controllers.forEach(c=>c.abort());error?reject(error):resolve(data);}
+    function backup(){if(fallback||settled)return;fallback=true;run(new URL(name,ARENA_ASSET_BASE),1);}
+    async function run(url,index){
+     started++;const controller=new AbortController();controllers.push(controller);const deadline=timer(()=>controller.abort(),90000);
+     let stall=index===0?timer(backup,6000):null;
+     try{
+      const response=await fetch(url,{signal:controller.signal});if(!response.ok)throw Error('HTTP '+response.status);
+      let data;
+      if(response.body?.getReader){
+       const reader=response.body.getReader(),parts=[];let size=0;const total=Number(response.headers.get('content-length'));
+       while(true){const {done,value}=await reader.read();if(done)break;parts.push(value);size+=value.byteLength;
+        if(index===0){clear(stall);stall=timer(backup,6000);}if(!settled)emit((index?' alternatif kaynaktan yükleniyor…':' yükleniyor…')+(total>0?' '+Math.min(100,Math.round(size/total*100))+'%':''));
+       }
+       const result=new Uint8Array(size);let offset=0;for(const part of parts){result.set(part,offset);offset+=part.byteLength;}data=result.buffer;
+      }else data=await response.arrayBuffer();
+      if(!valid(data))throw Error('Eksik veya geçersiz GLB');finish(null,data);
+     }catch(e){if(settled)return;errors[index]=(index?'R2':'GitHub')+': '+(e.name==='AbortError'?'zaman aşımı':e.message);failed++;if(index===0)backup();if(failed===started&&fallback)finish(Error(errors.filter(Boolean).join(' / ')));}
+     finally{clear(deadline);clear(stall);}
+    }
+    run(local,0);
+   });
+   if(cache)try{await cache.put(key.href,new Response(bytes,{headers:{'Content-Type':'model/gltf-binary'}}));}catch{}
+   emit(' hazırlanıyor…');return bytes;
+  })().finally(()=>pending.delete(key.href));return job.promise;
+ }
+ function prefetch(names){return Promise.allSettled(names.map(name=>load(name)));}
+ let warmed=false;
+ function warmArena(){if(warmed)return;warmed=true;const warm=()=>{prefetch(['Colosseum.glb']);};if(typeof requestIdleCallback==='function')requestIdleCallback(warm,{timeout:1500});else setTimeout(warm,500);}
+ return {load,prefetch,warmArena,valid};
+})();
+function ArenaAssetLoad(name,status,label){return ArenaAssets.load(name,status,label);}
+// Release inactive pages' GPU contexts instead of leaving them in Safari's back/forward cache.
+function ArenaCreateRenderer(options){
+ let renderer;
+ try{renderer=new THREE.WebGLRenderer(options);}catch(first){renderer=new THREE.WebGLRenderer({...options,powerPreference:'default'});}
+ let released=false;
+ addEventListener('pagehide',()=>{released=true;renderer.setAnimationLoop?.(null);renderer.dispose();renderer.forceContextLoss?.();},{once:true});
+ addEventListener('pageshow',event=>{if(event.persisted&&released)location.reload();});
+ return renderer;
 }
+
+
 
 var ArenaClasses={
  murmillo:{name:'Murmillo',weapon:'gladius',shield:'large',color:0x792a24,crest:true,armor:true},
@@ -6204,14 +6253,10 @@ var ImportedEquipment=(function(){
  async function load(status=()=>{}){
   if(pending)return pending;
   pending=(async()=>{let done=0,failed=0;await Promise.all(Object.entries(files).map(async([kind,file])=>{
-   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
    try{
-    // These four assets were uploaded to GitHub. Avoid needless R2 404 requests.
-    const response=await fetch(new URL(file,document.baseURI),{signal:controller.signal});
-    if(!response.ok)throw Error('HTTP '+response.status);const bytes=await response.arrayBuffer();
-    if(bytes.byteLength<12||new DataView(bytes).getUint32(0,true)!==0x46546c67)throw Error('Boş/geçersiz GLB');
+    const bytes=await ArenaAssetLoad(file,()=>{},'Ekipman');
     const model=await new T.GLTFLoader().parseAsync(bytes,'');templates[kind]=prepare(model.scene,kind);
-   }catch(e){failed++;}finally{clearTimeout(timer);done++;status(done<3?'Yeni ekipmanlar yükleniyor… '+done+'/3':failed?'Yeni ekipman: '+(3-failed)+'/3 · Yüklenemeyenlerde eski görünüm kullanılıyor.':'Yeni ekipmanlar hazır · 3/3');}
+   }catch(e){failed++;}finally{done++;status(done<3?'Yeni ekipmanlar yükleniyor… '+done+'/3':failed?'Yeni ekipman: '+(3-failed)+'/3 · Yüklenemeyenlerde eski görünüm kullanılıyor.':'Yeni ekipmanlar hazır · 3/3');}
   }));})();return pending;
  }
  return {load,prepare,helmet,weapon:kind=>['gladius','sica'].includes(kind)?templates.sword:null,shield:type=>templates[['murmillo','secutor','provocator'].includes(type)?'scutum':'shield'],get loaded(){return Object.keys(templates).length;}};
@@ -6267,7 +6312,8 @@ var QuaterniusMotion=(function(){
  const T=THREE,qa=new T.Quaternion(),qb=new T.Quaternion(),direction=new T.Vector3();
  function select(f,time){
   if(f.hp<=0||f.action==='knocked'||f.action==='dodge'||f.action==='stunned')return null;
-  if(f.reaction>0||f.action==='hurt')return ['hurt',Math.min(1,1-(f.reaction||0)/.32),.55];
+  // Ordinary hits use a small regional recoil, never the full-body knockback clip.
+  if(f.reaction>0||f.action==='hurt')return null;
   if(f.action==='bash')return ['bash',Math.min(1,f.timer/Math.max(.01,f.duration)),1];
   if(f.action==='spearcast')return ['throw',Math.min(1,f.timer/Math.max(.01,f.duration)),1];
   if(f.action==='attack'&&['gladius','sica'].includes(f.attackWeapon||f.weapon)){
@@ -6445,6 +6491,7 @@ var ClassEquipment=(function(){
   helmetCache[key]=batch(g);
  }return helmetCache[key];}
  function sync(m,f){
+  const revision=typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0;if(m.assetRevision!==revision){m.assetRevision=revision;m.equippedWeapon=undefined;m.offhandKind=undefined;m.shieldStyle=undefined;}
   setWeapon(m,f.weapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
@@ -6487,8 +6534,8 @@ var ImportedGladiator=(function(){
    data=await r.arrayBuffer();
    }
    status('Gladyatör hazırlanıyor…');
-   await Promise.all([typeof ArenaAnimations!=='undefined'?ArenaAnimations.load():null,equipmentReady]);
-   const g=await new T.GLTFLoader().parseAsync(data,'');g.scene.traverse(o=>{if(o.isMesh){const a=g.parser.associations.get(o);const name=a&&a.meshes!==undefined?g.parser.json.meshes[a.meshes].name:'';o.userData.isWeapon=/^weapon_geo/.test(name||'');o.userData.replaceGear=/^(weapon|helmet|shield)_geo/.test(name||'');}});template=g.scene;status('Gladyatör hazır · 11,9 MB');
+   if(typeof ArenaAnimations!=='undefined')await ArenaAnimations.load();
+   const g=await new T.GLTFLoader().parseAsync(data,'');g.scene.traverse(o=>{if(o.isMesh){const a=g.parser.associations.get(o);const name=a&&a.meshes!==undefined?g.parser.json.meshes[a.meshes].name:'';o.userData.isWeapon=/^weapon_geo/.test(name||'');o.userData.replaceGear=/^(weapon|helmet|shield)_geo/.test(name||'');}});template=g.scene;status('Gladyatör hazır · 11,9 MB');if(typeof ArenaAssets!=='undefined')ArenaAssets.warmArena();
   }catch(e){throw new Error(e.name==='AbortError'?'Gladyatör yüklemesi zaman aşımına uğradı. Tekrar dene.':e.message);}
   finally{clearTimeout(timeout);}
  }
@@ -6546,16 +6593,19 @@ var ImportedGladiator=(function(){
   if(f.action==='bash'||f.action==='hook'){const p=f.action==='hook'?1:Math.sin(Math.PI*Math.min(1,f.timer/.5)),side=f.action==='hook'&&!f.attackLeft?'Right':'Left';poses[side+'Arm']=[-1.2*p,0,-.2];poses[side+'ForeArm']=[-.2,0,0];poses.Spine2=[.18*p,0,0];}
   if(f.shieldHeldBy!==null&&f.shieldHeldBy!==undefined)poses.LeftArm=[-.75,0,-.25];
   if(f.action==='dodge'){const a=Math.sin(Math.PI*f.timer/f.duration);drop=-.23*a;lean=.3*a;poses.LeftUpLeg=[-.5*a,0,0];poses.RightUpLeg=[-.4*a,0,0];poses.LeftLeg=[a,0,0];poses.RightLeg=[.8*a,0,0];}
-  if(f.reaction>0||f.action==='hurt'){const r=f.reaction||.15;poses.Spine2=[-r*.6,0,0];if(f.lastRegion==='head')poses.Head=[-r*.9,0,r*.25];if(f.lastRegion==='leftArm')poses.LeftArm=[r*.4,0,-r];if(f.lastRegion==='rightArm')poses.RightArm=[r*.4,0,r];if(f.lastRegion==='legs'){poses.LeftLeg=[r,0,0];drop=-r*.2;}}
+
   if(f.action==='stunned'){poses.Spine2=[.2,Math.sin(time*12)*.03,0];poses.Head=[.15,0,0];}
   const fullBody=typeof ArenaMotion!=='undefined'?ArenaMotion.body(f):null;
   if(fullBody){Object.assign(poses,fullBody.poses);drop+=fullBody.drop;lean+=fullBody.lean;}
-  // Impact reactions override the attack torso while the hand follows its contact path.
-  if(f.reaction>0){const r=f.reaction/.32,envelope=Math.sin(Math.PI*Math.min(1,r));
-   if(f.lastRegion==='head'){poses.Head=[-.25*envelope,.08*envelope,.08*envelope];poses.Spine2=[-.12*envelope,0,0];}
-   else if(f.lastRegion==='chest')poses.Spine2=[-.2*envelope,0,.045*envelope];
-   else if(f.lastRegion==='leftArm'||f.lastRegion==='rightArm'){const side=f.lastRegion==='leftArm'?'Left':'Right',sign=side==='Left'?-1:1;poses[side+'Arm']=[.12*envelope,0,sign*.28*envelope];poses.Spine2=[0,sign*.15*envelope,0];}
-   else if(f.lastRegion==='legs'){poses.LeftLeg=[.3*envelope,0,0];poses.RightLeg=[.16*envelope,0,0];drop-=.06*envelope;}
+  // One restrained local response, with feet planted. The simulation's hit stun
+  // and actual knockdown remain unchanged; normal damage never plays a fall clip.
+  if(f.reaction>0&&f.hp>0&&!['knocked','stunned'].includes(f.action)){
+   const elapsed=Math.max(0,.32-f.reaction),phase=Math.min(1,elapsed/.18);
+   const envelope=phase<.24?Math.sin(phase/.24*Math.PI/2):Math.pow(1-(phase-.24)/.76,2);
+   if(f.lastRegion==='head'){poses.Head=[-.09*envelope,.015*envelope,.02*envelope];poses.Spine2=[-.035*envelope,0,0];}
+   else if(f.lastRegion==='chest')poses.Spine2=[-.065*envelope,0,.018*envelope];
+   else if(f.lastRegion==='leftArm'||f.lastRegion==='rightArm'){const side=f.lastRegion==='leftArm'?'Left':'Right',sign=side==='Left'?-1:1;poses[side+'Arm']=[.025*envelope,0,sign*.075*envelope];poses.Spine2=[0,sign*.03*envelope,0];}
+   else if(f.lastRegion==='legs'){poses.LeftLeg=[.045*envelope,0,0];poses.RightLeg=[.025*envelope,0,0];drop-=.01*envelope;}
   }
   let fall=0;if(f.hp<=0)fall=Math.min(1,f.deadTime*3);else if(f.action==='knocked'){const p=f.timer/f.duration;fall=p<.25?p/.25:p<.65?1:1-(p-.65)/.35;}
   const blend=1-Math.exp(-Math.max(0,dt)*(f.reaction>0?30:18));
@@ -6590,7 +6640,7 @@ var ImportedGladiator=(function(){
 
 (function(){
 'use strict';const T=THREE,$=id=>document.getElementById(id),canvas=$('scene');let renderer;
-try{renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){$('loading').textContent='3D görüntü açılamadı. Safari’de tekrar dene.';return;}
+try{renderer=ArenaCreateRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){$('loading').textContent='3D görüntü açılamadı. Safari’de tekrar dene.';return;}
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
 const scene=new T.Scene();scene.background=new T.Color('#75bdf2');scene.fog=new T.Fog('#c5e6fa',65,130);const camera=new T.PerspectiveCamera(58,1,.08,140);
 scene.add(new T.HemisphereLight(0xe4efff,0x897654,2));const sun=new T.DirectionalLight(0xffe6bd,3.2);sun.position.set(-13,24,-16);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:70});sun.shadow.normalBias=.035;sun.shadow.bias=-.00015;scene.add(sun);

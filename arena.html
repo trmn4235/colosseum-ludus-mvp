@@ -36,12 +36,12 @@ html,body{touch-action:none}.float{font-size:12px;text-shadow:0 1px 2px #29170c}
 #hand{position:static;grid-column:2;grid-row:1;width:48px;height:48px;min-width:0;min-height:0;padding:0;transform:none;border-radius:50%}#special{grid-column:3;grid-row:1}.actions{grid-template-columns:64px 78px 64px}@media(max-height:480px){.actions{grid-template-columns:52px 64px 52px}#hand{width:40px;height:40px}}
 </style><script id="gameNavigation">// Tab-local return frames. State is restored only for its authenticated owner.
 var LudusNavigation=(function(){
- const prefix='ludus-return-v12:',pages=new Set(['ludus.html','gelistirmeler.html','savas.html','pazar.html','arena.html']);
+ const prefix='ludus-return-v12:',pages=new Set(['ludus.html','gelistirmeler.html','savas.html','pazar.html','arena.html','gorevler.html']);
  let owner=null,readState=()=>null;
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','load14');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','legacy16');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -49,7 +49,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','load14');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','legacy16');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -6700,7 +6700,8 @@ var QuaterniusMotion=(function(){
  const T=THREE,qa=new T.Quaternion(),qb=new T.Quaternion(),direction=new T.Vector3();
  function select(f,time){
   if(f.hp<=0||f.action==='knocked'||f.action==='dodge'||f.action==='stunned')return null;
-  if(f.reaction>0||f.action==='hurt')return ['hurt',Math.min(1,1-(f.reaction||0)/.32),.55];
+  // Ordinary hits use a small regional recoil, never the full-body knockback clip.
+  if(f.reaction>0||f.action==='hurt')return null;
   if(f.action==='bash')return ['bash',Math.min(1,f.timer/Math.max(.01,f.duration)),1];
   if(f.action==='spearcast')return ['throw',Math.min(1,f.timer/Math.max(.01,f.duration)),1];
   if(f.action==='attack'&&['gladius','sica'].includes(f.attackWeapon||f.weapon)){
@@ -6980,16 +6981,19 @@ var ImportedGladiator=(function(){
   if(f.action==='bash'||f.action==='hook'){const p=f.action==='hook'?1:Math.sin(Math.PI*Math.min(1,f.timer/.5)),side=f.action==='hook'&&!f.attackLeft?'Right':'Left';poses[side+'Arm']=[-1.2*p,0,-.2];poses[side+'ForeArm']=[-.2,0,0];poses.Spine2=[.18*p,0,0];}
   if(f.shieldHeldBy!==null&&f.shieldHeldBy!==undefined)poses.LeftArm=[-.75,0,-.25];
   if(f.action==='dodge'){const a=Math.sin(Math.PI*f.timer/f.duration);drop=-.23*a;lean=.3*a;poses.LeftUpLeg=[-.5*a,0,0];poses.RightUpLeg=[-.4*a,0,0];poses.LeftLeg=[a,0,0];poses.RightLeg=[.8*a,0,0];}
-  if(f.reaction>0||f.action==='hurt'){const r=f.reaction||.15;poses.Spine2=[-r*.6,0,0];if(f.lastRegion==='head')poses.Head=[-r*.9,0,r*.25];if(f.lastRegion==='leftArm')poses.LeftArm=[r*.4,0,-r];if(f.lastRegion==='rightArm')poses.RightArm=[r*.4,0,r];if(f.lastRegion==='legs'){poses.LeftLeg=[r,0,0];drop=-r*.2;}}
+
   if(f.action==='stunned'){poses.Spine2=[.2,Math.sin(time*12)*.03,0];poses.Head=[.15,0,0];}
   const fullBody=typeof ArenaMotion!=='undefined'?ArenaMotion.body(f):null;
   if(fullBody){Object.assign(poses,fullBody.poses);drop+=fullBody.drop;lean+=fullBody.lean;}
-  // Impact reactions override the attack torso while the hand follows its contact path.
-  if(f.reaction>0){const r=f.reaction/.32,envelope=Math.sin(Math.PI*Math.min(1,r));
-   if(f.lastRegion==='head'){poses.Head=[-.25*envelope,.08*envelope,.08*envelope];poses.Spine2=[-.12*envelope,0,0];}
-   else if(f.lastRegion==='chest')poses.Spine2=[-.2*envelope,0,.045*envelope];
-   else if(f.lastRegion==='leftArm'||f.lastRegion==='rightArm'){const side=f.lastRegion==='leftArm'?'Left':'Right',sign=side==='Left'?-1:1;poses[side+'Arm']=[.12*envelope,0,sign*.28*envelope];poses.Spine2=[0,sign*.15*envelope,0];}
-   else if(f.lastRegion==='legs'){poses.LeftLeg=[.3*envelope,0,0];poses.RightLeg=[.16*envelope,0,0];drop-=.06*envelope;}
+  // One restrained local response, with feet planted. The simulation's hit stun
+  // and actual knockdown remain unchanged; normal damage never plays a fall clip.
+  if(f.reaction>0&&f.hp>0&&!['knocked','stunned'].includes(f.action)){
+   const elapsed=Math.max(0,.32-f.reaction),phase=Math.min(1,elapsed/.18);
+   const envelope=phase<.24?Math.sin(phase/.24*Math.PI/2):Math.pow(1-(phase-.24)/.76,2);
+   if(f.lastRegion==='head'){poses.Head=[-.09*envelope,.015*envelope,.02*envelope];poses.Spine2=[-.035*envelope,0,0];}
+   else if(f.lastRegion==='chest')poses.Spine2=[-.065*envelope,0,.018*envelope];
+   else if(f.lastRegion==='leftArm'||f.lastRegion==='rightArm'){const side=f.lastRegion==='leftArm'?'Left':'Right',sign=side==='Left'?-1:1;poses[side+'Arm']=[.025*envelope,0,sign*.075*envelope];poses.Spine2=[0,sign*.03*envelope,0];}
+   else if(f.lastRegion==='legs'){poses.LeftLeg=[.045*envelope,0,0];poses.RightLeg=[.025*envelope,0,0];drop-=.01*envelope;}
   }
   let fall=0;if(f.hp<=0)fall=Math.min(1,f.deadTime*3);else if(f.action==='knocked'){const p=f.timer/f.duration;fall=p<.25?p/.25:p<.65?1:1-(p-.65)/.35;}
   const blend=1-Math.exp(-Math.max(0,dt)*(f.reaction>0?30:18));
@@ -7257,7 +7261,7 @@ var LudusResults=(function(){
 // Authenticated battle ticket and idempotent reward delivery. Combat is still a client-simulated MVP.
 var LudusBattle=(function(){
  const client=supabase.createClient(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey);let ticket=null,inflight=null;
- async function load(){const id=new URL(location.href).searchParams.get('battle');if(!/^[a-f0-9-]{36}$/i.test(id||'')){location.replace('savas.html?v=return12');throw Error('Savaş hazırlığından gladyatörünü seç.');}const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');throw Error('Giriş gerekli.');}LudusNavigation.setOwner(u.data.user.id);
+ async function load(){const id=new URL(location.href).searchParams.get('battle');if(!/^[a-f0-9-]{36}$/i.test(id||'')){location.replace('savas.html?v=legacy16');throw Error('Savaş hazırlığından gladyatörünü seç.');}const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');throw Error('Giriş gerekli.');}LudusNavigation.setOwner(u.data.user.id);
   const pending=LudusResults.read(u.data.user.id);if(pending.length){await LudusResults.flush(client,u.data.user.id);if(pending.some(r=>r.payload.p_battle===id)){LudusNavigation.back('savas.html',{recovered:'1'});throw Error('Bekleyen savaş sonucu kaydedildi.');}}
   const r=await client.from('ludus_battles').select('*').eq('id',id).eq('owner_id',u.data.user.id).single();if(r.error)throw Error('Savaş kaydı okunamadı: '+r.error.message);ticket=r.data;if(ticket.finished_at){LudusNavigation.back('savas.html');throw Error('Bu savaş tamamlandı. Yeni savaş seç.');}return ticket;}
  function stage(won,stats){if(!ticket)throw Error('Savaş kaydı hazır değil');return LudusResults.stage(ticket.owner_id,ticket.id,won,stats,ticket.rule_version===2?'ludus_finish_battle_v2':'ludus_finish_battle');}
