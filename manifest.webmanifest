@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Colosseum & Ludus",
   "short_name": "Colosseum & Ludus",
-  "start_url": "./index.html?v=revision17",
+  "start_url": "./index.html?v=revision18",
   "scope": "./",
   "display": "standalone",
   "display_override": [
