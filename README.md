@@ -2,15 +2,13 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
-## Downloaded owner model V27
+## Owner revisions V28
 
-The owner uses downloaded MakeHuman CC0 human anatomy, Mixamo-compatible weights, skin textures, hair, eyebrows and beard meshes. The V26 primitive-built human is removed. See [OWNER_ASSETS.md](OWNER_ASSETS.md) for asset origins and current limits. This changes the character asset pipeline; Three.js remains the renderer.
+The owner uses a downloaded MakeHuman human with an adapted long white rope-belt tunic and ankle sandals. Downloaded normal-walk and idle motions replace the previous procedural posing. Hair colours retain strand texture while visibly differentiating blond, brown, red and grey; there are 11 hair, 6 facial-hair and 7 eyebrow choices. Weight blends include more pronounced waist, head, arm and thigh fat targets and fitted clothing.
 
-Registration and the portrait editor keep cosmetics in authenticated `ludus_owner` metadata, with no SQL migration. Skin is a continuous blend between natural light and dark skin textures; arbitrary skin RGB is removed. Hair, beard and eyebrows share one natural-colour palette. Body weight and muscle sliders blend anatomical morphs and matching clothing morphs, with intermediate values. Height is 160–200 cm. Only white starter clothing is available.
+Appearance does not open on ordinary login. Edit it from **Ludus yönetimi → Ludus sahibinin görünümü**. Manual initial customization remains available during signup. The clothing follows the long white belted silhouette but does not reproduce the reference's diagonal toga drape. Asset attribution and conversion details are in [OWNER_ASSETS.md](OWNER_ASSETS.md).
 
-The third-person camera, rooms, stairs and overview toggle remain. Ready assets load asynchronously with a loading/error message; the editor saves only after the model is available. Source textures are reduced to 1024px for a roughly 11 MB character package. The downloaded tunic is an interim garment, not the requested final Roman toga. Locomotion still uses the existing simple skeleton posing; no new authored motion-capture animation or renderer migration is claimed.
-
-Validation: `node --test tests/*.test.cjs`. Isolated browser checks verify metadata persistence, failed-save retry, third-person movement, room/stair camera behaviour and an 844×390 mobile editor. iPhone frame rate remains a device check.
+Preview: [owner preview V28](https://trmn4235.github.io/colosseum-ludus-mvp/owner-preview-v27.html?v=revision28). The GLB retains its existing filename; runtime asset URLs use `revision28` to refresh cached copies.
 
 ## Ludus architecture V25
 

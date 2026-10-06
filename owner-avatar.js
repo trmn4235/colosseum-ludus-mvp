@@ -1,9 +1,9 @@
-/* Downloaded MakeHuman CC0 anatomy, rig, hair, brows and beard assets. */
+/* Downloaded MakeHuman human and fitted assets; attribution in OWNER_ASSETS.md. */
 var LudusOwner = (() => {
  'use strict';
  const defaults={version:2,hair:'short',beard:'clean',brows:'natural',hairColor:'#34251e',beardColor:'#34251e',browColor:'#34251e',skinTone:.25,weight:.5,muscle:.45,height:178,outfit:'tunic',cloth:'#eee4d0',accent:'#eee4d0'};
- const choices={hair:[['short','Kısa'],['crop','Kısa kesim'],['curls','Kıvırcık'],['long','Uzun'],['bald','Kel']],beard:[['clean','Sakalsız'],['full','Dolgun sakal'],['goatee','Keçi sakalı'],['moustache','Bıyık']],brows:[['natural','Doğal'],['fine','İnce'],['thick','Kalın']],outfit:[['tunic','Beyaz tunik']]};
- const hairColors=[['#211b18','Siyah'],['#34251e','Koyu kahve'],['#74513b','Kahve'],['#b99a65','Kumral'],['#d6c59b','Sarı'],['#a8a3a0','Gri']];
+ const choices={hair:[['short','Kısa'],['crop','Kısa kesim'],['curls','Kıvırcık'],['long','Uzun'],['swept','Geri taranmış'],['parted','Yandan ayrık'],['bob','Küt kesim'],['waves','Dalgalı'],['ponytail','At kuyruğu'],['braid','Örgülü'],['bald','Kel']],beard:[['clean','Sakalsız'],['full','Dolgun sakal'],['goatee','Keçi sakalı'],['moustache','Bıyık'],['scruffy','Dağınık sakal'],['handlebar','Burma bıyık']],brows:[['natural','Doğal'],['fine','İnce'],['thick','Kalın'],['arched','Kavisli'],['straight','Düz'],['wide','Geniş'],['angled','Köşeli']],outfit:[['tunic','Beyaz tunik']]};
+ const hairColors=[['#211b18','Siyah'],['#34251e','Koyu kahve'],['#74513b','Kahve'],['#b99a65','Kumral'],['#d6c59b','Sarı'],['#9e5636','Kızıl'],['#a8a3a0','Gri'],['#ded9d0','Beyaz']];
  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
  function normalize(value){const v=value&&typeof value==='object'?value:{},r={...defaults};for(const key of Object.keys(choices))if(choices[key].some(([id])=>id===v[key]))r[key]=v[key];if(hairColors.some(([id])=>id===v.hairColor))r.hairColor=v.hairColor;r.beardColor=r.browColor=r.hairColor;
   for(const key of ['skinTone','weight','muscle'])if(v[key]!==undefined&&Number.isFinite(Number(v[key])))r[key]=clamp(Number(v[key]),0,1);
@@ -13,11 +13,11 @@ var LudusOwner = (() => {
  let template,pending,skinImages;
  function load(){if(template)return Promise.resolve(template);if(pending)return pending;
   const getImage=url=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Ten dokusu yüklenemedi.'));img.src=url;});
-  pending=Promise.all([new Promise((resolve,reject)=>new THREE.GLTFLoader().load('owner-makehuman-v27.glb',resolve,undefined,reject)),getImage('owner-skin-light-v27.jpg'),getImage('owner-skin-dark-v27.jpg')]).then(([g,light,dark])=>{template=g.scene;skinImages=[light,dark];return template;}).catch(e=>{pending=null;throw e;});return pending;
+  pending=Promise.all([new Promise((resolve,reject)=>new THREE.GLTFLoader().load('owner-makehuman-v27.glb?v=revision28',resolve,undefined,reject)),getImage('owner-skin-light-v27.jpg?v=revision28'),getImage('owner-skin-dark-v27.jpg?v=revision28')]).then(([g,light,dark])=>{template=g.scene;template.userData.ownerClips=g.animations;skinImages=[light,dark];return template;}).catch(e=>{pending=null;throw e;});return pending;
  }
  function cloneRig(source){const copy=source.clone(true),map=new Map();const pair=(a,b)=>{map.set(a,b);a.children.forEach((c,i)=>pair(c,b.children[i]));};pair(source,copy);source.traverse(o=>{if(o.isSkinnedMesh){const c=map.get(o);c.skeleton=o.skeleton.clone();c.skeleton.bones=o.skeleton.bones.map(b=>map.get(b));c.bind(c.skeleton,o.bindMatrix);}});return copy;}
  function create(value){const T=THREE,a=normalize(value),root=new T.Group(),body=new T.Group();root.name='ludus-owner';root.userData.appearance=a;root.userData.owner=true;root.add(body);
-  let disposed=false,ready=false,bones={},rests={},materials=[],ownGeometries=[],skinTexture=null,walk=0,speed=0;
+  let disposed=false,ready=false,bones={},rests={},materials=[],ownGeometries=[],skinTexture=null,walk=0,speed=0,mixer=null,walkAction=null,idleAction=null;
   const promise=load().then(source=>{if(disposed)return;const imported=cloneRig(source);body.add(imported);imported.updateMatrixWorld(true);
    imported.traverse(o=>{
     if(o.isBone){const name=o.name.replace(/^mixamorig[:]?/,'');bones[name]=o;rests[name]=o.quaternion.clone();}
@@ -34,22 +34,25 @@ var LudusOwner = (() => {
       const canvas=document.createElement('canvas');canvas.width=canvas.height=1024;const cx=canvas.getContext('2d');cx.drawImage(skinImages[0],0,0,1024,1024);cx.globalAlpha=a.skinTone;cx.drawImage(skinImages[1],0,0,1024,1024);skinTexture=new T.CanvasTexture(canvas);skinTexture.flipY=false;skinTexture.colorSpace=T.SRGBColorSpace;c.map=skinTexture;c.color.set(0xffffff);c.roughness=.85;
      }
      if(part==='OwnerEyes'){c.transparent=false;c.depthWrite=true;c.side=T.FrontSide;}
-     if(part==='OwnerWhiteTunic'){c.color.set('#eee4d0');c.side=T.DoubleSide;}
+     if(part==='OwnerWhiteTunic'){c.color.set('#fffaf0');c.transparent=false;c.depthWrite=true;c.side=T.DoubleSide;}
+     if(part==='OwnerSandals'){c.color.set('#756048');c.opacity=1;c.transparent=false;c.depthWrite=true;c.side=T.DoubleSide;}
      return c;});o.material=Array.isArray(o.material)?cloned:cloned[0];
    });
    // glTF uses metres. Normalize downloaded anatomy to the selected height.
    const box=new T.Box3().setFromObject(imported),h=box.max.y-box.min.y;body.scale.setScalar(a.height/100/h);imported.position.y-=box.min.y;
+   // Downloaded normal-walk and idle clips drive the actual weighted rig.
+   mixer=new T.AnimationMixer(imported);const clip=source.userData.ownerClips?.find(c=>c.name.includes('OwnerWalk'));
+   if(clip){const keep=clip.tracks.map(track=>{const t=track.clone();t.times=new Float32Array([0]);t.values=track.values.slice(0,track.getValueSize());return t;});const idle=source.userData.ownerClips.find(c=>c.name.includes('OwnerIdle'))||new T.AnimationClip('OwnerIdle',1,keep);idleAction=mixer.clipAction(idle).play();walkAction=mixer.clipAction(clip).play();walkAction.setEffectiveWeight(0);mixer.update(0);}
    root.userData.loaded=true;ready=true;animate(0,false);
   }).catch(e=>{root.userData.loadError=e.message;throw e;});
   // Game callers can mount an empty group while loading; no primitive fallback.
   promise.catch(()=>{});
   function pose(name,x=0,y=0,z=0){const bone=bones[name];if(bone)bone.quaternion.copy(rests[name]).multiply(new T.Quaternion().setFromEuler(new T.Euler(x,y,z)));}
   function align(name,child,direction){const bone=bones[name],end=bones[child];if(!bone||!end)return;root.updateMatrixWorld(true);const current=end.getWorldPosition(new T.Vector3()).sub(bone.getWorldPosition(new T.Vector3())).normalize(),target=new T.Vector3(...direction).normalize();target.applyQuaternion(root.getWorldQuaternion(new T.Quaternion()));const q=new T.Quaternion().setFromUnitVectors(current,target).multiply(bone.getWorldQuaternion(new T.Quaternion()));bone.quaternion.copy(bone.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(q));root.updateMatrixWorld(true);}
-  function animate(dt,moving){if(!ready)return;speed+=(Number(!!moving)-speed)*(1-Math.exp(-dt*10));walk+=dt*7.2*speed;for(const [name,bone]of Object.entries(bones))bone.quaternion.copy(rests[name]);
-   for(const [side,phase]of [['Left',0],['Right',Math.PI]]){const swing=Math.sin(walk+phase)*speed,sign=side==='Left'?1:-1;align(side+'Arm',side+'ForeArm',[sign*.10,-1,-swing*.20]);align(side+'ForeArm',side+'Hand',[sign*.02,-1,.10-swing*.15]);pose(side+'UpLeg',swing*.30);pose(side+'Leg',Math.max(0,-swing)*.45);pose(side+'Foot',-Math.max(0,-swing)*.15);}
-   pose('Spine2',0,Math.sin(walk)*.025*speed);body.position.y=Math.abs(Math.sin(walk))*.009*speed;
+  function animate(dt,moving){if(!ready)return;speed+=(Number(!!moving)-speed)*(1-Math.exp(-Math.min(dt,.1)*9));
+   if(walkAction){walkAction.setEffectiveWeight(speed);idleAction.setEffectiveWeight(1-speed);walkAction.setEffectiveTimeScale(1.05);mixer.update(Math.min(dt,.1));}else{for(const [name,bone]of Object.entries(bones))bone.quaternion.copy(rests[name]);for(const side of ['Left','Right']){const sign=side==='Left'?1:-1;align(side+'Arm',side+'ForeArm',[sign*.10,-1,0]);align(side+'ForeArm',side+'Hand',[sign*.02,-1,.1]);}}
   }
-  function dispose(){disposed=true;materials.forEach(m=>m.dispose());ownGeometries.forEach(g=>g.dispose());skinTexture?.dispose();root.removeFromParent();}
+  function dispose(){disposed=true;mixer?.stopAllAction();if(mixer)mixer.uncacheRoot(body.children[0]);materials.forEach(m=>m.dispose());ownGeometries.forEach(g=>g.dispose());skinTexture?.dispose();root.removeFromParent();}
   return {root,body,get head(){return bones.Head||body;},appearance:a,ready:promise,animate,dispose};
  }
  function createEditor(){
