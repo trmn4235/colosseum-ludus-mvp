@@ -2,13 +2,15 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
-## Owner appearance and third-person Ludus V26
+## Downloaded owner model V27
 
-Registration includes a live 3D owner editor for six hair styles, six beard styles, five eyebrow styles, separate hair/beard/brow colours, skin and eye colour, face shape, height (160–200 cm), four body builds and accessories. Only the starter white tunic is selectable; coloured outfits and cloth colours are not available. Cosmetic values are normalized, then stored in the authenticated user's `ludus_owner` metadata at sign-up or through `auth.updateUser`. Existing players can edit their appearance from the welcome screen or the Ludus portrait button. No SQL migration is required. These values never grant combat stats or paid inventory.
+The owner uses downloaded MakeHuman CC0 human anatomy, Mixamo-compatible weights, skin textures, hair, eyebrows and beard meshes. The V26 primitive-built human is removed. See [OWNER_ASSETS.md](OWNER_ASSETS.md) for asset origins and current limits. This changes the character asset pipeline; Three.js remains the renderer.
 
-Ludus opens with the owner's animated avatar and a third-person orbit camera. Movement uses the existing joystick/WASD controls, dragging changes the camera direction, and a camera button cycles near/medium/far. Collision proxies shorten the camera before walls, columns and gallery floors; the avatar follows stairs and transfers into rooms. The overview toggle remains available. The model batches rigid details inside articulated joints to keep draw calls low. The new original avatar is stylized and does not use the gladiator's combat rig.
+Registration and the portrait editor keep cosmetics in authenticated `ludus_owner` metadata, with no SQL migration. Skin is a continuous blend between natural light and dark skin textures; arbitrary skin RGB is removed. Hair, beard and eyebrows share one natural-colour palette. Body weight and muscle sliders blend anatomical morphs and matching clothing morphs, with intermediate values. Height is 160–200 cm. Only white starter clothing is available.
 
-Validation: `node --test tests/*.test.cjs`. An isolated browser fixture also verifies sign-up metadata, failed-save retry, cross-page persistence, visible third-person movement, stairs/gallery/rooms and an 844×390 mobile editor layout. Actual iPhone frame rate remains a device check.
+The third-person camera, rooms, stairs and overview toggle remain. Ready assets load asynchronously with a loading/error message; the editor saves only after the model is available. Source textures are reduced to 1024px for a roughly 11 MB character package. The downloaded tunic is an interim garment, not the requested final Roman toga. Locomotion still uses the existing simple skeleton posing; no new authored motion-capture animation or renderer migration is claimed.
+
+Validation: `node --test tests/*.test.cjs`. Isolated browser checks verify metadata persistence, failed-save retry, third-person movement, room/stair camera behaviour and an 844×390 mobile editor. iPhone frame rate remains a device check.
 
 ## Ludus architecture V25
 
