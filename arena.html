@@ -41,7 +41,7 @@ var LudusNavigation=(function(){
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision25');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision26');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -49,7 +49,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision25');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision26');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -78,7 +78,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision25"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision26"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -7547,7 +7547,7 @@ var LudusResults=(function(){
 // Authenticated battle ticket and idempotent reward delivery. Combat is still a client-simulated MVP.
 var LudusBattle=(function(){
  const client=supabase.createClient(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey);let ticket=null,inflight=null;
- async function load(){const id=new URL(location.href).searchParams.get('battle');if(!/^[a-f0-9-]{36}$/i.test(id||'')){location.replace('savas.html?v=revision25');throw Error('Savaş hazırlığından gladyatörünü seç.');}const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');throw Error('Giriş gerekli.');}LudusNavigation.setOwner(u.data.user.id);
+ async function load(){const id=new URL(location.href).searchParams.get('battle');if(!/^[a-f0-9-]{36}$/i.test(id||'')){location.replace('savas.html?v=revision26');throw Error('Savaş hazırlığından gladyatörünü seç.');}const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');throw Error('Giriş gerekli.');}LudusNavigation.setOwner(u.data.user.id);
   const pending=LudusResults.read(u.data.user.id);if(pending.length){await LudusResults.flush(client,u.data.user.id);if(pending.some(r=>r.payload.p_battle===id)){LudusNavigation.back('savas.html',{recovered:'1'});throw Error('Bekleyen savaş sonucu kaydedildi.');}}
   const r=await client.from('ludus_battles').select('*').eq('id',id).eq('owner_id',u.data.user.id).single();if(r.error)throw Error('Savaş kaydı okunamadı: '+r.error.message);ticket=r.data;if(ticket.finished_at){LudusNavigation.back('savas.html');throw Error('Bu savaş tamamlandı. Yeni savaş seç.');}return ticket;}
  function stage(won,stats){if(!ticket)throw Error('Savaş kaydı hazır değil');return LudusResults.stage(ticket.owner_id,ticket.id,won,stats,ticket.rule_version===2?'ludus_finish_battle_v2':'ludus_finish_battle');}

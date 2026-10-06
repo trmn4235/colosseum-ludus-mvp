@@ -7,7 +7,7 @@ var LudusNavigation=(function(){
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision25');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision26');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -15,7 +15,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision25');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision26');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -66,7 +66,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision25"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision26"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -7451,7 +7451,7 @@ var LUDUS_CLASS_PORTRAITS={"murmillo":"data:image/webp;base64,UklGRrQcAABXRUJQVl
   if(!r){if(!selection?.gladiator)throw Error('Önce gladyatörünü seç.');r=await rpc({p_action:'join',p_gladiator:selection.gladiator,p_slots:selection.slots||{}});}if(r.error)throw r.error;sessionStorage.setItem('ludus-match-room',r.data.id);showState(r.data);pending=false;step();}
   catch(e){message(e.message||'Maç başlatılamadı.');$('queueMessage').textContent=e.message||'Bağlantı kurulamadı.';$('mpRetry').hidden=false;}finally{pending=false;}
  }
- function travelBack(){if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision25';}
+ function travelBack(){if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision26';}
  async function leave(){if($('mpBack').disabled)return;stopped=true;$('mpBack').disabled=$('queueCancel').disabled=true;try{while(pending)await new Promise(r=>setTimeout(r,20));if(room&&room.status!=='finished'){const r=await rpc({p_action:'leave',p_room:room.id});if(r.error)throw r.error;}sessionStorage.removeItem('ludus-match-room');travelBack();}catch(e){message('Çıkış kaydedilemedi. Tekrar dene.');$('mpBack').disabled=$('queueCancel').disabled=false;stopped=false;step();}}
  $('mpBack').onclick=$('queueCancel').onclick=leave;$('mpRetry').onclick=()=>{$('mpRetry').hidden=true;join();};$('resultBack').onclick=travelBack;
  const stick=$('duelStick');let pointer=null;function move(e){const b=stick.getBoundingClientRect(),rad=b.width*.4;joy={x:Math.max(-1,Math.min(1,(e.clientX-b.x-b.width/2)/rad)),z:Math.max(-1,Math.min(1,(e.clientY-b.y-b.height/2)/rad))};const len=Math.hypot(joy.x,joy.z);if(len>1){joy.x/=len;joy.z/=len;}$('duelKnob').style.transform='translate('+joy.x*rad*.5+'px,'+joy.z*rad*.5+'px)';}

@@ -2,6 +2,14 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## Owner appearance and third-person Ludus V26
+
+Registration includes a live 3D owner editor for six hair styles, six beard styles, five eyebrow styles, separate hair/beard/brow colours, skin and eye colour, face shape, height (160–200 cm), four body builds and accessories. Only the starter white tunic is selectable; coloured outfits and cloth colours are not available. Cosmetic values are normalized, then stored in the authenticated user's `ludus_owner` metadata at sign-up or through `auth.updateUser`. Existing players can edit their appearance from the welcome screen or the Ludus portrait button. No SQL migration is required. These values never grant combat stats or paid inventory.
+
+Ludus opens with the owner's animated avatar and a third-person orbit camera. Movement uses the existing joystick/WASD controls, dragging changes the camera direction, and a camera button cycles near/medium/far. Collision proxies shorten the camera before walls, columns and gallery floors; the avatar follows stairs and transfers into rooms. The overview toggle remains available. The model batches rigid details inside articulated joints to keep draw calls low. The new original avatar is stylized and does not use the gladiator's combat rig.
+
+Validation: `node --test tests/*.test.cjs`. An isolated browser fixture also verifies sign-up metadata, failed-save retry, cross-page persistence, visible third-person movement, stairs/gallery/rooms and an 844×390 mobile editor layout. Actual iPhone frame rate remains a device check.
+
 ## Ludus architecture V25
 
 The burgundy wall frieze wraps all four courtyard walls at one height and stops at doorways. Arena torches sit above it. Stair rails now use the balcony’s limestone balusters. The colonnade has fluted Ionic shafts, moulded bases and spiral capitals. An instanced Roman city skyline with tiled roofs, cypresses and a three-tier elliptical amphitheatre is visible beyond the perimeter walls, including from the upper gallery. No SQL migration or new downloaded assets are required.
