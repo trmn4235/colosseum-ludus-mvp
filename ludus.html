@@ -13,7 +13,7 @@ var LudusNavigation=(function(){
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision24');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision25');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -21,7 +21,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision24');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision25');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -57,7 +57,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision24"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision25"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -6956,16 +6956,34 @@ for(let x=-14;x<=14;x+=.55)part('roof',x,7.45,10,.09,.08,5.15,.04);
 // Upper doorways and faded cloth flank the owner's gallery.
 for(const x of [-8,0,8]){part('dark',x,5,11.6,2,3,.06);part('wood',x,5,11.54,1.8,2.8,.08);part('stone',x,6.5,11.5,2.35,.2,.25);}
 for(const x of [-2.1,2.1])part('cloth',x,5.1,11.45,.65,2.3,.035);
-function fence(x1,x2,z){const geo=new T.LatheGeometry([[.10,0],[.10,.10],[.065,.15],[.08,.3],[.12,.4],[.065,.62],[.075,.76],[.10,.83]].map(([r,y])=>new T.Vector2(r,y)),14);part('stone',(x1+x2)/2,4.5,z,x2-x1,.16,.30);part('stone',(x1+x2)/2,3.62,z,x2-x1,.12,.30);const n=Math.ceil((x2-x1)/.55);for(let i=0;i<=n;i++)part('limestone',x1+(x2-x1)*i/n,3.68,z,1,1,1,0,0,0,geo);}
+// Balcony and stairway use the same carved limestone balusters.
+const balusterGeo=new T.LatheGeometry([[.10,0],[.10,.10],[.065,.15],[.08,.3],[.12,.4],[.065,.62],[.075,.76],[.10,.83]].map(([r,y])=>new T.Vector2(r,y)),14);
+function fence(x1,x2,z){part('limestone',(x1+x2)/2,4.5,z,x2-x1,.16,.30);part('limestone',(x1+x2)/2,3.62,z,x2-x1,.12,.30);const n=Math.ceil((x2-x1)/.55);for(let i=0;i<=n;i++)part('limestone',x1+(x2-x1)*i/n,3.68,z,1,1,1,0,0,0,balusterGeo);}
 fence(-10.3,13.4,7.91);
-// Stairway at left, 18 shallow treads leading directly into gallery.
+// Eighteen shallow treads; upright balusters follow each step, rails follow the incline.
 for(let i=0;i<18;i++){const h=(i+1)*3.47/18;part('stone',-11.75,h/2,1+(i+.5)*7/18,2.5,h,7/18+.02);}
-for(const x of [-13.12,-10.38]){beam(V(x,1,1),V(x,4.5,8),.14);for(let i=0;i<5;i++){const z=1+i*1.75;part('wood',x,.5+(z-1)*3.47/7,z,.12,1,.12);}}
-// Roman colonnade: profiled columns and voussoir arches share geometry and materials.
-const romanProfile=[[.35,0],[.35,.12],[.28,.16],[.25,.25],[.22,.34],[.20,2.62],[.25,2.68],[.31,2.75],[.34,2.86],[.34,3.12]].map(([r,y])=>new T.Vector2(r,y));
-const romanColumnGeo=new T.LatheGeometry(romanProfile,24);
-const corniceGeo=new T.BoxGeometry(1,1,1);
-function romanColumn(x,z,y=0,height=3.12){part('limestone',x,y,z,1,height/3.12,1,0,0,0,romanColumnGeo);part('stone',x,y+.08,z,.77,.16,.77);}
+const stairSlope=Math.atan2(3.47,7),stairLength=Math.hypot(3.47,7);
+for(const x of [-13.12,-10.38]){
+ for(const y of [.23,1.06])part('limestone',x,y+3.47/2,4.5,.30,.14,stairLength, -stairSlope);
+ for(let i=0;i<18;i++){const z=1+(i+.5)*7/18,y=(i+1)*3.47/18;part('limestone',x,y+.14,z,1,1,1,0,0,0,balusterGeo);}
+ for(const [z,y] of [[1,0],[8,3.47]]){part('limestone',x,y+.55,z,.32,1.10,.32);part('limestone',x,y+1.13,z,.40,.12,.40);}
+}
+// Ionic columns: true recessed flutes, moulded circular bases and twin spiral capitals.
+const shaftGeo=new T.CylinderGeometry(.205,.245,2.36,120,1);
+const shaftPositions=shaftGeo.attributes.position;
+for(let i=0;i<shaftPositions.count;i++){const x=shaftPositions.getX(i),z=shaftPositions.getZ(i),r=Math.hypot(x,z);if(r<.01)continue;const groove=.023*Math.pow((1+Math.cos(Math.atan2(z,x)*20))/2,2);shaftPositions.setXYZ(i,x*(r-groove)/r,shaftPositions.getY(i),z*(r-groove)/r);}
+shaftGeo.computeVertexNormals();
+const baseGeo=new T.LatheGeometry([[.36,0],[.36,.08],[.32,.12],[.34,.17],[.34,.22],[.28,.26],[.27,.34]].map(([r,y])=>new T.Vector2(r,y)),32);
+const neckGeo=new T.LatheGeometry([[.23,0],[.25,.06],[.31,.10],[.31,.16],[.26,.21]].map(([r,y])=>new T.Vector2(r,y)),32);
+const spiralPoints=[];for(let i=0;i<=64;i++){const t=i/64*Math.PI*3.6,r=.19*(1-i/64)+.025;spiralPoints.push(new T.Vector3(Math.cos(t)*r,Math.sin(t)*r,0));}
+const voluteGeo=new T.TubeGeometry(new T.CatmullRomCurve3(spiralPoints),64,.027,6,false);
+const voluteBacking=new T.CylinderGeometry(.225,.225,.15,24); 
+function romanColumn(x,z,y=0,height=3.12){const k=height/3.12;
+ part('limestone',x,y,z,1,k,1,0,0,0,baseGeo);part('limestone',x,y+1.52*k,z,1,k,1,0,0,0,shaftGeo);
+ part('limestone',x,y+2.69*k,z,1,k,1,0,0,0,neckGeo);
+ for(const side of [-1,1]){part('limestone',x+side*.29,y+2.87*k,z,1,1,k,Math.PI/2,0,0,voluteBacking);for(const face of [-1,1])part('limestone',x+side*.29,y+2.87*k,z+face*.09,1,k,1,0,face<0?Math.PI:0,side<0?Math.PI:0,voluteGeo);}
+ part('limestone',x,y+3.04*k,z,1.10,.16*k,.65);
+}
 for(const x of galleryPosts){romanColumn(x,8);romanColumn(x,8,3.47,3.48);romanColumn(x,11.5,3.47,3.48);}
 // Clear passage remains below every arch; no columns are placed on doors or stair landings.
 for(let i=0;i<galleryPosts.length-1;i++){
@@ -6975,11 +6993,11 @@ for(let i=0;i<galleryPosts.length-1;i++){
  const archMesh=new T.Mesh(new T.ExtrudeGeometry(shape,{depth:.34,bevelEnabled:true,bevelSize:.015,bevelThickness:.015,bevelSegments:1,curveSegments:16}),materials.limestone);archMesh.position.set(mid,2.18,7.83);archMesh.scale.y=.50;archMesh.castShadow=archMesh.receiveShadow=true;scene.add(archMesh);
  for(let k=0;k<11;k++){const t=(k+.5)*Math.PI/11;part('stone',mid+(r+.11)*Math.cos(t),2.18+(r+.11)*Math.sin(t)*.5,7.97,.025,.20,.37,0,0,t-Math.PI/2);}
 }
-// Warm travertine plinth, moulded limestone cornices and a restrained Pompeian red frieze.
-for(const [x,z,w,h,d] of [[0,11.53,28,.16,.18],[0,-11.5,28,.16,.18]]){
- part('stone',x,3.16,z,w,h,d);part('wall',x,3.25,z,w+.06,.12,d+.08);part('cloth',x,3.54,z,w,.38,d);part('stone',x,3.78,z,w+.10,.10,d+.10);
- for(let q=-13.3;q<=13.3;q+=1.1){part('stone',q,3.55,z-.11,.035,.24,.02);part('stone',q+.24,3.67,z-.11,.46,.035,.02);}
-}
+// A continuous level frieze on all four walls, interrupted at the arena doorway.
+const friezeY=2.38;
+function wallFrieze(x,z,length,angle=0){for(const [mat,y,h,depth] of [['stone',friezeY-.25,.10,.22],['cloth',friezeY,.38,.18],['stone',friezeY+.25,.10,.22]])part(mat,x,y,z,length,h,depth,0,angle);}
+wallFrieze(-11.4,-11.53,4.4);wallFrieze(5.4,-11.53,16.4);
+for(const [a,b] of [[-14,-10],[-8,-5.5],[-3.5,-1],[1,3.5],[5.5,8],[10,14]])wallFrieze((a+b)/2,11.53,b-a);for(const x of [-13.53,13.53])wallFrieze(x,0,23.1,Math.PI/2);
 part('stone',0,7.12,8,28,.15,.62);part('wall',0,7.25,8,28.35,.14,.75);part('stone',0,7.39,8,28.5,.10,.86);
 // Terracotta half-round roof tiles, shared instanced geometry rather than a flat slab.
 const tileGeo=new T.CylinderGeometry(.17,.17,1,10,1,true,0,Math.PI);
@@ -6987,15 +7005,45 @@ for(let x=-14.2;x<=14.2;x+=.34)for(let z=8;z<=12.2;z+=.76)part('roof',x,7.50+(z-
 // Wall braziers flank the arena; warm light has no expensive per-flame shadow maps.
 const bronze=new T.MeshStandardMaterial({color:0x60442b,metalness:.55,roughness:.6});
 for(const x of [-9.1,-2.9]){
- const bracket=new T.Mesh(new T.CylinderGeometry(.045,.07,.54,8),bronze);bracket.position.set(x,2.05,-11.25);bracket.rotation.x=.4;scene.add(bracket);
- const cup=new T.Mesh(new T.CylinderGeometry(.15,.06,.18,12),bronze);cup.position.set(x,2.29,-11.10);scene.add(cup);
- const flame=new T.Mesh(new T.ConeGeometry(.08,.30,9),new T.MeshBasicMaterial({color:0xffbc54}));flame.position.set(x,2.50,-11.1);scene.add(flame);
- const glow=new T.PointLight(0xffab4d,.65,3.5,2);glow.position.set(x,2.55,-11);scene.add(glow);
+ const bracket=new T.Mesh(new T.CylinderGeometry(.045,.07,.54,8),bronze);bracket.position.set(x,3.12,-11.25);bracket.rotation.x=.4;scene.add(bracket);
+ const cup=new T.Mesh(new T.CylinderGeometry(.15,.06,.18,12),bronze);cup.position.set(x,3.36,-11.10);scene.add(cup);
+ const flame=new T.Mesh(new T.ConeGeometry(.08,.30,9),new T.MeshBasicMaterial({color:0xffbc54}));flame.position.set(x,3.57,-11.1);scene.add(flame);
+ const glow=new T.PointLight(0xffab4d,.65,3.5,2);glow.position.set(x,3.62,-11);scene.add(glow);
 }
 
 // Training equipment and market cart are added by the activity module.
-// Distant ground forms keep the courtyard enclosed against a warm horizon.
-for(let i=0;i<12;i++){const mountain=new T.Mesh(new T.SphereGeometry(1,12,6),materials.earth);mountain.scale.set(16+rand()*9,4+rand()*4,12);mountain.position.set(-55+i*10,0,35+rand()*12);scene.add(mountain);}
+// Rome surrounds the ludus. Shared geometry keeps the distant city inexpensive.
+materials.cityStone=new T.MeshStandardMaterial({color:0xc9bba4,roughness:1});
+materials.cityPlaster=new T.MeshStandardMaterial({color:0xcdb79c,roughness:1});
+materials.cityRoof=new T.MeshStandardMaterial({color:0x985d43,roughness:1});
+materials.cityShade=new T.MeshStandardMaterial({color:0x62584d,roughness:1});
+const roofGeo=new T.CylinderGeometry(0,1,1,4);roofGeo.rotateY(Math.PI/4);
+for(let i=0;i<30;i++){
+ const side=i<15?-1:1,x=side*(20+rand()*24),z=-38+rand()*74,w=4+rand()*4,d=4+rand()*5,h=7+rand()*7;
+ part('cityPlaster',x,h/2,z,w,h,d);part('cityRoof',x,h+1,z,w*.80,2.3,d*.80,0,0,0,roofGeo);
+ for(let level=3;level<h-1;level+=2.3)for(const dx of [-w*.27,w*.27]){part('cityShade',x+dx,level,z+d/2+.025,.65,1,.06);part('cityStone',x+dx,level-.58,z+d/2+.06,.85,.12,.12);}
+ part('cityStone',x,h-.15,z,w+.3,.25,d+.3);
+}
+// The distant elliptical amphitheatre has three arcaded storeys and an attic.
+// Its upper tiers remain visible from the courtyard, stairs and gallery.
+const cx=12,cz=-67,rx=24,rz=17,segments=64,tierHeight=7.2;
+const opening=new T.Shape();opening.moveTo(-.78,0);opening.lineTo(.78,0);opening.lineTo(.78,3.5);opening.absarc(0,3.5,.78,0,Math.PI,false);opening.closePath();
+const openingGeo=new T.ShapeGeometry(opening,8);
+for(let i=0;i<segments;i++){
+ const angle=i*Math.PI*2/segments,x=cx+rx*Math.cos(angle),z=cz+rz*Math.sin(angle),yaw=Math.atan2(rz*Math.cos(angle),rx*Math.sin(angle)),width=Math.hypot(rx*Math.sin(angle),rz*Math.cos(angle))*Math.PI*2/segments+.12;
+ part('cityStone',x,12.5,z,width,25,1.1,0,yaw);
+ for(let tier=0;tier<3;tier++){
+  const y=2+tier*tierHeight;part('cityShade',x+Math.sin(yaw)*.57,y,z+Math.cos(yaw)*.57,1,1,1,0,yaw,0,openingGeo);
+  for(const dx of [-width*.43,width*.43])part('limestone',x+Math.cos(yaw)*dx,y+2.5,z-Math.sin(yaw)*dx,.16,5.8,1.26,0,yaw);
+  part('limestone',x,y+5.4,z,width+.12,.32,1.45,0,yaw);
+ }
+ part('cityShade',x+Math.sin(yaw)*.57,23.4,z+Math.cos(yaw)*.57,.58,1.5,.04,0,yaw);
+ part('limestone',x,25.15,z,width+.14,.40,1.5,0,yaw);
+}
+// A small temple pediment and cypresses add recognizable Roman street silhouettes.
+part('cityStone',-26,7,-44,12,14,9);part('cityRoof',-26,14.8,-44,10,2.2,8,0,0,0,roofGeo);
+const cypressGeo=new T.ConeGeometry(1,1,9);materials.cityGreen=new T.MeshStandardMaterial({color:0x59644c,roughness:1});
+for(const [x,z] of [[-19,-24],[22,-23],[-23,18],[23,20],[-34,-39]]){part('wood',x,3,z,.35,6,.35);part('cityGreen',x,7,z,1.1,9,1.1,0,0,0,cypressGeo);}
 for(const {mat,geo,matrices} of groups.values()){const mesh=new T.InstancedMesh(geo,mat,matrices.length);matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));mesh.castShadow=mat!==materials.sand;mesh.receiveShadow=true;mesh.computeBoundingSphere();scene.add(mesh);}
 const sky=new T.Mesh(new T.SphereGeometry(115,24,12),new T.ShaderMaterial({side:T.BackSide,depthWrite:false,uniforms:{top:{value:new T.Color('#7b9eb5')},bottom:{value:new T.Color('#e0d4bd')}},vertexShader:'varying vec3 p;void main(){p=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec3 p;uniform vec3 top;uniform vec3 bottom;void main(){float h=clamp(normalize(p).y,0.,1.);gl_FragColor=vec4(mix(bottom,top,pow(h,.55)),1.);}'}));sky.renderOrder=-10;scene.add(sky);
 const sunDisc=new T.Mesh(new T.SphereGeometry(2.7,20,12),new T.MeshBasicMaterial({color:0xfff1bf,fog:false}));sunDisc.position.copy(sun.position).normalize().multiplyScalar(95);scene.add(sunDisc);
@@ -7022,7 +7070,7 @@ let activeRoom=null,returnPose=null,nearest=null;
 const roomScene=new T.Scene();roomScene.background=new T.Color('#28231e');roomScene.add(new T.HemisphereLight(0xffefcc,0x655444,2.5));const roomLight=new T.PointLight(0xffdfad,65,20);roomLight.position.set(0,4,0);roomScene.add(roomLight);
 const roomProps=new T.Group();roomScene.add(roomProps);
 const roomQuestPanel=document.createElement('div');roomQuestPanel.id='roomQuestPanel';roomQuestPanel.hidden=true;
-const roomQuestButton=document.createElement('button');roomQuestButton.textContent='Günlük görevleri aç';roomQuestButton.onclick=()=>openLudusPage(new URL('gorevler.html?v=revision24',location.href).href);roomQuestPanel.append(roomQuestButton);document.body.append(roomQuestPanel);
+const roomQuestButton=document.createElement('button');roomQuestButton.textContent='Günlük görevleri aç';roomQuestButton.onclick=()=>openLudusPage(new URL('gorevler.html?v=revision25',location.href).href);roomQuestPanel.append(roomQuestButton);document.body.append(roomQuestPanel);
 
 function mesh(parent,mat,x,y,z,w,h,d,geo=boxgeo){const m=new T.Mesh(geo,materials[mat]);m.position.set(x,y,z);m.scale.set(w,h,d);m.castShadow=false;m.receiveShadow=true;parent.add(m);return m;}
 mesh(roomScene,'stone',0,-.12,0,10,.24,9);mesh(roomScene,'wall',0,2.5,-4.5,10,5,.3);for(const x of [-5,5])mesh(roomScene,'wall',x,2.5,0,.3,5,9);mesh(roomScene,'wall',0,5,0,10,.2,9);mesh(roomScene,'wood',0,2,4.5,10,4,.25);
@@ -7035,7 +7083,7 @@ roomEnhanceButton.textContent='GELİŞTİR';roomPouchButton.textContent='Taş Ke
 roomEnhanceButton.style.background='#783b25ee';roomEnhanceButton.setAttribute('aria-label','Ekipman geliştirme ekranını aç');
 roomUpgradePanel.append(roomEnhanceButton,roomPouchButton);document.body.append(roomUpgradePanel);
 function openUpgrades(pouch=false){if(activeRoom?.kind!=='upgrades')return;
- const url=new URL('gelistirmeler.html',window.location.href);url.searchParams.set('v','revision24');if(pouch)url.searchParams.set('pouch','1');
+ const url=new URL('gelistirmeler.html',window.location.href);url.searchParams.set('v','revision25');if(pouch)url.searchParams.set('pouch','1');
  try{sessionStorage.setItem('ludus-upgrade-return',JSON.stringify({owner:playerAccount?.user_id,room:activeRoom.kind,returnPose,player:{...player}}));}catch(e){}
  openLudusPage(url.href);
 }
@@ -7076,7 +7124,7 @@ $('roomExit').onclick=leaveRoom;
 const roomClanPanel=document.createElement('div');roomClanPanel.id='roomClanPanel';roomClanPanel.hidden=true;
 roomClanPanel.style.cssText='position:absolute;left:max(22px,env(safe-area-inset-left));top:110px;z-index:8;display:flex;align-items:center;gap:12px;padding:9px 13px;background:#541d2bd9;border:1px solid #c7a967;border-radius:6px;color:#f4e3bf;max-width:70vw;';
 const roomClanButton=document.createElement('button'),roomClanStatus=document.createElement('span');
-roomClanButton.id='roomClanButton';roomClanStatus.id='roomClanStatus';roomClanButton.textContent='Klan salonunu aç';roomClanButton.onclick=()=>openLudusPage(new URL('klan.html?v=revision24',location.href).href);roomClanStatus.style.cssText='font:13px Arial,sans-serif;';roomClanPanel.append(roomClanButton,roomClanStatus);document.body.append(roomClanPanel);
+roomClanButton.id='roomClanButton';roomClanStatus.id='roomClanStatus';roomClanButton.textContent='Klan salonunu aç';roomClanButton.onclick=()=>openLudusPage(new URL('klan.html?v=revision25',location.href).href);roomClanStatus.style.cssText='font:13px Arial,sans-serif;';roomClanPanel.append(roomClanButton,roomClanStatus);document.body.append(roomClanPanel);
 let clanRoomData=null,clanRoomRequest=0,clanRoomDrawing=0,clanRoomResources=[];
 function releaseClanRoom(){clanRoomRequest++;clanRoomDrawing++;for(const a of clanRoomResources)a.dispose?.();clanRoomResources=[];roomClanPanel.hidden=true;}
 function clanResource(value){clanRoomResources.push(value);return value;}
@@ -7125,7 +7173,7 @@ function showGladiator(g){clear();paused=true;$('orders').hidden=false;$('orders
 function closeOrders(){paused=false;$('orders').hidden=true;}
 $('ordersClose').onclick=closeOrders;
 for(const g of [])if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
-$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){openLudusPage(new URL('savas.html?v=revision24',window.location.href).href);}else if(nearest.kind==='market')openLudusPage(new URL('pazar.html?v=revision24',window.location.href).href);else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
+$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){openLudusPage(new URL('savas.html?v=revision25',window.location.href).href);}else if(nearest.kind==='market')openLudusPage(new URL('pazar.html?v=revision25',window.location.href).href);else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
  openUpgrades(nearest.kind==='stone-pouch');
  }else enterRoom(nearest);};
 function projectLabel(el,v,visible){const p=v.clone().project(camera);el.hidden=!visible||p.z<0||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;if(!el.hidden){el.style.left=((p.x+1)*50)+'%';el.style.top=((1-p.y)*50)+'%';}}
