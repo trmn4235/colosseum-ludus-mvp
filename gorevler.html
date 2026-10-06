@@ -23,7 +23,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision23"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision24"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -108,7 +108,7 @@ var LudusNavigation=(function(){
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision23');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision24');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -116,7 +116,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision23');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision24');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -169,7 +169,7 @@ var ARENA_SUPABASE_CONFIG = Object.freeze({
    const reward=document.createElement('strong');reward.className='quest-reward';reward.textContent=q.gold+' denarius';
    const action=document.createElement('button');action.className='quest-action';action.disabled=busy||q.claimed||!!pending;
    action.textContent=q.claimed?'Ödül alındı':q.progress>=q.target?'Ödülü al':q.key==='training'?'Gladyatörlerine git':'Göreve git';
-   action.onclick=()=>q.progress>=q.target?claim(q.key):travel(q.destination+'?v=revision23');
+   action.onclick=()=>q.progress>=q.target?claim(q.key):travel(q.destination+'?v=revision24');
    const track=document.createElement('div');track.className='quest-track';track.append(meter,progress);
    const bottom=document.createElement('div');bottom.className='quest-bottom';bottom.append(reward,action);
    card.append(crest,title,description,track,bottom);$('dailyGrid').append(card);
