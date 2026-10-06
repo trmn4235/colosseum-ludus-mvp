@@ -1,0 +1,5 @@
+White Sandstone Blocks 02 — Rob Tuytel / Poly Haven
+CC0-1.0
+https://polyhaven.com/a/white_sandstone_blocks_02
+512px optimized diffuse, OpenGL normal and roughness maps.
+Roman architectural geometry and matchmaking UI: project original.
