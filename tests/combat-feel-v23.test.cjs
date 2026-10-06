@@ -31,6 +31,22 @@ function advance(sim, seconds, block = false) {
 
 for (const page of ['arena.html', 'savas.html', 'multiplayer.html']) {
   const context = runtime(page);
+  test(page + ': cuts visibly carry the hand and torso, with a separate overhead heavy', () => {
+    const {sim,a}=duel(context);sim.attack(0);
+    const samples=Array.from({length:81},(_,i)=>context.ArenaMotion.sample(a,a.duration*i/80));
+    assert.ok(Math.max(...samples.map(s=>s.grip.x))-Math.min(...samples.map(s=>s.grip.x))>.65,'the cut must carry the hand across the body');
+    const turns=Array.from({length:81},(_,i)=>context.ArenaMotion.body({...a,timer:a.duration*i/80}).poses.Hips[1]);
+    assert.ok(Math.max(...turns)-Math.min(...turns)>.45,'pelvis must transfer weight into the swing');
+    const heavy={...a,attackKind:'heavy',attackProfile:context.ArenaMotion.profile(a.weapon,true)};
+    assert.ok(context.ArenaMotion.sample(heavy,heavy.attackProfile.wind).grip.y>1.85,'heavy wind-up goes above the shoulder');
+  });
+  test(page + ': shield interruption preserves the torso posture at contact', () => {
+    const {sim,a,b}=duel(context);sim.attack(b.id);b.timer=.34;
+    const before=context.ArenaMotion.body(b);sim.prepareGuard(a,true);sim.guard(b,a,false,{x:.26,y:1.42,z:.29});
+    const after=context.ArenaMotion.body(b);
+    for(const bone of ['Hips','Spine','Spine2']) assert.deepEqual(Array.from(after.poses[bone]),Array.from(before.poses[bone]));
+    assert.equal(after.shift,before.shift);
+  });
   test(page + ': shield contact stops the cut and leaves a continuous recovery', () => {
     const {sim,a,b}=duel(context);
     b.cooldown=999;advance(sim,.35,true);b.cooldown=0;assert.equal(sim.attack(b.id),true);
