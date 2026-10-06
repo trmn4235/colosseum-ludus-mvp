@@ -1,6 +1,18 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
-const root=path.resolve(__dirname,'..'),ctx=vm.createContext({console:{warn(){},log(){}},TextDecoder,TextEncoder,URL,Blob});
-vm.runInContext(fs.readFileSync(path.join(root,'owner-three-r160.js'),'utf8'),ctx);vm.runInContext(fs.readFileSync(path.join(root,'owner-avatar.js'),'utf8'),ctx);
-const owner=vm.runInContext('LudusOwner',ctx);
-test('untrusted cosmetic metadata cannot unlock coloured outfits or invalid meshes',()=>{const a=owner.normalize({hair:'unknown',beard:'<script>',height:999,skin:'url(secret)',outfit:'imperial',cloth:'#ff0000',accent:'#800080'});assert.equal(a.hair,'short');assert.equal(a.beard,'clean');assert.equal(a.height,200);assert.equal(a.skin,owner.defaults.skin);assert.equal(a.outfit,'tunic');assert.equal(a.cloth,owner.defaults.cloth);assert.equal(a.accent,owner.defaults.cloth);assert.equal(owner.normalize({height:-1}).height,160);assert.equal(owner.normalize().height,178);});
-test('all hair and beard variants retain finite geometry, an animated rig and small draw-call counts',()=>{for(const [hair]of owner.choices.hair)for(const [beard]of owner.choices.beard){const avatar=owner.create({hair,beard,height:188,body:'broad',accessory:'laurel'});let meshes=0;avatar.root.traverse(o=>{if(!o.isMesh)return;meshes++;const p=o.geometry.attributes.position;assert.ok([...p.array].every(Number.isFinite),`${hair}/${beard}`);});assert.ok(meshes<=25,`${hair}/${beard}: ${meshes} meshes`);avatar.animate(.1,true);avatar.root.updateMatrixWorld(true);const bounds=new ctx.THREE.Box3().setFromObject(avatar.root);assert.ok(bounds.max.y>1.80&&bounds.max.y<2.02);assert.ok(avatar.root.children[0].children.some(o=>o.isGroup),'animated joints remain separate');avatar.dispose();}});
+const root=path.resolve(__dirname,'..'),ctx=vm.createContext({console,TextDecoder,TextEncoder,URL,Blob});
+vm.runInContext(fs.readFileSync(path.join(root,'owner-avatar.js'),'utf8'),ctx);const owner=vm.runInContext('LudusOwner',ctx);
+test('cosmetics restrict natural colours, link facial hair and retain only white clothing',()=>{
+ const a=owner.normalize({version:2,hair:'unknown',skin:'#000080',skinTone:999,hairColor:'#00ff00',beardColor:'#ff0000',height:999,weight:-5,muscle:Infinity,outfit:'imperial',cloth:'#ff0000'});
+ assert.equal(a.hair,owner.defaults.hair);assert.equal(a.hairColor,owner.defaults.hairColor);assert.equal(a.beardColor,a.hairColor);assert.equal(a.browColor,a.hairColor);assert.equal(a.skinTone,1);assert.equal(a.weight,0);assert.equal(a.height,200);assert.equal(a.outfit,'tunic');assert.equal(a.cloth,owner.defaults.cloth);
+ assert.equal(owner.normalize({version:2,weight:.37,skinTone:.58}).weight,.37);assert.equal(owner.normalize({version:2,weight:.37,skinTone:.58}).skinTone,.58);
+ assert.equal(owner.normalize({body:'stocky'}).weight,.85);
+});
+test('downloaded model includes a real skinned body and matching anatomy/clothing morphs',()=>{
+ const bytes=fs.readFileSync(path.join(root,'owner-makehuman-v27.glb'));assert.equal(bytes.readUInt32LE(0),0x46546c67);assert.equal(bytes.length,bytes.readUInt32LE(8));
+ const doc=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12)));assert.ok(doc.skins.some(s=>s.joints.length>=40));
+ for(const part of ['OwnerSkin','OwnerWhiteTunic','Hair_short','Hair_crop','Beard_full','Beard_moustache','Brow_natural']){
+  const node=doc.nodes.find(n=>n.extras?.part===part);assert.ok(node,part);assert.ok(node.skin!==undefined,part+' skin');const mesh=doc.meshes[node.mesh];assert.deepEqual(mesh.extras.targetNames,['Thin','Heavy','Muscular','Soft']);
+  for(const primitive of mesh.primitives){assert.ok(primitive.attributes.JOINTS_0!==undefined);assert.equal(primitive.targets.length,4);const count=doc.accessors[primitive.attributes.POSITION].count;for(const target of primitive.targets)assert.equal(doc.accessors[target.POSITION].count,count);}
+ }
+ assert.ok(bytes.length<15*1024*1024,'mobile asset budget');
+});
