@@ -2,6 +2,14 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## Multiplayer controls V36
+
+Multiplayer now loads the same textured Colosseum model as the normal arena. A compact health/stamina HUD replaces the oversized banner. The touch controls use the established target, equipment-change, shield, sword and dodge symbols; swipe the attack control up/down/left/right for head/legs/left arm/right arm, or tap for chest. Hold the shield to block. Dual weapons expose the equipment-change control; a selected whip exposes its existing locked-target pull.
+
+Apply `ludus-multiplayer-v36.sql` after V23. The server validates attack regions and weapon hands, spends stamina (attack 13, dodge 25, whip 28), advances continuous dodges and retains timed frontal shields and counters. Attack and dodge IDs prevent duplicate actions after a lost response. The response keeps `combat_version: 23` for older clients and advertises `controls_version: 36` for the new client. Multiplayer remains a beta without rewards or item loss.
+
+`tests/multiplayer-v36.cjs` runs the repeatable migration and combat/authorization checks in PGlite (`@electric-sql/pglite`). `tests/multiplayer-ui-v36.cjs` uses Playwright, the real models and the real migrated RPC in two isolated local browser sessions: eight viewport sizes, fixed screen layout, all five attack directions, shared damage, lost-response retries, held guard and dodge. Set `CHROMIUM_EXECUTABLE_PATH` to a Chromium executable when needed. Physical iPhone performance and a live two-device match still require device validation.
+
 ## Clan room chest V35
 
 The downloaded walnut-tinted chest opens from the established arrow emblem. A fixed, non-scrolling screen presents **Klan Inventory** on the left and **Ludus Inventory** on the right, with separate 6×5 grids and independent pagination. Selecting equipment preserves its + level and all socketed stones. Gem stacks support quantity selection. Equipped, battle-locked and clan-roster-locked equipment cannot be donated.
