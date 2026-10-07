@@ -57,7 +57,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision37.1"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision37.1"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision37.1"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision38"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -7001,6 +7001,54 @@ const friezeY=2.38;
 function wallFrieze(x,z,length,angle=0){for(const [mat,y,h,depth] of [['stone',friezeY-.25,.10,.22],['cloth',friezeY,.38,.18],['stone',friezeY+.25,.10,.22]])part(mat,x,y,z,length,h,depth,0,angle);}
 wallFrieze(-11.4,-11.53,4.4);wallFrieze(5.4,-11.53,16.4);
 for(const [a,b] of [[-14,-10],[-8,-5.5],[-3.5,-1],[1,3.5],[5.5,8],[10,14]])wallFrieze((a+b)/2,11.53,b-a);for(const x of [-13.53,13.53])wallFrieze(x,0,23.1,Math.PI/2);
+
+// One shared clan banner on each side wall, centred in world space and facing the courtyard.
+const courtyardClanFlags=(()=>{
+ const geometry=new T.PlaneGeometry(2.2,3.6,16,24),positions=geometry.attributes.position;
+ for(let i=0;i<positions.count;i++){
+  const x=positions.getX(i),y=positions.getY(i);
+  positions.setZ(i,Math.sin(x*13)*.025+Math.cos(y*2.4)*.015);
+ }
+ geometry.computeVertexNormals();
+ const material=new T.MeshStandardMaterial({color:0xffffff,roughness:.91,side:T.DoubleSide,transparent:true,alphaTest:.12});
+ const flags=[-1,1].map(side=>{
+  const flag=new T.Mesh(geometry,material);
+  flag.name=side<0?'Klan bayrağı · sol duvar':'Klan bayrağı · sağ duvar';
+  flag.position.set(side*13.30,2.8,0);
+  flag.rotation.y=-side*Math.PI/2;
+  flag.castShadow=flag.receiveShadow=true;
+  flag.visible=false;scene.add(flag);return flag;
+ });
+ let drawing=0,key=null,texture=null;
+ function update(clan){
+  const next=clan?JSON.stringify([clan.id,clan.emblem,clan.emblem_color,clan.background]):null;
+  if(next===key)return;
+  key=next;const generation=++drawing;
+  for(const flag of flags)flag.visible=false;
+  if(!clan){
+   material.map=null;material.needsUpdate=true;texture?.dispose();texture=null;
+   renderer.shadowMap.needsUpdate=true;return;
+  }
+  const emblem=Math.max(1,Math.min(30,Number(clan.emblem)||2));
+  const svg=LudusClanEmblems.banner(emblem,clan.emblem_color||'#c3a060',clan.background||'#5c2430');
+  const img=new Image();
+  img.onload=()=>{
+   if(generation!==drawing)return;
+   const canvas=document.createElement('canvas');canvas.width=384;canvas.height=640;
+   canvas.getContext('2d').drawImage(img,0,0,384,640);
+   const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;
+   map.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
+   texture?.dispose();texture=map;material.map=map;material.needsUpdate=true;
+   for(const flag of flags)flag.visible=true;
+   renderer.shadowMap.needsUpdate=true;
+  };
+  img.onerror=()=>{if(generation===drawing){key=undefined;material.map=null;material.needsUpdate=true;texture?.dispose();texture=null;renderer.shadowMap.needsUpdate=true;}};
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+ }
+ return{update};
+})();
+let courtyardClanRequest=0;
+function syncCourtyardClanFlags(data){courtyardClanRequest++;courtyardClanFlags.update(data?.clan);}
 part('stone',0,7.12,8,28,.15,.62);part('wall',0,7.25,8,28.35,.14,.75);part('stone',0,7.39,8,28.5,.10,.86);
 // Terracotta half-round roof tiles, shared instanced geometry rather than a flat slab.
 const tileGeo=new T.CylinderGeometry(.17,.17,1,10,1,true,0,Math.PI);
@@ -7153,7 +7201,7 @@ function drawClanRoom(data){if(activeRoom?.kind!=='clan')return;clanRoomDrawing+
  for(const x of [-4.15,4.15])roomColliders.push({kind:'clan-bench',minX:x-.28,maxX:x+.28,minZ:-1.65,maxZ:1.85});
  clanVault?.attach();
 }
-async function loadClanRoom(){const request=++clanRoomRequest;roomClanPanel.hidden=false;drawClanRoom(null);try{await accountReady;const {data,error}=await accountClient.rpc('ludus_clan',{p_action:'state'});if(error)throw error;if(activeRoom?.kind!=='clan'||request!==clanRoomRequest)return;clanRoomData=data;drawClanRoom(data);}catch(e){if(activeRoom?.kind==='clan'&&request===clanRoomRequest)roomClanStatus.textContent='Klan bilgileri alınamadı; salonu açıp yeniden dene.';}}
+async function loadClanRoom(){const request=++clanRoomRequest;roomClanPanel.hidden=false;drawClanRoom(null);try{await accountReady;const {data,error}=await accountClient.rpc('ludus_clan',{p_action:'state'});if(error)throw error;if(activeRoom?.kind!=='clan'||request!==clanRoomRequest)return;clanRoomData=data;syncCourtyardClanFlags(data);drawClanRoom(data);}catch(e){if(activeRoom?.kind==='clan'&&request===clanRoomRequest)roomClanStatus.textContent='Klan bilgileri alınamadı; salonu açıp yeniden dene.';}}
 
 const stationDefs=[['Güç','Ağırlık',-8],['Dayanıklılık','Kum torbası',-4],['Hız','Adım parkuru',0],['Savunma','Kalkan direği',4],['Teknik','Vuruş kuklası',8]];
 const stations=stationDefs.map(([stat,name,x],i)=>({stat,name,x,z:-6,i}));
@@ -7239,6 +7287,13 @@ const stoneWallet=await accountClient.from('ludus_stones').select('family,quanti
  return playerAccount;
 })();
 accountReady.catch(error=>{$('loading').hidden=false;$('loading').textContent=error.message;$('residentStatus').hidden=true;});
+
+// Read the same authenticated clan state as the hall, without blocking courtyard entry.
+accountReady.then(async()=>{
+ const request=++courtyardClanRequest;
+ const {data,error}=await accountClient.rpc('ludus_clan',{p_action:'state'});
+ if(!error&&request===courtyardClanRequest)syncCourtyardClanFlags(data);
+}).catch(()=>{});
 $('accountLink').onclick=()=>viewSettings.open();
 roomOwnerButton.onclick=()=>{if(!playerAccount)return;const previousPause=paused;clear();paused=true;ownerEditor.open({edit:true,value:ownerAvatar.appearance,onClose:()=>{paused=previousPause;},onSave:async value=>{const {error}=await accountClient.auth.updateUser({data:{ludus_owner:value}});if(error)throw Error('Görünüm kaydedilemedi. Bağlantını kontrol edip tekrar dene.');setOwnerAppearance(value);}});};
 
