@@ -13,7 +13,7 @@ test('camera preference survives reload and handles unavailable or invalid stora
  assert.equal(ctx.LudusViewSettings.load(),'far');value='invalid';assert.equal(ctx.LudusViewSettings.load(),'medium');ctx.localStorage.getItem=()=>{throw Error('disabled');};assert.equal(ctx.LudusViewSettings.load(),'medium');assert.equal(ctx.LudusViewSettings.presets.medium.distance,3.6);
 });
 test('settings resume input synchronously and the late close event does not clear new movement',()=>{
- const handlers={},select={value:''},form={addEventListener:(name,fn)=>handlers['form:'+name]=fn},dialog={setAttribute(){},querySelector:s=>s==='select'?select:s==='form'?form:{},addEventListener:(name,fn)=>handlers[name]=fn,showModal(){}};
+ const handlers={},select={value:''},form={addEventListener:(name,fn)=>handlers['form:'+name]=fn},dialog={setAttribute(){},querySelectorAll:()=>[],querySelector:s=>s==='select'?select:s==='form'?form:{},addEventListener:(name,fn)=>handlers[name]=fn,showModal(){}};
  let paused=false,closes=0,stored='medium';const keys=new Set();const ctx=vm.createContext({document:{createElement:()=>dialog,body:{append(){}}},localStorage:{getItem:()=>stored,setItem:(_,v)=>stored=v}});vm.runInContext(fs.readFileSync(path.join(root,'ludus-settings-v29.js'),'utf8'),ctx);
  let distance=3.6;const settings=ctx.LudusViewSettings.create({onOpen:()=>paused=true,onChange:p=>distance=p.distance,onClose:()=>{paused=false;keys.clear();closes++;}});
  settings.open();assert.equal(paused,true);select.value='far';select.onchange();assert.equal(stored,'far');assert.equal(distance,5);

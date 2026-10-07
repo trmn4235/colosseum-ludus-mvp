@@ -12,3 +12,16 @@ The city is a distant game backdrop. Its neighbourhood layout and ludus position
 Existing masonry, plaster and wood PBR texture attribution remains in the repository's earlier asset credits. V29 retains the downloaded V28 owner model and motions unchanged; see [OWNER_ASSETS.md](OWNER_ASSETS.md).
 
 No licence claims in this document cover the original owners' names, trademarks, or endorsement.
+
+## V30 downloaded city architecture
+
+The procedural exterior boxes, roofs and windows were removed. Ready models keep their original authored geometry and materials; the browser only places, rotates and scales them. These distant assets are not new buildings drawn by Codex.
+
+- Roman Insula 1, Roman Forum and Roman Temple by AlexFerrart3D / lexferreira89, CC BY 4.0:
+  - https://sketchfab.com/3d-models/low-poly-roman-insula-1-wip-6562e2ffeb3c4bd8ae5b714c6600db20
+  - https://sketchfab.com/3d-models/low-poly-roman-forum-wip-3babeeadb8684bfdbeba9f816084c429
+  - https://sketchfab.com/3d-models/low-poly-roman-temple-wip-5953273cfe5346cbacf704809a404c83
+- Porta Nigra, MicMac, CC BY 4.0: https://sketchfab.com/3d-models/porta-nigra-roman-city-gate-in-trier-germany-f96abfafd34040a4bb09f5e2973403e9 . Adapted to a distant mesh LOD, approximately 60k triangles; used as a Roman architectural background asset, not as a claim that Trier's gate stood in Rome.
+- Download distribution: Allen Institute for AI Objaverse 1.0, https://huggingface.co/datasets/allenai/objaverse . Original GLB metadata contains author, source and CC BY licence.
+
+The ludus is between the monuments for a balanced distant skyline. Colosseum [820,0,650] and Pantheon [-594.21356,0,-764.21356] retain the specified 2,000m southeast relationship and heights 48m/43.3m. A clear street corridor prevents city houses covering either monument. There are no landmark-view buttons.

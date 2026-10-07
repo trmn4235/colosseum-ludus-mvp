@@ -10,7 +10,7 @@ The human geometry is MakeHuman's ready HM08 base, exported through MPFB. No sph
 - Long robe by Donitz, `donitz_monk_robe`: https://static.makehumancommunity.org/assets/assetpacks/suits02.html — the selected source header explicitly marks CC0. Adapted to white, shortened sleeves. Its existing rope belt is retained. This is an adapted ready long tunic, not an exact reconstruction of the reference's diagonal toga drape.
 - Caesar sandals by Elvaerwyn, `elvs_caesar_sandals1`: https://static.makehumancommunity.org/assets/assetpacks/shoes02.html — CC-BY (source header). Adapted from long straps to ankle height. Attribution: Elvaerwyn.
 - Scruffy beard by Elvaerwyn and Dal moustache by culturalibre: https://static.makehumancommunity.org/assets/assetpacks/bodyparts06.html — CC-BY (selected source headers). Attribution: Elvaerwyn; culturalibre. Other pack files are not shipped.
-- Normal walk and idle1 by punkduck: https://github.com/makehumancommunity/makehuman2 — official additional asset package, source pose metadata explicitly CC0. Downloaded BVH motion is retargeted offline to the ready Mixamo rig and embedded as OwnerWalk and OwnerIdle.
+- Normal walk, idle1 and run01 by punkduck: https://github.com/makehumancommunity/makehuman2 — official additional asset package, source pose metadata explicitly CC0. Downloaded BVH motion is retargeted offline to the ready Mixamo rig and embedded as OwnerWalk and OwnerIdle; OwnerRun is retargeted into the small animation-only owner-run-v30.glb on the same rig.
 - Asset/output licence policy: https://static.makehumancommunity.org/about/license.html
 
 ## Conversion
@@ -21,4 +21,4 @@ The starter tunic is always white, with ankle sandals. There are 11 hair choices
 
 ## Limits
 
-This is a ready human asset pipeline, not an Unreal/Unity engine migration. Locomotion crossfades between the downloaded idle and normal walk clips; movement speed is 1.45 m/s. The appearance editor does not open on login; it is available through the Ludus management room button, plus optional manual initial signup customization. The adapted garment differs from the reference’s diagonal shoulder drape. Actual device performance still needs player feedback.
+This is a ready human asset pipeline, not an Unreal/Unity engine migration. Locomotion crossfades between downloaded idle, normal walk and run clips. The analog joystick has a 10% deadzone, normal walking around its middle (1.47–1.65 m/s) and running at full deflection (4.2 m/s). The appearance editor does not open on login; it is available through the Ludus management room button, plus optional manual initial signup customization. The adapted garment differs from the reference’s diagonal shoulder drape. Actual device performance still needs player feedback.
