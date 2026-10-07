@@ -1,0 +1,1962 @@
+{
+  "notes": [
+    "RGBA+mipmaps are an upper-bound-style estimate, not measured GPU memory.",
+    "Primitive counts are unique source geometry; scene clones/instancing and visibility change rendered cost.",
+    "Accessor totals include animation and morph data, not only base geometry."
+  ],
+  "assets": [
+    {
+      "file": "Colosseum.glb",
+      "bytes": 15825436,
+      "uniquePrimitiveVertices": 244885,
+      "uniquePrimitiveTriangles": 198225,
+      "primitives": 808,
+      "meshNodes": 808,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 10219788,
+      "embeddedImageBytes": 4841920,
+      "rgbaWithMipmapsEstimateBytes": 15848790,
+      "images": [
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 99896,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "ecaebf85231b4533c971f3da442ba02e13458199867d571f45fd4f47c8e9da73"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 21798,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "fd4a4d612e37311a00ae919d7786f8bfdb79408e594f4681fba901a749c4d9a2"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 157031,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "5158ef9b42ba14fd79621927aebc54d213ff4f427b0e4d4db05716973aa4011b"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 13304,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "77e54c38513cb0c7bfda46da2cf2cc9f259f91cf222af50e1d38dbb0de0805ff"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 376532,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "1f3eb14c6dbb005afd498d931f4ed43bdf96eb2d3e256d9960ce7025e1f556d5"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 128,
+          "encodedBytes": 69404,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "ffbdc4b3026e9e813c6023855d45d704e9ad893dd2102d6700ee76246ecdf2dc"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 22966,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "021f616ce5e1804fbd4e2d6fa8aa49df4a01b666b96f9cdf685fe86348b2d4f1"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 326206,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "44f8430705eb3fe8423a73be1683f20f230ace786dcd5cff3fb01bc8fbd0eeb1"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 19599,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "c17e5fbf40548e7e10876c3d91a5753a80a37509e12252930b772422b78a1389"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 23543,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "10b70779cf7c375b2d420ac3a77aca2b3feee09253d4070a82a918d555adb8f0"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 132931,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "e02fafc85b10679a1c5b58cafc79d987d38d6680ef57198d5500daf044b8e310"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 256,
+          "encodedBytes": 91309,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "a28c682b97f6bf21cdd5546d974ddc2d44e086dc4e6d9e095d9192cca1a2fdf3"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 122348,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "878f3cc7441ed88d7d498fc7e683fc006503ae527792e141d0f1d88ef922d003"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 256,
+          "encodedBytes": 82421,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "1f04b002ee0ec0e6e75404793cc04af4f66119c07150a52c7a62bef34ec0a974"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 43884,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "f045638ea5395cad1c26ed8971e010065ac39a977a1b671ecad6f75372505a5b"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 29144,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "dd9ff0b8557774904955a599ab3294c1c105bc86bb85a4e921da4a9644923a0b"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 38339,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "69ba989e293340f70479cd3f96124318575061030207a5db6b3583b3178218e9"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 21918,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "4d37df0fa7de33f8506314baa67749732c4aa6a33f7e16256e479a79988a8101"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 256,
+          "encodedBytes": 49583,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "0e5960df2dcf217a391f31705842de546989d063043c5fbeb6c440615e8a3595"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 64,
+          "encodedBytes": 5003,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "9669b0e84f46be85dcddcc94d1922e9eacada2b9b664bd23650d8e8c85b9d7ee"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 119694,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "17b6116cb99cef7576652072b1f72211e3ad883a373604011f77ab612dc54a30"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 104742,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "3b0b21030c099b0aa956efad79c2b0cd4fb09700f05a265985f3b5223576bc4a"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 10742,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "acedcb6a9f9f7d9998add5962048f9ffc457196e28648c3c199f8ddf511d1afc"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 11084,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "1179792cedbe63de5cc2ded7e73038d6b8cff956f3a6523c536edec5e864a30c"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 2705,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "8ec3c26c4e1ffabcf94d465b1bf25f21afe9b4b6e148b99f5330419a12f078a3"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 2908,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "930381abb967b9234ea33f7edfcea22a4723b16006a4a374e8ab5a6a66dbd7e3"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 27401,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "bd113c363c963738715a40edd219cb7c5bca468f3bfe28d04a65591406542455"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 96461,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "8a13f1ba46f1b07b99568c900586fca255349fe986d911262b76bf421aecff9b"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 96322,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "60b0c93adbb20dae69c585b81df642281ecaa518b97f812900c331c027ec064f"
+        },
+        {
+          "name": "",
+          "width": 32,
+          "height": 256,
+          "encodedBytes": 17984,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "13d7ff8dee908e8c78a2c3f15ce21551085e0c7d49413c2105e8cbc8ad9f2194"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 256,
+          "encodedBytes": 20291,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "f1f06a098cebb023aed6499a5a7f952f7711a9e0135c461ba2aae407601177d8"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 21474,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "a904c1bce836f0145403ef85f38238ccdd85aaae3d58c90f0101814b9fcaff16"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 18036,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "16c9e094537cb752447d6504cbb6247d719635df79338b778e2471f98391eadb"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 32,
+          "encodedBytes": 5991,
+          "rgbaWithMipmapsEstimateBytes": 10923,
+          "sha256": "79b3ea6a83f95c5d67684e05c6e1ae04e84c3b30593ebfa02f0052255f276c6e"
+        },
+        {
+          "name": "",
+          "width": 32,
+          "height": 256,
+          "encodedBytes": 14574,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "0881d77284bae425316117ad3f836210fd6168414af56e4e518aaadeb71d0fe1"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 15329,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "4039db10e24bbebd9ac17ed00b2244536ab76069150d83e55ca13bcecb68eee9"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 9904,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "084430def67651a6cb8dbd94dde8b3efde0facfac1adbe43a261b52fa4d65852"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 128,
+          "encodedBytes": 61542,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "2bf78f75cebad8f5eea67d2ed8ce882c0acb52cc522e6f81f2b5b8ef430edb6f"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 96209,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "a535534e7753fa6863147eae56a3627d5f63609d7c6a464fb7a8ec3ffc06ab5b"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 6998,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "c7e706f0a35c0fc6b7f0d9c1215a2db19dc706e08d8c205c79ba62d5e24f7392"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 14236,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "a00748f92336cf13db599091cbda7a622c500a007800f229a1f46b357c9790c7"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 14350,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "5dd9739b22165049d9b3844cbc3d4cbfedf87a8334959122624f20a33a9790e3"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 14361,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "5db364f46864521f4b27b8e4fce1f41d5cb9e5872b62a579f5e953b394bfb480"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 18439,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "65c3eb1c305a670af6fb148abab5ef1a25a174ba648e0d229c30d971d9381d73"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 64,
+          "encodedBytes": 9306,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "eb2d9c70c780f086ac5f261ca1fd02a34452591d87eba54b24d06e9b713a6f1c"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 32,
+          "encodedBytes": 3584,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "029a44852ae55d97d788c7864f2a1e1987938d5ee3a01b7d5cf2110ca8669dc5"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 39223,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "6b85babf51f75b2a3218a52f7f86d2b718ac2b011dab84031de2ccda40c62f62"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 126827,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "28763e8ebc177e6011ca7f36443e7e9f867de687a3fd4acf06d40157cbbb47ba"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 64,
+          "encodedBytes": 31091,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "98a1bf695d8546c5387aa188f999f8c34a1ffff8f29b4dd8bd5f2c9ff4d15164"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 15826,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "0ebe1fba976721ad404a0154b6a9844c0e7004a36e96ddc5412eb78272fc96c9"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 128,
+          "encodedBytes": 46672,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "e6e5d7cba5ad3908fd7168ba14518b479b753656fd98a6678fb2c092c6c34d06"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 40722,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "65ad0e2ddedd370a4bc02901e20a2b25f5ba497f7ead2cb1e97c662173f8ee63"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 16170,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "daa4baf92406ccb8e22b4869184ee12b69b88214c421bf377ed77306f4093799"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 64,
+          "encodedBytes": 8842,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "f5460df2a65c4732cc7d736f5a9d297afe9e67e755b8d25fff93d77931451859"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 128,
+          "encodedBytes": 69145,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "a9163e2d64116929179a1fe56308904d0397c7d97321fe143011fd7b96997183"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 256,
+          "encodedBytes": 60552,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "1b1eef7d5a6ac3ab22be2888d7e2e60d3e1836cc564ad17dad0275b6e45eb365"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 18776,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "b736ed1d508db0eaa54dfc07fbfe4aaab95bf4ed30927c57f069b4f800f90179"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 256,
+          "encodedBytes": 112310,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "535d2835a94ce32d83f51bbe3029cb588be62736f643889ca7e7ca6c0cefbc56"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 32,
+          "encodedBytes": 5401,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "08871f52c785d01c68ae2886d39c73e7284d61221c6bbf92bf11f2c08285b68b"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 18693,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "ea4e56fdaff683a45cf2ab25b00e5ae4dc7dcfac199d55de3b1fd2a681e869a9"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 19203,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "e131b3ab8a305c6807808d811a82f21c4a6dc5d5066669981cd1caf16b8219ca"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 18993,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "47fcef2e7b93d4acfd350b6659bb04c70a77b953825f378e1c77aeaa7571c8d5"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 25854,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "341f43c6eddc99055491c8b0efa90bf6400e740077a5057ef4f20b2eabfcae95"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 128,
+          "encodedBytes": 36916,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "9edc9b9fa8f0d29f7690b7b583c2fa4bb5009a075d1db8d6c4de3a3b1d3468d6"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 32392,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "ef39933f7641f47bb55896d0628ffef2516b55c4c3345965a237427fd9fb5139"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 64,
+          "encodedBytes": 1262,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "81828e07540478e3ce27a923420598592e8eb8a5f012f4441953014110dbf741"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 7007,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "faedb77779aeff803fdaa4433bce82d4d48bd99dfa791c2eb3850d91003753e8"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 15065,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "26fb5c79a8ede7e8a30af2380586f3e2f1e483896af90865de1a0a4619101e43"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 128,
+          "encodedBytes": 60723,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "8e9d476e0c93c62f5737b6d228a75958dec12aa63c0ccf11ad7c236d1c4dd27c"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 128,
+          "encodedBytes": 133699,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "1ed17f68ade7f0e19ac1f2c73fc0fab7ff1f56577526bd833da74206a3b54ada"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 256,
+          "encodedBytes": 46933,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "781affbb6a3aab72536c80dbb5678f5fe5dd45a63c3790991abd57a434f53ccd"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 32,
+          "encodedBytes": 6971,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "7f2e73b16d1cc369a6f962d3658cf4e961c98fe4977bf7006730ef66563024ed"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 256,
+          "encodedBytes": 120874,
+          "rgbaWithMipmapsEstimateBytes": 699051,
+          "sha256": "844af9e2809c2bf91f9d9c263a269d0213896b18edf6d5668dbcc3e2c188d575"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 27819,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "89955548080155e8e396cb862b8c2b84cfcb0abffffbfa0eeffb2fb3a7b3e26b"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 128,
+          "encodedBytes": 39814,
+          "rgbaWithMipmapsEstimateBytes": 174763,
+          "sha256": "decc061416e5d7d7756b7c085b844045b231ebe7eaef2efc4215bbe5507b8456"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 17336,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "5501f05ac507fa2f4b99af415fae9934e189b11abe82e02e2c2fb95da2caaf58"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 20755,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "eafb00b53416465557dc8ba19d17614a697d5cdf21aff808ed9f33dc7b84cc80"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 256,
+          "encodedBytes": 171628,
+          "rgbaWithMipmapsEstimateBytes": 699051,
+          "sha256": "175b3680c02d27dd641492ed3a821982e24a6e5b3b67398052aa64479eb047e3"
+        },
+        {
+          "name": "",
+          "width": 32,
+          "height": 128,
+          "encodedBytes": 8890,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "697327435c0ef7d9df8643cd49ebdb5495321aeb538794d0716ee9895ff65227"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 14660,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "0cb7de4342d8b90d58a337e25d55efdcbae6266ec3e526d278148e8eff39f5a7"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 6290,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "49ce0344883a8316d4c27ec21dc2a385fcabd66ee46269ee7ce9c6493c26987b"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 16,
+          "encodedBytes": 6816,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "f3bf47f09f36898444175b43042655e4e1cd06d639caad38a34b4831a2799ccf"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 12311,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "98b5bd7bce574a51ec8109c55020b5435cf1a9fa0cdd5d238e68d5122b978b54"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 128,
+          "encodedBytes": 26191,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "4ee640c142c6f4a1ec64a9627cc63e861ec731a1ea4f7a16bf9c33bcc4c7433f"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 64,
+          "encodedBytes": 18854,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "c99f1a3ca1f294929c1f41f16d101e3507a14f6999f88b8ae4c32aaa0c0c220b"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 128,
+          "encodedBytes": 133699,
+          "rgbaWithMipmapsEstimateBytes": 349525,
+          "sha256": "1ed17f68ade7f0e19ac1f2c73fc0fab7ff1f56577526bd833da74206a3b54ada"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 256,
+          "encodedBytes": 23773,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "100fcd5a96e35c42e478d2eaff2e623aeb1d9b42897176009c7d10482b670c43"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 18372,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "22fdaa0b746fe36ee4ab2dc1ce0334d022e4821c5f41dac6086ce330d5bf58ea"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 17875,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "21a4a8e42d45c45d5ed75818d5226f7adedf310266488593ab5780310c6840a6"
+        },
+        {
+          "name": "",
+          "width": 128,
+          "height": 32,
+          "encodedBytes": 3429,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "963ce8fede74ea1e5ac50639568e7791fb0cf9b5c840160d78b8cda4c98d67fd"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 491172,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "891c3109f4cce2feb9672e5eed7f45c209179119c772a8a1f36b6d3d74f0d17d"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 256,
+          "encodedBytes": 6784,
+          "rgbaWithMipmapsEstimateBytes": 87381,
+          "sha256": "ede1d8e6e1a392b238cd93a97ca0f636f7ad46cf4624713a1fc56d4f55cb4489"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 128,
+          "encodedBytes": 14762,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "738ce5e4169ae524f93407fc82aa4171de1a81aa08c24429aa901ed8c97c71a1"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 19280,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "6ae2a4cb659a4f82be75c88ad0ee826370aae24d290e9dff16bda2cda2d3fab5"
+        },
+        {
+          "name": "",
+          "width": 256,
+          "height": 32,
+          "encodedBytes": 17063,
+          "rgbaWithMipmapsEstimateBytes": 43691,
+          "sha256": "a953a676b6683d9aeb577dc16e0cbe61ad7ef2644722d219f419dbc388c45aed"
+        },
+        {
+          "name": "",
+          "width": 64,
+          "height": 64,
+          "encodedBytes": 6379,
+          "rgbaWithMipmapsEstimateBytes": 21845,
+          "sha256": "ce51e5a77276895c4702b946f07916519e061b56e02ae829180bb58e990d871b"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": [
+        "KHR_materials_specular"
+      ]
+    },
+    {
+      "file": "clan-chest-v35.glb",
+      "bytes": 378472,
+      "uniquePrimitiveVertices": 2814,
+      "uniquePrimitiveTriangles": 3895,
+      "primitives": 9,
+      "meshNodes": 9,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 181812,
+      "embeddedImageBytes": 185390,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 60681,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "22c651326425d8f1c234a1662b6c29707386194c7967dcb45bd771bde34bb818"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 58619,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "b9ea4694b9b781249fdec4b385309123bb91c4bd8b6073a191c8e78266266525"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 66090,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "43489152ed6a9702881993fdc6eb26e71ba11360d90c84fa135931d0a757cd20"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "colosseum-city-v29.glb",
+      "bytes": 5560344,
+      "uniquePrimitiveVertices": 134484,
+      "uniquePrimitiveTriangles": 104633,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 5559084,
+      "embeddedImageBytes": 0,
+      "rgbaWithMipmapsEstimateBytes": 0,
+      "images": [],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "d7e37f45-6781-4a6a-92c4-1257e9f55e40_8e25d42ea47e696de77e16317a3db85d.glb",
+      "bytes": 4293064,
+      "uniquePrimitiveVertices": 19753,
+      "uniquePrimitiveTriangles": 29518,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 809204,
+      "embeddedImageBytes": 3481986,
+      "rgbaWithMipmapsEstimateBytes": 67108863,
+      "images": [
+        {
+          "name": "medieval_fortress_courtyard_3d_model_normal",
+          "width": 2048,
+          "height": 2048,
+          "encodedBytes": 1781854,
+          "rgbaWithMipmapsEstimateBytes": 22369621,
+          "sha256": "e8c3f250d2eb4b081dc4aba3d98168a3106918d52e0360f73a90376d397baa25"
+        },
+        {
+          "name": "medieval_fortress_courtyard_3d_model_basecolor",
+          "width": 2048,
+          "height": 2048,
+          "encodedBytes": 1059171,
+          "rgbaWithMipmapsEstimateBytes": 22369621,
+          "sha256": "6ad040facf5e69773a0d41bb9e24481f6d73cb77daa3923846950aeabfc5f82a"
+        },
+        {
+          "name": "medieval_fortress_courtyard_3d_model_rm",
+          "width": 2048,
+          "height": 2048,
+          "encodedBytes": 640961,
+          "rgbaWithMipmapsEstimateBytes": 22369621,
+          "sha256": "943722aef210e88bdd5f62bb62f47f9694f72c76497b90752454eb5a75e77bf6"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "gladiator-mobile.glb",
+      "bytes": 11908916,
+      "uniquePrimitiveVertices": 45504,
+      "uniquePrimitiveTriangles": 78158,
+      "primitives": 8,
+      "meshNodes": 8,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 4405688,
+      "embeddedImageBytes": 7453206,
+      "rgbaWithMipmapsEstimateBytes": 50331646,
+      "images": [
+        {
+          "name": "",
+          "width": 2048,
+          "height": 2048,
+          "encodedBytes": 1165731,
+          "rgbaWithMipmapsEstimateBytes": 22369621,
+          "sha256": "1859434d1edd96c1f0d8d37384f3231e77e193644ac1ebd49c6503fabde0237f"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1373757,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "816ec60e62e9607cd545bf96b29e67d31a45369be855f1e4e9276467a8681d28"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1562199,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "66232b5f1d80f56a3a3016cc5be78a2dab102b51f2bbf4142b5c077e596c0651"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 352529,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "63b76b017722bb0065869424e0f4b5973e832eab44f446e049c1430fcee13da4"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1384491,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "27d5f5149166ad9458a6648b3c018b10a5b7c6ebc0c7dfafa3113f0eb22b9998"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1614499,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "b61927eada735a29110365cc0a1a99f6d3874ea0a504a780b5f556185cc8506f"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "imperial-desk-v31.glb",
+      "bytes": 3233536,
+      "uniquePrimitiveVertices": 3729,
+      "uniquePrimitiveTriangles": 3698,
+      "primitives": 7,
+      "meshNodes": 7,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 253200,
+      "embeddedImageBytes": 2968079,
+      "rgbaWithMipmapsEstimateBytes": 16777215,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1076605,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "8219b495f459b3ae7bf0aa4c920dc3373549ad9f1f6833a65c2d0a6de4aca6ca"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 862584,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "629e2d4a0ed465fe441505ce5b69d17f05e9d63312a909a64de2ee2666115858"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1028890,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "11761a04fb77ca3ced23487633313d63427d0cb0d0dcfc3e19fefea1d8082cf8"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "office-daily-book-v32.glb",
+      "bytes": 178704,
+      "uniquePrimitiveVertices": 704,
+      "uniquePrimitiveTriangles": 982,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 45576,
+      "embeddedImageBytes": 130163,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 43239,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "434b322f84f6b3e998376e21755c65cbe5f76066aebeabe6c724c6a450308a0a"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 51322,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "c5f17d770beb463144b7beb9096a2bebac599782d9888b957f153e81e6781f93"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 35602,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "0ce02ea15fd7d9eeb781b75b4d8e4c43d91dec9b24f5298f72097af31b8dee13"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "office-wardrobe-v32.glb",
+      "bytes": 886552,
+      "uniquePrimitiveVertices": 6712,
+      "uniquePrimitiveTriangles": 8372,
+      "primitives": 2,
+      "meshNodes": 2,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 422512,
+      "embeddedImageBytes": 459476,
+      "rgbaWithMipmapsEstimateBytes": 16777215,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 164575,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "3fe2b8016caa695f260750f280b4a83a46711bc8a208e129507d3c74e87732aa"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 116341,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "dc5f451e5f0b95297e1e3dfa6eab6ebf7f633a4e24b5320cce4c4d33762ecb83"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 178560,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "3568f4fe74d543fb7667b82d85d7895e2aa4b46ff1890b3994b0ab6f18065493"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": [
+        "KHR_materials_transmission"
+      ]
+    },
+    {
+      "file": "owner-makehuman-v27.glb",
+      "bytes": 21411012,
+      "uniquePrimitiveVertices": 94084,
+      "uniquePrimitiveTriangles": 147560,
+      "primitives": 26,
+      "meshNodes": 26,
+      "morphTargetCountAcrossPrimitives": 104,
+      "accessorUncompressedBytes": 14843648,
+      "embeddedImageBytes": 7071671,
+      "rgbaWithMipmapsEstimateBytes": 69905057,
+      "images": [
+        {
+          "name": "BeardViking",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 190616,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "12e36fab07344785c4ddb782bffbd0477457a50b357308cae8930fdeff26ada5"
+        },
+        {
+          "name": "brown",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 26647,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "14cd4fca0e401383050cf6a7aae7af1b4912518e3822416e15a0b3207260247d"
+        },
+        {
+          "name": "dali",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 30230,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "d10471da0cf76d948c68b562810b877626d0c760f4abe85736e650837e099257"
+        },
+        {
+          "name": "MoustacheViking",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 161624,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "a26cf75754390c936641d6db31e4ead4ae5261aa3786b9f245c863f9816dff09"
+        },
+        {
+          "name": "elvs_beard1_longscruffy3_normal",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1376445,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "1e365b6c4533b662029cf21ee49a8ea1aff7f52422f13cadbfd00dc749b3061b"
+        },
+        {
+          "name": "elvs_beard1_longscruffy3_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 308934,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "5fe99b7dd2292c8dff75aaee8e272d8a2239a80ca2849bef4db6ab1f75db0f10"
+        },
+        {
+          "name": "eyebrow008",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 81677,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "d0cb8030b1aa863c72418cc4eecb0d130e091462b3177fdd3875d5d82de74369"
+        },
+        {
+          "name": "eyebrow002",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 73828,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "0afc3977c43cb7b82d771b98cb01547bd0bbe8da958240a2cc3bad302ea33e1c"
+        },
+        {
+          "name": "eyebrow005",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 56548,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "2e7cee0c9e39dce96ed56054b24fb7bf4cb49896a90fc77a9e41b3b9a87ab13c"
+        },
+        {
+          "name": "eyebrow001",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 69132,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "fb3977d1295ae05599e561e26b6d6f575c2bd8cd34e6e4c6c54484c9b25f6eca"
+        },
+        {
+          "name": "eyebrow004",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 67357,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "edabf675df254b62313fadbe38d7c2b859b91b4d577d2d609898c7da579a2b0b"
+        },
+        {
+          "name": "eyebrow003",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 69658,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "9592373dafd064430dbdc418a19a3007cc6d5e4711af6f5f64cc71cffd1fdbe8"
+        },
+        {
+          "name": "eyebrow006",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 20690,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "74d6be58fcb655b59605e677dd813d720177bbd683db07ca7c9c6cd0736e4eee"
+        },
+        {
+          "name": "bob01_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 143428,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "9d08fb498b8ca196ccefda46285389be2e90a494ca0d83e9c09a7c443a929048"
+        },
+        {
+          "name": "braid01_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 83059,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "41f595264efb740a7b9072f05be607bcdbacf3d936f3fddf5a7ea4b2685e830f"
+        },
+        {
+          "name": "short02_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 119678,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "ca4a72c24ea6d91587447f0d46204c255214c9c93dfe7dd9ee443456be2d5aa3"
+        },
+        {
+          "name": "afro_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 275427,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "20702adbb383320c636b76bc03328a75ea8bd03bd42de0623245e24a3fa79415"
+        },
+        {
+          "name": "long01_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 98256,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "461b53ad8221cfc0626456b26ebb9285b3764e8c9bd3a5c1e0016ac516fb07e7"
+        },
+        {
+          "name": "short04_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 174648,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "aabadc9ec70fafc37b10b8420249f4e6b3599596431255ff6f641492e113d0ba"
+        },
+        {
+          "name": "ponytail01_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 209227,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "25ea4e26faab30228ad4ef8d97ea120bea4022494ac8265a8d2a9c1b4810d82e"
+        },
+        {
+          "name": "short01_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 259564,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "9a347f12c84625c8ad66219329dff0544283d970139fc47de1d0f55f1f00d9c0"
+        },
+        {
+          "name": "short03_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 110577,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "602843b57e91ab644a02084881237a19fa2e86f6ada1715307e0f83b18c3a8ef"
+        },
+        {
+          "name": "bob02_diffuse",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 134991,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "7da74bdf8d7baa299cf4c21e6e4f0aa5be5e534be8a3067654a5fdd235e86998"
+        },
+        {
+          "name": "brown_eye",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 610229,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "314ac8545608b90be86f7392a064498f0db124672702d69c321361b2679e3f14"
+        },
+        {
+          "name": "sandalsnormals",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 758458,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "39c921421dafe5f276b39f076c68b30fcea911581cf3d09ea03c9a8b7492f155"
+        },
+        {
+          "name": "sandaltex",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 712193,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "2185e2389f8dfb9650bd29ad9f0269635caa4ee7866e85703497facafdb6ddd3"
+        },
+        {
+          "name": "young_lightskinned_male_diffuse",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 118818,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "2452de5458fa3edd3d9886724bec7f6a0973293944d6d621b32e3240bf751b17"
+        },
+        {
+          "name": "robe__normal_gl",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 686379,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "39173f01ea8264ee171fbd56db280e0181474b2728dab2c2caa23dc7ae1fee7b"
+        },
+        {
+          "name": "robe_brown__diffuse",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 43353,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "44c31b4dd6da4cc0e81f38205cffbd506a23da1eebbce88587d88ab911783b77"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "owner-run-v30.glb",
+      "bytes": 52932,
+      "uniquePrimitiveVertices": 0,
+      "uniquePrimitiveTriangles": 0,
+      "primitives": 0,
+      "meshNodes": 0,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 7136,
+      "embeddedImageBytes": 0,
+      "rgbaWithMipmapsEstimateBytes": 0,
+      "images": [],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "pantheon-city-v29.glb",
+      "bytes": 3204960,
+      "uniquePrimitiveVertices": 72300,
+      "uniquePrimitiveTriangles": 122372,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 3203664,
+      "embeddedImageBytes": 0,
+      "rgbaWithMipmapsEstimateBytes": 0,
+      "images": [],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "roman_legionnaire_helmet.glb",
+      "bytes": 4109864,
+      "uniquePrimitiveVertices": 14449,
+      "uniquePrimitiveTriangles": 25542,
+      "primitives": 8,
+      "meshNodes": 8,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 1000056,
+      "embeddedImageBytes": 3098822,
+      "rgbaWithMipmapsEstimateBytes": 16777215,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 528022,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "8a2330d53715e8891121cfa43d8b3f357eb847e80d04de7ef5c88c098f8d27a4"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1309085,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "bb57809779a69b8eccc1450bfca17b522011f37e5496917cc126c3dd0e6af4a7"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1261715,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "7538e07120cf1dbd8f73a6d203abbdfa105f60a36d14d0399739253acdfa6270"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "roman_scutum_shield.glb",
+      "bytes": 4394088,
+      "uniquePrimitiveVertices": 1039,
+      "uniquePrimitiveTriangles": 1466,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 92400,
+      "embeddedImageBytes": 4298116,
+      "rgbaWithMipmapsEstimateBytes": 16777215,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1758361,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "d3da1f30b0e57f4b51e2f07ea180a63b780cd0d53ba60fed94675b2621947be8"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1554113,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "3dd3b9183aa391885ab21a6aafc75940a12d094bd48366555fbeda6857f6bd43"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 985642,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "4735c6299f7e92a4839bf898f55591192a43809b7f1fafe2dd38a078dc5cee54"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "roman_shield.glb",
+      "bytes": 2941088,
+      "uniquePrimitiveVertices": 1008,
+      "uniquePrimitiveTriangles": 1246,
+      "primitives": 7,
+      "meshNodes": 7,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 63336,
+      "embeddedImageBytes": 2866535,
+      "rgbaWithMipmapsEstimateBytes": 16777215,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1100867,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "dc7d7b301ebb183b3e1a26cedc977ffd0b9df504647dfe09fff9a6c47a6d7c8c"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 965599,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "d63e3ab076196781a63b22394eeb54d4f9aa7162eb00637c56da099ab57b70d1"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 800069,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "f21e522c67dc401050a71d98680718c62c89158e6d956c5031ad03b6d6588368"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "roman_spatha.glb",
+      "bytes": 1942872,
+      "uniquePrimitiveVertices": 3670,
+      "uniquePrimitiveTriangles": 4994,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 236088,
+      "embeddedImageBytes": 1704044,
+      "rgbaWithMipmapsEstimateBytes": 16777215,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 590275,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "feb32c258f26863e8ce45202e4face3e34e50a10203344dd855b740a91a9df65"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 578720,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "be7c712cc530fe4a153c921f17fd608262596521f11f92d2f6acb0065410342e"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 535049,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "440d99486141be3637ae8105ca0debc55d1eba02bebb894c005000ef3a5a621f"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "rome-forum-v30.glb",
+      "bytes": 2439968,
+      "uniquePrimitiveVertices": 2228,
+      "uniquePrimitiveTriangles": 1634,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 90904,
+      "embeddedImageBytes": 2346604,
+      "rgbaWithMipmapsEstimateBytes": 11184810,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1755780,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "41dfe86ee49caecc6dc6e745a784c80d831fc1a2790e1ca91ab3c91b421fe69b"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 590824,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "ba5f1e829de089def9ec55715ff40d7ed5fa80f7bf6578a369050a6dbe3ceb2c"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "rome-gateway-v30.glb",
+      "bytes": 3988060,
+      "uniquePrimitiveVertices": 99695,
+      "uniquePrimitiveTriangles": 62468,
+      "primitives": 29,
+      "meshNodes": 29,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 3963828,
+      "embeddedImageBytes": 0,
+      "rgbaWithMipmapsEstimateBytes": 0,
+      "images": [],
+      "extensionsRequired": [],
+      "extensionsUsed": [
+        "KHR_materials_unlit"
+      ]
+    },
+    {
+      "file": "rome-insula-v30.glb",
+      "bytes": 2931200,
+      "uniquePrimitiveVertices": 7450,
+      "uniquePrimitiveTriangles": 3618,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 281816,
+      "embeddedImageBytes": 2646919,
+      "rgbaWithMipmapsEstimateBytes": 11184810,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 1951916,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "ab2a06a2df8c0ec7f9ac1421e63eef2438510cc5667193ec2eb48e87c7c1d324"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 695003,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "adcdb14455eeb4fb23c6f8c0a80d7994151ef7b93ced0ce73bfe4fcdd7b71acb"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "rome-temple-v30.glb",
+      "bytes": 1176116,
+      "uniquePrimitiveVertices": 1073,
+      "uniquePrimitiveTriangles": 748,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 43312,
+      "embeddedImageBytes": 1130334,
+      "rgbaWithMipmapsEstimateBytes": 11184810,
+      "images": [
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 537147,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "2dac9622e0a8f712ca84a31c8e9bf5e854c9f58fce3fddf0bb9e0da0d7c7771c"
+        },
+        {
+          "name": "",
+          "width": 1024,
+          "height": 1024,
+          "encodedBytes": 593187,
+          "rgbaWithMipmapsEstimateBytes": 5592405,
+          "sha256": "4b95c7ca464d5cb0e99940f0b116bbfa0d41ac1f199f16989625e4a3e3f034db"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "assets/equipment/armor_shoulder-c17b1581ca44.glb",
+      "bytes": 511996,
+      "uniquePrimitiveVertices": 2366,
+      "uniquePrimitiveTriangles": 4228,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 164304,
+      "embeddedImageBytes": 344628,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 95105,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "724edbf5780451cb904866e3e62f9a598a6a5b15694dc8d9a915682c2e6bc782"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 130109,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "3f707dc928eb3dd60d0acfa5611a3bbc8be3b3f99fa3f6ddbaabedc48943f3c7"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 119414,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "c9f58f10d97924f48869dfd3be8b5abdf1c45114471353d370b6a519ddb35451"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "assets/equipment/chest_plate-6376ad0c8654.glb",
+      "bytes": 263528,
+      "uniquePrimitiveVertices": 162,
+      "uniquePrimitiveTriangles": 260,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 10896,
+      "embeddedImageBytes": 249562,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 65264,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "2292dd9a926e19bf8d98cc23d07dd3b4900cfaaa2124a75db72e6605498d7034"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 93560,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "6cf8f34c9117c5c681ced22ebb011cafe85d7c7a5fdb3a07ce3bc040cbe80b81"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 90738,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "f61aac0a7035380f60d27f7c0c02f3e5c7148b218a3a59feb9d946328741e80f"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "assets/equipment/gladiator-9bcb0ac9d566.glb",
+      "bytes": 447244,
+      "uniquePrimitiveVertices": 3712,
+      "uniquePrimitiveTriangles": 4347,
+      "primitives": 18,
+      "meshNodes": 18,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 230340,
+      "embeddedImageBytes": 194356,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 75622,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "8f3061689244b911184edd7ddfffc794c1352db524844ad942967a8394abd243"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 22623,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "c4c959822895c5ab1711cf419b27361e49cf7c239dadc1dc713ba06406102e1a"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 96111,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "a2953d58e287f9cea67ed775c3c7837a68956cd7f3a68b7f7d4b9300260437df"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "assets/equipment/gladiator_chest-e2f685b66fb6.glb",
+      "bytes": 1212096,
+      "uniquePrimitiveVertices": 37369,
+      "uniquePrimitiveTriangles": 50880,
+      "primitives": 15,
+      "meshNodes": 15,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 1202136,
+      "embeddedImageBytes": 0,
+      "rgbaWithMipmapsEstimateBytes": 0,
+      "images": [],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "assets/equipment/knights-e30cc69af0fd.glb",
+      "bytes": 612424,
+      "uniquePrimitiveVertices": 2004,
+      "uniquePrimitiveTriangles": 3271,
+      "primitives": 2,
+      "meshNodes": 2,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 135444,
+      "embeddedImageBytes": 472635,
+      "rgbaWithMipmapsEstimateBytes": 9786707,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 106563,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "aadf7c11f783569f12a7d45f3e7f695539d114f442f5976bb45ce4fa5a708fad"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 86015,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "ebb06dbc2b3681e098e5c6745f607d2487c7f2caf7ac68e524ac775b138f74c6"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 59945,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "7e241688432ca0385000d78e4e4da2d0b4a0438f26b34929ff46a3f357b921f0"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 68026,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "52c2b6033d63eb3c7c293cf96db4ef79b6d1e94557ed714d8a244da3ccc348e9"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 93334,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "ee7d205ba2844ff51109ae9cb03f2b66b34862563e60365fbc33bc1954a52563"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 50957,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "4e0e1ffb03196ec5bf2aa572fb65e393b63ccf3a217b40af55ba7fc0823328b0"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 7795,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "73c8d601cfd888fa213a2d59b12753c7d3304834a17b65ba5dd3f84de374e5a1"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": [
+        "KHR_materials_specular"
+      ]
+    },
+    {
+      "file": "assets/equipment/roman-6d187d4b7f8c.glb",
+      "bytes": 601112,
+      "uniquePrimitiveVertices": 6084,
+      "uniquePrimitiveTriangles": 11290,
+      "primitives": 5,
+      "meshNodes": 5,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 427512,
+      "embeddedImageBytes": 166118,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 54368,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "749f5af5f9b5b8233bbe48fdd6ba837207acb8130eb05023e1294981cbc9dda9"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 60148,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "846f299247b8dfec19a5a8fe0e139d21a30fff7aa9a428cd4a33f4ea6901fe81"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 51602,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "e22705ec87f7bb1a63c552b776fc02a3e8049721ef9c20032a0ad1fec5a5705c"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "assets/equipment/shoulder_armor-a71778444187.glb",
+      "bytes": 251676,
+      "uniquePrimitiveVertices": 557,
+      "uniquePrimitiveTriangles": 948,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 38112,
+      "embeddedImageBytes": 210583,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 61067,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "5919ee1d88aae3ed10571af9f055420ef85fc5cd95894847ff6ef261d1b99ed8"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 104855,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "09b7970a484fb583574fef6efee5e1852f748de0afaa47ff7d5f206e85095633"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 44661,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "097f9ce9af87a7aeb4725afe37a2b096304d1b9c8d1f5de3f8ef826128df23cf"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    },
+    {
+      "file": "assets/equipment/winged-111637d14990.glb",
+      "bytes": 520556,
+      "uniquePrimitiveVertices": 3393,
+      "uniquePrimitiveTriangles": 3896,
+      "primitives": 1,
+      "meshNodes": 1,
+      "morphTargetCountAcrossPrimitives": 0,
+      "accessorUncompressedBytes": 209616,
+      "embeddedImageBytes": 308103,
+      "rgbaWithMipmapsEstimateBytes": 4194303,
+      "images": [
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 95537,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "1afc51976acfb62b7e633fd7fc4a2d365ea1409130fefcda7c0d3442c1e6c366"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 145773,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "1c56db014016eb98fff64bf51031171ae32ae5c2e0042284b89dc817cd41d250"
+        },
+        {
+          "name": "",
+          "width": 512,
+          "height": 512,
+          "encodedBytes": 66793,
+          "rgbaWithMipmapsEstimateBytes": 1398101,
+          "sha256": "7c41f959558d1ca06e4402adce54b7156014d189cd9b86596bd36c7357e00cfe"
+        }
+      ],
+      "extensionsRequired": [],
+      "extensionsUsed": []
+    }
+  ],
+  "duplicateEmbeddedImages": {
+    "1ed17f68ade7f0e19ac1f2c73fc0fab7ff1f56577526bd833da74206a3b54ada": [
+      "Colosseum.glb:",
+      "Colosseum.glb:"
+    ]
+  }
+}

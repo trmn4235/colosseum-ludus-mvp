@@ -2,6 +2,12 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## Mobile loading
+
+The anonymous login screen does not request GLBs. In the measured two-fighter Ludus fixture, cold uncompressed source payload falls from 87.40 MiB to 66.18 MiB (24.3%). The arena GLB waits for arena navigation; desk, wardrobe, books and clan chest load on room entry. Four renderer pages share byte-identical, content-addressed equipment/PBR resources, and Ludus reuses the existing persistent cache for the large owner model. The two office books share geometry/materials with independent transforms.
+
+[The investigation](docs/mobile-performance/README.md) includes complete network phases, geometry/texture costs, before/after images, cache and interaction tests, and Meshopt/Draco/KTX2 decisions. Geometry and image resolution are preserved. These fixture measurements are not production wire-byte, FPS or physical iPhone benchmarks; device performance remains unmeasured. No migration or hosting change is required.
+
 ## Ludus progression V37
 
 The office level book opens from the existing arrow emblem, yellow when a level reward can be collected and faded grey otherwise. The fixed landscape page shows account EXP, granted gladiator rights, the current roster and the exact PDF rewards for levels 2–50 with pagination and no scrolling. New accounts start with two gladiators; total granted rights are three at level 2, four at level 6, five at level 10 and fifteen at level 50. Existing rosters remain intact.

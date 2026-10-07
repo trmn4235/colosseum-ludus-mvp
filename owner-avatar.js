@@ -11,9 +11,16 @@ var LudusOwner = (() => {
   if(v.height!==undefined&&Number.isFinite(Number(v.height)))r.height=Math.round(clamp(Number(v.height),160,200));return r;
  }
  let template,pending,skinImages;
+ function model(url){
+  const loader=new THREE.GLTFLoader();
+  // Ludus already has a validated persistent GLB cache. Preview/login pages
+  // retain the standalone loader when that shared runtime is unavailable.
+  if(typeof ArenaAssetLoad==='function')return ArenaAssetLoad(url).then(bytes=>loader.parseAsync(bytes,new URL('.',document.baseURI).href));
+  return new Promise((resolve,reject)=>loader.load(url,resolve,undefined,reject));
+ }
  function load(){if(template)return Promise.resolve(template);if(pending)return pending;
   const getImage=url=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Ten dokusu yüklenemedi.'));img.src=url;});
-  pending=Promise.all([new Promise((resolve,reject)=>new THREE.GLTFLoader().load('owner-makehuman-v27.glb?v=revision28',resolve,undefined,reject)),new Promise((resolve,reject)=>new THREE.GLTFLoader().load('owner-run-v30.glb?v=revision30',resolve,undefined,reject)),getImage('owner-skin-light-v27.jpg?v=revision28'),getImage('owner-skin-dark-v27.jpg?v=revision28')]).then(([g,run,light,dark])=>{template=g.scene;template.userData.ownerClips=[...g.animations,...run.animations];skinImages=[light,dark];return template;}).catch(e=>{pending=null;throw e;});return pending;
+  pending=Promise.all([model('owner-makehuman-v27.glb?v=revision28'),model('owner-run-v30.glb?v=revision30'),getImage('owner-skin-light-v27.jpg?v=revision28'),getImage('owner-skin-dark-v27.jpg?v=revision28')]).then(([g,run,light,dark])=>{template=g.scene;template.userData.ownerClips=[...g.animations,...run.animations];skinImages=[light,dark];return template;}).catch(e=>{pending=null;throw e;});return pending;
  }
  function cloneRig(source){const copy=source.clone(true),map=new Map();const pair=(a,b)=>{map.set(a,b);a.children.forEach((c,i)=>pair(c,b.children[i]));};pair(source,copy);source.traverse(o=>{if(o.isSkinnedMesh){const c=map.get(o);c.skeleton=o.skeleton.clone();c.skeleton.bones=o.skeleton.bones.map(b=>map.get(b));c.bind(c.skeleton,o.bindMatrix);}});return copy;}
  function create(value){const T=THREE,a=normalize(value),root=new T.Group(),body=new T.Group();root.name='ludus-owner';root.userData.appearance=a;root.userData.owner=true;root.add(body);

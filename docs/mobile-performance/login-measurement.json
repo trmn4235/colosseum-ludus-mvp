@@ -1,0 +1,24 @@
+{
+  "environment": "fresh anonymous Chromium context, local HTTP, remote connections blocked",
+  "requests": [
+    {
+      "url": "/index.html",
+      "sourceBytes": 3610135
+    },
+    {
+      "url": "/owner-avatar.css?v=revision26",
+      "sourceBytes": 4542
+    },
+    {
+      "url": "/owner-three-r160.js?v=revision26",
+      "sourceBytes": 811253
+    },
+    {
+      "url": "/owner-avatar.js?v=revision38-mobile",
+      "sourceBytes": 17959
+    }
+  ],
+  "sourceBytes": 4443889,
+  "models": [],
+  "errors": []
+}

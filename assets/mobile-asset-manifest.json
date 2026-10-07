@@ -1,0 +1,407 @@
+{
+  "assets/equipment/gladiator-9bcb0ac9d566.glb": {
+    "sha256": "9bcb0ac9d56695da631f80944fc5175100cfe6002ef490d29e2b9016f0f1bd78",
+    "bytes": 447244,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/equipment/knights-e30cc69af0fd.glb": {
+    "sha256": "e30cc69af0fd59456b00eff3582ff56356943a840dfbce5eaef7b78347bc691a",
+    "bytes": 612424,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/equipment/winged-111637d14990.glb": {
+    "sha256": "111637d14990f9791d862941a9ff7de801d17358f07e184dea6492c694affca4",
+    "bytes": 520556,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/equipment/roman-6d187d4b7f8c.glb": {
+    "sha256": "6d187d4b7f8ce9ebe0148bb8ed1e58b447ac62a7a6ace31970495e5e15952d37",
+    "bytes": 601112,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/equipment/gladiator_chest-e2f685b66fb6.glb": {
+    "sha256": "e2f685b66fb67d8f54722651c6400bbbf433947cdc9e95a4dc3f2b29d3ee5a22",
+    "bytes": 1212096,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/equipment/chest_plate-6376ad0c8654.glb": {
+    "sha256": "6376ad0c8654e4030ae326eecc91f881f69f8b66bfa7d390ed4d5d1e93581f30",
+    "bytes": 263528,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/equipment/armor_shoulder-c17b1581ca44.glb": {
+    "sha256": "c17b1581ca449b74422b60640bd4cb39af91d5918748ef0226b5b70216061c55",
+    "bytes": 511996,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/equipment/shoulder_armor-a71778444187.glb": {
+    "sha256": "a71778444187c3917a915405473157985ac13bb42665b6c6776cdca0c5021d9b",
+    "bytes": 251676,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/sand_01-diff-8aecb3769d72.webp": {
+    "sha256": "8aecb3769d728aadf96574bdee876281641d4b1792e68b86ff30f816acc5461e",
+    "bytes": 71456,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/sand_01-nor_gl-6616ebcba18d.webp": {
+    "sha256": "6616ebcba18d54cb75145afcc4e59d50993192ad94544137f9115f90e8c9192d",
+    "bytes": 100628,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/sand_01-rough-a75cb02d64ea.webp": {
+    "sha256": "a75cb02d64ea4728f46ba3038d74d47bba6667119d9d47c4249eb2c92ea0d9c1",
+    "bytes": 22524,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/white_plaster_02-diff-6aa57de97b10.webp": {
+    "sha256": "6aa57de97b102277f5e9295247084c6842f8523389ccc83eacfd1b141204a77a",
+    "bytes": 35452,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/white_plaster_02-nor_gl-dcd2b93a4cbb.webp": {
+    "sha256": "dcd2b93a4cbbe27dc0f2d0bd28a5e8e329c948cf5fc12d38012aa32026c0c6fe",
+    "bytes": 29274,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/white_plaster_02-rough-1e05c5521169.webp": {
+    "sha256": "1e05c55211698c434063ce19d4dcd4ea59e4f3d3ab5243b1f141f94ce7ed36a5",
+    "bytes": 7226,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/stone_wall_02-diff-978ee90ff99a.webp": {
+    "sha256": "978ee90ff99a76adebcd12163bf3872d2f0d5ad0a50f78ddafd4f0ef1b69f3d8",
+    "bytes": 34626,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/stone_wall_02-nor_gl-280beb967583.webp": {
+    "sha256": "280beb96758310746e4475339de58a8f62852e8da81c4832a2301080c6dfd7f8",
+    "bytes": 108142,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/stone_wall_02-rough-0d9b4ef4bd03.webp": {
+    "sha256": "0d9b4ef4bd033e2d8bf9b44ab1a5d466a27141f36341b33a3f432b5b28295dba",
+    "bytes": 13790,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/wooden_gate-diff-67741a5af1f9.webp": {
+    "sha256": "67741a5af1f97ac3fd9ae9a1ea5cd194e9c6fb06e13dc083dc6515b2431bc636",
+    "bytes": 18786,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/wooden_gate-nor_gl-9c9095cd8a7d.webp": {
+    "sha256": "9c9095cd8a7d0cc473b9300098e068328ed94ae01f007386ae713cf3256beb42",
+    "bytes": 14094,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/wooden_gate-rough-f62304f04b81.webp": {
+    "sha256": "f62304f04b81aefde80ba7fb85b5d9d6716a56d0c7f57566c146f08ca37f570c",
+    "bytes": 37576,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/brown_leather-nor_gl-3e1524121f58.webp": {
+    "sha256": "3e1524121f581e4f89dc348b182d0771a7c04a044ffca31c609423aac2097228",
+    "bytes": 64848,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/brown_leather-rough-db921d8e689c.webp": {
+    "sha256": "db921d8e689ceaf9c9fd76f0364ec0a8608e6362652bf4530ed72f5bea43b3f7",
+    "bytes": 108620,
+    "embeddedIn": [
+      "ludus.html",
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp": {
+    "sha256": "291a56b4ab78d7ff5c81abfa5dde645c61fb1d535e1cde480ea9ecc7bff2ca6f",
+    "bytes": 65722,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp": {
+    "sha256": "ca837027cc377a096c0e2d34e1aad7ec3db8ff3251dd5674e2608977296df9d6",
+    "bytes": 44192,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp": {
+    "sha256": "4b0a136337d7b7fd0dfae56c2c4938d40d3e52c5e8fa3ea0d13bbff2ec749806",
+    "bytes": 40818,
+    "embeddedIn": [
+      "ludus.html"
+    ]
+  },
+  "assets/textures/sand_01-diff-05b825608ef2.webp": {
+    "sha256": "05b825608ef204824e17d63e8a7cffe4b84fcf9eea65184d0231518178c2f348",
+    "bytes": 40496,
+    "embeddedIn": [
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/sand_01-nor_gl-694c0d6327db.webp": {
+    "sha256": "694c0d6327dbc88f7fea4fdd7148dbfb4f737f217b2fe232686109828231402e",
+    "bytes": 91246,
+    "embeddedIn": [
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/sand_01-rough-13596e2e2ff4.webp": {
+    "sha256": "13596e2e2ff4a76f2b14cfeb5d6a5890e5fc5211cb7bdcbeecbc575dcb55a779",
+    "bytes": 11310,
+    "embeddedIn": [
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/stone_wall_02-diff-48c8a82a57aa.webp": {
+    "sha256": "48c8a82a57aaa8314c7171dfbff592821a681dd07c3fef996319c5a74874a8c1",
+    "bytes": 19318,
+    "embeddedIn": [
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/stone_wall_02-nor_gl-7a19d5f27a5c.webp": {
+    "sha256": "7a19d5f27a5c0e7d9268ca601b1ff46a300e7117c3af3fc0c90f4ffacf07fc6c",
+    "bytes": 78314,
+    "embeddedIn": [
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/stone_wall_02-rough-80ee9e48aba5.webp": {
+    "sha256": "80ee9e48aba5e7606a19db1a265b00051b0d28412eb631c6c49d1bbc9a2330dd",
+    "bytes": 1314,
+    "embeddedIn": [
+      "savas.html",
+      "arena.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/gladiator-3e9fab30d191.webp": {
+    "sha256": "3e9fab30d191d929aa53f45427a206b410cb5f0c8d087aefe9ead35671e64854",
+    "bytes": 7362,
+    "embeddedIn": [
+      "savas.html",
+      "savas.html",
+      "multiplayer.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/knights-a65625344d40.webp": {
+    "sha256": "a65625344d408f264b2cebcdc29c9f900beb525b2f688bdeb1132d02b341d5bc",
+    "bytes": 10034,
+    "embeddedIn": [
+      "savas.html",
+      "savas.html",
+      "multiplayer.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/winged-6f464bdefb69.webp": {
+    "sha256": "6f464bdefb69ec7da787920000427179ea6e591a3675562cd9495f06295325cc",
+    "bytes": 11526,
+    "embeddedIn": [
+      "savas.html",
+      "savas.html",
+      "multiplayer.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/roman-12c0d9fa4cf2.webp": {
+    "sha256": "12c0d9fa4cf2fca98fdaf4c2119bcbe0654f221d5cd2211c6c150a162ce1f661",
+    "bytes": 8406,
+    "embeddedIn": [
+      "savas.html",
+      "savas.html",
+      "multiplayer.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/gladiator_chest-89bcf1e90f16.webp": {
+    "sha256": "89bcf1e90f1603641809aacc8412c105c2c337192e9233e2b881d7a5985aa122",
+    "bytes": 9054,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/chest_plate-730d42485f3a.webp": {
+    "sha256": "730d42485f3a3246b7800d290f97f15ada246f2c2a9851f5b5d315dc5e2e27c3",
+    "bytes": 10270,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/armor_shoulder-265d36601366.webp": {
+    "sha256": "265d366013669e1d07334d94fe4949ddc60b262fef29928cbef603ebb254af43",
+    "bytes": 7044,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/shoulder_armor-3c831205a71f.webp": {
+    "sha256": "3c831205a71f385aaed20ad4150c23f5d4ad647c2011d6e8aeb6858cae8dd651",
+    "bytes": 6488,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/murmillo-3e675f23b653.webp": {
+    "sha256": "3e675f23b6538ac9b6096f8033516e2ff9b1d1a6ead5e7abb9522a2628e73ce5",
+    "bytes": 7356,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/thraex-cda03a764bfa.webp": {
+    "sha256": "cda03a764bfa96b21bb4fef071dec548bdb84ecc8a9d1660250f3af506d4ffd2",
+    "bytes": 6780,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/hoplomachus-2016b8441dd6.webp": {
+    "sha256": "2016b8441dd69288403c9ac4c419ee464dd4554cf2e9666a1d7e79fa178a1df4",
+    "bytes": 6672,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/secutor-c0a735b063c1.webp": {
+    "sha256": "c0a735b063c1c62de30969ad1cf92afc3e4ef90af665ec4f72b5eee7107e3d81",
+    "bytes": 7408,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/retiarius-4f388b00bb43.webp": {
+    "sha256": "4f388b00bb43bb9a2cbf6300190102d08f46fcb90a4ab81f9c3bd6c0f0c812bb",
+    "bytes": 7122,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/provocator-07d7518a15c4.webp": {
+    "sha256": "07d7518a15c45e30f3593ea5099b7d363ffe124085b5bfa739a5fa02839467bf",
+    "bytes": 7200,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  },
+  "assets/textures/scissor-13a6b2685a92.webp": {
+    "sha256": "13a6b2685a929efdd906184113e971843bf6ec275b9728b5592831f28e29bd4b",
+    "bytes": 6732,
+    "embeddedIn": [
+      "savas.html",
+      "multiplayer.html"
+    ]
+  }
+}
