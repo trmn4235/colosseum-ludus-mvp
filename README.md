@@ -2,6 +2,16 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## Ludus progression V37
+
+The office level book opens from the existing arrow emblem, yellow when a level reward can be collected and faded grey otherwise. The fixed landscape page shows account EXP, granted gladiator rights, the current roster and the exact PDF rewards for levels 2–50 with pagination and no scrolling. New accounts start with two gladiators; total granted rights are three at level 2, four at level 6, five at level 10 and fifteen at level 50. Existing rosters remain intact.
+
+Current PvE victories award 100 Ludus EXP. The first ten daily wins award full EXP, wins 11–30 half and later wins one quarter, capped at 2,500 battle EXP per Istanbul calendar day. Losses, abandoned battles, friendly matches and multiplayer beta award no Ludus EXP. Daily quests award 150/150/250/350 EXP plus a 300 EXP completion bonus. Imperial mission tiers award 500/750/1,000 EXP on collection. Level L requires `3000 + 100*(L-1) + 15*(L-1)^2` EXP for the next level; level 10 requires 33,660 total EXP. Clan and individual gladiator EXP stay independent.
+
+Apply `ludus-level-v37.sql` after the existing backend migrations. Validated settlement and quest-claim transactions grant EXP once. Level claims draw random equipment and random stones from each specified family; repeated or lost-response retries preserve the original draw and cannot duplicate rewards. Gladiators are drawn from classes the player does not own. The current catalog contains seven classes: when all are owned, additional gladiator rights remain pending until an eligible class and a free slot are available. This does not create extra starting slots or delete existing fighters.
+
+Validation: `tests/ludus-level-v37.cjs` exercises the repeatable migration, all PDF totals, daily battle caps, all EXP sources, exact 2/3/4/5/15 rights, persistent random rewards and account isolation in PGlite. `tests/ludus-level-ui-v37.cjs` uses the migrated RPC in Chromium to verify six landscape sizes, pagination, double clicks and reload after a lost claim response. Set `NODE_PATH` to the installed PGlite/Playwright modules and `CHROMIUM_EXECUTABLE_PATH` when needed.
+
 ## Multiplayer controls V36
 
 Multiplayer now loads the same textured Colosseum model as the normal arena. A compact health/stamina HUD replaces the oversized banner. The touch controls use the established target, equipment-change, shield, sword and dodge symbols; swipe the attack control up/down/left/right for head/legs/left arm/right arm, or tap for chest. Hold the shield to block. Dual weapons expose the equipment-change control; a selected whip exposes its existing locked-target pull.
