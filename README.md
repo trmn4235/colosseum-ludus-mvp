@@ -2,6 +2,16 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## City and camera V29
+
+Walking speed is now 2.1 m/s, with the downloaded walk clip sped up to match. **Ayarlar → Kamera uzaklığı** offers Yakın, Orta yakın (the unchanged default), and Uzak; the selection persists on the device. Closing settings restores movement immediately, including before the browser's asynchronous dialog-close event.
+
+Downloaded monument models replace the procedural amphitheatre and temple. Colosseum height is 48 m; Pantheon height is 43.3 m. Their centres are exactly 2,000 m apart, with the Colosseum southeast of the Pantheon. North is -Z and east is +X. The Pantheon entrance faces north, so the Colosseum is behind-right when looking out. The ludus is positioned for the game view; this is not a surveyed reconstruction of Rome.
+
+A photographed CC0 sky panorama, tiled roof textures, masonry facades, varied building heights, cypresses, a continuous city ground and atmospheric distance replace the previous sky and skyline. The Pantheon scan is cropped to the monument; it is a distant skyline model, not an explorable or high-detail interior. Attribution and modifications are in [CITY_ASSETS.md](CITY_ASSETS.md). No SQL migration is required. V29 JavaScript uses new cache keys; the unchanged owner GLB keeps its V28 cache key.
+
+Local validation includes model dimensions and placement, camera persistence and immediate input resumption, the existing regression suite, actual Three.js rendered views, and an isolated mobile browser fixture. Physical iPhone performance remains unmeasured.
+
 ## Owner revisions V28
 
 The owner uses a downloaded MakeHuman human with an adapted long white rope-belt tunic and ankle sandals. Downloaded normal-walk and idle motions replace the previous procedural posing. Hair colours retain strand texture while visibly differentiating blond, brown, red and grey; there are 11 hair, 6 facial-hair and 7 eyebrow choices. Weight blends include more pronounced waist, head, arm and thigh fat targets and fitted clothing.
