@@ -1,0 +1,69 @@
+.clan-vault-marker{position:fixed;z-index:12;display:grid;place-items:center;width:47px;height:47px;padding:7px;border:1px solid #d7b875;border-radius:50%;color:#ffe1a0;background:radial-gradient(circle at 35% 25%,#79582c,#29231ae8 72%);box-shadow:0 3px 12px #0008,0 0 0 3px #211c1780;transform:translate(-50%,-50%);cursor:pointer;touch-action:manipulation}
+.clan-vault-marker svg{width:100%;height:100%;filter:drop-shadow(0 1px 2px #000)}
+.clan-vault-marker:focus-visible{outline:3px solid #fff1b6;outline-offset:3px}
+.clan-vault-marker[hidden],.clan-vault-modal[hidden]{display:none!important}
+.clan-vault-modal{position:fixed;inset:0;z-index:4000;display:grid;place-items:center;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:#0c090be0;backdrop-filter:blur(5px);overflow:hidden;overscroll-behavior:none;box-sizing:border-box;font:14px Arial,sans-serif;color:#ebddbf;isolation:isolate}
+.clan-vault-modal *{box-sizing:border-box}
+.clan-vault-frame{position:relative;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;width:min(1260px,100%);height:min(790px,100%);min-height:0;padding:14px 17px 12px;border:2px solid #b0935c;border-radius:9px;background:linear-gradient(120deg,#37342a,#191b18 43%,#302c24);box-shadow:0 0 0 2px #141411,0 0 0 4px #74674d,0 16px 70px #000b,inset 0 0 0 2px #41392a;overflow:hidden}
+.clan-vault-frame:before,.clan-vault-frame:after{content:'◆';position:absolute;top:4px;color:#bba06b;font-size:13px;pointer-events:none}
+.clan-vault-frame:before{left:5px}.clan-vault-frame:after{right:5px}
+.clan-vault-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 10px;border-bottom:1px solid #b0935c66;min-width:0}
+.clan-vault-heading{min-width:0}.clan-vault-heading h1{margin:0;color:#f2ddb0;font:26px Georgia,serif;line-height:1.2;letter-spacing:.2px}.clan-vault-heading p{margin:5px 0 0;color:#b7ab92;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.clan-vault-modal button{font:inherit;color:inherit;min-height:0;backdrop-filter:none;cursor:pointer;touch-action:manipulation}
+.clan-vault-modal button:disabled{cursor:default;opacity:.42;filter:saturate(.4)}
+.clan-vault-modal button:focus-visible,.clan-vault-modal input:focus-visible{outline:2px solid #f6d584;outline-offset:2px}
+.clan-vault-close{flex:none;display:grid;place-items:center;width:36px;height:34px;padding:0;border:1px solid #ac915e;border-radius:3px;background:linear-gradient(#6c2635,#37131c);font-size:23px!important;color:#f5deb0!important}
+.clan-vault-panels{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;min-width:0;min-height:0}
+.clan-vault-panel{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto auto;gap:8px;min-width:0;min-height:0;padding:10px;border:1px solid #776c50;border-radius:4px;background:linear-gradient(135deg,#282b2a,#171918);box-shadow:inset 0 0 0 2px #0c0e0d,0 4px 12px #0003}
+.clan-vault-belt{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;margin:-1px -1px 0;padding:8px 10px;border:1px solid #857047;background:linear-gradient(#464239,#262924);box-shadow:inset 0 1px #c2aa7040}
+.clan-vault-belt h2{margin:0;white-space:nowrap;font:21px Georgia,serif;color:#f4dfb3;line-height:1.2}
+.clan-vault-count{font-size:11px;white-space:nowrap;color:#beb49c}
+.clan-vault-slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr));gap:5px;min-height:0;min-width:0;padding:7px;border:1px solid #62583f;box-shadow:inset 0 0 10px #000b;background:#0e1110;overflow:hidden}
+.clan-vault-slot{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;width:100%;height:100%;padding:5px;border:1px solid #5a604e;border-radius:2px;box-shadow:inset 0 0 0 1px #0009,inset 0 0 15px #0003;background:radial-gradient(ellipse at 50% 35%,#363e32,#191e1a);overflow:hidden}
+.clan-vault-slot[data-type=equipment]{background:radial-gradient(ellipse at 50% 30%,#eee0c2,#b4a688);border-color:#918364}
+.clan-vault-slot[data-type=stone]{background:radial-gradient(ellipse at 50% 40%,var(--gem-glow,#213b45),#101614 90%)}
+.clan-vault-slot[data-empty=true]{opacity:.64;background:linear-gradient(140deg,#202622,#0d1110);border-color:#3b4238;cursor:default}
+.clan-vault-slot[data-empty=true]:after{content:'';position:absolute;inset:5px;border:1px solid #a8a1720b}
+.clan-vault-slot[aria-pressed=true]{border:2px solid #f7d578;box-shadow:0 0 0 1px #9f682e,inset 0 0 14px #efce7444;background-color:#5f5129}
+.clan-vault-slot>svg{width:100%!important;height:100%!important;max-height:100%;max-width:100%;pointer-events:none}
+.clan-vault-slot .equipment-icon{mix-blend-mode:multiply}
+.clan-vault-slot .equipment-icon>rect:first-child{fill:transparent}
+.clan-vault-quantity,.clan-vault-level{position:absolute;z-index:1;top:3px;padding:1px 3px;line-height:1.1;font-size:12px;font-weight:700;border-radius:2px;background:#101710b8;color:#fff3d1;text-shadow:0 1px 1px #000;pointer-events:none}
+.clan-vault-quantity{left:3px}.clan-vault-level{right:3px;color:#fff1a3;background:#6b4b249e}
+.clan-vault-page{display:flex;justify-content:center;align-items:center;gap:13px;min-height:25px;font-size:12px;color:#c8b68a}
+.clan-vault-page button{display:grid;place-items:center;width:29px;height:25px;padding:0;border:1px solid #8c7548;border-radius:2px;background:linear-gradient(#b09d66,#6f613b);color:#181b14;font-size:17px}
+.clan-vault-selection{display:flex;align-items:center;gap:7px;min-height:38px;min-width:0;padding:5px 0;border-top:1px solid #70644766}
+.clan-vault-iteminfo{flex:1;min-width:0}.clan-vault-iteminfo strong,.clan-vault-iteminfo small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clan-vault-iteminfo strong{font-size:13px;line-height:1.25;color:#f2ddb0}.clan-vault-iteminfo small{margin-top:3px;font-size:10px;color:#aaa18a}
+.clan-vault-transfer{flex:none;display:flex;align-items:center;justify-content:center;gap:5px;min-height:30px;padding:5px 9px;border:1px solid #b7965b;border-radius:3px;background:linear-gradient(#773540,#441723);color:#ffe8bb!important;white-space:nowrap;font-size:12px!important}
+.clan-vault-transfer svg{width:20px;height:18px;flex:none}.clan-vault-transfer[data-direction=deposit] svg{transform:rotate(180deg)}
+.clan-vault-amount{width:48px!important;min-width:0;height:28px;padding:2px 4px!important;border:1px solid #84724c!important;border-radius:2px;background:#101410!important;color:#f4e2b9!important;font:12px Arial!important;text-align:center;box-shadow:inset 0 1px 5px #0007}
+.clan-vault-treasury{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;min-height:47px;padding:7px 8px;border:1px solid #80734d;background:linear-gradient(90deg,#36372b,#20251d);box-shadow:inset 0 1px #a58d4e33}
+.clan-vault-balance{display:flex;align-items:center;gap:6px;min-width:0}.clan-vault-balance svg{width:28px;height:28px;flex:none}.clan-vault-balance strong{display:block;white-space:nowrap;font-size:17px;color:#f8dfa1;line-height:1.1}.clan-vault-balance small{display:block;font-size:10px;color:#bcb18e;line-height:1.4}
+.clan-vault-donation{display:flex;align-items:center;gap:5px;margin:0;min-width:0;flex:1;max-width:58%}
+.clan-vault-donation input{width:100%;min-width:0;height:32px;padding:4px 7px;border:1px solid #74674a;border-radius:2px;background:#101410;color:#fff0c5;font:13px Arial,sans-serif;box-shadow:inset 0 2px 6px #0008}
+.clan-vault-donation input::placeholder{color:#9c987e;font-size:11px}
+.clan-vault-donation button{flex:none;display:grid;place-items:center;width:35px;height:32px;padding:4px;border:1px solid #b79d62;border-radius:2px;background:linear-gradient(#57472b,#302916)}
+.clan-vault-donation button svg{width:25px;height:25px}
+.clan-vault-wallet-note{font-size:11px;color:#b0a58b;white-space:nowrap}
+.clan-vault-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:23px;min-width:0}
+.clan-vault-status{margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#dfc898;font-size:12px}
+.clan-vault-status[data-tone=error]{color:#ffb3a2}.clan-vault-status[data-tone=success]{color:#bbddaa}
+.clan-vault-retry{flex:none;padding:4px 10px;border:1px solid #a08751;border-radius:3px;background:#443d2c;font-size:12px!important}
+.clan-vault-retry[hidden]{display:none!important}
+@media(max-width:900px),(max-height:570px){
+ .clan-vault-frame{gap:7px;padding:9px 11px 7px}.clan-vault-top{padding-bottom:6px}.clan-vault-heading h1{font-size:20px}.clan-vault-heading p{font-size:10px;margin-top:3px}.clan-vault-close{width:30px;height:29px}
+ .clan-vault-panels{gap:12px}.clan-vault-panel{gap:5px;padding:7px}.clan-vault-belt{padding:5px 7px}.clan-vault-belt h2{font-size:17px}.clan-vault-count{font-size:10px}
+ .clan-vault-slots{gap:4px;padding:5px}.clan-vault-slot{padding:3px}.clan-vault-quantity,.clan-vault-level{font-size:10px;top:2px;padding:1px 2px}
+ .clan-vault-page{min-height:21px;gap:10px;font-size:10px}.clan-vault-page button{width:24px;height:21px;font-size:14px}
+ .clan-vault-selection{min-height:32px;padding:3px 0;gap:4px}.clan-vault-iteminfo strong{font-size:11px}.clan-vault-iteminfo small{font-size:9px;margin-top:2px}.clan-vault-transfer{font-size:10px!important;padding:4px 5px;min-height:26px;gap:3px}.clan-vault-transfer svg{width:16px;height:15px}.clan-vault-amount{width:39px!important;height:25px;font-size:11px!important}
+ .clan-vault-treasury{min-height:39px;padding:5px;gap:5px}.clan-vault-balance{gap:4px}.clan-vault-balance svg{width:22px;height:22px}.clan-vault-balance strong{font-size:14px}.clan-vault-balance small{font-size:9px}.clan-vault-donation{max-width:57%;gap:4px}.clan-vault-donation input{height:28px;font-size:11px;padding:3px 5px}.clan-vault-donation input::placeholder{font-size:10px}.clan-vault-donation button{width:30px;height:28px;padding:3px}.clan-vault-donation button svg{width:21px;height:21px}.clan-vault-wallet-note{font-size:10px}.clan-vault-bottom{min-height:19px}.clan-vault-status{font-size:10px}.clan-vault-retry{font-size:10px!important;padding:3px 6px}
+}
+@media(max-height:355px),(max-width:700px){
+ .clan-vault-modal{padding:7px 9px}.clan-vault-frame{gap:5px;padding:7px 8px 6px}.clan-vault-heading h1{font-size:17px}.clan-vault-heading p{font-size:9px}.clan-vault-top{padding-bottom:4px}.clan-vault-close{width:28px;height:26px}
+ .clan-vault-panel{padding:5px;gap:4px}.clan-vault-panels{gap:8px}.clan-vault-belt{padding:4px 5px}.clan-vault-belt h2{font-size:14px}.clan-vault-count{font-size:9px}.clan-vault-slots{padding:4px;gap:3px}.clan-vault-slot{padding:2px}.clan-vault-quantity,.clan-vault-level{font-size:9px;top:1px}
+ .clan-vault-selection{min-height:27px}.clan-vault-iteminfo strong{font-size:10px}.clan-vault-iteminfo small{font-size:8px}.clan-vault-transfer{font-size:9px!important;padding:3px 4px;min-height:23px}.clan-vault-amount{width:32px!important;height:22px;font-size:10px!important}
+ .clan-vault-treasury{min-height:33px;padding:4px}.clan-vault-balance svg{width:19px;height:19px}.clan-vault-balance strong{font-size:12px}.clan-vault-balance small{font-size:8px}.clan-vault-donation input{height:25px;font-size:10px}.clan-vault-donation button{width:27px;height:25px}.clan-vault-donation input::placeholder{font-size:9px}.clan-vault-wallet-note{font-size:9px}.clan-vault-page{min-height:19px}.clan-vault-page button{width:23px;height:19px}.clan-vault-bottom{min-height:17px}.clan-vault-status{font-size:9px}
+}
+@media(max-height:450px){.clan-vault-heading{display:flex;align-items:center;gap:12px}.clan-vault-heading h1{font-size:18px;white-space:nowrap}.clan-vault-heading p{margin:0;max-width:45vw}.clan-vault-panel{gap:4px;padding:6px;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto auto}.clan-vault-belt,.clan-vault-slots,.clan-vault-treasury{grid-column:1/-1}.clan-vault-belt{padding:4px 6px}.clan-vault-belt h2{font-size:16px}.clan-vault-treasury{min-height:34px;padding:4px}.clan-vault-selection{grid-row:3;grid-column:2;min-height:27px;padding:0;border:0}.clan-vault-iteminfo{display:none}.clan-vault-page{grid-row:3;grid-column:1;min-height:27px}.clan-vault-page button{height:23px}.clan-vault-bottom{min-height:17px}}
+@media(max-width:440px){.clan-vault-count,.clan-vault-wallet-note,.clan-vault-iteminfo small{display:none}.clan-vault-belt h2{font-size:12px}.clan-vault-transfer span{display:none}.clan-vault-selection{gap:3px}.clan-vault-transfer{padding:3px}.clan-vault-heading p{max-width:240px}.clan-vault-donation{max-width:55%}.clan-vault-balance strong{font-size:10px}.clan-vault-balance svg{width:15px;height:15px}.clan-vault-donation input::placeholder{font-size:8px}}

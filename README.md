@@ -2,6 +2,16 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## Clan room chest V35
+
+The downloaded walnut-tinted chest opens from the established arrow emblem. A fixed, non-scrolling screen presents **Klan Inventory** on the left and **Ludus Inventory** on the right, with separate 6×5 grids and independent pagination. Selecting equipment preserves its + level and all socketed stones. Gem stacks support quantity selection. Equipped, battle-locked and clan-roster-locked equipment cannot be donated.
+
+Enter an integer in the clan denarius field and press its coin emblem to donate personal denarius to the clan. There is no coin withdrawal endpoint or button. All clan members can inspect the chest and donate denarius; equipment/gem deposits and withdrawals require the leader-controlled existing `vault_access` permission. The chest has 60 shared slots, counting equipment and nonempty gem stacks; merging a stack does not consume another slot. The older clan equipment screen respects this same capacity.
+
+Apply `ludus-clan-vault-v35.sql` after the existing V22/V23 backend. The RPC authenticates `auth.uid()`, checks current membership and permissions, uses the established wallet/clan lock order, and records an idempotent request and ledger entry within the same transaction. A persisted pending request can be retried after a lost response without duplicating the transfer. Requests pin the destination clan ID. The new stone table denies all direct client access; only the authenticated chest RPC is exposed, with private helpers inaccessible and an empty security-definer search path.
+
+Verification: `tests/clan-vault-v35.sql` generates fixtures inside a rollback transaction; `tests/clan-vault-v35.cjs` checks seven viewport sizes and transaction UI in Chromium/WebKit; `tests/clan-room-v35.cjs` renders the real model, checks collision/no tunnelling, and verifies room changes do not leave stale colliders. Asset credits: [CLAN_VAULT_ASSETS.md](CLAN_VAULT_ASSETS.md).
+
 ## City and camera V29
 
 Walking speed is now 2.1 m/s, with the downloaded walk clip sped up to match. **Ayarlar → Kamera uzaklığı** offers Yakın, Orta yakın (the unchanged default), and Uzak; the selection persists on the device. Closing settings restores movement immediately, including before the browser's asynchronous dialog-close event.
