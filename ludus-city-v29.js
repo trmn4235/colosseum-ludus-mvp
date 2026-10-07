@@ -3,7 +3,7 @@ var LudusCity=(()=>{
  'use strict';
  const diagonal=2000/Math.sqrt(2);
  // Metres, east = +X, north = -Z. The Pantheon's entrance faces north.
- const landmarks={colosseum:{position:[820,0,650],height:48,footprint:[188,156],file:'colosseum-city-v29.glb',yaw:0},pantheon:{position:[820-diagonal,0,650-diagonal],height:43.3,file:'pantheon-city-v29.glb',yaw:0}};
+ const landmarks={colosseum:{position:[1050,0,-100],height:48,footprint:[188,156],file:'colosseum-city-v29.glb',yaw:0},pantheon:{position:[1050-diagonal,0,-100-diagonal],height:43.3,file:'pantheon-city-v29.glb',yaw:0}};
  function create(scene,renderer,sun){
   const T=THREE,root=new T.Group();root.name='Rome city';scene.add(root);
   scene.fog=new T.FogExp2('#bac3c7',.00032);
