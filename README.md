@@ -79,3 +79,14 @@ Online strikes resolve once at their scheduled contact time. The server validate
 Run `node --test tests/combat-feel-v23.test.cjs` with Node 18 or later. The tests exercise shield recoil, timed counters, held and rapidly toggled defense, target and expiry checks, projectile defense, and compilation of embedded scripts.
 
 Local PostgreSQL checks also cover repeatable migration, delayed damage, attack retry deduplication, late defense and authorization. Browser checks use local assets and an isolated battle fixture. Actual iPhone frame rate and a live two-device match still need device validation.
+# Gladiator exercise V46
+
+Apply `supabase/migrations/20261008234312_gladiator_exercise_v46.sql` after the existing training, imperial and level migrations. The seven character attributes total 350 at adoption (Overall 50). Existing earned Overall is preserved. Overall is the precise mean of character attributes, excluding equipment.
+
+Each gladiator has one Istanbul-calendar daily allowance. Three completed matches, one selected-attribute training, or one completed easy imperial mission fill it. Mixed activities share the same allowance. Growth is awarded once when it fills; the base daily budget is 3.5 attribute points, slowing at Overall 60/70/80/90. Selected training concentrates growth, while matches and easy missions share it across seven attributes. Capped-attribute overflow redistributes to uncapped attributes.
+
+The fatigue meter displays remaining energy: a fight costs 20, training 30, and easy/medium/hard missions 20/35/50. Idle recovery adds 10 energy per hour, including offline time; midnight does not reset it. Starting an activity below 30 remaining energy records a server-owned 25% injury chance, rolled once at completion. Injury removes 35 total attribute points (5 Overall), requires 12 hours of recovery, and lost attributes must be trained again. Exhausted and injured fighters cannot start new activities. In-progress historical activities are preserved without retroactive injury rolls.
+
+The courtyard panel shows portrait and Overall, daily and energy bars, then the seven selectable attributes. Batch training starts the selected attribute for up to 30 eligible gladiators atomically. All sessions keep the existing one-hour training plus one-hour rest duration. The former weekly absence penalty is retired.
+
+Validation: `tests/gladiator-exercise-v46.cjs` runs actual migration/functions/triggers in PGlite. `tests/gladiator-exercise-ui-v46.cjs` tests the real UI module and portrait assets in Chromium/WebKit across five landscape sizes. Set `LUDUS_PGLITE_MODULE`, `CODEX_PRIMARY_RUNTIME_NODE_MODULES`, `LUDUS_TEST_ENGINES`, and `LUDUS_TEST_OUTPUT` as appropriate.
