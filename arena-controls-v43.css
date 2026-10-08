@@ -1,0 +1,28 @@
+/* Approved mobile layout: controls grow upward from the bottom safe edge. */
+.actions{--unit:clamp(42px,10.5dvh,72px);--gap:clamp(7px,2dvh,14px);width:calc(var(--unit)*4 + var(--gap)*3);height:calc(var(--unit)*4 + var(--gap)*3);display:block;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));pointer-events:none}
+.actions .action{position:absolute;margin:0;padding:0;width:var(--unit)!important;height:var(--unit)!important;min-width:0;min-height:0;pointer-events:auto;border:1.5px solid #d4ad62;border-radius:50%;background:radial-gradient(ellipse at 35% 25%,#4d3c24e8,#151612df);box-shadow:inset 0 0 0 2px #1c140b,0 2px 5px #0006;transform:none}
+.actions .action svg{width:55%!important;height:55%!important;stroke:#f6d992;stroke-width:1.5;fill:#d7b46b33}
+.actions small{display:none!important}
+.actions #attack,.actions #block{left:0;border-radius:999px;height:calc(var(--unit)*1.5 + var(--gap))!important;background:radial-gradient(ellipse at 35% 25%,#4d3c24e8,#151612df)}
+.actions #attack{top:calc(var(--unit) + var(--gap))}.actions #block{bottom:0}
+.actions #dodge,.actions #special{top:0;width:calc(var(--unit)*1.5 + var(--gap)*.5)!important;height:calc(var(--unit)*.72)!important;border-radius:999px}
+.actions #dodge{left:calc(var(--unit) + var(--gap))}.actions #special{right:0}
+.actions #dodge svg,.actions #special svg{width:30%!important;height:70%!important}
+.actions [data-region=head]{top:calc(var(--unit) + var(--gap));left:calc((var(--unit) + var(--gap))*2)}
+.actions [data-region=rightArm]{top:calc((var(--unit) + var(--gap))*2);left:calc(var(--unit) + var(--gap))}
+.actions [data-region=chest]{top:calc((var(--unit) + var(--gap))*2);left:calc((var(--unit) + var(--gap))*2)}
+.actions [data-region=leftArm]{top:calc((var(--unit) + var(--gap))*2);right:0}
+.actions [data-region=rightLeg]{bottom:0;left:calc((var(--unit) + var(--gap))*1.5)}
+.actions [data-region=leftLeg]{bottom:0;right:calc((var(--unit) + var(--gap))*.5)}
+.actions .action.mode-selected,.actions .body-target.selected{background:linear-gradient(140deg,#912c27ed,#4a1118ed)!important;border-color:#ffe3a0;box-shadow:inset 0 0 0 2px #3c1711,0 0 7px #edc87866}
+/* Existing utility controls stay available without crowding the target cluster. */
+.actions #target,.actions #hand{width:30px!important;height:30px!important;left:-40px;bottom:0;opacity:.75}.actions #hand{bottom:40px}
+.controlHint{display:none}
+.topright>div:first-child,.vitals .name,.vitals>.eyebrow{display:none!important}
+.vitals{left:calc(max(12px,env(safe-area-inset-left)) + 28px)!important;top:max(15px,env(safe-area-inset-top))!important;width:clamp(140px,21vw,260px)!important}
+.vitals .meter{height:14px!important;padding:2px;margin:6px 0 16px!important;border:1px solid #d8b86e;border-radius:2px;background:#17130fe3;box-shadow:0 1px 3px #0008}
+.vitals .meter span{background:linear-gradient(#c7443c,#821b26)}.vitals .meter.energy span{background:linear-gradient(#f6d573,#b98626)}
+.vitals .meter small{display:none}.vitals .meter label{font:8px/10px Arial!important;color:#fff1ce;right:4px!important;top:1px!important}
+.vital-icon{position:absolute;left:-28px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;border:1px solid #d7b268;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4b3020,#17110e);box-shadow:0 1px 3px #0009}
+.vital-icon svg{width:19px;height:19px;fill:#efce77;stroke:#ffe7a6;stroke-width:.6}
+@media(max-height:350px){.actions{--unit:37px;--gap:6px}.vitals .meter{margin-bottom:12px!important}}
