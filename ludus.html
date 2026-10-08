@@ -13,7 +13,7 @@ var LudusNavigation=(function(){
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision39');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision41');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -21,7 +21,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision39');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision41');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -57,7 +57,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision37.1"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision39"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision37.1"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision41"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -184,12 +184,12 @@ body[data-roman-screen="ludus"] .ludus-menu #accountSummary{background:transpare
 body[data-roman-screen="ludus"] #accountSummary svg{width:clamp(16px,4.3dvh,22px)!important;height:clamp(16px,4.3dvh,22px)!important;filter:drop-shadow(0 1px 2px #251911aa)}
 body[data-roman-screen="ludus"] .ludus-menu #accountSummary>span:first-child{max-width:13vw!important}
 body[data-roman-screen="ludus"] .ludus-menu .tools{gap:4px!important}
-body[data-roman-screen="ludus"] .tools button{width:clamp(32px,8.2dvh,40px)!important;height:clamp(32px,8.2dvh,40px)!important;min-width:0!important;padding:5px!important;background:transparent!important;border:1px solid #e2c58d66!important;border-radius:8px!important;filter:drop-shadow(0 1px 2px #211610bb)}
-body[data-roman-screen="ludus"] .tools button:hover,body[data-roman-screen="ludus"] .tools button:focus-visible{background:#24180d33!important;border-color:#f3d8a4!important}
-body[data-roman-screen="ludus"] .tools svg{width:18px!important;height:18px!important}
+body[data-roman-screen="ludus"] .tools button{position:relative!important;width:clamp(28px,7.2dvh,34px)!important;height:clamp(28px,7.2dvh,34px)!important;min-width:0!important;padding:4px!important;background:transparent!important;border:0!important;border-radius:0!important;filter:drop-shadow(0 1px 2px #211610bb)}
+body[data-roman-screen="ludus"] .tools button:focus-visible{background:transparent!important;outline:0!important;filter:drop-shadow(0 0 4px #ffe4a8)}
+body[data-roman-screen="ludus"] .tools svg{width:16px!important;height:16px!important}
 body[data-roman-screen="ludus"] .tools #explore{display:none!important}
 @media(max-width:600px){body[data-roman-screen="ludus"] .ludus-menu{gap:4px!important}body[data-roman-screen="ludus"] .ludus-menu #accountSummary{font-size:10px!important;gap:4px!important}body[data-roman-screen="ludus"] #accountSummary svg{width:14px!important;height:14px!important}}
-</style><script src="arena-fall-motion-v39.js?v=revision39"></script><script src="arena-ground-fall-v39.js?v=revision39"></script></head><body data-roman-screen="ludus"><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="ludus-menu" aria-label="Ludus menüsü"><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div class="tools"><button id="explore" hidden aria-hidden="true" tabindex="-1" disabled></button><button id="friendsOpen" aria-label="Arkadaşlar" title="Arkadaşlar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M2 21v-4a7 7 0 0 1 14 0v4M16 4a3 3 0 0 1 0 6M18 14a5 5 0 0 1 4 5v2"/></svg><span id="friendCount">0</span></button><button id="accountLink" aria-label="Ayarlar" title="Ayarlar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 3 6 0 .7 3.2 2.8-1 3 5.2-2.3 2.2 2.3 2.2-3 5.2-2.8-1-.7 3.2H9l-.7-3.2-2.8 1-3-5.2 2.3-2.2-2.3-2.2 3-5.2 2.8 1Z" transform="translate(0 -1) scale(1 .95)"/><circle cx="12" cy="12" r="3"/></svg></button></div></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
+</style><script src="arena-fall-motion-v39.js?v=revision39"></script><script src="arena-ground-fall-v39.js?v=revision41"></script><script src="ludus-door-icons-v41.js?v=revision41"></script><link rel="stylesheet" href="ludus-messages-v41.css?v=revision41"><script src="ludus-messages-v41.js?v=revision41"></script></head><body data-roman-screen="ludus"><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="ludus-menu" aria-label="Ludus menüsü"><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div class="tools"><button id="explore" hidden aria-hidden="true" tabindex="-1" disabled></button><button id="friendsOpen" aria-label="Arkadaşlar" title="Arkadaşlar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M2 21v-4a7 7 0 0 1 14 0v4M16 4a3 3 0 0 1 0 6M18 14a5 5 0 0 1 4 5v2"/></svg><span id="friendCount" hidden>0</span></button><button id="messagesOpen" aria-label="Mesajlar" title="Mesajlar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg><span id="messageUnread" hidden></span></button><button id="accountLink" aria-label="Ayarlar" title="Ayarlar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 3 6 0 .7 3.2 2.8-1 3 5.2-2.3 2.2 2.3 2.2-3 5.2-2.8-1-.7 3.2H9l-.7-3.2-2.8 1-3-5.2 2.3-2.2-2.3-2.2 3-5.2 2.8 1Z" transform="translate(0 -1) scale(1 .95)"/><circle cx="12" cy="12" r="3"/></svg></button></div></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
 <div id="labels"></div><button id="interact" hidden></button><button id="roomExit" hidden>← Avluya dön</button><section id="orders" hidden><div><h2 id="ordersTitle"></h2><p id="ordersText"></p><div id="orderButtons"></div><button id="ordersClose">Kapat</button></div></section>
 <button id="residentStatus" style="position:absolute;left:50%;top:18px;transform:translateX(-50%);font:11px Arial;max-width:35%" disabled>Başlangıç gladyatörleri yükleniyor…</button>
 <script>/*The MIT License
@@ -6815,6 +6815,8 @@ var ImportedGladiator=(function(){
   alignBone(upper,lower,desiredElbow);alignBone(lower,hand,desiredHand);return hand.getWorldPosition(new T.Vector3());
  }
  function animate(f,m,time,dt){
+  GroundFall.begin(f,m);
+  if(f.hp<=0&&f.corpseEquipment)f={...f,...f.corpseEquipment};
   // Reuse the existing sword rig for three short swings without extra model assets.
   if(f.action==='triple')f={...f,action:'attack',timer:f.timer%.2,chain:1+Math.floor(f.timer/.2)};
   m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;ClassEquipment.sync(m,f);
@@ -6852,7 +6854,7 @@ var ImportedGladiator=(function(){
   const fallen=GroundFall.pose(f,m);if(fallen){Object.assign(poses,fallen.poses);drop=fallen.lift;lean=0;}
   const blend=1-Math.exp(-Math.max(0,dt)*(f.reaction>0?30:18));
   for(const [name,bone] of Object.entries(m.bones)){const r=m.rest.get(name),p=poses[name]||[0,0,0];Q.setFromEuler(E.set(...p));P.copy(r.p).invert().multiply(Q).multiply(r.p).multiply(r.q);bone.quaternion.slerp(P,blend);}
-  m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;if(fallen){m.body.position.y=fallen.lift;m.body.position.z=fallen.shift;m.body.rotation.set(0,0,0);m.root.position.set(fallen.x,0,fallen.z);m.root.rotation.y=fallen.heading;}m.root.updateMatrixWorld(true);GroundFall.apply(m,fallen);GroundFall.ground(m,fallen);
+  m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;if(fallen){m.body.position.y=fallen.lift;m.body.position.z=fallen.shift;m.body.quaternion.identity();if(fallen.state?.captured&&fallen.entry<1)m.body.quaternion.copy(fallen.state.rotation).slerp(new T.Quaternion(),fallen.entry);m.root.position.set(fallen.x,0,fallen.z);m.root.rotation.y=fallen.heading;}m.root.updateMatrixWorld(true);GroundFall.apply(m,fallen);GroundFall.ground(m,fallen);
   if(typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
   if(strike&&f.hp>0&&!fallen){const anchor=f.attackLeft?m.offhandAnchor:m.weaponAnchor,hand=reach(m,f.attackLeft,strike.grip),desired=m.root.localToWorld(new T.Vector3(strike.grip.x,strike.grip.y,strike.grip.z));
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
@@ -6874,7 +6876,7 @@ var ImportedGladiator=(function(){
    Q.setFromAxisAngle(new T.Vector3(0,0,1),(side==='Left'?1:-1)*.48);bone.quaternion.copy(rest.q).multiply(Q);
   }
   ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);
-  for(const material of m.materials)material.emissive?.setHex(f.flash>0?0x29100a:0);m.root.updateMatrixWorld(true);
+  for(const material of m.materials)material.emissive?.setHex(f.flash>0?0x29100a:0);m.root.updateMatrixWorld(true);GroundFall.finish(m,fallen);
  }
  function dispose(m){m.root.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.dispose();});m.materials.forEach(x=>x.dispose());for(const o of [m.trail,m.shadow]){o.geometry.dispose();o.material.dispose();}}
  return {load,create,animate,dispose,get loaded(){return !!template;}};
@@ -7127,16 +7129,10 @@ function openLudusPage(url){if(globalThis.LudusNavigation){LudusNavigation.setOw
 roomEnhanceButton.onclick=()=>openUpgrades();roomPouchButton.onclick=()=>openUpgrades(true);
 [-8,0,8].forEach((x,i)=>rooms.push({x,z:11.1,y:3.47,name:['Ludus Yönetim Odası','Klan Odası','Dinlenme Odası'][i],kind:['office','clan','rest'][i]}));
 [-9,-4.5,0,4.5,9].forEach((x,i)=>rooms.push({x,z:11.1,y:0,name:['Geliştirmeler','Silahlık','Revir','Yemekhane','Depo'][i],kind:['upgrades','armory','infirmary','dining','store'][i]}));
-// Fixed wooden signs identify rooms without adding overlays over the courtyard.
-function roomSign(text,x,y,z,width=1.55,angle=Math.PI){
- const canvas=document.createElement('canvas');canvas.width=256;canvas.height=64;const c=canvas.getContext('2d');
- c.fillStyle='#3d2618';c.fillRect(0,0,256,64);c.strokeStyle='#b89458';c.lineWidth=3;c.strokeRect(4,4,248,56);
- c.fillStyle='#eed5a2';c.textAlign='center';c.textBaseline='middle';c.font='bold 23px Georgia';c.fillText(text,128,33,234);
- const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;const plaque=new T.Mesh(new T.PlaneGeometry(width,width/4),new T.MeshBasicMaterial({map}));plaque.position.set(x,y,z);plaque.rotation.y=angle;scene.add(plaque);
-}
-const signs={office:'YÖNETİM',clan:'KLAN',rest:'DİNLENME',upgrades:'GELİŞTİRMELER',armory:'SİLAHLIK',infirmary:'REVİR',dining:'YEMEKHANE',store:'DEPO'};
-for(const room of rooms)roomSign(signs[room.kind],room.x,room.y+3.12,11.45);
-roomSign('ARENA',-6,5.16,-11.55,2.2,0);roomSign('PAZAR',-11.1,2.6,-9.05,1.3,0);
+// Pictograms sit above the doors; nearby interaction buttons retain the room names.
+for(const room of rooms)scene.add(LudusDoorIcons.create(T,room.kind,room.name,room.x,room.y+3.08,11.45));
+scene.add(LudusDoorIcons.create(T,'arena','Arena',-6,5.16,-11.55,.9,0));
+scene.add(LudusDoorIcons.create(T,'market','Pazar',-11.1,2.6,-9.05,.72,0));
 
 
 function table(x,z){roomColliders.push({kind:'table',minX:x-1,maxX:x+1,minZ:z-.55,maxZ:z+.55});mesh(roomProps,'wood',x,1,z,2,.18,1.1);for(const a of [-.8,.8])for(const b of [-.4,.4])mesh(roomProps,'wood',x+a,.5,z+b,.12,1,.12);}
@@ -7281,6 +7277,11 @@ const stoneWallet=await accountClient.from('ludus_stones').select('family,quanti
  return playerAccount;
 })();
 accountReady.catch(error=>{$('loading').hidden=false;$('loading').textContent=error.message;$('residentStatus').hidden=true;});
+let messagesPreviousPause=false;
+const messageInbox=LudusMessages.create({client:accountClient,getUser:()=>playerAccount?.user_id,
+ onOpen(){messagesPreviousPause=paused;clear();paused=true;},onClose(){clear();paused=messagesPreviousPause;}});
+accountReady.then(()=>{$('messagesOpen').hidden=false;messageInbox.refresh();}).catch(()=>{});
+
 
 // Read the same authenticated clan state as the hall, without blocking courtyard entry.
 accountReady.then(async()=>{
@@ -7381,7 +7382,7 @@ body{position:fixed!important;inset:0!important}
  function render(){const pageSize=innerHeight<350?3:4;$('friendList').style.gridTemplateRows='repeat('+pageSize+',minmax(0,1fr))';const data=rows.filter(r=>r.state===filter).sort((a,b)=>Number(b.online)-Number(a.online)),pages=Math.max(1,Math.ceil(data.length/pageSize));page=Math.min(page,pages-1);$('friendPage').textContent=(page+1)+'/'+pages;$('friendPrev').disabled=!page;$('friendNext').disabled=page>=pages-1;$('friendList').replaceChildren();
   for(const r of data.slice(page*pageSize,page*pageSize+pageSize)){const row=document.createElement('div');row.className='friend-row';const name=document.createElement('div'),strong=document.createElement('strong'),sub=document.createElement('small');strong.textContent=r.name;sub.textContent='@'+r.username+' · '+(r.state==='accepted'?(r.online?'Çevrimiçi':'Çevrimdışı'):r.incoming?'Sana istek gönderdi':'İstek gönderildi');name.append(strong,sub);row.append(name);if(r.state==='accepted'){const dot=document.createElement('i');dot.className=r.online?'online':'offline';dot.setAttribute('aria-label',r.online?'Çevrimiçi':'Çevrimdışı');row.append(dot);}if(r.state==='pending'&&r.incoming){const b=document.createElement('button');b.textContent='Kabul et';b.onclick=()=>call('accept',null,r.id);b.disabled=busy;row.append(b);}const remove=document.createElement('button');remove.textContent=r.state==='accepted'?'Çıkar':r.incoming?'Reddet':'İptal';remove.disabled=busy;remove.onclick=()=>call('remove',null,r.id);row.append(remove);$('friendList').append(row);}
   if(!data.length){const p=document.createElement('p');p.className='friends-empty';p.textContent=filter==='accepted'?'Kullanıcı adıyla arkadaş ekle. Çevrimiçi arkadaşların burada görünür.':'Bekleyen arkadaşlık isteğin yok.';$('friendList').append(p);}
-  const badge=$('friendCount');if(badge)badge.textContent=String(rows.filter(r=>r.state==='accepted'&&r.online).length);
+  const badge=$('friendCount');if(badge){const count=rows.filter(r=>r.state==='accepted'&&r.online).length;badge.textContent=String(count);badge.hidden=count===0;}
  }
  async function call(action='list',username=null,peer=null){if(!owner){$('friendMessage').textContent='Arkadaşlarını görmek için hesabına giriş yap.';return;}if(busy)return;busy=true;$('friendSend').disabled=true;const seq=++request;
   try{const r=await client.rpc('ludus_social',{p_action:action,p_username:username,p_peer:peer});if(r.error)throw r.error;if(seq!==request)return;rows=r.data.friends||[];if(action==='request'){$('friendUsername').value='';filter='pending';page=0;tabs();}$('friendMessage').textContent=action==='request'?'Arkadaşlık isteği gönderildi.':rows.filter(r=>r.state==='accepted'&&r.online).length+' arkadaş çevrimiçi';}

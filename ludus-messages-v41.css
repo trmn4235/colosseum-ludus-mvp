@@ -1,0 +1,31 @@
+#ludusMessages{width:min(760px,94vw);height:min(460px,92dvh);max-height:92dvh;padding:clamp(9px,2.5dvh,20px);border:3px double #ba9758;border-radius:10px;background:#f5ecda;color:#38251f;box-shadow:0 20px 65px #0008;box-sizing:border-box;font:14px Georgia}
+#ludusMessages::backdrop{background:#180e16a6;backdrop-filter:blur(4px)}
+#ludusMessages[open]{display:flex;flex-direction:column;gap:8px}
+#ludusMessages .messages-head{position:static!important;display:flex!important;justify-content:space-between;align-items:center;pointer-events:auto;text-shadow:none;border-bottom:1px solid #ba975866;padding-bottom:7px;flex-shrink:0}
+#ludusMessages h2{margin:0;font:clamp(18px,4.6dvh,26px) Georgia;color:#692831}
+#ludusMessages button{border:1px solid #b79761;border-radius:5px;background:#6c2932;color:#fff0cf;padding:6px 10px;font:13px Georgia;cursor:pointer;min-height:30px}
+#ludusMessages button:disabled{opacity:.5;cursor:default}
+#ludusMessages button:focus-visible,#ludusMessages select:focus-visible,#ludusMessages textarea:focus-visible{outline:2px solid #9c7739;outline-offset:2px}
+#ludusMessages .messages-close{font:22px Arial;padding:0 9px}
+#ludusMessages .messages-content{display:grid;grid-template-columns:minmax(135px,30%) minmax(0,1fr);gap:12px;min-height:0;flex:1}
+#ludusMessages .messages-peers{display:flex;flex-direction:column;gap:6px;min-height:0;border-right:1px solid #b79a6755;padding-right:12px}
+#ludusMessages select{width:100%;min-width:0;padding:7px 4px;border:1px solid #b79761;border-radius:4px;background:#fffbf2;color:#392820;font:12px Arial}
+#ludusMessages .messages-conversations{min-height:0;overflow:auto;display:flex;flex-direction:column;gap:5px}
+#ludusMessages .messages-conversations button{background:#e8ddc5;color:#492b25;text-align:left;display:flex;flex-direction:column;gap:3px;flex-shrink:0;overflow:hidden}
+#ludusMessages .messages-conversations button[aria-pressed=true]{background:#6c2932;color:#fff0cf}
+#ludusMessages .messages-conversations strong,#ludusMessages .messages-conversations small{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ludusMessages .messages-conversations small{font:11px Arial;opacity:.8}
+#ludusMessages .messages-thread{display:flex;flex-direction:column;min-height:0;min-width:0;gap:6px}
+#ludusMessages .messages-peer-name{margin:0;font:16px Georgia;min-height:18px}
+#ludusMessages .messages-history{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:7px;padding:3px;overscroll-behavior:contain}
+#ludusMessages .message-bubble{max-width:88%;align-self:flex-start;padding:7px 10px;background:#e9dfca;border-radius:7px;overflow-wrap:anywhere;white-space:pre-wrap;margin:0;font:13px/1.4 Arial}
+#ludusMessages .message-bubble.mine{align-self:flex-end;background:#6c2932;color:#fff1d7}
+#ludusMessages .message-bubble time{display:block;opacity:.65;font:10px Arial;text-align:right;margin-top:4px}
+#ludusMessages .messages-compose{display:flex;gap:6px;align-items:stretch}
+#ludusMessages textarea{resize:none;min-width:0;flex:1;height:44px;box-sizing:border-box;border:1px solid #b79761;border-radius:5px;background:#fffaf0;color:#38251f;padding:7px;font:13px/1.35 Arial}
+#ludusMessages .messages-status{margin:0;min-height:16px;color:#795540;font:12px/1.3 Arial}
+#ludusMessages .messages-empty{margin:auto;text-align:center;color:#80694e;font:13px/1.5 Arial}
+body[data-roman-screen=ludus] .tools #friendCount,body[data-roman-screen=ludus] .tools #messageUnread{position:absolute;right:-2px;top:-3px;background:#672932;border-radius:8px;padding:1px 3px;min-width:9px;font:9px Arial!important;line-height:12px!important;color:#ffe6ae}
+body[data-roman-screen=ludus] .tools [hidden]{display:none!important}
+@media(max-height:410px){#ludusMessages{gap:5px!important}#ludusMessages .messages-head{padding-bottom:4px}#ludusMessages .message-bubble{padding:5px 8px}#ludusMessages textarea{height:36px}#ludusMessages .messages-status{font-size:11px}}
+@media(max-width:570px){#ludusMessages .messages-content{grid-template-columns:minmax(100px,31%) minmax(0,1fr);gap:7px}#ludusMessages .messages-peers{padding-right:7px}#ludusMessages .messages-compose{flex-wrap:wrap}#ludusMessages .messages-compose button{margin-left:auto}}
