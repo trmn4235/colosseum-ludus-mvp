@@ -1,4 +1,4 @@
-/* V34: every mission view occupies one fixed viewport; no vertical scroll. */
+/* V45: separate card/detail art and a four-day editor; one fixed viewport. */
 .imperial-modal,.imperial-modal *{box-sizing:border-box}.imperial-modal[hidden],.imperial-marker[hidden],.office-object-hotspot[hidden]{display:none!important}
 .imperial-modal{position:fixed!important;inset:0!important;width:100%!important;height:var(--game-height,100dvh)!important;z-index:3000;display:flex;align-items:center;justify-content:center;padding:14px max(20px,env(safe-area-inset-right)) 14px max(20px,env(safe-area-inset-left));overflow:hidden;overscroll-behavior:none;background:#17100ccd;color:#382d26;font:14px Georgia,serif;backdrop-filter:blur(4px)}
 .imperial-paper{position:relative;isolation:isolate;flex:none;width:min(1360px,100%);height:min(740px,100%);min-width:0;min-height:0;display:flex;flex-direction:column;padding:clamp(13px,2.8dvh,24px) clamp(12px,2vw,28px);border:5px double #b48849;border-radius:7px;background:radial-gradient(ellipse at 40% 15%,#fff0cd,#e6c899 70%,#bd965e);box-shadow:inset 0 0 50px #9a682d55,0 16px 60px #0008;overflow:hidden;max-width:100%;max-height:100%}
@@ -56,3 +56,10 @@
 .imperial-roster button>span{grid-column:2;grid-row:1;min-height:0;line-height:1.1}
 .imperial-roster button>small:nth-of-type(1){grid-column:2;grid-row:2;min-height:0}
 .imperial-roster button>small:nth-of-type(2){grid-column:2;grid-row:3;min-height:0}
+
+.imperial-admin-preview{position:relative;min-height:0;flex:1;overflow:hidden}
+.imperial-admin-slot label:has(select){flex-direction:row;align-items:center;justify-content:space-between}
+.imperial-modal select{min-height:0;max-width:100%;font:clamp(9px,2.3dvh,13px)/1.2 Arial;color:#53432f;background:#fffef9;border:1px solid #cab891;border-radius:3px;padding:3px}
+@media(max-width:800px){.imperial-admin-top{gap:4px}.imperial-admin-top button{padding:5px 6px;font-size:10px}.imperial-admin-top input{width:110px}.imperial-admin-top label{font-size:9px}}
+@media(max-height:420px){.view-admin{gap:4px}.imperial-admin-day h2{display:none}.imperial-admin-tabs button{padding:4px 3px;font-size:9px}.imperial-admin-slot{gap:3px;padding:4px}.imperial-admin-slot label{gap:2px}.imperial-admin-slot input,.imperial-admin-slot textarea{padding:3px}.imperial-admin-slot small{font-size:8px}.imperial-admin-slot strong{font-size:10px}}
+@media(max-height:360px){.imperial-card-body{gap:2px}.imperial-card h2{font-size:12px}.imperial-card .imperial-rewards{font-size:8px;line-height:1;gap:2px}.imperial-card .imperial-rewards span{padding:1px;font-size:8px;line-height:1}.imperial-card .imperial-face{width:20px;height:20px}.imperial-card .imperial-timer{font-size:10px;padding:0}.imperial-card[data-state=ready] .imperial-card-state{flex-direction:row;align-items:center}.imperial-card[data-state=ready] .imperial-card-state button{width:auto;flex:1}}

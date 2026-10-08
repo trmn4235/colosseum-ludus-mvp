@@ -1,0 +1,126 @@
+{
+  "version": 45,
+  "cycle_days": 4,
+  "timezone": "Europe/Istanbul",
+  "image_sizes": {
+    "card": [
+      960,
+      640
+    ],
+    "detail": [
+      1536,
+      1024
+    ]
+  },
+  "entries": [
+    {
+      "cycle_day": 1,
+      "slot": 1,
+      "difficulty": 1,
+      "title": "Aventinus Tepesi Hırsızı",
+      "description": "\"Bana muhalif bir pleb lideri, Aventinus Tepesi'ndeki evinde Senato yolsuzluklarımı içeren belgeler saklıyor. Evine sız, o parşömenleri çal ve yerine yasadışı büyü/tılsım malzemeleri bırak ki ertesi gün onu vatana ihanet ve cadılıkla suçlayabileyim.\"",
+      "image": "imperial-missions/gun01-kolay-aventinus-kart.webp",
+      "detail_image": "imperial-missions/gun01-kolay-aventinus-detay.webp"
+    },
+    {
+      "cycle_day": 1,
+      "slot": 2,
+      "difficulty": 2,
+      "title": "Palmyra İsyan Tohumu",
+      "description": "\"Palmyra'da Roma'ya sadık görünen yeni valinin aslında halkı örgütlediğini duydum. Valinin korumalarını aşarak yatak odasına sız. Duvara kanla yerel dilde isyan sloganları yaz ve valiyi öldürerek suçu radikal örgütlere yık; böylece şehre ordu sokma hakkım doğsun.\"",
+      "image": "imperial-missions/gun01-orta-palmyra-kart.webp",
+      "detail_image": "imperial-missions/gun01-orta-palmyra-detay.webp"
+    },
+    {
+      "cycle_day": 1,
+      "slot": 3,
+      "difficulty": 3,
+      "title": "Nisibis Kuşatması / Sasaniler",
+      "description": "\"Doğu sınırındaki Nisibis (Nusaybin) kalesi düşmek üzere. Sasanilerin kuşatma kulelerini koruyan nöbetçileri gizlilikle temizle, kulelerin ahşap ayaklarına zift dök ve hepsini ateşe vererek orduya zaman kazandır.\"",
+      "image": "imperial-missions/gun01-zor-nisibis-kart.webp",
+      "detail_image": "imperial-missions/gun01-zor-nisibis-detay.webp"
+    },
+    {
+      "cycle_day": 2,
+      "slot": 1,
+      "difficulty": 1,
+      "title": "Hamamda Boğma",
+      "description": "Caracalla Hamamları'nın buhar odasında (Sudatorium), imparatora suikast planlayan bir muhbiri, kaza süsü vererek suyun altında boğup öldürün.",
+      "image": "imperial-missions/gun02-kolay-hamam-kart.webp",
+      "detail_image": "imperial-missions/gun02-kolay-hamam-detay.webp"
+    },
+    {
+      "cycle_day": 2,
+      "slot": 2,
+      "difficulty": 2,
+      "title": "Pompeii Vergi Kaçakçısı",
+      "description": "\"Pompeii'deki zengin bir zeytinyağı tüccarı Senato'ya rüşvet vererek imparatorluk vergisinden kaçıyor. Evine hırsız kılığına girerek sız, gizli altın kasasını boşalt ve duvara 'Vergisini ödemeyenin sonu' yazarak suçu yerel çetelere at.\"",
+      "image": "imperial-missions/gun02-orta-pompeii-vergi-kart.webp",
+      "detail_image": "imperial-missions/gun02-orta-pompeii-vergi-detay.webp"
+    },
+    {
+      "cycle_day": 2,
+      "slot": 3,
+      "difficulty": 3,
+      "title": "Aktium Sabotajı",
+      "description": "Aktium deniz savaşı başlamadan hemen önceki gece, Mark Antony ve Kleopatra’nın amiral gemisinin omurgasını ve kürek mekanizmalarını suyun altından sızarak sabote edin.",
+      "image": "imperial-missions/gun02-zor-aktium-kart.webp",
+      "detail_image": "imperial-missions/gun02-zor-aktium-detay.webp"
+    },
+    {
+      "cycle_day": 3,
+      "slot": 1,
+      "difficulty": 3,
+      "title": "Masada Fedaileri",
+      "description": "Dik yamaçtaki Masada Kalesi'nin düşmesini hızlandırmak için gece vakti uçurumlardan tırmanarak kaleye sızın ve içerideki direnişçilerin su sarnıçlarını zehirleyin.",
+      "image": "imperial-missions/gun03-masada-kart.webp",
+      "detail_image": "imperial-missions/gun03-masada-detay.webp"
+    },
+    {
+      "cycle_day": 3,
+      "slot": 2,
+      "difficulty": 3,
+      "title": "Kudüs Yağması",
+      "description": "General Titus’un ordusu Kudüs Tapınağı'na girerken, kaosun ortasında tapınağın altındaki kutsal altın şamdanı (Menora) askerlerden önce çalıp Roma’daki efendinize göndermek üzere kaçırın.",
+      "image": "imperial-missions/gun03-kudus-kart.webp",
+      "detail_image": "imperial-missions/gun03-kudus-detay.webp"
+    },
+    {
+      "cycle_day": 3,
+      "slot": 3,
+      "difficulty": 3,
+      "title": "Cannae Felaketini Gizlemek",
+      "description": "\"Hannibal Cannae'de ordumuzu haritadan sildi. Bu haber Roma'ya ulaşırsa halk şehri terk eder ve devlet çöker. Savaş alanından kaçıp Senato'ya haber götürmeye çalışan o yaralı ulakları yolda bul ve sustur. Zaman kazanmalıyım.\"",
+      "image": "imperial-missions/gun03-cannae-kart.webp",
+      "detail_image": "imperial-missions/gun03-cannae-detay.webp"
+    },
+    {
+      "cycle_day": 4,
+      "slot": 1,
+      "difficulty": 1,
+      "title": "Traianus Pazarında Hırsız Avı",
+      "description": "Traianus Pazarının kalabalık koridorlarında imparatorluk mallarını çalan bir çete izini kaybettiriyor. Görevlendirdiğin gladyatörler tüccarların arasına karışıp hırsızların izini sürecek, elebaşını yakalayacak ve çalınan mühürlü sandığı saraya geri getirecek. Operasyon boyunca ekibin Ludustan uzakta olacak.",
+      "image": "imperial-missions/gun04-kolay-traianus-kart.webp",
+      "detail_image": "imperial-missions/gun04-kolay-traianus-detay.webp"
+    },
+    {
+      "cycle_day": 4,
+      "slot": 2,
+      "difficulty": 2,
+      "title": "Portus Limanında Kaçakçılara Baskın",
+      "description": "Portus limanında geceleri yüklenen gemilerde yasaklı mallar taşındığı bildirildi. Ekibin rıhtımdaki depoları gözleyecek, kaçakçıların sevkiyat saatini belirleyecek ve imparatorun emriyle sessiz bir baskın düzenleyecek. Güçlü bir ekip, muhafızların müdahalesini beklemeden kaçış yollarını kapatmalı.",
+      "image": "imperial-missions/gun04-orta-portus-kart.webp",
+      "detail_image": "imperial-missions/gun04-orta-portus-detay.webp"
+    },
+    {
+      "cycle_day": 4,
+      "slot": 3,
+      "difficulty": 3,
+      "title": "Subura Hamamları Suikasti",
+      "description": "Subura hamamlarında bir imparatorluk görevlisine karşı suikast planlandığına dair gizli bir haber ulaştı. Gladyatörlerin kalabalığın içine sızarak komplocuları izleyecek, hedefi güvenli bir çıkışa ulaştıracak ve saldırı gerçekleşmeden şebekeyi etkisiz hale getirecek. Sarayın en hassas emri için toplam gücü yüksek bir ekip gerekiyor.",
+      "image": "imperial-missions/gun04-zor-subura-kart.webp",
+      "detail_image": "imperial-missions/gun04-zor-subura-detay.webp"
+    }
+  ]
+}
+
