@@ -20,11 +20,11 @@ var LudusOwner = (() => {
  }
  function load(){if(template)return Promise.resolve(template);if(pending)return pending;
   const getImage=url=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Ten dokusu yüklenemedi.'));img.src=url;});
-  pending=Promise.all([model('owner-makehuman-v27.glb?v=revision28'),model('owner-run-v30.glb?v=revision30'),getImage('owner-skin-light-v27.jpg?v=revision28'),getImage('owner-skin-dark-v27.jpg?v=revision28')]).then(([g,run,light,dark])=>{template=g.scene;template.userData.ownerClips=[...g.animations,...run.animations];skinImages=[light,dark];return template;}).catch(e=>{pending=null;throw e;});return pending;
+  pending=Promise.all([model('owner-makehuman-v27.glb?v=revision28'),getImage('owner-skin-light-v27.jpg?v=revision28'),getImage('owner-skin-dark-v27.jpg?v=revision28')]).then(([g,light,dark])=>{template=g.scene;template.userData.ownerClips=g.animations;skinImages=[light,dark];return template;}).catch(e=>{pending=null;throw e;});return pending;
  }
  function cloneRig(source){const copy=source.clone(true),map=new Map();const pair=(a,b)=>{map.set(a,b);a.children.forEach((c,i)=>pair(c,b.children[i]));};pair(source,copy);source.traverse(o=>{if(o.isSkinnedMesh){const c=map.get(o);c.skeleton=o.skeleton.clone();c.skeleton.bones=o.skeleton.bones.map(b=>map.get(b));c.bind(c.skeleton,o.bindMatrix);}});return copy;}
  function create(value){const T=THREE,a=normalize(value),root=new T.Group(),body=new T.Group();root.name='ludus-owner';root.userData.appearance=a;root.userData.owner=true;root.add(body);
-  let disposed=false,ready=false,bones={},rests={},materials=[],ownGeometries=[],skinTexture=null,walk=0,speed=0,mixer=null,walkAction=null,idleAction=null,runAction=null,runWeight=0;
+  let disposed=false,ready=false,bones={},rests={},materials=[],ownGeometries=[],skinTexture=null,walk=0,speed=0,mixer=null,walkAction=null,idleAction=null,gaitTempo=1;
   const promise=load().then(source=>{if(disposed)return;const imported=cloneRig(source);body.add(imported);imported.updateMatrixWorld(true);
    imported.traverse(o=>{
     if(o.isBone){const name=o.name.replace(/^mixamorig[:]?/,'');bones[name]=o;rests[name]=o.quaternion.clone();}
@@ -49,15 +49,17 @@ var LudusOwner = (() => {
    const box=new T.Box3().setFromObject(imported),h=box.max.y-box.min.y;body.scale.setScalar(a.height/100/h);imported.position.y-=box.min.y;
    // Downloaded normal-walk and idle clips drive the actual weighted rig.
    mixer=new T.AnimationMixer(imported);const clip=source.userData.ownerClips?.find(c=>c.name.includes('OwnerWalk'));
-   if(clip){const keep=clip.tracks.map(track=>{const t=track.clone();t.times=new Float32Array([0]);t.values=track.values.slice(0,track.getValueSize());return t;});const idle=source.userData.ownerClips.find(c=>c.name.includes('OwnerIdle'))||new T.AnimationClip('OwnerIdle',1,keep);idleAction=mixer.clipAction(idle).play();walkAction=mixer.clipAction(clip).play();walkAction.setEffectiveWeight(0);const run=source.userData.ownerClips.find(c=>c.name.includes('OwnerRun'));if(run){runAction=mixer.clipAction(run).play();runAction.setEffectiveWeight(0);}mixer.update(0);}
+   if(clip){const keep=clip.tracks.map(track=>{const t=track.clone();t.times=new Float32Array([0]);t.values=track.values.slice(0,track.getValueSize());return t;});const idle=source.userData.ownerClips.find(c=>c.name.includes('OwnerIdle'))||new T.AnimationClip('OwnerIdle',1,keep);idleAction=mixer.clipAction(idle).play();walkAction=mixer.clipAction(clip).play();walkAction.setEffectiveWeight(0);mixer.update(0);}
    root.userData.loaded=true;ready=true;animate(0,false);
   }).catch(e=>{root.userData.loadError=e.message;throw e;});
   // Game callers can mount an empty group while loading; no primitive fallback.
   promise.catch(()=>{});
   function pose(name,x=0,y=0,z=0){const bone=bones[name];if(bone)bone.quaternion.copy(rests[name]).multiply(new T.Quaternion().setFromEuler(new T.Euler(x,y,z)));}
   function align(name,child,direction){const bone=bones[name],end=bones[child];if(!bone||!end)return;root.updateMatrixWorld(true);const current=end.getWorldPosition(new T.Vector3()).sub(bone.getWorldPosition(new T.Vector3())).normalize(),target=new T.Vector3(...direction).normalize();target.applyQuaternion(root.getWorldQuaternion(new T.Quaternion()));const q=new T.Quaternion().setFromUnitVectors(current,target).multiply(bone.getWorldQuaternion(new T.Quaternion()));bone.quaternion.copy(bone.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(q));root.updateMatrixWorld(true);}
-  function animate(dt,moving){if(!ready)return;const velocity=typeof moving==='number'?Math.max(0,moving):(moving?1.6:0),blend=1-Math.exp(-Math.min(dt,.1)*9);speed+=((velocity>.05?1:0)-speed)*blend;runWeight+=(clamp((velocity-2.0)/1.3,0,1)-runWeight)*blend;
-   if(walkAction){walkAction.setEffectiveWeight(speed*(1-runWeight));runAction?.setEffectiveWeight(speed*runWeight);idleAction.setEffectiveWeight(1-speed);walkAction.setEffectiveTimeScale(clamp(velocity/1.3,.6,1.5));runAction?.setEffectiveTimeScale(clamp(velocity/3.7,.8,1.2));mixer.update(Math.min(dt,.1));}else{for(const [name,bone]of Object.entries(bones))bone.quaternion.copy(rests[name]);for(const side of ['Left','Right']){const sign=side==='Left'?1:-1;align(side+'Arm',side+'ForeArm',[sign*.10,-1,0]);align(side+'ForeArm',side+'Hand',[sign*.02,-1,.1]);}}
+  // The original two-frame run export is invalid. The complete CC0 walk cycle
+  // stays on its own rig, with a shared phase and cadence matching ground speed.
+  function animate(dt,moving){if(!ready)return;dt=clamp(Number(dt)||0,0,.1);const velocity=clamp(typeof moving==='number'?Number(moving)||0:moving?1.65:0,0,2.6),blend=1-Math.exp(-dt*12);speed+=((velocity>.05?1:0)-speed)*blend;gaitTempo+=(clamp(velocity/1.65,.12,1.58)-gaitTempo)*blend;
+   if(walkAction){walkAction.setEffectiveWeight(speed);idleAction.setEffectiveWeight(1-speed);walkAction.setEffectiveTimeScale(gaitTempo);mixer.update(dt);}else{for(const [name,bone]of Object.entries(bones))bone.quaternion.copy(rests[name]);for(const side of ['Left','Right']){const sign=side==='Left'?1:-1;align(side+'Arm',side+'ForeArm',[sign*.10,-1,0]);align(side+'ForeArm',side+'Hand',[sign*.02,-1,.1]);}}
   }
   function dispose(){disposed=true;mixer?.stopAllAction();if(mixer)mixer.uncacheRoot(body.children[0]);materials.forEach(m=>m.dispose());ownGeometries.forEach(g=>g.dispose());skinTexture?.dispose();root.removeFromParent();}
   return {root,body,get head(){return bones.Head||body;},appearance:a,ready:promise,animate,dispose};

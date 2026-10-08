@@ -78,7 +78,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision26"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision22"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum &amp; Ludus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision26"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision39"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -156,7 +156,7 @@ body[data-roman-screen="ludus"] #accountLink:after{content:none!important}
 body[data-roman-screen="ludus"] #accountLink[hidden]{display:none!important}
 body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#ebce89}
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
-</style><style>#attack.counter-ready{border-color:#e4c577;box-shadow:0 0 18px #efcc7770}#attack.counter-ready span{color:#fff1bd}</style></head><body data-roman-screen="arena"><main id="app"><canvas id="scene" aria-label="Üç boyutlu kolezyum arenası"></canvas><div id="vignette"></div><div id="damageWash"></div>
+</style><style>#attack.counter-ready{border-color:#e4c577;box-shadow:0 0 18px #efcc7770}#attack.counter-ready span{color:#fff1bd}</style><script src="arena-fall-motion-v39.js?v=revision39"></script><script src="arena-ground-fall-v39.js?v=revision39"></script></head><body data-roman-screen="arena"><main id="app"><canvas id="scene" aria-label="Üç boyutlu kolezyum arenası"></canvas><div id="vignette"></div><div id="damageWash"></div>
 <section id="hud" aria-label="Dövüş göstergeleri"><div class="vitals"><div class="eyebrow">LUDUS · GLADYATÖRÜN</div><div class="name">Cassius</div><div class="meter" role="meter" aria-label="Can" aria-valuemin="0" aria-valuemax="120" aria-valuenow="120"><span id="hpFill"></span><small>CAN</small><label id="hpText">120 / 120</label></div><div class="meter energy" role="meter" aria-label="Kondisyon" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="stFill"></span><small>KONDİSYON</small><label id="stText">100 / 100</label></div></div><div class="match"><strong>KOLEZYUM</strong><span id="roundInfo">3 RAKİP · SERBEST DÖVÜŞ</span></div><div class="topright"><div><div class="eagle" aria-label="Baş, gövde, kollar ve bacakların durumu"><svg viewBox="0 0 100 100"><path id="dir-front" d="M42 35 L42 22 L38 17 L49 10 L61 15 L65 22 L55 21 L54 34 L50 43 Z"/><path id="dir-left" d="M45 39 L34 29 L5 15 L8 27 L23 37 L10 31 L13 41 L27 47 L16 44 L20 54 L32 57 L26 57 L32 65 L42 55 L46 46 Z"/><path id="dir-right" d="M55 39 L66 29 L95 15 L92 27 L77 37 L90 31 L87 41 L73 47 L84 44 L80 54 L68 57 L74 57 L68 65 L58 55 L54 46 Z"/><path id="dir-chest" d="M43 36 L57 36 L64 55 L54 68 L46 68 L36 55 Z"/><path id="dir-back" d="M46 64 L54 64 L65 86 L52 80 L50 88 L47 80 L35 86 Z"/></svg></div><div id="directionText">VÜCUT DURUMU</div></div><div class="tools"><button class="tool" id="fullscreen" aria-label="Tam ekran" title="Tam ekran">⛶</button><button class="tool" id="perfToggle" aria-label="Performans ölçümünü aç veya kapat" aria-expanded="false">FPS</button><button class="tool" id="sound" aria-label="Sesi aç" title="Ses">♪</button><button class="tool" id="pause" aria-label="Duraklat" title="Duraklat">Ⅱ</button></div></div><div id="teamScore" aria-label="Ayakta kalan takım üyeleri"></div><div id="enemyLabels"></div><div id="floaters"></div><div id="netStatus" style="position:absolute;left:50%;top:76px;transform:translateX(-50%);font:10px Arial;color:#ead09b;text-shadow:0 1px 3px #000"></div><div id="combo"></div><div id="toast" role="status"></div></section>
 <section id="controls" aria-label="Oyun kontrolleri"><div id="stick" role="group" aria-label="Hareket çubuğu"><div id="knob"></div><span class="controlHint">HAREKET</span></div><div class="actions"><button id="target" class="action" aria-label="Hedef kilidini aç veya kapat" title="Hedef kilidi · E"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/></svg></button><button id="hand" class="action" aria-label="Ekipman değiştir" title="Özel hareket için ekipman değiştir"><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 3M20 3v6h-6M20 15a8 8 0 0 1-14 3l-2-3M4 21v-6h6"/></svg></button><button id="block" class="action" aria-label="Kalkanı tut"><svg viewBox="0 0 24 24"><path d="M4 4l8-2 8 2v8c0 5-8 10-8 10S4 17 4 12zM12 4v15"/></svg><small>BLOK</small></button><button id="attack" class="action" aria-label="Saldır"><svg viewBox="0 0 24 24"><path d="M7 17L20 3l1 5L10 19M5 13l7 7M4 21l4-5"/></svg><small>SALDIR</small></button><button id="special" class="action" aria-label="Özel yetenek"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg><small id="specialLabel">ÖZEL</small></button><button id="dodge" class="action" aria-label="Kaçış"><svg viewBox="0 0 24 24"><path d="M3 12h17m-6-6l6 6-6 6M4 6h5M2 18h7"/></svg><small>KAÇIŞ</small></button></div><div id="regionHint" hidden></div><button id="pickup" hidden aria-label="Yerdeki silahı al">Silahı al</button><div class="desktopHint">WASD hareket · J saldırı · K blok · L kaçış · E hedef kilidi · F silah al · Q özel · R / H ekipman değiştir · 1–5 bölge · Sürükle: kamera</div></section>
 <section id="intro" class="overlay"><div class="intro"><div class="eyebrow">COLOSSEUM & LUDUS · ARENA 0.18 · 10’A 10 TAKIM SAVAŞI</div><h1>Kum. Çelik.<em>Mavi takımınla kazan.</em></h1><div class="line"></div><p>Mavi takımda 10’a 10 savaş. Saldırıyı kaydır: ↑ baş, ↓ bacak, ← / → kollar; dokun: gövde. Özel hareket eldeki ekipmana göre değişir.</p><p class="fine">Kolezyum: <a style="color:inherit" href="https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30" target="_blank" rel="noopener">Neberkenezer</a> · <a style="color:inherit" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> · Ölçek ve çizim düzeni uyarlandı.</p><p id="equipmentLoad" class="fine" role="status">Yeni ekipmanlar hazırlanıyor…</p><p id="characterLoad" class="fine" role="status">Gladyatör yükleniyor…</p><p class="fine">Gladyatör: <a style="color:inherit" target="_blank" rel="noopener" href="https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c">huyunited</a> · CC BY 4.0 · Dokular küçültüldü; ölçek ve dövüş hareketleri uyarlandı.</p><div class="features"><span>GERÇEK ZAMANLI 3D</span><span>BOTLARA KARŞI</span></div><div class="choices"><label for="difficulty">Zorluk</label><select id="difficulty"><option value="easy">Kolay</option><option value="normal" selected>Normal</option></select><label for="quality">Görünüm</label><select id="quality"><option value="low">Akıcı</option><option value="high" selected>Detaylı</option></select></div><div class="choices"><label for="fighterType">Gladyatör</label><select id="fighterType"><option value="murmillo">Murmillo · Kılıç / büyük kalkan</option><option value="thraex">Thraex · Eğri kılıç / küçük kalkan</option><option value="hoplomachus">Hoplomachus · Mızrak / yuvarlak kalkan</option><option value="secutor" selected>Secutor · Kapalı miğfer / kılıç</option><option value="retiarius">Retiarius · Üç dişli mızrak / ağ</option><option value="provocator">Provocator · Kılıç / büyük kalkan</option><option value="scissor">Scissor · Kılıç / kol bıçağı</option></select></div><button id="cloudProfile" type="button" style="color:#ead09b;background:transparent;border:0;font:12px Arial;padding:8px">Misafir profili bağlanıyor…</button><p id="record" class="fine"></p><button id="fullscreenIntro" class="start" style="padding:10px 16px;font-size:14px" aria-label="Tam ekran">⛶ Tam ekran</button> <button id="start" class="start" disabled>Arena hazırlanıyor…</button><p class="fine">ARENA 0.18 · 10’A 10 TAKIM SAVAŞI · İnsan modelleri · İskelet animasyonu · Yeni silahlar.<br>Solda hareket; sağda saldırı, blok ve kaçış. Boş alanda sürükle: kamera.</p></div></section>
@@ -6633,7 +6633,7 @@ class ArenaCombat {
     if(f.action==='attack'){const p=f.attackProfile;if(f.lunging&&f.timer<p.wind){f.x+=Math.sin(f.angle)*dt*2;f.z+=Math.cos(f.angle)*dt*2;}
      if(f.timer>=p.wind&&before<=p.wind+p.active){const from=Math.max(before,p.wind),to=Math.min(f.timer,p.wind+p.active);for(const v of this.fighters){if(f.action!=='attack')break;if(this.enemy(f,v)&&!f.hitVictims.has(v.id)){const shield=Motion.shieldContact(f,v,from,to);if(shield||Motion.contact(f,v,from,to)){if(this.hit(f,v,true,shield))f.hitVictims.add(v.id);if(p.pole)break;}}}}f.hitDone=f.timer>p.wind+p.active;
     }
-    if(f.action==='bash'&&!f.specialDone&&f.timer>=.25){f.specialDone=true;const t=this.fighters[f.specialTarget];if(this.enemy(f,t)&&this.canBlock(f)&&distance(f,t)<=2.3&&t.action!=='dodge'){const a=Math.atan2(t.x-f.x,t.z-f.z);t.x+=Math.sin(a)*.85;t.z+=Math.cos(a)*.85;this.bound(t);this.knock(t,1.5);t.reaction=.3;t.lastRegion='chest';this.emit('bashhit',{id:t.id,source:f.id,point:Motion.target(t,'chest')});}}
+    if(f.action==='bash'&&!f.specialDone&&f.timer>=.25){f.specialDone=true;const t=this.fighters[f.specialTarget];if(this.enemy(f,t)&&this.canBlock(f)&&distance(f,t)<=2.3&&t.action!=='dodge'){const a=Math.atan2(t.x-f.x,t.z-f.z),origin={x:t.x,z:t.z};t.x+=Math.sin(a)*.85;t.z+=Math.cos(a)*.85;this.bound(t);this.knock(t,1.5);t.knockOrigin=origin;t.knockAngle=a+Math.PI;t.reaction=.3;t.lastRegion='chest';this.emit('bashhit',{id:t.id,source:f.id,point:Motion.target(t,'chest')});}}
     if(f.action==='dodge'){const speed=f.body.legs<30?6:8;f.x+=f.dx*speed*dt;f.z+=f.dz*speed*dt;}
     if(f.timer>=f.duration){f.action='idle';f.cooldown=f.id===0?.06:.4+this.random()*.35;}
    }
@@ -6670,7 +6670,7 @@ const install=(Combat,Classes)=>{
  p.reset=function(...args){const r=reset.apply(this,args);for(const f of this.fighters){const s=Classes[f.type].stats;f.skillReady=[0,0];f.overall=50;f.maxHp=f.hp=s.health*2;f.maxStamina=f.stamina=s.stamina*2;f.attackBonus=s.strength/50;f.defenseBonus=s.defense/50;f.speedBonus=s.speed/50;f.agility=s.agility;f.spareSword=false;}return r;};
  p.specialKind=function(f,index){const left=index===undefined?f.pickupHand==='offhand':index===1,w=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'disarm';if(f.shield)return 'bash';}if(['spear','trident','gladius','sica'].includes(w))return 'throw';if(w==='whip')return 'pull';return null;};
  p.skillNames=function(f){return [0,1].map(i=>({net:'AĞ AT',disarm:'SİLAH DÜŞÜR',bash:'KALKAN VUR',throw:'FIRLAT',pull:'ÇEK'}[this.specialKind(f,i)]||'ÖZEL YOK'));};
- p.knock=function(t,seconds){t.stunUntil=this.time+seconds;t.knockedUntil=t.stunUntil;t.action='knocked';t.timer=0;t.duration=seconds;t.blocking=false;this.emit('knockdown',{id:t.id});};
+ p.knock=function(t,seconds){t.stunUntil=this.time+seconds;t.knockedUntil=t.stunUntil;t.action='knocked';t.timer=0;t.duration=seconds;t.knockOrigin=null;t.knockAngle=null;t.blocking=false;this.emit('knockdown',{id:t.id});};
  p.special=function(id=0,index){
   const f=this.fighters[id];if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stunUntil>this.time)return false;
   index=index===undefined?(f.pickupHand==='offhand'?1:0):index;if(index!==0&&index!==1)return false;
@@ -6703,7 +6703,7 @@ const install=(Combat,Classes)=>{
    if(m.age>=f.duration)f.skillMotion=null;
   }
   tick.call(this,dt,input);
-  for(const f of this.fighters)if(f.hp>0){if(f.knockedUntil>this.time){f.action='knocked';f.timer=Math.min(f.duration*.5,f.timer+dt);}else if(f.knockedUntil){if(f.action==='knocked'){f.action='idle';f.timer=0;}f.knockedUntil=0;}}
+  for(const f of this.fighters)if(f.hp>0){if(f.knockedUntil>this.time){f.action='knocked';f.timer=Math.min(f.duration,Math.max(0,f.duration-(f.knockedUntil-this.time)));}else if(f.knockedUntil){if(f.action==='knocked'){f.action='idle';f.timer=0;}f.knockedUntil=0;}}
  };
 };
 if(typeof module!=='undefined')module.exports=install;else install(root.ArenaCombat,root.ArenaClasses);
@@ -6932,7 +6932,7 @@ var LudusHelmets=(function(){
  function prepare(scene,key){
   const wrapper=new T.Group();wrapper.add(scene);if(key==='winged')wrapper.rotation.y=-Math.PI/2;wrapper.updateMatrixWorld(true);
   // Calipers at the skull shell, rather than the outermost ornament.
-  const fit={roman:{scale:[.16,.18,.17],shift:[0,.025,-.019]},gladiator:{scale:[.95,.95,.95],shift:[0,-.133,-.008]},knights:{scale:[.028,.021,.025],shift:[0,.039,.024]},winged:{scale:[.0081,.0094,.0079],shift:[0,.015,.016]}}[key];
+  const fit={roman:{scale:[.17,.195,.20],shift:[0,.011,-.050]},gladiator:{scale:[.95,.95,.95],shift:[0,-.133,-.008]},knights:{scale:[.028,.021,.025],shift:[0,.039,.024]},winged:{scale:[.0086,.0100,.0094],shift:[0,0,-.018]}}[key];
   const transform=new T.Matrix4().makeTranslation(...fit.shift).multiply(new T.Matrix4().makeScale(...fit.scale));
   const group=new T.Group(),batches=new Map();group.userData.asset=key+'-helmet-v18';group.userData.helmetModel=key;
   wrapper.traverse(o=>{if(!o.isMesh)return;const geometry=o.geometry.clone().applyMatrix4(new T.Matrix4().multiplyMatrices(transform,o.matrixWorld));
@@ -6952,9 +6952,9 @@ var LudusHelmets=(function(){
  function get(value,type){return templates[model(value,type)]||waiting;}
  function headFit(m){
   if(referenceHead)return referenceHead;
-  m.root.updateMatrixWorld(true);const origin=m.bones.Head.getWorldPosition(new T.Vector3()),bounds=new T.Box3();
+  m.root.updateMatrixWorld(true);const origin=m.root.worldToLocal(m.bones.Head.getWorldPosition(new T.Vector3())),bounds=new T.Box3();
   m.visual.traverse(o=>{if(!o.isSkinnedMesh||!o.visible||o.userData.replaceGear)return;o.skeleton.update();const ix=o.geometry.attributes.skinIndex,wt=o.geometry.attributes.skinWeight,p=new T.Vector3();
-   if(!ix||!wt)return;for(let i=0;i<o.geometry.attributes.position.count;i++){let weight=0;for(let k=0;k<4;k++)if(o.skeleton.bones[ix.getComponent(i,k)]?.name.includes('Head'))weight+=wt.getComponent(i,k);if(weight<.65)continue;o.getVertexPosition(i,p).applyMatrix4(o.matrixWorld);bounds.expandByPoint(p);}
+   if(!ix||!wt)return;for(let i=0;i<o.geometry.attributes.position.count;i++){let weight=0;for(let k=0;k<4;k++)if(o.skeleton.bones[ix.getComponent(i,k)]?.name.includes('Head'))weight+=wt.getComponent(i,k);if(weight<.65)continue;o.getVertexPosition(i,p).applyMatrix4(o.matrixWorld);m.root.worldToLocal(p);bounds.expandByPoint(p);}
   });
   const size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3()).sub(origin);
   if(bounds.isEmpty())return {offset:[-.011,.108,.042],scale:[1,1,1]};
@@ -7153,25 +7153,7 @@ var ClassEquipment=(function(){
 https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c
 Runtime adaptation: scale, heading and procedural combat poses. */
 /* A short braced collapse and a hand-supported recovery. It changes visuals only. */
-var GroundFall=(function(){
- const clamp=v=>Math.max(0,Math.min(1,v)),ease=v=>{v=clamp(v);return v*v*(3-2*v);};
- function pose(f){const dead=f.hp<=0,knocked=f.action==='knocked';if(!dead&&!knocked)return null;
-  const elapsed=dead?Math.max(0,f.deadTime||0):Math.max(0,f.timer||0),duration=Math.max(.6,f.duration||1.5),rise=knocked?ease((elapsed/duration-.60)/.40):0;
-  const fall=ease((elapsed-.055)/.39)*(1-rise),brace=ease(elapsed/.13)*(1-ease((elapsed-.16)/.22))*(1-rise),side=f.id%2===0?1:-1;
-  const bent=(.42*brace+.22*fall+Math.sin(rise*Math.PI)*.38),support=Math.sin(rise*Math.PI);
-  return {fall,rotation:-1.48*fall,roll:side*.035*fall,lift:.235*fall-.115*brace,shift:-.09*fall,
-   poses:{Hips:[-.10*brace,side*.035*fall,0],Spine:[.065*brace+support*.14,0,0],Spine2:[.10*brace+support*.18,0,side*.04*fall],Head:[.13*fall,side*.045*fall,0],
-    LeftUpLeg:[-.31*brace-.14*fall-support*.30,0,-.065*fall],RightUpLeg:[-.24*brace-.09*fall-support*.22,0,.045*fall],LeftLeg:[bent,0,0],RightLeg:[bent*.78,0,0],LeftFoot:[-.12*brace-.06*fall,0,0],RightFoot:[-.09*brace-.07*fall,0,0],
-    LeftArm:[-.26*brace-.20*fall-support*.58,0,-.31*fall],RightArm:[-.21*brace-.13*fall-support*.30,0,.26*fall],LeftForeArm:[-.42*brace-.26*fall-support*.50,0,0],RightForeArm:[-.32*brace-.18*fall,0,0]}};
- }
- // Ground clearance from anatomical capsules, sampled only while actually falling.
- function ground(m,fall){if(!fall||fall.fall<.45)return;
-  const radii={Head:.155,Hips:.13,Spine2:.16,LeftForeArm:.065,RightForeArm:.065,LeftHand:.045,RightHand:.045,LeftLeg:.07,RightLeg:.07,LeftFoot:.05,RightFoot:.05};
-  let low=Infinity;const point=new THREE.Vector3();for(const [name,r]of Object.entries(radii)){const bone=m.bones[name];if(bone)low=Math.min(low,bone.getWorldPosition(point).y-r);}
-  if(!Number.isFinite(low))return;const weight=ease((fall.fall-.45)/.35);m.body.position.y+=(.015-low)*weight;m.root.updateMatrixWorld(true);
- }
- return {pose,ground};
-})();
+/* Shared authored fall runtime: arena-ground-fall-v39.js. */
 
 var ImportedGladiator=(function(){
  const T=THREE;let template=null;
@@ -7212,7 +7194,7 @@ var ImportedGladiator=(function(){
   const shadow=new T.Mesh(new T.CircleGeometry(.47,24),new T.MeshBasicMaterial({color:0x35281b,transparent:true,opacity:.18,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.012;root.add(shadow);
   const trail=new T.Mesh(new T.BufferGeometry().setAttribute('position',new T.BufferAttribute(new Float32Array(12),3)).setIndex([0,1,2,2,1,3]),new T.MeshBasicMaterial({color:0xffe2a7,transparent:true,opacity:0,side:T.DoubleSide,depthWrite:false}));trail.frustumCulled=false;root.add(trail);
   visual.traverse(o=>{if(o.userData.replaceGear)o.visible=false;});
-  const model={root,body,visual,bones,rest,materials:[...materials.values()],shadow,trail,type,imported:true,id};ClassEquipment.equip(model);root.updateMatrixWorld(true);model.footRest={};for(const side of ['Left','Right']){const foot=bones[side+'Foot'];if(foot)model.footRest[side]={position:root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}return model;
+  const model={root,body,visual,bones,rest,materials:[...materials.values()],shadow,trail,type,imported:true,id};ClassEquipment.equip(model);root.updateMatrixWorld(true);model.hipRest=root.worldToLocal(bones.Hips.getWorldPosition(new T.Vector3()));root.updateMatrixWorld(true);model.footRest={};for(const side of ['Left','Right']){const foot=bones[side+'Foot'];if(foot)model.footRest[side]={position:root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}return model;
  }
  function alignBone(bone,end,target){
   const origin=bone.getWorldPosition(new T.Vector3()),current=end.getWorldPosition(new T.Vector3()).sub(origin).normalize(),desired=target.clone().sub(origin).normalize();
@@ -7280,10 +7262,10 @@ var ImportedGladiator=(function(){
    else if(f.lastRegion==='leftArm'||f.lastRegion==='rightArm'){const side=f.lastRegion==='leftArm'?'Left':'Right',sign=side==='Left'?-1:1;poses[side+'Arm']=[.025*envelope,0,sign*.075*envelope];poses.Spine2=[0,sign*.03*envelope,0];}
    else if(f.lastRegion==='legs'){poses.LeftLeg=[.045*envelope,0,0];poses.RightLeg=[.025*envelope,0,0];drop-=.01*envelope;}
   }
-  const fallen=GroundFall.pose(f);if(fallen){Object.assign(poses,fallen.poses);drop=fallen.lift;lean=0;}
+  const fallen=GroundFall.pose(f,m);if(fallen){Object.assign(poses,fallen.poses);drop=fallen.lift;lean=0;}
   const blend=1-Math.exp(-Math.max(0,dt)*(f.reaction>0?30:18));
   for(const [name,bone] of Object.entries(m.bones)){const r=m.rest.get(name),p=poses[name]||[0,0,0];Q.setFromEuler(E.set(...p));P.copy(r.p).invert().multiply(Q).multiply(r.p).multiply(r.q);bone.quaternion.slerp(P,blend);}
-  m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?fallen.shift:fullBody?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;m.root.updateMatrixWorld(true);GroundFall.ground(m,fallen);
+  m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?fallen.shift:fullBody?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;if(fallen){m.body.position.y=fallen.lift;m.body.position.z=fallen.shift;m.body.rotation.set(0,0,0);m.root.position.set(fallen.x,0,fallen.z);m.root.rotation.y=fallen.heading;}m.root.updateMatrixWorld(true);GroundFall.apply(m,fallen);GroundFall.ground(m,fallen);
   if(typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
    if(fullBody&&!fallen&&['attack','recoil','stagger'].includes(f.action))plantFeet(m);
   if(strike&&f.hp>0&&!fallen){const anchor=f.attackLeft?m.offhandAnchor:m.weaponAnchor,hand=reach(m,f.attackLeft,strike.grip),desired=m.root.localToWorld(new T.Vector3(strike.grip.x,strike.grip.y,strike.grip.z));
@@ -7305,7 +7287,7 @@ var ImportedGladiator=(function(){
    const bone=m.bones[side+'HandIndex'+index],rest=m.rest.get(side+'HandIndex'+index);if(!bone||!rest)continue;
    Q.setFromAxisAngle(new T.Vector3(0,0,1),(side==='Left'?1:-1)*.48);bone.quaternion.copy(rest.q).multiply(Q);
   }
-  ClassEquipment.animateFlex(m,f);
+  ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);
   for(const material of m.materials)material.emissive?.setHex(f.flash>0?0x29100a:0);m.root.updateMatrixWorld(true);
  }
  function dispose(m){m.root.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.dispose();});m.materials.forEach(x=>x.dispose());for(const o of [m.trail,m.shadow]){o.geometry.dispose();o.material.dispose();}}
