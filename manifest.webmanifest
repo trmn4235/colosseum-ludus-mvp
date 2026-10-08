@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Colosseum & Ludus",
-  "short_name": "Colosseum & Ludus",
-  "start_url": "./index.html?v=revision37.1",
+  "name": "Colosseum&Magnus",
+  "short_name": "Colosseum&Magnus",
+  "start_url": "./index.html?v=revision40",
   "scope": "./",
   "display": "standalone",
   "display_override": [
@@ -10,8 +10,8 @@
     "standalone"
   ],
   "orientation": "landscape",
-  "background_color": "#eee2cb",
-  "theme_color": "#eee2cb",
+  "background_color": "#201714",
+  "theme_color": "#201714",
   "icons": [
     {
       "src": "app-icon.png",
