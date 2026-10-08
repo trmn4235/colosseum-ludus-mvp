@@ -1,4 +1,4 @@
-/* Small, transparent bronze pictograms above the existing room entrances. */
+/* Half-size bronze pictograms mounted just above each door's centre. */
 var LudusDoorIcons=(function(){
  const paths={
   office:['M6 4h11v16H6z','M6 4H4v4h2M17 16h3v4h-3','M9 8h5M9 11h5M9 14h3'],
@@ -12,7 +12,7 @@ var LudusDoorIcons=(function(){
   arena:['M5 4l6 5-3 3zM8 12l9 9M14 18l4-4','M19 4l-6 5 3 3zM16 12l-9 9M6 14l4 4','M3 5Q0 14 5 20M21 5q3 9-2 15'],
   market:['M12 3v18M7 21h10M4 7h16','M6 7l-4 8h8zM18 7l-4 8h8z']
  };
- function create(T,kind,name,x,y,z,size=.72,angle=Math.PI){
+ function create(T,kind,name,x,y,z,size=.36,angle=Math.PI){
   const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const c=canvas.getContext('2d');
   c.shadowColor='#0009';c.shadowBlur=5;c.shadowOffsetY=3;
   const bronze=c.createRadialGradient(44,32,5,64,64,58);bronze.addColorStop(0,'#665039');bronze.addColorStop(1,'#251b14');
