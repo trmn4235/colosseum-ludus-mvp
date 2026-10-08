@@ -25,3 +25,9 @@ The procedural exterior boxes, roofs and windows were removed. Ready models keep
 - Download distribution: Allen Institute for AI Objaverse 1.0, https://huggingface.co/datasets/allenai/objaverse . Original GLB metadata contains author, source and CC BY licence.
 
 The ludus is south of the monuments so the gallery roof does not hide the Colosseum. Colosseum [1050,0,-100] and Pantheon [-364.21356,0,-1514.21356] retain the specified 2,000m southeast relationship and heights 48m/43.3m. A clear street corridor prevents city houses covering either monument. There are no landmark-view buttons.
+
+## V39 spatial city backdrop
+
+`assets/city/rome-backdrop-87af8072b91e.webp` contains rendered views of the licensed city models credited above, with their existing in-game materials, lighting and distance fog. The 143 views are packed into a lossless 2048 × 2048 WebP atlas. These derived images retain the CC BY attribution to Vladyslav Holhanov, Brian Trepanier / CMBC, AlexFerrart3D / lexferreira89 and MicMac; the photographed PBR maps and sky retain their existing CC0 credits. No external art pack or AI-generated image is used.
+
+The browser places each image on a small surface at its original building's depth, preserving the skyline layout and approximate parallax within the bounded courtyard/gallery. The sky and ground remain separate, and the owner, gladiators, courtyard and interactive furniture remain 3D. The original six GLBs remain available for the bake tool and the automatic 3D fallback when the backdrop fails to load. Source hashes, positions and atlas rectangles are recorded in `assets/city/rome-backdrop-v39.json`. See [the comparison](docs/city-performance/README.md) for visual and rendering-cost limits.

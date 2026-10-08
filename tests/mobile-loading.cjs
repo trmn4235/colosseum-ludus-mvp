@@ -39,7 +39,7 @@ async function measure(source,label,browser) {
   const gzipBytes=zlib.gzipSync(body).length;
   if(url.pathname==='/ludus.html') body=Buffer.from(body.toString().replace('const accountClient=supabase.createClient','let accountClient=supabase.createClient').replace('const accountReady=(async()=>{',fixture+'\nconst accountReady=(async()=>{accountClient=window.__fixtureClient;').replace('function frame(now){requestAnimationFrame(frame);','function frame(now){requestAnimationFrame(frame);if(window.__freezeFrame){imperial.tick();clanVault?.tick();if(window.__renderOnce){renderer.render(activeRoom?roomScene:scene,camera);window.__renderOnce=false;}return;}'));
   requests.push({stage,url:url.pathname+url.search,sourceBytes,gzipBytes});
-  res.writeHead(200,{'content-type':mime[path.extname(file)]||'application/octet-stream','content-length':body.length,'cache-control':'public,max-age=600','content-security-policy':"connect-src 'self'"});res.end(body);
+  res.writeHead(200,{'content-type':mime[path.extname(file)]||'application/octet-stream','content-length':body.length,'cache-control':'public,max-age=600','content-security-policy':"connect-src 'self' blob: data:"});res.end(body);
  });
  servers.push(server);await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
  const context=await browser.newContext({viewport:{width:844,height:390},deviceScaleFactor:1,hasTouch:true});

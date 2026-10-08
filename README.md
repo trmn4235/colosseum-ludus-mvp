@@ -4,9 +4,9 @@ Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equ
 
 ## Mobile loading
 
-The anonymous login screen does not request GLBs. In the measured two-fighter Ludus fixture, cold uncompressed source payload falls from 87.40 MiB to 66.18 MiB (24.3%). The arena GLB waits for arena navigation; desk, wardrobe, books and clan chest load on room entry. Four renderer pages share byte-identical, content-addressed equipment/PBR resources, and Ludus reuses the existing persistent cache for the large owner model. The two office books share geometry/materials with independent transforms.
+The anonymous login screen does not request GLBs. In the measured two-fighter Ludus fixture, cold uncompressed source payload falls from 87.40 MiB to 49.85 MiB (43.0%). The arena GLB waits for arena navigation; desk, wardrobe, books and clan chest load on room entry. Four renderer pages share byte-identical, content-addressed equipment/PBR resources, and Ludus reuses the existing persistent cache for the large owner model. The two office books share geometry/materials with independent transforms.
 
-[The investigation](docs/mobile-performance/README.md) includes complete network phases, geometry/texture costs, before/after images, cache and interaction tests, and Meshopt/Draco/KTX2 decisions. Geometry and image resolution are preserved. These fixture measurements are not production wire-byte, FPS or physical iPhone benchmarks; device performance remains unmeasured. No migration or hosting change is required.
+[The investigation](docs/mobile-performance/README.md) includes complete network phases, geometry/texture costs, before/after images, cache and interaction tests, and Meshopt/Draco/KTX2 decisions. Owner/equipment geometry and image bytes are preserved. [The exterior city comparison](docs/city-performance/README.md) verifies the same skyline using 143 spatial image cards: 781,433 → 288 city triangles, 18.41 → 2.07 MiB source payload, with an automatic 3D fallback. These fixture measurements are not production wire-byte, game FPS or physical iPhone benchmarks; device performance remains unmeasured. No migration or hosting change is required.
 
 ## Ludus progression V37
 

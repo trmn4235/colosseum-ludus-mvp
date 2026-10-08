@@ -1,0 +1,2908 @@
+{
+  "environment": {
+    "browser": "153.0.8010.0",
+    "renderer": "Chromium/SwiftShader, one-pixel readback per timed frame; fixed-pose owner and two fighters visible",
+    "viewport": "844x390 DPR 1 touch",
+    "physicalIPhone": false,
+    "baselineTree": "b8fe9ed2f62aa9b98c4d62696725872fbf55e037",
+    "sourceHashes": {
+      "ludus.html": "5792cd37a9dc4ed4b4412203bdca8120a346feaba762a7e98254f7beb7906104",
+      "ludus-city-v29.js": "7e91e398c1e582bda0c0efd78903b7294d41526c09ce247fbdf890f01ea4d027",
+      "assets/city/rome-backdrop-v39.json": "82a0754b77eea2fbbfc6394b8262d01734c74991e266a1f2eae318f75767b674"
+    }
+  },
+  "before": {
+    "label": "before",
+    "overview": {
+      "mode": "3d",
+      "cityTriangles": 781433,
+      "meshes": 172,
+      "materials": 7,
+      "backdropError": false,
+      "landmarks": {
+        "colosseum": {
+          "position": [
+            1050,
+            0,
+            -100
+          ],
+          "height": 48,
+          "footprint": [
+            188,
+            156
+          ],
+          "file": "colosseum-city-v29.glb",
+          "yaw": 0
+        },
+        "pantheon": {
+          "position": [
+            -364.2135623730949,
+            0,
+            -1514.2135623730949
+          ],
+          "height": 43.3,
+          "file": "pantheon-city-v29.glb",
+          "yaw": 0
+        }
+      }
+    },
+    "network": {
+      "cityModelBytes": 19300648,
+      "backdropBytes": 0,
+      "sourceStartupBytes": 69397160
+    },
+    "views": [
+      {
+        "pose": {
+          "name": "courtyard-0",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 0,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 41,
+            "calls": 114,
+            "triangles": 389612,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 42,
+            "calls": 75,
+            "triangles": 138226,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            0,
+            2.616913689886738,
+            3.343192688075437
+          ],
+          "times": [
+            756.5999999940395,
+            767,
+            846,
+            811.1000000014901,
+            801.2000000029802
+          ]
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-1",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 0.7853981633974483,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 45,
+            "calls": 117,
+            "triangles": 394766,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 46,
+            "calls": 77,
+            "triangles": 139762,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            2.539350276690662,
+            1.0298057495848822,
+            2.5393502766906626
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-2",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 1.5707963267948966,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 49,
+            "calls": 122,
+            "triangles": 302707,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 50,
+            "calls": 74,
+            "triangles": 140383,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            3.343192688075437,
+            2.616913689886738,
+            2.04711511219221e-16
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-3",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 2.356194490192345,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 53,
+            "calls": 109,
+            "triangles": 375246,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 54,
+            "calls": 29,
+            "triangles": 139600,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            2.5393502766906626,
+            1.0298057495848822,
+            -2.539350276690662
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-4",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 3.141592653589793,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 57,
+            "calls": 108,
+            "triangles": 374772,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 58,
+            "calls": 28,
+            "triangles": 139126,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            4.09423022438442e-16,
+            2.616913689886738,
+            -3.343192688075437
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-5",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 3.9269908169872414,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 61,
+            "calls": 72,
+            "triangles": 384633,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 62,
+            "calls": 30,
+            "triangles": 140132,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -2.539350276690662,
+            1.0298057495848822,
+            -2.539350276690663
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-6",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 4.71238898038469,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 65,
+            "calls": 56,
+            "triangles": 351883,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 66,
+            "calls": 23,
+            "triangles": 139058,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -3.343192688075437,
+            2.616913689886738,
+            -6.141345336576629e-16
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-7",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 5.497787143782138,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 69,
+            "calls": 58,
+            "triangles": 356306,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 70,
+            "calls": 24,
+            "triangles": 137879,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -2.539350276690663,
+            1.0298057495848822,
+            2.539350276690662
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-0",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 81,
+            "calls": 122,
+            "triangles": 406684,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 82,
+            "calls": 79,
+            "triangles": 140826,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -11,
+            5.756563335561553,
+            11.480732405029595
+          ],
+          "times": [
+            924.0999999940395,
+            883.6000000014901,
+            980.3000000044703,
+            992.5999999940395,
+            1002.5
+          ]
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-1",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0.7853981633974483,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 85,
+            "calls": 112,
+            "triangles": 394663,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 86,
+            "calls": 72,
+            "triangles": 139659,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -8.510339748758502,
+            4.301144360554042,
+            11.089660251241497
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-2",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 1.5707963267948966,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 89,
+            "calls": 69,
+            "triangles": 303934,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 90,
+            "calls": 20,
+            "triangles": 137992,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -7.503183290532693,
+            5.907329455137684,
+            8.6
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-3",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 2.356194490192345,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 93,
+            "calls": 94,
+            "triangles": 360716,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 94,
+            "calls": 17,
+            "triangles": 135924,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -10.688314458402303,
+            4.957648958965739,
+            8.288314458402303
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-4",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.141592653589793,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 97,
+            "calls": 101,
+            "triangles": 369022,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 98,
+            "calls": 22,
+            "triangles": 136994,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -11,
+            5.907329455137684,
+            5.103183290532693
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-5",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.9269908169872414,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 101,
+            "calls": 73,
+            "triangles": 383633,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 102,
+            "calls": 31,
+            "triangles": 139132,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -13.489660251241498,
+            4.301144360554042,
+            6.110339748758501
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-6",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 4.71238898038469,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 105,
+            "calls": 68,
+            "triangles": 360729,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 106,
+            "calls": 33,
+            "triangles": 140668,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -14.496816709467307,
+            5.907329455137684,
+            8.6
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-7",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 5.497787143782138,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 109,
+            "calls": 128,
+            "triangles": 366551,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 110,
+            "calls": 93,
+            "triangles": 144506,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -13.411685541597697,
+            4.32464819428283,
+            11.011685541597695
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-0",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 113,
+            "calls": 121,
+            "triangles": 399980,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 114,
+            "calls": 80,
+            "triangles": 141358,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            10,
+            5.628087066636459,
+            10.955732405029593
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-1",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0.7853981633974483,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 117,
+            "calls": 135,
+            "triangles": 406746,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 118,
+            "calls": 93,
+            "triangles": 144506,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            12.489660251241498,
+            4.301144360554042,
+            11.089660251241497
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-2",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 1.5707963267948966,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 121,
+            "calls": 167,
+            "triangles": 373847,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 122,
+            "calls": 91,
+            "triangles": 142970,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            13.496816709467307,
+            5.907329455137684,
+            8.6
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-3",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 2.356194490192345,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 125,
+            "calls": 108,
+            "triangles": 370626,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 126,
+            "calls": 29,
+            "triangles": 138598,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            10.276628916804611,
+            4.96821604006156,
+            8.323371083195388
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-4",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.141592653589793,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 129,
+            "calls": 100,
+            "triangles": 368490,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 130,
+            "calls": 21,
+            "triangles": 136462,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            10,
+            5.146681050570853,
+            8.211464810059187
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-5",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.9269908169872414,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 133,
+            "calls": 61,
+            "triangles": 374257,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 134,
+            "calls": 21,
+            "triangles": 136992,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            7.510339748758502,
+            4.301144360554042,
+            6.110339748758501
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-6",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 4.71238898038469,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 145,
+            "calls": 56,
+            "triangles": 354969,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 146,
+            "calls": 22,
+            "triangles": 138526,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            6.503183290532693,
+            5.907329455137684,
+            8.6
+          ],
+          "times": [
+            681.7999999970198,
+            753.2999999970198,
+            700.5,
+            705.2999999970198,
+            743.2000000029802
+          ]
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-7",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 5.497787143782138,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 149,
+            "calls": 55,
+            "triangles": 356951,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 150,
+            "calls": 21,
+            "triangles": 138524,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            7.5103397487585015,
+            4.301144360554042,
+            11.089660251241497
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "city-centre",
+          "x": 0,
+          "z": 0,
+          "y": 3.47,
+          "yaw": -1.47,
+          "pitch": -0.1,
+          "cityOnly": true
+        },
+        "cost": {
+          "all": {
+            "frame": 153,
+            "calls": 35,
+            "triangles": 216455,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 154,
+            "calls": 1,
+            "triangles": 12,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -3.4790680909581404,
+            5.907329455137684,
+            0.3518697459098251
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "city-left",
+          "x": -13,
+          "z": 9,
+          "y": 3.47,
+          "yaw": 0.236,
+          "pitch": -0.1,
+          "cityOnly": true
+        },
+        "cost": {
+          "all": {
+            "frame": 157,
+            "calls": 42,
+            "triangles": 260618,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 158,
+            "calls": 1,
+            "triangles": 12,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -12.402135325550967,
+            5.677339289495601,
+            11.486117306138345
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "city-right",
+          "x": 13,
+          "z": -10,
+          "y": 3.47,
+          "yaw": -2.1,
+          "pitch": -0.1,
+          "cityOnly": true
+        },
+        "cost": {
+          "all": {
+            "frame": 161,
+            "calls": 35,
+            "triangles": 218439,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 162,
+            "calls": 1,
+            "triangles": 12,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            9.981515062933527,
+            5.907329455137684,
+            -11.765354294274262
+          ],
+          "times": []
+        }
+      }
+    ],
+    "requests": [
+      {
+        "url": "/ludus.html",
+        "bytes": 1408842
+      },
+      {
+        "url": "/owner-avatar.css",
+        "bytes": 4542
+      },
+      {
+        "url": "/imperial-missions-v31.css",
+        "bytes": 13145
+      },
+      {
+        "url": "/clan-vault-v35.css",
+        "bytes": 12830
+      },
+      {
+        "url": "/ludus-level-v37.js",
+        "bytes": 6939
+      },
+      {
+        "url": "/imperial-missions-v31.js",
+        "bytes": 24720
+      },
+      {
+        "url": "/clan-equipment-v35.js",
+        "bytes": 12227
+      },
+      {
+        "url": "/clan-vault-v35.js",
+        "bytes": 15774
+      },
+      {
+        "url": "/owner-gait-v30.js",
+        "bytes": 414
+      },
+      {
+        "url": "/owner-avatar.js",
+        "bytes": 17959
+      },
+      {
+        "url": "/ludus-settings-v29.js",
+        "bytes": 1843
+      },
+      {
+        "url": "/ludus-city-v29.js",
+        "bytes": 4396
+      },
+      {
+        "url": "/rome-insula-v30.glb",
+        "bytes": 2931200
+      },
+      {
+        "url": "/rome-forum-v30.glb",
+        "bytes": 2439968
+      },
+      {
+        "url": "/rome-temple-v30.glb",
+        "bytes": 1176116
+      },
+      {
+        "url": "/rome-gateway-v30.glb",
+        "bytes": 3988060
+      },
+      {
+        "url": "/colosseum-city-v29.glb",
+        "bytes": 5560344
+      },
+      {
+        "url": "/pantheon-city-v29.glb",
+        "bytes": 3204960
+      },
+      {
+        "url": "/assets/textures/brown_leather-nor_gl-3e1524121f58.webp",
+        "bytes": 64848
+      },
+      {
+        "url": "/assets/textures/brown_leather-rough-db921d8e689c.webp",
+        "bytes": 108620
+      },
+      {
+        "url": "/assets/textures/sand_01-diff-8aecb3769d72.webp",
+        "bytes": 71456
+      },
+      {
+        "url": "/assets/textures/sand_01-nor_gl-6616ebcba18d.webp",
+        "bytes": 100628
+      },
+      {
+        "url": "/assets/textures/sand_01-rough-a75cb02d64ea.webp",
+        "bytes": 22524
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp",
+        "bytes": 65722
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp",
+        "bytes": 44192
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp",
+        "bytes": 40818
+      },
+      {
+        "url": "/assets/textures/wooden_gate-diff-67741a5af1f9.webp",
+        "bytes": 18786
+      },
+      {
+        "url": "/assets/textures/wooden_gate-nor_gl-9c9095cd8a7d.webp",
+        "bytes": 14094
+      },
+      {
+        "url": "/assets/textures/wooden_gate-rough-f62304f04b81.webp",
+        "bytes": 37576
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-diff-6aa57de97b10.webp",
+        "bytes": 35452
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-nor_gl-dcd2b93a4cbb.webp",
+        "bytes": 29274
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-rough-1e05c5521169.webp",
+        "bytes": 7226
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-diff-978ee90ff99a.webp",
+        "bytes": 34626
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-nor_gl-280beb967583.webp",
+        "bytes": 108142
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-rough-0d9b4ef4bd03.webp",
+        "bytes": 13790
+      },
+      {
+        "url": "/rome-sky-v29.jpg",
+        "bytes": 441354
+      },
+      {
+        "url": "/owner-skin-light-v27.jpg",
+        "bytes": 134915
+      },
+      {
+        "url": "/owner-skin-dark-v27.jpg",
+        "bytes": 107298
+      },
+      {
+        "url": "/owner-makehuman-v27.glb",
+        "bytes": 21411012
+      },
+      {
+        "url": "/owner-run-v30.glb",
+        "bytes": 52932
+      },
+      {
+        "url": "/assets/equipment/gladiator-9bcb0ac9d566.glb",
+        "bytes": 447244
+      },
+      {
+        "url": "/assets/equipment/knights-e30cc69af0fd.glb",
+        "bytes": 612424
+      },
+      {
+        "url": "/assets/equipment/winged-111637d14990.glb",
+        "bytes": 520556
+      },
+      {
+        "url": "/assets/equipment/roman-6d187d4b7f8c.glb",
+        "bytes": 601112
+      },
+      {
+        "url": "/assets/equipment/gladiator_chest-e2f685b66fb6.glb",
+        "bytes": 1212096
+      },
+      {
+        "url": "/assets/equipment/chest_plate-6376ad0c8654.glb",
+        "bytes": 263528
+      },
+      {
+        "url": "/assets/equipment/armor_shoulder-c17b1581ca44.glb",
+        "bytes": 511996
+      },
+      {
+        "url": "/assets/equipment/shoulder_armor-a71778444187.glb",
+        "bytes": 251676
+      },
+      {
+        "url": "/roman_scutum_shield.glb",
+        "bytes": 4394088
+      },
+      {
+        "url": "/roman_shield.glb",
+        "bytes": 2941088
+      },
+      {
+        "url": "/roman_spatha.glb",
+        "bytes": 1942872
+      },
+      {
+        "url": "/gladiator-mobile.glb",
+        "bytes": 11908916
+      },
+      {
+        "url": "/imperial-desk-v31.glb",
+        "bytes": 3233536
+      },
+      {
+        "url": "/office-wardrobe-v32.glb",
+        "bytes": 886552
+      },
+      {
+        "url": "/office-daily-book-v32.glb",
+        "bytes": 178704
+      },
+      {
+        "url": "/clan-chest-v35.glb",
+        "bytes": 378472
+      }
+    ],
+    "errors": [],
+    "functional": {
+      "colliderCount": 9,
+      "cameraObstacleCount": 30,
+      "boundary": {
+        "x": 13.309352517985586,
+        "z": 11.270983213429243
+      },
+      "office": [
+        {
+          "kind": "desk",
+          "minX": -1.410528790969021,
+          "maxX": 1.4105287909690212,
+          "minZ": -1.6063105494224947,
+          "maxZ": -0.39368945057750526
+        },
+        {
+          "kind": "wardrobe",
+          "minX": 2.8696131868635226,
+          "maxX": 4.030386813136477,
+          "minZ": -3.8479013875767363,
+          "maxZ": -3.1520986124232633
+        }
+      ],
+      "clan": [
+        {
+          "kind": "clan-bench",
+          "minX": -4.430000000000001,
+          "maxX": -3.87,
+          "minZ": -1.65,
+          "maxZ": 1.85
+        },
+        {
+          "kind": "clan-bench",
+          "minX": 3.87,
+          "maxX": 4.430000000000001,
+          "minZ": -1.65,
+          "maxZ": 1.85
+        },
+        {
+          "kind": "clan-chest",
+          "minX": -0.9,
+          "maxX": 0.9,
+          "minZ": -3.2446146664117514,
+          "maxZ": -1.7553853335882483
+        }
+      ]
+    }
+  },
+  "after": {
+    "label": "after",
+    "overview": {
+      "mode": "backdrop",
+      "cityTriangles": 288,
+      "meshes": 2,
+      "materials": 2,
+      "backdropError": false,
+      "landmarks": {
+        "colosseum": {
+          "position": [
+            1050,
+            0,
+            -100
+          ],
+          "height": 48,
+          "footprint": [
+            188,
+            156
+          ],
+          "file": "colosseum-city-v29.glb",
+          "yaw": 0
+        },
+        "pantheon": {
+          "position": [
+            -364.2135623730949,
+            0,
+            -1514.2135623730949
+          ],
+          "height": 43.3,
+          "file": "pantheon-city-v29.glb",
+          "yaw": 0
+        }
+      }
+    },
+    "network": {
+      "cityModelBytes": 0,
+      "backdropBytes": 2172467,
+      "sourceStartupBytes": 52272477
+    },
+    "views": [
+      {
+        "pose": {
+          "name": "courtyard-0",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 0,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 41,
+            "calls": 77,
+            "triangles": 138514,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 42,
+            "calls": 75,
+            "triangles": 138226,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            0,
+            2.616913689886738,
+            3.343192688075437
+          ],
+          "times": [
+            292.90000000596046,
+            257.5,
+            286.19999999552965,
+            281.29999999701977,
+            291.20000000298023
+          ]
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-1",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 0.7853981633974483,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 45,
+            "calls": 79,
+            "triangles": 140050,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 46,
+            "calls": 77,
+            "triangles": 139762,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            2.539350276690662,
+            1.0298057495848822,
+            2.5393502766906626
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-2",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 1.5707963267948966,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 49,
+            "calls": 76,
+            "triangles": 140671,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 50,
+            "calls": 74,
+            "triangles": 140383,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            3.343192688075437,
+            2.616913689886738,
+            2.04711511219221e-16
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-3",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 2.356194490192345,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 53,
+            "calls": 31,
+            "triangles": 139888,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 54,
+            "calls": 29,
+            "triangles": 139600,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            2.5393502766906626,
+            1.0298057495848822,
+            -2.539350276690662
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-4",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 3.141592653589793,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 57,
+            "calls": 30,
+            "triangles": 139414,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 58,
+            "calls": 28,
+            "triangles": 139126,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            4.09423022438442e-16,
+            2.616913689886738,
+            -3.343192688075437
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-5",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 3.9269908169872414,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 61,
+            "calls": 32,
+            "triangles": 140420,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 62,
+            "calls": 30,
+            "triangles": 140132,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -2.539350276690662,
+            1.0298057495848822,
+            -2.539350276690663
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-6",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 4.71238898038469,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 65,
+            "calls": 25,
+            "triangles": 139346,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 66,
+            "calls": 23,
+            "triangles": 139058,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -3.343192688075437,
+            2.616913689886738,
+            -6.141345336576629e-16
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "courtyard-7",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 5.497787143782138,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 69,
+            "calls": 26,
+            "triangles": 138167,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 70,
+            "calls": 24,
+            "triangles": 137879,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -2.539350276690663,
+            1.0298057495848822,
+            2.539350276690662
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-0",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 81,
+            "calls": 81,
+            "triangles": 141114,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 82,
+            "calls": 79,
+            "triangles": 140826,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -11,
+            5.756563335561553,
+            11.480732405029595
+          ],
+          "times": [
+            379,
+            387.19999999552965,
+            370,
+            389.5,
+            381.20000000298023
+          ]
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-1",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0.7853981633974483,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 85,
+            "calls": 74,
+            "triangles": 139947,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 86,
+            "calls": 72,
+            "triangles": 139659,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -8.510339748758502,
+            4.301144360554042,
+            11.089660251241497
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-2",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 1.5707963267948966,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 89,
+            "calls": 22,
+            "triangles": 138280,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 90,
+            "calls": 20,
+            "triangles": 137992,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -7.503183290532693,
+            5.907329455137684,
+            8.6
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-3",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 2.356194490192345,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 93,
+            "calls": 19,
+            "triangles": 136212,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 94,
+            "calls": 17,
+            "triangles": 135924,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -10.688314458402303,
+            4.957648958965739,
+            8.288314458402303
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-4",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.141592653589793,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 97,
+            "calls": 24,
+            "triangles": 137282,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 98,
+            "calls": 22,
+            "triangles": 136994,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -11,
+            5.907329455137684,
+            5.103183290532693
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-5",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.9269908169872414,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 101,
+            "calls": 33,
+            "triangles": 139420,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 102,
+            "calls": 31,
+            "triangles": 139132,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -13.489660251241498,
+            4.301144360554042,
+            6.110339748758501
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-6",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 4.71238898038469,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 105,
+            "calls": 35,
+            "triangles": 140956,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 106,
+            "calls": 33,
+            "triangles": 140668,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -14.496816709467307,
+            5.907329455137684,
+            8.6
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-left-7",
+          "x": -11,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 5.497787143782138,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 109,
+            "calls": 95,
+            "triangles": 144794,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 110,
+            "calls": 93,
+            "triangles": 144506,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -13.411685541597697,
+            4.32464819428283,
+            11.011685541597695
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-0",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 113,
+            "calls": 82,
+            "triangles": 141646,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 114,
+            "calls": 80,
+            "triangles": 141358,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            10,
+            5.628087066636459,
+            10.955732405029593
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-1",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 0.7853981633974483,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 117,
+            "calls": 95,
+            "triangles": 144794,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 118,
+            "calls": 93,
+            "triangles": 144506,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            12.489660251241498,
+            4.301144360554042,
+            11.089660251241497
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-2",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 1.5707963267948966,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 121,
+            "calls": 93,
+            "triangles": 143258,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 122,
+            "calls": 91,
+            "triangles": 142970,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            13.496816709467307,
+            5.907329455137684,
+            8.6
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-3",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 2.356194490192345,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 125,
+            "calls": 31,
+            "triangles": 138886,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 126,
+            "calls": 29,
+            "triangles": 138598,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            10.276628916804611,
+            4.96821604006156,
+            8.323371083195388
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-4",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.141592653589793,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 129,
+            "calls": 23,
+            "triangles": 136750,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 130,
+            "calls": 21,
+            "triangles": 136462,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            10,
+            5.146681050570853,
+            8.211464810059187
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-5",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 3.9269908169872414,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 133,
+            "calls": 23,
+            "triangles": 137280,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 134,
+            "calls": 21,
+            "triangles": 136992,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            7.510339748758502,
+            4.301144360554042,
+            6.110339748758501
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-6",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 4.71238898038469,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 145,
+            "calls": 24,
+            "triangles": 138814,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 146,
+            "calls": 22,
+            "triangles": 138526,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            6.503183290532693,
+            5.907329455137684,
+            8.6
+          ],
+          "times": [
+            378.30000000447035,
+            364.69999999552965,
+            328.6000000014901,
+            352.80000000447035,
+            329.19999999552965
+          ]
+        }
+      },
+      {
+        "pose": {
+          "name": "gallery-right-7",
+          "x": 10,
+          "z": 8.6,
+          "y": 3.47,
+          "yaw": 5.497787143782138,
+          "pitch": 0.35
+        },
+        "cost": {
+          "all": {
+            "frame": 149,
+            "calls": 23,
+            "triangles": 138812,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 150,
+            "calls": 21,
+            "triangles": 138524,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            7.5103397487585015,
+            4.301144360554042,
+            11.089660251241497
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "city-centre",
+          "x": 0,
+          "z": 0,
+          "y": 3.47,
+          "yaw": -1.47,
+          "pitch": -0.1,
+          "cityOnly": true
+        },
+        "cost": {
+          "all": {
+            "frame": 153,
+            "calls": 3,
+            "triangles": 300,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 154,
+            "calls": 1,
+            "triangles": 12,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -3.4790680909581404,
+            5.907329455137684,
+            0.3518697459098251
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "city-left",
+          "x": -13,
+          "z": 9,
+          "y": 3.47,
+          "yaw": 0.236,
+          "pitch": -0.1,
+          "cityOnly": true
+        },
+        "cost": {
+          "all": {
+            "frame": 157,
+            "calls": 3,
+            "triangles": 300,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 158,
+            "calls": 1,
+            "triangles": 12,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            -12.402135325550967,
+            5.677339289495601,
+            11.486117306138345
+          ],
+          "times": []
+        }
+      },
+      {
+        "pose": {
+          "name": "city-right",
+          "x": 13,
+          "z": -10,
+          "y": 3.47,
+          "yaw": -2.1,
+          "pitch": -0.1,
+          "cityOnly": true
+        },
+        "cost": {
+          "all": {
+            "frame": 161,
+            "calls": 3,
+            "triangles": 300,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 162,
+            "calls": 1,
+            "triangles": 12,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            9.981515062933527,
+            5.907329455137684,
+            -11.765354294274262
+          ],
+          "times": []
+        }
+      }
+    ],
+    "requests": [
+      {
+        "url": "/ludus.html",
+        "bytes": 1408842
+      },
+      {
+        "url": "/owner-avatar.css",
+        "bytes": 4542
+      },
+      {
+        "url": "/imperial-missions-v31.css",
+        "bytes": 13145
+      },
+      {
+        "url": "/clan-vault-v35.css",
+        "bytes": 12830
+      },
+      {
+        "url": "/imperial-missions-v31.js",
+        "bytes": 24720
+      },
+      {
+        "url": "/clan-equipment-v35.js",
+        "bytes": 12227
+      },
+      {
+        "url": "/clan-vault-v35.js",
+        "bytes": 15774
+      },
+      {
+        "url": "/ludus-level-v37.js",
+        "bytes": 6939
+      },
+      {
+        "url": "/owner-gait-v30.js",
+        "bytes": 414
+      },
+      {
+        "url": "/owner-avatar.js",
+        "bytes": 17959
+      },
+      {
+        "url": "/ludus-settings-v29.js",
+        "bytes": 1843
+      },
+      {
+        "url": "/ludus-city-v29.js",
+        "bytes": 7894
+      },
+      {
+        "url": "/assets/city/rome-backdrop-v39.json",
+        "bytes": 39807
+      },
+      {
+        "url": "/assets/textures/brown_leather-nor_gl-3e1524121f58.webp",
+        "bytes": 64848
+      },
+      {
+        "url": "/assets/textures/brown_leather-rough-db921d8e689c.webp",
+        "bytes": 108620
+      },
+      {
+        "url": "/assets/textures/sand_01-diff-8aecb3769d72.webp",
+        "bytes": 71456
+      },
+      {
+        "url": "/assets/textures/sand_01-nor_gl-6616ebcba18d.webp",
+        "bytes": 100628
+      },
+      {
+        "url": "/assets/textures/sand_01-rough-a75cb02d64ea.webp",
+        "bytes": 22524
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp",
+        "bytes": 65722
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp",
+        "bytes": 44192
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp",
+        "bytes": 40818
+      },
+      {
+        "url": "/assets/textures/wooden_gate-diff-67741a5af1f9.webp",
+        "bytes": 18786
+      },
+      {
+        "url": "/assets/textures/wooden_gate-nor_gl-9c9095cd8a7d.webp",
+        "bytes": 14094
+      },
+      {
+        "url": "/assets/textures/wooden_gate-rough-f62304f04b81.webp",
+        "bytes": 37576
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-diff-6aa57de97b10.webp",
+        "bytes": 35452
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-nor_gl-dcd2b93a4cbb.webp",
+        "bytes": 29274
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-rough-1e05c5521169.webp",
+        "bytes": 7226
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-diff-978ee90ff99a.webp",
+        "bytes": 34626
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-nor_gl-280beb967583.webp",
+        "bytes": 108142
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-rough-0d9b4ef4bd03.webp",
+        "bytes": 13790
+      },
+      {
+        "url": "/rome-sky-v29.jpg",
+        "bytes": 441354
+      },
+      {
+        "url": "/owner-skin-light-v27.jpg",
+        "bytes": 134915
+      },
+      {
+        "url": "/owner-skin-dark-v27.jpg",
+        "bytes": 107298
+      },
+      {
+        "url": "/owner-makehuman-v27.glb",
+        "bytes": 21411012
+      },
+      {
+        "url": "/owner-run-v30.glb",
+        "bytes": 52932
+      },
+      {
+        "url": "/assets/equipment/gladiator-9bcb0ac9d566.glb",
+        "bytes": 447244
+      },
+      {
+        "url": "/assets/city/rome-backdrop-87af8072b91e.webp",
+        "bytes": 2132660
+      },
+      {
+        "url": "/assets/equipment/knights-e30cc69af0fd.glb",
+        "bytes": 612424
+      },
+      {
+        "url": "/assets/equipment/winged-111637d14990.glb",
+        "bytes": 520556
+      },
+      {
+        "url": "/assets/equipment/roman-6d187d4b7f8c.glb",
+        "bytes": 601112
+      },
+      {
+        "url": "/assets/equipment/gladiator_chest-e2f685b66fb6.glb",
+        "bytes": 1212096
+      },
+      {
+        "url": "/assets/equipment/chest_plate-6376ad0c8654.glb",
+        "bytes": 263528
+      },
+      {
+        "url": "/assets/equipment/armor_shoulder-c17b1581ca44.glb",
+        "bytes": 511996
+      },
+      {
+        "url": "/assets/equipment/shoulder_armor-a71778444187.glb",
+        "bytes": 251676
+      },
+      {
+        "url": "/roman_scutum_shield.glb",
+        "bytes": 4394088
+      },
+      {
+        "url": "/roman_shield.glb",
+        "bytes": 2941088
+      },
+      {
+        "url": "/roman_spatha.glb",
+        "bytes": 1942872
+      },
+      {
+        "url": "/gladiator-mobile.glb",
+        "bytes": 11908916
+      },
+      {
+        "url": "/imperial-desk-v31.glb",
+        "bytes": 3233536
+      },
+      {
+        "url": "/office-wardrobe-v32.glb",
+        "bytes": 886552
+      },
+      {
+        "url": "/office-daily-book-v32.glb",
+        "bytes": 178704
+      },
+      {
+        "url": "/clan-chest-v35.glb",
+        "bytes": 378472
+      }
+    ],
+    "errors": [],
+    "functional": {
+      "colliderCount": 9,
+      "cameraObstacleCount": 30,
+      "boundary": {
+        "x": 13.309352517985586,
+        "z": 11.270983213429243
+      },
+      "office": [
+        {
+          "kind": "desk",
+          "minX": -1.410528790969021,
+          "maxX": 1.4105287909690212,
+          "minZ": -1.6063105494224947,
+          "maxZ": -0.39368945057750526
+        },
+        {
+          "kind": "wardrobe",
+          "minX": 2.8696131868635226,
+          "maxX": 4.030386813136477,
+          "minZ": -3.8479013875767363,
+          "maxZ": -3.1520986124232633
+        }
+      ],
+      "clan": [
+        {
+          "kind": "clan-bench",
+          "minX": -4.430000000000001,
+          "maxX": -3.87,
+          "minZ": -1.65,
+          "maxZ": 1.85
+        },
+        {
+          "kind": "clan-bench",
+          "minX": 3.87,
+          "maxX": 4.430000000000001,
+          "minZ": -1.65,
+          "maxZ": 1.85
+        },
+        {
+          "kind": "clan-chest",
+          "minX": -0.9,
+          "maxX": 0.9,
+          "minZ": -3.2446146664117514,
+          "maxZ": -1.7553853335882483
+        }
+      ]
+    }
+  },
+  "fallback": {
+    "label": "fallback",
+    "overview": {
+      "mode": "3d",
+      "cityTriangles": 781433,
+      "meshes": 172,
+      "materials": 7,
+      "backdropError": true,
+      "landmarks": {
+        "colosseum": {
+          "position": [
+            1050,
+            0,
+            -100
+          ],
+          "height": 48,
+          "footprint": [
+            188,
+            156
+          ],
+          "file": "colosseum-city-v29.glb",
+          "yaw": 0
+        },
+        "pantheon": {
+          "position": [
+            -364.2135623730949,
+            0,
+            -1514.2135623730949
+          ],
+          "height": 43.3,
+          "file": "pantheon-city-v29.glb",
+          "yaw": 0
+        }
+      }
+    },
+    "network": {
+      "cityModelBytes": 19300648,
+      "backdropBytes": 39807,
+      "sourceStartupBytes": 69440465
+    },
+    "views": [
+      {
+        "pose": {
+          "name": "courtyard-0",
+          "x": 0,
+          "z": 0,
+          "y": 0,
+          "yaw": 0,
+          "pitch": -0.1
+        },
+        "cost": {
+          "all": {
+            "frame": 41,
+            "calls": 114,
+            "triangles": 389612,
+            "points": 0,
+            "lines": 0
+          },
+          "without": {
+            "frame": 42,
+            "calls": 75,
+            "triangles": 138226,
+            "points": 0,
+            "lines": 0
+          },
+          "camera": [
+            0,
+            2.616913689886738,
+            3.343192688075437
+          ],
+          "times": [
+            748.3000000044703,
+            756.7999999970198,
+            713.8999999985099,
+            718.6000000014901,
+            703.1000000014901
+          ]
+        }
+      }
+    ],
+    "requests": [
+      {
+        "url": "/ludus.html",
+        "bytes": 1408842
+      },
+      {
+        "url": "/owner-avatar.css",
+        "bytes": 4542
+      },
+      {
+        "url": "/imperial-missions-v31.css",
+        "bytes": 13145
+      },
+      {
+        "url": "/clan-vault-v35.css",
+        "bytes": 12830
+      },
+      {
+        "url": "/imperial-missions-v31.js",
+        "bytes": 24720
+      },
+      {
+        "url": "/clan-equipment-v35.js",
+        "bytes": 12227
+      },
+      {
+        "url": "/clan-vault-v35.js",
+        "bytes": 15774
+      },
+      {
+        "url": "/ludus-level-v37.js",
+        "bytes": 6939
+      },
+      {
+        "url": "/owner-gait-v30.js",
+        "bytes": 414
+      },
+      {
+        "url": "/owner-avatar.js",
+        "bytes": 17959
+      },
+      {
+        "url": "/ludus-settings-v29.js",
+        "bytes": 1843
+      },
+      {
+        "url": "/ludus-city-v29.js",
+        "bytes": 7894
+      },
+      {
+        "url": "/assets/city/rome-backdrop-v39.json",
+        "bytes": 39807
+      },
+      {
+        "url": "/assets/textures/brown_leather-nor_gl-3e1524121f58.webp",
+        "bytes": 64848
+      },
+      {
+        "url": "/assets/textures/brown_leather-rough-db921d8e689c.webp",
+        "bytes": 108620
+      },
+      {
+        "url": "/assets/textures/sand_01-diff-8aecb3769d72.webp",
+        "bytes": 71456
+      },
+      {
+        "url": "/assets/textures/sand_01-nor_gl-6616ebcba18d.webp",
+        "bytes": 100628
+      },
+      {
+        "url": "/assets/textures/sand_01-rough-a75cb02d64ea.webp",
+        "bytes": 22524
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp",
+        "bytes": 65722
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp",
+        "bytes": 44192
+      },
+      {
+        "url": "/assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp",
+        "bytes": 40818
+      },
+      {
+        "url": "/assets/textures/wooden_gate-diff-67741a5af1f9.webp",
+        "bytes": 18786
+      },
+      {
+        "url": "/assets/textures/wooden_gate-nor_gl-9c9095cd8a7d.webp",
+        "bytes": 14094
+      },
+      {
+        "url": "/assets/textures/wooden_gate-rough-f62304f04b81.webp",
+        "bytes": 37576
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-diff-6aa57de97b10.webp",
+        "bytes": 35452
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-nor_gl-dcd2b93a4cbb.webp",
+        "bytes": 29274
+      },
+      {
+        "url": "/assets/textures/white_plaster_02-rough-1e05c5521169.webp",
+        "bytes": 7226
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-diff-978ee90ff99a.webp",
+        "bytes": 34626
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-nor_gl-280beb967583.webp",
+        "bytes": 108142
+      },
+      {
+        "url": "/assets/textures/stone_wall_02-rough-0d9b4ef4bd03.webp",
+        "bytes": 13790
+      },
+      {
+        "url": "/rome-sky-v29.jpg",
+        "bytes": 441354
+      },
+      {
+        "url": "/owner-skin-light-v27.jpg",
+        "bytes": 134915
+      },
+      {
+        "url": "/owner-skin-dark-v27.jpg",
+        "bytes": 107298
+      },
+      {
+        "url": "/owner-makehuman-v27.glb",
+        "bytes": 21411012
+      },
+      {
+        "url": "/owner-run-v30.glb",
+        "bytes": 52932
+      },
+      {
+        "url": "/assets/equipment/gladiator-9bcb0ac9d566.glb",
+        "bytes": 447244
+      },
+      {
+        "url": "/assets/city/rome-backdrop-87af8072b91e.webp",
+        "bytes": 0,
+        "status": 404
+      },
+      {
+        "url": "/assets/equipment/knights-e30cc69af0fd.glb",
+        "bytes": 612424
+      },
+      {
+        "url": "/assets/equipment/winged-111637d14990.glb",
+        "bytes": 520556
+      },
+      {
+        "url": "/assets/equipment/roman-6d187d4b7f8c.glb",
+        "bytes": 601112
+      },
+      {
+        "url": "/assets/equipment/gladiator_chest-e2f685b66fb6.glb",
+        "bytes": 1212096
+      },
+      {
+        "url": "/assets/equipment/chest_plate-6376ad0c8654.glb",
+        "bytes": 263528
+      },
+      {
+        "url": "/assets/equipment/armor_shoulder-c17b1581ca44.glb",
+        "bytes": 511996
+      },
+      {
+        "url": "/assets/equipment/shoulder_armor-a71778444187.glb",
+        "bytes": 251676
+      },
+      {
+        "url": "/roman_scutum_shield.glb",
+        "bytes": 4394088
+      },
+      {
+        "url": "/roman_shield.glb",
+        "bytes": 2941088
+      },
+      {
+        "url": "/roman_spatha.glb",
+        "bytes": 1942872
+      },
+      {
+        "url": "/gladiator-mobile.glb",
+        "bytes": 11908916
+      },
+      {
+        "url": "/rome-insula-v30.glb",
+        "bytes": 2931200
+      },
+      {
+        "url": "/rome-forum-v30.glb",
+        "bytes": 2439968
+      },
+      {
+        "url": "/rome-temple-v30.glb",
+        "bytes": 1176116
+      },
+      {
+        "url": "/rome-gateway-v30.glb",
+        "bytes": 3988060
+      },
+      {
+        "url": "/colosseum-city-v29.glb",
+        "bytes": 5560344
+      },
+      {
+        "url": "/pantheon-city-v29.glb",
+        "bytes": 3204960
+      },
+      {
+        "url": "/imperial-desk-v31.glb",
+        "bytes": 3233536
+      },
+      {
+        "url": "/office-wardrobe-v32.glb",
+        "bytes": 886552
+      },
+      {
+        "url": "/office-daily-book-v32.glb",
+        "bytes": 178704
+      },
+      {
+        "url": "/clan-chest-v35.glb",
+        "bytes": 378472
+      }
+    ],
+    "errors": [],
+    "functional": {
+      "colliderCount": 9,
+      "cameraObstacleCount": 30,
+      "boundary": {
+        "x": 13.309352517985586,
+        "z": 11.270983213429243
+      },
+      "office": [
+        {
+          "kind": "desk",
+          "minX": -1.410528790969021,
+          "maxX": 1.4105287909690212,
+          "minZ": -1.6063105494224947,
+          "maxZ": -0.39368945057750526
+        },
+        {
+          "kind": "wardrobe",
+          "minX": 2.8696131868635226,
+          "maxX": 4.030386813136477,
+          "minZ": -3.8479013875767363,
+          "maxZ": -3.1520986124232633
+        }
+      ],
+      "clan": [
+        {
+          "kind": "clan-bench",
+          "minX": -4.430000000000001,
+          "maxX": -3.87,
+          "minZ": -1.65,
+          "maxZ": 1.85
+        },
+        {
+          "kind": "clan-bench",
+          "minX": 3.87,
+          "maxX": 4.430000000000001,
+          "minZ": -1.65,
+          "maxZ": 1.85
+        },
+        {
+          "kind": "clan-chest",
+          "minX": -0.9,
+          "maxX": 0.9,
+          "minZ": -3.2446146664117514,
+          "maxZ": -1.7553853335882483
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "savedCityBytes": 17128181,
+    "visual": {
+      "courtyard-0": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "courtyard-1": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "courtyard-2": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "courtyard-3": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "courtyard-4": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "courtyard-5": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "courtyard-6": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "courtyard-7": {
+        "meanAbsoluteChannelDifference": 0.00006379876048122494,
+        "fractionPixelsDifferenceAbove16": 0.0000030380362133916637
+      },
+      "gallery-left-0": {
+        "meanAbsoluteChannelDifference": 0.6514349657714587,
+        "fractionPixelsDifferenceAbove16": 0.013409891845910803
+      },
+      "gallery-left-1": {
+        "meanAbsoluteChannelDifference": 0.0000030380362133916637,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "gallery-left-2": {
+        "meanAbsoluteChannelDifference": 0.5944272289059019,
+        "fractionPixelsDifferenceAbove16": 0.013036213391663628
+      },
+      "gallery-left-3": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "gallery-left-4": {
+        "meanAbsoluteChannelDifference": 0.27005205168712276,
+        "fractionPixelsDifferenceAbove16": 0.005948474905820877
+      },
+      "gallery-left-5": {
+        "meanAbsoluteChannelDifference": 0.0011129339328391462,
+        "fractionPixelsDifferenceAbove16": 0.00001822821728034998
+      },
+      "gallery-left-6": {
+        "meanAbsoluteChannelDifference": 0.19891845910803257,
+        "fractionPixelsDifferenceAbove16": 0.0040588163810912625
+      },
+      "gallery-left-7": {
+        "meanAbsoluteChannelDifference": 0.06401547373111355,
+        "fractionPixelsDifferenceAbove16": 0.001282051282051282
+      },
+      "gallery-right-0": {
+        "meanAbsoluteChannelDifference": 0.5031990521327014,
+        "fractionPixelsDifferenceAbove16": 0.009572852108397131
+      },
+      "gallery-right-1": {
+        "meanAbsoluteChannelDifference": 0.021766516790213474,
+        "fractionPixelsDifferenceAbove16": 0.00038886863531413296
+      },
+      "gallery-right-2": {
+        "meanAbsoluteChannelDifference": 0.2457356098351359,
+        "fractionPixelsDifferenceAbove16": 0.005346943735569328
+      },
+      "gallery-right-3": {
+        "meanAbsoluteChannelDifference": 0.007047231336330863,
+        "fractionPixelsDifferenceAbove16": 0.0002673471867784664
+      },
+      "gallery-right-4": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "gallery-right-5": {
+        "meanAbsoluteChannelDifference": 0.00006177340300563049,
+        "fractionPixelsDifferenceAbove16": 0.0000030380362133916637
+      },
+      "gallery-right-6": {
+        "meanAbsoluteChannelDifference": 0.6834791590715761,
+        "fractionPixelsDifferenceAbove16": 0.012790132458378903
+      },
+      "gallery-right-7": {
+        "meanAbsoluteChannelDifference": 0,
+        "fractionPixelsDifferenceAbove16": 0
+      },
+      "city-centre": {
+        "meanAbsoluteChannelDifference": 1.1613187102523594,
+        "fractionPixelsDifferenceAbove16": 0.025370640418033785
+      },
+      "city-left": {
+        "meanAbsoluteChannelDifference": 1.401108883217888,
+        "fractionPixelsDifferenceAbove16": 0.02595090533479159
+      },
+      "city-right": {
+        "meanAbsoluteChannelDifference": 1.3196743225179244,
+        "fractionPixelsDifferenceAbove16": 0.026777251184834122
+      }
+    },
+    "render": [
+      {
+        "name": "courtyard-0",
+        "beforeMedianMs": 801.2000000029802,
+        "afterMedianMs": 286.19999999552965,
+        "beforeTriangles": 389612,
+        "afterTriangles": 138514,
+        "beforeCalls": 114,
+        "afterCalls": 77
+      },
+      {
+        "name": "gallery-left-0",
+        "beforeMedianMs": 980.3000000044703,
+        "afterMedianMs": 381.20000000298023,
+        "beforeTriangles": 406684,
+        "afterTriangles": 141114,
+        "beforeCalls": 122,
+        "afterCalls": 81
+      },
+      {
+        "name": "gallery-right-6",
+        "beforeMedianMs": 705.2999999970198,
+        "afterMedianMs": 352.80000000447035,
+        "beforeTriangles": 354969,
+        "afterTriangles": 138814,
+        "beforeCalls": 56,
+        "afterCalls": 24
+      }
+    ]
+  }
+}

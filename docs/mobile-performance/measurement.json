@@ -6,7 +6,7 @@
     "physicalIPhone": false,
     "baselineCommit": "af08a6a",
     "sourceHashes": {
-      "ludus.html": "78c185eb90067d9574e3b53fa47b8cd159d2cf2dddb335a493c0deb14763d299",
+      "ludus.html": "5792cd37a9dc4ed4b4412203bdca8120a346feaba762a7e98254f7beb7906104",
       "owner-avatar.js": "f6b28106e8031929c60e800e0428ccf7347bfd1d1fe8c97824472398f134c0bc",
       "imperial-missions-v31.js": "59702dbcd996522691865a9473bba82e314d97a994982ee4fc12651e9442945a",
       "clan-vault-v35.js": "da02cd11db93a4328961f3224b8d59db2cad70481eed08dad1692cd57c1a96f2"
@@ -14,8 +14,8 @@
   },
   "before": {
     "label": "before",
-    "courtyardReadyMs": 6721,
-    "startupMs": 9269,
+    "courtyardReadyMs": 5865,
+    "startupMs": 8300,
     "requests": [
       {
         "stage": "startup",
@@ -61,12 +61,6 @@
       },
       {
         "stage": "startup",
-        "url": "/clan-vault-v35.js?v=revision35",
-        "sourceBytes": 15667,
-        "gzipBytes": 6220
-      },
-      {
-        "stage": "startup",
         "url": "/owner-gait-v30.js?v=revision30",
         "sourceBytes": 414,
         "gzipBytes": 285
@@ -82,6 +76,12 @@
         "url": "/ludus-settings-v29.js?v=revision30",
         "sourceBytes": 1843,
         "gzipBytes": 957
+      },
+      {
+        "stage": "startup",
+        "url": "/clan-vault-v35.js?v=revision35",
+        "sourceBytes": 15667,
+        "gzipBytes": 6220
       },
       {
         "stage": "startup",
@@ -151,6 +151,12 @@
       },
       {
         "stage": "startup",
+        "url": "/roman_scutum_shield.glb",
+        "sourceBytes": 4394088,
+        "gzipBytes": 4337378
+      },
+      {
+        "stage": "startup",
         "url": "/office-daily-book-v32.glb?v=revision32",
         "sourceBytes": 178704,
         "gzipBytes": 154748
@@ -160,30 +166,6 @@
         "url": "/clan-chest-v35.glb?v=revision35",
         "sourceBytes": 378472,
         "gzipBytes": 288368
-      },
-      {
-        "stage": "startup",
-        "url": "/roman_scutum_shield.glb",
-        "sourceBytes": 4394088,
-        "gzipBytes": 4337378
-      },
-      {
-        "stage": "startup",
-        "url": "/rome-sky-v29.jpg?v=revision30",
-        "sourceBytes": 441354,
-        "gzipBytes": 436273
-      },
-      {
-        "stage": "startup",
-        "url": "/owner-skin-light-v27.jpg?v=revision28",
-        "sourceBytes": 134915,
-        "gzipBytes": 132058
-      },
-      {
-        "stage": "startup",
-        "url": "/owner-skin-dark-v27.jpg?v=revision28",
-        "sourceBytes": 107298,
-        "gzipBytes": 105050
       },
       {
         "stage": "startup",
@@ -202,6 +184,24 @@
         "url": "/gladiator-mobile.glb",
         "sourceBytes": 11908916,
         "gzipBytes": 9796149
+      },
+      {
+        "stage": "startup",
+        "url": "/rome-sky-v29.jpg?v=revision30",
+        "sourceBytes": 441354,
+        "gzipBytes": 436273
+      },
+      {
+        "stage": "startup",
+        "url": "/owner-skin-dark-v27.jpg?v=revision28",
+        "sourceBytes": 107298,
+        "gzipBytes": 105050
+      },
+      {
+        "stage": "startup",
+        "url": "/owner-skin-light-v27.jpg?v=revision28",
+        "sourceBytes": 134915,
+        "gzipBytes": 132058
       },
       {
         "stage": "startup",
@@ -228,192 +228,192 @@
           "url": "/owner-avatar.css?v=revision32",
           "transferSize": 4842,
           "encodedBodySize": 4542,
-          "duration": 9.5
+          "duration": 8.300000004470348
         },
         {
           "url": "/imperial-missions-v31.css?v=revision34",
           "transferSize": 13445,
           "encodedBodySize": 13145,
-          "duration": 10.799999997019768
-        },
-        {
-          "url": "/imperial-missions-v31.js?v=revision37.1",
-          "transferSize": 24728,
-          "encodedBodySize": 24428,
-          "duration": 12.299999997019768
+          "duration": 10
         },
         {
           "url": "/clan-vault-v35.css?v=revision35",
           "transferSize": 13130,
           "encodedBodySize": 12830,
-          "duration": 11.199999999254942
+          "duration": 10
         },
         {
           "url": "/clan-equipment-v35.js?v=revision35",
           "transferSize": 12527,
           "encodedBodySize": 12227,
-          "duration": 15.699999999254942
+          "duration": 11.399999998509884
         },
         {
-          "url": "/ludus-level-v37.js?v=revision37.1",
-          "transferSize": 7239,
-          "encodedBodySize": 6939,
-          "duration": 16
+          "url": "/imperial-missions-v31.js?v=revision37.1",
+          "transferSize": 24728,
+          "encodedBodySize": 24428,
+          "duration": 11.299999997019768
         },
         {
           "url": "/clan-vault-v35.js?v=revision35",
           "transferSize": 15967,
           "encodedBodySize": 15667,
-          "duration": 16.100000001490116
+          "duration": 19.900000005960464
+        },
+        {
+          "url": "/ludus-level-v37.js?v=revision37.1",
+          "transferSize": 7239,
+          "encodedBodySize": 6939,
+          "duration": 19.700000002980232
         },
         {
           "url": "/owner-gait-v30.js?v=revision30",
           "transferSize": 714,
           "encodedBodySize": 414,
-          "duration": 3.600000001490116
+          "duration": 11.799999997019768
         },
         {
           "url": "/owner-avatar.js?v=revision30",
           "transferSize": 17975,
           "encodedBodySize": 17675,
-          "duration": 5.399999998509884
+          "duration": 11.899999998509884
         },
         {
           "url": "/ludus-settings-v29.js?v=revision30",
           "transferSize": 2143,
           "encodedBodySize": 1843,
-          "duration": 5.199999999254942
+          "duration": 11.600000001490116
         },
         {
           "url": "/ludus-city-v29.js?v=revision30",
           "transferSize": 4696,
           "encodedBodySize": 4396,
-          "duration": 6.599999997764826
+          "duration": 13
         },
         {
           "url": "/rome-insula-v30.glb?v=revision30",
           "transferSize": 2931500,
           "encodedBodySize": 2931200,
-          "duration": 3144.800000000745
+          "duration": 2688.2000000029802
         },
         {
           "url": "/rome-forum-v30.glb?v=revision30",
           "transferSize": 2440268,
           "encodedBodySize": 2439968,
-          "duration": 3155.599999997765
+          "duration": 2696.0999999940395
         },
         {
           "url": "/rome-temple-v30.glb?v=revision30",
           "transferSize": 1176416,
           "encodedBodySize": 1176116,
-          "duration": 161
+          "duration": 150.10000000149012
         },
         {
           "url": "/rome-gateway-v30.glb?v=revision30",
           "transferSize": 3988360,
           "encodedBodySize": 3988060,
-          "duration": 3181.10000000149
+          "duration": 2716.39999999851
         },
         {
           "url": "/colosseum-city-v29.glb?v=revision30",
           "transferSize": 5560644,
           "encodedBodySize": 5560344,
-          "duration": 3225.300000000745
+          "duration": 2749.39999999851
         },
         {
           "url": "/pantheon-city-v29.glb?v=revision30",
           "transferSize": 3205260,
           "encodedBodySize": 3204960,
-          "duration": 3188
+          "duration": 2712.9000000059605
         },
         {
           "url": "/owner-makehuman-v27.glb?v=revision28",
           "transferSize": 21411312,
           "encodedBodySize": 21411012,
-          "duration": 5491.699999999255
+          "duration": 3467
         },
         {
           "url": "/owner-run-v30.glb?v=revision30",
           "transferSize": 53232,
           "encodedBodySize": 52932,
-          "duration": 3151.800000000745
+          "duration": 2701.5
         },
         {
           "url": "/imperial-desk-v31.glb?v=revision32",
           "transferSize": 3233836,
           "encodedBodySize": 3233536,
-          "duration": 3433.099999997765
+          "duration": 2828.39999999851
         },
         {
           "url": "/office-wardrobe-v32.glb?v=revision32",
           "transferSize": 886852,
           "encodedBodySize": 886552,
-          "duration": 3258.300000000745
+          "duration": 2800
         },
         {
           "url": "/office-daily-book-v32.glb?v=revision32",
           "transferSize": 179004,
           "encodedBodySize": 178704,
-          "duration": 3261.199999999255
+          "duration": 2906.8000000044703
         },
         {
           "url": "/clan-chest-v35.glb?v=revision35",
           "transferSize": 378772,
           "encodedBodySize": 378472,
-          "duration": 3275.89999999851
+          "duration": 2950.9000000059605
         },
         {
           "url": "/rome-sky-v29.jpg?v=revision30",
           "transferSize": 441654,
           "encodedBodySize": 441354,
-          "duration": 3395.7000000029802
+          "duration": 3404.6999999955297
         },
         {
           "url": "/owner-skin-light-v27.jpg?v=revision28",
           "transferSize": 135215,
           "encodedBodySize": 134915,
-          "duration": 3399.10000000149
+          "duration": 3410.5
         },
         {
           "url": "/owner-skin-dark-v27.jpg?v=revision28",
           "transferSize": 107598,
           "encodedBodySize": 107298,
-          "duration": 3405.2999999970198
+          "duration": 3405.89999999851
         },
         {
           "url": "/roman_scutum_shield.glb",
           "transferSize": 4394388,
           "encodedBodySize": 4394088,
-          "duration": 426.29999999701977
+          "duration": 488.90000000596046
         },
         {
           "url": "/roman_shield.glb",
           "transferSize": 2941388,
           "encodedBodySize": 2941088,
-          "duration": 313.1000000014901
+          "duration": 500.19999999552965
         },
         {
           "url": "/roman_spatha.glb",
           "transferSize": 1943172,
           "encodedBodySize": 1942872,
-          "duration": 246.60000000149012
+          "duration": 335.40000000596046
         },
         {
           "url": "/gladiator-mobile.glb",
           "transferSize": 11909216,
           "encodedBodySize": 11908916,
-          "duration": 2854.89999999851
+          "duration": 2370.4000000059605
         },
         {
           "url": "/Colosseum.glb",
           "transferSize": 15825736,
           "encodedBodySize": 15825436,
-          "duration": 353.4000000022352
+          "duration": 394.1000000014901
         }
       ],
       "renderer": {
         "geometries": 106,
-        "textures": 56,
+        "textures": 78,
         "calls": 111,
         "triangles": 465434
       }
@@ -479,14 +479,14 @@
   },
   "after": {
     "label": "after",
-    "courtyardReadyMs": 3743,
-    "startupMs": 6512,
+    "courtyardReadyMs": 4300,
+    "startupMs": 6335,
     "requests": [
       {
         "stage": "startup",
         "url": "/ludus.html",
         "sourceBytes": 1408842,
-        "gzipBytes": 375727
+        "gzipBytes": 375730
       },
       {
         "stage": "startup",
@@ -502,6 +502,12 @@
       },
       {
         "stage": "startup",
+        "url": "/ludus-level-v37.js?v=revision37.1",
+        "sourceBytes": 6939,
+        "gzipBytes": 2796
+      },
+      {
+        "stage": "startup",
         "url": "/clan-vault-v35.css?v=revision35",
         "sourceBytes": 12830,
         "gzipBytes": 3211
@@ -511,24 +517,6 @@
         "url": "/imperial-missions-v31.js?v=revision38-mobile",
         "sourceBytes": 24720,
         "gzipBytes": 8550
-      },
-      {
-        "stage": "startup",
-        "url": "/clan-equipment-v35.js?v=revision35",
-        "sourceBytes": 12227,
-        "gzipBytes": 4740
-      },
-      {
-        "stage": "startup",
-        "url": "/clan-vault-v35.js?v=revision38-mobile",
-        "sourceBytes": 15774,
-        "gzipBytes": 6246
-      },
-      {
-        "stage": "startup",
-        "url": "/ludus-level-v37.js?v=revision37.1",
-        "sourceBytes": 6939,
-        "gzipBytes": 2796
       },
       {
         "stage": "startup",
@@ -550,45 +538,27 @@
       },
       {
         "stage": "startup",
-        "url": "/ludus-city-v29.js?v=revision30",
-        "sourceBytes": 4396,
-        "gzipBytes": 1763
+        "url": "/clan-equipment-v35.js?v=revision35",
+        "sourceBytes": 12227,
+        "gzipBytes": 4740
       },
       {
         "stage": "startup",
-        "url": "/rome-insula-v30.glb?v=revision30",
-        "sourceBytes": 2931200,
-        "gzipBytes": 2717708
+        "url": "/ludus-city-v29.js?v=revision39",
+        "sourceBytes": 7894,
+        "gzipBytes": 2966
       },
       {
         "stage": "startup",
-        "url": "/rome-forum-v30.glb?v=revision30",
-        "sourceBytes": 2439968,
-        "gzipBytes": 2381029
+        "url": "/clan-vault-v35.js?v=revision38-mobile",
+        "sourceBytes": 15774,
+        "gzipBytes": 6246
       },
       {
         "stage": "startup",
-        "url": "/rome-temple-v30.glb?v=revision30",
-        "sourceBytes": 1176116,
-        "gzipBytes": 1140675
-      },
-      {
-        "stage": "startup",
-        "url": "/rome-gateway-v30.glb?v=revision30",
-        "sourceBytes": 3988060,
-        "gzipBytes": 2628217
-      },
-      {
-        "stage": "startup",
-        "url": "/colosseum-city-v29.glb?v=revision30",
-        "sourceBytes": 5560344,
-        "gzipBytes": 2783423
-      },
-      {
-        "stage": "startup",
-        "url": "/pantheon-city-v29.glb?v=revision30",
-        "sourceBytes": 3204960,
-        "gzipBytes": 1680519
+        "url": "/assets/city/rome-backdrop-v39.json?v=revision39",
+        "sourceBytes": 39807,
+        "gzipBytes": 13404
       },
       {
         "stage": "startup",
@@ -607,6 +577,12 @@
         "url": "/assets/textures/sand_01-diff-8aecb3769d72.webp",
         "sourceBytes": 71456,
         "gzipBytes": 71499
+      },
+      {
+        "stage": "startup",
+        "url": "/assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp",
+        "sourceBytes": 40818,
+        "gzipBytes": 40851
       },
       {
         "stage": "startup",
@@ -631,12 +607,6 @@
         "url": "/assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp",
         "sourceBytes": 44192,
         "gzipBytes": 44225
-      },
-      {
-        "stage": "startup",
-        "url": "/assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp",
-        "sourceBytes": 40818,
-        "gzipBytes": 40851
       },
       {
         "stage": "startup",
@@ -718,6 +688,12 @@
       },
       {
         "stage": "startup",
+        "url": "/assets/city/rome-backdrop-87af8072b91e.webp",
+        "sourceBytes": 2132660,
+        "gzipBytes": 2132743
+      },
+      {
+        "stage": "startup",
         "url": "/owner-run-v30.glb?v=revision30",
         "sourceBytes": 52932,
         "gzipBytes": 12618
@@ -742,15 +718,15 @@
       },
       {
         "stage": "startup",
-        "url": "/assets/equipment/roman-6d187d4b7f8c.glb",
-        "sourceBytes": 601112,
-        "gzipBytes": 419922
-      },
-      {
-        "stage": "startup",
         "url": "/assets/equipment/gladiator_chest-e2f685b66fb6.glb",
         "sourceBytes": 1212096,
         "gzipBytes": 1051378
+      },
+      {
+        "stage": "startup",
+        "url": "/assets/equipment/roman-6d187d4b7f8c.glb",
+        "sourceBytes": 601112,
+        "gzipBytes": 419922
       },
       {
         "stage": "startup",
@@ -766,9 +742,9 @@
       },
       {
         "stage": "startup",
-        "url": "/assets/equipment/shoulder_armor-a71778444187.glb",
-        "sourceBytes": 251676,
-        "gzipBytes": 233072
+        "url": "/roman_scutum_shield.glb",
+        "sourceBytes": 4394088,
+        "gzipBytes": 4337378
       },
       {
         "stage": "startup",
@@ -778,21 +754,21 @@
       },
       {
         "stage": "startup",
-        "url": "/roman_scutum_shield.glb",
-        "sourceBytes": 4394088,
-        "gzipBytes": 4337378
+        "url": "/roman_spatha.glb",
+        "sourceBytes": 1942872,
+        "gzipBytes": 1819928
+      },
+      {
+        "stage": "startup",
+        "url": "/assets/equipment/shoulder_armor-a71778444187.glb",
+        "sourceBytes": 251676,
+        "gzipBytes": 233072
       },
       {
         "stage": "startup",
         "url": "/gladiator-mobile.glb",
         "sourceBytes": 11908916,
         "gzipBytes": 9796149
-      },
-      {
-        "stage": "startup",
-        "url": "/roman_spatha.glb",
-        "sourceBytes": 1942872,
-        "gzipBytes": 1819928
       },
       {
         "stage": "office",
@@ -822,7 +798,7 @@
         "stage": "reload",
         "url": "/ludus.html",
         "sourceBytes": 1408842,
-        "gzipBytes": 375727
+        "gzipBytes": 375730
       }
     ],
     "startup": {
@@ -831,314 +807,290 @@
           "url": "/owner-avatar.css?v=revision32",
           "transferSize": 4842,
           "encodedBodySize": 4542,
-          "duration": 2.5
+          "duration": 2.899999998509884
         },
         {
           "url": "/imperial-missions-v31.css?v=revision34",
           "transferSize": 13445,
           "encodedBodySize": 13145,
-          "duration": 4.400000002235174
+          "duration": 4.899999998509884
         },
         {
           "url": "/clan-vault-v35.css?v=revision35",
           "transferSize": 13130,
           "encodedBodySize": 12830,
-          "duration": 4.899999998509884
+          "duration": 5.699999995529652
         },
         {
           "url": "/imperial-missions-v31.js?v=revision38-mobile",
           "transferSize": 25020,
           "encodedBodySize": 24720,
-          "duration": 8.100000001490116
-        },
-        {
-          "url": "/clan-equipment-v35.js?v=revision35",
-          "transferSize": 12527,
-          "encodedBodySize": 12227,
-          "duration": 8.099999997764826
+          "duration": 8.299999997019768
         },
         {
           "url": "/ludus-level-v37.js?v=revision37.1",
           "transferSize": 7239,
           "encodedBodySize": 6939,
-          "duration": 8.199999999254942
+          "duration": 5.700000002980232
+        },
+        {
+          "url": "/clan-equipment-v35.js?v=revision35",
+          "transferSize": 12527,
+          "encodedBodySize": 12227,
+          "duration": 12
         },
         {
           "url": "/clan-vault-v35.js?v=revision38-mobile",
           "transferSize": 16074,
           "encodedBodySize": 15774,
-          "duration": 8.099999997764826
+          "duration": 13.900000005960464
         },
         {
           "url": "/owner-gait-v30.js?v=revision30",
           "transferSize": 714,
           "encodedBodySize": 414,
-          "duration": 4.699999999254942
-        },
-        {
-          "url": "/owner-avatar.js?v=revision38-mobile",
-          "transferSize": 18259,
-          "encodedBodySize": 17959,
-          "duration": 4.800000000745058
+          "duration": 2.1999999955296516
         },
         {
           "url": "/ludus-settings-v29.js?v=revision30",
           "transferSize": 2143,
           "encodedBodySize": 1843,
-          "duration": 6.099999997764826
+          "duration": 5.200000002980232
         },
         {
-          "url": "/ludus-city-v29.js?v=revision30",
-          "transferSize": 4696,
-          "encodedBodySize": 4396,
-          "duration": 6.100000001490116
+          "url": "/owner-avatar.js?v=revision38-mobile",
+          "transferSize": 18259,
+          "encodedBodySize": 17959,
+          "duration": 5.300000004470348
         },
         {
-          "url": "/rome-insula-v30.glb?v=revision30",
-          "transferSize": 2931500,
-          "encodedBodySize": 2931200,
-          "duration": 1846.300000000745
+          "url": "/ludus-city-v29.js?v=revision39",
+          "transferSize": 8194,
+          "encodedBodySize": 7894,
+          "duration": 7.700000002980232
         },
         {
-          "url": "/rome-forum-v30.glb?v=revision30",
-          "transferSize": 2440268,
-          "encodedBodySize": 2439968,
-          "duration": 1857
-        },
-        {
-          "url": "/rome-temple-v30.glb?v=revision30",
-          "transferSize": 1176416,
-          "encodedBodySize": 1176116,
-          "duration": 137.19999999925494
-        },
-        {
-          "url": "/rome-gateway-v30.glb?v=revision30",
-          "transferSize": 3988360,
-          "encodedBodySize": 3988060,
-          "duration": 1866.9000000022352
-        },
-        {
-          "url": "/colosseum-city-v29.glb?v=revision30",
-          "transferSize": 5560644,
-          "encodedBodySize": 5560344,
-          "duration": 2970.800000000745
-        },
-        {
-          "url": "/pantheon-city-v29.glb?v=revision30",
-          "transferSize": 3205260,
-          "encodedBodySize": 3204960,
-          "duration": 1872.1000000014901
+          "url": "/assets/city/rome-backdrop-v39.json?v=revision39",
+          "transferSize": 40107,
+          "encodedBodySize": 39807,
+          "duration": 3
         },
         {
           "url": "/assets/textures/brown_leather-nor_gl-3e1524121f58.webp",
           "transferSize": 65148,
           "encodedBodySize": 64848,
-          "duration": 405.6000000014901
+          "duration": 4.5
         },
         {
           "url": "/assets/textures/brown_leather-rough-db921d8e689c.webp",
           "transferSize": 108920,
           "encodedBodySize": 108620,
-          "duration": 413.69999999925494
+          "duration": 6.4000000059604645
         },
         {
           "url": "/assets/textures/sand_01-diff-8aecb3769d72.webp",
           "transferSize": 71756,
           "encodedBodySize": 71456,
-          "duration": 419.8999999985099
+          "duration": 8.5
         },
         {
           "url": "/assets/textures/sand_01-nor_gl-6616ebcba18d.webp",
           "transferSize": 100928,
           "encodedBodySize": 100628,
-          "duration": 423
+          "duration": 11.600000001490116
         },
         {
           "url": "/assets/textures/sand_01-rough-a75cb02d64ea.webp",
           "transferSize": 22824,
           "encodedBodySize": 22524,
-          "duration": 424.3999999985099
+          "duration": 11.5
         },
         {
           "url": "/assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp",
           "transferSize": 66022,
           "encodedBodySize": 65722,
-          "duration": 426.69999999925494
-        },
-        {
-          "url": "/assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp",
-          "transferSize": 44492,
-          "encodedBodySize": 44192,
-          "duration": 428.5
+          "duration": 15.700000002980232
         },
         {
           "url": "/assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp",
           "transferSize": 41118,
           "encodedBodySize": 40818,
-          "duration": 430.0999999977648
+          "duration": 8.299999997019768
+        },
+        {
+          "url": "/assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp",
+          "transferSize": 44492,
+          "encodedBodySize": 44192,
+          "duration": 16
         },
         {
           "url": "/assets/textures/wooden_gate-diff-67741a5af1f9.webp",
           "transferSize": 19086,
           "encodedBodySize": 18786,
-          "duration": 431.19999999925494
+          "duration": 16.100000001490116
         },
         {
           "url": "/assets/textures/wooden_gate-nor_gl-9c9095cd8a7d.webp",
           "transferSize": 14394,
           "encodedBodySize": 14094,
-          "duration": 432.3999999985099
+          "duration": 17
         },
         {
           "url": "/assets/textures/wooden_gate-rough-f62304f04b81.webp",
           "transferSize": 37876,
           "encodedBodySize": 37576,
-          "duration": 433.8999999985099
+          "duration": 16.900000005960464
         },
         {
           "url": "/assets/textures/white_plaster_02-diff-6aa57de97b10.webp",
           "transferSize": 35752,
           "encodedBodySize": 35452,
-          "duration": 435.5
+          "duration": 17.5
         },
         {
           "url": "/assets/textures/white_plaster_02-nor_gl-dcd2b93a4cbb.webp",
           "transferSize": 29574,
           "encodedBodySize": 29274,
-          "duration": 436.9000000022352
+          "duration": 20.5
         },
         {
           "url": "/assets/textures/white_plaster_02-rough-1e05c5521169.webp",
           "transferSize": 7526,
           "encodedBodySize": 7226,
-          "duration": 437.9000000022352
+          "duration": 20.600000001490116
         },
         {
           "url": "/assets/textures/stone_wall_02-diff-978ee90ff99a.webp",
           "transferSize": 34926,
           "encodedBodySize": 34626,
-          "duration": 439.4000000022352
+          "duration": 20.5
         },
         {
           "url": "/assets/textures/stone_wall_02-nor_gl-280beb967583.webp",
           "transferSize": 108442,
           "encodedBodySize": 108142,
-          "duration": 442.5
+          "duration": 22.899999998509884
         },
         {
           "url": "/assets/textures/stone_wall_02-rough-0d9b4ef4bd03.webp",
           "transferSize": 14090,
           "encodedBodySize": 13790,
-          "duration": 443.6000000014901
+          "duration": 22.69999999552965
         },
         {
           "url": "/rome-sky-v29.jpg?v=revision30",
           "transferSize": 441654,
           "encodedBodySize": 441354,
-          "duration": 454.3999999985099
+          "duration": 33.100000001490116
         },
         {
           "url": "/owner-skin-light-v27.jpg?v=revision28",
           "transferSize": 135215,
           "encodedBodySize": 134915,
-          "duration": 458.5999999977648
+          "duration": 36.099999994039536
         },
         {
           "url": "/owner-skin-dark-v27.jpg?v=revision28",
           "transferSize": 107598,
           "encodedBodySize": 107298,
-          "duration": 462.19999999925494
+          "duration": 38.5
         },
         {
           "url": "/owner-makehuman-v27.glb?v=revision28",
           "transferSize": 21411312,
           "encodedBodySize": 21411012,
-          "duration": 1664.699999999255
+          "duration": 857.6999999955297
+        },
+        {
+          "url": "/assets/city/rome-backdrop-87af8072b91e.webp",
+          "transferSize": 2132960,
+          "encodedBodySize": 2132660,
+          "duration": 547.5
         },
         {
           "url": "/owner-run-v30.glb?v=revision30",
           "transferSize": 53232,
           "encodedBodySize": 52932,
-          "duration": 467.8999999985099
+          "duration": 542.7000000029802
         },
         {
           "url": "/assets/equipment/gladiator-9bcb0ac9d566.glb",
           "transferSize": 447544,
           "encodedBodySize": 447244,
-          "duration": 477.69999999925494
+          "duration": 552.7000000029802
         },
         {
           "url": "/assets/equipment/knights-e30cc69af0fd.glb",
           "transferSize": 612724,
           "encodedBodySize": 612424,
-          "duration": 468.6000000014901
+          "duration": 570.6999999955297
         },
         {
           "url": "/assets/equipment/winged-111637d14990.glb",
           "transferSize": 520856,
           "encodedBodySize": 520556,
-          "duration": 16.399999998509884
+          "duration": 583.2000000029802
         },
         {
           "url": "/assets/equipment/roman-6d187d4b7f8c.glb",
           "transferSize": 601412,
           "encodedBodySize": 601112,
-          "duration": 40.900000002235174
+          "duration": 632.3000000044703
         },
         {
           "url": "/assets/equipment/gladiator_chest-e2f685b66fb6.glb",
           "transferSize": 1212396,
           "encodedBodySize": 1212096,
-          "duration": 69.30000000074506
+          "duration": 614.5
         },
         {
           "url": "/assets/equipment/chest_plate-6376ad0c8654.glb",
           "transferSize": 263828,
           "encodedBodySize": 263528,
-          "duration": 73.90000000223517
+          "duration": 637.1000000014901
         },
         {
           "url": "/assets/equipment/armor_shoulder-c17b1581ca44.glb",
           "transferSize": 512296,
           "encodedBodySize": 511996,
-          "duration": 89.10000000149012
+          "duration": 651.5999999940395
         },
         {
           "url": "/assets/equipment/shoulder_armor-a71778444187.glb",
           "transferSize": 251976,
           "encodedBodySize": 251676,
-          "duration": 95.89999999850988
+          "duration": 845.1000000014901
         },
         {
           "url": "/roman_scutum_shield.glb",
           "transferSize": 4394388,
           "encodedBodySize": 4394088,
-          "duration": 540.1000000014901
+          "duration": 848.5
         },
         {
           "url": "/roman_shield.glb",
           "transferSize": 2941388,
           "encodedBodySize": 2941088,
-          "duration": 253.30000000074506
+          "duration": 802.0999999940395
         },
         {
           "url": "/roman_spatha.glb",
           "transferSize": 1943172,
           "encodedBodySize": 1942872,
-          "duration": 535.2999999970198
+          "duration": 840
         },
         {
           "url": "/gladiator-mobile.glb",
           "transferSize": 11909216,
           "encodedBodySize": 11908916,
-          "duration": 580
+          "duration": 1230
         }
       ],
       "renderer": {
-        "geometries": 106,
-        "textures": 56,
-        "calls": 111,
-        "triangles": 465434
+        "geometries": 74,
+        "textures": 73,
+        "calls": 33,
+        "triangles": 230076
       }
     },
     "office": {
@@ -1198,22 +1150,22 @@
       "after-clan.png"
     ],
     "errors": [],
-    "sourceStartupBytes": 69397160
+    "sourceStartupBytes": 52272477
   },
   "comparison": {
-    "savedSourceBytes": 22246932,
+    "savedSourceBytes": 39371615,
     "visual": {
       "courtyard": {
-        "meanAbsoluteChannelDifference": 0.6522846032324705,
-        "fractionPixelsDifferenceAbove16": 0.008813343055049216
+        "meanAbsoluteChannelDifference": 0.08663972941224125,
+        "fractionPixelsDifferenceAbove16": 0.0016375015190181067
       },
       "office": {
-        "meanAbsoluteChannelDifference": 0.6755529225908373,
-        "fractionPixelsDifferenceAbove16": 0.01044476850164054
+        "meanAbsoluteChannelDifference": 0.15919714829667436,
+        "fractionPixelsDifferenceAbove16": 0.0033995625227852717
       },
       "clan": {
-        "meanAbsoluteChannelDifference": 0.5162919755336817,
-        "fractionPixelsDifferenceAbove16": 0.006881152023332118
+        "meanAbsoluteChannelDifference": 0.07334427026370155,
+        "fractionPixelsDifferenceAbove16": 0.0014612954186413903
       }
     }
   }

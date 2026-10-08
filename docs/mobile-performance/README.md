@@ -1,6 +1,6 @@
 # Mobile loading investigation
 
-Baseline: `af08a6a` (including the two courtyard clan banners). The proposed changes preserve the original GLB/image bytes, materials, geometry, equipment fitting, owner appearance choices and gameplay rules.
+Baseline: `af08a6a` (including the two courtyard clan banners). Owner/equipment GLB/image bytes, materials, geometry, fitting, appearance choices and gameplay rules are preserved. The distant city uses image cards baked from its original models/materials; the complete [city comparison](../city-performance/README.md) covers projection differences and the original 3D fallback.
 
 ## What is actually requested
 
@@ -10,7 +10,7 @@ In the authenticated Ludus fixture, the browser requests:
 
 - `owner-makehuman-v27.glb`, `owner-run-v30.glb`, and both owner skin JPEGs. All appearance variants/morphs are still in the owner GLB, including currently hidden hair and facial-hair meshes.
 - `gladiator-mobile.glb`, plus `roman_scutum_shield.glb`, `roman_shield.glb` and `roman_spatha.glb`. These three equipment templates currently load for every nonempty roster, including when some are unequipped.
-- Six city GLBs: insula, forum, temple, gateway, city Colosseum and Pantheon; the sky JPEG and architectural PBR maps. The city Colosseum is a **different asset** from the arena's `Colosseum.glb`.
+- Originally six city GLBs: insula, forum, temple, gateway, city Colosseum and Pantheon. These now load only in the 3D fallback; the default city downloads a small manifest and one lossless WebP atlas, with 143 spatial image cards. The sky JPEG and courtyard/ground PBR maps remain. The city Colosseum is a **different asset** from the arena's `Colosseum.glb`.
 - Previously: arena `Colosseum.glb` from the gladiator loader's idle prefetch, the desk, wardrobe, daily book and clan chest during boot. Room models now load on first room entry; the arena model waits for arena/battle navigation.
 - Previously: four helmets, four armours, PBR maps and several UI thumbnails were downloaded as base64 **inside each of four HTML documents**. They are now shared files with SHA-256-derived names. PBR maps load when their materials are created; UI thumbnails load when used. An empty roster now skips the gladiator/equipment pipeline entirely.
 
@@ -22,13 +22,13 @@ The measurement uses real HTTP requests, original models/textures and the comple
 
 | Cold authenticated Ludus | Before | After |
 | --- | ---: | ---: |
-| Requested source payload | 87.40 MiB | 66.18 MiB |
+| Requested source payload | 87.40 MiB | 49.85 MiB |
 | `ludus.html` source | 8.00 MiB | 1.34 MiB |
 | Arena GLB at boot | 15.09 MiB | 0 |
 | Room GLBs at boot | 4.46 MiB | 0 |
-| Geometry/draw work at QA view | 465,434 triangles / 111 calls | 465,434 triangles / 111 calls |
+| City model / backdrop source | 18.41 MiB | 2.07 MiB |
 
-The reduction is **21.22 MiB (24.3%)** in the uncompressed fixture. These are observed resource bytes, not a claim about production wire transfer, iPhone startup time, frame rate, or GPU memory. Production HTTP compression, cache eviction, device, connection and roster size change the totals/timings. The individual local timings in `measurement.json` are single runs under Chromium/SwiftShader and should not be treated as device benchmarks. The cold HTTP request count increases from 32 to 52 as inline data becomes separately cacheable resources; cellular latency and HTTP multiplexing still need device validation.
+The reduction is **37.55 MiB (43.0%)** in the uncompressed fixture. The first shared-asset/lazy-room step reduced startup to 66.18 MiB; the subsequent city backdrop removes another 16.33 MiB from the complete startup trace. These are observed resource bytes, not a claim about production wire transfer, iPhone startup time, frame rate, or GPU memory. Production HTTP compression, cache eviction, device, connection and roster size change the totals/timings. The individual local timings in `measurement.json` are single runs under Chromium/SwiftShader and should not be treated as device benchmarks. Cellular latency and HTTP multiplexing still need device validation; extracted inline resources become separate, cacheable requests.
 
 The owner GLB also uses the existing validated persistent cache in Ludus; the fixture's reload does not fetch it again. Standalone login/appearance preview pages retain their existing loader fallback. Cache Storage failures retain the network path.
 
@@ -51,7 +51,7 @@ Counts below are unique source primitive triangles, not total visible triangles 
 | `roman_shield.glb` | 2.80 | 1,246 | 2.73 | 16.00 |
 | `imperial-desk-v31.glb` | 3.08 | 3,698 | 2.83 | 16.00 |
 
-The owner contains 104 morph targets across primitives; reducing or merging this geometry must preserve all appearance controls, skinning and animation. The gladiator texture payload is 7.11 MiB of its 11.36 MiB file. The large shield files are almost entirely textures, so geometry-only compression will have little effect on them. The two distant monuments retain 227,005 source triangles together. They are good LOD candidates, but no simplification was applied without silhouette/material comparisons and device profiling.
+The owner contains 104 morph targets across primitives; reducing or merging this geometry must preserve all appearance controls, skinning and animation. The gladiator texture payload is 7.11 MiB of its 11.36 MiB file. The large shield files are almost entirely textures, so geometry-only compression will have little effect on them. The two distant monuments retain 227,005 source triangles together in the authored GLBs. The default skyline now uses the verified spatial backdrop; the original geometry remains in the repository for offline baking and fallback.
 
 ## Compression decisions
 
@@ -62,7 +62,7 @@ The owner contains 104 morph targets across primitives; reducing or merging this
 | Meshopt | Covers geometry, morphs and animation. Default glTF Transform pipelines reorder/quantize; verify error, bind pose, all owner morphs and combat clips. Requires a matching decoder and delivery compression | Evaluated; decoder not wired |
 | Draco | Geometry-oriented; does not replace texture compression or reduce triangle/draw counts. Requires a matching decoder and decode-time checks | Evaluated; decoder not wired |
 | KTX2/Basis | Targets GPU texture storage as well as transfer. Test UASTC for normals/alpha/detail and ETC1S for suitable colour maps; preserve sRGB vs linear maps and mip behaviour | Evaluated; needs transcoder and iPhone quality/support tests |
-| Distant city LOD / loadout-specific equipment | Can reduce rendered geometry or avoid unused shield/helmet/armour work | Follow-up; visible silhouettes/equipment changes need dedicated tests |
+| Spatial city backdrop / loadout-specific equipment | Baked city cards retain approximate depth/parallax within the bounded courtyard; loadout-specific assets can avoid unused equipment | City cards applied after 27 visual comparisons; loadout-specific equipment remains follow-up |
 
 Primary references: [glTF Transform Meshopt](https://gltf-transform.dev/modules/extensions/classes/EXTMeshoptCompression), [Three.js GLTFLoader](https://threejs.org/docs/pages/GLTFLoader.html), [Three.js KTX2Loader](https://threejs.org/docs/pages/KTX2Loader.html), [Three.js DRACOLoader](https://threejs.org/docs/pages/DRACOLoader.html). The embedded loader is r160; a production codec integration must use compatible, version-pinned loaders/decoders. File compression alone does not establish a frame-rate improvement.
 
@@ -71,7 +71,8 @@ Primary references: [glTF Transform Meshopt](https://gltf-transform.dev/modules/
 - `tests/mobile-assets.test.cjs`: verifies every extracted SHA-256/size/container, common paths on all four pages, and (with `BASELINE_ROOT`) exact identity to prior embedded resources.
 - `tests/mobile-login.cjs`: traces anonymous launch and checks that no GLB loads.
 - `tests/mobile-loading.cjs`: captures cold/reload/room network phases, compares courtyard/office/clan images and colliders, opens the dual inventory, checks book loading and no room re-downloads, and verifies the owner cache on reload.
-- Existing combat, equipment, city/camera and owner suites: 37 checks; the asset suite adds three, all passing.
+- Existing combat, equipment, city/camera and owner suites: 37 checks; shared assets add three and the city atlas adds two, all **42 passing**.
+- The city browser comparison verifies 24 playable poses, three exposed-skyline diagnostic views, synchronized rendering/readback cost, unchanged colliders/boundaries and the missing-atlas 3D fallback.
 - Existing multiplayer V36 integration passes eight viewport sizes, real Colosseum rendering, all five swipe regions, two-player damage, lost-response retry, held guard, dodge and portrait gating.
 - Existing clan-room integration verifies chest collision, no tunnelling, walking around furniture, both inventories, movement resumption and stale colliders. Existing level-office integration verifies appearance entry, level arrows, collision and closing resumption.
 
@@ -97,6 +98,6 @@ Set `CHROMIUM_EXECUTABLE_PATH` for a system Chromium; browser tests fall back to
 | Office | [PNG](before-office.png) | [PNG](after-office.png) |
 | Clan room | [PNG](before-clan.png) | [PNG](after-clan.png) |
 
-All three screenshot pairs passed the pixel-difference budget (mean absolute channel difference below 2/255); small idle-animation differences remain. Resource byte identity provides the stronger check for unchanged image/geometry quality. Auth/backend responses are fixtures, not a live account/backend regression claim.
+All three screenshot pairs passed the pixel-difference budget (mean absolute channel difference below 2/255, observed maximum 0.1592); small idle-animation differences remain. Resource byte identity provides the stronger check for unchanged owner/equipment quality; distant image cards are covered by the separate 27-view test. The updated fixture CSP allows GLTF `blob:`/`data:` texture decoding. Auth/backend responses are fixtures, not a live account/backend regression claim.
 
 **Physical iPhone performance remains unmeasured.** Device validation should cover cold and warm launch on the same connection, first room entry, appearance options, equipped combat, sustained frame time and Safari memory pressure. No publish, merge, SQL or backend change is included.
