@@ -102,3 +102,9 @@ The V50 paired wooden-rudis test is now connected to real one-hour training sess
 Apply `supabase/migrations/20261009040911_targeted_training_v51.sql` after V46. It changes only training settlement: chosen-stat growth stays isolated at the cap and after mixed battle/training days. Existing match/mission growth, fatigue, injury rolls, one-hour training/rest, daily caps and retry protection are preserved.
 
 Validation: `tests/targeted-training-v51.cjs` runs all seven targets, cap and mixed-day cases in actual PostgreSQL/PGlite. `tests/training-yard-v51.cjs` verifies the real courtyard and detail UI, solo instructor, 30 trainees, equipment restoration and off-camera culling with isolated account fixtures. `tests/training-preview-v51.cjs` checks every preview, viewport fit, no account requests, and same-scene frame measurements for 2/12/30 models. Use the existing PGlite/Playwright environment variables.
+
+# Dining room V53
+
+Two facing A-frame table/bench sets leave the entrance and central aisle clear. A cauldron and preparation table occupy the rear-left corner. Two ready shelf models form the rear-right pantry, holding grain sacks, wine barrel, ham and an apple crate, with two hanging fish. Foods are decorative; this revision adds no inventory consumption or morale rules.
+
+The shared `assets/dining/dining-kit-v53.glb` is 398,500 bytes, loaded only on dining room entry and reused on subsequent visits. Ready CC0 geometry from Kenney and Quaternius replaces the former generic dining furniture; see `DINING_ASSETS.md`. `tests/dining-room-v53.cjs` verifies delayed-load cancellation, model counts, shelf placement, furniture collisions, the entrance/aisle, one download across repeated visits and browser errors with an isolated account fixture.
