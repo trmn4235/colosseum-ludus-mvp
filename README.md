@@ -93,6 +93,8 @@ Validation: `tests/gladiator-exercise-v46.cjs` runs actual migration/functions/t
 
 # Courtyard training V51
 
+V52 equipment placement follows the rear-right corner toward the arena gate: two posts at x=11.6/9.9, centred paired rudis piles at x=6.9, and three equally spaced shoulder beams at x=4.35/2.4/0.45. The wall-side line is z=-10.55; the gate approach stays clear. Displayed rudis count follows the signed-in roster, including odd counts and roster changes. Speed trainees share the two fixed posts in two rotating queues; the courtyard never adds extra practice posts. The isolated V50 test retains its original equipment layout.
+
 The V50 paired wooden-rudis test is now connected to real one-hour training sessions in Ludus. Attack technique, defense technique and tactics share the approved paired motion; each fighter keeps their own server-selected target. An odd participant practices with one visual instructor that receives no session, fatigue or stat award. Conditioning uses a shoulder timber carry, muscle uses shoulder-timber squats, and speed uses rapid rudis strikes against a wooden post. Practice props and the existing rig share geometry; no new GLBs or large image assets load. Hidden and off-camera rigs stop animating. Completed training removes practice equipment and restores the fighter's owned loadout.
 
 `training-preview-v51.html` shows all motions with the same real model/courtyard, plus an explicitly labeled swinging-bag reflex draft. The reflex draft remains out of the live courtyard. Preview and performance measurement never call account or award endpoints. `training-test-v50.html` retains the original paired experiment. Desktop headless FPS is not an iPhone benchmark.
