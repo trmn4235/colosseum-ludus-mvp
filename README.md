@@ -108,3 +108,7 @@ Validation: `tests/targeted-training-v51.cjs` runs all seven targets, cap and mi
 Two facing A-frame table/bench sets leave the entrance and central aisle clear. A cauldron and preparation table occupy the rear-left corner. Two ready shelf models form the rear-right pantry, holding grain sacks, wine barrel, ham and an apple crate, with two hanging fish. Foods are decorative; this revision adds no inventory consumption or morale rules.
 
 The shared `assets/dining/dining-kit-v53.glb` is 398,500 bytes, loaded only on dining room entry and reused on subsequent visits. Ready CC0 geometry from Kenney and Quaternius replaces the former generic dining furniture; see `DINING_ASSETS.md`. `tests/dining-room-v53.cjs` verifies delayed-load cancellation, model counts, shelf placement, furniture collisions, the entrance/aisle, one download across repeated visits and browser errors with an isolated account fixture.
+
+## Dining room correction V54
+
+Each bench faces its own table. Replace the ham and fish with ready KayKit/Quaternius models at readable proportions: two bone-in hams, four hanging mackerel and four grain sacks on the rear pantry. Centre two beer barrels on the right pantry's upper shelf, with two apple crates directly below. V54 uses a new cache-safe 412,984-byte bundle; the V53 bundle is retained for older cached clients. The dining browser check also verifies bench orientation, exact food counts and matching barrel/crate columns.

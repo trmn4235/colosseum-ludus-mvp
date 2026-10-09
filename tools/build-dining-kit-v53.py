@@ -4,8 +4,8 @@ from PIL import Image
 source=pathlib.Path(sys.argv[1]); destination=pathlib.Path(sys.argv[2])
 models={
  'table':'packs/furniture-kit/tablecross.glb','bench':'packs/furniture-kit/bench.glb',
- 'apples':'apple-crate.glb','fish':'packs/food-kit/fish.glb',
- 'meat':'packs/food-kit/whole-ham.glb','barrel':'packs/food-kit/barrel.glb',
+ 'apples':'apple-crate.glb','fish':'mackerel.glb',
+ 'meat':'ham.glb','barrel':'packs/food-kit/barrel.glb',
  'bowl':'packs/food-kit/bowl-broth.glb','sack':'bag.glb','cauldron':'cauldron.glb','shelf':'packs/furniture-kit/bookcaseopen.glb'}
 out={'asset':{'version':'2.0','generator':'Ludus dining V53: ready Kenney/Quaternius models'},'scene':0,'scenes':[{'nodes':[]}],'nodes':[],'meshes':[],'accessors':[],'bufferViews':[],'materials':[],'textures':[],'images':[],'samplers':[]}; binary=bytearray(); images={}; materials={}; report=[]
 def append(data,target=None):
