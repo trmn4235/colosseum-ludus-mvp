@@ -10,6 +10,7 @@ const near=(a,b,t=.00001)=>assert.ok(Math.abs(Number(a)-Number(b))<t,`${a} ≈ $
  await db.query('insert into public.ludus_accounts(user_id)values($1),($2)',[owner,other]);
  await db.query("insert into public.ludus_gladiators(owner_id,name,class,overall)values($1,'Önceki eğitim','murmillo',63)",[owner]);
  await db.exec(fs.readFileSync(root+'/supabase/migrations/'+migration,'utf8'));
+ const targeted=fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_targeted_training_v51.sql'));if(targeted)await db.exec(fs.readFileSync(root+'/supabase/migrations/'+targeted,'utf8'));
  near((await db.query("select overall from public.ludus_gladiators where name='Önceki eğitim'")).rows[0].overall,63);
  await db.exec('create trigger test_new_gladiator before insert on public.ludus_gladiators for each row execute function ludus_private.v7_new_gladiator()');
  await db.query("select set_config('request.jwt.claim.sub',$1,false)",[owner]);
@@ -70,7 +71,7 @@ const near=(a,b,t=.00001)=>assert.ok(Math.abs(Number(a)-Number(b))<t,`${a} ≈ $
  await db.query("update ludus_private.exercise_events_v46 set started_at=now()-interval '20 seconds'where source_id=$1",[pvpID]);
  await db.query("update public.ludus_matches set status='finished'where id=$1",[pvpID]);assert.equal((await state()).gladiators.find(x=>x.id===pg.id).exercise_units,1);
  await db.query("update public.ludus_matches set status='finished'where id=$1",[pvpID]);assert.equal((await state()).gladiators.find(x=>x.id===pg.id).exercise_units,1);
- // Caps redistribute growth; no lost gains, no value above 100.
+ // General all-stat awards redistribute at caps; selected training has its own clamp.
  const capped=await db.query("select ludus_private.exercise_adjust_v46($1,3.5,'{\"muscle\":1}')as stats",[{...ui.profile('murmillo'),muscle:99}]);
  near(capped.rows[0].stats.muscle,100);near(ui.mean(capped.rows[0].stats),ui.mean({...ui.profile('murmillo'),muscle:99})+.5);
  for(const [overall,budget]of [[50,3.5],[60,2.8],[70,2.24],[80,3.5/2.34375],[90,3.5/3.515625]])near((await db.query('select ludus_private.exercise_budget_v46($1)as n',[overall])).rows[0].n,budget);
