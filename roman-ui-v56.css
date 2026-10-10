@@ -1,0 +1,45 @@
+/* Shared page interface: white surfaces, burgundy hierarchy, restrained gold. */
+:root{--roman-white:#fff;--roman-ink:#30232a;--roman-burgundy:#591823;--roman-gold:#b38b43;--roman-marble:linear-gradient(#fff,#faf9f6);--ui-white:#fff;--ui-ink:#30232a;--ui-muted:#74656c;--ui-burgundy:#591823;--ui-gold:#b38b43}
+body[data-roman-screen]:not([data-roman-screen="ludus"]):not([data-roman-screen="index"]):not([data-roman-screen="arena"]):not([data-roman-screen="multiplayer"]){background:#faf9f6!important;color:var(--ui-ink)!important}
+.game-shell{background:#faf9f6!important}
+.panel,.paper,.product,.quest-card,.daily-sidebar,.daily-bonus,.inspect-paper,.pouch,.friends-paper,.level-paper,.entry-panel,#appInstallHelp>div{background:#fff!important;background-image:none!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:0 4px 18px #59182312!important}
+.top,.statusbar,body[data-roman-screen="pazar"]>header,body[data-roman-screen="gorevler"]>header,.inspect-head,.pouch-head,.friends-head{background:var(--ui-burgundy)!important;color:#fff!important;border-color:var(--ui-gold)!important}
+.inspect-head h2,.pouch-head h2,.friends-head h2{color:#fff!important}
+.side{background:var(--ui-burgundy)!important;color:#fff!important;border-color:var(--ui-gold)!important}.side .active{background:#fff!important;color:var(--ui-burgundy)!important}
+.tabs button,.gem-tabs button,#categories button,.market-pager button{background:#fff!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important}
+.tabs button.active,.gem-tabs button.active,#categories button.active,.primary,.buy,#retry,.quest-action,#enter,#useGem{background:var(--ui-burgundy)!important;color:#fff!important;border-color:var(--ui-gold)!important}
+.art,.inspect-art,.equipment-icon,.item-picture,.fighter,.preview{background:#fff!important;border-color:var(--ui-gold)!important}.product h2,.panel h2,.paper h2,.price{color:var(--ui-burgundy)!important}.subtitle,.basic{color:var(--ui-muted)!important}
+#message{background:#fff!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important}
+#roomQuestPanel,#roomUpgradePanel,#roomClanPanel{background:#fff!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="pazar"] #categories{grid-template-columns:repeat(7,minmax(0,1fr))}
+#foodMealNote{font:clamp(10px,2.3dvh,14px)/1.35 Arial;color:var(--ui-muted);margin:0;flex:none}
+.market-food .art img{width:100%;height:100%;object-fit:contain;display:block}
+.food-detail{font:clamp(9px,2.1dvh,12px) Arial;color:var(--ui-muted);white-space:nowrap}
+.market-quantity{display:flex;align-items:center;justify-content:space-between;gap:5px;width:100%;font:clamp(9px,2dvh,12px) Arial;color:var(--ui-muted)}
+.market-quantity input{width:65px;max-width:42%;min-width:35px;border:1px solid var(--ui-gold);border-radius:4px;background:#fff;color:var(--ui-ink);padding:3px;font:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--ui-gold);outline-offset:2px}
+@media(max-height:350px){.market-food{gap:2px!important}.food-detail,.market-quantity{font-size:9px}.market-quantity input{padding:1px}}
+/* Food cards reserve a visible illustration even on short landscape screens. */
+.market-food{display:grid!important;grid-template-columns:40% minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr)) auto auto;align-items:center!important;column-gap:5px!important}
+.market-food .art{grid-column:1;grid-row:1/4;height:100%;min-height:40px;align-self:stretch;border:0!important;box-shadow:none!important}
+.market-food h2,.market-food .food-detail,.market-food .price{grid-column:2;width:100%;text-align:left;white-space:normal;line-height:1.15}
+.market-food .market-quantity,.market-food .buy{grid-column:1/-1}
+#ludusMessages{background:#fff!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important}
+#ludusMessages .message-bubble,#ludusMessages .messages-conversations button{background:#faf9f6;color:var(--ui-ink)}
+#ludusMessages .message-bubble.mine,#ludusMessages .messages-conversations button[aria-pressed=true]{background:var(--ui-burgundy);color:#fff}
+.level-head{background:var(--ui-burgundy);color:#fff;padding:8px;border-color:var(--ui-gold)}.level-head p{color:#e4c77b}.level-summary,.level-table-area{background:#fff}.level-table th{color:var(--ui-burgundy)}
+.market-food{grid-template-rows:auto auto auto auto auto!important}
+.market-food h2{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;font-size:clamp(11px,2.7dvh,17px)!important}
+.market-food .food-detail{font-size:clamp(8px,1.9dvh,11px);line-height:1.2}.market-food .price{font-size:clamp(9px,2.2dvh,14px);line-height:1.2}
+/* Shared surfaces inside Ludus page-like overlays. */
+.imperial-paper,.inventory-panel,.clan-vault-frame,.clan-vault-panel,.exercise-summary,.exercise-details,.exercise-item,.exercise-others,.exercise-roster-card{background:#fff!important;background-image:none!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:0 4px 18px #59182312!important}
+#orders>.exercise-panel{background:#faf9f6!important;color:var(--ui-ink)!important}.exercise-panel:before{background:none!important}.exercise-top,.imperial-head,.clan-vault-belt{background:var(--ui-burgundy)!important;color:#fff!important;border-color:var(--ui-gold)!important}
+.exercise-item small,.exercise-item>span{color:var(--ui-burgundy)!important}.exercise-attribute.selected,.exercise-roster-card.selected{background:#f6edf0!important}
+.clan-vault-heading h1,.clan-vault-heading p,.clan-vault-panel h2{color:var(--ui-burgundy)!important}.clan-vault-frame,.clan-vault-panel{color:var(--ui-ink)!important}
+.clan-vault-slots{background:#faf9f6!important;border-color:var(--ui-gold)!important}.clan-vault-slot{background:#fff!important;color:var(--ui-ink)!important;border-color:#b38b4355!important}
+.clan-vault-note,.clan-vault-status{color:var(--ui-muted)!important}
+.clan-vault-belt h2{color:#fff!important}.clan-vault-count{color:#fff!important}
+.clan-vault-treasury{background:#faf9f6!important;border-color:var(--ui-gold)!important;color:var(--ui-ink)!important}
+.clan-vault-balance,.clan-vault-wallet-note,.clan-vault-selection,.clan-vault-iteminfo{color:var(--ui-muted)!important}.clan-vault-balance strong{color:var(--ui-burgundy)!important}
+.clan-vault-amount{background:#fff!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important}
+.clan-vault-transfer,.clan-vault-donation,.clan-vault-page button{background:var(--ui-burgundy)!important;color:#fff!important;border-color:var(--ui-gold)!important}

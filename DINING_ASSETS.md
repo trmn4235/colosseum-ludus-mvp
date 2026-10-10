@@ -29,3 +29,7 @@ python tools/build-dining-kit-v53.py /path/to/sources assets/dining/dining-kit-v
 ## V55 pantry thumbnails
 
 The stock cards use ready model-preview PNGs from the same pinned CC0 mirror above: Bag, FarmCrate_Apple, Kenney barrel, KayKit food_ingredient_ham and Quaternius Prop_Fish_Mackerel. Five 256px thumbnails total 13591 bytes; no additional 3D assets are loaded for the supply panel.
+
+## V56 interface icons
+
+`assets/dining/icons/*-v56.svg` are five original SVG illustrations created for this project: grain, apple, fish, bone-in ham and beer. Dining and market use them instead of V55 thumbnails, with no external bitmap or font download.

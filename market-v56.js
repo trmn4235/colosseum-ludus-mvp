@@ -1,0 +1,36 @@
+(()=>{
+ const $=id=>document.getElementById(id),client=supabase.createClient(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey),storageKey='ludus-pending-purchase-v2';
+ const categories=['Silahlar','Kalkanlar','Miğferler','Göğüs Zırhı','Omuzluk','Bacaklık','Gıda'];
+ let catalog=[],category=categories[0],owner=null,busy=true,pending=null,coins=0,productPage=0,foodState=null; 
+ globalThis.LudusNavigation?.register(()=>({category,productPage}));
+ function balance(){ $('balance').textContent='◉ '+coins+' denarius'; }
+ function message(text){$('message').textContent=text;}
+ function render(){
+  $('categories').replaceChildren();for(const c of categories){const b=document.createElement('button');b.textContent=c;b.className=c===category?'active':'';b.setAttribute('aria-pressed',String(c===category));b.onclick=()=>{category=c;productPage=0;render();};$('categories').append(b);}
+  document.querySelector('.subtitle').textContent=category==='Gıda'?'Erzak · Adetle alım · 1 adet, 1 gladyatör için bir porsiyon':'Başlangıç ekipmanları · Her ürün 100 denarius · +0, taşsız';const note=$('foodMealNote');note.hidden=category!=='Gıda';note.textContent=foodState?'1 öğün = 1 tahıl + 1 balık veya but · Elma ve bira ek porsiyondur. '+foodState.crew_count+' gladyatör / gün · Stok: '+foodState.menu.available_meals+' tam öğün ('+(foodState.menu.meal_days??0)+' gün).':'';
+  const products=catalog.filter(i=>i.category===category),pages=Math.max(1,Math.ceil(products.length/4));productPage=Math.min(productPage,pages-1);$('previousProducts').disabled=productPage===0;$('nextProducts').disabled=productPage===pages-1;$('productPage').textContent=(productPage+1)+' / '+pages;
+  $('products').replaceChildren();for(const item of products.slice(productPage*4,productPage*4+4)){const article=document.createElement('article');article.className='product';const art=document.createElement('div'),name=document.createElement('h2'),label=document.createElement('div'),price=document.createElement('div'),buy=document.createElement('button');art.className='art';if(item.kind==='food'){renderFood(item,article);$('products').append(article);continue;}art.innerHTML=LudusIcons.svg(item);art.setAttribute('role','button');art.tabIndex=0;art.setAttribute('aria-label',item.name+' özelliklerini incele');art.onclick=()=>LudusInspect.open(item,true);art.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();LudusInspect.open(item,true);}};name.textContent=item.name;label.className='basic';label.textContent='BASIC · +0 · İncele';price.className='price';price.textContent='100 denarius';buy.className='buy';buy.textContent='Satın al';buy.disabled=busy||!!pending||coins<100;buy.onclick=()=>purchase(item);article.append(art,label,name,price,buy);$('products').append(article);}
+ }
+ function renderFood(item,article){
+  article.classList.add('market-food');article.dataset.sku=item.sku;
+  const art=document.createElement('div'),image=document.createElement('img'),name=document.createElement('h2'),detail=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input'),price=document.createElement('div'),buy=document.createElement('button');
+  art.className='art';image.src='assets/dining/icons/'+item.sku+'-v56.svg';image.alt='';art.append(image);name.textContent=item.sku==='meat'?'But':item.name;name.title=item.name;detail.className='food-detail';detail.textContent='Stok '+item.quantity+' · '+item.daily+'/gün';
+  label.className='market-quantity';label.textContent='Adet';input.type='number';input.min='1';input.max='5000';input.step='1';input.inputMode='numeric';input.value=String(foodDrafts[item.sku]??1);input.setAttribute('aria-label',item.name+' adet');input.disabled=busy||!!pending;label.append(input);
+  price.className='price';price.textContent=item.price+' denarius / adet';buy.className='buy';
+  function update(){const q=Number(input.value);foodDrafts[item.sku]=input.value;const valid=Number.isInteger(q)&&q>=1&&q<=5000;buy.textContent=valid?'Al · '+(q*item.price)+' denarius':'Geçerli adet gir';buy.disabled=busy||!!pending||!valid||coins<q*item.price||item.quantity+q>50000;}
+  input.oninput=update;buy.onclick=()=>{const q=Number(input.value);if(!buy.disabled)purchase(item,q);};update();article.append(art,name,detail,price,label,buy);
+ }
+ const foodDrafts={};
+ function adoptFood(data){foodState=data;catalog=catalog.filter(i=>i.kind!=='food').concat(data.items.map(i=>({...i,kind:'food',category:'Gıda'})));}
+ $('previousProducts').onclick=()=>{productPage=Math.max(0,productPage-1);render();};$('nextProducts').onclick=()=>{productPage++;render();};
+ async function submit(){
+  if(!pending||busy)return;busy=true;render();$('retry').hidden=true;message('Satın alma kaydediliyor…');
+  try{const isFood=pending.kind==='food',r=await client.rpc(isFood?'ludus_food_buy':'ludus_buy_basic',isFood?{p_sku:pending.sku,p_quantity:pending.quantity,p_request:pending.request}:{p_sku:pending.sku,p_request:pending.request});if(r.error)throw r.error;coins=Number(r.data.gold);if(isFood)adoptFood(r.data);localStorage.removeItem(storageKey);pending=null;balance();message(isFood?'Gıda yemekhane erzağına eklendi.':'Eşya envanterine eklendi.');}
+  catch(e){if(e.code==='P0001'){pending=null;localStorage.removeItem(storageKey);}message('Satın alma tamamlanamadı: '+e.message);$('retry').hidden=!pending;}
+  finally{busy=false;render();}
+ }
+ function purchase(item,quantity){if(busy||pending)return;pending={owner,sku:item.sku,request:crypto.randomUUID(),...(item.kind==='food'?{kind:'food',quantity}:{})};try{localStorage.setItem(storageKey,JSON.stringify(pending));}catch{pending=null;message('Güvenli işlem kaydı oluşturulamadı. Tarayıcı depolamasını açıp tekrar dene.');return;}submit();}
+ async function load(){busy=true;message('Pazar hazırlanıyor…');try{const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');return;}owner=u.data.user.id;globalThis.LudusNavigation?.setOwner(owner);const restored=globalThis.LudusNavigation?.restore();if(categories.includes(restored?.category))category=restored.category;if(Number.isInteger(restored?.productPage)&&restored.productPage>=0)productPage=restored.productPage;const [a,c,f]=await Promise.all([client.from('ludus_accounts').select('gold').eq('user_id',owner).single(),client.from('ludus_shop_catalog').select('*').order('sku'),client.rpc('ludus_food_state')]);if(a.error||c.error||f.error)throw a.error||c.error||f.error;coins=Number(a.data.gold);catalog=c.data.map(it=>({...it,name:LudusArmourName(it)||(it.kind==='helmet'?LUDUS_HELMET_NAMES[it.model]:null)||it.name,category:it.kind==='gloves'?'Omuzluk':it.category}));adoptFood(f.data);coins=Number(f.data.gold);try{const saved=JSON.parse(localStorage.getItem(storageKey));if(saved?.owner===owner)pending=saved;}catch{}balance();message('');busy=false;render();if(pending)await submit();}
+  catch(e){message('Pazar yüklenemedi: '+e.message);$('retry').hidden=false;}finally{busy=false;}}
+ $('retry').onclick=()=>pending?submit():load();load();
+})();
