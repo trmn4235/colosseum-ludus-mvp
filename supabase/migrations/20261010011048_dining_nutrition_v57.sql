@@ -4,33 +4,33 @@ alter table public.ludus_food_catalog add column if not exists nutrition integer
 -- Preserve beer's internal SKU so pending requests and existing stock still work.
 update public.ludus_food_catalog set name='Şarap' where sku='beer';
 insert into public.ludus_food_catalog(sku,name,price,edible,sort_order,nutrition)
- values('egg','Yumurta',6,true,6,25),('bread','Ekmek',3,true,7,25),('meal','Hazır öğün',30,true,8,100)
+ values('egg','Yumurta',6,true,6,20),('bread','Ekmek',3,true,7,15),('meal','Hazır öğün',30,true,8,100)
 on conflict(sku)do update set name=excluded.name,price=excluded.price,nutrition=excluded.nutrition;
-update public.ludus_food_catalog set nutrition=case sku when 'grain' then 20 when 'apple' then 10 when 'fish' then 40 when 'meat' then 50 when 'egg' then 25 when 'bread' then 25 when 'meal' then 100 else 0 end;
+update public.ludus_food_catalog set nutrition=case sku when 'grain' then 20 when 'apple' then 15 when 'fish' then 25 when 'meat' then 30 when 'egg' then 20 when 'bread' then 15 when 'beer' then 5 when 'meal' then 100 else 0 end;
 insert into public.ludus_food_stock(owner_id,sku)select h.owner_id,c.sku from public.ludus_food_house h cross join public.ludus_food_catalog c on conflict(owner_id,sku)do nothing;
 create or replace function ludus_food_private.menu_v55(p_crew integer,p_items jsonb)
 returns jsonb language plpgsql immutable set search_path='' as $$
-declare goal integer:=greatest(0,p_crew)*20;paths jsonb[];scores integer[];
+declare target integer:=greatest(0,p_crew)*20;goal integer:=case when p_crew>0 then p_crew*20+19 else 0 end;paths jsonb[];scores integer[];
  entry jsonb;sku text;weight integer;remaining integer;chunk integer;take integer;j integer;
  candidate jsonb;score integer;types integer;groups integer;count_items integer;
- used integer:=0;wine integer:=0;served jsonb:='[]';available bigint:=0;group_coverage numeric:=0;
+ used integer:=0;wine integer:=0;served jsonb:='[]';available bigint:=0;group_coverage numeric:=0;coverage numeric:=0;
 begin
  -- Integer portions, five-unit steps, bounded knapsack: maximize nutrition
- -- without charging unused ingredients. Tie-break toward groups and variety.
+ -- with the smallest excess for indivisible portions. Prefer groups and variety at equal totals.
  paths:=array_fill(null::jsonb,array[goal+1]);scores:=array_fill(-1000000,array[goal+1]);
  paths[1]:='{}';scores[1]:=0;
  for entry in select value from jsonb_array_elements(p_items)loop
-  sku:=entry->>'sku';weight:=case sku when 'meat' then 10 when 'fish' then 8
-   when 'meal' then 20 when 'egg' then 5 when 'bread' then 5 when 'grain' then 4 when 'apple' then 2 else 0 end;
+  sku:=entry->>'sku';weight:=case sku when 'meat' then 6 when 'fish' then 5
+   when 'meal' then 20 when 'egg' then 4 when 'bread' then 3 when 'grain' then 4 when 'apple' then 3 when 'beer' then 1 else 0 end;
   available:=available+weight*5*(entry->>'quantity')::bigint;
   if weight=0 then continue;end if;
-  remaining:=least((entry->>'quantity')::integer,goal/weight);chunk:=1;
+  remaining:=least((entry->>'quantity')::integer,goal/weight);if sku='beer' then remaining:=least(remaining,p_crew);end if;chunk:=1;
   while remaining>0 loop
    take:=least(chunk,remaining);
    for j in reverse goal..weight*take loop
     if paths[j-weight*take+1]is not null then
      candidate:=jsonb_set(paths[j-weight*take+1],array[sku],to_jsonb(coalesce((paths[j-weight*take+1]->>sku)::integer,0)+take));
-     select count(*),count(distinct case key when 'grain' then 'staple' when 'bread' then 'staple'
+     select count(*),count(distinct case key when 'beer' then null when 'grain' then 'staple' when 'bread' then 'staple'
       when 'apple' then 'fruit' else 'protein' end),sum(value::integer)
      into types,groups,count_items from jsonb_each_text(candidate);
      if candidate?'meal' then groups:=3;end if;
@@ -41,23 +41,26 @@ begin
    remaining:=remaining-take;chunk:=chunk*2;
   end loop;
  end loop;
- for j in reverse goal..0 loop if paths[j+1]is not null then used:=j*5;candidate:=paths[j+1];exit;end if;end loop;
+ candidate:=null;
+ for j in target..goal loop if paths[j+1]is not null then used:=j*5;candidate:=paths[j+1];exit;end if;end loop;
+ if candidate is null then for j in reverse target..0 loop if paths[j+1]is not null then used:=j*5;candidate:=paths[j+1];exit;end if;end loop;end if;
  for entry in select value from jsonb_array_elements(p_items)loop
   sku:=entry->>'sku';
-  if sku='beer' then wine:=least((entry->>'quantity')::integer,used/100);take:=wine;
+  if sku='beer' then wine:=coalesce((candidate->>sku)::integer,0);take:=wine;
   else take:=coalesce((candidate->>sku)::integer,0);end if;
   served:=served||jsonb_build_array(jsonb_build_object('sku',sku,'quantity',take));
  end loop;
  if p_crew>0 then
   select least(3,coalesce(sum(least(1.0,n/p_crew)*case when g='complete' then 3 else 1 end),0))into group_coverage from
-  (select case key when 'meal' then 'complete' when 'grain' then 'staple' when 'bread' then 'staple' when 'apple' then 'fruit' else 'protein' end g,
-   sum(value::numeric)n from jsonb_each_text(candidate)group by 1)x;
+  (select case key when 'meal' then 'complete' when 'grain' then 'staple' when 'bread' then 'staple' when 'apple' then 'fruit' when 'beer' then null else 'protein' end g,
+   sum(value::numeric)n from jsonb_each_text(candidate)where key<>'beer' group by 1)x;
+  coverage:=least(1,used::numeric/(p_crew*100));
  end if;
  return jsonb_build_object('crew_count',p_crew,'daily_need',p_crew*100,'meal_size',50,'meals_per_day',2,
- 'units',used,'available_units',available,'missing_units',p_crew*100-used,'served',served,
- 'meals',used/50,'available_meals',available/50,'meal_days',case when p_crew>0 then available/(p_crew*100)end,
- 'coverage',case when p_crew>0 then round(used::numeric/p_crew,1)end,
- 'morale',case when p_crew>0 then round(least(100,70.0*used/(p_crew*100)+20.0/3*group_coverage*used/(p_crew*100)+10.0*wine/p_crew),1)end);
+ 'units',used,'available_units',available,'missing_units',greatest(0,p_crew*100-used),'extra_units',greatest(0,used-p_crew*100),'served',served,
+ 'meals',least(p_crew*2,used/50),'available_meals',available/50,'meal_days',case when p_crew>0 then available/(p_crew*100)end,
+ 'coverage',case when p_crew>0 then round(coverage*100,1)end,
+ 'morale',case when p_crew>0 then round(least(100,70.0*coverage+20.0/3*group_coverage*coverage+10.0*wine/p_crew*coverage),1)end);
 end;$$;
 create or replace function ludus_food_private.settle_v55(p_owner uuid,p_today date)
 returns void language plpgsql security definer set search_path='' as $$
