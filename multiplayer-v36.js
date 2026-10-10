@@ -78,14 +78,25 @@ return {load,prepare};
  const foodBonusLabel=document.createElement('small');foodBonusLabel.id='selfFoodBonus';foodBonusLabel.className='mp-food-bonus';foodBonusLabel.hidden=true;$('selfStamina').after(foodBonusLabel);
  let selectedRegion='chest',attackRegion='chest',hand='main_hand',attackHand='main_hand',attackGesture=null,dodgeId=null,dodge=false,preparePromise=null;
  const blockPointers=new Set();
- let owner=null,room=null,pending=false,stopped=false,scene,renderer,camera,ready=false,last=performance.now(),keys=new Set(),joy={x:0,z:0},attacks=0,special=false,block=false,failure=0,locked=null,clockOffset=0,attackId=null,inputDirty=false,nextStep=null;
+ let owner=null,room=null,pending=false,stopped=false,scene,renderer,camera,ready=false,last=null,keys=new Set(),joy={x:0,z:0},attacks=0,special=false,block=false,failure=0,locked=null,clockOffset=0,attackId=null,inputDirty=false,nextStep=null;
  const models=new Map(),states=new Map(),whipLines=new Map();
+ const presentationSnapshots=new WeakMap(),cameraGoal=new THREE.Vector3();
+ let frameHandle=null,pageReleased=false,contextLost=false;
+ function scheduleFrame(){if(frameHandle===null&&!pageReleased&&!contextLost&&!document.hidden)frameHandle=requestAnimationFrame(frame);}
+ function stopFrames(){if(frameHandle!==null){cancelAnimationFrame(frameHandle);frameHandle=null;}last=null;}
+ // Network snapshots stay authoritative; cache only their presentation metadata.
+ function presentationSnapshot(p){let cached=presentationSnapshots.get(p);if(!cached){cached={times:{},profiles:new Map()};for(const key of ['recoil_until','stagger_until','recoil_at','swing_end','swing_at','dodge_until','dodge_at','counter_until'])cached.times[key]=Date.parse(p[key]);presentationSnapshots.set(p,cached);}return cached;}
+ function attackProfile(p,weapon){const profiles=presentationSnapshot(p).profiles,key=(room?.combat_version||0)+':'+weapon;let profile=profiles.get(key);if(!profile){const authored=ArenaMotion.profile(weapon);profile=room?.combat_version===23?{wind:p.wind,active:p.active,recover:p.recover,duration:p.wind+p.active+p.recover,pole:['spear','trident'].includes(weapon),length:authored.length}:authored;profiles.set(key,profile);}return profile;}
+ window.addEventListener('pagehide',()=>{pageReleased=true;stopFrames();});
  const selection=(()=>{try{return JSON.parse(sessionStorage.getItem('ludus-duel-selection')||'null');}catch{return null;}})();
  function fitViewport(){const h=Math.round(Math.min(innerHeight,window.visualViewport?.height||innerHeight));for(const el of [document.documentElement,document.body]){el.style.setProperty('height',h+'px','important');el.style.setProperty('min-height','0','important');}document.documentElement.style.setProperty('--game-height',h+'px');}
  window.addEventListener('resize',fitViewport);window.visualViewport?.addEventListener('resize',fitViewport);fitViewport();
  function message(t){$('mpStatus').textContent=t;}
  function makeStage(){
-  renderer=ArenaCreateRenderer({canvas:$('duelCanvas'),antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.3));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  const canvas=$('duelCanvas');
+  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();contextLost=true;clear();stopFrames();});
+  canvas.addEventListener('webglcontextrestored',()=>{if(pageReleased)return;contextLost=false;last=null;scheduleFrame();});
+  renderer=ArenaCreateRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.3));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
   scene=new THREE.Scene();scene.background=new THREE.Color('#a9c9de');scene.fog=new THREE.Fog('#cbbfa6',80,180);RomanVisualAssets.environment(scene);camera=new THREE.PerspectiveCamera(48,1,.1,250);
   scene.add(new THREE.HemisphereLight(0xfff4db,0x655340,1.6));const sun=new THREE.DirectionalLight(0xffe8bf,2);sun.position.set(25,55,30);scene.add(sun);
   const material=new THREE.MeshStandardMaterial({color:0xe0c79e,roughness:1});RomanVisualAssets.material(material,'sand_01',1/1.5,.32,true);
@@ -96,7 +107,7 @@ return {load,prepare};
   preparePromise=Promise.all([ImportedGladiator.load(t=>{$('queueMessage').textContent=t;}),ColosseumEnvironment.load(scene,renderer,t=>{$('queueCaption').textContent=t;})]).then(()=>{ready=true;syncModels();}).catch(e=>{preparePromise=null;throw e;});
   return preparePromise;
  }
- function active(){return ready&&!stopped&&room?.status==='playing'&&(me()?.hp||0)>0;}
+ function active(){return ready&&!stopped&&!pageReleased&&!contextLost&&!document.hidden&&room?.status==='playing'&&(me()?.hp||0)>0;}
  function enhanced(){return (room?.controls_version||0)>=36;}
  function weapons(){return(me()?.items||[]).filter(i=>i.kind==='weapon'&&['main_hand','off_hand'].includes(i.equipped_slot));}
  function selectedWeapon(){return weapons().find(i=>i.equipped_slot===hand)||weapons()[0];}
@@ -165,29 +176,30 @@ return {load,prepare};
  });
  window.addEventListener('keyup',e=>{keys.delete(e.code);if((e.code==='KeyK'||e.code==='ShiftLeft')&&!blockPointers.size&&!keys.has('KeyK')&&!keys.has('ShiftLeft'))setBlock(false);});
  function clear(){keys.clear();blockPointers.clear();resetStick();attackGesture=null;$('duelRegionHint').hidden=true;attacks=0;attackId=null;dodge=false;dodgeId=null;special=false;setBlock(false);}
- window.addEventListener('blur',clear);document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();});
+ window.addEventListener('blur',clear);document.addEventListener('visibilitychange',()=>{if(document.hidden){clear();stopFrames();}else{last=null;scheduleFrame();}});
  $('duelControls').addEventListener('contextmenu',e=>e.preventDefault());
- function frame(t){requestAnimationFrame(frame);const dt=Math.min(.05,(t-last)/1000);last=t;updateLobby();if(!renderer)return;const c=$('duelCanvas'),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*renderer.getPixelRatio())||c.height!==Math.round(h*renderer.getPixelRatio())){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+ function frame(t){frameHandle=null;if(pageReleased||contextLost||document.hidden){last=null;return;}scheduleFrame();const dt=last===null?0:Math.max(0,Math.min(.05,(t-last)/1000));last=t;updateLobby();if(!renderer)return;const c=$('duelCanvas'),w=c.clientWidth,h=c.clientHeight;if(w<=0||h<=0)return;if(c.width!==Math.floor(w*renderer.getPixelRatio())||c.height!==Math.floor(h*renderer.getPixelRatio())){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+  const serverTime=Date.now()+clockOffset;
   if(room?.status!=='waiting'&&states.size){for(const p of room.players){const f=states.get(p.owner),m=models.get(p.owner);if(!f||!m)continue;f.x+=(p.x-f.x)*(1-Math.exp(-dt*16));f.z+=(p.z-f.z)*(1-Math.exp(-dt*16));f.angle+=Math.atan2(Math.sin(p.angle-f.angle),Math.cos(p.angle-f.angle))*(1-Math.exp(-dt*16));f.hp=p.hp;f.move=p.move||0;f.walk=(f.walk||0)+dt*f.move*7;f.blocking=p.block;f.reaction=Math.max(0,(f.reaction||0)-dt);f.guardFlash=Math.max(0,(f.guardFlash||0)-dt);if(f.hp<f._hp){f.reaction=.32;f.lastRegion=p.hit_region||'chest';}f._hp=f.hp;
-   const serverTime=Date.now()+clockOffset;
+   const timing=presentationSnapshot(p).times;
    if(p.serial!==f._serial){f._serial=p.serial;f.action='attack';f.timer=0;f.attackRegion=p.strike_region||'chest';f.attackWeapon=p.strike_weapon||f.weapon;f.attackLeft=p.strike_hand==='off_hand';f.chain=1+(Math.max(1,p.serial)-1)%3;f.recoilSample=null;
-    f.attackProfile=room.combat_version===23?{wind:p.wind,active:p.active,recover:p.recover,duration:p.wind+p.active+p.recover,pole:['spear','trident'].includes(f.attackWeapon),length:ArenaMotion.profile(f.attackWeapon).length}:ArenaMotion.profile(f.attackWeapon);f.duration=f.attackProfile.duration;}
+    f.attackProfile=attackProfile(p,f.attackWeapon);f.duration=f.attackProfile.duration;}
    if(room.combat_version===23){
-    if(Date.parse(p.recoil_until)>serverTime){
+    if(timing.recoil_until>serverTime){
      if(!['recoil','stagger'].includes(f.action)){const contact={...f,action:'attack',timer:Number(p.recoil_elapsed)||0};f.recoilBody=ArenaMotion.body(contact);f.recoilSample=ArenaMotion.sample(contact);}
-     f.action=Date.parse(p.stagger_until)>serverTime?'stagger':'recoil';f.timer=Math.max(0,(serverTime-Date.parse(p.recoil_at))/1000);f.duration=(Date.parse(p.recoil_until)-Date.parse(p.recoil_at))/1000;
-    }else if(Date.parse(p.swing_end)>serverTime){
+     f.action=timing.stagger_until>serverTime?'stagger':'recoil';f.timer=Math.max(0,(serverTime-timing.recoil_at)/1000);f.duration=(timing.recoil_until-timing.recoil_at)/1000;
+    }else if(timing.swing_end>serverTime){
      f.action='attack';f.attackRegion=p.strike_region||'chest';f.attackWeapon=p.strike_weapon||f.weapon;f.attackLeft=p.strike_hand==='off_hand';f.chain=1+(Math.max(1,p.serial)-1)%3;
-     f.attackProfile={wind:p.wind,active:p.active,recover:p.recover,duration:p.wind+p.active+p.recover,pole:['spear','trident'].includes(f.attackWeapon),length:ArenaMotion.profile(f.attackWeapon).length};f.duration=f.attackProfile.duration;f.timer=Math.max(0,(serverTime-Date.parse(p.swing_at))/1000);
+     f.attackProfile=attackProfile(p,f.attackWeapon);f.duration=f.attackProfile.duration;f.timer=Math.max(0,(serverTime-timing.swing_at)/1000);
     }else if(['attack','recoil','stagger'].includes(f.action)){f.action='idle';f.timer=0;f.recoilSample=null;}
     if(p.defense_serial!==f._defenseSerial){if(f._defenseSerial!==undefined&&p.defense_serial){f.guardFlash=.20;f.guardImpact=p.last_defense==='perfect'?1:.65;if(p.owner===owner&&p.last_defense==='perfect')message('Mükemmel blok · Karşı vuruş için saldır.');}f._defenseSerial=p.defense_serial;}
-   }else if(f.action==='attack'){f.timer+=dt;if(f.timer>f.duration)f.action='idle';}if(Date.parse(p.dodge_until)>serverTime){f.action='dodge';f.timer=Math.max(0,(serverTime-Date.parse(p.dodge_at))/1000);f.duration=.46;f.blocking=false;}else if(f.action==='dodge')f.action='idle';
+   }else if(f.action==='attack'){f.timer+=dt;if(f.timer>f.duration)f.action='idle';}if(timing.dodge_until>serverTime){f.action='dodge';f.timer=Math.max(0,(serverTime-timing.dodge_at)/1000);f.duration=.46;f.blocking=false;}else if(f.action==='dodge')f.action='idle';
    if(p.pull_from){f.action='knocked';f.timer=.35;f.duration=.7;}else if(f.action==='knocked')f.action='idle';if(f.hp<=0){f.deadTime+=dt;f.action='dead';}ImportedGladiator.animate(f,m,t/1000,dt);m.teamMark.visible=p.owner===locked;}
-   const p=me(),f=states.get(owner),r=target();$('duelAttack').classList.toggle('counter-ready',room.combat_version===23&&Date.parse(p?.counter_until)>Date.now()+clockOffset&&p?.counter_target===r?.owner);if(f){const dx=(r?.x??0)-f.x,dz=(r?.z??-1)-f.z,len=Math.max(.01,Math.hypot(dx,dz)),goal=new THREE.Vector3(f.x-dx/len*4.2,3.1,f.z-dz/len*4.2);camera.position.lerp(goal,1-Math.exp(-dt*7));camera.lookAt(f.x+dx*.2,1.1,f.z+dz*.2);}
+   const p=me(),f=states.get(owner),r=target();$('duelAttack').classList.toggle('counter-ready',room.combat_version===23&&p&&presentationSnapshot(p).times.counter_until>serverTime&&p.counter_target===r?.owner);if(f){const dx=(r?.x??0)-f.x,dz=(r?.z??-1)-f.z,len=Math.max(.01,Math.hypot(dx,dz)),goal=cameraGoal.set(f.x-dx/len*4.2,3.1,f.z-dz/len*4.2);camera.position.lerp(goal,1-Math.exp(-dt*7));camera.lookAt(f.x+dx*.2,1.1,f.z+dz*.2);}
    for(const p of room.players){let line=whipLines.get(p.owner);const victim=room.players.find(x=>x.owner===p.pull_target&&x.pull_from===p.owner);if(!victim){if(line)line.visible=false;continue;}if(!line){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3));line=new THREE.Line(g,new THREE.LineBasicMaterial({color:0x503521}));line.frustumCulled=false;whipLines.set(p.owner,line);scene.add(line);}line.visible=true;const a=states.get(p.owner),b=states.get(victim.owner);if(a&&b){line.geometry.attributes.position.array.set([a.x,1.15,a.z,b.x,.35,b.z]);line.geometry.attributes.position.needsUpdate=true;}}
   }else{camera.position.set(0,4.5,9);camera.lookAt(0,0,0);}renderer.render(scene,camera);
  }
  async function boot(){try{await prepare();if(!stopped)await join();}catch(e){message('Arena yüklenemedi. '+e.message);$('queueMessage').textContent='Arena yüklenemedi. Bağlantını kontrol edip tekrar dene.';$('mpRetry').hidden=false;}}
  $('mpRetry').onclick=()=>{$('mpRetry').hidden=true;stopped=false;boot();};
- requestAnimationFrame(frame);boot();
+ scheduleFrame();boot();
 })();

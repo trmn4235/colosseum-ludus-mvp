@@ -1,0 +1,116 @@
+{
+  "status": "PASS for real-rig and DOM checks; rendered-device QA pending",
+  "renderer": "no-GPU real-rig/DOM fixture",
+  "baselineRef": "a6f530d",
+  "sourceSha256": {
+    "before": "4b757d0c69cf36bdf1e4425702d199b6dd59a40309cf3f857f93769bab1e5435",
+    "after": "55ce8d2bf9bab372c808dd70ad8398201520432cb9d0d5d40a4d5feff286c060"
+  },
+  "guardEntryMaxHandStepMetres": {
+    "before": 0.8373773592600751,
+    "after": 0.21988246078121237,
+    "reductionPercent": 73.74153261374235
+  },
+  "guardReleaseMaxHandStepMetres": {
+    "before": 0.21474638773073174,
+    "after": 0.1267762607197291,
+    "reductionPercent": 40.964659727504916
+  },
+  "guardWalkMaxFootStepMetres": {
+    "before": 0.33820993091449,
+    "after": 0.05328757822013888,
+    "reductionPercent": 84.24423018092521
+  },
+  "guardWalkForwardFootExcursionMetres": {
+    "before": 0.004134411105879643,
+    "after": 0.5470928250363931
+  },
+  "guardStrafeLateralFootExcursionMetres": {
+    "before": 0.006037123630922403,
+    "after": 0.529671972023396
+  },
+  "maximumActiveBladeAngleErrorRadians": 0,
+  "maximumGripOffsetMetres": 6.736090074350496e-16,
+  "plantedFeet": {
+    "chest": {
+      "leftMinAnkleY": 0.12478331559475853,
+      "rightMinAnkleY": 0.1247836358615605,
+      "leftTotalExcursion": [
+        0.00007343331983986068,
+        0.0015811379420365146,
+        0.00013724306500409456
+      ],
+      "rightTotalExcursion": [
+        0.00007784616945921696,
+        0.0016893407519510406,
+        0.00012935573862782324
+      ],
+      "finite": true
+    },
+    "head": {
+      "leftMinAnkleY": 0.12478331559477723,
+      "rightMinAnkleY": 0.1247836358616628,
+      "leftTotalExcursion": [
+        0.00007401317711730471,
+        0.0015903961985542225,
+        0.0001381513354448416
+      ],
+      "rightTotalExcursion": [
+        0.00007780341019336667,
+        0.0016848029747109083,
+        0.000129368042307329
+      ],
+      "finite": true
+    },
+    "leftLeg": {
+      "leftMinAnkleY": 0.12478331123210874,
+      "rightMinAnkleY": 0.12478363998777309,
+      "leftTotalExcursion": [
+        6.20273082896361e-10,
+        1.007998272350985e-8,
+        7.609458174684391e-9
+      ],
+      "rightTotalExcursion": [
+        6.431309373944316e-10,
+        0.00000777900128900999,
+        6.18832871057684e-9
+      ],
+      "finite": true
+    }
+  },
+  "landscapeSizes": [
+    [
+      667,
+      375
+    ],
+    [
+      844,
+      390
+    ],
+    [
+      932,
+      430
+    ],
+    [
+      740,
+      320
+    ],
+    [
+      1366,
+      768
+    ]
+  ],
+  "pause": {
+    "stopped": true,
+    "cleared": true,
+    "resumed": true
+  },
+  "repeatedInput": "Requires external pointer runner; synthetic events are not claimed as physical pointer coverage.",
+  "limitations": [
+    "Cloud WebGL context creation is disabled. Only the QA fixture replaces the renderer with a matrix-update stub. All GLB geometry, skeletons and motion code are real.",
+    "No rendered before/after scene, video, graphics FPS, GPU timing or aesthetic claim is provided.",
+    "Ankle height is a joint diagnostic, not a proof of sole-floor contact or absent mesh penetration.",
+    "Pointer capture, actual physical-device behavior and visual naturalness need the WebGL-enabled browser/device follow-up."
+  ],
+  "noGPU": true
+}

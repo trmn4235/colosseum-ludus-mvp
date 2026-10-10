@@ -1,0 +1,507 @@
+{
+  "rendererKind": "no-GPU real-rig/DOM fixture",
+  "errors": [],
+  "snapshots": [],
+  "continuity": {
+    "walk": {
+      "root": {
+        "max": 0.02416666666666667,
+        "p95": 0.02416666666666667
+      },
+      "leftHand": {
+        "max": 0.03466305780864319,
+        "p95": 0.033878019318027926
+      },
+      "rightHand": {
+        "max": 0.030245576978296173,
+        "p95": 0.030027909549785698
+      },
+      "leftFoot": {
+        "max": 0.05211455813687559,
+        "p95": 0.05147810575001736
+      },
+      "rightFoot": {
+        "max": 0.053957558526736595,
+        "p95": 0.05340067590561954
+      },
+      "shield": {
+        "max": 0.03466305780864319,
+        "p95": 0.033878019318027926
+      }
+    },
+    "run": {
+      "root": {
+        "max": 0.06166666666666676,
+        "p95": 0.06166666666666676
+      },
+      "leftHand": {
+        "max": 0.07377446745389558,
+        "p95": 0.0733602636976692
+      },
+      "rightHand": {
+        "max": 0.07863540751293016,
+        "p95": 0.07791404957506691
+      },
+      "leftFoot": {
+        "max": 0.1439106689322391,
+        "p95": 0.14026549923651593
+      },
+      "rightFoot": {
+        "max": 0.13904170548009515,
+        "p95": 0.13595117201375517
+      },
+      "shield": {
+        "max": 0.07377446745389558,
+        "p95": 0.0733602636976692
+      }
+    },
+    "stop": {
+      "root": {
+        "max": 0,
+        "p95": 0
+      },
+      "leftHand": {
+        "max": 0.023574095094254635,
+        "p95": 0.02347340270039989
+      },
+      "rightHand": {
+        "max": 0.034836567040681714,
+        "p95": 0.03328719166344926
+      },
+      "leftFoot": {
+        "max": 0.04153436987629012,
+        "p95": 0.033826833009725304
+      },
+      "rightFoot": {
+        "max": 0.11761500689105371,
+        "p95": 0.11213737098647596
+      },
+      "shield": {
+        "max": 0.023574095094254635,
+        "p95": 0.02347340270039989
+      }
+    },
+    "guardWalk": {
+      "root": {
+        "max": 0.02416666666666689,
+        "p95": 0.02416666666666689
+      },
+      "leftHand": {
+        "max": 0.22812646389187513,
+        "p95": 0.18494916447160492
+      },
+      "rightHand": {
+        "max": 0.161509319808839,
+        "p95": 0.03133269792551552
+      },
+      "leftFoot": {
+        "max": 0.05328757822013888,
+        "p95": 0.05245935088801981
+      },
+      "rightFoot": {
+        "max": 0.048526966161136206,
+        "p95": 0.04762626677393029
+      },
+      "shield": {
+        "max": 0.22812711115070358,
+        "p95": 0.18494921599816233
+      }
+    },
+    "guardStrafe": {
+      "root": {
+        "max": 0.02416666666666667,
+        "p95": 0.02416666666666667
+      },
+      "leftHand": {
+        "max": 0.02416969905613896,
+        "p95": 0.02416838973351345
+      },
+      "rightHand": {
+        "max": 0.029927874980123684,
+        "p95": 0.02960567188597679
+      },
+      "leftFoot": {
+        "max": 0.05798606527045223,
+        "p95": 0.054386994669966125
+      },
+      "rightFoot": {
+        "max": 0.044491449482962235,
+        "p95": 0.04432181026644487
+      },
+      "shield": {
+        "max": 0.024166666666668224,
+        "p95": 0.024166666666668224
+      }
+    },
+    "guardEnter": {
+      "root": {
+        "max": 0,
+        "p95": 0
+      },
+      "leftHand": {
+        "max": 0.21988246078121237,
+        "p95": 0.21988246078121237
+      },
+      "rightHand": {
+        "max": 0.2039279943618936,
+        "p95": 0.2039279943618936
+      },
+      "leftFoot": {
+        "max": 0.004787128804411225,
+        "p95": 0.004787128804411225
+      },
+      "rightFoot": {
+        "max": 0.005361969746756588,
+        "p95": 0.005361969746756588
+      },
+      "shield": {
+        "max": 0.2198800726385997,
+        "p95": 0.2198800726385997
+      }
+    },
+    "guardRelease": {
+      "root": {
+        "max": 0,
+        "p95": 0
+      },
+      "leftHand": {
+        "max": 0.1267762607197291,
+        "p95": 0.1159027086445019
+      },
+      "rightHand": {
+        "max": 0.024632478878086422,
+        "p95": 0.024599498319492562
+      },
+      "leftFoot": {
+        "max": 0.004090088697964509,
+        "p95": 0.004057123995986779
+      },
+      "rightFoot": {
+        "max": 0.004579087992330784,
+        "p95": 0.0045430929099996385
+      },
+      "shield": {
+        "max": 0.12677627373866027,
+        "p95": 0.11590270024015933
+      }
+    }
+  },
+  "alignment": {
+    "chest": {
+      "bladeActiveAngleRadians": {
+        "count": 13,
+        "mean": 0,
+        "p95": 0,
+        "max": 0,
+        "min": 0
+      },
+      "gripOffsetMetres": {
+        "count": 49,
+        "mean": 1.8591792461740226e-16,
+        "p95": 3.7238012298709097e-16,
+        "max": 4.611102534756203e-16,
+        "min": 0
+      },
+      "leftFoot": {
+        "count": 48,
+        "mean": 0.000033099673026311456,
+        "p95": 0.000209643552237712,
+        "max": 0.0007467456111085046,
+        "min": 4.240294964128492e-11
+      },
+      "rightFoot": {
+        "count": 48,
+        "mean": 0.0000353352645437527,
+        "p95": 0.00020718079821567737,
+        "max": 0.0007477254860114471,
+        "min": 4.043778475499445e-11
+      }
+    },
+    "head": {
+      "bladeActiveAngleRadians": {
+        "count": 13,
+        "mean": 0,
+        "p95": 0,
+        "max": 0,
+        "min": 0
+      },
+      "gripOffsetMetres": {
+        "count": 49,
+        "mean": 2.1050015827578047e-16,
+        "p95": 4.577698275459881e-16,
+        "max": 5.79553433516819e-16,
+        "min": 0
+      },
+      "leftFoot": {
+        "count": 48,
+        "mean": 0.000033293818630912917,
+        "p95": 0.0002096443175937096,
+        "max": 0.0007467483068039758,
+        "min": 4.242142529564823e-11
+      },
+      "rightFoot": {
+        "count": 48,
+        "mean": 0.00003524095830269187,
+        "p95": 0.0002071745440884079,
+        "max": 0.0007447481645874367,
+        "min": 4.0439385598318186e-11
+      }
+    },
+    "leftLeg": {
+      "bladeActiveAngleRadians": {
+        "count": 13,
+        "mean": 0,
+        "p95": 0,
+        "max": 0,
+        "min": 0
+      },
+      "gripOffsetMetres": {
+        "count": 49,
+        "mean": 2.1057351992937836e-16,
+        "p95": 5.214799211354908e-16,
+        "max": 6.736090074350496e-16,
+        "min": 0
+      },
+      "leftFoot": {
+        "count": 48,
+        "mean": 3.43251600969225e-10,
+        "p95": 6.646390150874027e-10,
+        "max": 7.286459398936209e-9,
+        "min": 5.209184518682721e-11
+      },
+      "rightFoot": {
+        "count": 48,
+        "mean": 1.6219042011931683e-7,
+        "p95": 0.0000015569331188509358,
+        "max": 0.000002023997567800706,
+        "min": 6.174449032985183e-11
+      }
+    }
+  },
+  "layouts": [
+    {
+      "width": 667,
+      "height": 375,
+      "verticalOverflow": 0,
+      "horizontalOverflow": 0,
+      "controlCount": 10,
+      "insideViewport": true,
+      "nonOverlapping": true
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "verticalOverflow": 0,
+      "horizontalOverflow": 0,
+      "controlCount": 10,
+      "insideViewport": true,
+      "nonOverlapping": true
+    },
+    {
+      "width": 932,
+      "height": 430,
+      "verticalOverflow": 0,
+      "horizontalOverflow": 0,
+      "controlCount": 10,
+      "insideViewport": true,
+      "nonOverlapping": true
+    },
+    {
+      "width": 740,
+      "height": 320,
+      "verticalOverflow": 0,
+      "horizontalOverflow": 0,
+      "controlCount": 10,
+      "insideViewport": true,
+      "nonOverlapping": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "verticalOverflow": 0,
+      "horizontalOverflow": 0,
+      "controlCount": 10,
+      "insideViewport": true,
+      "nonOverlapping": true
+    }
+  ],
+  "noGPU": true,
+  "renderer": "NO GPU: skeleton and DOM only",
+  "bones": 34,
+  "models": 20,
+  "frameTiming": null,
+  "pause": {
+    "stopped": true,
+    "cleared": true,
+    "resumed": true
+  },
+  "repeatedInput": "Requires external pointer runner; synthetic events are not claimed as physical pointer coverage.",
+  "limitations": "NO GPU: renderer is a QA-only matrix-update stub. Real GLB meshes, skeletons, materials and animation loaded. No rendered screenshots, GPU timings or full-frame performance claim. CPU/JS timing is not GPU timing or physical-device FPS. Loaded assets, continuity, strike alignment and DOM viewport tests are automated; naturalness remains a visual judgment. Frame fixture holds identical world positions for comparison.",
+  "resourceAudit": {
+    "external": [],
+    "glbCount": 13
+  },
+  "pass": true,
+  "sourceSha256": "55ce8d2bf9bab372c808dd70ad8398201520432cb9d0d5d40a4d5feff286c060",
+  "motionSha256": "9f81b396a71793c49e396dfb330dbdfd413e8653c210eb19e6f97c60a0bae3a8",
+  "baselineRef": "a6f530d",
+  "fixtureServedAt": "2026-10-10T07:02:31.299Z",
+  "gait": {
+    "walk": {
+      "leftFootMinAnkleY": 0.12478331153491784,
+      "rightFootMinAnkleY": 0.12460383595703112,
+      "leftRelativeExcursion": [
+        0.0645222527291811,
+        0.1297146306201512,
+        0.5329409884212286
+      ],
+      "rightRelativeExcursion": [
+        0.06152861083875434,
+        0.12146568081849202,
+        0.5352883786905039
+      ],
+      "finite": true
+    },
+    "run": {
+      "leftFootMinAnkleY": 0.16996073144928842,
+      "rightFootMinAnkleY": 0.14499558163087478,
+      "leftRelativeExcursion": [
+        0.05469711272062691,
+        0.5557323306848584,
+        0.8157245141430614
+      ],
+      "rightRelativeExcursion": [
+        0.05151562209817079,
+        0.5619329835969005,
+        0.8189626487776911
+      ],
+      "finite": true
+    },
+    "stop": {
+      "leftFootMinAnkleY": 0.12413227929744769,
+      "rightFootMinAnkleY": 0.12416178247691395,
+      "leftRelativeExcursion": [
+        0.0026875672250821214,
+        0.009506933923103977,
+        0.027712156198346882
+      ],
+      "rightRelativeExcursion": [
+        0.0025883125028751813,
+        0.012461794951235117,
+        0.07354616261754376
+      ],
+      "finite": true
+    },
+    "guardWalk": {
+      "leftFootMinAnkleY": 0.12434734414283127,
+      "rightFootMinAnkleY": 0.12438555437977594,
+      "leftRelativeExcursion": [
+        0.04732896419016713,
+        0.11254630702023011,
+        0.5470928250363931
+      ],
+      "rightRelativeExcursion": [
+        0.03595945468227679,
+        0.1339657455206258,
+        0.5443789274392437
+      ],
+      "finite": true
+    },
+    "guardStrafe": {
+      "leftFootMinAnkleY": 0.1467646164971217,
+      "rightFootMinAnkleY": 0.15565546529806895,
+      "leftRelativeExcursion": [
+        0.529671972023396,
+        0.04599422971549799,
+        0.103142574623039
+      ],
+      "rightRelativeExcursion": [
+        0.5286234725707745,
+        0.054374464442574044,
+        0.12438814665934927
+      ],
+      "finite": true
+    },
+    "guardEnter": {
+      "leftFootMinAnkleY": 0.12259103439006919,
+      "rightFootMinAnkleY": 0.1247966559152548,
+      "leftRelativeExcursion": [
+        0.00004924268589101555,
+        0.00033752989754537444,
+        0.012592480002469639
+      ],
+      "rightRelativeExcursion": [
+        5.000259789555983e-10,
+        0.0018855253242878178,
+        0.013973700297885139
+      ],
+      "finite": true
+    },
+    "guardRelease": {
+      "leftFootMinAnkleY": 0.12259103439006919,
+      "rightFootMinAnkleY": 0.12479827464581073,
+      "leftRelativeExcursion": [
+        1.2428662404806445e-7,
+        0.0009563305910798015,
+        0.010134831978074188
+      ],
+      "rightRelativeExcursion": [
+        4.0947084611886453e-10,
+        0.0008782261989332407,
+        0.01144118807884259
+      ],
+      "finite": true
+    }
+  },
+  "plantedFeet": {
+    "chest": {
+      "leftMinAnkleY": 0.12478331559475853,
+      "rightMinAnkleY": 0.1247836358615605,
+      "leftTotalExcursion": [
+        0.00007343331983986068,
+        0.0015811379420365146,
+        0.00013724306500409456
+      ],
+      "rightTotalExcursion": [
+        0.00007784616945921696,
+        0.0016893407519510406,
+        0.00012935573862782324
+      ],
+      "finite": true
+    },
+    "head": {
+      "leftMinAnkleY": 0.12478331559477723,
+      "rightMinAnkleY": 0.1247836358616628,
+      "leftTotalExcursion": [
+        0.00007401317711730471,
+        0.0015903961985542225,
+        0.0001381513354448416
+      ],
+      "rightTotalExcursion": [
+        0.00007780341019336667,
+        0.0016848029747109083,
+        0.000129368042307329
+      ],
+      "finite": true
+    },
+    "leftLeg": {
+      "leftMinAnkleY": 0.12478331123210874,
+      "rightMinAnkleY": 0.12478363998777309,
+      "leftTotalExcursion": [
+        6.20273082896361e-10,
+        1.007998272350985e-8,
+        7.609458174684391e-9
+      ],
+      "rightTotalExcursion": [
+        6.431309373944316e-10,
+        0.00000777900128900999,
+        6.18832871057684e-9
+      ],
+      "finite": true
+    }
+  },
+  "nonGraphicsCpuDiagnostic": {
+    "sceneCpuMs": 7.761390887296868,
+    "note": "Single cloud-browser run, matrix renderer stub, no GPU work. Not a graphics benchmark; CPU-only numbers are noisy and do not establish a speedup."
+  }
+}

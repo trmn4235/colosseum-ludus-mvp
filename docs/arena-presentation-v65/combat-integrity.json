@@ -1,0 +1,17 @@
+[
+  {
+    "page": "arena.html",
+    "combatCodeUnchanged": true,
+    "sha256": "59f9ef174920dd2862e57ecc591092fc82ff8a24ca56d1d7ef96601fad8af5b3"
+  },
+  {
+    "page": "savas.html",
+    "combatCodeUnchanged": true,
+    "sha256": "ab86148f3f3584225edb4aba657b7e00203ef30a0a7d077b6ad7d3190f53b75f"
+  },
+  {
+    "page": "multiplayer.html",
+    "combatCodeUnchanged": true,
+    "sha256": "ab86148f3f3584225edb4aba657b7e00203ef30a0a7d077b6ad7d3190f53b75f"
+  }
+]
