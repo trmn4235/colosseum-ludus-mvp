@@ -124,3 +124,8 @@ Full nutrition contributes 70 morale; proportional staple/protein/fruit coverage
 White/burgundy/gold interfaces and shared SVG icons remain in use. V57 adds original egg, bread, ready-meal and wine illustrations; prior symbols remain for the other products. Room geometry and model placement remain as designed.
 
 Validation: `tests/dining-nutrition-v57.cjs` executes the actual migrations and functions: repeatability, new products, 100-unit need and minimum excess, integer portions, exact-fill selection, seven apples, wine daily cap and insufficient wine-only nutrition, diversity, retry safety, owner isolation, RLS, roster changes and 1000 offline days. `tests/market-food-v57.cjs` and `tests/dining-food-ui-v57.cjs` check real page integration, eight products, quantity purchases, lost-response retries and three/four landscape sizes. These are headless checks, not iPhone performance measurements.
+
+### V58 — Menü kalitesi ve toparlanma
+Her gladyatörün günlük ihtiyacı 100 beslenme birimidir. Tamamlanan günün menüsü ertesi İstanbul takvim gününde enerji toparlanmasına en fazla %50 bonus verir (10 → 15 enerji/saat). İhtiyaç tamamen karşılanmışsa protein payı kaliteye 50, meyve payı 50 puana kadar katkı sağlar; hazır öğün dengeli kabul edilir. Şarap morale katkı sağlar. Bonuslar toplanmaz; fazladan besin bonusu artırmaz. Çevrimdışı toparlanma tüketim geçmişinin ilgili günleri üzerinden hesaplanır. Sakatlık süresi ve savaş değerleri değişmez. Satın alma hemen bonus vermez.
+
+Doğrulama: `tests/dining-recovery-v58.cjs`, `tests/dining-nutrition-v57.cjs`, `tests/dining-food-ui-v57.cjs`, `tests/market-food-v57.cjs`.
