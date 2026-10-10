@@ -8,7 +8,9 @@
  function mean(stats){return attributes.reduce((sum,[key])=>sum+Number(stats[key]||0),0)/7;}
  function energy(g,now=Date.now()){
   const value=Number(g.fatigue_value??g.fatigue??0),from=Date.parse(g.fatigue_rest_from);
-  return Math.min(100,Math.max(0,100-value+(Number.isFinite(from)?Math.max(0,now-from)/3600000*10:0)));
+  const hours=Number.isFinite(from)?Math.max(0,now-from)/3600000:0,until=Date.parse(g.recovery_rate_until),rate=Math.min(15,Math.max(10,Number(g.recovery_rate)||10));
+  const bonusHours=Number.isFinite(from)&&Number.isFinite(until)?Math.max(0,Math.min(now,until)-from)/3600000:0;
+  return Math.min(100,Math.max(0,100-value+hours*10+bonusHours*(rate-10)));
  }
  function combatStats(g){
   const s=g.base_stats||profile(g.class),v=key=>Number(s[key]??50);
@@ -48,7 +50,7 @@
    const labels={available:'Hazır',training:'Antrenmanda',resting:'Dinleniyor',injured:'Sakat · İyileşiyor',mission:'İmparator görevinde',clanlocked:'Klan kadrosunda'};
    state.textContent=message||(labels[p]||'Kullanımda')+(options.time?.(g)?' · '+options.time(g):'');summary.append(state);
    const bars=node('div','exercise-bars');bars.append(meter('Günlük Egzersiz Barı',units/3*100,'daily',r.exercise_completed?'Bugünkü gelişim tamamlandı':'3 maç · 1 antrenman · 1 kolay görev'));
-   bars.append(meter('Yorgunluk Barı',e,'energy'+(e<30?' danger':''),e<30?'%25 sakatlık riski · +10/saat':'Kalan enerji · +10/saat'));summary.append(bars);
+   bars.append(meter('Yorgunluk Barı',e,'energy'+(e<30?' danger':''),(e<30?'%25 sakatlık riski':'Kalan enerji')+' · +'+format(Date.parse(r.recovery_rate_until)>now()?r.recovery_rate||10:10)+'/saat'));summary.append(bars);
    const list=node('div','exercise-attributes');list.setAttribute('aria-label','Gladyatör istatistikleri');
    for(const [key,label]of attributes){const b=button('',()=>{stat=key;message='';render();},busy,'exercise-attribute'+(stat===key?' selected':''));b.setAttribute('aria-pressed',String(stat===key));b.append(node('span','',label),node('strong','',format(stats[key])));list.append(b);}details.append(node('h3','exercise-section-title','ÖZELLİKLER'),list);
    const actions=node('div','exercise-actions');actions.id='orderButtons';
@@ -76,7 +78,7 @@
    if(!selected||panel.hidden||busy)return;
    const value=energy(record(selected),now()),wrap=panel.querySelector('.exercise-meter.energy');
    if(!wrap)return;wrap.classList.toggle('danger',value<30);wrap.querySelector('strong').textContent=format(value)+'%';wrap.querySelector('.exercise-fill').style.width=value+'%';wrap.querySelector('[role=progressbar]').setAttribute('aria-valuenow',String(value));
-   wrap.querySelector('small').textContent=value<30?'%25 sakatlık riski · +10/saat':'Kalan enerji · +10/saat';
+   wrap.querySelector('small').textContent=valu(e<30?'%25 sakatlık riski':'Kalan enerji')+' · +'+format(Date.parse(r.recovery_rate_until)>now()?r.recovery_rate||10:10)+'/saat';
   }
   let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(selected&&!panel.hidden){rosterPage=Math.floor(Math.max(0,roster().indexOf(selected))/pageSize());render();}},80);});
   document.addEventListener('keydown',event=>{if(panel.hidden)return;if(event.key==='Escape'){event.preventDefault();if(gearSlot&&!busy){gearSlot=null;gearMessage='';render();}else close();}if(event.key==='Tab'){const buttons=[...panel.querySelectorAll('button:not(:disabled),input:not(:disabled)')].filter(n=>n.getClientRects().length),first=buttons[0],last=buttons.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}});

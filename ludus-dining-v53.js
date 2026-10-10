@@ -21,7 +21,7 @@
    for(const x of [1.85,2.50,3.15,3.80])prop('sack','Tahıl çuvalı',[.46,.60,.44],x,shelfY(rear,x,-3.86,.95),-3.86);
    for(const x of [2.05,3.15])prop('meat','Kemikli but',[.68,.41,.41],x,shelfY(rear,x,-3.87,1.85),-3.87);
    for(const z of [-2.63,-1.33]){
-    prop('barrel','Bira fıçısı',[.56,.62,.52],4.30,shelfY(side,4.30,z,1.85),z,-Math.PI/2);
+    prop('barrel','Şarap fıçısı',[.56,.62,.52],4.30,shelfY(side,4.30,z,1.85),z,-Math.PI/2);
     prop('apples','Elma kasası',[.72,.30,.42],4.30,shelfY(side,4.30,z,1.15),z,Math.PI/2);
    }
    for(const x of [1.90,2.50,3.10,3.70]){const fish=prop('fish','Asılı balık',[.64,.26,.102],x-.13,1.44,-3.57);fish.rotation.z=-Math.PI/2;}

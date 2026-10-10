@@ -33,3 +33,7 @@ The stock cards use ready model-preview PNGs from the same pinned CC0 mirror abo
 ## V56 interface icons
 
 `assets/dining/icons/*-v56.svg` are five original SVG illustrations created for this project: grain, apple, fish, bone-in ham and beer. Dining and market use them instead of V55 thumbnails, with no external bitmap or font download.
+
+## V57 nutrition icons
+
+Original small SVG illustrations for egg, bread, prepared meal and a wine goblet are in `assets/dining/icons/*-v57.svg`; the four existing grain/apple/fish/ham symbols are reused in the same set. All eight icons share dining and marketplace presentation. Wine preserves the historical `beer` key only in code and data.

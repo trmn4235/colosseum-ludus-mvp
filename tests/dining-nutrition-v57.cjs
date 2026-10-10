@@ -1,0 +1,36 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{randomUUID}=require('node:crypto');
+const {PGlite}=require(process.env.LUDUS_PGLITE_MODULE||'@electric-sql/pglite');
+const root=path.resolve(__dirname,'..'),a='00000000-0000-4000-8000-000000000001',b='00000000-0000-4000-8000-000000000002';
+(async()=>{
+ const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema auth;
+ create function auth.uid()returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create function auth.jwt()returns jsonb language sql stable as $$select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;grant execute on function auth.jwt()to authenticated;
+ grant usage on schema auth to authenticated;grant execute on function auth.uid()to authenticated;
+ create table ludus_accounts(user_id uuid primary key,gold bigint not null default 10000);
+ create table ludus_gladiators(id uuid primary key default gen_random_uuid(),owner_id uuid references ludus_accounts(user_id));`);
+ const sql=fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_dining_food_v55.sql')),'utf8');await db.exec(sql);await db.exec(sql);const v56=fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_dining_meals_v56.sql')),'utf8');await db.exec(v56);await db.exec(v56);const v57=fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_dining_nutrition_v57.sql')),'utf8');await db.exec(v57);await db.exec(v57);
+ await db.query('insert into ludus_accounts(user_id)values($1),($2)',[a,b]);await db.query('insert into ludus_gladiators(owner_id)values($1),($1)',[a]);
+ const query=async(sql,args=[])=>(await db.query(sql,args)).rows;
+ const state=async()=> (await query('select ludus_food_state()as value'))[0].value;
+ const buy=async(sku,n,request=randomUUID())=>(await query('select ludus_food_buy($1,$2,$3)as value',[sku,n,request]))[0].value;
+ await query("select set_config('request.jwt.claim.sub',$1,false)",[a]);await db.exec('set role authenticated');
+
+ let s=await state();assert.equal(s.items.length,8);assert.equal(s.menu.daily_need,200);assert.equal(s.menu.units,0);assert.equal(s.items.find(i=>i.sku==='beer').name,'Şarap');assert.equal(s.items.find(i=>i.sku==='egg').nutrition,20);assert.equal(s.items.find(i=>i.sku==='bread').price,3);
+ const id=randomUUID();s=await buy('egg',10,id);assert.equal(s.gold,9940);assert.equal(s.menu.units,200);assert.equal(s.menu.coverage,100);s=await buy('egg',10,id);assert.equal(s.gold,9940);assert.equal(s.purchase.replayed,true);await assert.rejects(()=>buy('egg',11,id),/İşlem kimliği/);await assert.rejects(()=>buy('bread',0),/1–5000/);
+ await assert.rejects(()=>db.query('update ludus_food_stock set quantity=9999'),/permission denied/);await assert.rejects(()=>db.query(`select ludus_food_private.menu_v55(1,'[]')`),/permission denied/);
+ async function fixture(stock,crew=1){await db.exec('reset role');await db.exec('delete from ludus_food_history');await query(`update ludus_food_house set settled_day=(transaction_timestamp()at time zone'Europe/Istanbul')::date-1 where owner_id=$1`,[a]);await query('delete from ludus_gladiators where owner_id=$1',[a]);for(let i=0;i<crew;i++)await query('insert into ludus_gladiators(owner_id)values($1)',[a]);await query('update ludus_food_stock set quantity=0 where owner_id=$1',[a]);for(const [sku,n]of Object.entries(stock))await query('update ludus_food_stock set quantity=$3 where owner_id=$1 and sku=$2',[a,sku,n]);await db.exec('set role authenticated');return state();}
+ s=await fixture({apple:7});assert.equal(s.menu.units,105);assert.equal(s.menu.coverage,100);assert.equal(s.menu.missing_units,0);assert.equal(s.menu.extra_units,5);assert.equal(s.menu.meals,2);assert.equal(s.items.find(i=>i.sku==='apple').daily,7);
+ s=await fixture({meal:1});assert.equal(s.menu.units,100);assert.equal(s.menu.morale,90);assert.equal(s.items.find(i=>i.sku==='meal').daily,1);
+ s=await fixture({meat:4});assert.equal(s.menu.units,120);assert.equal(s.menu.extra_units,20);assert.equal(s.menu.coverage,100);assert.equal(s.menu.morale,76.7);
+ s=await fixture({beer:7});assert.equal(s.menu.units,5);assert.equal(s.menu.missing_units,95);assert.equal(s.menu.morale,4);assert.equal(s.items.find(i=>i.sku==='beer').daily,1);
+ s=await fixture({grain:1,apple:1,fish:1,meat:1,beer:1,egg:1,bread:1});assert.equal(s.menu.units,100);assert.equal(s.menu.morale,100);assert.equal(s.menu.available_units,130);assert.equal(s.menu.served.find(i=>i.sku==='meat').quantity,0);assert.equal(s.menu.served.find(i=>i.sku==='fish').quantity,1);
+ // Exact-fill selection uses 30 ham + 2×25 fish + 20 grain.
+ s=await fixture({meat:1,fish:2,grain:1});assert.equal(s.menu.units,100);assert.equal(s.items.find(i=>i.sku==='fish').daily,2);assert.equal(s.items.find(i=>i.sku==='grain').daily,1);
+ s=await fixture({bread:500,egg:500,fish:500,apple:500,beer:500},3);assert.equal(s.menu.units,300);const projected=s.menu.served;await db.exec('reset role');await query('update ludus_food_house set settled_day=settled_day-3 where owner_id=$1',[a]);await db.exec('set role authenticated');s=await state();for(const item of s.items){const used=projected.find(i=>i.sku===item.sku).quantity;assert.equal(item.quantity,(['bread','egg','fish','apple','beer'].includes(item.sku)?500:0)-3*used);}
+ // Inventory cannot feed above the 100/person cap, and long absence compresses.
+ await db.exec('reset role');await db.exec('delete from ludus_food_history');await query('update ludus_food_house set settled_day=settled_day-1000 where owner_id=$1',[a]);await db.exec('set role authenticated');s=await state();assert.equal(s.menu.units,0);assert.ok(s.history.length<=12);assert.ok(s.items.every(i=>i.quantity>=0));
+ // Growing the roster settles old days before changing the daily need.
+ await fixture({bread:40},2);await db.exec('reset role');await query('update ludus_food_house set settled_day=settled_day-1 where owner_id=$1',[a]);await query('insert into ludus_gladiators(owner_id)values($1)',[a]);await db.exec('set role authenticated');s=await state();assert.equal(s.crew_count,3);assert.equal(s.menu.daily_need,300);assert.equal(s.items.find(i=>i.sku==='bread').quantity,26);assert.equal(s.history[0].crew_count,2);
+ await query("select set_config('request.jwt.claim.sub',$1,false)",[b]);s=await state();assert.equal(s.crew_count,0);assert.equal(s.menu.units,0);assert.equal(s.menu.morale,null);assert.equal((await query('select count(*)::int as n from ludus_food_orders'))[0].n,0);await query(`select set_config('request.jwt.claims','{"is_anonymous":true}',false)`);await assert.rejects(()=>state(),/Giriş gerekiyor/);await db.exec('reset role');await db.exec('set role anon');await assert.rejects(()=>state(),/permission denied/);
+ await db.close();console.log(JSON.stringify({wineRename:true,newProducts:3,daily100Units:true,twoMeals:true,integerConsumption:true,exactFill:true,variety:true,appleSevenIs105:true,wineDailyCap:true,receiptReplay:true,offline1000:true,rosterHistory:true,rls:true}));
+})().catch(e=>{console.error(e);process.exit(1)});

@@ -20,26 +20,27 @@ var LudusFood=(()=>{
   function render(){
    modal.setAttribute('aria-busy',String(busy));stockTab.setAttribute('aria-pressed',String(tab==='stock'));buyTab.setAttribute('aria-pressed',String(tab==='buy'));summary.replaceChildren();content.replaceChildren();
    if(!state){content.append(el('p','food-empty','Erzaklar yükleniyor…'));return;}
-   for(const [label,value]of [['Gladyatör',num(state.crew_count)],['Tam öğün',num(state.menu.available_meals)+' · '+num(state.menu.meal_days)+' gün'],['Bugünkü menü morali',state.menu.morale===null?'—':num(state.menu.morale)+'/100']]){const s=el('div');s.append(el('small','',label),el('strong','',value));summary.append(s);}
-   content.append(el('p','food-wallet',num(state.gold)+' denarius · Bugün '+num(state.menu.meals)+' / '+num(state.crew_count)+' gladyatöre tam öğün'));
-   const description=el('p','food-rule','1 tam öğün = 1 tahıl + 1 balık veya 1 but. Her gladyatör günde 1 öğün tüketir. Elma ve bira öğüne eklenir; tek başına öğün sayılmaz. Gün Türkiye saatiyle 00.00’da tamamlanır.');content.append(description);
+   for(const [label,value]of [['Gladyatör',num(state.crew_count)],['Günlük beslenme',num(state.menu.units)+' / '+num(state.menu.daily_need)+' birim'],['Bugünkü menü morali',state.menu.morale===null?'—':num(state.menu.morale)+'/100']]){const s=el('div');s.append(el('small','',label),el('strong','',value));summary.append(s);}
+   content.append(el('p','food-wallet',num(state.gold)+' denarius · Stok '+num(state.menu.available_units)+' besin birimi · Eksik '+num(state.menu.missing_units)+' birim'));
+   const benefit=el('p','food-benefit','Aktif toparlanma: +%'+num(state.recovery?.active_bonus||0)+' · '+num(10*(1+(state.recovery?.active_bonus||0)/100))+' enerji / saat. Bugünkü menü kalitesi: '+num(state.menu.quality||0)+'/100 → yarın +%'+num(state.menu.recovery_bonus_percent||0)+'.');content.append(benefit);
+   const description=el('p','food-rule','Her gladyatör günde 100 besin birimi ister: 2 öğün × 50 birim. Ürünler günlük ortak menüde otomatik kullanılır; öğünler için ayrı besleme yoktur. Gün Türkiye saatiyle 00.00’da tamamlanır.');content.append(description);
    if(tab==='buy'){
     const quantities=el('div','food-quantities');quantities.append(el('span','','Her ürün için porsiyon:'));for(const days of [1,3,7])quantities.append(btn(days+' × gladyatör sayısı',()=>{for(const i of state.items)drafts[i.sku]=Math.min(5000,Math.max(1,state.crew_count)*days);render()}));content.append(quantities);
    }
    const grid=el('div','food-grid');
    for(const item of state.items){
-    const card=el('article','food-card');card.dataset.sku=item.sku;const image=el('img');image.src='assets/dining/icons/'+item.sku+'-v56.svg';image.alt='';image.width=96;image.height=96;image.loading='lazy';
-    const info=el('div','food-info');info.append(el('h2','',item.name),el('strong','food-stock',num(item.quantity)+' porsiyon'),el('p','',state.crew_count?num(item.daily)+' adet bugün tüketilecek':'Henüz gladyatör yok'));
+    const card=el('article','food-card');card.dataset.sku=item.sku;const image=el('img');image.src='assets/dining/icons/'+item.sku+'-v57.svg';image.alt='';image.width=96;image.height=96;image.loading='lazy';
+    const info=el('div','food-info');info.append(el('h2','',item.name),el('small','food-value',item.nutrition?num(item.nutrition)+' besin birimi / adet':'Açlığı karşılamaz · Moral katkısı'),el('strong','food-stock',num(item.quantity)+' porsiyon'),el('p','',state.crew_count?num(item.daily)+' adet / gün · '+num(item.daily*item.nutrition)+' birim':'Henüz gladyatör yok'));
     card.append(image,info);
     if(tab==='buy'){
      const form=el('form','food-buy');const label=el('label','','Porsiyon'),input=el('input');input.type='number';input.inputMode='numeric';input.min='1';input.max='5000';input.step='1';input.value=String(drafts[item.sku]??Math.max(1,state.crew_count));input.setAttribute('aria-label',item.name+' porsiyon miktarı');input.disabled=busy||!!pending||!!loading;label.append(input);
      const purchase=btn('');purchase.type='submit';purchase.dataset.buy=item.sku;
      function update(){const q=Number(input.value);drafts[item.sku]=input.value;const valid=Number.isInteger(q)&&q>=1&&q<=5000;purchase.textContent=valid?'Al · '+num(q*item.price)+' denarius':'Geçerli miktar gir';purchase.disabled=busy||!!pending||!!loading||!valid||q*item.price>state.gold||q+item.quantity>50000;}
      input.oninput=update;update();form.onsubmit=e=>{e.preventDefault();purchaseItem(item,Number(input.value));};form.append(el('small','',num(item.price)+' denarius / porsiyon'),label,purchase);card.append(form);
-    }else{const served=state.menu.served.find(s=>s.sku===item.sku)?.quantity||0;card.append(el('span','food-portion',served?num(served)+' porsiyon menüde':item.quantity?'Öğün için bekliyor':'Stok yok'));}
+    }else{const served=state.menu.served.find(s=>s.sku===item.sku)?.quantity||0;card.append(el('span','food-portion',served?num(served)+' adet menüde':item.quantity?'Stokta saklanacak':'Stok yok'));}
     grid.append(card);
    }
-   content.append(grid,el('p','food-note','Balık önce kullanılır, eksik ana yemek butla tamamlanır. Bir öğünde ikisi birden harcanmaz. Öğün başına en fazla 1 elma ve 1 bira eklenir. Tam öğün morali 70; elma +20, bira +10. Eksik öğünde ek ürünler saklanır. Moral bu sürümde beslenme göstergesidir.'));
+   content.append(grid,el('p','food-note','Menü günlük ihtiyacı karşılayan en yakın tam adetleri seçer; fazla birim ek moral vermez. Tam adet tüketilir; kalan ürünler saklanır. Aynı miktarda besin sağlayan seçeneklerde çeşitlilik tercih edilir. Tahıl/ekmek, protein ve meyve çeşitliliği morali destekler. Şarap 5 besin birimidir; kişi başına günde en fazla 1 adet kullanılır. 100 birim tamamlandığında protein ve meyve, menü kalitesini yükseltir. Menü kalitesi ertesi gün enerji toparlanmasına saatte 10 yerine en fazla 15 enerji sağlar. Hazır öğün dengeli menüdür; bonuslar toplanmaz. Şarap moral katkısıdır.'));
    if(state.last_menu)content.append(el('p','food-last',date(state.settled_day)+' · Son hesaplanan günün morali: '+(state.last_menu.morale===null?'—':num(state.last_menu.morale)+'/100')));
    else content.append(el('p','food-last','İlk günlük tüketim bu gece hesaplanacak. Yukarıdaki moral bugünkü stoklarla hazırlanabilecek menüyü gösterir.'));
    if(tab==='stock'&&state.history.length){const details=el('details','food-history');details.append(el('summary','','Tüketim geçmişi'));for(const h of state.history){const days=Math.round((Date.parse(h.to_day)-Date.parse(h.from_day))/86400000)+1;const used=h.menu.served.filter(i=>i.quantity).map(i=>{const name=state.items.find(s=>s.sku===i.sku)?.name||i.sku;return name+' '+num(i.quantity*days);}).join(' · ');details.append(el('p','',(h.from_day===h.to_day?date(h.to_day):date(h.from_day)+' – '+date(h.to_day))+' · '+(used||'Erzak yok')));}content.append(details);}
