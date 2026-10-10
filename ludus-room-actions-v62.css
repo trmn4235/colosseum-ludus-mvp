@@ -1,0 +1,6 @@
+.room-world-action{position:absolute!important;transform:translate(-50%,-50%)!important;width:44px!important;height:44px!important;min-height:44px!important;padding:10px!important;max-width:none!important;z-index:8;border:1px solid #a3a3a04d!important;border-radius:7px!important;background:#272827a6!important;color:#aaa9a4!important;box-shadow:none!important;backdrop-filter:blur(3px);touch-action:manipulation}
+.room-world-action svg{display:block;width:100%;height:100%;pointer-events:none}.room-world-action[hidden]{display:none!important}.room-world-action:focus-visible{outline:2px solid #ccc9bf;outline-offset:3px}
+.room-world-action[data-state="ready"]{color:#e5bd62!important;border-color:#d8af5c99!important}
+#roomUpgradePanel:not([hidden]){display:contents!important;position:static!important;transform:none!important}#roomUpgradePanel[hidden]{display:none!important}
+.tools button{color:#aaa9a4!important;border-color:#98988d44!important;background:#27282790!important}.tools button[data-state="ready"],.tools #messagesOpen:has(#messageUnread:not([hidden])){color:#e5bd62!important;border-color:#d8af5c99!important}
+#interact.room-world-action{bottom:auto!important}

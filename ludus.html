@@ -189,8 +189,10 @@ body[data-roman-screen="ludus"] .tools button:focus-visible{background:transpare
 body[data-roman-screen="ludus"] .tools svg{width:16px!important;height:16px!important}
 body[data-roman-screen="ludus"] .tools #explore{display:none!important}
 @media(max-width:600px){body[data-roman-screen="ludus"] .ludus-menu{gap:4px!important}body[data-roman-screen="ludus"] .ludus-menu #accountSummary{font-size:10px!important;gap:4px!important}body[data-roman-screen="ludus"] #accountSummary svg{width:14px!important;height:14px!important}}
-</style><link rel="stylesheet" href="dining-food-v55.css?v=revision61"><script src="dining-food-v55.js?v=revision61"></script><script src="ludus-dining-v53.js?v=revision57"></script><script src="training-motion-v50.js?v=revision51"></script><script src="training-props-v50.js?v=revision52"></script><script src="training-yard-v51.js?v=revision52"></script><script src="arena-fall-motion-v39.js?v=revision39"></script><script src="arena-ground-fall-v39.js?v=revision41"></script><script src="ludus-door-icons-v41.js?v=revision44"></script><link rel="stylesheet" href="ludus-messages-v41.css?v=revision41"><script src="ludus-messages-v41.js?v=revision41"></script><link rel="stylesheet" href="gladiator-exercise-v46.css?v=49"><script src="gladiator-exercise-v46.js?v=revision60"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision56"></head><body data-roman-screen="ludus"><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="ludus-menu" aria-label="Ludus menüsü"><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div class="tools"><button id="explore" hidden aria-hidden="true" tabindex="-1" disabled></button><button id="friendsOpen" aria-label="Arkadaşlar" title="Arkadaşlar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M2 21v-4a7 7 0 0 1 14 0v4M16 4a3 3 0 0 1 0 6M18 14a5 5 0 0 1 4 5v2"/></svg><span id="friendCount" hidden>0</span></button><button id="messagesOpen" aria-label="Mesajlar" title="Mesajlar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg><span id="messageUnread" hidden></span></button><button id="accountLink" aria-label="Ayarlar" title="Ayarlar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 3 6 0 .7 3.2 2.8-1 3 5.2-2.3 2.2 2.3 2.2-3 5.2-2.8-1-.7 3.2H9l-.7-3.2-2.8 1-3-5.2 2.3-2.2-2.3-2.2 3-5.2 2.8 1Z" transform="translate(0 -1) scale(1 .95)"/><circle cx="12" cy="12" r="3"/></svg></button></div></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
-<div id="labels"></div><button id="interact" hidden></button><button id="roomExit" hidden>← Avluya dön</button><section id="orders" hidden><div><h2 id="ordersTitle"></h2><p id="ordersText"></p><div id="orderButtons"></div><button id="ordersClose">Kapat</button></div></section>
+</style><link rel="stylesheet" href="dining-food-v55.css?v=revision61"><script src="dining-food-v55.js?v=revision61"></script><script src="ludus-dining-v53.js?v=revision57"></script><script src="training-motion-v50.js?v=revision51"></script><script src="training-props-v50.js?v=revision62"></script><script src="training-yard-v51.js?v=revision62"></script><script src="arena-fall-motion-v39.js?v=revision39"></script><script src="arena-ground-fall-v39.js?v=revision41"></script><script src="ludus-door-icons-v41.js?v=revision62"></script><link rel="stylesheet" href="ludus-messages-v41.css?v=revision41"><script src="ludus-messages-v41.js?v=revision41"></script><link rel="stylesheet" href="gladiator-exercise-v46.css?v=49"><script src="gladiator-exercise-v46.js?v=revision60"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision56"><link rel="stylesheet" href="ludus-room-actions-v62.css?v=62">
+<script src="ludus-room-actions-v62.js?v=62"></script>
+</head><body data-roman-screen="ludus"><canvas id="scene" aria-label="Gezilebilir Ludus avlusu"></canvas><div id="vignette"></div><header><small>COLOSSEUM & LUDUS</small><h1>LUDUS</h1><p id="place">Antrenman avlusu · Ludus 5</p></header><div class="ludus-menu" aria-label="Ludus menüsü"><p id="accountSummary" style="position:absolute;left:22px;top:85px;font:11px Arial;color:#fff;text-shadow:0 1px 3px #000"></p><div class="tools"><button id="explore" hidden aria-hidden="true" tabindex="-1" disabled></button><button id="friendsOpen" aria-label="Arkadaşlar" title="Arkadaşlar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M2 21v-4a7 7 0 0 1 14 0v4M16 4a3 3 0 0 1 0 6M18 14a5 5 0 0 1 4 5v2"/></svg><span id="friendCount" hidden>0</span></button><button id="messagesOpen" aria-label="Mesajlar" title="Mesajlar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg><span id="messageUnread" hidden></span></button><button id="accountLink" aria-label="Ayarlar" title="Ayarlar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 3 6 0 .7 3.2 2.8-1 3 5.2-2.3 2.2 2.3 2.2-3 5.2-2.8-1-.7 3.2H9l-.7-3.2-2.8 1-3-5.2 2.3-2.2-2.3-2.2 3-5.2 2.8 1Z" transform="translate(0 -1) scale(1 .95)"/><circle cx="12" cy="12" r="3"/></svg></button></div></div><div id="stick" hidden><div id="knob"></div></div><div id="look" hidden>BAKMAK İÇİN SÜRÜKLE</div><div id="hint">Kumlu avlu · Gladyatör odaları · Üst galeri</div><div id="loading">Ludus hazırlanıyor…</div><section id="notice" hidden><div><p id="noticeText"></p><button id="close">Kapat</button></div></section>
+<div id="labels"></div><button id="interact" hidden></button><button id="roomExit" hidden aria-label="Avluya dön"></button><section id="orders" hidden><div><h2 id="ordersTitle"></h2><p id="ordersText"></p><div id="orderButtons"></div><button id="ordersClose">Kapat</button></div></section>
 <button id="residentStatus" style="position:absolute;left:50%;top:18px;transform:translateX(-50%);font:11px Arial;max-width:35%" disabled>Başlangıç gladyatörleri yükleniyor…</button>
 <script>/*The MIT License
 
@@ -7117,12 +7119,11 @@ const roomQuestButton=document.createElement('button');roomQuestButton.textConte
 function mesh(parent,mat,x,y,z,w,h,d,geo=boxgeo){const m=new T.Mesh(geo,materials[mat]);m.position.set(x,y,z);m.scale.set(w,h,d);m.castShadow=false;m.receiveShadow=true;parent.add(m);return m;}
 mesh(roomScene,'stone',0,-.12,0,10,.24,9);mesh(roomScene,'wall',0,2.5,-4.5,10,5,.3);for(const x of [-5,5])mesh(roomScene,'wall',x,2.5,0,.3,5,9);mesh(roomScene,'wall',0,5,0,10,.2,9);mesh(roomScene,'wood',0,2,4.5,10,4,.25);
 const rooms=[];
-const upgradeObjects=[{x:0,z:0,y:0,name:'GELİŞTİR',kind:'upgrade-table'},{x:2.5,z:0,y:0,name:'Taş Kesesi · Aç',kind:'stone-pouch'}];
+
 const roomUpgradePanel=document.createElement('div');roomUpgradePanel.id='roomUpgradePanel';roomUpgradePanel.hidden=true;
 roomUpgradePanel.style.cssText='position:absolute;left:max(22px,env(safe-area-inset-left));top:156px;display:flex;gap:8px;z-index:8;';
 const roomEnhanceButton=document.createElement('button'),roomPouchButton=document.createElement('button');
-roomEnhanceButton.textContent='GELİŞTİR';roomPouchButton.textContent='Taş Kesesi';
-roomEnhanceButton.style.background='#783b25ee';roomEnhanceButton.setAttribute('aria-label','Ekipman geliştirme ekranını aç');
+roomEnhanceButton.id='roomEnhanceAction';roomPouchButton.id='roomStoneAction';
 roomUpgradePanel.append(roomEnhanceButton,roomPouchButton);document.body.append(roomUpgradePanel);
 function openUpgrades(pouch=false){if(activeRoom?.kind!=='upgrades')return;
  const url=new URL('gelistirmeler.html',window.location.href);url.searchParams.set('v','revision30');if(pouch)url.searchParams.set('pouch','1');
@@ -7131,36 +7132,38 @@ function openUpgrades(pouch=false){if(activeRoom?.kind!=='upgrades')return;
 }
 function openLudusPage(url){if(globalThis.LudusNavigation){LudusNavigation.setOwner(playerAccount?.user_id);LudusNavigation.go(url);}else window.location.href=url;}
 roomEnhanceButton.onclick=()=>openUpgrades();roomPouchButton.onclick=()=>openUpgrades(true);
+const worldActionContext={player,camera,canvas,blocked:()=>paused};
+const roomActions=LudusRoomActions.create({...worldActionContext,T,props:roomProps,colliders:roomColliders,box:boxgeo,cylinder:cylgeo,wood:materials.wood,iron:materials.iron,enhance:roomEnhanceButton,pouch:roomPouchButton,exit:$('roomExit'),inUpgrades:()=>activeRoom?.kind==='upgrades',inRoom:()=>!!activeRoom&&exploring,onError:error=>{console.warn('Taş sandığı modeli',error);notice('Taş sandığı modeli yüklenemedi. Odadan çıkıp yeniden gir.');}});
+roomScene.add(LudusDoorIcons.create(T,'exit','Avluya dön',0,1.72,4.30,.34,Math.PI));
+function roomAttention(kind){
+ if(kind==='office')return Number(levelProgress.state?.claimable_count)>0||LudusImperial.imperialAttention(imperial.data,trainingNow())||!!document.querySelector('[aria-label="Günlük görevleri defterden aç"][data-state="ready"]');
+ if(kind==='dining'||kind==='market')return Number(foodSystem.state?.crew_count)>0&&Number(foodSystem.state?.menu?.missing_units)>0;
+ if(kind==='clan')return !!clanVault?.pending;
+ if(kind==='arena')return !$('pendingBattleNotice')?.hidden&&!!$('pendingBattleNotice');
+ return false;
+}
+const market={x:-10.7,z:-8.7,y:0,name:'Pazarı incele',kind:'market'},gateAction={x:-6,z:-10.7,y:0,name:'Arenaya git',kind:'arena'};
 [-8,0,8].forEach((x,i)=>rooms.push({x,z:11.1,y:3.47,name:['Ludus Yönetim Odası','Klan Odası','Dinlenme Odası'][i],kind:['office','clan','rest'][i]}));
 [-9,-4.5,0,4.5,9].forEach((x,i)=>rooms.push({x,z:11.1,y:0,name:['Geliştirmeler','Silahlık','Revir','Yemekhane','Depo'][i],kind:['upgrades','armory','infirmary','dining','store'][i]}));
 // Centre each half-size badge on the door leaf, slightly above its vertical midpoint.
-for(const room of rooms){const upper=room.y>0;scene.add(LudusDoorIcons.create(T,room.kind,room.name,room.x,(upper?5:1.1)+.2,upper?11.45:11.40));}
-scene.add(LudusDoorIcons.create(T,'arena','Arena',-6,2.47,-11.24,.45,0));
+for(const room of rooms){const upper=room.y>0;room.icon=LudusDoorIcons.create(T,room.kind,room.name,room.x,(upper?5:1.1)+.2,upper?11.45:11.40);scene.add(room.icon);}
+gateAction.icon=LudusDoorIcons.create(T,'arena','Arena',-6,2.47,-11.24,.45,0);scene.add(gateAction.icon);
 // The market uses a wagon: its badge sits on the front wooden panel.
-scene.add(LudusDoorIcons.create(T,'market','Pazar',-11.4,1.2,-9.53,.36,0));
+market.icon=LudusDoorIcons.create(T,'market','Pazar',-11.4,1.2,-9.53,.36,0);scene.add(market.icon);
 
 
 function table(x,z){roomColliders.push({kind:'table',minX:x-1,maxX:x+1,minZ:z-.55,maxZ:z+.55});mesh(roomProps,'wood',x,1,z,2,.18,1.1);for(const a of [-.8,.8])for(const b of [-.4,.4])mesh(roomProps,'wood',x+a,.5,z+b,.12,1,.12);}
 function bed(x,z){roomColliders.push({kind:'bed',minX:x-.75,maxX:x+.75,minZ:z-1.3,maxZ:z+1.3});mesh(roomProps,'wood',x,.35,z,1.5,.6,2.6);mesh(roomProps,'cloth',x,.71,z,1.45,.15,2.5);mesh(roomProps,'wall',x,.84,z-.8,1.1,.2,.5);}
 const diningRoom=LudusDining.create({T,load:ArenaAssetLoad,wood:materials.wood});
-function enterRoom(r){foodSystem.leave();diningRoom.leave();releaseClanRoom();returnPose={...player};activeRoom=r;clear();roomProps.clear();roomColliders.length=0;player.x=0;player.z=2.6;player.y=0;player.yaw=0;player.pitch=0;
+function enterRoom(r){roomActions.leave();foodSystem.leave();diningRoom.leave();releaseClanRoom();returnPose={...player};activeRoom=r;clear();roomProps.clear();roomColliders.length=0;player.x=0;player.z=2.6;player.y=0;player.yaw=0;player.pitch=0;
  if(r.kind==='dining'){diningRoom.enter(roomProps,roomColliders).then(loaded=>{if(loaded&&activeRoom===r)$('hint').textContent='Yemekhane · İki sofra · Kazanlı mutfak · Erzak rafları';}).catch(error=>{if(activeRoom===r)notice('Yemekhane modelleri yüklenemedi. Odadan çıkıp yeniden gir.');console.warn(error);});}else if(r.kind==='clan'){}else if(['rest','quarters','infirmary'].includes(r.kind)){bed(-2,-1);bed(2,-1);table(0,-3);}else if(['store','armory','upgrades'].includes(r.kind)){for(const x of [-3,3])for(const y of [.5,1.6,2.7]){mesh(roomProps,'wood',x,y,-3,2,.15,1);for(let j=0;j<3;j++)mesh(roomProps,r.kind==='armory'?'iron':'cloth',x-.65+j*.65,y+.35,-3,.35,.55,.5);}table(0,0);}else{table(0,-1);mesh(roomProps,'cloth',0,.03,-1,3,.035,4);mesh(roomProps,'wood',0,.55,-2.3,.8,1.1,.7);}
  if(['store','armory','upgrades'].includes(r.kind))for(const x of [-3,3])roomColliders.push({kind:'shelves',minX:x-1,maxX:x+1,minZ:-3.5,maxZ:-2.5});
- if(r.kind==='upgrades'){
-  roomColliders.push({kind:'pouch-stand',minX:2,maxX:3,minZ:-.45,maxZ:.45});
-  // Reuse small room geometries; no GLB downloads or per-frame allocations.
-  mesh(roomProps,'cloth',0,1.12,0,1.65,.05,.85);
-  mesh(roomProps,'iron',-.45,1.20,-.12,.42,.13,.30);
-  mesh(roomProps,'wood',.45,1.19,.08,.48,.10,.18);
-  mesh(roomProps,'wood',2.5,.25,0,1,.50,.90);
-  mesh(roomProps,'cloth',2.5,.81,0,.34,.62,.31,cylgeo);
-  mesh(roomProps,'wood',2.5,1.12,0,.24,.06,.24,cylgeo);
- }
+ if(r.kind==='upgrades')roomActions.enter();
  if(r.kind==='office')imperial.enter();else imperial.leave();
- if(r.kind==='dining')foodSystem.enter();if(r.kind==='clan')loadClanRoom();roomQuestPanel.hidden=true;roomUpgradePanel.hidden=r.kind!=='upgrades';$('roomExit').hidden=false;$('hint').textContent=r.kind==='dining'?'Yemekhane hazırlanıyor…':r.kind==='clan'?'Klan bayrağı · Kupa rafları · Klan salonunu aç':r.kind==='upgrades'?'GELİŞTİR veya Taş Kesesi butonuna dokun':'Ayrı oda sahnesi · Avluya dönerek diğer odaları gez';$('place').textContent=r.name;
+ if(r.kind==='dining')foodSystem.enter();if(r.kind==='clan')loadClanRoom();roomQuestPanel.hidden=true;roomUpgradePanel.hidden=r.kind!=='upgrades';$('roomExit').hidden=false;$('hint').textContent=r.kind==='dining'?'Yemekhane hazırlanıyor…':r.kind==='clan'?'Klan bayrağı · Kupa rafları · Klan salonunu aç':r.kind==='upgrades'?'Masadaki çekiç · Taş sandığı':'Ayrı oda sahnesi · Avluya dönerek diğer odaları gez';$('place').textContent=r.name;
 }
-function leaveRoom(){if(!activeRoom)return;foodSystem.leave();diningRoom.leave();imperial.leave();releaseClanRoom();Object.assign(player,returnPose);activeRoom=null;roomQuestPanel.hidden=true;roomUpgradePanel.hidden=true;$('roomExit').hidden=true;$('hint').textContent='Kapıya yaklaş · Gladyatörün ismine dokun';}
-$('roomExit').onclick=leaveRoom;
+function leaveRoom(){if(!activeRoom)return;roomActions.leave();foodSystem.leave();diningRoom.leave();imperial.leave();releaseClanRoom();Object.assign(player,returnPose);activeRoom=null;roomQuestPanel.hidden=true;roomUpgradePanel.hidden=true;$('roomExit').hidden=true;$('hint').textContent='Kapıya yaklaş · Gladyatörün ismine dokun';}
+$('roomExit').onclick=()=>leaveRoom();
 // The former records room is now the clan hall. The rear wall faces its door.
 const roomClanPanel=document.createElement('div');roomClanPanel.id='roomClanPanel';roomClanPanel.hidden=true;
 roomClanPanel.style.cssText='position:absolute;right:max(12px,env(safe-area-inset-right));bottom:max(52px,env(safe-area-inset-bottom));z-index:8;display:flex;align-items:center;gap:8px;padding:5px 8px;background:#541d2bd9;border:1px solid #c7a967;border-radius:6px;color:#f4e3bf;max-width:48vw;';
@@ -7205,7 +7208,7 @@ function label(text){const el=document.createElement('button');el.className='wor
 for(const s of stations){s.label=label('');s.label.hidden=true;s.label.disabled=true;s.anchor=new T.Vector3(s.x,2.6,s.z);}
 // Lightweight market wagon: wooden bed, iron tyres, shafts and a fabric canopy.
 const cart=new T.Group();scene.add(cart);cart.position.set(-11.4,0,-10.4);cart.rotation.y=Math.PI/2;mesh(cart,'wood',0,.85,0,1.5,.18,2.3);for(const x of [-.78,.78]){mesh(cart,'wood',x,1.15,0,.12,.5,2.3);for(const z of [-.8,.8]){const wheel=mesh(cart,'wood',x,.5,z,1,1,1,new T.TorusGeometry(.42,.055,5,16));wheel.rotation.y=Math.PI/2;const hub=mesh(cart,'iron',x,.5,z,.11,.17,.11,cylgeo);hub.rotation.z=Math.PI/2;for(let spoke=0;spoke<6;spoke++){const bar=mesh(cart,'wood',x,.5,z,.055,.75,.055);bar.rotation.x=spoke*Math.PI/6;}}}for(const x of [-.65,.65]){mesh(cart,'wood',x,.55,2,.08,.08,2);for(const z of [-1,1])mesh(cart,'wood',x,1.65,z,.07,1.5,.07);}mesh(cart,'cloth',0,2.42,0,1.7,.09,2.6);for(let i=0;i<3;i++)mesh(cart,'wood',-.45+i*.45,1.08,0,.35,.4,.7);colliders.push({x:-10.7,z:-10.4,half:1.7});
-const market={x:-10.7,z:-8.7,y:0,name:'Pazarı incele',kind:'market'},gateAction={x:-6,z:-10.7,y:0,name:'Arenaya git',kind:'arena'};
+
 materials.skin=new T.MeshStandardMaterial({color:0xb68462,roughness:1});materials.team=new T.MeshStandardMaterial({color:0x365f83,roughness:.9});const headGeo=new T.SphereGeometry(1,10,8);
 const starters=[{name:'Cassius',type:'hoplomachus'},{name:'Titus',type:'retiarius'}];
 let saved={};try{saved=JSON.parse(localStorage.getItem('ludus-starter-orders-v4')||'{}');}catch(e){}
@@ -7225,8 +7228,11 @@ function updateActivities(dt){if(activeRoom)$('place').textContent=activeRoom.na
  const distance=Math.hypot(g.body.position.x-player.x,g.body.position.z-player.z);projectLabel(g.label,g.body.position.clone().add(new T.Vector3(0,2.12,0)),!!g.model&&exploring&&!activeRoom&&!paused&&player.y<1&&distance<5.5);
  }
  for(const s of stations)s.label.hidden=true;
- nearest=null;if(exploring&&!paused){let best=2.05;const targets=activeRoom?(activeRoom.kind==='upgrades'?upgradeObjects:[]):[...rooms,market,gateAction];for(const r of targets){const d=Math.hypot(player.x-r.x,player.z-r.z);if(Math.abs(player.y-r.y)<.6&&d<best){best=d;nearest=r;}}}
- $('interact').hidden=!nearest||activeRoom?.kind==='upgrades';if(nearest)$('interact').textContent=['arena','market','upgrade-table','stone-pouch'].includes(nearest.kind)?nearest.name:nearest.name+' · Gir';
+ nearest=null;if(exploring&&!paused){let best=2.05;const targets=activeRoom?[]:[...rooms,market,gateAction];for(const r of targets){const d=Math.hypot(player.x-r.x,player.z-r.z);if(Math.abs(player.y-r.y)<.6&&d<best){best=d;nearest=r;}}}
+ const action=$('interact');action.hidden=true;
+ if(nearest&&!activeRoom){const label=['arena','market'].includes(nearest.kind)?nearest.name:nearest.name+' · Gir';if(action.dataset.kind!==nearest.kind){action.classList.add('room-world-action');action.dataset.kind=nearest.kind;action.innerHTML=LudusDoorIcons.svg(nearest.kind);}action.title=label;action.setAttribute('aria-label',label);action.dataset.state=roomAttention(nearest.kind)?'ready':'idle';LudusRoomActions.place(action,nearest.icon.position,worldActionContext,true);}
+ for(const room of [...rooms,market,gateAction])LudusDoorIcons.setAttention(T,room.icon,roomAttention(room.kind));
+ roomActions.tick();
 }
 
 const ludusPose=p=>p&&Object.fromEntries(['x','z','y','yaw','pitch'].map(k=>[k,p[k]]));
@@ -7374,7 +7380,7 @@ roomQuestButton.onclick=()=>imperial.openDaily();
 let foodPause=false;const foodSystem=LudusFood.create({client:accountClient,ready:accountReady,inRoom:()=>activeRoom?.kind==='dining',blocked:()=>paused,onOpen:()=>{foodPause=paused;clear();paused=true;},onClose:()=>{clear();paused=foodPause;},onWallet:gold=>{if(playerAccount)playerAccount.gold=gold;const coin=$('accountSummary').querySelector('.money');if(coin?.lastChild)coin.lastChild.textContent=String(gold);}});
 let clanVaultPause=false;
 clanVault=LudusClanVault.create({client:accountClient,ready:accountReady,props:roomProps,player,camera,canvas,inRoom:()=>activeRoom?.kind==="clan",blocked:()=>paused,setCollider:c=>{roomColliders.splice(0,roomColliders.length,...roomColliders.filter(x=>x.kind!=="clan-chest"),c);if(!allowed(player.x,player.z)){player.x=0;player.z=2.6;}},onOpen:()=>{clanVaultPause=paused;clear();paused=true;},onClose:()=>{clear();paused=clanVaultPause;},onTransfer:data=>{const counts={};for(const s of data.inventory_stones||[])counts[s.family]=(counts[s.family]||0)+s.quantity;const values=[data.wallet?.gold||0,counts.diamond||0,counts.sapphire||0,counts.emerald||0,counts.ruby||0];$("accountSummary").querySelectorAll(".money").forEach((node,i)=>{node.lastChild.textContent=String(values[i]);});}});
-window.LudusPreview={exercisePanel,refreshTraining,showGladiator,imperial,levelProgress,clanVault,city,viewSettings,get paused(){return paused;},get inputKeys(){return [...keys];},get cameraDistance(){return cameraDistance;},get ownerVelocity(){return ownerVelocity;},get ownerAvatar(){return ownerAvatar;},followOwner,setOwnerAppearance,toggleExplore,get exploring(){return exploring;},cameraObstacles,accountReady,residentsReady,gateAction,market,cart,scene,camera,player,move,floorAt,renderer,rooms,roster,stations,colliders,roomColliders,diningRoom,foodSystem,roomProps,roomScene,galleryPosts,allowed,assign,enterRoom,leaveRoom,updateActivities,updateResidents,courtyardTraining};
+window.LudusPreview={exercisePanel,refreshTraining,showGladiator,imperial,levelProgress,clanVault,city,viewSettings,get paused(){return paused;},get inputKeys(){return [...keys];},get cameraDistance(){return cameraDistance;},get ownerVelocity(){return ownerVelocity;},get ownerAvatar(){return ownerAvatar;},followOwner,setOwnerAppearance,toggleExplore,get exploring(){return exploring;},cameraObstacles,accountReady,residentsReady,gateAction,market,cart,scene,camera,player,move,floorAt,renderer,rooms,roster,stations,colliders,roomColliders,diningRoom,foodSystem,roomProps,roomScene,galleryPosts,allowed,assign,enterRoom,leaveRoom,updateActivities,updateResidents,courtyardTraining,roomActions};
 })();
 </script>
 <style id="gameViewportStyle">
