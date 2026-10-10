@@ -75,6 +75,7 @@ return {load,prepare};
  control('duelDodge','dodge','KAÇIŞ','Kaçış')+'</div><div id="duelRegionHint" hidden role="status"></div>';
  $('mpBack').textContent='‹';$('mpBack').setAttribute('aria-label','Savaş hazırlığına dön');
  for(const id of ['self','rival']){const meter=document.createElement('progress');meter.id=id+'Stamina';meter.className='mp-stamina';meter.max=meter.value=100;meter.setAttribute('aria-label',id==='self'?'Kondisyonun':'Rakibin kondisyonu');$(id+'Hp').after(meter);$(id+'Hp').setAttribute('aria-label',id==='self'?'Canın':'Rakibin canı');}
+ const foodBonusLabel=document.createElement('small');foodBonusLabel.id='selfFoodBonus';foodBonusLabel.className='mp-food-bonus';foodBonusLabel.hidden=true;$('selfStamina').after(foodBonusLabel);
  let selectedRegion='chest',attackRegion='chest',hand='main_hand',attackHand='main_hand',attackGesture=null,dodgeId=null,dodge=false,preparePromise=null;
  const blockPointers=new Set();
  let owner=null,room=null,pending=false,stopped=false,scene,renderer,camera,ready=false,last=performance.now(),keys=new Set(),joy={x:0,z:0},attacks=0,special=false,block=false,failure=0,locked=null,clockOffset=0,attackId=null,inputDirty=false,nextStep=null;
@@ -113,6 +114,7 @@ return {load,prepare};
   $('duelSpecial').hidden=selectedWeapon()?.model!=='whip';$('duelHand').hidden=!enhanced()||weapons().length<2;$('duelHand').classList.toggle('off-hand',hand==='off_hand');$('duelDodge').hidden=!enhanced();
   $('duelBlock').disabled=!(p?.items||[]).some(i=>i.kind==='shield'&&i.equipped_slot==='off_hand');$('duelBlock').setAttribute('aria-pressed',String(block));
   for(const [id,f] of [['self',p],['rival',t]]){$(id+'Hp').max=f?.maxHp||100;$(id+'Stamina').max=f?.maxStamina||100;$(id+'Stamina').value=f?.stamina??100;$(id+'Stamina').hidden=!enhanced();}
+  const foodBonus=Math.min(12,Math.max(0,Number(p?.gladiator?.combat_stamina_bonus)||0));foodBonusLabel.hidden=!enhanced()||!foodBonus||p?.hp<=0||room.status!=='playing';foodBonusLabel.textContent='Beslenme +%'+foodBonus;foodBonusLabel.title='Savaş içindeki kondisyon yenilenmesi +%'+foodBonus+' · Tüketilmiş menü';
   $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<25;
   $('duelTarget').classList.toggle('locked',!!locked);$('duelTarget').setAttribute('aria-pressed',String(!!locked));
   $('queueNames').textContent=room.players.slice(0,6).map(x=>x.name).join(' · ')+(room.players.length>6?' · +'+(room.players.length-6):'');

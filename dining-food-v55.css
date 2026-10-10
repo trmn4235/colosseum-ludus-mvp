@@ -8,4 +8,4 @@
 
 .food-value{display:block;font:10px/1.4 Arial;color:#74656c;margin-bottom:5px}
 
-.food-benefit{font:12px/1.5 Arial;color:#591823;background:#faf8f4;border-left:3px solid #b38b43;padding:8px 10px;margin:8px 0}
+.food-benefit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0;font:12px/1.5 Arial;color:#591823}.food-bonus{min-width:0;border:1px solid #c7a96766;border-top:3px solid #b38b43;background:#fff;padding:9px 12px;border-radius:4px}.food-bonus small{display:block;color:#74656c;font-size:11px}.food-bonus strong{display:block;margin:3px 0;font:bold 24px/1.2 Georgia;color:#591823}.food-bonus span{display:block;font-size:11px;overflow-wrap:anywhere}.food-effect-rule,.food-cost-note{font:11px/1.5 Arial;color:#66565e;margin:6px 0}.food-cost{font:bold 12px/1.5 Arial;color:#591823;margin:10px 0 2px}@media(max-height:450px){.food-bonus{padding:7px 9px}.food-bonus strong{font-size:21px}}@media(max-width:420px){.food-benefit{grid-template-columns:1fr}}

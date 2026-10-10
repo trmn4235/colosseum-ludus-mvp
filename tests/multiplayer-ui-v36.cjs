@@ -6,7 +6,7 @@ const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||requi
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.glb':'model/gltf-binary','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg'};
 let cleanup=async()=>{};
 async function main(){
- const db=await createDatabase();await setMatch(db);let chain=Promise.resolve(),failNextAttack=false,lostAttackState;const inputs=[],actionStates=[];
+ const db=await createDatabase();const advance=fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_combat_food_stamina_v60.sql')),'utf8').match(/CREATE OR REPLACE FUNCTION private\.ludus_advance_combat_v36[\s\S]*?end; \$function\$/)[0];await db.exec(advance+';');const fed=players();fed[0].gladiator.combat_stamina_bonus=12;await setMatch(db,fed);let chain=Promise.resolve(),failNextAttack=false,lostAttackState;const inputs=[],actionStates=[];
  const serialized=fn=>{const next=chain.then(fn);chain=next.catch(()=>{});return next;};
  const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://fixture.local');
@@ -25,7 +25,7 @@ async function main(){
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
  const browser=process.env.LUDUS_TEST_ENGINE==='webkit'?await webkit.launch({headless:true}):await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/tmp/chromium',headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
- cleanup=async()=>{await browser.close();await new Promise(r=>server.close(r));await db.close();};
+ let bootHeartbeat;cleanup=async()=>{clearInterval(bootHeartbeat);await browser.close();await new Promise(r=>server.close(r));await db.close();};
  const errors=[],pages=[];
  async function open(owner){
   const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,deviceScaleFactor:1});const p=await context.newPage();pages.push(p);
@@ -34,7 +34,7 @@ async function main(){
   await p.route('**/*',async route=>{
    const u=new URL(route.request().url());
    if(u.pathname.endsWith('/multiplayer-v36.js')){
-    const setup=`const fixtureUser={id:window.fixtureOwner,is_anonymous:false};supabase.createClient=()=>({auth:{getUser:async()=>({data:{user:fixtureUser},error:null}),getSession:async()=>({data:{session:{user:fixtureUser}},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},rpc:async(name,args)=>{const response=await fetch('/fixture/rpc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name,args,owner:fixtureUser.id})});if(!response.ok)throw Error('Lost response');return response.json();}});const fixtureAdd=THREE.Scene.prototype.add;THREE.Scene.prototype.add=function(...objects){for(const o of objects)if(o.name==='Neberkenezer_Colosseum'){window.fixtureArena=o;window.fixtureScene=this;}return fixtureAdd.apply(this,objects);};`;
+    const setup=`const fixtureUser={id:window.fixtureOwner,is_anonymous:false};supabase.createClient=()=>({auth:{getUser:async()=>({data:{user:fixtureUser},error:null}),getSession:async()=>({data:{session:{user:fixtureUser}},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},rpc:async(name,args)=>{const response=await fetch('/fixture/rpc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name,args,owner:fixtureUser.id})});if(!response.ok)throw Error('Lost response');const result=await response.json();if(name==='ludus_match')window.fixtureLastMatch=result.data;return result;}});const fixtureAdd=THREE.Scene.prototype.add;THREE.Scene.prototype.add=function(...objects){for(const o of objects)if(o.name==='Neberkenezer_Colosseum'){window.fixtureArena=o;window.fixtureScene=this;}return fixtureAdd.apply(this,objects);};`;
     return route.fulfill({contentType:'text/javascript',body:setup+fs.readFileSync(root+'/multiplayer-v36.js','utf8')});
    }
    if(u.origin===base)return route.continue();
@@ -46,8 +46,11 @@ async function main(){
   catch(e){console.error('Fixture loading state:',await p.locator('#queueMessage').textContent(),await p.locator('#queueCaption').textContent(),errors);throw e;}
   return p;
  }
- const a=await open(A),b=await open(B);
+ // Both fixture players remain connected while the headless renderer loads their models.
+ bootHeartbeat=setInterval(()=>serialized(async()=>{await call(db,A,'state');await call(db,B,'state');}).catch(()=>{}),2000);
+ const a=await open(A),b=await open(B);clearInterval(bootHeartbeat);
  assert.equal(await a.locator('#selfName').textContent(),'Hoplomachus');assert.equal(await b.locator('#selfName').textContent(),'Cassius');
+ assert.equal(await a.locator('#selfFoodBonus').innerText(),'Beslenme +%12');assert.match(await a.locator('#selfFoodBonus').getAttribute('title'),/Savaş içindeki kondisyon/);assert.equal(await b.locator('#selfFoodBonus').isHidden(),true,JSON.stringify(await b.locator('#selfFoodBonus').evaluate(n=>({hidden:n.hidden,text:n.textContent,display:getComputedStyle(n).display,name:document.querySelector('#selfName').textContent}))));
  const overlap=(a,b)=>a.left<b.right-.5&&b.left<a.right-.5&&a.top<b.bottom-.5&&b.top<a.bottom-.5;
  for(const [width,height]of [[667,375],[740,360],[844,390],[852,393],[932,430],[1024,768],[1366,768],[2048,944]]){
   await a.setViewportSize({width,height});await a.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
@@ -61,7 +64,7 @@ async function main(){
  }
  await a.setViewportSize({width:844,height:390});
  await a.locator('#duelTarget').click();assert.equal(await a.locator('#duelTarget').getAttribute('aria-pressed'),'true');await a.locator('#duelTarget').click();assert.equal(await a.locator('#duelTarget').getAttribute('aria-pressed'),'false');
- async function fresh(){await serialized(()=>setMatch(db));await a.waitForFunction(()=>document.getElementById('selfHp').value===100&&document.getElementById('rivalHp').value===100&&document.getElementById('selfStamina').value===100);}
+ async function fresh(){await serialized(()=>setMatch(db));await a.waitForFunction(()=>document.getElementById('selfHp').value===100&&document.getElementById('rivalHp').value===100&&document.getElementById('selfStamina').value===100);await a.locator('#selfFoodBonus').waitFor({state:'hidden'});}
  for(const [region,dx,dy]of [['chest',0,0],['head',0,-35],['legs',0,35],['leftArm',-35,0],['rightArm',35,0]]){
   await fresh();const n=inputs.length,box=await a.locator('#duelAttack').boundingBox(),x=box.x+box.width/2,y=box.y+box.height/2;
   await a.mouse.move(x,y);await a.mouse.down();await a.mouse.move(x+dx,y+dy);await a.mouse.up();
@@ -74,7 +77,7 @@ async function main(){
  assert.equal(lostAttackState.players[0].stamina,87,'one attack costs 13 at acceptance');
  let state=await serialized(()=>call(db,A,'state'));assert.equal(state.players[0].serial,1);assert.ok(state.players[0].stamina>=87&&state.players[0].stamina<=100,'retry adds no cost; time may regenerate stamina');
  await fresh();const block=await a.locator('#duelBlock').boundingBox();await a.mouse.move(block.x+block.width/2,block.y+block.height/2);await a.mouse.down();
- await a.waitForFunction(()=>document.getElementById('duelBlock').classList.contains('pressed'));state=await serialized(()=>call(db,A,'state'));assert.equal(state.players[0].block,true);
+ await a.waitForFunction(()=>document.getElementById('duelBlock').classList.contains('pressed')&&window.fixtureLastMatch?.players.find(p=>p.owner===window.fixtureOwner)?.block===true);state=await serialized(()=>call(db,A,'state'));assert.equal(state.players[0].block,true);
  await a.mouse.up();await a.waitForFunction(()=>!document.getElementById('duelBlock').classList.contains('pressed'));
  await fresh();const dn=actionStates.length;await a.locator('#duelDodge').click();await a.waitForFunction(()=>document.getElementById('selfStamina').value<80);state=await serialized(()=>call(db,A,'state'));assert.equal(state.players[0].dodge_serial,1);assert.equal(actionStates.slice(dn).find(x=>x.owner===A&&x.input.dodge).data.players[0].stamina,75,'one dodge costs 25 at acceptance');
  await fresh();await a.screenshot({path:path.join(out,'multiplayer-v36-844x390.png')});

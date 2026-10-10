@@ -22,7 +22,14 @@ var LudusFood=(()=>{
    if(!state){content.append(el('p','food-empty','Erzaklar yükleniyor…'));return;}
    for(const [label,value]of [['Gladyatör',num(state.crew_count)],['Günlük beslenme',num(state.menu.units)+' / '+num(state.menu.daily_need)+' birim'],['Bugünkü menü morali',state.menu.morale===null?'—':num(state.menu.morale)+'/100']]){const s=el('div');s.append(el('small','',label),el('strong','',value));summary.append(s);}
    content.append(el('p','food-wallet',num(state.gold)+' denarius · Stok '+num(state.menu.available_units)+' besin birimi · Eksik '+num(state.menu.missing_units)+' birim'));
-   const benefit=el('p','food-benefit','Kondisyon yenilenmesi · Savaş içi aktif yemek bonusu: +%'+num(state.combat?.active_bonus||0)+'. Bugünkü menü: yarın +%'+num(state.menu.stamina_bonus_percent||0)+'.');content.append(benefit);
+   const benefit=el('div','food-benefit'),active=Number(state.combat?.active_bonus)||0,forecast=Number(state.menu.stamina_bonus_percent)||0;
+   const menuName=bonus=>bonus>=12?'Dengeli menü':bonus>=8?'Protein/meyve katkılı menü':bonus>=4?'Temel menü':'Yemek bonusu yok';
+   for(const [label,bonus,detail]of [['Savaş içi · Bugün',active,menuName(active)+' · Yeni savaşlarda geçerli'],['Menü · Yarın',forecast,state.crew_count?forecast?menuName(forecast)+' · Günlük tüketimden sonra':num(state.menu.missing_units)+' besin birimi eksik':'Henüz gladyatör yok']]){
+    const card=el('div','food-bonus');card.append(el('small','',label),el('strong','','+%'+num(bonus)),el('span','',detail));benefit.append(card);
+   }
+   content.append(benefit,el('p','food-effect-rule','Yemek bonusu savaş sırasında kondisyonun yenilenme hızını artırır. Bugünkü menü Türkiye saatiyle 00.00’da tüketilir ve yarının bonusunu belirler.'));
+   const prices=new Map(state.items.map(i=>[i.sku,Number(i.price)||0]));const dailyCost=state.menu.served.reduce((sum,i)=>sum+(Number(i.quantity)||0)*(prices.get(i.sku)||0),0);
+   content.append(el('p','food-cost','Planlanan menü: '+num(dailyCost)+' denarius / gün'+(state.crew_count?' · '+num(dailyCost/state.crew_count)+' / gladyatör':'')),el('p','food-cost-note','Bu, tüketilecek erzakların pazar değeridir. Ücret alımda ödenir; günlük tüketimde yeniden kesilmez.'));
    const description=el('p','food-rule','Her gladyatör günde 100 besin birimi ister: 2 öğün × 50 birim. Ürünler günlük ortak menüde otomatik kullanılır; öğünler için ayrı besleme yoktur. Gün Türkiye saatiyle 00.00’da tamamlanır.');content.append(description);
    if(tab==='buy'){
     const quantities=el('div','food-quantities');quantities.append(el('span','','Her ürün için porsiyon:'));for(const days of [1,3,7])quantities.append(btn(days+' × gladyatör sayısı',()=>{for(const i of state.items)drafts[i.sku]=Math.min(5000,Math.max(1,state.crew_count)*days);render()}));content.append(quantities);

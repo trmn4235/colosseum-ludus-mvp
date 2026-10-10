@@ -16,6 +16,7 @@
 .mp-health progress::-moz-progress-bar{background:linear-gradient(#9e403b,#742421)}
 .mp-health progress.mp-stamina{height:5px;margin-top:3px;border-color:#c7b98b88}
 .mp-health .mp-stamina::-webkit-progress-value{background:#cbb575}.mp-health .mp-stamina::-moz-progress-bar{background:#cbb575}
+.mp-health .mp-food-bonus{display:block;margin-top:4px;color:#f0dba2;font:10px/1.25 Arial;text-shadow:0 1px 3px #000}.mp-food-bonus[hidden]{display:none!important}
 #duelControls{--mp-size:clamp(47px,14dvh,72px);--mp-attack:clamp(62px,19dvh,90px);--mp-small:clamp(30px,9dvh,44px);--mp-gap:clamp(5px,1.6dvh,10px);touch-action:none;user-select:none;-webkit-user-select:none}
 #duelStick{left:max(22px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));width:clamp(92px,27dvh,144px);border:1px solid #dfca9370;background:radial-gradient(#2d211744,#201b1733);box-shadow:inset 0 0 0 5px #dfcf9518}
 #duelKnob{position:absolute;width:40%;height:40%;background:radial-gradient(#aa8c5966,#65472a55);border:1px solid #e8d09b99;box-shadow:0 2px 7px #0003}
