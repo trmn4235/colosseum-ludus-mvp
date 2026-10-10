@@ -6,15 +6,12 @@
  const format=n=>Number(n??0).toLocaleString('tr-TR',{maximumFractionDigits:2});
  function profile(type){return Object.fromEntries(attributes.map(([key],i)=>[key,(profiles[type]||Array(7).fill(50))[i]]));}
  function mean(stats){return attributes.reduce((sum,[key])=>sum+Number(stats[key]||0),0)/7;}
- const baseRecovery=6.5;
- function recoveryRate(g,now=Date.now()){
-  return Date.parse(g.recovery_rate_until)>now?Math.min(7.28,Math.max(baseRecovery,Number(g.recovery_rate)||baseRecovery)):baseRecovery;
- }
+ const baseRecovery=10;
+ function recoveryRate(){return baseRecovery;}
  function energy(g,now=Date.now()){
   const value=Number(g.fatigue_value??g.fatigue??0),from=Date.parse(g.fatigue_rest_from);
-  const hours=Number.isFinite(from)?Math.max(0,now-from)/3600000:0,until=Date.parse(g.recovery_rate_until),rate=Math.min(7.28,Math.max(baseRecovery,Number(g.recovery_rate)||baseRecovery));
-  const bonusHours=Number.isFinite(from)&&Number.isFinite(until)?Math.max(0,Math.min(now,until)-from)/3600000:0;
-  return Math.min(100,Math.max(0,100-value+hours*baseRecovery+bonusHours*(rate-baseRecovery)));
+  const hours=Number.isFinite(from)?Math.max(0,now-from)/3600000:0;
+  return Math.min(100,Math.max(0,100-value+hours*baseRecovery));
  }
  function combatStats(g){
   const s=g.base_stats||profile(g.class),v=key=>Number(s[key]??50);
