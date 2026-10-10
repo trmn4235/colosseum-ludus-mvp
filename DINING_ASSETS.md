@@ -25,3 +25,7 @@ To rebuild, download the listed GLBs into the paths in `tools/build-dining-kit-v
 ```sh
 python tools/build-dining-kit-v53.py /path/to/sources assets/dining/dining-kit-v54.glb
 ```
+
+## V55 pantry thumbnails
+
+The stock cards use ready model-preview PNGs from the same pinned CC0 mirror above: Bag, FarmCrate_Apple, Kenney barrel, KayKit food_ingredient_ham and Quaternius Prop_Fish_Mackerel. Five 256px thumbnails total 13591 bytes; no additional 3D assets are loaded for the supply panel.
