@@ -3,7 +3,7 @@
  const categories=['Silahlar','Kalkanlar','Miğferler','Göğüs Zırhı','Omuzluk','Bacaklık','Gıda'];
  let catalog=[],category=categories[0],owner=null,busy=true,pending=null,coins=0,productPage=0,foodState=null; 
  globalThis.LudusNavigation?.register(()=>({category,productPage}));
- function balance(){ $('balance').textContent='◉ '+coins+' denarius'; }
+ function balance(){ $('balance').textContent='◉ '+coins.toLocaleString('tr-TR')+' denarius';globalThis.dispatchEvent(new CustomEvent('ludus-basic-market-gold',{detail:{gold:coins}})); }
  function message(text){$('message').textContent=text;}
  function render(){
   $('categories').replaceChildren();for(const c of categories){const b=document.createElement('button');b.textContent=c;b.className=c===category?'active':'';b.setAttribute('aria-pressed',String(c===category));b.onclick=()=>{category=c;productPage=0;render();};$('categories').append(b);}
@@ -31,6 +31,8 @@
  }
  function purchase(item,quantity){if(busy||pending)return;pending={owner,sku:item.sku,request:crypto.randomUUID(),...(item.kind==='food'?{kind:'food',quantity}:{})};try{localStorage.setItem(storageKey,JSON.stringify(pending));}catch{pending=null;message('Güvenli işlem kaydı oluşturulamadı. Tarayıcı depolamasını açıp tekrar dene.');return;}submit();}
  async function load(){busy=true;message('Pazar hazırlanıyor…');try{const u=await client.auth.getUser();if(u.error||!u.data.user||u.data.user.is_anonymous){location.replace('index.html');return;}owner=u.data.user.id;globalThis.LudusNavigation?.setOwner(owner);const restored=globalThis.LudusNavigation?.restore();if(categories.includes(restored?.category))category=restored.category;if(Number.isInteger(restored?.productPage)&&restored.productPage>=0)productPage=restored.productPage;const [a,c,f]=await Promise.all([client.from('ludus_accounts').select('gold').eq('user_id',owner).single(),client.from('ludus_shop_catalog').select('*').order('sku'),client.rpc('ludus_food_state')]);if(a.error||c.error||f.error)throw a.error||c.error||f.error;coins=Number(a.data.gold);catalog=c.data.map(it=>({...it,name:LudusArmourName(it)||(it.kind==='helmet'?LUDUS_HELMET_NAMES[it.model]:null)||it.name,category:it.kind==='gloves'?'Omuzluk':it.category}));adoptFood(f.data);coins=Number(f.data.gold);try{const saved=JSON.parse(localStorage.getItem(storageKey));if(saved?.owner===owner)pending=saved;}catch{}balance();message('');busy=false;render();if(pending)await submit();}
-  catch(e){message('Pazar yüklenemedi: '+e.message);$('retry').hidden=false;}finally{busy=false;}}
+   catch(e){message('Pazar yüklenemedi: '+e.message);$('retry').hidden=false;}finally{busy=false;globalThis.dispatchEvent(new CustomEvent('ludus-basic-market-ready',{detail:{owner,gold:coins}}));}}
+ globalThis.LudusBasicMarket={client,getOwner:()=>owner,getGold:()=>coins,getNavigationState:()=>({category,productPage}),
+  setGold:value=>{if(Number.isFinite(Number(value))){coins=Number(value);balance();render();}},refresh:load};
  $('retry').onclick=()=>pending?submit():load();load();
 })();
