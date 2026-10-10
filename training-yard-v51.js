@@ -53,6 +53,7 @@
   const {T,scene,camera,props}=options,entries=new Map(),frustum=new T.Frustum(),matrix=new T.Matrix4(),sphere=new T.Sphere(new T.Vector3(),1.65);let signature='',instructor=null,metrics={active:0,hidden:0,pairs:0};
   const layout=props.layout;
   function bound(point,padding=1.25){if(!layout)return point;const b=layout.bounds;point.x=Math.max(b.minX+padding,Math.min(b.maxX-padding,point.x));point.z=Math.max(b.minZ+padding,Math.min(b.maxZ-padding,point.z));return point;}
+  function postOrigin(p){const at=bound({x:p.x-1.2,z:p.z});at.angle=Math.atan2(p.x-at.x,p.z-at.z);return at;}
   function route(g,at){if(layout){const p=bound({x:g.body.position.x,z:g.body.position.z});g.body.position.set(p.x,0,p.z);}g.path=[{x:g.body.position.x,z:at.z},{x:at.x,z:at.z}];}
   function isVisible(x,z){sphere.center.set(x,1,z);return frustum.intersectsSphere(sphere);}
   function beginFrame(){camera.updateMatrixWorld();matrix.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);frustum.setFromProjectionMatrix(matrix);metrics.active=metrics.hidden=0;}
@@ -66,7 +67,7 @@
    if(layout){
     // Fixed practice stations share their twenty-second visual turns. Sessions and awards remain server-owned.
     const pairLanes=layout.pairs.map(()=>({members:[]})),weightLanes=layout.weights.map(()=>({members:[]})),postLanes=layout.posts.map(()=>({members:[]}));
-    const reserved=[...layout.pairs.flatMap(p=>[-.82,.82].map(d=>({x:p.x,z:p.z+d,r:1.15}))),...layout.weights.map(p=>({...p,r:1.65})),...layout.posts.map(p=>({x:p.x-1.2,z:p.z,r:1.15}))];
+    const reserved=[...layout.pairs.flatMap(p=>[-.82,.82].map(d=>({x:p.x,z:p.z+d,r:1.15}))),...layout.weights.map(p=>({...p,r:1.65})),...layout.posts.map(p=>({...postOrigin(p),r:1.15}))];
     const waiting=[];for(let z=layout.bounds.maxZ-1.10;z>layout.bounds.minZ+1.04;z-=1.08)for(let x=layout.bounds.minX+1.10;x<layout.bounds.maxX-1.04;x+=1.08){
      if(z< -9.55&&(x<5.2||x>9.9)||reserved.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))continue;waiting.push({x,z,angle:Math.PI});
     }
@@ -76,7 +77,7 @@
      for(let role=0;role<2;role++){const g=paired[i+role],position={x:at.x,z:at.z+(role?.82:-.82),angle:role?Math.PI:0};if(g){group.members.push(g);const e=add(g,g.record.session.exercise_stat,role,position,group);queue(e,lane,group.queue.index,position);}else{const model=options.makeInstructor(paired[i]),state=practiceState(paired[i].state,'attack_technique');instructor={model,state,stat:'attack_technique',role:1,origin:position,group};equip(model,state,'attack_technique',props,options.animate);model.root.position.set(position.x,0,position.z);scene.add(model.root);}}
     }
     const weights=solo.filter(g=>['carry','squat'].includes(definitions[g.record.session.exercise_stat]?.mode)),speed=solo.filter(g=>g.record.session.exercise_stat==='speed');
-    for(const g of solo){const stat=g.record.session.exercise_stat,isPost=stat==='speed',i=(isPost?speed:weights).indexOf(g),lanes=isPost?postLanes:weightLanes,n=i%lanes.length,lane=lanes[n],index=lane.members.length,at=isPost?{x:layout.posts[n].x-1.2,z:layout.posts[n].z,angle:Math.PI/2}:{...layout.weights[n],angle:0},group={timeOffset:i*.43,members:[g]};lane.members.push(g);queue(add(g,stat,0,at,group),lane,index,at);}
+    for(const g of solo){const stat=g.record.session.exercise_stat,isPost=stat==='speed',i=(isPost?speed:weights).indexOf(g),lanes=isPost?postLanes:weightLanes,n=i%lanes.length,lane=lanes[n],index=lane.members.length,at=isPost?postOrigin(layout.posts[n]):{...layout.weights[n],angle:0},group={timeOffset:i*.43,members:[g]};lane.members.push(g);queue(add(g,stat,0,at,group),lane,index,at);}
     metrics.pairs=Math.ceil(paired.length/2);props.setPosts([]);options.onLayout?.();return;
    }
    for(let i=0;i<paired.length;i+=2){const at=origin(),group={timeOffset:cell*.37,members:[]};

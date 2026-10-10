@@ -144,3 +144,10 @@ Geliştirme masasındaki metin düğmeleri, masaya bağlı çekiç ve taş sand�
 
 ### V63 — Vurma direklerinin ölçüleri ve yönü
 İki direğin ortak merkezi görseldeki sağ yönde 1 metre taşındı; aralarındaki merkez mesafesi 2,8 metreden 3,8 metreye çıkarıldı. Direkler 90° döndürüldü; ana gövde yüksekliği 1,65 → 2,65 metre ve kesiti 24 × 24 → 72 × 72 santimetre oldu. Kalınlaşan gövdeye göre travers ve ayak açıklıkları uyarlandı. Hız talimi ve bekleme noktaları yeni konumları kullanır. Gerçek sahne testi ölçüleri, yönü, iki talim konumunu ve 30 gladyatörün alan içinde kalmasını doğrular.
+
+### V64 — Daha dar kütükler ve yer yataklı dinlenme odası
+Kütük gövdelerinin kesiti %25 daraltıldı: 72 × 72 → 54 × 54 santimetre. İki kütük görseldeki sağ yönde 1 metre daha taşındı. Sınıra yakın kütüğün talim noktası alan içinde tutulur ve gladyatör gerçek kütük konumuna yönelir.
+
+Dinlenme odasında toplam gladyatör sayısı kadar kahverengi, yuvarlatılmış yer yatağı ve yastık bulunur. Sağ ve sol sıralar orta koridora bakar; yatak kenarları arasında 50 santimetre vardır. Tek sayılı kadrolarda her sıra kendi içinde oda merkezine göre dengelenir. Odanın derinliği, zemini, duvarları ve kamera/yürüme sınırı yatak sayısına göre uzar. Orta hatta simetrik üç sıcak ışıklı meşale bulunur; ilave gölge haritası açılmaz. Yatak geometrisi, kumaşı ve ışık kaynakları tekrar kullanılır. Dinlenen gladyatörler kadrodaki sabit yataklarında, kolları gövdelerinin yanında yatar; faaliyet değişiminde ve oda çıkışında normal donanım ve sahne konumu geri yüklenir.
+
+Gerçek sahne testi 0–30 kişilik yatak yerleşimlerini, 50 santimetre boşluğu, üç meşaleyi, açık giriş/koridoru, antrenmandan dinlenmeye geçişi, 30 dinlenen gladyatörün pozunu, tekrar girişte nesne çoğalmamasını, donanımın geri yüklenmesini ve avlu antrenman sınırlarını doğrular.

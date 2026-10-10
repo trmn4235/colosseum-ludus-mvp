@@ -1,8 +1,8 @@
 /* Shared low-detail timber props. Static kit: three draw calls; held rudis: one. */
 (function(root){
  'use strict';
- // Screenshot right follows +Z: translate the midpoint by 1 m and add 1 m of spacing.
- const yard={bounds:{minX:-1.45,maxX:13.25,minZ:-11.15,maxZ:-3.10},posts:[{x:12,z:-8.30},{x:12,z:-4.50}],rudis:{x:11.35,z:-10.70},pairs:[{x:6.5,z:-7.4},{x:8.8,z:-7.4}],weights:[{x:.8,z:-6.7},{x:3.4,z:-6.7},{x:3,z:-8.75}]};
+ // Screenshot right follows +Z; both posts move another metre while keeping their spacing.
+ const yard={bounds:{minX:-1.45,maxX:13.25,minZ:-11.15,maxZ:-3.10},posts:[{x:12,z:-7.30},{x:12,z:-3.50}],rudis:{x:11.35,z:-10.70},pairs:[{x:6.5,z:-7.4},{x:8.8,z:-7.4}],weights:[{x:.8,z:-6.7},{x:3.4,z:-6.7},{x:3,z:-8.75}]};
  function create(T,material,options={}){
   const parts=[],box=new T.BoxGeometry(1,1,1),transform=new T.Object3D(),back=options.back?-6:0,corner=!!options.back;
   function piece(geometry,x,y,z,sx,sy,sz,rz=0,ry=0){transform.position.set(x,y,z);transform.rotation.set(0,ry,rz);transform.scale.set(sx,sy,sz);transform.updateMatrix();const g=geometry.index?geometry.toNonIndexed():geometry.clone();g.applyMatrix4(transform.matrix);parts.push(g);}
@@ -15,9 +15,9 @@
   const group=new T.Group(),matrices=[];group.name='Antrenman aletleri';
   function timber(x,y,z,w,h,d,ry=0){transform.position.set(x,y,z);transform.rotation.set(0,ry,0);transform.scale.set(w,h,d);transform.updateMatrix();matrices.push(transform.matrix.clone());}
   const postPoints=corner?yard.posts:[-4,-2.5].map(x=>({x,z:-3.4+back}));
-  // Keep the upright's foot at .065 m; extend its top by 1 m and triple its thickness.
+  // Keep the V63 height and foot; narrow the upright by 25% (72 -> 54 cm).
   // Lengthen the crossbar and feet to retain clearance around the thicker upright.
-  const postPieces=[[0,1.39,0,.72,2.65,.72,0],[0,2.31,0,1.22,.36,.36,0],...[0,Math.PI/3,-Math.PI/3].map(a=>[0,.075,0,1.53,.15,.42,a])];
+  const postPieces=[[0,1.39,0,.54,2.65,.54,0],[0,2.31,0,1.22,.36,.36,0],...[0,Math.PI/3,-Math.PI/3].map(a=>[0,.075,0,1.53,.15,.42,a])];
   for(const p of postPoints)for(const [x,y,z,w,h,d,a]of postPieces)timber(p.x+x,y,p.z+z,w,h,d,a+Math.PI/2);
   const posts=new T.InstancedMesh(box,material,matrices.length);posts.name='Vurma kütükleri';matrices.forEach((m,i)=>posts.setMatrixAt(i,m));posts.castShadow=true;posts.receiveShadow=true;posts.computeBoundingSphere();group.add(posts);
   let leaning=new T.InstancedMesh(rudisGeometry,material,Math.max(4,options.rudisCount||0));
