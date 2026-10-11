@@ -6655,7 +6655,7 @@ if(typeof module!=='undefined'){require('./equipment-skills.js')(ArenaCombat,Cla
 const install=(Combat,Classes)=>{
  const p=Combat.prototype,reset=p.reset,tick=p.tick,attack=p.attack,net=p.throwNet;
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
- p.attack=function(...args){const ok=attack.apply(this,args);if(ok){const f=this.fighters[args[0]],factor=Math.max(.7,Math.min(1.3,(f.agility??50)/50));f.attackProfile={...f.attackProfile};for(const k of ['duration','wind','active','recover'])f.attackProfile[k]/=factor;f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;}return ok;};
+ p.attack=function(...args){const ok=attack.apply(this,args);if(ok){const f=this.fighters[args[0]],factor=(.7+.006*Math.max(0,Math.min(100,f.agility??50)));f.attackProfile={...f.attackProfile};for(const k of ['duration','wind','active','recover'])f.attackProfile[k]/=factor;f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;}return ok;};
  p.reset=function(...args){const r=reset.apply(this,args);for(const f of this.fighters){const s=Classes[f.type].stats;f.skillReady=[0,0];f.overall=50;f.maxHp=f.hp=s.health*2;f.maxStamina=f.stamina=s.stamina*2;f.attackBonus=s.strength/50;f.defenseBonus=s.defense/50;f.speedBonus=s.speed/50;f.agility=s.agility;f.spareSword=false;}return r;};
  p.specialKind=function(f,index){const left=index===undefined?f.pickupHand==='offhand':index===1,w=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'disarm';if(f.shield)return 'bash';}if(['spear','trident','gladius','sica'].includes(w))return 'throw';if(w==='whip')return 'pull';return null;};
  p.skillNames=function(f){return [0,1].map(i=>({net:'AĞ AT',disarm:'SİLAH DÜŞÜR',bash:'KALKAN VUR',throw:'FIRLAT',pull:'ÇEK'}[this.specialKind(f,i)]||'ÖZEL YOK'));};
@@ -7483,7 +7483,7 @@ var LudusResults=(function(){
 
 var LUDUS_CLASS_PORTRAITS={"murmillo":"assets/textures/murmillo-3e675f23b653.webp","thraex":"assets/textures/thraex-cda03a764bfa.webp","hoplomachus":"assets/textures/hoplomachus-2016b8441dd6.webp","secutor":"assets/textures/secutor-c0a735b063c1.webp","retiarius":"assets/textures/retiarius-4f388b00bb43.webp","provocator":"assets/textures/provocator-07d7518a15c4.webp","scissor":"assets/textures/scissor-13a6b2685a92.webp"};
 /* Multiplayer V36 is loaded below; shared asset/runtime definitions above are retained. */
-</script><script src="multiplayer-v36.js?v=revision73">
+</script><script src="multiplayer-v36.js?v=revision74">
 
 
 </script><style id="gameViewportStyle">

@@ -60,7 +60,7 @@ async function database(){
  await db.exec("create function auth.jwt()returns jsonb language sql stable as $$select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;grant usage on schema auth to authenticated;grant execute on function auth.uid(),auth.jwt()to authenticated;alter table ludus_accounts add column username text,add column ludus_name text;");
  await db.exec(fs.readFileSync(root+'/ludus-multiplayer-v36.sql','utf8'));
  const migrate=async name=>db.exec(fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_'+name+'.sql')),'utf8'));
- for(const name of['gladiator_exercise_v46','targeted_training_v51','dining_food_v55','dining_meals_v56','dining_nutrition_v57','dining_recovery_v58','dining_recovery_balance_v59','combat_food_stamina_v60','combat_stats_v73','combat_stats_v73'])await migrate(name);
+ for(const name of['gladiator_exercise_v46','targeted_training_v51','dining_food_v55','dining_meals_v56','dining_nutrition_v57','dining_recovery_v58','dining_recovery_balance_v59','combat_food_stamina_v60','combat_stats_v73','combat_stats_v73','combat_stats_v74','combat_stats_v74'])await migrate(name);
  return db;
 }
 module.exports={runtime,item,fixture,database,g,core};
@@ -78,7 +78,7 @@ async function main(){
   const s=await snap(glad,items),f=fixture(c).a;c.LudusLoadout.apply(f,glad,items);
   for(const[server,client]of[['maxHp','maxHp'],['maxStamina','maxStamina'],['attack','attackBonus'],['defense','defenseBonus'],['speed','speedBonus'],['agility','agility'],['native_attack','nativeAttackBonus']])near(s[server],f[client]);
   for(const[k,v]of Object.entries(f.itemStats))near(s.items[k],v);
-  near(s.attack_speed,Math.max(.7,Math.min(1.3,f.agility/50))*(1+Math.max(0,Math.min(.25,(f.itemStats.attack_speed||0)/100))));
+  near(s.attack_speed,(.7+.006*Math.max(0,Math.min(100,f.agility)))*(1+Math.max(0,Math.min(.25,(f.itemStats.attack_speed||0)/100))));
  }
  const time='2026-10-11T12:00:00Z',now='2026-10-11T12:00:01Z';
  const player=async(owner,items=[],glad=g)=>({owner,class:glad.class,gladiator:glad,items,stats_version:73,combat_stats:await snap(glad,items),hp:100,maxHp:100,stamina:100,maxStamina:100,stamina_at:time,seen:time,x:0,z:owner===A?0:1.25,angle:owner===A?0:Math.PI,block:false,serial:0});
@@ -109,10 +109,11 @@ async function main(){
  const legacyA=structuredClone(a),legacyV=structuredClone(v);delete legacyA.stats_version;delete legacyA.combat_stats;delete legacyV.stats_version;delete legacyV.combat_stats;resolved=await resolve([strike(legacyA),legacyV]);assert.equal(resolved[1].hp,86,'existing room damage stays unchanged');
  // Join uses database-owned gladiators/items, preserving eligibility and food rules.
  await q('insert into ludus_accounts(user_id,gold)values($1,1000),($2,1000),($3,1000)',[A,B,C]);
+ const oldQueue=(await q("insert into ludus_matches(status,starts_at,players)values('waiting',now()+interval '25 seconds',$1::jsonb)returning id",[JSON.stringify([await player(B)])]))[0].id;
  const ga=(await q("insert into ludus_gladiators(owner_id,name,class,base_stats,stat_version)values($1,'Alpha','secutor',$2::jsonb,46)returning id",[A,JSON.stringify({...core,conditioning:80})]))[0].id;
  await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
  let joined=(await q("select ludus_match('join',null,$1,'{}',$2::jsonb) r",[ga,JSON.stringify({combat_stats:{attack:9999},hp:9999})]))[0].r;
- assert.equal(joined.players[0].stats_version,73);assert.equal(joined.players[0].maxHp,160);assert.equal(joined.players[0].hp,160);assert.ok(joined.players[0].combat_stats.attack<2);
+ assert.notEqual(joined.id,oldQueue,'new queues cannot join old reflex snapshots');assert.equal(joined.players[0].stats_version,74);assert.equal(joined.players[0].maxHp,160);assert.equal(joined.players[0].hp,160);assert.ok(joined.players[0].combat_stats.attack<2);
  const liveA=await player(A),liveB=await player(B);liveA.seen=liveB.seen=new Date().toISOString();liveA.stamina_at=liveB.stamina_at=liveA.seen;
  await q("update ludus_matches set status='playing',players=$2::jsonb where id=$1",[joined.id,JSON.stringify([liveA,liveB])]);
  const step=async(input)=>(await q("select ludus_match('step',$1,null,'{}',$2::jsonb) r",[joined.id,JSON.stringify(input)]))[0].r;
@@ -127,7 +128,10 @@ async function main(){
  assert.ok(Math.abs(moved.x-expectedX)<.02,'server movement applies speed, acceleration and gear');
  const aim=Math.atan2(-moved.x,1.25),turn=Math.atan2(Math.sin(aim-Math.PI/2),Math.cos(aim-Math.PI/2));
  assert.ok(Math.abs(moved.angle-(Math.PI/2+turn*Math.min(1,(1-Math.exp(-18*dt))*1.3)))<.03,'server turn consumes turn speed');
- state=await step({attack:true,attack_id:'haste',target:B});near(state.players[0].wind,.24/(1.3*1.04));
+ state=await step({attack:true,attack_id:'haste',target:B});near(state.players[0].wind,.24/(1.18*1.04));
+ // Already-running V73 rooms keep their stored speed, even after V74 deployment.
+ mover.combat_stats.attack_speed=1.3*1.04;await q("update ludus_matches set players=$2::jsonb where id=$1",[joined.id,JSON.stringify([mover,liveB])]);
+ state=await step({attack:true,attack_id:'cached-v73',target:B});near(state.players[0].wind,.24/(1.3*1.04));
  const recovered=await player(A,[item(c,'legs',{natural_stats:{recovery_speed:30}})]),perfect=await player(B,[item(c,'shield',{natural_stats:{block_power:40}})]);
  Object.assign(perfect,{block:true,guard_at:'2026-10-11T12:00:00.400Z'});
  resolved=await resolve([strike(recovered),perfect]);assert.equal(resolved[1].last_defense,'perfect');near(resolved[1].stamina,96.4);

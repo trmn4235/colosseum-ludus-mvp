@@ -137,7 +137,7 @@ return {load,prepare};
   if(!r){if(!selection?.gladiator)throw Error('Önce gladyatörünü seç.');r=await rpc({p_action:'join',p_gladiator:selection.gladiator,p_slots:selection.slots||{}});}if(r.error)throw r.error;sessionStorage.setItem('ludus-match-room',r.data.id);showState(r.data);pending=false;step();}
   catch(e){message(e.message||'Maç başlatılamadı.');$('queueMessage').textContent=e.message||'Bağlantı kurulamadı.';$('mpRetry').hidden=false;}finally{pending=false;}
  }
- function travelBack(){if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision73';}
+ function travelBack(){if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision74';}
  async function leave(){if($('mpBack').disabled)return;stopped=true;$('mpBack').disabled=$('queueCancel').disabled=true;try{while(pending)await new Promise(r=>setTimeout(r,20));if(room&&room.status!=='finished'){const r=await rpc({p_action:'leave',p_room:room.id});if(r.error)throw r.error;}sessionStorage.removeItem('ludus-match-room');travelBack();}catch(e){message('Çıkış kaydedilemedi. Tekrar dene.');$('mpBack').disabled=$('queueCancel').disabled=false;stopped=false;step();}}
  $('mpBack').onclick=$('queueCancel').onclick=leave;$('mpRetry').onclick=()=>{$('mpRetry').hidden=true;join();};$('resultBack').onclick=travelBack;
  const stick=$('duelStick');let pointer=null;

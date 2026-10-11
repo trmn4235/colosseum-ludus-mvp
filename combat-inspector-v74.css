@@ -1,0 +1,16 @@
+#combatInfo{box-sizing:border-box;width:min(780px,94vw);max-height:90dvh;margin:auto;padding:16px;border:2px solid #bd9451;border-radius:9px;background:#241c19;color:#f1dfb9;font:14px/1.5 Georgia,serif;box-shadow:0 20px 70px #000b}
+#combatInfo::backdrop{background:#080605bd}
+#combatInfo header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+#combatInfo h2{font-size:20px;margin:0}
+#combatInfo button{color:#f1dfb9;background:#473027;border:1px solid #aa8246;border-radius:4px;padding:7px 12px;cursor:pointer;font:inherit}
+#combatInfo nav{display:flex;gap:8px;margin:12px 0}
+#combatInfo button[aria-pressed=true]{background:#763a31;border-color:#e2bd72}
+#combatInfo :focus-visible{outline:2px solid #f3d89e;outline-offset:2px}
+#combatInfo .combat-info-content{max-height:calc(90dvh - 120px);overflow:auto;overscroll-behavior:contain;padding-right:8px}
+#combatInfo h3{color:#e5c17b;font-size:17px;margin:14px 0 6px}
+#combatInfo table{width:100%;border-collapse:collapse;font:13px/1.4 Arial,sans-serif;margin:12px 0}
+#combatInfo th,#combatInfo td{text-align:left;padding:8px 6px;border-bottom:1px solid #81644155}
+#combatInfo th{color:#edcb8e}#combatInfo td:not(:first-child){font-variant-numeric:tabular-nums}
+#combatInfo details{border-bottom:1px solid #81644155;padding:8px 0}#combatInfo summary{cursor:pointer;color:#edcb8e}
+#openCombatInfo{white-space:nowrap}
+@media(max-height:400px){#combatInfo{padding:10px;font-size:12px}#combatInfo h2{font-size:16px}#combatInfo nav{margin:7px 0}#combatInfo .combat-info-content{max-height:calc(90dvh - 95px)}}
