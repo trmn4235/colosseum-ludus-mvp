@@ -21,7 +21,7 @@ async function main(){
  const arena=await context.newPage(),errors=[];arena.on('pageerror',e=>errors.push(e.message));
  await arena.goto(base+'/arena.html?battle='+battle);await arena.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:60000});
  await arena.evaluate(()=>__arena.freeze());assert.equal(await arena.evaluate(()=>__arena.renderer.getPixelRatio()),1.25);
- const hud=await arena.locator('.vitals').boundingBox(),icon=await arena.locator('.vital-icon').first().boundingBox();assert.equal(Math.round(icon.width),26);assert.ok(icon.x>=0&&icon.x<15);assert.ok(hud.x<35);
+ const hud=await arena.locator('.vitals').boundingBox(),icon=await arena.locator('.vital-icon').first().boundingBox();assert.equal(Math.round(icon.width),20);assert.ok(icon.x>=0&&icon.x<8);assert.ok(hud.x<25);
  await arena.screenshot({path:out+'/hud-844.png'});
  await arena.evaluate(()=>{Object.assign(__arena.combat,{result:'win',time:245});Object.assign(__arena.combat.stats,{hits:50,damage:572,damageTaken:86,kills:7,blocks:12,dodges:5,parries:2});__arena.showResult();});
  assert.equal(await arena.locator('#resultRewards .result-reward-row').count(),0,'no awards before acknowledgement');
@@ -39,10 +39,15 @@ async function main(){
  const ludus=await context.newPage();ludus.on('pageerror',e=>errors.push(e.message));let releaseOffice;const officeGate=new Promise(r=>releaseOffice=r);
  await ludus.route('**/*office*.glb*',async route=>{await officeGate;await route.continue();});await ludus.route('**/imperial-desk-v31.glb*',async route=>{await officeGate;await route.continue();});
  await ludus.goto(base+'/ludus.html');await ludus.waitForFunction(()=>window.LudusPreview?.exploring&&LudusPreview.roster.every(g=>g.model),null,{timeout:60000});
+ assert.ok(await ludus.evaluate(()=>LudusPreview.roster.every(g=>g.home.z===2.4)),'V79 resident row stands two metres farther from balcony');
+ await ludus.evaluate(()=>{const w=LudusPreview;window.__freezeFrame=true;Object.assign(w.player,{x:0,y:3.47,z:8.3,yaw:0,pitch:-.60});for(const g of w.roster){g.path=[];g.body.position.set(g.home.x,0,g.home.z);}w.updateResidents(1/60);w.followOwner(.05,false);w.renderer.render(w.scene,w.camera);});
+ await ludus.screenshot({path:out+'/balcony-v79-844.png'});await ludus.evaluate(()=>window.__freezeFrame=false);
  await ludus.evaluate(()=>LudusPreview.enterRoom(LudusPreview.rooms.find(r=>r.kind==='office')));assert.equal(await ludus.evaluate(()=>LudusPreview.roomProps.children.length),0,'no former table or carpet while approved office models load');releaseOffice();await ludus.waitForFunction(()=>LudusPreview.roomColliders.some(c=>c.kind==='desk'),null,{timeout:60000});
  await ludus.evaluate(()=>{const w=LudusPreview;window.__freezeFrame=true;w.leaveRoom();w.enterRoom(w.rooms.find(r=>r.kind==='rest'));w.camera.position.set(0,4.3,4.3);w.camera.lookAt(0,1.4,-1.6);w.camera.updateMatrixWorld();w.ownerAvatar.root.visible=false;w.renderer.render(w.roomScene,w.camera);});
  const rest=await ludus.evaluate(()=>{const w=LudusPreview,g=w.roomProps.getObjectByName('Dinlenme · Kahverengi yer yatakları'),m=g.getObjectByName('Duvar meşalesi sapları'),v=new THREE.Matrix4();return{count:g.userData.counts,torches:w.restRoom.layout.torches,positions:Array.from({length:m.count},(_,i)=>{m.getMatrixAt(i,v);return new THREE.Vector3().setFromMatrixPosition(v).toArray();}),floorObstacles:w.roomColliders.filter(c=>c.kind==='rest-torch').length};});
  assert.equal(rest.count.torches,4);assert.deepEqual(rest.torches.map(t=>t.wall),['back','front','left','right']);assert.ok(rest.positions.every(p=>p[1]>2&&Math.abs(p[0])>4||p[1]>2&&Math.abs(p[2])>4));assert.equal(rest.floorObstacles,0);
- await ludus.screenshot({path:out+'/rest-844.png'});assert.deepEqual(errors,[]);console.log(JSON.stringify({viewports:4,receiptBeforeRewards:true,realArena:true,smallerHud:true,mobileDpr:1.25,noOldOffice:true,wallTorches:4,out}));await cleanup();
+ await ludus.screenshot({path:out+'/rest-844.png'});
+ await ludus.evaluate(()=>{LudusPreview.leaveRoom();LudusPreview.updateActivities(0);});assert.ok(await ludus.evaluate(()=>LudusPreview.roster.every(g=>g.home.z===2.4&&g.body.parent===LudusPreview.scene)),'returning residents keep the shifted home row');
+ assert.deepEqual(errors,[]);console.log(JSON.stringify({viewports:4,receiptBeforeRewards:true,realArena:true,smallerHud:true,mobileDpr:1.25,noOldOffice:true,wallTorches:4,residentOffsetMetres:2,restReturn:true,out}));await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exitCode=1;});
