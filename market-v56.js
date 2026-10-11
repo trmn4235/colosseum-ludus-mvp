@@ -3,7 +3,7 @@
  const categories=['Silahlar','Kalkanlar','Miğferler','Göğüs Zırhı','Omuzluk','Bacaklık','Gıda'];
  let catalog=[],category=categories[0],owner=null,busy=true,pending=null,coins=0,productPage=0,foodState=null; 
  globalThis.LudusNavigation?.register(()=>({category,productPage}));
- function balance(){ $('balance').textContent='◉ '+coins.toLocaleString('tr-TR')+' denarius';globalThis.dispatchEvent(new CustomEvent('ludus-basic-market-gold',{detail:{gold:coins}})); }
+ function balance(){ $('balance').textContent=coins.toLocaleString('tr-TR');globalThis.dispatchEvent(new CustomEvent('ludus-basic-market-gold',{detail:{gold:coins}})); }
  function message(text){$('message').textContent=text;}
  function render(){
   $('categories').replaceChildren();for(const c of categories){const b=document.createElement('button');b.textContent=c;b.className=c===category?'active':'';b.setAttribute('aria-pressed',String(c===category));b.onclick=()=>{category=c;productPage=0;render();};$('categories').append(b);}

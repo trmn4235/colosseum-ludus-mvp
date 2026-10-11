@@ -1,0 +1,34 @@
+/* Approved photographic posters. Source artwork is not stretched or repainted. */
+body[data-roman-screen="savas"] .modes{width:min(96%,calc((var(--game-height,100dvh) - 110px)*2.25 + 44px))!important;align-items:center;gap:clamp(8px,1.6vw,22px)!important}
+body[data-roman-screen="savas"] .mode{height:auto!important;max-height:100%;aspect-ratio:3/4!important;border:0!important;background:var(--ui-burgundy)!important;box-shadow:0 4px 16px #59182320!important;isolation:isolate}
+body[data-roman-screen="savas"] .mode::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background-image:url('assets/arena-modes-v69.webp');background-size:200% 100%;background-repeat:no-repeat;background-position:left center}
+body[data-roman-screen="savas"] .mode[data-mode="solo20"]::before{background-position:right center}
+body[data-roman-screen="savas"] .mode[data-mode="multiplayer"]::before{background-image:url('assets/multiplayer-poster-v69.webp');background-size:100% 100%}
+body[data-roman-screen="savas"] .mode:hover{transform:translateY(-2px)}
+body[data-roman-screen="savas"] .mode:focus-visible{outline:3px solid var(--ui-burgundy)!important;outline-offset:3px}
+
+/* Poster remains intact at left; live queue controls stay separate and readable. */
+body[data-roman-screen="multiplayer"] #matchLobby{padding:clamp(10px,2.8dvh,24px);grid-template-columns:39% minmax(0,1fr);grid-template-rows:24% 48% 28%;column-gap:clamp(12px,3vw,42px);background:var(--ui-canvas);color:var(--ui-ink);isolation:isolate}
+body[data-roman-screen="multiplayer"] #matchLobby::after{content:none}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-scene{position:relative;inset:auto;grid-column:1;grid-row:1/4;z-index:0;min-height:0;background:url('assets/multiplayer-poster-v69.webp') center/contain no-repeat}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-scene>*{display:none}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-title{grid-column:2;grid-row:1;align-self:center;text-shadow:none}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-title h1{font-size:clamp(17px,4.4dvh,32px);letter-spacing:1px;color:var(--ui-burgundy);margin:1dvh 0}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-title :is(small,span){color:var(--ui-muted);letter-spacing:1px}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-body{grid-column:2;grid-row:2;grid-template-columns:1fr 1fr;gap:10px;min-height:0}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-centre{display:none}
+body[data-roman-screen="multiplayer"] #matchLobby :is(.queue-label,#queueCaption,#queueNames,#queueMessage){color:var(--ui-muted)!important;letter-spacing:.5px}
+body[data-roman-screen="multiplayer"] #matchLobby #queueCount{color:var(--ui-burgundy)!important;text-shadow:none;font-size:clamp(40px,14dvh,96px)}
+body[data-roman-screen="multiplayer"] #matchLobby #queueRing{width:clamp(72px,25dvh,180px);box-shadow:none}
+body[data-roman-screen="multiplayer"] #matchLobby #queueRing>div{border:1px solid var(--ui-gold);box-shadow:none}
+body[data-roman-screen="multiplayer"] #matchLobby #queueSeconds{font-size:clamp(34px,11dvh,80px);text-shadow:none}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-live{color:var(--ui-muted);letter-spacing:.5px}
+body[data-roman-screen="multiplayer"] #matchLobby #queueNames{max-width:25vw}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-footer{grid-column:2;grid-row:3;align-self:center;gap:1.7dvh 8px}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-track{width:100%}
+body[data-roman-screen="multiplayer"] #matchLobby .queue-beta{color:var(--ui-muted)}
+
+/* Live transparent WebGL preview sits over this quiet preparation-room image. */
+body[data-roman-screen="ludus"] .exercise-character{background:var(--ui-canvas) url('assets/gladiator-preparation-v69.webp') center bottom/cover no-repeat;border-radius:4px}
+@media(prefers-reduced-motion:reduce){body[data-roman-screen="savas"] .mode{transition:none!important;transform:none!important}}
+@media(max-height:350px){body[data-roman-screen="savas"] .modes{width:min(96%,calc((var(--game-height,100dvh) - 100px)*2.25 + 24px))!important}body[data-roman-screen="multiplayer"] #matchLobby .queue-title h1{font-size:17px}body[data-roman-screen="multiplayer"] #matchLobby .queue-footer button{padding:5px 9px}body[data-roman-screen="multiplayer"] #matchLobby .queue-beta{font-size:8px}}

@@ -1,5 +1,5 @@
 /* Shared page interface: white surfaces, burgundy hierarchy, restrained gold. */
-:root{--roman-white:#fff;--roman-ink:#30232a;--roman-burgundy:#591823;--roman-gold:#b38b43;--roman-marble:linear-gradient(#fff,#faf9f6);--ui-white:#fff;--ui-ink:#30232a;--ui-muted:#74656c;--ui-burgundy:#591823;--ui-gold:#b38b43}
+:root{--ui-canvas:#faf9f6;--ui-selected:#f6edf0;--ui-line:#b38b4340;--ui-gold-light:#e4c77b;--ui-font:Arial,Helvetica,sans-serif;--ui-display-font:Georgia,"Times New Roman",serif;--roman-white:#fff;--roman-ink:#30232a;--roman-burgundy:#591823;--roman-gold:#b38b43;--roman-marble:linear-gradient(#fff,#faf9f6);--ui-white:#fff;--ui-ink:#30232a;--ui-muted:#74656c;--ui-burgundy:#591823;--ui-gold:#b38b43}
 body[data-roman-screen]:not([data-roman-screen="ludus"]):not([data-roman-screen="index"]):not([data-roman-screen="arena"]):not([data-roman-screen="multiplayer"]){background:#faf9f6!important;color:var(--ui-ink)!important}
 .game-shell{background:#faf9f6!important}
 .panel,.paper,.product,.quest-card,.daily-sidebar,.daily-bonus,.inspect-paper,.pouch,.friends-paper,.level-paper,.entry-panel,#appInstallHelp>div{background:#fff!important;background-image:none!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:0 4px 18px #59182312!important}

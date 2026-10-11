@@ -1,0 +1,169 @@
+/* Approved V68 interface. Palette lives in roman-ui-v56.css.
+   UI only: never recolour scene canvases, character/gear art, team IDs or gems. */
+body[data-roman-screen]{--wine:var(--ui-burgundy);--deep:var(--ui-burgundy);--gold:var(--ui-gold);--ink:var(--ui-ink);--muted:var(--ui-muted);--line:var(--ui-line);--paper:var(--ui-white);font-family:var(--ui-font)}
+body[data-roman-screen] :is(button,input,select,textarea){font-family:var(--ui-font)}
+body[data-roman-screen] :is(h1,h2,h3){font-family:var(--ui-display-font);text-shadow:none}
+body[data-roman-screen] :is(button,a,input,select,textarea):focus-visible{outline:2px solid var(--ui-gold)!important;outline-offset:2px}
+body[data-roman-screen] :is(input:not([type=color]):not([type=range]):not([type=checkbox]),select,textarea){background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(input,textarea)::placeholder{color:var(--ui-muted)!important;opacity:1}
+
+/* White cards, single gold edge: no parchment, bronze gradients or heavy bevels. */
+body[data-roman-screen] :is(.panel,.paper,.product,.quest-card,.daily-bonus,.inspect-paper,.pouch,.friends-paper,.level-paper,.entry-panel,.imperial-paper,.imperial-card,.imperial-daily-card,.imperial-admin-slot,.clan-vault-frame,.clan-vault-panel,.food-frame,.food-card,.food-bonus,.exercise-summary,.exercise-details,.exercise-others,.exercise-picker,.exercise-picker-item,.exercise-roster-card,.ludus-view-settings,#ludusMessages,#roomQuestPanel,#roomUpgradePanel,#roomClanPanel,#appInstallHelp>div){background:var(--ui-white)!important;background-image:none!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;border-width:1px!important;border-style:solid;border-radius:5px!important;box-shadow:0 3px 14px #5918230a!important}
+body[data-roman-screen] :is(.panel,.paper,.pouch,.friends-paper,.level-paper,.entry-panel,.imperial-paper,.clan-vault-frame,.food-frame,.exercise-summary,.exercise-details,.exercise-others,.exercise-picker) :is(h1,h2,h3){color:var(--ui-burgundy)!important}
+body[data-roman-screen] :is(.muted,.subtitle,.basic,.small,.empty,.details .note,.credits,.friends-empty,.friends-paper small,.imperial-description,.imperial-card p,.imperial-facts,.imperial-total,.imperial-empty,.imperial-admin-slot small,.imperial-daily-card p,.imperial-daily-facts,.exercise-class,.exercise-note,.exercise-meter small,.exercise-bulk-row small,.exercise-picker-name>small,.level-facts dt,.level-next,.level-foot,.food-rule,.food-note,.food-last,.food-wallet,.messages-status,.messages-empty){color:var(--ui-muted)!important}
+
+/* Burgundy surfaces use the same light gold for EVERY text label. */
+body[data-roman-screen] :is(.top,.statusbar,.inspect-head,.pouch-head,.friends-head,.level-head,.imperial-head,.clan-vault-belt,.food-top,.exercise-top,.exercise-roster-heading,.messages-head){background:var(--ui-burgundy)!important;background-image:none!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important;text-shadow:none!important}
+body[data-roman-screen] :is(.top,.statusbar,.inspect-head,.pouch-head,.friends-head,.level-head,.imperial-head,.clan-vault-belt,.food-top,.exercise-top,.exercise-roster-heading,.messages-head) :is(h1,h2,h3,p,small,strong,span,a,label,b){color:var(--ui-gold-light)!important;text-shadow:none!important}
+body[data-roman-screen] :is(.primary,.buy,.quest-action,.start,.button:not(.secondary):not(.danger),.friends-paper button,.imperial-modal button,.food-modal button,.exercise-primary,.exercise-top button,.clan-vault-close,.clan-vault-transfer,.clan-vault-donation button,.clan-vault-retry,.ludus-view-settings button,#ludusMessages button,#dailyBonus,#dailyRefresh,#dailyRetry,#enter,#useGem,#retry,#appInstallHelp button){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border:1px solid var(--ui-gold)!important;border-radius:4px!important;box-shadow:none!important;text-shadow:none!important}
+body[data-roman-screen] :is(.tabs button,.gem-tabs button,.material-tabs button,.market-pager button,.compact-pager button,.pager button,.pagination button,.tab,.button.secondary,.entry-panel .secondary,.exercise-actions button:not(.exercise-primary),.exercise-footer button,.exercise-pagination button,.clan-vault-page button){background:var(--ui-white)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.tabs button.active,.gem-tabs button.active,.material-tabs button.active,.tab.active,.imperial-category-tabs button[aria-pressed=true],.imperial-admin-tabs button.active,.food-tabs button[aria-pressed=true],.friends-paper nav button.active){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.button.danger,.entry-panel .back,#togglePassword,.exercise-picker-close){background:var(--ui-white)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-line)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.item,.inv,.slot,.socket,.gem-slot,.material-stone,.exercise-item,.clan-vault-slot,.fighter,.itemCard,.rosterSlot,.gladiatorChoice,.emblemButton){background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.item.selected,.item.chosen,.fighter.selected,.exercise-roster-card.active,.exercise-attribute.selected,.exercise-picker-item:hover,.imperial-roster button[aria-pressed=true],.clan-vault-slot[aria-pressed=true],.itemCard.selected,.emblemButton.selected){background:var(--ui-selected)!important;color:var(--ui-burgundy)!important;outline-color:var(--ui-gold)!important;box-shadow:inset 3px 0 var(--ui-burgundy)!important}
+body[data-roman-screen] :is(.gem-grid,.clan-vault-slots,.clan-vault-treasury,.food-summary>div,.operation .rate-box,.row,.permissionRow,.bannerPreview){background:var(--ui-canvas)!important;color:var(--ui-ink)!important;border-color:var(--ui-line)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.gem-slot.empty-slot,.socket.empty,.socket.empty-socket,.clan-vault-slot[data-empty=true],.rosterSlot.emptySlot){background:var(--ui-canvas)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen] :is(.quantity,.upgrade-level,.clan-vault-quantity,.clan-vault-level){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;text-shadow:none!important}
+body[data-roman-screen] :is(.slot small,.fighter small,.itemCard small,.clan-vault-iteminfo small,.clan-vault-balance small,.clan-vault-wallet-note,.clan-vault-page,.gem-note,#itemMeta,#operationNote,#resetMaterial){color:var(--ui-muted)!important}
+body[data-roman-screen] :is(.exercise-item small,.exercise-item>span,.exercise-attribute,.exercise-attribute strong,.exercise-meter-heading strong,.exercise-overall strong,.clan-vault-iteminfo strong,.clan-vault-balance strong,.price,.stat-title){color:var(--ui-burgundy)!important}
+body[data-roman-screen] :is(.side,.daily-sidebar){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;border-width:1px!important;box-shadow:none!important}
+body[data-roman-screen] :is(.side,.daily-sidebar) :is(h1,h2,p,small,span,strong,a,button),body[data-roman-screen] #dailyReset{color:var(--ui-gold-light)!important}
+body[data-roman-screen] .side .active{background:var(--ui-white)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important;box-shadow:inset 0 -3px var(--ui-gold)!important}
+body[data-roman-screen] .side .active :is(span,small){color:var(--ui-burgundy)!important}
+
+/* Shared overlays retain positioning, focus management and existing scroll tracks. */
+body[data-roman-screen] :is(#friendsOverlay,.imperial-modal,.clan-vault-modal,.food-modal,#pouchOverlay,#confirmLayer,#appInstallHelp){background:#30232ab3!important}
+body[data-roman-screen] :is(#landscapeGate,#portrait,#levelOrientation,.mobile-gate){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(#landscapeGate,#portrait,#levelOrientation,.mobile-gate) :is(svg,p,strong){color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(.ludus-view-settings,#ludusMessages)::backdrop{background:#30232ab3}
+body[data-roman-screen] :is(.panel,.paper,.product,.quest-card,.clan-vault-frame)::before,
+body[data-roman-screen] :is(.panel,.paper,.product,.quest-card,.clan-vault-frame)::after{content:none!important}
+body[data-roman-screen] :is(.level-meter,.imperial-progress,.quest-track progress,.exercise-track){background:var(--ui-canvas)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.level-meter>div,.imperial-progress>div,.exercise-fill){background:var(--ui-burgundy)!important;box-shadow:none!important}
+body[data-roman-screen] .quest-track progress::-webkit-progress-bar{background:var(--ui-canvas)}
+body[data-roman-screen] .quest-track progress::-webkit-progress-value{background:var(--ui-burgundy)}
+body[data-roman-screen] .quest-track progress::-moz-progress-bar{background:var(--ui-burgundy)}
+/* Functional gem, health, stamina, error and team colours remain semantic. */
+body[data-roman-screen] .exercise-meter.energy .exercise-fill{background:#357251!important}
+body[data-roman-screen] .exercise-meter.danger .exercise-fill{background:#a52b42!important}
+body[data-roman-screen] .imperial-progress.ready>div{background:#357251!important}
+
+/* Login: preserve artwork/reveal/auth flows, make the form readable on white. */
+body[data-roman-screen="index"] .entry-panel :is(label,p,small,#status,#modalMessage,#accountMessage,.join-divider,.panel small,.owner-create-button small){color:var(--ui-muted)!important}
+body[data-roman-screen="index"] .entry-panel .panel{background:transparent!important;border:0!important;box-shadow:none!important}
+body[data-roman-screen="index"] .entry-panel :is(.primary,.owner-create-button) small{color:var(--ui-gold-light)!important}
+body[data-roman-screen="index"] .join-divider::before,body[data-roman-screen="index"] .join-divider::after{background:var(--ui-line)}
+body[data-roman-screen="index"] .sound-toggle{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+
+/* Avatar frame only: model and colour swatches keep their actual colours. */
+body[data-roman-screen] .owner-editor{background:#30232ab3!important;color:var(--ui-ink)!important}
+body[data-roman-screen] .owner-sheet{background:var(--ui-white)!important;border-color:var(--ui-gold)!important;border-radius:5px;box-shadow:0 3px 14px #59182320!important}
+body[data-roman-screen] .owner-sheet>header,body[data-roman-screen] .owner-sheet>footer{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen] .owner-sheet>header :is(h2,small),body[data-roman-screen] .owner-sheet>footer p{color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(.owner-sheet button,.owner-zoom){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] .owner-custom nav button{background:var(--ui-white)!important;color:var(--ui-burgundy)!important}
+body[data-roman-screen] .owner-custom nav button.active{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(.owner-preview,.owner-field){background:var(--ui-canvas)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen] :is(.owner-field span,.owner-caption,.owner-preview-tools span){color:var(--ui-muted)!important}
+
+/* Preparation, upgrades and daily missions. */
+body[data-roman-screen="savas"] :is(.heading h1,.details .class,.details #victories){color:var(--ui-burgundy)!important}
+body[data-roman-screen="savas"] :is(.heading p,.footer,.caption small){color:var(--ui-muted)!important}
+body[data-roman-screen="savas"] :is(.top button,.footer .action,.mode .tag,.mode .caption,.status,.inventory h2,.roster h2,.modelStatus){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;text-shadow:none!important;box-shadow:none!important}
+body[data-roman-screen="savas"] .mode .caption small{color:var(--ui-gold-light)!important}
+body[data-roman-screen="savas"] :is(.slot,.item,.fighter){border-width:1px;border-radius:4px}
+body[data-roman-screen="gelistirmeler"] :is(.top,.statusbar,.side){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen="gelistirmeler"] .operation .medallion span{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="gelistirmeler"] .operation .rate-box{color:var(--ui-burgundy)!important}
+body[data-roman-screen="gelistirmeler"] :is(.material-stone img,.gem-slot img){background:var(--ui-white)!important}
+body[data-roman-screen="gorevler"]>header{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="gorevler"]>header button{background:transparent!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="gorevler"] :is(.quest-card p,.quest-progress,.daily-bonus span){color:var(--ui-muted)!important}
+body[data-roman-screen="gorevler"] :is(.quest-reward,.daily-bonus strong){color:var(--ui-burgundy)!important}
+body[data-roman-screen="gorevler"] #dailyMessage{background:var(--ui-white)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="level"] :is(.level-table th,.level-summary h2){color:var(--ui-burgundy)!important}
+body[data-roman-screen="level"] .level-table tr[data-state=ready]{background:var(--ui-selected)!important}
+body[data-roman-screen="level"] .level-table tr:not([data-state=ready]){color:var(--ui-muted)}
+body[data-roman-screen="level"] button{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="level"] button:disabled{background:var(--ui-canvas)!important;color:var(--ui-muted)!important}
+
+/* Clan screen: banners/emblem customisation keep their actual player colours. */
+body[data-roman-screen="clan"] #clanStage{background:var(--ui-canvas)!important}
+body[data-roman-screen="clan"] :is(header,.sidebar,.foot){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="clan"] :is(.brand svg,.back,.refresh,.nav),body[data-roman-screen="clan"] .foot #retry{background:transparent;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="clan"] .foot #message{background:transparent!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen="clan"] .nav.active{background:var(--ui-white)!important;color:var(--ui-burgundy)!important;box-shadow:inset 0 -3px var(--ui-gold)!important}
+body[data-roman-screen="clan"] :is(.pageTitle h1,.panel h3,.metric strong,.treasury .amount,.ledgerRow b){color:var(--ui-burgundy)!important}
+body[data-roman-screen="clan"] :is(.field,.row small,.metric label,.metric small,.itemCard small,.ledgerRow small,.permissionRow small,.rosterSlot small,.gladiatorChoice small,.pageTitle .tag,.pagination){color:var(--ui-muted)!important}
+body[data-roman-screen="clan"] :is(.notice,.warDisclaimer){background:var(--ui-canvas)!important;color:var(--ui-muted)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen="clan"] .progress{background:var(--ui-canvas)!important}body[data-roman-screen="clan"] .progress i{background:var(--ui-burgundy)}
+body[data-roman-screen="clan"] :is(.emblemButton svg,.rosterSlot svg,.gladiatorChoice svg){color:var(--ui-burgundy)!important}
+
+/* Ludus HUD and its actual room dialogs, without touching the 3D view. */
+body[data-roman-screen="ludus"] .ludus-menu{background:var(--ui-burgundy)!important;border:1px solid var(--ui-gold)!important;border-radius:5px!important;box-shadow:0 3px 14px #59182320!important}
+body[data-roman-screen="ludus"] .ludus-menu #accountSummary{background:transparent!important;color:var(--ui-gold-light)!important;text-shadow:none!important;box-shadow:none!important}
+body[data-roman-screen="ludus"] .ludus-menu .tools{background:transparent!important}
+body[data-roman-screen="ludus"] .tools button{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="ludus"] :is(#friendCount,#messageUnread,#explore.active){background:var(--ui-white)!important;color:var(--ui-burgundy)!important}
+body[data-roman-screen="ludus"] :is(.worldLabel,.room-world-action,.clan-vault-marker,#interact,#roomExit,#loading,#pendingBattleNotice){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important;text-shadow:none!important}
+body[data-roman-screen="ludus"] .room-world-action[data-state=ready]{outline:2px solid var(--ui-gold-light);outline-offset:2px}
+body[data-roman-screen="ludus"] #orders{background:#30232ab3!important}
+body[data-roman-screen="ludus"] #orders>div:not(.exercise-panel){background:var(--ui-white);color:var(--ui-ink);border:1px solid var(--ui-gold);border-radius:5px;padding:16px}
+body[data-roman-screen] #orders>.exercise-panel{background:var(--ui-white)!important;color:var(--ui-ink)!important;border:1px solid var(--ui-gold)!important;box-shadow:0 3px 14px #59182320!important}
+body[data-roman-screen] .exercise-panel::before{background:none!important}
+body[data-roman-screen] .exercise-panel :is(#ordersText.exercise-status,.exercise-note,.exercise-bulk-stat,.exercise-picker-status,.exercise-picker-empty){color:var(--ui-muted)!important}
+body[data-roman-screen] .exercise-panel .exercise-top h1{color:var(--ui-gold-light)!important}
+body[data-roman-screen] .exercise-roster-heading .exercise-pagination button{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] .exercise-attribute{background:transparent!important}
+body[data-roman-screen] .exercise-attribute.selected{background:var(--ui-selected)!important}
+body[data-roman-screen] .imperial-paper .imperial-head{padding:8px;border-radius:4px;background:var(--ui-burgundy)!important}
+body[data-roman-screen] .imperial-paper .imperial-head :is(h1,p){color:var(--ui-gold-light)!important}
+body[data-roman-screen] .imperial-roster button{background:var(--ui-white)!important;color:var(--ui-burgundy)!important}
+body[data-roman-screen] .imperial-roster button[aria-pressed=true]{background:var(--ui-selected)!important;box-shadow:inset 3px 0 var(--ui-burgundy)!important}
+body[data-roman-screen] .imperial-rewards span{background:var(--ui-canvas)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen] :is(.imperial-state-label,.imperial-party-label,.imperial-timer,.imperial-extra){color:var(--ui-muted)!important}
+body[data-roman-screen] .clan-vault-donation{background:transparent!important;color:var(--ui-ink)!important}
+body[data-roman-screen] :is(.clan-vault-amount,.clan-vault-donation input){background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] #ludusMessages :is(.message-bubble,.messages-conversations button){background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
+body[data-roman-screen] #ludusMessages :is(.message-bubble.mine,.messages-conversations button[aria-pressed=true]){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] #ludusMessages .messages-head h2{color:var(--ui-gold-light)!important}
+body[data-roman-screen] .food-top :is(h1,small,.food-close){color:var(--ui-gold-light)!important}
+
+/* Combat UI only. Keep hit targets, timing, HP/stamina and team indicators intact. */
+body[data-roman-screen="arena"] :is(.tool,.action,#attack,#hand,#controlLayout,#toast,#regionHint,#pickup){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="arena"] .action svg{stroke:var(--ui-gold-light)!important}
+body[data-roman-screen="arena"] :is(.action.mode-selected,.action.body-target.selected,.action.pressed){box-shadow:inset 0 0 0 2px var(--ui-gold-light)!important}
+body[data-roman-screen="arena"] .action.counter-ready{box-shadow:0 0 12px var(--ui-gold-light)!important}
+body[data-roman-screen="arena"] .overlay{background:#30232a9c!important}
+body[data-roman-screen="arena"] .overlay>.intro{background:var(--ui-white);color:var(--ui-ink);border:1px solid var(--ui-gold);border-radius:5px;padding:clamp(12px,2.5dvh,24px);max-height:90dvh;overflow:auto}
+body[data-roman-screen="arena"] .intro :is(h1,em,.eyebrow){color:var(--ui-burgundy)!important}
+body[data-roman-screen="arena"] .intro :is(p,.features,.fine){color:var(--ui-muted)!important}
+body[data-roman-screen="arena"] :is(.secondary,.choices select){background:var(--ui-white)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="arena"] :is(#resultStats,#resultStats b){color:var(--ui-burgundy)!important}
+body[data-roman-screen="arena"] :is(#stick,#knob){background:#59182370!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="multiplayer"] :is(.mp-top #mpBack,#duelActions .mp-action,#duelActions #duelAttack,#duelActions #duelTarget,#duelActions #duelHand,#duelRegionHint,#duelResult button,.queue-footer button){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="multiplayer"] :is(#duelStick,#duelKnob){background:#59182370!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="multiplayer"] #duelResult{background:#30232ab3!important}
+body[data-roman-screen="multiplayer"] #duelResult>section{background:var(--ui-white)!important;color:var(--ui-ink)!important;border:1px solid var(--ui-gold)!important;border-radius:5px!important;box-shadow:none!important}
+body[data-roman-screen="multiplayer"] #duelResult h1{color:var(--ui-burgundy)!important}
+body[data-roman-screen="multiplayer"] .mp-rule{color:var(--ui-muted)!important}
+body[data-roman-screen="multiplayer"] :is(#queueRing>div,.queue-centre){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="multiplayer"] :is(#queueSeconds,#queueRing span,#queueCount,#queueNames,#queueMessage,#queueCaption,.queue-label){color:var(--ui-gold-light)!important}
+body[data-roman-screen="multiplayer"] .queue-track{background:var(--ui-selected)!important}
+body[data-roman-screen="multiplayer"] .queue-track i{background:var(--ui-gold)!important}
+
+/* Utility and model-preview pages also get the UI theme, not recoloured models. */
+body[data-roman-screen="utility"]{background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
+body[data-roman-screen="utility"] :is(main,section){background:var(--ui-white)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="utility"] :is(h1,h2,a){color:var(--ui-burgundy)!important}
+body[data-roman-screen="utility"] :is(button,a.action){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border:1px solid var(--ui-gold)!important}
+body[data-roman-screen="preview"] :is(header,footer,.hud,.bar,.badge,#loading,button,.back){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="preview"] :is(header,footer) :is(h1,small,p,#measurement){color:var(--ui-gold-light)!important}
+body[data-roman-screen="preview"] .result{background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="preview"] .result b{color:var(--ui-burgundy)!important}
+
+/* Compact financial readouts; values still come from the existing controllers. */
+body[data-roman-screen]:not([data-roman-screen="pazar"]) :is(.topWallet,.balance,#dailyWallet,.food-wallet){font-family:var(--ui-font)!important;font-variant-numeric:tabular-nums;font-size:clamp(10px,2.3dvh,16px);gap:8px}
+body[data-roman-screen] .topWallet small{font-size:11px}
+body[data-roman-screen] :is(.topWallet,.balance,#dailyWallet) svg{max-width:22px;max-height:22px}
+@media(max-height:420px){body[data-roman-screen] .imperial-paper .imperial-head{padding:4px}body[data-roman-screen="arena"] .overlay>.intro{padding:10px;max-height:92dvh}}

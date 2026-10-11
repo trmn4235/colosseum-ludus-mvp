@@ -1,0 +1,12 @@
+/* Peripheral architecture stays visible around the approved, unchanged posters.
+   Scope to the mode picker so the preparation page keeps its white UI. */
+body[data-roman-screen="savas"] #modePage{position:relative;isolation:isolate}
+body[data-roman-screen="savas"] .top{position:relative;z-index:2}
+body[data-roman-screen="savas"] #modePage::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:#30232a url('assets/arena-entrance-v70.webp') center/100% 100% no-repeat}
+body[data-roman-screen="savas"] #modePage .heading{padding:2px 16px 4px;border-radius:4px;background:#30232a80;max-width:78%;flex-shrink:0}
+body[data-roman-screen="savas"] #modePage .heading h1{color:var(--ui-gold-light)!important;text-shadow:0 1px 3px #0008}
+body[data-roman-screen="savas"] #modePage .heading p{color:var(--ui-gold-light)!important;margin:3px 0 0}
+body[data-roman-screen="savas"] #modePage .modes{width:min(82%,calc((var(--game-height,100dvh) - 110px)*2.25 + 44px))!important}
+body[data-roman-screen="savas"] #modePage .mode{box-shadow:0 5px 18px #0007!important}
+body[data-roman-screen="savas"] #modePage .mode:focus-visible{outline:3px solid var(--ui-gold-light)!important;outline-offset:3px}
+@media(max-height:350px){body[data-roman-screen="savas"] #modePage .modes{width:min(82%,calc((var(--game-height,100dvh) - 100px)*2.25 + 24px))!important}}
