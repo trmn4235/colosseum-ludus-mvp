@@ -1,0 +1,20 @@
+body[data-roman-screen="savas"] .top{position:relative;min-height:48px;padding-top:2px;padding-bottom:2px}
+.arena-tabs{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:clamp(8px,2vw,28px);height:100%;top:0}
+.arena-tabs button{display:grid;place-items:center;gap:0;background:transparent!important;border:0!important;padding:2px 5px!important;color:#d7b773!important;opacity:.65;min-width:60px;box-shadow:none!important}
+.arena-tabs button[aria-selected="true"]{opacity:1;filter:drop-shadow(0 0 5px #e6c57470)}
+.arena-tabs svg{width:29px;height:27px;fill:none;stroke:currentColor;stroke-width:1.7}
+.arena-tabs span{font:10px Georgia,serif;white-space:nowrap}.arena-tabs button:focus-visible{outline:2px solid #e9cb87!important;outline-offset:-1px}
+body[data-roman-screen="savas"] #modePage .heading::before{display:none}
+body[data-roman-screen="savas"] #modePage .modes{grid-template-columns:repeat(2,minmax(0,1fr))!important;width:min(72%,calc((var(--game-height,100dvh) - 127px)*1.5 + 22px))!important}
+body[data-roman-screen="savas"] #modePage .modes[data-arena-panel="multi"]{grid-template-columns:1fr!important;width:min(36%,calc((var(--game-height,100dvh) - 127px)*.75))!important}
+.arena-panel[hidden]{display:none!important}
+.clan-panel{flex:1;min-height:0;width:86%;display:flex;flex-direction:column;align-items:center;gap:4px}
+.clan-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(7px,1.3vw,20px);min-height:0;flex:1;width:min(100%,calc((var(--game-height,100dvh) - 148px)*2.67 + 60px))}
+.clan-card{position:relative;overflow:hidden;border:2px solid #bc9650;border-radius:5px;min-height:0;background:#591823;color:#ffe3a0;display:flex;flex-direction:column;margin:0;box-shadow:0 4px 12px #0006}
+.clan-card img{width:100%;height:100%;min-height:0;object-fit:cover;flex:1}
+.clan-card figcaption{padding:5px 3px;text-align:center;background:linear-gradient(#701e29,#390b13);border-top:1px solid #bc9650;line-height:1.05;flex-shrink:0}
+.clan-card small{display:block;font:clamp(8px,1.7dvh,12px) Georgia,serif;letter-spacing:1px}.clan-card strong{display:block;font:700 clamp(22px,6dvh,44px) Georgia,serif}.clan-soon{font:clamp(12px,2.8dvh,19px) Georgia,serif;color:#f0cf84;letter-spacing:2px;margin:2px 0}
+@media(max-width:900px){body[data-roman-screen="savas"] .balance{max-width:25%;font-size:10px!important;gap:3px!important}.balance #wallet{font-size:9px!important}.arena-tabs{gap:4px}.arena-tabs button{min-width:53px}.arena-tabs span{font-size:9px}.arena-tabs svg{height:24px;width:26px}}
+body[data-roman-screen="savas"]{grid-template-rows:48px minmax(0,1fr)!important}
+/* Naval artwork stays fully visible, including both sides' sails and crews. */
+.clan-card img[src*="clan-water-"]{object-fit:contain;background:radial-gradient(ellipse at center,#7b3c30,#3b1019)}
