@@ -53,7 +53,7 @@
    const bars=node('div','exercise-bars');bars.append(meter('Günlük Egzersiz Barı',units/3*100,'daily',r.exercise_completed?'Bugünkü gelişim tamamlandı':'3 maç · 1 antrenman · 1 kolay görev'));
    bars.append(meter('Yorgunluk Barı',e,'energy'+(e<30?' danger':''),(e<30?'%25 sakatlık riski':'Kalan enerji')+' · +'+format(recoveryRate(r,now()))+'/saat'));summary.append(bars);
    const list=node('div','exercise-attributes');list.setAttribute('aria-label','Gladyatör istatistikleri');
-   for(const [key,label]of attributes){const b=button('',()=>{stat=key;message='';render();},busy,'exercise-attribute'+(stat===key?' selected':''));b.setAttribute('aria-pressed',String(stat===key));b.append(node('span','',label),node('strong','',format(stats[key])));list.append(b);}details.append(node('h3','exercise-section-title','ÖZELLİKLER'),list);
+   for(const [key,label]of attributes){const b=button('',()=>{stat=key;message='';render();},busy,'exercise-attribute'+(stat===key?' selected':''));b.setAttribute('aria-pressed',String(stat===key));if(key==='tactics')b.title='Saldırı ve savunma hesabına katılır. Bot kontrolünde tepki süresini, dayanıklılık yönetimini ve açık bölge seçimini geliştirir.';b.append(node('span','',label),node('strong','',format(stats[key])));list.append(b);}details.append(node('h3','exercise-section-title','ÖZELLİKLER'),list);
    const actions=node('div','exercise-actions');actions.id='orderButtons';
    actions.append(button(busy?'Kaydediliyor…':attributes.find(a=>a[0]===stat)[1]+' çalış',()=>send([record(g).id]),busy||!options.loaded()||!eligible(g),'exercise-primary'));
    actions.append(button(bulk?'Tek gladyatöre dön':'Toplu antrenman',()=>{bulk=!bulk;gearSlot=null;bulkPage=0;selectedIDs=new Set(roster().filter(eligible).slice(0,30).map(g=>record(g).id));message='';render();},busy||!options.loaded()));summary.append(actions);
@@ -79,7 +79,7 @@
    if(!selected||panel.hidden||busy)return;
    const value=energy(record(selected),now()),wrap=panel.querySelector('.exercise-meter.energy');
    if(!wrap)return;wrap.classList.toggle('danger',value<30);wrap.querySelector('strong').textContent=format(value)+'%';wrap.querySelector('.exercise-fill').style.width=value+'%';wrap.querySelector('[role=progressbar]').setAttribute('aria-valuenow',String(value));
-   wrap.querySelector('small').textContent=valu(e<30?'%25 sakatlık riski':'Kalan enerji')+' · +'+format(recoveryRate(r,now()))+'/saat';
+   wrap.querySelector('small').textContent=(value<30?'%25 sakatlık riski':'Kalan enerji')+' · +'+format(recoveryRate(record(selected),now()))+'/saat';
   }
   let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(selected&&!panel.hidden){rosterPage=Math.floor(Math.max(0,roster().indexOf(selected))/pageSize());render();}},80);});
   document.addEventListener('keydown',event=>{if(panel.hidden)return;if(event.key==='Escape'){event.preventDefault();if(gearSlot&&!busy){gearSlot=null;gearMessage='';render();}else close();}if(event.key==='Tab'){const buttons=[...panel.querySelectorAll('button:not(:disabled),input:not(:disabled)')].filter(n=>n.getClientRects().length),first=buttons[0],last=buttons.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}});

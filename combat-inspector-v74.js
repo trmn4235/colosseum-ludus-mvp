@@ -20,7 +20,7 @@
   stamina_regeneration:'Saniyelik ham ek yenilenme. Savaş temposu ×0,65 ve yemek bonusu daha sonra uygulanır.',
   minimum_damage:'Hasardaki %20 rastgele değişkenliği kapatır; 20 üstü ek fayda sağlamaz.',
   recovery_speed:'Darbe sonrası toparlanmayı, normal/mükemmel blok geri tepmesini ve yere düşme sonrası kalkışı hızlandırır. Ağ ve devam eden kırbaç çekişini bozmaz. %30 bonus, toparlanma süresini 1,30’a böler.',
-  dodge_rate:'Uygun bekleme durumunda pasif kaçınma ihtimali.',
+  dodge_rate:'Uygun bekleme durumunda pasif kaçınma ihtimali. Başarılı olunca kısa bir gövde sıyrılması görünür; fazladan dokunulmazlık veya yuvarlanma vermez.',
   parry_rate:'Uygun elde silah ve en az 6 dayanıklılık gerektirir.',
   attack_speed:'Refleks çarpanından ayrı uygulanır. Refleks 0–100 boyunca 0,70–1,30 çarpanı verir.'
  };
@@ -61,6 +61,7 @@
     table(['Bonus','Ham','Tavana kadar','Boşa çıkan'],result.rows.map(r=>[r.label,fmt(r.raw),r.used===null?'Duruma bağlı':fmt(r.used)+' / '+fmt(r.cap),r.excess===null?'—':fmt(r.excess)]));
     if(result.legacy)add('p','Eski tip eşyaların gladyatör özelliklerine katkıları bu taş bonusu tablosuna dahil değildir.');
     for(const r of result.rows){const d=add('details',''),s=document.createElement('summary'),p=document.createElement('p');s.textContent=r.label;p.textContent=r.note;d.append(s,p);}
+    add('p','Moral 0–100 arasında savaş içi kondisyon yenilenmesini ×0,95–×1,05 değiştirir; 50 nötrdür. Tamamlanmış menüden alınır ve savaş boyunca sabit kalır. Beslenme bonusuyla çarpılır. Taktik, saldırı ve savunmanın yanında botun tepki süresine, dayanıklılık yönetimine ve açık bölge seçimine etki eder.');
     add('p','Refleks saldırı zamanlarını kısaltır: 0 → ×0,70; 50 → ×1,00; 65 → ×1,09; 80 → ×1,18; 100 → ×1,30. Celeritas ayrıca uygulanır.');
    }
   }

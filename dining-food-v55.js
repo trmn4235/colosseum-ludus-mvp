@@ -28,6 +28,8 @@ var LudusFood=(()=>{
     const card=el('div','food-bonus');card.append(el('small','',label),el('strong','','+%'+num(bonus)),el('span','',detail));benefit.append(card);
    }
    content.append(benefit,el('p','food-effect-rule','Yemek bonusu savaş sırasında kondisyonun yenilenme hızını artırır. Bugünkü menü Türkiye saatiyle 00.00’da tüketilir ve yarının bonusunu belirler.'));
+   const morale=Math.min(100,Math.max(0,Number(state.last_menu?.morale??50)));
+   content.append(el('p','food-effect-rule','Bugünkü savaş morali '+num(morale)+'/100 · Kondisyon yenilenmesi ×'+(1+(morale-50)/1000).toLocaleString('tr-TR',{maximumFractionDigits:3})+'. Moral 50’de nötrdür; 0’da %5 yavaşlatır, 100’de %5 hızlandırır. Savaş başlarken sabitlenir. İlk tamamlanmış menüye kadar 50 kabul edilir.'));
    const prices=new Map(state.items.map(i=>[i.sku,Number(i.price)||0]));const dailyCost=state.menu.served.reduce((sum,i)=>sum+(Number(i.quantity)||0)*(prices.get(i.sku)||0),0);
    content.append(el('p','food-cost','Planlanan menü: '+num(dailyCost)+' denarius / gün'+(state.crew_count?' · '+num(dailyCost/state.crew_count)+' / gladyatör':'')),el('p','food-cost-note','Bu, tüketilecek erzakların pazar değeridir. Ücret alımda ödenir; günlük tüketimde yeniden kesilmez.'));
    const description=el('p','food-rule','Her gladyatör günde 100 besin birimi ister: 2 öğün × 50 birim. Ürünler günlük ortak menüde otomatik kullanılır; öğünler için ayrı besleme yoktur. Gün Türkiye saatiyle 00.00’da tamamlanır.');content.append(description);
