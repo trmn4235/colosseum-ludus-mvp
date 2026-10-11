@@ -60,7 +60,7 @@ async function database(){
  await db.exec("create function auth.jwt()returns jsonb language sql stable as $$select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;grant usage on schema auth to authenticated;grant execute on function auth.uid(),auth.jwt()to authenticated;alter table ludus_accounts add column username text,add column ludus_name text;");
  await db.exec(fs.readFileSync(root+'/ludus-multiplayer-v36.sql','utf8'));
  const migrate=async name=>db.exec(fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_'+name+'.sql')),'utf8'));
- for(const name of['gladiator_exercise_v46','targeted_training_v51','dining_food_v55','dining_meals_v56','dining_nutrition_v57','dining_recovery_v58','dining_recovery_balance_v59','combat_food_stamina_v60','combat_stats_v73','combat_stats_v73','combat_stats_v74','combat_stats_v74','combat_stats_v75','combat_stats_v75'])await migrate(name);
+ for(const name of['gladiator_exercise_v46','targeted_training_v51','dining_food_v55','dining_meals_v56','dining_nutrition_v57','dining_recovery_v58','dining_recovery_balance_v59','combat_food_stamina_v60','combat_stats_v73','combat_stats_v73','combat_stats_v74','combat_stats_v74','combat_stats_v75','combat_stats_v75','online_projectiles_v76','online_projectiles_v76'])await migrate(name);
  return db;
 }
 module.exports={runtime,item,fixture,database,g,core};
@@ -113,7 +113,7 @@ async function main(){
  const ga=(await q("insert into ludus_gladiators(owner_id,name,class,base_stats,stat_version)values($1,'Alpha','secutor',$2::jsonb,46)returning id",[A,JSON.stringify({...core,conditioning:80})]))[0].id;
  await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
  let joined=(await q("select ludus_match('join',null,$1,'{}',$2::jsonb) r",[ga,JSON.stringify({combat_stats:{attack:9999},hp:9999})]))[0].r;
- assert.notEqual(joined.id,oldQueue,'new queues cannot join old reflex snapshots');assert.equal(joined.players[0].stats_version,75);assert.equal(joined.players[0].maxHp,160);assert.equal(joined.players[0].hp,160);assert.ok(joined.players[0].combat_stats.attack<2);
+ assert.notEqual(joined.id,oldQueue,'new queues cannot join old reflex snapshots');assert.equal(joined.players[0].stats_version,76);assert.equal(joined.players[0].maxHp,160);assert.equal(joined.players[0].hp,160);assert.ok(joined.players[0].combat_stats.attack<2);
  const liveA=await player(A),liveB=await player(B);liveA.seen=liveB.seen=new Date().toISOString();liveA.stamina_at=liveB.stamina_at=liveA.seen;
  await q("update ludus_matches set status='playing',players=$2::jsonb where id=$1",[joined.id,JSON.stringify([liveA,liveB])]);
  const step=async(input)=>(await q("select ludus_match('step',$1,null,'{}',$2::jsonb) r",[joined.id,JSON.stringify(input)]))[0].r;

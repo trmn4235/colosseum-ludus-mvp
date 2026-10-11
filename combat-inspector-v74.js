@@ -11,7 +11,7 @@
   damage_reduction:'İlgili kesici, delici veya fırlatılan silah direnciyle toplamı en fazla %55.',
   pierce_resistance:'Delici saldırılarda hasar azaltmayla toplamı en fazla %55.',
   slash_resistance:'Kesici saldırılarda hasar azaltmayla toplamı en fazla %55.',
-  projectile_resistance:'Fırlatılan silahlarda hasar azaltmayla toplamı en fazla %55. Çevrimiçi arenada fırlatma eylemi henüz yok.',
+  projectile_resistance:'Fırlatılan silahlarda hasar azaltmayla toplamı en fazla %55. Çevrimiçi arenadaki kılıç, eğri kılıç, mızrak ve trident fırlatmalarında da uygulanır.',
   physical_defense:'Gladyatörün kendi savunmasına eklenir; buradaki sınır yalnızca ekipman katkısıdır.',
   block_rate:'Uygun durumda, önden gelen saldırıya karşı kalkanla otomatik blok ihtimali.',
   block_power:'Başarılı blokta harcanan dayanıklılığın iade edilen yüzdesi.',
