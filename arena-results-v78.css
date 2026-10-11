@@ -1,0 +1,35 @@
+/* The artwork supplies the arena; all labels, numbers and actions remain real UI. */
+#result{position:absolute;inset:0;z-index:30;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(6px,1.6dvh,16px);padding:max(10px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));background:#4f3425 url('assets/arena-result-v78.webp') center/cover no-repeat;color:#40291d;text-align:center;touch-action:manipulation}
+#result[hidden]{display:none!important}
+#result :is(h1,h2,span,b,dt,dd,button){font-family:Georgia,'Times New Roman',serif!important}
+#resultTitle:focus{outline:none!important}
+#result::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(#29100765,transparent 27%,transparent 72%,#1b090b90);z-index:-1}
+#result .result-heading{display:block!important;position:static!important;background:none!important;box-shadow:none!important;border:0!important;padding:0!important;color:#ffe8ac;text-shadow:0 2px 3px #351407,0 0 10px #251000}
+#resultMode{display:inline-block;padding:4px 28px;background:linear-gradient(#8a3328,#4f151b);border:3px double #d2ac5d;box-shadow:0 3px 6px #29100980;font:700 clamp(11px,2.9dvh,20px) Georgia;letter-spacing:.1em}
+#resultTitle{font:700 clamp(28px,8.8dvh,70px)/1 Palatino,Georgia,serif;letter-spacing:.075em;margin:4px 0 2px;color:#ffe7ab}
+#resultDescription{font:clamp(9px,2.4dvh,15px)/1.3 Georgia;margin:0;color:#fff2d1}
+#result .result-columns{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 28% minmax(0,1fr);gap:clamp(9px,2vw,30px);align-items:stretch;width:min(1180px,100%);justify-self:center}
+#result .result-paper{min-height:0;padding:clamp(8px,2dvh,19px);display:flex;flex-direction:column;border:5px double #aa7737;outline:1px solid #e7c478;outline-offset:1px;border-radius:8px;background:radial-gradient(ellipse at 20% 10%,#fff9e8c9,transparent 60%),linear-gradient(115deg,#e6c895ed,#fff5dcf7 43%,#e4c79bed);box-shadow:inset 0 0 0 3px #fff6d780,inset 0 0 24px #9f6c252d,0 5px 16px #29150e70;text-align:left;color:#422c1f}
+#result .result-paper h2{flex:none;font:700 clamp(16px,4.3dvh,29px)/1.1 Georgia;color:#571a20;text-align:center;margin:0 0 6px;padding:0 0 7px;border-bottom:1px solid #a8783d8c;position:relative}
+#result .result-paper h2::after{content:'◆';position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-size:9px;background:#f3ddb3;color:#a47235;padding:0 5px}
+#resultRewards{min-height:0;flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:clamp(3px,.75dvh,7px);padding-top:6px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;touch-action:pan-y}
+#result .result-reward-row{display:flex;align-items:center;gap:7px;min-height:clamp(22px,6dvh,40px);border-bottom:1px solid #b38a5140;padding-bottom:2px;font:clamp(10px,2.7dvh,17px)/1.15 Georgia}
+#result .result-reward-row span{min-width:0;flex:1;overflow-wrap:anywhere}
+#result .result-reward-row b{flex:none;color:#58191f;font-size:1.18em}
+#result .result-reward-icon{display:grid;place-items:center;flex:none;width:clamp(21px,5.5dvh,36px);height:clamp(21px,5.5dvh,36px);color:#ab7626}
+#result .result-reward-icon svg{width:100%;height:100%;filter:drop-shadow(0 1px 0 #fff7d1)}
+#result .result-reward-icon.diamond{color:#3b99b5}#result .result-reward-icon.stone{color:#3a5ba2}#result .result-reward-icon.equipment{color:#77604b}#result .result-reward-icon.exp{color:#996f28}
+#result #rewardStatus{flex:none;font:clamp(9px,2.2dvh,13px)/1.3 Arial;color:#6a482c;text-align:left;margin:5px 0 0;overflow-wrap:anywhere}
+#result #rewardRetry{flex:none;align-self:start;margin-top:5px;padding:5px 9px;font:clamp(9px,2.3dvh,13px) Georgia}
+#result .result-empty{margin:auto 0;font:clamp(11px,2.8dvh,17px)/1.5 Georgia;text-align:center;color:#7c5739}
+#result #resultStats{display:grid;grid-template-columns:1fr;grid-template-rows:repeat(8,minmax(0,1fr));flex:1;min-height:0;gap:0;margin:4px 0 0;color:#493326;font:clamp(10px,2.7dvh,17px)/1.2 Georgia}
+#result #resultStats>div{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #b38a5140}
+#result #resultStats dt{font-weight:400}#result #resultStats dd{margin:0;font-weight:700;font-size:1.16em;white-space:nowrap;color:#641f23}
+#result .result-standing{align-self:end;display:grid;gap:3px;background:linear-gradient(#751f24f0,#411018f5);border:4px double #ca9f51;color:#ffe5b0;padding:clamp(6px,1.8dvh,14px);box-shadow:0 3px 12px #2110087a;min-width:0}
+#resultGladiator{font:700 clamp(13px,3.7dvh,24px)/1.1 Georgia;overflow-wrap:anywhere}#resultRank{font:700 clamp(18px,5.3dvh,38px)/1.1 Georgia}#resultRankLabel{font:clamp(8px,2dvh,12px) Arial;letter-spacing:.09em;color:#d9b576}
+#result .result-actions{display:flex;justify-content:center;align-items:center;gap:clamp(8px,2vw,24px)}
+#result button{padding:clamp(7px,2dvh,15px) clamp(16px,3vw,42px);border:4px double #cfac60;border-radius:3px;background:linear-gradient(#862b2e,#4b101a);color:#ffe7b3;font:700 clamp(12px,3.2dvh,22px)/1.1 Georgia;box-shadow:inset 0 0 0 1px #361014,0 3px 8px #20090b70;touch-action:manipulation}
+#result button:disabled{opacity:.6;cursor:wait}#result button:focus-visible{outline:2px solid #fff3bd;outline-offset:3px}#result button:active{filter:brightness(1.2)}
+#result[data-outcome="loss"] #resultTitle{color:#f5d1bc}
+@media(max-height:360px){#result{padding-top:6px;padding-bottom:6px;gap:5px}#resultTitle{font-size:26px;margin:2px 0}#resultMode{font-size:10px;padding:3px 20px}#resultDescription{font-size:8px}#result .result-paper{padding:6px;border-width:3px}#result .result-paper h2{font-size:15px;padding-bottom:5px}#result .result-reward-row{min-height:23px;font-size:9px}#result #resultStats{font-size:9px}#result .result-actions button{padding:6px 16px;font-size:12px}}
+@media(max-width:700px){#result .result-columns{grid-template-columns:minmax(0,1fr) 23% minmax(0,1fr);gap:8px}#result .result-paper{border-width:3px;padding:7px}#resultGladiator{font-size:12px}#result .result-standing{border-width:3px;padding:5px}#resultRankLabel{font-size:7px;letter-spacing:0}}

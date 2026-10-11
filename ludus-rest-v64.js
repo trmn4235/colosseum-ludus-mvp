@@ -1,4 +1,4 @@
-/* Shared padded floor beds and three shadowless torches. No gameplay or recovery changes. */
+/* Shared padded floor beds and four small wall torches. No gameplay or recovery changes. */
 var LudusRestRoom=(()=>{
  'use strict';
  const width=.95,length=2.35,gap=.50;
@@ -9,8 +9,12 @@ var LudusRestRoom=(()=>{
    const side=i%2===0?-1:1,row=Math.floor(i/2),sideCount=side<0?Math.ceil(count/2):Math.floor(count/2);
    beds.push({id:i,x:side*2.55,z:centerZ+(row-(sideCount-1)/2)*(width+gap),angle:side<0?Math.PI/2:-Math.PI/2,width,length});
   }
-  const spacing=(depth-4.8)/3;
-  return {beds,depth,centerZ,gap,torches:[-spacing,0,spacing].map(z=>({x:0,z:centerZ+z}))};
+  return {beds,depth,centerZ,gap,torches:[
+   {wall:'back',x:0,z:4.5-depth+.24,angle:0},
+   {wall:'front',x:0,z:4.5-.24,angle:Math.PI},
+   {wall:'left',x:-4.76,z:centerZ,angle:Math.PI/2},
+   {wall:'right',x:4.76,z:centerZ,angle:-Math.PI/2}
+  ]};
  }
  function create(ctx){
   const {T,props,colliders}=ctx,group=new T.Group(),transform=new T.Object3D(),sleepers=new Map();group.name='Dinlenme · Kahverengi yer yatakları';
@@ -33,7 +37,7 @@ var LudusRestRoom=(()=>{
    const fabric=new T.CanvasTexture(c);fabric.colorSpace=T.SRGBColorSpace;fabric.wrapS=fabric.wrapT=T.RepeatWrapping;fabric.repeat.set(3,6);fabric.anisotropy=2;
    const cloth=new T.MeshStandardMaterial({map:fabric,color:0xeee2cc,roughness:1}),piping=new T.MeshStandardMaterial({color:0x896348,roughness:1}),bronze=new T.MeshStandardMaterial({color:0x504236,metalness:.55,roughness:.65});
    const points=[];for(let i=0;i<48;i++){const a=i*Math.PI*2/48,ca=Math.cos(a),sa=Math.sin(a);points.push(new T.Vector3(Math.sign(ca)*Math.pow(Math.abs(ca),.24)*(width/2-.025),.05,Math.sign(sa)*Math.pow(Math.abs(sa),.24)*(length/2-.025)));}
-   kit={cloth,piping,bronze,mattress:cushion(width,.20,length),pillow:cushion(.68,.19,.40),seam:new T.TubeGeometry(new T.CatmullRomCurve3(points,true),48,.006,3,true),shadow:new T.PlaneGeometry(width+.08,length+.08).rotateX(-Math.PI/2),shadowMat:new T.MeshBasicMaterial({color:0x3a2417,opacity:.12,transparent:true,depthWrite:false}),shaft:new T.CylinderGeometry(.038,.055,1.25,8),base:new T.CylinderGeometry(.23,.26,.10,10),bowl:new T.LatheGeometry([[.045,0],[.085,.02],[.17,.14],[.19,.18],[.16,.18],[.12,.09]].map(p=>new T.Vector2(...p)),10),flame:new T.SphereGeometry(1,8,6),outer:new T.MeshBasicMaterial({color:0xff8b28}),inner:new T.MeshBasicMaterial({color:0xffdf81})};
+   kit={cloth,piping,bronze,mattress:cushion(width,.20,length),pillow:cushion(.68,.19,.40),seam:new T.TubeGeometry(new T.CatmullRomCurve3(points,true),48,.006,3,true),shadow:new T.PlaneGeometry(width+.08,length+.08).rotateX(-Math.PI/2),shadowMat:new T.MeshBasicMaterial({color:0x3a2417,opacity:.12,transparent:true,depthWrite:false}),shaft:new T.CylinderGeometry(.04,.055,.58,8),bracket:new T.BoxGeometry(.10,.14,.24),bowl:new T.LatheGeometry([[.035,0],[.065,.01],[.12,.11],[.14,.14],[.11,.14],[.08,.07]].map(p=>new T.Vector2(...p)),8),flame:new T.ConeGeometry(1,1,7),outer:new T.MeshBasicMaterial({color:0xff9d35}),inner:new T.MeshBasicMaterial({color:0xffe490})};
    return kit;
   }
   function batch(geometry,material,count,name){const m=new T.InstancedMesh(geometry,material,Math.max(1,count));m.name=name;m.count=count;m.castShadow=false;m.receiveShadow=true;group.add(m);return m;}
@@ -46,15 +50,14 @@ var LudusRestRoom=(()=>{
    for(const bed of current.beds){stamp(bedMeshes[0],bed.id,bed.x,.115,bed.z,bed.angle);stamp(bedMeshes[1],bed.id,bed.x-Math.sin(bed.angle)*.87,.303,bed.z-Math.cos(bed.angle)*.87,bed.angle);stamp(bedMeshes[2],bed.id,bed.x,.115,bed.z,bed.angle);stamp(bedMeshes[3],bed.id,bed.x,.005,bed.z,bed.angle);}
    bedMeshes.forEach(flush);
    if(!torchMeshes.length){
-    torchMeshes=[batch(k.shaft,ctx.wood,3,'Meşale sapları'),batch(k.base,k.bronze,3,'Meşale ayakları'),batch(k.bowl,k.bronze,3,'Meşale çanakları')];
-    for(let i=0;i<3;i++){const outer=new T.Mesh(k.flame,k.outer),inner=new T.Mesh(k.flame,k.inner),flame=new T.Group();outer.scale.set(.10,.25,.10);inner.scale.set(.053,.16,.053);inner.position.set(0,-.03,.012);flame.add(outer,inner);flame.name='Işık meşalesi '+(i+1);group.add(flame);flames.push(flame);const light=new T.PointLight(0xffb966,16,11,2);light.castShadow=false;group.add(light);lights.push(light);}
+    torchMeshes=[batch(k.shaft,ctx.wood,4,'Duvar meşalesi sapları'),batch(k.bracket,k.bronze,4,'Duvar meşalesi bağlantıları'),batch(k.bowl,k.bronze,4,'Duvar meşalesi çanakları')];
+    for(let i=0;i<4;i++){const outer=new T.Mesh(k.flame,k.outer),inner=new T.Mesh(k.flame,k.inner),flame=new T.Group();outer.scale.set(.075,.29,.075);inner.scale.set(.043,.20,.043);inner.position.set(0,-.045,.016);flame.add(outer,inner);flame.name='Duvar meşalesi '+(i+1);group.add(flame);flames.push(flame);const light=new T.PointLight(0xffb966,12,9,2);light.castShadow=false;group.add(light);lights.push(light);}
    }
-   for(const [i,p]of current.torches.entries()){stamp(torchMeshes[0],i,0,.70,p.z);stamp(torchMeshes[1],i,0,.05,p.z);stamp(torchMeshes[2],i,0,1.30,p.z);flames[i].position.set(0,1.64,p.z);lights[i].position.set(0,1.77,p.z);}
+   for(const [i,p]of current.torches.entries()){stamp(torchMeshes[0],i,p.x,2.30,p.z,p.angle);stamp(torchMeshes[1],i,p.x-Math.sin(p.angle)*.10,2.30,p.z-Math.cos(p.angle)*.10,p.angle);stamp(torchMeshes[2],i,p.x,2.59,p.z,p.angle);flames[i].position.set(p.x,2.89,p.z);lights[i].position.set(p.x+Math.sin(p.angle)*.30,2.93,p.z+Math.cos(p.angle)*.30);}
    torchMeshes.forEach(flush);
    for(let i=colliders.length-1;i>=0;i--)if(colliders[i].kind?.startsWith('rest-'))colliders.splice(i,1);
    for(const bed of current.beds)colliders.push({kind:'rest-bed',minX:bed.x-length/2,maxX:bed.x+length/2,minZ:bed.z-width/2,maxZ:bed.z+width/2});
-   for(const p of current.torches)colliders.push({kind:'rest-torch',minX:-.24,maxX:.24,minZ:p.z-.24,maxZ:p.z+.24});
-   group.userData.counts={beds:count,pillows:count,torches:3};group.userData.layout=current;
+   group.userData.counts={beds:count,pillows:count,torches:4};group.userData.layout=current;
   }
   function release(g){
    if(!sleepers.has(g))return;sleepers.delete(g);g.body.rotation.set(0,0,0);ctx.restore(g);g.model.shadow.visible=true;g.model.trail.visible=true;g.body.position.set(g.home.x,0,g.home.z);ctx.scene.add(g.body);g.body.visible=false;
@@ -77,7 +80,7 @@ var LudusRestRoom=(()=>{
   }
   function enter(roster){active=true;signature='';props.add(group);sync(roster);}
   function leave(){if(!active)return;for(const g of [...sleepers.keys()])release(g);active=false;signature='';current=null;group.removeFromParent();ctx.setDepth(9);}
-  function tick(dt){if(!active||dt<=0)return;time+=dt;for(let i=0;i<3;i++){const flicker=Math.sin(time*5+i*2.3)*.045+Math.sin(time*8+i)*.018;flames[i].scale.set(1-flicker*.3,1+flicker,1-flicker*.3);lights[i].intensity=16+flicker*12;}}
+  function tick(dt){if(!active||dt<=0)return;time+=dt;for(let i=0;i<4;i++){const flicker=Math.sin(time*5+i*2.3)*.045+Math.sin(time*8+i)*.018;flames[i].scale.set(1-flicker*.3,1+flicker,1-flicker*.3);lights[i].intensity=12+flicker*9;}}
   return {enter,leave,prepare,sync,tick,get layout(){return current;},get active(){return active;}};
  }
  return {create,layout};

@@ -6386,7 +6386,7 @@ class ArenaCombat {
  constructor(random=Math.random){this.random=random;this.reset();}
  reset(difficulty='normal',playerType='secutor',mode='4x5'){
   Object.assign(this,{mode,allowDrops:true,difficulty,time:0,events:[],finished:false,result:null,combo:0,comboUntil:0,lockedTarget:null,nets:[],netSequence:0,projectiles:[],projectileSequence:0,drops:[],dropSequence:0});
-  this.stats={hits:0,blocks:0,dodges:0,damage:0,parries:0,knockdowns:0,nets:0};
+  this.stats={hits:0,blocks:0,dodges:0,damage:0,damageTaken:0,kills:0,parries:0,knockdowns:0,nets:0};
   const names=['Cassius','Varro','Felix','Drusus','Marcus','Titus','Lucius','Cato','Brutus','Aulus','Flavius','Decimus','Gaius','Quintus','Severus','Nero','Octavius','Rufus','Maximus','Silvanus'];
   this.fighters=names.map((name,id)=>{const team=mode==='solo20'?id:Math.floor(id/5),k=id%5,col=[0,-1,1,-2,2][k],row=0,type=id===0&&Classes[playerType]?playerType:Object.keys(Classes)[id%7],c=Classes[type];return {
    id,name,team,type,x:col*2.5,z:(team===0?1:-1)*(10+row*2.7),angle:team===0?Math.PI:0,hp:id===0?120:100,maxHp:id===0?120:100,stamina:100,
@@ -6453,9 +6453,12 @@ class ArenaCombat {
   if(region==='rightArm')this.wearEquipment(victim,'weapon',base*(heavy?1.65:.5));
   if(region==='leftArm'){for(const item of ['shield','offhand','leftGear'])this.wearEquipment(victim,item,base*(heavy?1.65:.5));}
   if(attacker.id===0){this.stats.hits++;this.stats.damage+=Math.min(victim.hp,damage);this.combo=this.time<this.comboUntil?this.combo+1:1;this.comboUntil=this.time+2.6;}
+  if(victim.id===0)this.stats.damageTaken+=Math.min(victim.hp,damage);
   victim.hp=Math.max(0,victim.hp-damage);victim.flash=.2;victim.regenDelay=.8;victim.blocking=false;
   const aim=Math.atan2(victim.x-attacker.x,victim.z-attacker.z);victim.x+=Math.sin(aim)*(heavy?.22:.1);victim.z+=Math.cos(aim)*(heavy?.22:.1);this.bound(victim);
   if(victim.hp===0){
+   if(attacker.id===0)this.stats.kills++;
+   if(victim.id===0&&this.mode==='solo20')this.stats.placement=this.fighters.filter(f=>f.hp>0).length+1;
    // Preserve appearance only; ownership and pickup still use the real dropped items.
    victim.corpseEquipment=Object.fromEntries(['weapon','offhand','leftGear','shield','helmet','chest','greaves','shoulders','shieldStyle','helmetStyle','helmetColor','helmetModel','chestModel','shoulderModel','netBusy'].map(key=>[key,victim[key]]));
    victim.deadTime=0;victim.knockOrigin=null;victim.knockAngle=null;victim.knockedUntil=0;victim.skillMotion=null;

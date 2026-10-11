@@ -19,12 +19,12 @@ body[data-control-layout="regions"] .actions .action.mode-selected,body[data-con
 body[data-control-layout="regions"] .actions #target,body[data-control-layout="regions"] .actions #hand{width:30px!important;height:30px!important;left:-40px;bottom:0;opacity:.75}body[data-control-layout="regions"] .actions #hand{bottom:40px}
 body[data-control-layout="regions"] .controlHint{display:none}
 .topright>div:first-child,.vitals .name,.vitals>.eyebrow{display:none!important}
-.vitals{left:calc(max(12px,env(safe-area-inset-left)) + 28px)!important;top:max(15px,env(safe-area-inset-top))!important;width:clamp(140px,21vw,260px)!important}
-.vitals .meter{height:14px!important;padding:2px;margin:6px 0 16px!important;border:1px solid #d8b86e;border-radius:2px;background:#17130fe3;box-shadow:0 1px 3px #0008}
+.vitals{left:calc(max(6px,env(safe-area-inset-left)) + 24px)!important;top:max(15px,env(safe-area-inset-top))!important;width:clamp(135px,20vw,250px)!important}
+.vitals .meter{height:12px!important;padding:2px;margin:6px 0 14px!important;border:1px solid #d8b86e;border-radius:2px;background:#17130fe3;box-shadow:0 1px 3px #0008}
 .vitals .meter span{background:linear-gradient(#c7443c,#821b26)}.vitals .meter.energy span{background:linear-gradient(#f6d573,#b98626)}
 .vitals .meter small{display:none}.vitals .meter label{font:8px/10px Arial!important;color:#fff1ce;right:4px!important;top:1px!important}
-.vital-icon{position:absolute;left:-28px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;border:1px solid #d7b268;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4b3020,#17110e);box-shadow:0 1px 3px #0009}
-.vital-icon svg{width:19px;height:19px;fill:#efce77;stroke:#ffe7a6;stroke-width:.6}
+.vital-icon{position:absolute;left:-24px;top:50%;transform:translateY(-50%);width:26px;height:26px;display:grid;place-items:center;border:1px solid #d7b268;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4b3020,#17110e);box-shadow:0 1px 3px #0009}
+.vital-icon svg{width:16px;height:16px;fill:#efce77;stroke:#ffe7a6;stroke-width:.6}
 @media(max-height:350px){body[data-control-layout="regions"] .actions{--unit:37px;--gap:6px}.vitals .meter{margin-bottom:12px!important}}
 
 body[data-control-layout="classic"] .body-target{display:none!important}
