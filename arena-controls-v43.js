@@ -9,7 +9,7 @@ var ArenaTouchControls = (() => {
   leftLeg:'M14 2H7l2 9 3 5 1 5h6l-2-7-2-4z',
   heart:'M12 21S2 14 2 7c0-6 8-6 10-1 2-5 10-5 10 1 0 7-10 14-10 14z',
   energy:'M13 1L4 13h7l-1 10 10-14h-7z',
-  slide:'M16 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4 M12 8l4 3 4-1M14 9l-5 6 7 2-5 4M9 15l-6 5H1M2 9h6M1 12h5'
+  roll:'M19 7a8 8 0 1 0 1 9M19 3v5h-5 M10 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4 M9 12l-3 3 4 3 5-2-2-4z M15 16l2 3'
  };
  const svg = key => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[key]}"/></svg>`;
  function mount(api) {
@@ -38,7 +38,9 @@ var ArenaTouchControls = (() => {
   for(const event of ['pointercancel','lostpointercapture'])attack.addEventListener(event,e=>{if(gesture?.id===e.pointerId)gesture=null;});
   block.addEventListener('pointerdown',e=>{e.preventDefault();if(!api.active())return;if(layout==='regions'){setMode('defense');return;}if(held!==null)return;held=e.pointerId;block.setPointerCapture(e.pointerId);block.classList.add('pressed');api.guardClassic?.(true);});
   for(const event of ['pointerup','pointercancel','lostpointercapture'])block.addEventListener(event,e=>{if(layout!=='classic'||held!==e.pointerId)return;held=null;block.classList.remove('pressed');release();});
-  document.getElementById('dodge').querySelector('svg').outerHTML=svg('slide');
+  document.getElementById('dodge').querySelector('svg').outerHTML=svg('roll');
+  document.getElementById('dodge').setAttribute('aria-label','Yuvarlanarak kaçın');
+  document.getElementById('dodge').querySelector('small').textContent='YUVARLAN';
   for(const [id,key] of [['hpFill','heart'],['stFill','energy']]){const badge=document.createElement('i');badge.className='vital-icon';badge.innerHTML=svg(key);document.getElementById(id).parentElement.append(badge);}
   function applyLayout(value){layout=value;document.body.dataset.controlLayout=value;held=gesture=null;release();block.classList.remove('pressed');targets.forEach(b=>b.classList.remove('selected'));setMode(mode);attack.setAttribute('aria-label',layout==='classic'?'Saldır; kaydırarak bölge seç':'Saldırı modunu seç');block.setAttribute('aria-label',layout==='classic'?'Savunmak için basılı tut':'Savunma modunu seç');}
   addEventListener('combat-control-layout',e=>applyLayout(e.detail));

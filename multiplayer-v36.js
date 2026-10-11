@@ -64,7 +64,7 @@ return {load,prepare};
  block:'<path d="M4 4l8-2 8 2v8c0 5-8 10-8 10S4 17 4 12zM12 4v15"/>',
  attack:'<path d="M7 17L20 3l1 5L10 19M5 13l7 7M4 21l4-5"/>',
  special:'<path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>',
- dodge:'<path d="M3 12h17m-6-6l6 6-6 6M4 6h5M2 18h7"/>'};
+ dodge:'<path d="M19 7a8 8 0 1 0 1 9M19 3v5h-5 M10 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4 M9 12l-3 3 4 3 5-2-2-4z M15 16l2 3"/>'};
  const control=(id,icon,label,aria)=>'<button id="'+id+'" class="mp-action" type="button" aria-label="'+aria+'" title="'+aria+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+icons[icon]+'</svg>'+(label?'<small>'+label+'</small>':'')+'</button>';
  $('duelControls').innerHTML='<div id="duelStick" role="group" aria-label="Hareket çubuğu"><div id="duelKnob"></div><span>HAREKET</span></div><div id="duelActions">'+
  control('duelTarget','target','','Hedef kilidini aç veya kapat')+
@@ -72,7 +72,7 @@ return {load,prepare};
  control('duelSpecial','special','ÇEK','Kırbaçla çek')+
  control('duelBlock','block','BLOK','Kalkanı tut')+
  control('duelAttack','attack','SALDIR','Saldır; kaydırarak vuruş bölgesi seç')+
- control('duelDodge','dodge','KAÇIŞ','Kaçış')+'</div><div id="duelRegionHint" hidden role="status"></div>';
+ control('duelDodge','dodge','YUVARLAN','Yuvarlanarak kaçın')+'</div><div id="duelRegionHint" hidden role="status"></div>';
  $('mpBack').textContent='‹';$('mpBack').setAttribute('aria-label','Savaş hazırlığına dön');
  for(const id of ['self','rival']){const meter=document.createElement('progress');meter.id=id+'Stamina';meter.className='mp-stamina';meter.max=meter.value=100;meter.setAttribute('aria-label',id==='self'?'Kondisyonun':'Rakibin kondisyonu');$(id+'Hp').after(meter);$(id+'Hp').setAttribute('aria-label',id==='self'?'Canın':'Rakibin canı');}
  const foodBonusLabel=document.createElement('small');foodBonusLabel.id='selfFoodBonus';foodBonusLabel.className='mp-food-bonus';foodBonusLabel.hidden=true;$('selfStamina').after(foodBonusLabel);

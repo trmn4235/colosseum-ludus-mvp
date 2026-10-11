@@ -1,0 +1,50 @@
+[
+  {
+    "version": "before",
+    "mode": "4x5",
+    "runs": 6,
+    "secondsPerRun": 25,
+    "swings": 742,
+    "hits": 509,
+    "blocks": 115,
+    "rolls": 7,
+    "playerDamage": 486,
+    "finite": true
+  },
+  {
+    "version": "before",
+    "mode": "solo20",
+    "runs": 6,
+    "secondsPerRun": 25,
+    "swings": 802,
+    "hits": 466,
+    "blocks": 171,
+    "rolls": 10,
+    "playerDamage": 385,
+    "finite": true
+  },
+  {
+    "version": "after",
+    "mode": "4x5",
+    "runs": 6,
+    "secondsPerRun": 25,
+    "swings": 779,
+    "hits": 352,
+    "blocks": 252,
+    "rolls": 132,
+    "playerDamage": 398,
+    "finite": true
+  },
+  {
+    "version": "after",
+    "mode": "solo20",
+    "runs": 6,
+    "secondsPerRun": 25,
+    "swings": 813,
+    "hits": 308,
+    "blocks": 312,
+    "rolls": 120,
+    "playerDamage": 318,
+    "finite": true
+  }
+]
