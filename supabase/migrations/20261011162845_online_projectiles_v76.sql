@@ -8,7 +8,9 @@ declare
  ox float; oz float; dx float; dz float; from_d float; to_d float; along float; side2 float; contact float; best float;
  facing float; guarded boolean; passive text; outcome text; cost numeric;
 begin
- for ai in 0..jsonb_array_length(players)-1 loop
+ -- Earlier releases must resolve first, regardless of player array order.
+ for ai in select (ord-1)::int from jsonb_array_elements(p_players) with ordinality e(f,ord)
+  order by (f->'projectile'->>'launch_at')::timestamptz nulls last,ord loop
   a:=players->ai;shot:=a->'projectile';
   if shot is null or shot='null'::jsonb or coalesce((shot->>'resolved')::boolean,false) then continue;end if;
   start_at:=(shot->>'launch_at')::timestamptz;
@@ -52,7 +54,7 @@ begin
    else
     hit:=private.ludus_hit_v73(shot->'attacker',v,shot->>'weapon',shot->>'hand',(shot->>'base')::numeric,random()::numeric,random()::numeric,true);
     outcome:=case when (hit->>'critical')::boolean then 'critical' else 'hit' end;
-    v:=v||jsonb_build_object('hp',greatest(0,(v->>'hp')::int-(hit->>'damage')::int),'hit_serial',coalesce((v->>'hit_serial')::int,0)+1,'hit_from',a->>'owner','hit_time',p_now,'hit_region','chest','block',false,'guard_at',null);
+    v:=v||jsonb_build_object('hp',greatest(0,(v->>'hp')::int-(hit->>'damage')::int),'hit_serial',coalesce((v->>'hit_serial')::int,0)+1,'hit_from',a->>'owner','hit_time',p_now,'hit_impact_at',impact,'hit_region','chest','block',false,'guard_at',null);
    end if;
    if outcome in('block','parry','evade') then
     v:=v||jsonb_build_object('defense_serial',coalesce((v->>'defense_serial')::int,0)+1,'last_defense',outcome,'defense_from',a->>'owner','defense_at',p_now);

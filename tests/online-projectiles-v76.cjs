@@ -39,6 +39,17 @@ async function main(){
  const cancelled=structuredClone(state.players);cancelled[0].hp=0;cancelled[0].hit_impact_at=new Date(Date.parse(cancelled[0].projectile.launch_at)-1).toISOString();assert.equal((await resolve(cancelled))[0].projectile.outcome,'cancelled');
  const released=structuredClone(cancelled);released[0].hit_impact_at=new Date(Date.parse(released[0].projectile.launch_at)+10).toISOString();assert.ok((await resolve(released))[1].hp<100,'a weapon released before the thrower dies keeps flying');
  const left=structuredClone(state.players);left[0].hp=0;left[0].left=true;assert.equal((await resolve(left))[0].projectile.outcome,'cancelled');
+ // A late poll must use impact time and release order, not player array order.
+ for(const delay of [100,300])for(const reversed of [false,true]){
+  const duel=structuredClone(state.players),launch=Date.parse(duel[0].projectile.launch_at);
+  duel[0].projectile.base=1000;
+  duel[1].projectile={...structuredClone(duel[0].projectile),id:'return-throw',origin_z:3,z:3,dz:-1,launch_at:new Date(launch+delay).toISOString(),tick_at:new Date(launch+delay).toISOString(),expires_at:new Date(launch+delay+375).toISOString()};
+  if(reversed)duel.reverse();
+  const result=await resolve(duel),first=result.find(p=>p.owner===A),second=result.find(p=>p.owner===B);
+  assert.equal(second.hp,0);
+  assert.equal(first.hp,delay===100?0:100,'only weapons released before the fatal impact keep flying');
+  assert.equal(second.projectile.outcome,delay===100?'hit':'cancelled');
+ }
  for(const change of [r=>r[0].stamina=25,r=>r[1].z=5,r=>r[0].pull_from=B,r=>r[0].recoil_until=new Date(Date.now()+10000).toISOString(),r=>r[0].swing_end=new Date(Date.now()+10000).toISOString(),r=>r[0].items[0].model='mace',r=>r[0].stats_version=75]){
   const rows=await players(db);change(rows);await setMatch(db,rows);const rejected=await step({special:true,special_id:'invalid',target:B});assert.equal(rejected.players[0].throw_serial,undefined);
  }

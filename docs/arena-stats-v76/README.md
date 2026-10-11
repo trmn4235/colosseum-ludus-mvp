@@ -28,6 +28,8 @@ authoritative flight path. A lost RPC response reuses the special command ID and
 the original hand/target. The room waits for outstanding projectiles before
 declaring a winner, including weapons already released by a subsequently killed
 thrower. Death or leaving before release cancels the throw without a hit.
+Delayed polling resolves releases in time order and records each impact time, so
+this rule also holds for opposing throws in either player-array order.
 
 New queues use stats/control version 76. Earlier room versions retain their
 existing mechanics and controls. Private projectile resolution is security
