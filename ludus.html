@@ -7227,7 +7227,7 @@ function showGladiator(g){clear();paused=true;$('orders').hidden=false;$('orders
 function closeOrders(){paused=false;$('orders').hidden=true;}
 $('ordersClose').onclick=closeOrders;
 for(const g of [])if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
-$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){openLudusPage(new URL('savas.html?v=revision30',window.location.href).href);}else if(nearest.kind==='market')openLudusPage(new URL('pazar.html?v=revision30',window.location.href).href);else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
+$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){openLudusPage(new URL('savas.html?v=revision73',window.location.href).href);}else if(nearest.kind==='market')openLudusPage(new URL('pazar.html?v=revision30',window.location.href).href);else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
  openUpgrades(nearest.kind==='stone-pouch');
  }else enterRoom(nearest);};
 function projectLabel(el,v,visible){const p=v.clone().project(camera);el.hidden=!visible||p.z<0||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;if(!el.hidden){el.style.left=((p.x+1)*50)+'%';el.style.top=((1-p.y)*50)+'%';}}

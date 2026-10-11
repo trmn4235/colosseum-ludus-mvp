@@ -6446,7 +6446,7 @@ class ArenaCombat {
  }
  wearEquipment(f,slot,amount){if(!f[slot])return;f.wear[slot]=Math.max(0,f.wear[slot]-amount);if(f.wear[slot]===0)this.dropEquipment(f,slot,true);}
  damage(attacker,victim,base,region='chest',heavy=false,point=null){
-  if(!this.enemy(attacker,victim))return false;base*=(attacker.team===0?.5:.55)*(attacker.attackBonus||1)/(victim.defenseBonus||1);const slot=region==='head'?'helmet':region==='chest'?'chest':region==='legs'?'greaves':null,protectedPart=slot&&victim[slot],weak=victim.body[region]<30;
+  if(!this.enemy(attacker,victim))return false;base*=(attacker.team===0?.5:.55)*(attacker.attackBonus??1)/(victim.defenseBonus??1);const slot=region==='head'?'helmet':region==='chest'?'chest':region==='legs'?'greaves':null,protectedPart=slot&&victim[slot],weak=victim.body[region]<30;
   const damage=Math.max(1,Math.round(base*(protectedPart?.8:1.12)*(weak?1.5:1)));victim.lastRegion=region;victim.reaction=.32;
   victim.body[region]=Math.max(0,victim.body[region]-base*(heavy?1.7:1.1));
   if(protectedPart)this.wearEquipment(victim,slot,base*(heavy?1.8:.65));
@@ -6655,7 +6655,7 @@ if(typeof module!=='undefined'){require('./equipment-skills.js')(ArenaCombat,Cla
 const install=(Combat,Classes)=>{
  const p=Combat.prototype,reset=p.reset,tick=p.tick,attack=p.attack,net=p.throwNet;
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
- p.attack=function(...args){const ok=attack.apply(this,args);if(ok){const f=this.fighters[args[0]],factor=Math.max(.7,Math.min(1.3,(f.agility||50)/50));f.attackProfile={...f.attackProfile};for(const k of ['duration','wind','active','recover'])f.attackProfile[k]/=factor;f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;}return ok;};
+ p.attack=function(...args){const ok=attack.apply(this,args);if(ok){const f=this.fighters[args[0]],factor=Math.max(.7,Math.min(1.3,(f.agility??50)/50));f.attackProfile={...f.attackProfile};for(const k of ['duration','wind','active','recover'])f.attackProfile[k]/=factor;f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;}return ok;};
  p.reset=function(...args){const r=reset.apply(this,args);for(const f of this.fighters){const s=Classes[f.type].stats;f.skillReady=[0,0];f.overall=50;f.maxHp=f.hp=s.health*2;f.maxStamina=f.stamina=s.stamina*2;f.attackBonus=s.strength/50;f.defenseBonus=s.defense/50;f.speedBonus=s.speed/50;f.agility=s.agility;f.spareSword=false;}return r;};
  p.specialKind=function(f,index){const left=index===undefined?f.pickupHand==='offhand':index===1,w=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'disarm';if(f.shield)return 'bash';}if(['spear','trident','gladius','sica'].includes(w))return 'throw';if(w==='whip')return 'pull';return null;};
  p.skillNames=function(f){return [0,1].map(i=>({net:'AĞ AT',disarm:'SİLAH DÜŞÜR',bash:'KALKAN VUR',throw:'FIRLAT',pull:'ÇEK'}[this.specialKind(f,i)]||'ÖZEL YOK'));};
@@ -6672,12 +6672,14 @@ const install=(Combat,Classes)=>{
   f.angle=Math.atan2(t.x-f.x,t.z-f.z);
   if(kind==='net'){if(!net.call(this,id,t.id))return false;f.nextNet=this.time+8;}
   else if(kind==='throw'){
+   // Pay before removing stamina-granting gear changes the capacity.
+   f.stamina=Math.max(0,f.stamina-26);
    const sword=['gladius','sica'].includes(w),base=(id===0?20:this.difficulty==='easy'?11:15.5)*(f.body[index?'leftArm':'rightArm']<30?.8:1);
    this.projectiles.push({id:++this.projectileSequence,owner:id,kind:w,itemEntry:f.equipment?.[slot],durability:f.wear[slot],x:f.x,z:f.z,dx:Math.sin(f.angle),dz:Math.cos(f.angle),age:0,launched:false,maxAge:.27+range/12,baseDamage:sword?base:(id===0?30:20),attackBonus:f.attackBonus});
    f[slot]=null;if(f.equipment)delete f.equipment[slot];root.LudusLoadout?.refresh(f);f.action='spearcast';f.timer=0;f.duration=.7;f.attackLeft=!!index;
   }else if(kind==='bash'){f.action='bash';f.timer=0;f.duration=.6;f.specialTarget=t.id;f.specialDone=false;}
   else {f.action='hook';f.timer=0;f.duration=kind==='pull'?4:.45;f.attackLeft=!!index;f.skillMotion={kind,target:t.id,age:0,slot,done:false};}
-  f.blocking=false;f.stamina-=26;f.regenDelay=.9;f.skillReady??=[0,0];f.skillReady[index]=this.time+8;this.emit('special',{id,target:t.id,kind});return true;
+  f.blocking=false;if(kind!=='throw')f.stamina=Math.max(0,f.stamina-26);f.regenDelay=.9;f.skillReady??=[0,0];f.skillReady[index]=this.time+8;this.emit('special',{id,target:t.id,kind});return true;
  };
  p.throwNet=function(id,target){const f=this.fighters[id];if(!f||f.leftGear!=='net')return false;if(id===0)this.lockedTarget=target;else f.target=target;return this.special(id,1);};
  p.tick=function(dt,input={}){
@@ -7244,7 +7246,7 @@ var LudusLoadout={apply(f,g,items){
 LudusLoadout.combatSlot=function(slot,item){return slot==='main_hand'?'weapon':slot==='off_hand'?(item.kind==='shield'?'shield':['net','scissor'].includes(item.model)?'leftGear':'offhand'):({legs:'greaves',gloves:'shoulders'})[slot]||slot;};
 LudusLoadout.inventorySlot=slot=>({weapon:'main_hand',shield:'off_hand',offhand:'off_hand',leftGear:'off_hand',greaves:'legs',shoulders:'gloves'})[slot]||slot;
 LudusLoadout.initialize=function(combat,ticket){if(ticket.rule_version!==2){combat.allowDrops=false;return;}combat.allowDrops=true;for(const f of combat.fighters){f.equipment={};f.gearBase=f.id===0?ticket.snapshot.gladiator:{name:f.name,class:f.type,level:1,base_stats:{health:100,stamina:100,strength:10,defense:10,agility:10}};for(const entry of ticket.loot.filter(e=>e.actor===f.id))f.equipment[this.combatSlot(entry.slot,entry.item)]=entry;this.refresh(f,true);}};
-LudusLoadout.refresh=function(f,initial=false){if(!f.equipment||!f.gearBase)return;const damage=f.maxHp-f.hp,hp=f.hp,stamina=f.stamina,hand=f.pickupHand;const items=Object.entries(f.equipment).map(([slot,entry])=>({...entry.item,equipped_slot:this.inventorySlot(slot)}));this.apply(f,f.gearBase,items);if(!initial){f.hp=hp<=0?0:Math.max(1,f.maxHp-damage);f.stamina=Math.min(stamina,f.maxStamina);f.pickupHand=hand;}const h=items.find(i=>i.equipped_slot==='helmet');f.helmetModel=h?.model;f.helmetColor=['gold','silver'].includes(h?.model)?h.model:null;};
+LudusLoadout.refresh=function(f,initial=false){if(!f.equipment||!f.gearBase)return;const damage=f.maxHp-f.hp,hp=f.hp,stamina=f.stamina,hand=f.pickupHand;const items=Object.entries(f.equipment).map(([slot,entry])=>({...entry.item,equipped_slot:this.inventorySlot(slot)}));this.apply(f,f.gearBase,items);if(!initial){f.hp=hp<=0?0:Math.max(1,f.maxHp-damage);f.stamina=Math.max(0,Math.min(stamina,f.maxStamina));f.pickupHand=hand;}const h=items.find(i=>i.equipped_slot==='helmet');f.helmetModel=h?.model;f.helmetColor=['gold','silver'].includes(h?.model)?h.model:null;};
 LudusLoadout.exitSlots=function(f){if(f.hp<=0)return {};return Object.fromEntries(Object.entries(f.equipment||{}).filter(([slot])=>f[slot]).map(([slot,entry])=>[this.inventorySlot(slot),entry.token]));};
 
 // C.docx master v1.0. Deterministic rules only: no client-side rolls or currency writes.
@@ -7365,8 +7367,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
   if(held?.stat_version===10){const power=LudusItemSystem.effectiveStats(held).physical_power||0,reference=LudusItemSystem.baseStats(held.kind).physical_power||7;
    // The striking item's power is multiplicative: 7 -> 14 really doubles its hit
    // against the same defender. Other equipped power stays an additive bonus.
-   const otherPower=clamp((s.physical_power||0)-power,0,50),attack=(a.nativeAttackBonus||1)+otherPower/50;
-   base*=attack/(a.attackBonus||1)*Math.max(.01,power/reference);
+   const otherPower=clamp((s.physical_power||0)-power,0,50),attack=(a.nativeAttackBonus??1)+otherPower/50;
+   base*=attack/Math.max(.000001,a.attackBonus??1)*Math.max(.01,power/reference);
   }
   if(v.action==='idle'&&this.random()<clamp((t.dodge_rate||0)/100,0,.2)){this.emit('evade',{id:v.id});if(v.id===0)this.stats.dodges++;return true;}
   const critical=this.random()<clamp(((s.critical_rate||0)-(t.critical_resistance||0))/100,0,.35);
@@ -7383,11 +7385,12 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
  const guard=P.guard;
  P.guard=function(a,v,heavy,point){
   const s=v.itemStats||{};const facing=Math.abs(Math.atan2(Math.sin(Math.atan2(a.x-v.x,a.z-v.z)-v.angle),Math.cos(Math.atan2(a.x-v.x,a.z-v.z)-v.angle)))<1.1;
+  const shieldGuard=()=>{const before=v.stamina,blocked=guard.call(this,a,v,heavy,point);if(blocked&&v.shield){const spent=Math.max(0,before-v.stamina);v.stamina=Math.min(v.maxStamina??100,v.stamina+spent*clamp((s.block_power||0)/100,0,.4));}return blocked;};
   if(!v.blocking&&v.action==='idle'&&facing){
-   if(v.weapon&&this.random()<clamp((s.parry_rate||0)/100,0,.2)){this.deflectAttack(a,v,false);this.emit('parry',{id:v.id,source:a.id,point,perfect:false});v.stamina=Math.max(0,v.stamina-6);return true;}
-   if(v.shield&&this.random()<clamp((s.block_rate||0)/100,0,.3)){v.blocking=true;v._automaticGuard=true;try{return guard.call(this,a,v,heavy,point);}finally{v.blocking=false;v._automaticGuard=false;}}
+   if((v.weapon||v.offhand||v.leftGear==='scissor')&&v.stamina>=6&&this.random()<clamp((s.parry_rate||0)/100,0,.2)){this.deflectAttack(a,v,false);this.emit('parry',{id:v.id,source:a.id,point,perfect:false});v.stamina=Math.max(0,v.stamina-6);return true;}
+   if(v.shield&&this.random()<clamp((s.block_rate||0)/100,0,.3)){v.blocking=true;v._automaticGuard=true;try{return shieldGuard();}finally{v.blocking=false;v._automaticGuard=false;}}
   }
-  const before=v.stamina,blocked=guard.call(this,a,v,heavy,point);if(blocked&&v.shield){const spent=Math.max(0,before-v.stamina);v.stamina=Math.min(v.maxStamina||100,v.stamina+spent*clamp((s.block_power||0)/100,0,.4));}return blocked;
+  return shieldGuard();
  };
  const attack=P.attack;
  P.attack=function(id,...args){const ok=attack.call(this,id,...args),f=this.fighters[id];if(ok){const k=1+clamp((f.itemStats?.attack_speed||0)/100,0,.25);f.duration/=k;if(f.attackProfile){f.attackProfile={...f.attackProfile};for(const key of ['duration','wind','active','recover'])if(Number.isFinite(f.attackProfile[key]))f.attackProfile[key]/=k;}if(Number.isFinite(f.hitTime))f.hitTime/=k;}return ok;};
@@ -7406,7 +7409,16 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
    this.bound(f);
   }
  };
- P.damageProjectileV10=function(a,v,projectile,...args){const s=a.itemStats,weapon=a.attackWeapon;try{a.itemProjectile=true;a.projectileItemV10=projectile.itemEntry?.item;a.itemStats=a.projectileItemV10?LudusItemSystem.effectiveStats(a.projectileItemV10):s;a.attackWeapon=projectile.kind;return this.damage(a,v,...args);}finally{a.itemProjectile=false;a.projectileItemV10=null;a.itemStats=s;a.attackWeapon=weapon;}};
+ P.damageProjectileV10=function(a,v,projectile,...args){
+  const s=a.itemStats,weapon=a.attackWeapon,wasProjectile=a.itemProjectile,oldItem=a.projectileItemV10,item=projectile.itemEntry?.item;
+  try{
+   a.itemProjectile=true;a.projectileItemV10=item;a.itemStats={...s};
+   // The thrown piece has already left the loadout. Add it once to the remaining gear.
+   const stillEquipped=item&&Object.values(a.itemPowerSlots||{}).some(i=>i===item||(i.id&&i.id===item.id));
+   if(item&&!stillEquipped)for(const [key,value]of Object.entries(LudusItemSystem.effectiveStats(item)))a.itemStats[key]=(a.itemStats[key]||0)+value;
+   a.attackWeapon=projectile.kind;return this.damage(a,v,...args);
+  }finally{a.itemProjectile=wasProjectile;a.projectileItemV10=oldItem;a.itemStats=s;a.attackWeapon=weapon;}
+ };
 })();
 
 // Original small SVG equipment illustrations; no external images or additional requests.
@@ -7471,7 +7483,7 @@ var LudusResults=(function(){
 
 var LUDUS_CLASS_PORTRAITS={"murmillo":"assets/textures/murmillo-3e675f23b653.webp","thraex":"assets/textures/thraex-cda03a764bfa.webp","hoplomachus":"assets/textures/hoplomachus-2016b8441dd6.webp","secutor":"assets/textures/secutor-c0a735b063c1.webp","retiarius":"assets/textures/retiarius-4f388b00bb43.webp","provocator":"assets/textures/provocator-07d7518a15c4.webp","scissor":"assets/textures/scissor-13a6b2685a92.webp"};
 /* Multiplayer V36 is loaded below; shared asset/runtime definitions above are retained. */
-</script><script src="multiplayer-v36.js?v=revision72">
+</script><script src="multiplayer-v36.js?v=revision73">
 
 
 </script><style id="gameViewportStyle">

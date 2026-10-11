@@ -80,6 +80,11 @@ async function main(){
  await a.waitForFunction(()=>document.getElementById('duelBlock').classList.contains('pressed')&&window.fixtureLastMatch?.players.find(p=>p.owner===window.fixtureOwner)?.block===true);state=await serialized(()=>call(db,A,'state'));assert.equal(state.players[0].block,true);
  await a.mouse.up();await a.waitForFunction(()=>!document.getElementById('duelBlock').classList.contains('pressed'));
  await fresh();const dn=actionStates.length;await a.locator('#duelDodge').click();await a.waitForFunction(()=>document.getElementById('selfStamina').value<80);state=await serialized(()=>call(db,A,'state'));assert.equal(state.players[0].dodge_serial,1);assert.equal(actionStates.slice(dn).find(x=>x.owner===A&&x.input.dodge).data.players[0].stamina,75,'one dodge costs 25 at acceptance');
+ // A progress element clamps value to max immediately. Capacity must be set first.
+ await a.evaluate(()=>{window.hpAssignments=[];const d=Object.getOwnPropertyDescriptor(HTMLProgressElement.prototype,'value');Object.defineProperty(HTMLProgressElement.prototype,'value',{configurable:true,get:d.get,set(value){if(this.id==='selfHp'&&value===160)window.hpAssignments.push(this.max);d.set.call(this,value);}});});
+ const boosted=players();boosted[0].hp=boosted[0].maxHp=160;await serialized(()=>setMatch(db,boosted));
+ await a.waitForFunction(()=>window.hpAssignments.length>0);assert.equal((await a.evaluate(()=>window.hpAssignments))[0],160);
+ await b.waitForFunction(()=>document.getElementById('rivalHp').max===160&&document.getElementById('rivalHp').value===160);
  await fresh();await a.screenshot({path:path.join(out,'multiplayer-v36-844x390.png')});
  await a.setViewportSize({width:393,height:852});await a.locator('#landscapeGate').waitFor({state:'visible',timeout:5000});
  assert.deepEqual(errors,[],'browser errors');console.log('V36 browser checks passed: real Colosseum, eight viewports, no scrolling/overlap, symbols, target toggle, five swipe regions, two-player damage, lost response retry, held guard, dodge, portrait gate.');
