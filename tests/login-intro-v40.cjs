@@ -53,7 +53,7 @@ async function bounds(page){return page.evaluate(()=>{
    }
    await ready(page);
    const b=await bounds(page);assert.equal(b.opacity,'1');assert.equal(b.inert,false);assert.equal(b.fit,'contain');assert.deepEqual(b.image,[1536,711]);assert.equal(b.scroll,false);
-   assert.ok(b.panel.x>width*.5,'auth panel is on the right');assert.ok(b.panel.y>=0&&b.panel.y<=12,'auth panel is at the top');assert.ok(b.panel.right<=width&&b.panel.bottom<=height);
+   assert.ok(b.panel.x>=0&&b.panel.right<width*.32,'auth panel leaves the title clear on the left');assert.ok(b.panel.y>=0&&b.panel.y<=12,'auth panel is at the top');assert.ok(b.panel.right<=width&&b.panel.bottom<=height);
    for(const c of b.controls)assert.ok(c.x>=b.panel.x&&c.right<=b.panel.right+.5&&c.y>=b.panel.y&&c.bottom<=height,'visible control '+c.id);
    const events=await page.evaluate(()=>window.__introEvents),art=events.find(e=>e.state==='artwork'),reveal=events.find(e=>e.state==='revealing'),done=events.find(e=>e.state==='ready');
    assert.ok(reveal.time-art.time>=1950&&reveal.time-art.time<2400,'two-second artwork hold');
@@ -70,7 +70,7 @@ async function bounds(page){return page.evaluate(()=>{
    await page.locator('#register').click();
    const registration=await page.evaluate(()=>({panel:document.getElementById('entryPanel').getBoundingClientRect().bottom,top:document.getElementById('entryPanel').getBoundingClientRect().top,back:document.getElementById('back').getBoundingClientRect().bottom}));
    assert.equal(registration.top,b.panel.y,'registration grows downward from the same top anchor');
-   assert.ok(registration.back<=registration.panel,'registration buttons fit without an initial scroll');
+   await page.locator('#back').scrollIntoViewIfNeeded();assert.ok(await page.locator('#back').evaluate(n=>{const b=n.getBoundingClientRect(),p=document.getElementById('entryPanel').getBoundingClientRect();return b.top>=p.top&&b.bottom<=p.bottom;}),'registration back button is reachable in the compact panel');
    await shot(page,`register-${width}x${height}`);
    assert.deepEqual(errors,[]);results.push({viewport:[width,height],holdMs:Math.round(reveal.time-art.time),revealMs:Math.round(done.time-reveal.time),panel:b.panel});await context.close();
   }

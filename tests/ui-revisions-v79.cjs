@@ -28,9 +28,9 @@ async function main(){
   for(const match of source.matchAll(/(?:arena|savas|ludus|multiplayer)\.html\?v=(revision[\d.]+)/g))assert.equal(match[1],'revision79',file+' navigation is current');
   for(const match of source.matchAll(/searchParams\.set\('v','(revision[\d.]+)'\)/g))assert.equal(match[1],'revision79',file+' navigation helper is current');
  }
- assert.match(read('index.html'),/login-intro-v40\.css\?v=revision79/);
+ assert.match(read('index.html'),/login-intro-v40\.css\?v=revision80/);
  assert.match(read('arena.html'),/arena-controls-v43\.css\?v=revision79/);
- assert.equal(JSON.parse(read('manifest.webmanifest')).start_url,'./index.html?v=revision79');
+ assert.equal(JSON.parse(read('manifest.webmanifest')).start_url,'./index.html?v=revision80');
  const ludus=read('ludus.html'),frontZ=Number(ludus.match(/const residentHomeFrontZ=([\d.]+);/)[1]);
  const homeExpression=ludus.match(/g\.data\.forEach\(\(row,i\)=>\{const home=(\{[^}]+\})/)[1];
  assert.equal(frontZ,2.4);assert.equal((ludus.match(/z:residentHomeFrontZ/g)||[]).length,2,'starter and account rows share the new anchor');
@@ -55,8 +55,12 @@ async function main(){
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
  const ready=()=>page.waitForFunction(()=>document.body.dataset.introState==='ready'&&getComputedStyle(document.getElementById('entryPanel')).opacity==='1');
  async function measure(name,width,height){
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   const b=await page.locator('#entryPanel').boundingBox();
-  assert.ok(b.x>=width*.5&&b.y>=0&&b.y<=12&&b.x+b.width<=width+.5&&b.y+b.height<=height+.5,name+' stays top-right');
+  assert.ok(b.x>=0&&b.x<width*.15&&b.y>=0&&b.y<=12&&b.x+b.width<=width+.5&&b.y+b.height<=height+.5,name+' stays top-left: '+JSON.stringify(b));
+  assert.ok(b.width<=340.5&&b.width<width*.31,'smaller auth panel');
+  const titleGap=await page.locator('#loginArtwork').evaluate((image,right)=>{const b=image.getBoundingClientRect(),scale=Math.min(b.width/image.naturalWidth,b.height/image.naturalHeight);return b.x+(b.width-image.naturalWidth*scale)/2+488*scale-right;},b.x+b.width);
+  assert.ok(titleGap>=12,'blank space before Colosseum C: '+titleGap);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal scrolling');
   await page.screenshot({path:path.join(out,name+'-'+width+'.png')});return b;
  }
@@ -70,7 +74,7 @@ async function main(){
    await page.locator('#register').click();const register=await measure('register',width,height);
    assert.equal(register.x,login.x);assert.equal(register.y,login.y);assert.ok(register.height>=login.height,'longer membership form grows down');
    for(const selector of ['#newUsername','#ludusName','#email','#newPassword','#createOwner','#registerForm button[type=submit]','#back']){
-    const b=await page.locator(selector).boundingBox();assert.ok(b.y>=register.y&&b.y+b.height<=register.y+register.height+.5,'membership control fits: '+selector);
+    await page.locator(selector).scrollIntoViewIfNeeded();const b=await page.locator(selector).boundingBox();assert.ok(b.y>=register.y&&b.y+b.height<=register.y+register.height+.5,'membership control is reachable: '+selector);
    }
    await page.locator('#back').click();await page.locator('#forgot').click();const forgot=await measure('forgot',width,height);
    assert.equal(forgot.y,login.y);assert.equal(forgot.x,login.x);await page.locator('#back').click();
@@ -78,6 +82,8 @@ async function main(){
   await page.goto('http://ui-v79.test/index.html?case=error');await ready();
   assert.equal(await page.locator('#enter').isEnabled(),false);assert.match(await page.locator('#accountMessage').innerText(),/Ludus adı yüklenemedi/);
   await page.setViewportSize({width:844,height:390});await measure('account-error',844,390);
+  await page.locator('#entryPanel').evaluate(n=>n.style.setProperty('--entry-safe-left','59px'));await measure('safe-left',844,390);
+  await page.locator('#entryPanel').evaluate(n=>n.style.removeProperty('--entry-safe-left'));
   await page.goto('http://ui-v79.test/index.html?case=recovery&mode=recovery');await ready();
   assert.equal(await page.locator('#resetForm').isVisible(),true);
   for(const [width,height]of viewports){await page.setViewportSize({width,height});await measure('reset',width,height);}
@@ -99,7 +105,7 @@ async function main(){
    await page.screenshot({path:path.join(out,'hud-'+preset+'-'+width+'.png')});
   }
   assert.deepEqual(errors,[]);assert.deepEqual(remote,[],'no real account requests');
-  console.log(JSON.stringify({viewports:viewports.length,authModes:6,keyboard:true,hudPresets:2,iconPixels:20,barPixels:10,currentNavigation:true,pageErrors:0,productionRequests:0,out}));
+  console.log(JSON.stringify({viewports:viewports.length,authModes:6,authAnchor:'top-left',titleGap:true,simulatedSafeLeft:59,keyboard:true,hudPresets:2,iconPixels:20,barPixels:10,currentNavigation:true,pageErrors:0,productionRequests:0,out}));
  }finally{await browser.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
