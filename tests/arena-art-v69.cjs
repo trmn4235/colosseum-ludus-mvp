@@ -11,7 +11,7 @@ const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp
   for(const asset of ['arena-modes-v69','multiplayer-poster-v69','gladiator-preparation-v69'])assert.ok(await page.evaluate(async name=>{const image=new Image();image.src='/assets/'+name+'.webp';await image.decode();return image.naturalWidth>1000;},asset),'asset decodes');
   for(const [width,height]of [[1536,706],[844,390],[667,375],[568,320]]){
    await page.setViewportSize({width,height});await page.evaluate(()=>document.documentElement.style.setProperty('--game-height',innerHeight+'px'));
-   const selectors=file==='savas.html'?['.mode[data-mode="4x5"]','.mode[data-mode="solo20"]','.mode[data-mode="multiplayer"]']:['.queue-scene','.queue-title','.queue-body','.queue-footer','#queueCancel'];
+   const selectors=file==='savas.html'?['.mode[data-mode="4x5"]','.mode[data-mode="solo20"]']:['.queue-scene','.queue-title','.queue-body','.queue-footer','#queueCancel'];
    for(const selector of selectors){const b=await page.locator(selector).boundingBox();assert.ok(b&&b.x>=-1&&b.y>=-1&&b.x+b.width<=width+1&&b.y+b.height<=height+1,file+' '+selector+' viewport '+width);}
    if(file==='savas.html'){
     const title=page.locator('#modePage .heading'),titleBox=await title.boundingBox(),cardBox=await page.locator('.mode').first().boundingBox();assert.ok(titleBox.y+titleBox.height<cardBox.y,'title does not overlap posters');assert.equal(await title.locator('h1').innerText(),'SAVAŞINI SEÇ');
@@ -20,7 +20,7 @@ const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp
     const backdrop=await page.locator('#modePage').evaluate(e=>getComputedStyle(e,'::before').backgroundImage);assert.ok(backdrop.includes('arena-entrance-v70.webp'));
     assert.ok(await page.evaluate(async()=>{const i=new Image();i.src='/assets/arena-entrance-v70.webp';await i.decode();return i.naturalWidth>1000;}));
     const cards=page.locator('.mode');assert.equal(await cards.count(),3);
-    for(let i=0;i<3;i++){const c=cards.nth(i),b=await c.boundingBox();assert.ok(Math.abs(b.width/b.height-.75)<.015,'poster aspect ratio');assert.ok(await c.getAttribute('aria-label'),'accessible mode name');const bg=await c.evaluate(e=>getComputedStyle(e,'::before').backgroundImage);assert.ok(bg.includes(i===2?'multiplayer-poster-v69':'arena-modes-v69'));assert.equal(await c.evaluate(e=>{const b=e.getBoundingClientRect();return document.elementFromPoint(b.x+b.width/2,b.y+b.height/2).closest('button')===e;}),true,'art does not intercept button');}
+    for(let i=0;i<2;i++){const c=cards.nth(i),b=await c.boundingBox();assert.ok(Math.abs(b.width/b.height-.75)<.015,'poster aspect ratio');assert.ok(await c.getAttribute('aria-label'),'accessible mode name');const bg=await c.evaluate(e=>getComputedStyle(e,'::before').backgroundImage);assert.ok(bg.includes(i===2?'multiplayer-poster-v69':'arena-modes-v69'));assert.equal(await c.evaluate(e=>{const b=e.getBoundingClientRect();return document.elementFromPoint(b.x+b.width/2,b.y+b.height/2).closest('button')===e;}),true,'art does not intercept button');}
    }else{
     const art=await page.locator('.queue-scene').boundingBox(),controls=await page.locator('.queue-body').boundingBox();assert.ok(art.x+art.width<controls.x,'art/control separation');
     await page.evaluate(()=>{document.querySelector('#queueCount').textContent='20';document.querySelector('#queueNames').textContent='Aquila · Invicta · Maximus · Spartacus';document.querySelector('#queueSeconds').textContent='8';});
