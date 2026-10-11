@@ -3,7 +3,7 @@
  'use strict';
  const caps={physical_defense:50,block_rate:30,block_power:40,armor_penetration:60,acceleration:30,movement_speed:30,dodge_rate:20,recovery_speed:30,turn_speed:30,dodge_distance:25,max_hp:120,max_stamina:100,hp_regeneration:2,stamina_regeneration:8,minimum_damage:20,parry_rate:20,attack_speed:25};
  const notes={
-  physical_power:'Eldeki silahın gücü kendi hasarını çarpar. Diğer ekipmanların toplam katkısı en fazla 50; kullanılan ele göre değişir.',
+  physical_power:'Vuruş yapan ekipmanın doğal gücü (+ seviyesi ve Safir dahil) hasarı çarpar. Fortitudo her yuvada aynı ek bonus havuzuna girer. Bu havuz, diğer ekipmanların doğal gücüyle birlikte en fazla 50 puandır.',
   critical_rate:'Rakibin kritik direnci çıkarıldıktan sonra en fazla %35 kritik ihtimali.',
   critical_damage:'Rakibin kritik hasarı azaltmasıyla birlikte hesaplanır. Son kritik çarpanı 1,1–2,2 arasındadır.',
   critical_resistance:'Rakibin kritik ihtimalinden çıkarılır; ihtimal sıfırın altına inmez.',
@@ -19,7 +19,7 @@
   hp_regeneration:'Uygun dinlenme durumunda saniyelik ek HP; ölü gladyatörü diriltmez.',
   stamina_regeneration:'Saniyelik ham ek yenilenme. Savaş temposu ×0,65 ve yemek bonusu daha sonra uygulanır.',
   minimum_damage:'Hasardaki %20 rastgele değişkenliği kapatır; 20 üstü ek fayda sağlamaz.',
-  recovery_speed:'Darbe sonrası hurt/recover/stagger toparlanmasına etki eder; her sersemletme türünü kısaltmaz.',
+  recovery_speed:'Darbe sonrası toparlanmayı, normal/mükemmel blok geri tepmesini ve yere düşme sonrası kalkışı hızlandırır. Ağ ve devam eden kırbaç çekişini bozmaz. %30 bonus, toparlanma süresini 1,30’a böler.',
   dodge_rate:'Uygun bekleme durumunda pasif kaçınma ihtimali.',
   parry_rate:'Uygun elde silah ve en az 6 dayanıklılık gerektirir.',
   attack_speed:'Refleks çarpanından ayrı uygulanır. Refleks 0–100 boyunca 0,70–1,30 çarpanı verir.'

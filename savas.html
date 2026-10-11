@@ -6684,7 +6684,7 @@ const install=(Combat,Classes)=>{
    if(f.hp<=0||f.stunUntil>this.time||f.action!=='hook'||!this.enemy(f,t)||(m.kind==='pull'?f[m.slot]!=='whip':f.leftGear!=='scissor')){f.skillMotion=null;continue;}
    m.age+=dt;
    if(!m.done&&m.age>=.18){m.done=true;const r=m.kind==='pull'?Infinity:2.2;if(m.kind!=='pull'&&(distance(f,t)>r||t.action==='dodge'||this.guard(f,t,false))){f.skillMotion=null;continue;}
-    if(m.kind==='disarm')this.dropEquipment(t,t.weapon?'weapon':'offhand');else this.knock(t,.62);
+    if(m.kind==='disarm')this.dropEquipment(t,t.weapon?'weapon':'offhand');else this.knock(t,.62,'pull');
    }
    if(m.kind==='pull'&&m.done){const d=distance(f,t),step=Math.min(Math.max(0,d-.85),dt*Math.max(6,d*3));if(d){t.x+=(f.x-t.x)/d*step;t.z+=(f.z-t.z)/d*step;this.bound(t);}t.knockedUntil=this.time+.18;if(d<=.91){f.skillMotion=null;f.action='idle';f.timer=0;}}
    if(m.age>=f.duration)f.skillMotion=null;
@@ -7360,9 +7360,9 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
  P.damage=function(a,v,base,region,heavy,point){
   if(!this.enemy(a,v))return false;const s=a.itemStats||{},t=v.itemStats||{};
   const held=a.itemProjectile?a.projectileItemV10:a.itemPowerSlots?.[a.action==='bash'?'off_hand':a.attackLeft?'off_hand':'main_hand'];
-  if(held?.stat_version===10){const power=LudusItemSystem.effectiveStats(held).physical_power||0,reference=LudusItemSystem.baseStats(held.kind).physical_power||7;
-   // The striking item's power is multiplicative: 7 -> 14 really doubles its hit
-   // against the same defender. Other equipped power stays an additive bonus.
+  if(held?.stat_version===10){const power=LudusItemSystem.naturalValues(held).physical_power?.effective||0,reference=LudusItemSystem.baseStats(held.kind).physical_power||7;
+   // Only natural weapon power (+ level and sapphire) forms the weapon multiplier.
+   // Fortitudo from every slot stays in the same additive equipment-power pool.
    const otherPower=clamp((s.physical_power||0)-power,0,50),attack=(a.nativeAttackBonus??1)+otherPower/50;
    base*=attack/Math.max(.000001,a.attackBonus??1)*Math.max(.01,power/reference);
   }
@@ -7376,8 +7376,15 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
   base*=defense/Math.max(.1,defense-itemDefense*clamp((s.armor_penetration||0)/100,0,.6));
   base*=clamp(.8+this.random()*.2+(s.minimum_damage||0)/100,.8,1);
   if(critical){base*=1+clamp(.5+((s.critical_damage||0)-(t.critical_damage_reduction||0))/100,.1,1.2);this.emit('critical',{id:v.id,source:a.id});}
-  return damage.call(this,a,v,base,region,heavy,point);
+  const hit=damage.call(this,a,v,base,region,heavy,point);
+  if(hit&&v.hp>0&&['hurt','knocked'].includes(v.action))v.duration/=1+clamp((v.itemStats?.recovery_speed||0)/100,0,.3);
+  return hit;
  };
+ const recovery=f=>1+clamp((f.itemStats?.recovery_speed||0)/100,0,.3);
+ const knock=P.knock;
+ P.knock=function(f,seconds,kind){return knock.call(this,f,kind==='pull'?seconds:seconds/recovery(f));};
+ const deflect=P.deflectAttack;
+ P.deflectAttack=function(a,v,perfect){const active=a.action==='attack',result=deflect.call(this,a,v,perfect);if(active&&['recoil','stagger'].includes(a.action))a.duration/=recovery(a);return result;};
  const guard=P.guard;
  P.guard=function(a,v,heavy,point){
   const s=v.itemStats||{};const facing=Math.abs(Math.atan2(Math.sin(Math.atan2(a.x-v.x,a.z-v.z)-v.angle),Math.cos(Math.atan2(a.x-v.x,a.z-v.z)-v.angle)))<1.1;
@@ -7401,7 +7408,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
     if(moving){const k=.85+.15*f.itemAcceleration;f.x=b.x+(f.x-b.x)*k;f.z=b.z+(f.z-b.z)*k;}
     const turn=Math.atan2(Math.sin(f.angle-b.angle),Math.cos(f.angle-b.angle));f.angle=b.angle+turn*(1+clamp((s.turn_speed||0)/100,0,.3));
    }
-   if(['hurt','recover','stagger'].includes(f.action))f.timer+=dt*clamp((s.recovery_speed||0)/100,0,.3);
+   if(f.action==='recover')f.timer+=dt*clamp((s.recovery_speed||0)/100,0,.3);
    this.bound(f);
   }
  };
@@ -7525,12 +7532,12 @@ var LUDUS_CLASS_PORTRAITS={"murmillo":"assets/textures/murmillo-3e675f23b653.web
   finally{busy=false;render();}
  }
  $('retry').onclick=()=>{drafts.clear();load();};
- $('resumeBattle').onclick=()=>{if(activeTicket)travel('arena.html?v=revision74&battle='+activeTicket.id);};
+ $('resumeBattle').onclick=()=>{if(activeTicket)travel('arena.html?v=revision75&battle='+activeTicket.id);};
  $('abandonBattle').onclick=async()=>{if(!activeTicket||busy)return;busy=true;try{const r=await client.rpc(activeTicket.rule_version===2?'ludus_finish_battle_v2':'ludus_finish_battle',{p_battle:activeTicket.id,p_won:false,p_stats:{alive:false,exit_slots:{},abandoned:true}});if(r.error)throw r.error;activeTicket=null;drafts.clear();await load();}catch(e){status('Çekilme kaydedilemedi: '+e.message);}finally{busy=false;render();}};
  function showMode(){$('modePage').hidden=false;$('setupPage').hidden=!mode;if(mode){$('modePage').hidden=true;$('modeTitle').textContent=(mode==='4x5'?'4x5':mode==='multiplayer'?'Multiplayer':'Solo 20')+' · Savaş hazırlığı';if(selected){render();ensurePreview();}}}
  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;startRequest=null;showMode();document.querySelector('.details p.note:last-child').textContent=mode==='multiplayer'?'Multiplayer Beta: 10 saniyelik kuyruğa katılan herkes aynı arenaya girer. Ödül yok; ekipmanın korunur.':'Ölünce ekipman düşer. Kazanıp hayatta çıkarsan üzerindeki eşyalar envanterine geçer.';});
  $('back').onclick=()=>{if(busy)return;if(mode){mode=null;showMode();status('');}else if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='ludus.html';};
- $('enter').onclick=async()=>{if(mode==='multiplayer'){if(busy||!selected||!available(selected))return;sessionStorage.setItem('ludus-duel-selection',JSON.stringify({gladiator:selected.id,slots:getSlots()}));travel('multiplayer.html?v=revision74');return;}if(busy||pendingResult||activeTicket||!selected||!available(selected))return;busy=true;render();status('Savaş kaydın hazırlanıyor…');try{const r=await client.rpc('ludus_start_battle_v2',{p_gladiator:selected.id,p_mode:mode,p_slots:getSlots(),p_request:startRequest||(startRequest=crypto.randomUUID())});if(r.error)throw r.error;sessionStorage.setItem('ludus-active-battle',r.data.id);activeTicket=r.data;travel('arena.html?v=revision74&battle='+encodeURIComponent(r.data.id));}catch(e){status(/function|schema cache|PGRST202/i.test(e.message)?'Savaş sistemi henüz kurulmamış. Oyun yöneticisi savaş kurulumunu tamamlamalı.':'Savaş başlatılamadı: '+e.message);busy=false;render();}};
+ $('enter').onclick=async()=>{if(mode==='multiplayer'){if(busy||!selected||!available(selected))return;sessionStorage.setItem('ludus-duel-selection',JSON.stringify({gladiator:selected.id,slots:getSlots()}));travel('multiplayer.html?v=revision75');return;}if(busy||pendingResult||activeTicket||!selected||!available(selected))return;busy=true;render();status('Savaş kaydın hazırlanıyor…');try{const r=await client.rpc('ludus_start_battle_v2',{p_gladiator:selected.id,p_mode:mode,p_slots:getSlots(),p_request:startRequest||(startRequest=crypto.randomUUID())});if(r.error)throw r.error;sessionStorage.setItem('ludus-active-battle',r.data.id);activeTicket=r.data;travel('arena.html?v=revision75&battle='+encodeURIComponent(r.data.id));}catch(e){status(/function|schema cache|PGRST202/i.test(e.message)?'Savaş sistemi henüz kurulmamış. Oyun yöneticisi savaş kurulumunu tamamlamalı.':'Savaş başlatılamadı: '+e.message);busy=false;render();}};
  async function ensurePreview(){if(loadPromise)return loadPromise;loadPromise=(async()=>{try{renderer=ArenaCreateRenderer({canvas:$('model'),antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;scene=new THREE.Scene();RomanVisualAssets.environment(scene);camera=new THREE.PerspectiveCamera(34,1,.1,30);camera.position.set(0,1.3,4.5);camera.lookAt(0,1.05,0);scene.add(new THREE.HemisphereLight(0xfff2db,0x5a4c38,1.35));const sun=new THREE.DirectionalLight(0xffedcf,2);sun.position.set(3,5,4);scene.add(sun);await ImportedGladiator.load(t=>$('modelStatus').textContent=t);$('modelStatus').hidden=true;updatePreview();requestAnimationFrame(frame);}catch(e){$('modelStatus').hidden=false;$('modelStatus').textContent='3D önizleme açılamadı. Ekipman seçimine devam edebilirsin.';const img=document.createElement('img');img.id='modelFallback';img.alt='Seçilen gladyatör';img.src=LUDUS_CLASS_PORTRAITS[selected?.class]||'';img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:contain';$('model').after(img);console.warn(e);}})();return loadPromise;}
  function updatePreview(){if(!ImportedGladiator.loaded||!scene||!selected)return;if(model&&model.type!==selected.class){scene.remove(model.root);ImportedGladiator.dispose(model);model=null;}if(!model){model=ImportedGladiator.create(0,selected.class);scene.add(model.root);}state=new ArenaCombat().reset('normal',selected.class).fighters[0];LudusLoadout.apply(state,selected,chosenItems());state.x=state.z=state.angle=0;state.action='idle';state.move=0;}
  let last=0;function frame(t){requestAnimationFrame(frame);if(!mode||document.hidden||!model)return;const dt=Math.min(.05,(t-last)/1000||.016);last=t;const c=$('model'),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*renderer.getPixelRatio())||c.height!==Math.round(h*renderer.getPixelRatio())){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}state.angle=angle;ImportedGladiator.animate(state,model,t/1000,dt);model.teamMark.visible=false;renderer.render(scene,camera);}

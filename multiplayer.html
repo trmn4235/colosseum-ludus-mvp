@@ -6688,7 +6688,7 @@ const install=(Combat,Classes)=>{
    if(f.hp<=0||f.stunUntil>this.time||f.action!=='hook'||!this.enemy(f,t)||(m.kind==='pull'?f[m.slot]!=='whip':f.leftGear!=='scissor')){f.skillMotion=null;continue;}
    m.age+=dt;
    if(!m.done&&m.age>=.18){m.done=true;const r=m.kind==='pull'?Infinity:2.2;if(m.kind!=='pull'&&(distance(f,t)>r||t.action==='dodge'||this.guard(f,t,false))){f.skillMotion=null;continue;}
-    if(m.kind==='disarm')this.dropEquipment(t,t.weapon?'weapon':'offhand');else this.knock(t,.62);
+    if(m.kind==='disarm')this.dropEquipment(t,t.weapon?'weapon':'offhand');else this.knock(t,.62,'pull');
    }
    if(m.kind==='pull'&&m.done){const d=distance(f,t),step=Math.min(Math.max(0,d-.85),dt*Math.max(6,d*3));if(d){t.x+=(f.x-t.x)/d*step;t.z+=(f.z-t.z)/d*step;this.bound(t);}t.knockedUntil=this.time+.18;if(d<=.91){f.skillMotion=null;f.action='idle';f.timer=0;}}
    if(m.age>=f.duration)f.skillMotion=null;
@@ -7364,9 +7364,9 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
  P.damage=function(a,v,base,region,heavy,point){
   if(!this.enemy(a,v))return false;const s=a.itemStats||{},t=v.itemStats||{};
   const held=a.itemProjectile?a.projectileItemV10:a.itemPowerSlots?.[a.action==='bash'?'off_hand':a.attackLeft?'off_hand':'main_hand'];
-  if(held?.stat_version===10){const power=LudusItemSystem.effectiveStats(held).physical_power||0,reference=LudusItemSystem.baseStats(held.kind).physical_power||7;
-   // The striking item's power is multiplicative: 7 -> 14 really doubles its hit
-   // against the same defender. Other equipped power stays an additive bonus.
+  if(held?.stat_version===10){const power=LudusItemSystem.naturalValues(held).physical_power?.effective||0,reference=LudusItemSystem.baseStats(held.kind).physical_power||7;
+   // Only natural weapon power (+ level and sapphire) forms the weapon multiplier.
+   // Fortitudo from every slot stays in the same additive equipment-power pool.
    const otherPower=clamp((s.physical_power||0)-power,0,50),attack=(a.nativeAttackBonus??1)+otherPower/50;
    base*=attack/Math.max(.000001,a.attackBonus??1)*Math.max(.01,power/reference);
   }
@@ -7380,8 +7380,15 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
   base*=defense/Math.max(.1,defense-itemDefense*clamp((s.armor_penetration||0)/100,0,.6));
   base*=clamp(.8+this.random()*.2+(s.minimum_damage||0)/100,.8,1);
   if(critical){base*=1+clamp(.5+((s.critical_damage||0)-(t.critical_damage_reduction||0))/100,.1,1.2);this.emit('critical',{id:v.id,source:a.id});}
-  return damage.call(this,a,v,base,region,heavy,point);
+  const hit=damage.call(this,a,v,base,region,heavy,point);
+  if(hit&&v.hp>0&&['hurt','knocked'].includes(v.action))v.duration/=1+clamp((v.itemStats?.recovery_speed||0)/100,0,.3);
+  return hit;
  };
+ const recovery=f=>1+clamp((f.itemStats?.recovery_speed||0)/100,0,.3);
+ const knock=P.knock;
+ P.knock=function(f,seconds,kind){return knock.call(this,f,kind==='pull'?seconds:seconds/recovery(f));};
+ const deflect=P.deflectAttack;
+ P.deflectAttack=function(a,v,perfect){const active=a.action==='attack',result=deflect.call(this,a,v,perfect);if(active&&['recoil','stagger'].includes(a.action))a.duration/=recovery(a);return result;};
  const guard=P.guard;
  P.guard=function(a,v,heavy,point){
   const s=v.itemStats||{};const facing=Math.abs(Math.atan2(Math.sin(Math.atan2(a.x-v.x,a.z-v.z)-v.angle),Math.cos(Math.atan2(a.x-v.x,a.z-v.z)-v.angle)))<1.1;
@@ -7405,7 +7412,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
     if(moving){const k=.85+.15*f.itemAcceleration;f.x=b.x+(f.x-b.x)*k;f.z=b.z+(f.z-b.z)*k;}
     const turn=Math.atan2(Math.sin(f.angle-b.angle),Math.cos(f.angle-b.angle));f.angle=b.angle+turn*(1+clamp((s.turn_speed||0)/100,0,.3));
    }
-   if(['hurt','recover','stagger'].includes(f.action))f.timer+=dt*clamp((s.recovery_speed||0)/100,0,.3);
+   if(f.action==='recover')f.timer+=dt*clamp((s.recovery_speed||0)/100,0,.3);
    this.bound(f);
   }
  };
@@ -7483,7 +7490,7 @@ var LudusResults=(function(){
 
 var LUDUS_CLASS_PORTRAITS={"murmillo":"assets/textures/murmillo-3e675f23b653.webp","thraex":"assets/textures/thraex-cda03a764bfa.webp","hoplomachus":"assets/textures/hoplomachus-2016b8441dd6.webp","secutor":"assets/textures/secutor-c0a735b063c1.webp","retiarius":"assets/textures/retiarius-4f388b00bb43.webp","provocator":"assets/textures/provocator-07d7518a15c4.webp","scissor":"assets/textures/scissor-13a6b2685a92.webp"};
 /* Multiplayer V36 is loaded below; shared asset/runtime definitions above are retained. */
-</script><script src="multiplayer-v36.js?v=revision74">
+</script><script src="multiplayer-v36.js?v=revision75">
 
 
 </script><style id="gameViewportStyle">
