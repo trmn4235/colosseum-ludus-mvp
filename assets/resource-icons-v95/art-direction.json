@@ -1,0 +1,70 @@
+{
+  "version": "resource-photo95",
+  "generator": "OpenAI built-in image_gen",
+  "format": "WebP, 320 × 320, alpha preserved, quality 84",
+  "style": "Photoreal studio product photography; natural material texture; centered isolated object; neutral light from upper left; transparent background; no illustration, text or UI.",
+  "notes": "The existing food SKU beer is displayed as Şarap and uses the wine goblet. The same files are shared by supply stock, crafting ingredients, market and dining.",
+  "assets": [
+    {
+      "file": "iron.webp",
+      "label": "Demir",
+      "subject": "Three rough forged iron ingots stacked two below and one above, cool dark steel gray with subtle silver wear, realistic hammer marks and oxidized edges. Clearly iron, not shiny silver bullion."
+    },
+    {
+      "file": "copper.webp",
+      "label": "Bakır",
+      "subject": "Three solid copper ingots stacked two below and one above, naturally warm reddish orange copper, scuffed reflective metal and slightly oxidized irregular edges. Clearly copper, not gold."
+    },
+    {
+      "file": "wood.webp",
+      "label": "Odun",
+      "subject": "Two short oak firewood logs nestled together diagonally, real rugged dark bark, visible pale cut end grain and annual growth rings, a small coarse hemp tie around the two logs."
+    },
+    {
+      "file": "leather.webp",
+      "label": "Deri",
+      "subject": "One irregular naturally shaped piece of tanned brown animal leather, softly folded over itself near one edge, supple thickness, fine pores, wear and creases, rough cut edges. No cartoon pelt silhouette, no stitching, no symbols."
+    },
+    {
+      "file": "linen.webp",
+      "label": "Keten",
+      "subject": "A compact stack of three folded unbleached ivory linen cloth pieces bound with a simple narrow flax twine, realistic woven fibres, softly uneven frayed edges and natural folds."
+    },
+    {
+      "file": "grain.webp",
+      "label": "Tahıl",
+      "subject": "A small open coarse burlap sack full of ripe golden wheat grains, three wheat ears tucked upright into the sack and a few loose grains at its base, realistic grain kernels and sack fibres."
+    },
+    {
+      "file": "apple.webp",
+      "label": "Elma",
+      "subject": "One fresh red apple with subtle yellow green patches, a short brown stem and one small natural leaf, visible realistic skin pores, restrained natural reflections, not waxy."
+    },
+    {
+      "file": "meat.webp",
+      "label": "Et",
+      "subject": "One modest rustic roasted bone-in ham portion, realistic richly brown roasted exterior and a cut face showing pink cooked meat and thin ivory fat, a short clean bone visible. Appetizing food product, no blood or gore."
+    },
+    {
+      "file": "fish.webp",
+      "label": "Balık",
+      "subject": "One whole fresh Mediterranean sea bream lying on its side diagonally, anatomically accurate silver scaled body, dark grey fins, naturally proportioned small eye and tail, realistic iridescent scales, no garnish."
+    },
+    {
+      "file": "egg.webp",
+      "label": "Yumurta",
+      "subject": "One natural pale beige chicken egg resting at a slight angle, fine eggshell pores and subtle tiny brown freckles, naturally asymmetric egg shape, soft matte shell. No nest."
+    },
+    {
+      "file": "beer.webp",
+      "label": "Şarap",
+      "subject": "One modest antique handmade transparent glass goblet with a short stem filled halfway with deep red wine, realistic thick slightly irregular glass, transparent rim, restrained reflections and physically accurate refraction. No lettering or ornament."
+    },
+    {
+      "file": "olive_oil.webp",
+      "label": "Zeytinyağı",
+      "subject": "One small ancient Roman terracotta olive oil vessel with two practical side handles and a narrow pouring neck, realistic warm ochre fired clay texture, a simple stopper, with a tiny olive sprig and two olives resting closely at its base to communicate olive oil. No label or painted symbol."
+    }
+  ],
+  "bytes": 306164
+}

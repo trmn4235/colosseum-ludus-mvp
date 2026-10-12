@@ -41,7 +41,7 @@ var LudusFood=(()=>{
    }
    const grid=el('div','food-grid');
    for(const item of state.items.filter(i=>!i.retired||(tab==='stock'&&i.quantity>0))){
-    const card=el('article','food-card');card.dataset.sku=item.sku;const image=el('img');image.src='assets/dining/icons/'+item.sku+'-v57.svg';image.alt='';image.width=96;image.height=96;image.loading='lazy';
+    const card=el('article','food-card');card.dataset.sku=item.sku;const image=el('img');image.src=['grain','apple','fish','meat','beer','egg','olive_oil'].includes(item.sku)?'assets/resource-icons-v95/'+item.sku+'.webp':'assets/dining/icons/'+item.sku+'-v57.svg';image.alt='';image.decoding='async';image.width=96;image.height=96;image.loading='lazy';
     const info=el('div','food-info');info.append(el('h2','',item.name+(item.retired?' · Eski stok':'')),el('small','food-value',item.nutrition?num(item.nutrition)+' besin birimi / adet':item.sku==='olive_oil'?'Yalnızca en yüksek kalite menü':'Açlığı karşılamaz · Moral katkısı'),el('strong','food-stock',num(item.quantity)+' porsiyon'),el('p','',state.crew_count?num(item.daily)+' adet / gün · '+num(item.daily*item.nutrition)+' birim':'Henüz gladyatör yok'));
     card.append(image,info);
     if(tab==='buy'){
