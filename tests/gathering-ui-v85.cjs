@@ -23,7 +23,7 @@ const base={user_id:owner,server_now:new Date().toISOString(),level:10,workers:2
  ui.leave();assert.equal(closed,1);assert.equal(w.document.getElementById('supplyModal').hidden,true);
  ui.enter('forge');await ui.open();assert.equal(w.document.getElementById('supplyTitle').textContent,'Demirci');assert.equal(w.document.querySelector('[data-craft=gladius]').disabled,false);
  w.document.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(w.document.getElementById('supplyModal').hidden,true);
- data={...data,workers:0,free_workers:0,busy_workers:0,jobs:[],level:5,unclaimed_workers:1};ui.enter();await ui.open();assert.equal(w.document.querySelector('[data-send]').disabled,true);assert.match(w.document.querySelector('.supply-reward-link').textContent,/1 işçi/);d.window.close();
+ data={...data,workers:0,free_workers:0,busy_workers:0,jobs:[],level:5,unclaimed_workers:1};ui.enter();await ui.open();w.document.querySelector('[data-destination=iron]').click();assert.equal(w.document.querySelector('[data-send]').disabled,true);assert.match(w.document.querySelector('.supply-reward-link').textContent,/1 işçi/);d.window.close();
  // Reward ledger has its own worker column, distinct from gladiator rewards.
  const l=dom(read('ludus-seviye.html')),lw=l.window;await pause();
  const state={level:5,current_exp:0,next_exp:3000,granted_gladiators:3,owned_gladiators:2,workers:1,next_worker_level:10,battle_exp_today:0,claimable_count:0,pending_gladiator_count:0,wallet:{ludus_name:'Fixture'},rewards:Array.from({length:49},(_,i)=>({level:i+2,diamonds:1,denarius:100,items:1,gladiators:0,workers:(i+2)%5===0?1:0,claimed:i+2<=5,unlocked:i+2<=5,claimable:false}))};
