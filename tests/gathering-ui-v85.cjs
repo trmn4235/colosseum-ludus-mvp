@@ -22,6 +22,17 @@ const base={user_id:owner,server_now:new Date().toISOString(),level:10,workers:2
  [...w.document.querySelectorAll('.supply-tabs button')].find(b=>b.textContent.startsWith('Seferler')).click();assert.equal(w.document.querySelector('.supply-auto-label').disabled,true);assert.equal(w.document.querySelector('[data-claim]'),null);
  ui.leave();assert.equal(closed,1);assert.equal(w.document.getElementById('supplyModal').hidden,true);
  ui.enter('forge');await ui.open();assert.equal(w.document.getElementById('supplyTitle').textContent,'Demirci');assert.equal(w.document.querySelector('[data-craft=gladius]').disabled,false);
+ // A blocked operation must show its error even when the empty footer was hidden.
+ assert.equal(w.document.querySelector('.supply-footer').hidden,true);
+ const save=w.Storage.prototype.setItem,beforeBlockedCraft=calls.length;
+ w.Storage.prototype.setItem=function(key,value){if(key.startsWith('ludus-supply-pending-'))throw new w.DOMException('Storage unavailable','QuotaExceededError');return save.call(this,key,value);};
+ w.document.querySelector('[data-craft=gladius]').click();await pause();await pause();
+ assert.equal(calls.length,beforeBlockedCraft);assert.equal(ui.pending,null);
+ assert.match(w.document.querySelector('.supply-status').textContent,/İşlem kaydı saklanamadı/);
+ assert.equal(w.document.querySelector('.supply-status').dataset.error,'true');assert.equal(w.document.querySelector('.supply-footer').hidden,false);
+ w.Storage.prototype.setItem=save;
+ w.document.querySelector('[data-craft=gladius]').click();await pause();await pause();
+ assert.equal(calls.length,beforeBlockedCraft+1);assert.equal(calls.at(-1).args.p_action,'craft');assert.equal(ui.pending,null);
  w.document.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(w.document.getElementById('supplyModal').hidden,true);
  data={...data,workers:0,free_workers:0,busy_workers:0,jobs:[],level:5,unclaimed_workers:1};ui.enter();await ui.open();w.document.querySelector('[data-destination=iron]').click();assert.equal(w.document.querySelector('[data-send]').disabled,true);assert.match(w.document.querySelector('.supply-reward-link').textContent,/1 işçi/);d.window.close();
  // Reward ledger has its own worker column, distinct from gladiator rewards.
@@ -36,5 +47,5 @@ const base={user_id:owner,server_now:new Date().toISOString(),level:10,workers:2
  [...fw.document.querySelectorAll('.food-tabs button')].find(b=>b.textContent==='Erzak al').click();assert.equal(fw.document.querySelector('[data-sku=bread]'),null);assert.ok(fw.document.querySelector('[data-sku=olive_oil]'));assert.match(fw.document.querySelector('[data-sku=olive_oil]').textContent,/Yalnızca en yüksek kalite/);f.window.close();
  // Parse all inline scripts in the integrated game (without executing its 3D runtime).
  for(const file of ['ludus.html','ludus-seviye.html','pazar.html'])for(const m of read(file).matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){if(!/type=["'](?:importmap|application\/json)/.test(m[1])&&m[2].trim())new vm.Script(m[2],{filename:file});}
- console.log('V85 DOM PASS: map selections; worker input; lost-response replay; reward ledger; forge entry; expired job guard; retired food; oil help; game script parsing.');
+ console.log('V85 DOM PASS: map selections; worker input; lost-response replay; reward ledger; forge entry; visible storage error and recovery; expired job guard; retired food; oil help; game script parsing.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

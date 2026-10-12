@@ -59,7 +59,7 @@ var LudusSupply=(()=>{
    if(['+','=','-','0','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();if(e.key==='+'||e.key==='=')zoomAt(view.zoom+.25);else if(e.key==='-')zoomAt(view.zoom-.25);else if(e.key==='0')fitArt();else{view.x+=e.key==='ArrowLeft'?48:e.key==='ArrowRight'?-48:0;view.y+=e.key==='ArrowUp'?48:e.key==='ArrowDown'?-48:0;paintArt();}}
   }
   const point=ctx.T?new ctx.T.Vector3(0,1.65,0):null,chestPoint=ctx.T?new ctx.T.Vector3(-3.6,1.45,1.02):null;
-  function message(text,error=false){status.textContent=text;status.dataset.error=String(error);}
+  function message(text,error=false){status.textContent=text;status.dataset.error=String(error);footer.hidden=!text&&retry.hidden;}
   function resource(sku){return state?.resources.find(r=>r.sku===sku);}
   function names(cargo,mult=1){return Object.entries(cargo).map(([sku,n])=>num(n*mult)+' '+(resource(sku)?.name||sku)).join(' · ');}
   function remaining(job){const seconds=Math.max(0,Math.ceil((Date.parse(job.ends_at)-Date.now()-offset)/1000));return seconds?Math.floor(seconds/3600)+' sa '+Math.floor(seconds%3600/60)+' dk '+seconds%60+' sn':job.delivery_check_at?'Kasa dolu · Yük güvende':'Kasaya aktarılıyor…';}
