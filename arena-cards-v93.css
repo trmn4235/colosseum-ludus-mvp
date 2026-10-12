@@ -1,0 +1,43 @@
+/* V93: one poster component for Singleplayer, Multiplayer and Clan War. */
+body[data-roman-screen="savas"] #modePage .arena-card-grid[data-arena-panel]{
+  --card-gap:clamp(8px,1.6vw,22px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:var(--card-gap)!important;width:min(94%,840px,calc((var(--game-height,100dvh) - 126px)*2.25 + 2*var(--card-gap)))!important;
+  max-width:none!important;min-height:0;flex:1;margin:0 auto;padding:0;align-items:center;
+}
+body[data-roman-screen="savas"] #modePage .arena-card-grid[data-arena-panel="clan"]{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  width:min(96%,1126px,calc((var(--game-height,100dvh) - 126px)*3 + 3*var(--card-gap)))!important;
+}
+body[data-roman-screen="savas"] #modePage .arena-choice{
+  position:relative;display:flex;flex-direction:column;isolation:isolate;container-type:inline-size;
+  width:100%;min-width:0;min-height:0;height:auto!important;max-height:100%;aspect-ratio:3/4!important;
+  margin:0;padding:0;overflow:hidden;border:2px solid #bc9650!important;border-radius:5px;
+  background:#591823!important;color:#f5dc9d;box-shadow:0 5px 18px #0007!important;text-align:center;
+}
+body[data-roman-screen="savas"] #modePage .arena-choice::before{content:none!important}
+body[data-roman-screen="savas"] #modePage button.arena-choice:hover{transform:translateY(-2px);border-color:#f2cf82!important}
+body[data-roman-screen="savas"] #modePage button.arena-choice:focus-visible{outline:3px solid #ffe2a1!important;outline-offset:3px}
+.arena-choice-art{position:relative;display:block;flex:0 0 59%;height:59%;min-height:0;width:100%;overflow:hidden;background:#4c201b;background-repeat:no-repeat}
+.arena-choice-art img{display:block;width:100%;height:100%;min-height:0;object-fit:cover;object-position:center 58%}
+.arena-choice-art::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(transparent 78%,#4c152455)}
+.arena-choice-art.art-teams,.arena-choice-art.art-solo{background-image:url('assets/arena-modes-v69.webp');background-size:200% auto;background-position:left top}
+.arena-choice-art.art-solo{background-position:right top}
+.arena-choice-art.art-survival{background-image:url('assets/survival-poster-v83.jpeg');background-size:100% auto;background-position:center 48%}
+.arena-choice-art.art-online{background-image:url('assets/multiplayer-poster-v69.webp');background-size:100% auto;background-position:center 35%}
+.arena-choice-copy{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(2px,.9cqw,3px);flex:1;min-height:0;width:100%;padding:clamp(5px,2.2cqw,8px) clamp(5px,2.5cqw,9px);border-top:1px solid #bc9650;background:linear-gradient(#651d2b,#390d17)}
+.arena-choice-copy .arena-kicker{display:block;margin:0;color:#d2b982;font:clamp(7px,3.3cqw,10px)/1.1 Georgia,serif;letter-spacing:clamp(.7px,.4cqw,1.3px)}
+.arena-choice-copy .arena-card-title{display:block;font:700 clamp(14px,8.7cqw,25px)/1.08 Georgia,serif;letter-spacing:.4px;color:#ffe1a0;margin:0 0 2px}
+.arena-choice-copy .arena-description{display:block;margin:0;color:#f2e4c6;font:clamp(8px,4.2cqw,12px)/1.25 Arial,Helvetica,sans-serif}
+.arena-choice-copy .arena-detail{display:block;margin:2px 0 0;color:#cfb993;font:clamp(8px,3.7cqw,11px)/1.15 Arial,Helvetica,sans-serif}
+.arena-choice-copy .arena-detail b{color:#ffe1a0;font-size:1.13em}
+.arena-choice-copy .ranked-points{display:flex;gap:clamp(8px,5cqw,18px);justify-content:center;margin:1px 0 0;color:#e5d6b9;font:clamp(8px,3.7cqw,11px)/1.15 Arial,Helvetica,sans-serif}
+.ranked-points span{white-space:nowrap}.ranked-points b{color:#d5e9ae;font:700 1.3em Georgia,serif;margin-left:3px}.ranked-points .ranked-loss b{color:#f2c3ac}
+.arena-card-status{display:block;flex:none;width:100%;margin:0;padding:clamp(4px,1.8cqw,6px) 3px;border-top:1px solid #b28c4955;background:#310c16;color:#f0cf84;font:clamp(7px,3.2cqw,10px)/1 Georgia,serif;letter-spacing:clamp(1px,.7cqw,2px)}
+.arena-card-status.is-live{color:#d9e8b9}
+.arena-choice-copy .clan-team-detail{font:clamp(8px,4.2cqw,12px)/1.25 Arial,Helvetica,sans-serif;letter-spacing:0;white-space:normal}
+.arena-choice-copy .clan-total{font:clamp(8px,3.7cqw,11px)/1.15 Arial,Helvetica,sans-serif;margin-top:2px;color:#cfb993}
+.arena-choice.clan-card img[src*="clan-water-"]{object-fit:cover;background:none}
+@media(max-height:350px){body[data-roman-screen="savas"] #modePage .arena-card-grid[data-arena-panel]{width:min(96%,840px,calc((var(--game-height,100dvh) - 113px)*2.25 + 2*var(--card-gap)))!important}
+body[data-roman-screen="savas"] #modePage .arena-card-grid[data-arena-panel="clan"]{width:min(96%,1126px,calc((var(--game-height,100dvh) - 113px)*3 + 3*var(--card-gap)))!important}
+.arena-choice-art{flex-basis:53%;height:53%}}
+@media(prefers-reduced-motion:reduce){body[data-roman-screen="savas"] #modePage button.arena-choice:hover{transform:none}}
