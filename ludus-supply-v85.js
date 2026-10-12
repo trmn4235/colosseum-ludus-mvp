@@ -9,11 +9,12 @@ var LudusSupply=(()=>{
  function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
  function button(text,fn,cls=''){const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;}
  const artRoot='assets/supply-v86/';
+ const artURL=id=>id==='rome-map'?'assets/supply-v91/rome-panorama.webp':artRoot+id+'.webp';
  // Game destinations around the illustrated city, not real mineral deposits.
  const positions={iron:[88,64],copper:[89,14],wood:[10,16],hunt:[35,13],linen:[62,14],olive_oil:[60,73],grain:[89,40],apple:[82,85],fish:[27,65],egg:[49,88],wine:[12,84]};
  const shortNames={iron:'Demir',copper:'Bakır',wood:'Orman',hunt:'Av sahası',linen:'Keten',grain:'Tahıl',apple:'Elma',fish:'Balık',egg:'Çiftlik',wine:'Bağ',olive_oil:'Zeytinlik'};
  const uses={iron:'Silah ve zırh üretimi için demir.',copper:'Basic ekipman üretimi için bakır.',wood:'Silah, kalkan ve ekipman için odun.',hunt:'Yemekhaneye et, demirciye deri sağlar.',linen:'Ekipman üretimi için keten.',grain:'Yemekhanenin tahıl stoğunu tamamlar.',apple:'Yemekhanenin meyve stoğunu tamamlar.',fish:'Yemekhaneye balık sağlar.',egg:'Yemekhaneye yumurta sağlar.',wine:'Yemekhane için şarap getirir.',olive_oil:'Yalnızca en yüksek kalite menüde kullanılır.'};
- function picture(id,alt,cls=''){const img=el('img',cls);img.src=artRoot+id+'.webp';img.alt=alt;img.width=1200;img.height=800;img.decoding='async';img.draggable=false;return img;}
+ function picture(id,alt,cls=''){const img=el('img',cls);img.src=artURL(id);img.alt=alt;img.width=id==='rome-map'?1774:1200;img.height=id==='rome-map'?887:800;img.decoding='async';img.draggable=false;return img;}
  function create(ctx){
   let state=null,owner=null,key=null,pending=null,busy=false,loading=null,opened=false,mode='trade',tab='map',selected=null,workers=1,filter='all',craftSelection=null,page=0,lastFocus=null,offset=0,lastRefresh=0,lastTick=0,artOpen=false,artFocus=null,artReturn='.supply-art-expand',seenDeliveries=new Set();
   const opener=button('',()=>open(),'room-world-action supply-open');opener.hidden=true;opener.id='supplyOpen';document.body.append(opener);
@@ -39,7 +40,7 @@ var LudusSupply=(()=>{
   }
   function zoomAt(value,clientX,clientY){const {r,w,h}=stageSize(),x=clientX===undefined?0:clientX-r.left-w/2,y=clientY===undefined?0:clientY-r.top-h/2,z=Math.max(1,Math.min(4,value)),ratio=z/view.zoom;view.x=x-(x-view.x)*ratio;view.y=y-(y-view.y)*ratio;view.zoom=z;paintArt();}
   function fitArt(){Object.assign(view,{zoom:1,x:0,y:0});pointers.clear();gesture=null;paintArt();}
-  function showArt(id,name){artFocus=document.activeElement;artReturn=id==='rome-map'?'.supply-map-expand':'.supply-art-expand';artOpen=true;galleryName.textContent=name;galleryImage.src=artRoot+id+'.webp';galleryImage.alt=name;galleryHint.textContent='Yakınlaştır · Sürükle';gallery.hidden=false;modal.inert=true;modal.setAttribute('aria-hidden','true');lastTap=null;fitArt();galleryClose.focus();}
+  function showArt(id,name){artFocus=document.activeElement;artReturn=id==='rome-map'?'.supply-map-expand':'.supply-art-expand';artOpen=true;galleryName.textContent=name;galleryImage.src=artURL(id);galleryImage.alt=name;galleryHint.textContent='Yakınlaştır · Sürükle';gallery.hidden=false;modal.inert=true;modal.setAttribute('aria-hidden','true');lastTap=null;fitArt();galleryClose.focus();}
   function closeArt(){if(!artOpen)return;artOpen=false;pointers.clear();gesture=null;gallery.hidden=true;modal.inert=false;modal.removeAttribute('aria-hidden');(artFocus?.isConnected?artFocus:content.querySelector(artReturn)||closeButton).focus({preventScroll:true});}
   function beginGesture(){const ps=[...pointers.values()],{r,w,h}=stageSize();gesture=ps.length>1?{zoom:view.zoom,x:view.x,y:view.y,distance:Math.max(1,Math.hypot(ps[0].x-ps[1].x,ps[0].y-ps[1].y)),cx:(ps[0].x+ps[1].x)/2-r.left-w/2,cy:(ps[0].y+ps[1].y)/2-r.top-h/2}:null;if(ps.length>1){lastTap=null;for(const p of ps)p.dragged=true;}}
   galleryImage.onload=()=>{if(artOpen)paintArt();};galleryImage.onerror=()=>{galleryHint.textContent='Görsel yüklenemedi. Kapatıp yeniden dene.';};

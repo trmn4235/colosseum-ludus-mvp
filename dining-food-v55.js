@@ -6,7 +6,9 @@ var LudusFood=(()=>{
  function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
  function btn(text,fn,cls){const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;}
  function create(ctx){
-  const opener=btn('Erzak ve beslenme',open,'food-open');opener.id='foodOpen';opener.hidden=true;document.body.append(opener);
+  const opener=btn('',open,'room-world-action food-cauldron');opener.id='foodOpen';opener.hidden=true;opener.title='Erzak ve beslenme';opener.setAttribute('aria-label','Erzak ve beslenmeyi aç');opener.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 10h14v5a7 7 0 0 1-14 0Zm-2 1h2m14 0h2M8 21l1-2m6 0 1 2M8 7c-2-2 2-3 0-5m4 5c-2-2 2-3 0-5m4 5c-2-2 2-3 0-5"/></svg>';document.body.append(opener);
+  const cauldronPoint=ctx.T?new ctx.T.Vector3(-3.55,1.50,-2.9):null;
+  function placeOpener(){if(cauldronPoint&&globalThis.LudusRoomActions)LudusRoomActions.place(opener,cauldronPoint,ctx,ctx.inRoom()&&!opened,8);else opener.hidden=!ctx.inRoom()||opened||ctx.blocked();}
   const modal=el('section','food-modal');modal.id='foodModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','foodTitle');
   const frame=el('div','food-frame'),top=el('header','food-top'),heading=el('div'),title=el('h1','','Yemekhane');title.id='foodTitle';heading.append(el('small','','LUDUS · BESLENME'),title);
   const closeButton=btn('×',close,'food-close');closeButton.setAttribute('aria-label','Yemekhaneyi kapat');top.append(heading,closeButton);
@@ -63,9 +65,9 @@ var LudusFood=(()=>{
   }
   async function open(){if(opened||!ctx.inRoom()||ctx.blocked())return;opened=true;lastFocus=document.activeElement;modal.hidden=false;ctx.onOpen?.();closeButton.focus();render();await refresh();}
   function close(){if(!opened)return;opened=false;modal.hidden=true;ctx.onClose?.();if(lastFocus?.isConnected&&!lastFocus.hidden)lastFocus.focus();else opener.focus();}
-  function enter(){opener.hidden=false;refresh();}
+  function enter(){placeOpener();refresh();}
   function leave(){opener.hidden=true;close();}
-  function tick(){if(Date.now()<nextTick)return;nextTick=Date.now()+1000;if(!state||busy||loading||Date.now()-lastAttempt<15000)return;if(Date.now()+offset>=Date.parse(state.reset_at)||(opened&&Date.now()-refreshAt>60000))refresh();}
+  function tick(){placeOpener();if(Date.now()<nextTick)return;nextTick=Date.now()+1000;if(!state||busy||loading||Date.now()-lastAttempt<15000)return;if(Date.now()+offset>=Date.parse(state.reset_at)||(opened&&Date.now()-refreshAt>60000))refresh();}
   document.addEventListener('keydown',e=>{if(modal.hidden)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close();}if(e.key==='Tab'){const all=[...modal.querySelectorAll('button:not(:disabled),input:not(:disabled),summary')].filter(n=>!n.hidden&&n.getClientRects().length);if(e.shiftKey&&document.activeElement===all[0]){e.preventDefault();all.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===all.at(-1)){e.preventDefault();all[0]?.focus();}}});
   modal.addEventListener('pointerdown',e=>e.stopPropagation());ctx.ready.then(()=>refresh()).catch(()=>{});
   return {enter,leave,tick,open,close,refresh,get state(){return state;}};
