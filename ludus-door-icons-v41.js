@@ -7,6 +7,7 @@ var LudusDoorIcons=(function(){
   clan:['M12 3 5 6v6c0 5 7 9 7 9s7-4 7-9V6z','M12 7v9M8 10h8'],
   rest:['M3 7v14M21 11v10M3 17h18M3 11h18v6','M6 8h4v3H6z'],
   upgrades:['M8 11h13l-3 4h-4v4h4v2H6v-2h4v-4H7l-4-4h5','M5 3l5 4-3 4-5-4zM9 8l4 4'],
+  empty:['M5 3h14v18H5z','M8 6h8v12H8zM14 12h.01'],
   armory:['M3 9h18l-5 5h-2v5h4v2H6v-2h4v-5H7Z','M7 3l4 3-2 3-5-3Z'],
   infirmary:['M9 3h6v6h6v6h-6v6H9v-6H3V9h6z'],
   dining:['M3 3v6M6 3v6M9 3v6M3 8q3 5 6 0M6 12v9','M19 3q-4 3-4 10h4M19 3v18','M12 8a4 4 0 0 1 0 8'],

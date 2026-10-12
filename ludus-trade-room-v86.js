@@ -2,8 +2,8 @@
 var LudusTradeRoom=(()=>{
  'use strict';
  function create({T,wood,stone}){
-  let root=null;
-  const bounds=[{kind:'trade-map-table',minX:-1.4,maxX:1.4,minZ:-1.4,maxZ:.45},{kind:'trade-left-shelves',minX:-4.65,maxX:-2.15,minZ:-4.12,maxZ:-2.75},{kind:'trade-right-shelves',minX:2.15,maxX:4.65,minZ:-4.12,maxZ:-2.75},{kind:'trade-ledger',minX:3.3,maxX:4.65,minZ:-.95,maxZ:1.4},{kind:'trade-cargo',minX:-4.65,maxX:-3.25,minZ:-.7,maxZ:1.5}];
+  let root=null,chest=null,lid=null;
+  const bounds=[{kind:'trade-map-table',minX:-1.4,maxX:1.4,minZ:-1.4,maxZ:.45},{kind:'trade-left-shelves',minX:-4.65,maxX:-2.15,minZ:-4.12,maxZ:-2.75},{kind:'trade-right-shelves',minX:2.15,maxX:4.65,minZ:-4.12,maxZ:-2.75},{kind:'trade-ledger',minX:3.3,maxX:4.65,minZ:-.95,maxZ:1.4},{kind:'trade-chest',minX:-4.48,maxX:-2.72,minZ:.55,maxZ:1.55}];
   function build(){
    root=new T.Group();root.name='Roman trade hall V86';
    const box=new T.BoxGeometry(1,1,1),cylinder=new T.CylinderGeometry(1,1,1,16),sphere=new T.SphereGeometry(1,12,8),plane=new T.PlaneGeometry(1,1),ring=new T.TorusGeometry(1,.14,6,16);
@@ -26,8 +26,6 @@ var LudusTradeRoom=(()=>{
    for(const x of [-4.83,4.83]){block(m.red,x,.82,0,.04,1.6,8.7);block(m.marble,x,1.65,0,.14,.13,8.7);block(m.gold,x,1.77,0,.03,.03,8.6);}
    for(const x of [-4.25,-1.88,1.88,4.25]){block(m.marble,x,.15,-4.08,.54,.3,.48);put(cylinder,m.marble,x,2.02,-4.10,.17,3.5,.17);block(m.marble,x,3.87,-4.1,.5,.18,.44);block(m.gold,x,3.97,-4.1,.5,.035,.44);}
    block(m.marble,0,4.28,-4.13,9.8,.25,.24);block(m.gold,0,4.11,-4.02,9.6,.04,.07);
-   const title=canvasMaterial(1024,128,(c,w,h)=>{c.fillStyle='#591823';c.fillRect(0,0,w,h);c.strokeStyle='#c7a460';c.lineWidth=5;c.strokeRect(6,6,w-12,h-12);c.fillStyle='#e9cd8c';c.font='46px Georgia';c.textAlign='center';c.textBaseline='middle';c.fillText('TEDARİK • ROMA',w/2,h/2);});
-   put(plane,title,0,4.58,-4.26,3.8,.47);
    const map=new T.TextureLoader().load('assets/supply-v86/rome-map.webp');map.colorSpace=T.SRGBColorSpace;map.anisotropy=4;
    const mapMat=new T.MeshStandardMaterial({map,roughness:.95});
    block(m.wood,0,2.81,-4.14,3.24,2.18,.13);put(plane,mapMat,0,2.81,-4.06,3.08,2.05);
@@ -48,7 +46,19 @@ var LudusTradeRoom=(()=>{
    for(const [x,y,z,s,dark]of [[2.48,.27,-3.52,.84,false],[3.18,.27,-3.52,.9,true],[3.85,.27,-3.52,.76,false],[2.54,1.38,-3.52,.83,true],[3.34,1.38,-3.52,.86,false],[3.90,1.38,-3.52,.70,true]])jar(x,y,z,s,dark);
    for(let i=0;i<4;i++){sack(-3.94+i*.51,.27,-3.52,.8);put(cylinder,m.linen,-3.88+i*.5,1.57,-3.55,.20,.54,.20,Math.PI/2);put(cylinder,m.red,-3.88+i*.5,1.57,-3.55,.21,.06,.21,Math.PI/2);}
    for(let i=0;i<4;i++){block(i<2?m.iron:m.copper,-3.91+i*.5,2.54,-3.55,.4,.14,.37);block(i<2?m.iron:m.copper,-3.91+i*.5,2.69,-3.55,.32,.12,.31);jar(2.45+i*.48,2.47,-3.55,.43,i%2===0);}
-   crate(-4.03,0,.4,.95,.68,.8);crate(-4.05,.69,.42,.77,.58,.7);sack(-3.8,0,-.44,1);sack(-4.25,0,1.17,.83);
+   chest=new T.Group();chest.name='Tedarik kasası';chest.position.set(-3.6,.045,1.02);root.add(chest);
+   function chestPart(parent,material,x,y,z,w,h,d){const o=new T.Mesh(box,material);o.position.set(x,y,z);o.scale.set(w,h,d);o.receiveShadow=true;parent.add(o);return o;}
+   chestPart(chest,m.wood,0,.32,0,1.7,.60,.88);chestPart(chest,m.dark,0,.635,0,1.54,.018,.72);
+   for(const x of [-.65,.65]){chestPart(chest,m.gold,x,.33,.456,.085,.63,.035);chestPart(chest,m.gold,x,.33,-.456,.085,.63,.035);}
+   for(const y of [.05,.60])chestPart(chest,m.gold,0,y,.457,1.72,.045,.035);
+   for(const y of [.18,.33,.48])chestPart(chest,m.dark,0,y,.449,1.53,.012,.014);
+   lid=new T.Group();lid.name='Açılır kasa kapağı';lid.position.set(0,.64,-.44);chest.add(lid);chestPart(lid,m.wood,0,.06,.44,1.76,.13,.94);
+   for(const x of [-.65,.65])chestPart(lid,m.gold,x,.132,.44,.095,.025,.94);
+   chestPart(lid,m.gold,0,.065,.925,1.77,.045,.025);chestPart(lid,m.gold,0,-.06,.925,.18,.22,.045);chestPart(lid,m.dark,0,-.05,.952,.035,.07,.02);
+   for(const x of [-.82,.82]){chestPart(chest,m.gold,x,.28,0,.04,.18,.30);chestPart(chest,m.dark,x*1.025,.28,0,.02,.08,.16);}
+   // Each chest part is cached; the hinged lid remains an independent transform.
+   for(const node of [chest,lid]){const grouped=new Map();for(const o of [...node.children]){if(!o.isMesh)continue;o.updateMatrix();const k=o.material.uuid;if(!grouped.has(k))grouped.set(k,[]);grouped.get(k).push(o);}for(const list of grouped.values()){const inst=new T.InstancedMesh(box,list[0].material,list.length);for(let i=0;i<list.length;i++){inst.setMatrixAt(i,list[i].matrix);node.remove(list[i]);}inst.receiveShadow=true;inst.computeBoundingSphere();node.add(inst);}}
+
    // Ledger counter, wax tablets and a bronze merchant's balance.
    block(m.wood,4.04,.92,.2,1.22,.16,2.10);for(const x of [3.57,4.51])for(const z of [-.65,1.02])block(m.wood,x,.45,z,.13,.85,.13);
    block(m.red,3.85,1.02,.64,.65,.09,.48);block(m.paper,3.85,1.075,.63,.59,.012,.42);block(m.dark,4.34,1.05,.82,.10,.08,.12);
@@ -61,7 +71,7 @@ var LudusTradeRoom=(()=>{
    root.userData.colliderCount=bounds.length;
   }
   function enter(props,colliders){if(!root)build();props.add(root);colliders.push(...bounds.map(b=>({...b})));}
-  return {enter,get root(){return root;}};
+  return {enter,setChestOpen(open){if(lid)lid.rotation.x=open?-1.10:0;},get chest(){return chest;},get root(){return root;}};
  }
  return {create};
 })();

@@ -19,7 +19,7 @@ const base={user_id:owner,server_now:new Date().toISOString(),level:10,workers:2
  const input=w.document.querySelector('.supply-worker-label input');input.value='3';input.dispatchEvent(new w.Event('input'));assert.equal(w.document.querySelector('[data-send]').disabled,true);
  input.value='1';input.dispatchEvent(new w.Event('input'));w.document.querySelector('[data-send]').click();await pause();await pause();assert.ok(ui.pending);const pendingId=ui.pending.request;
  assert.equal(w.document.querySelector('[data-send]').disabled,true);w.document.querySelector('.supply-footer button').click();await pause();await pause();assert.equal(ui.pending,null);assert.equal(pendingId,lastRequest);assert.equal(ui.state.jobs.length,1);
- [...w.document.querySelectorAll('.supply-tabs button')].find(b=>b.textContent.startsWith('Seferler')).click();assert.equal(w.document.querySelector('[data-claim]').disabled,true);
+ [...w.document.querySelectorAll('.supply-tabs button')].find(b=>b.textContent.startsWith('Seferler')).click();assert.equal(w.document.querySelector('.supply-auto-label').disabled,true);assert.equal(w.document.querySelector('[data-claim]'),null);
  ui.leave();assert.equal(closed,1);assert.equal(w.document.getElementById('supplyModal').hidden,true);
  ui.enter('forge');await ui.open();assert.equal(w.document.getElementById('supplyTitle').textContent,'Demirci');assert.equal(w.document.querySelector('[data-craft=gladius]').disabled,false);
  w.document.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(w.document.getElementById('supplyModal').hidden,true);
