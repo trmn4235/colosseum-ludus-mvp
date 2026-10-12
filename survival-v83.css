@@ -1,0 +1,12 @@
+body[data-roman-screen="savas"] #modePage .modes[data-arena-panel="single"]{grid-template-columns:repeat(3,minmax(0,1fr))!important;width:min(94%,calc((var(--game-height,100dvh) - 127px)*2.25 + 44px))!important}
+body[data-roman-screen="savas"] .mode[data-mode="survival"]::before{background-image:url('assets/survival-poster-v83.jpeg');background-size:contain;background-position:center}
+#survivalRecord{max-width:80%;margin:3px auto 0;padding:5px 12px;color:#622530;border:1px solid #bda06a70;background:#fff8e8cc;border-radius:3px;text-align:center;font:clamp(10px,2.5dvh,16px)/1.35 Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#survivalRecord[hidden],#survivalStage[hidden]{display:none!important}
+#survivalRecord strong{color:#8b662c;letter-spacing:1px;margin-right:8px}
+body.survival-active #teamScore{display:none}
+#survivalStage{position:absolute;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);pointer-events:none;display:flex;align-items:center;gap:16px;color:#fff2cd;text-shadow:0 2px 5px #000;font-family:Georgia,serif}
+#survivalStage span{font-size:17px;opacity:.32;min-width:23px;text-align:center}
+#survivalStage strong{font-size:29px;font-weight:normal;opacity:.78;min-width:35px;text-align:center}
+#survivalStage small{position:absolute;top:100%;left:50%;transform:translateX(-50%);white-space:nowrap;font:9px/1.5 Arial,sans-serif;letter-spacing:2px;opacity:.62}
+#survivalEntryRecord{position:absolute;left:50%;top:29%;transform:translateX(-50%);width:min(68%,610px);padding:13px 18px;background:linear-gradient(90deg,#240b08a8,#57201bdc,#240b08a8);border-block:1px solid #c49d5e88;color:#ffe9b5;text-shadow:0 2px 4px #000;text-align:center;pointer-events:none;font:clamp(12px,3dvh,20px)/1.5 Georgia,serif;transition:opacity .5s}
+#survivalEntryRecord strong{display:block;font-size:.65em;letter-spacing:3px;color:#e5bd74}
