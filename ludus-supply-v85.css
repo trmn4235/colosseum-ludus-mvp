@@ -46,3 +46,15 @@
 
 @media(max-width:620px){.supply-map-intro>span{display:none}}
 @media(max-height:350px){.supply-route .supply-trip-note{display:none}}
+/* V88: zoom stays inside the artwork stage, never enlarging or scrolling the page. */
+.supply-gallery{grid-template-rows:auto minmax(0,1fr) auto}
+.supply-gallery-stage{position:relative;min-width:0;min-height:0;overflow:hidden;touch-action:none;user-select:none;cursor:zoom-in}
+.supply-gallery-stage[data-zoomed=true]{cursor:grab}.supply-gallery-stage[data-zoomed=true]:active{cursor:grabbing}
+.supply-gallery-image{transform-origin:center;pointer-events:none;max-width:none;-webkit-user-drag:none}
+.supply-gallery-controls{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;border-top:1px solid #ffffff20;color:#eee5d1;font:12px Arial,Helvetica,sans-serif}
+.supply-gallery-controls button{height:34px;min-height:34px;min-width:36px;padding:5px 10px;background:#302629;color:#eee5d1;border:1px solid #a79067;border-radius:4px;box-shadow:none;text-shadow:none;touch-action:manipulation;font:20px/1 Arial,Helvetica,sans-serif;cursor:pointer}
+.supply-gallery-controls button:disabled{opacity:.35;cursor:default}.supply-gallery-controls .supply-gallery-fit{font-size:12px;padding:5px 14px}.supply-gallery-level{min-width:44px;text-align:center;font-variant-numeric:tabular-nums}.supply-gallery-hint{margin-left:10px;color:#c1b9af;font-size:11px}
+.supply-chest-count{position:absolute;right:-7px;top:-7px;display:grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border:1px solid #e4c77b;border-radius:10px;background:#591823;color:#e4c77b;font:bold 10px/1 Arial,Helvetica,sans-serif;pointer-events:none}.supply-chest-count[hidden]{display:none!important}
+.supply-arrival{display:flex;justify-content:space-between;align-items:center;gap:10px;flex:none;min-width:0;padding:7px 10px;border-left:3px solid var(--ui-gold,#b38b43);background:var(--ui-canvas,#faf9f6)}.supply-arrival>span{display:flex;flex-direction:column;gap:3px;min-width:0}.supply-arrival small{font-size:9px;letter-spacing:1px;color:var(--ui-muted,#74656c)}.supply-arrival strong{font-size:12px;font-weight:normal;color:var(--ui-burgundy,#591823);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.supply-arrival .supply-secondary{flex:none;font-size:11px;min-height:28px;padding:5px 8px}
+@media(max-width:620px){.supply-gallery-hint{display:none}}
+@media(max-height:420px){.supply-gallery-controls{gap:6px;padding:4px 10px}.supply-gallery-controls button{height:28px;min-height:28px}.supply-arrival{padding:4px 8px}.supply-arrival small{font-size:8px}.supply-arrival strong{font-size:11px}.supply-arrival .supply-secondary{min-height:24px}}

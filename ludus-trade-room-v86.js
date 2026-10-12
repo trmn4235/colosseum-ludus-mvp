@@ -3,7 +3,7 @@ var LudusTradeRoom=(()=>{
  'use strict';
  function create({T,wood,stone}){
   let root=null,chest=null,lid=null;
-  const bounds=[{kind:'trade-map-table',minX:-1.4,maxX:1.4,minZ:-1.4,maxZ:.45},{kind:'trade-left-shelves',minX:-4.65,maxX:-2.15,minZ:-4.12,maxZ:-2.75},{kind:'trade-right-shelves',minX:2.15,maxX:4.65,minZ:-4.12,maxZ:-2.75},{kind:'trade-ledger',minX:3.3,maxX:4.65,minZ:-.95,maxZ:1.4},{kind:'trade-chest',minX:-4.48,maxX:-2.72,minZ:.55,maxZ:1.55}];
+  const bounds=[{kind:'trade-map-table',minX:-1.4,maxX:1.4,minZ:-1.4,maxZ:.45},{kind:'trade-left-shelves',minX:-4.65,maxX:-2.15,minZ:-4.12,maxZ:-2.75},{kind:'trade-right-shelves',minX:2.15,maxX:4.65,minZ:-4.12,maxZ:-2.75},{kind:'trade-ledger',minX:3.3,maxX:4.65,minZ:-.95,maxZ:1.4},{kind:'trade-chest',minX:-4.48,maxX:-2.72,minZ:.55,maxZ:1.55},...[-1,1].map(side=>({kind:'trade-entry-jamb',minX:side*1.15-.125,maxX:side*1.15+.125,minZ:4.09,maxZ:4.33}))];
   function build(){
    root=new T.Group();root.name='Roman trade hall V86';
    const box=new T.BoxGeometry(1,1,1),cylinder=new T.CylinderGeometry(1,1,1,16),sphere=new T.SphereGeometry(1,12,8),plane=new T.PlaneGeometry(1,1),ring=new T.TorusGeometry(1,.14,6,16);
@@ -26,6 +26,12 @@ var LudusTradeRoom=(()=>{
    for(const x of [-4.83,4.83]){block(m.red,x,.82,0,.04,1.6,8.7);block(m.marble,x,1.65,0,.14,.13,8.7);block(m.gold,x,1.77,0,.03,.03,8.6);}
    for(const x of [-4.25,-1.88,1.88,4.25]){block(m.marble,x,.15,-4.08,.54,.3,.48);put(cylinder,m.marble,x,2.02,-4.10,.17,3.5,.17);block(m.marble,x,3.87,-4.1,.5,.18,.44);block(m.gold,x,3.97,-4.1,.5,.035,.44);}
    block(m.marble,0,4.28,-4.13,9.8,.25,.24);block(m.gold,0,4.11,-4.02,9.6,.04,.07);
+   // A matching courtyard portal completes the front without adding another title plaque.
+   for(const side of [-1,1]){block(m.marble,side*3.06,2.32,4.34,3.60,4.62,.035);block(m.red,side*3.08,.82,4.30,3.53,1.60,.035);block(m.marble,side*3.08,1.65,4.25,3.53,.13,.12);block(m.marble,side*1.15,1.48,4.23,.24,2.96,.22);}
+   block(m.marble,0,3.84,4.34,2.55,1.61,.035);block(m.wood,0,1.43,4.34,2.02,2.86,.035);
+   for(const x of [-.78,-.52,-.26,0,.26,.52,.78])block(m.dark,x,1.43,4.315,.009,2.82,.012);
+   for(const side of [-1,1]){for(const y of [.55,2.25])block(m.iron,side*.54,y,4.29,.81,.075,.03);put(ring,m.gold,side*.66,1.37,4.25,.07,.10,.07);}
+   block(m.marble,0,3.05,4.21,2.65,.22,.30);block(m.gold,0,3.19,4.16,2.67,.035,.30);block(m.marble,0,3.40,4.26,2.88,.14,.22);block(m.marble,0,4.67,4.28,9.67,.24,.22);
    const map=new T.TextureLoader().load('assets/supply-v86/rome-map.webp');map.colorSpace=T.SRGBColorSpace;map.anisotropy=4;
    const mapMat=new T.MeshStandardMaterial({map,roughness:.95});
    block(m.wood,0,2.81,-4.14,3.24,2.18,.13);put(plane,mapMat,0,2.81,-4.06,3.08,2.05);

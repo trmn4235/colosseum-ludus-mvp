@@ -24,10 +24,10 @@ function walkPages(w,selector){const all=new Set();for(let guard=0;guard<25;guar
  }
  // Construct the actual room with Three.js; textures/canvas are CPU placeholders.
  const paint=new Proxy({}, {get:(o,k)=>()=>paint}),context=vm.createContext({console,document:{createElement:()=>({width:768,height:768,getContext:()=>paint})}});vm.runInContext(read('owner-three-r160.js'),context);const T=context.THREE;let textures=0;T.TextureLoader.prototype.load=()=>{textures++;return new T.Texture();};vm.runInContext(read('ludus-trade-room-v86.js'),context);
- const room=context.LudusTradeRoom.create({T,wood:new T.MeshStandardMaterial(),stone:new T.MeshStandardMaterial()}),props=new T.Group(),colliders=[];room.enter(props,colliders);const first=room.root;assert.equal(textures,1);assert.ok(first.children.length<45,'instanced drawing budget');assert.equal(colliders.length,5);
+ const room=context.LudusTradeRoom.create({T,wood:new T.MeshStandardMaterial(),stone:new T.MeshStandardMaterial()}),props=new T.Group(),colliders=[];room.enter(props,colliders);const first=room.root;assert.equal(textures,1);assert.ok(first.children.length<45,'instanced drawing budget');assert.equal(colliders.length,7);
  const blocked=(x,z)=>colliders.some(c=>Math.hypot(x-Math.max(c.minX,Math.min(x,c.maxX)),z-Math.max(c.minZ,Math.min(z,c.maxZ)))<.28);
  assert.equal(blocked(0,2.6),false,'spawn clear');assert.equal(blocked(0,.8),false,'map interaction reachable');assert.equal(blocked(0,0),true,'table collision');assert.equal(blocked(2,0),false,'right passage');assert.equal(blocked(-2,0),false,'left passage');
- for(let n=0;n<8;n++){props.clear();colliders.length=0;room.enter(props,colliders);assert.equal(room.root,first);assert.equal(props.children.length,1);assert.equal(colliders.length,5);}assert.equal(textures,1,'no texture reload on re-entry');
+ for(let n=0;n<8;n++){props.clear();colliders.length=0;room.enter(props,colliders);assert.equal(room.root,first);assert.equal(props.children.length,1);assert.equal(colliders.length,7);}assert.equal(textures,1,'no texture reload on re-entry');
  for(const id of [...ids,'rome-map']){const bytes=fs.readFileSync(path.join(root,'assets/supply-v86/'+id+'.webp'));assert.equal(bytes.toString('ascii',8,12),'WEBP');}
  console.log('V86 PASS: 11 region scenes, map/back/Escape, full stock/job/recipe pagination at five viewport inputs, filters, non-scrolling CSS, room batching/re-entry/collisions, 12 WebP assets. Browser pixel/layout QA not performed.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

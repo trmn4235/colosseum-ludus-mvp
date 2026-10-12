@@ -15,9 +15,9 @@ var LudusSupply=(()=>{
  const uses={iron:'Silah ve zırh üretimi için demir.',copper:'Basic ekipman üretimi için bakır.',wood:'Silah, kalkan ve ekipman için odun.',hunt:'Yemekhaneye et, demirciye deri sağlar.',linen:'Ekipman üretimi için keten.',grain:'Yemekhanenin tahıl stoğunu tamamlar.',apple:'Yemekhanenin meyve stoğunu tamamlar.',fish:'Yemekhaneye balık sağlar.',egg:'Yemekhaneye yumurta sağlar.',wine:'Yemekhane için şarap getirir.',olive_oil:'Yalnızca en yüksek kalite menüde kullanılır.'};
  function picture(id,alt,cls=''){const img=el('img',cls);img.src=artRoot+id+'.webp';img.alt=alt;img.width=1200;img.height=800;img.decoding='async';img.draggable=false;return img;}
  function create(ctx){
-  let state=null,owner=null,key=null,pending=null,busy=false,loading=null,opened=false,mode='trade',tab='map',selected=null,workers=1,filter='all',page=0,lastFocus=null,offset=0,lastRefresh=0,lastTick=0,artOpen=false,artFocus=null;
+  let state=null,owner=null,key=null,pending=null,busy=false,loading=null,opened=false,mode='trade',tab='map',selected=null,workers=1,filter='all',page=0,lastFocus=null,offset=0,lastRefresh=0,lastTick=0,artOpen=false,artFocus=null,artReturn='.supply-art-expand',seenDeliveries=new Set();
   const opener=button('',()=>open(),'room-world-action supply-open');opener.hidden=true;opener.id='supplyOpen';document.body.append(opener);
-  const chestOpener=button('',()=>open('stock'),'room-world-action supply-open');chestOpener.id='supplyChestOpen';chestOpener.hidden=true;chestOpener.innerHTML=icon('chest');chestOpener.title='Tedarik kasasını aç';chestOpener.setAttribute('aria-label',chestOpener.title);document.body.append(chestOpener);
+  const chestOpener=button('',()=>open('stock'),'room-world-action supply-open');chestOpener.id='supplyChestOpen';chestOpener.hidden=true;chestOpener.innerHTML=icon('chest');chestOpener.title='Tedarik kasasını aç';chestOpener.setAttribute('aria-label',chestOpener.title);document.body.append(chestOpener);const chestCount=el('span','supply-chest-count');chestCount.hidden=true;chestCount.setAttribute('aria-hidden','true');chestOpener.append(chestCount);
   const modal=el('section','supply-modal');modal.id='supplyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','supplyTitle');
   const frame=el('div','supply-frame'),head=el('header','supply-head'),heading=el('div');heading.append(el('small','','COLOSSEUM & LUDUS'));
   const title=el('h1','','Roma ve çevresi');title.id='supplyTitle';heading.append(title);
@@ -25,16 +25,48 @@ var LudusSupply=(()=>{
   const summary=el('div','supply-summary'),tabs=el('nav','supply-tabs'),content=el('div','supply-content'),footer=el('footer','supply-footer'),status=el('p','supply-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const retry=button('Yeniden dene',()=>pending?submit():refresh(),'supply-secondary');retry.hidden=true;footer.append(status,retry);frame.append(head,summary,tabs,content,footer);modal.append(frame);document.body.append(modal);
   const gallery=el('section','supply-gallery');gallery.hidden=true;gallery.setAttribute('role','dialog');gallery.setAttribute('aria-modal','true');gallery.setAttribute('aria-label','Bölge görseli');
-  const galleryBar=el('div','supply-gallery-bar'),galleryName=el('span'),galleryClose=button('×',closeArt,'supply-gallery-close');galleryClose.setAttribute('aria-label','Görseli kapat');galleryBar.append(galleryName,galleryClose);const galleryImage=el('img','supply-gallery-image');galleryImage.alt='';gallery.append(galleryBar,galleryImage);document.body.append(gallery);
-  function showArt(id,name){artFocus=document.activeElement;artOpen=true;galleryName.textContent=name;galleryImage.src=artRoot+id+'.webp';galleryImage.alt=name;gallery.hidden=false;modal.inert=true;galleryClose.focus();}
-  function closeArt(){if(!artOpen)return;artOpen=false;gallery.hidden=true;modal.inert=false;artFocus?.focus({preventScroll:true});}
+  const galleryBar=el('div','supply-gallery-bar'),galleryName=el('span'),galleryClose=button('×',closeArt,'supply-gallery-close');galleryClose.setAttribute('aria-label','Görseli kapat');galleryBar.append(galleryName,galleryClose);
+  const galleryStage=el('div','supply-gallery-stage'),galleryImage=el('img','supply-gallery-image');galleryImage.alt='';galleryImage.draggable=false;galleryStage.append(galleryImage);
+  const galleryControls=el('div','supply-gallery-controls'),zoomOut=button('−',()=>zoomAt(view.zoom-.25),'supply-gallery-control'),zoomLevel=el('output','supply-gallery-level','100%'),zoomIn=button('+',()=>zoomAt(view.zoom+.25),'supply-gallery-control'),zoomFit=button('Sığdır',fitArt,'supply-gallery-fit'),galleryHint=el('small','supply-gallery-hint','Yakınlaştır · Sürükle');
+  zoomOut.setAttribute('aria-label','Görseli uzaklaştır');zoomIn.setAttribute('aria-label','Görseli yakınlaştır');zoomFit.setAttribute('aria-label','Görselin tamamını göster');zoomLevel.setAttribute('aria-label','Yakınlaştırma oranı');galleryControls.append(zoomOut,zoomLevel,zoomIn,zoomFit,galleryHint);gallery.append(galleryBar,galleryStage,galleryControls);document.body.append(gallery);
+  const view={zoom:1,x:0,y:0},pointers=new Map();let gesture=null,lastTap=null,lastTouchAt=0;
+  function stageSize(){const r=galleryStage.getBoundingClientRect();return {r,w:r.width||galleryStage.clientWidth,h:r.height||galleryStage.clientHeight};}
+  function paintArt(){
+   const {w,h}=stageSize(),ratio=(galleryImage.naturalWidth||1200)/(galleryImage.naturalHeight||800),fitW=Math.min(w,h*ratio),fitH=Math.min(h,w/ratio);
+   const maxX=Math.max(0,(fitW*view.zoom-w)/2),maxY=Math.max(0,(fitH*view.zoom-h)/2);view.x=Math.max(-maxX,Math.min(maxX,view.x));view.y=Math.max(-maxY,Math.min(maxY,view.y));
+   galleryImage.style.transform='translate('+view.x+'px,'+view.y+'px) scale('+view.zoom+')';galleryStage.dataset.zoomed=String(view.zoom>1);zoomLevel.value=Math.round(view.zoom*100)+'%';zoomOut.disabled=view.zoom<=1;zoomIn.disabled=view.zoom>=4;
+  }
+  function zoomAt(value,clientX,clientY){const {r,w,h}=stageSize(),x=clientX===undefined?0:clientX-r.left-w/2,y=clientY===undefined?0:clientY-r.top-h/2,z=Math.max(1,Math.min(4,value)),ratio=z/view.zoom;view.x=x-(x-view.x)*ratio;view.y=y-(y-view.y)*ratio;view.zoom=z;paintArt();}
+  function fitArt(){Object.assign(view,{zoom:1,x:0,y:0});pointers.clear();gesture=null;paintArt();}
+  function showArt(id,name){artFocus=document.activeElement;artReturn=id==='rome-map'?'.supply-map-expand':'.supply-art-expand';artOpen=true;galleryName.textContent=name;galleryImage.src=artRoot+id+'.webp';galleryImage.alt=name;galleryHint.textContent='Yakınlaştır · Sürükle';gallery.hidden=false;modal.inert=true;modal.setAttribute('aria-hidden','true');lastTap=null;fitArt();galleryClose.focus();}
+  function closeArt(){if(!artOpen)return;artOpen=false;pointers.clear();gesture=null;gallery.hidden=true;modal.inert=false;modal.removeAttribute('aria-hidden');(artFocus?.isConnected?artFocus:content.querySelector(artReturn)||closeButton).focus({preventScroll:true});}
+  function beginGesture(){const ps=[...pointers.values()],{r,w,h}=stageSize();gesture=ps.length>1?{zoom:view.zoom,x:view.x,y:view.y,distance:Math.max(1,Math.hypot(ps[0].x-ps[1].x,ps[0].y-ps[1].y)),cx:(ps[0].x+ps[1].x)/2-r.left-w/2,cy:(ps[0].y+ps[1].y)/2-r.top-h/2}:null;if(ps.length>1){lastTap=null;for(const p of ps)p.dragged=true;}}
+  galleryImage.onload=()=>{if(artOpen)paintArt();};galleryImage.onerror=()=>{galleryHint.textContent='Görsel yüklenemedi. Kapatıp yeniden dene.';};
+  galleryStage.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;e.preventDefault();pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,dragged:false});galleryStage.setPointerCapture?.(e.pointerId);beginGesture();});
+  galleryStage.addEventListener('pointermove',e=>{
+   const p=pointers.get(e.pointerId);if(!p)return;e.preventDefault();const dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;if(Math.hypot(p.x-p.startX,p.y-p.startY)>6)p.dragged=true;
+   if(pointers.size>1&&gesture){const ps=[...pointers.values()],{r,w,h}=stageSize(),z=Math.max(1,Math.min(4,gesture.zoom*Math.hypot(ps[0].x-ps[1].x,ps[0].y-ps[1].y)/gesture.distance)),ratio=z/gesture.zoom;view.x=(ps[0].x+ps[1].x)/2-r.left-w/2-(gesture.cx-gesture.x)*ratio;view.y=(ps[0].y+ps[1].y)/2-r.top-h/2-(gesture.cy-gesture.y)*ratio;view.zoom=z;}
+   else if(view.zoom>1){view.x+=dx;view.y+=dy;}paintArt();
+  });
+  function endPointer(e){const p=pointers.get(e.pointerId);if(!p)return;const tap=e.type==='pointerup'&&e.pointerType==='touch'&&pointers.size===1&&!p.dragged;pointers.delete(e.pointerId);if(tap){const now=Date.now();lastTouchAt=now;if(lastTap&&now-lastTap.at<320&&Math.hypot(p.x-lastTap.x,p.y-lastTap.y)<24){zoomAt(view.zoom>1?1:2,p.x,p.y);lastTap=null;}else lastTap={at:now,x:p.x,y:p.y};}else lastTap=null;beginGesture();}
+  for(const event of ['pointerup','pointercancel','lostpointercapture'])galleryStage.addEventListener(event,endPointer);
+  galleryStage.addEventListener('dblclick',e=>{e.preventDefault();if(e.pointerType!=='touch'&&Date.now()-lastTouchAt>500)zoomAt(view.zoom>1?1:2,e.clientX,e.clientY);});
+  galleryStage.addEventListener('wheel',e=>{e.preventDefault();zoomAt(view.zoom*Math.exp(-e.deltaY*.0015),e.clientX,e.clientY);},{passive:false});
+  function artKey(e){
+   e.stopImmediatePropagation();if(e.key==='Escape'){e.preventDefault();closeArt();return;}
+   if(e.key==='Tab'){e.preventDefault();const buttons=[galleryClose,zoomOut,zoomIn,zoomFit].filter(b=>!b.disabled),i=buttons.indexOf(document.activeElement);buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();return;}
+   if(['+','=','-','0','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();if(e.key==='+'||e.key==='=')zoomAt(view.zoom+.25);else if(e.key==='-')zoomAt(view.zoom-.25);else if(e.key==='0')fitArt();else{view.x+=e.key==='ArrowLeft'?48:e.key==='ArrowRight'?-48:0;view.y+=e.key==='ArrowUp'?48:e.key==='ArrowDown'?-48:0;paintArt();}}
+  }
   const point=ctx.T?new ctx.T.Vector3(0,1.65,0):null,chestPoint=ctx.T?new ctx.T.Vector3(-3.6,1.45,1.02):null;
   function message(text,error=false){status.textContent=text;status.dataset.error=String(error);}
   function resource(sku){return state?.resources.find(r=>r.sku===sku);}
   function names(cargo,mult=1){return Object.entries(cargo).map(([sku,n])=>num(n*mult)+' '+(resource(sku)?.name||sku)).join(' · ');}
   function remaining(job){const seconds=Math.max(0,Math.ceil((Date.parse(job.ends_at)-Date.now()-offset)/1000));return seconds?Math.floor(seconds/3600)+' sa '+Math.floor(seconds%3600/60)+' dk '+seconds%60+' sn':job.delivery_check_at?'Kasa dolu · Yük güvende':'Kasaya aktarılıyor…';}
-  async function identify(){if(owner)return;const account=await ctx.ready;owner=account.user_id;key='ludus-supply-pending-v85:'+owner;try{const old=JSON.parse(localStorage.getItem(key)||'null');if(old?.owner===owner&&['send','claim','craft'].includes(old.action)&&old.request&&typeof old.key==='string')pending=old;}catch{message('Önceki işlem kaydı okunamadı.',true);}}
-  function adopt(data){if(!data||data.user_id!==owner)throw Error('Hesap doğrulanamadı. Sayfayı yenile.');const oldDeliveries=state?.deliveries?.map(j=>j.id)||[];const received=!!state&&(data.deliveries||[]).some(j=>!oldDeliveries.includes(j.id));state=data;if(received)ctx.onChange?.('delivery');offset=Date.parse(data.server_now)-Date.now();lastRefresh=Date.now();workers=Math.max(1,Math.min(workers,state.free_workers||1));render();}
+  function unseen(){return (state?.deliveries||[]).filter(j=>!seenDeliveries.has(j.id));}
+  function updateChest(){const n=unseen().length;chestOpener.dataset.state=n?'ready':'idle';chestCount.hidden=!n;chestCount.textContent=String(n);chestOpener.title='Tedarik kasasını aç'+(n?' · '+n+' yeni teslimat':'');chestOpener.setAttribute('aria-label',chestOpener.title);}
+  function acknowledge(){const rows=state?.deliveries||[];if(!rows.some(j=>!seenDeliveries.has(j.id)))return;seenDeliveries=new Set([...seenDeliveries,...rows.map(j=>j.id)].slice(-50));try{localStorage.setItem('ludus-supply-seen-v88:'+owner,JSON.stringify([...seenDeliveries]));}catch{}updateChest();}
+  async function identify(){if(owner)return;const account=await ctx.ready;owner=account.user_id;key='ludus-supply-pending-v85:'+owner;try{const seen=JSON.parse(localStorage.getItem('ludus-supply-seen-v88:'+owner)||'[]');if(Array.isArray(seen))seenDeliveries=new Set(seen.filter(id=>typeof id==='string').slice(-50));}catch{}try{const old=JSON.parse(localStorage.getItem(key)||'null');if(old?.owner===owner&&['send','claim','craft'].includes(old.action)&&old.request&&typeof old.key==='string')pending=old;}catch{message('Önceki işlem kaydı okunamadı.',true);}}
+  function adopt(data){if(!data||data.user_id!==owner)throw Error('Hesap doğrulanamadı. Sayfayı yenile.');const oldDeliveries=state?.deliveries?.map(j=>j.id)||[];const received=!!state&&(data.deliveries||[]).some(j=>!oldDeliveries.includes(j.id));state=data;updateChest();if(received)ctx.onChange?.('delivery');offset=Date.parse(data.server_now)-Date.now();lastRefresh=Date.now();workers=Math.max(1,Math.min(workers,state.free_workers||1));render();}
   async function refresh(){if(loading||busy)return loading;loading=(async()=>{await identify();const r=await ctx.client.rpc('ludus_supply');if(r.error)throw r.error;adopt(r.data);message(pending?'Önceki işlemin sonucu bekliyor. Yeniden dene ile kontrol et.':'');retry.hidden=!pending;})().catch(e=>{message(e.message||'Tedarik bilgileri yüklenemedi.',true);retry.hidden=false;}).finally(()=>{loading=null;render();});render();return loading;}
   async function act(action,target,count=1){if(busy||loading||pending||!state)return;pending={owner,action,key:target,workers:count,request:crypto.randomUUID()};try{localStorage.setItem(key,JSON.stringify(pending));}catch{pending=null;message('İşlem kaydı saklanamadı. Tarayıcı depolamasını açıp yeniden dene.',true);return;}return submit();}
   async function submit(){if(busy||!pending)return;busy=true;retry.hidden=true;message('İşlem kaydediliyor…');render();
@@ -46,6 +78,7 @@ var LudusSupply=(()=>{
   function render(){
    const active=document.activeElement,focusId=content.contains(active)?active.id:null;
    title.textContent=mode==='forge'?'Demirci':tab==='stock'?'Tedarik kasası':'Tedarik';ctx.onChestOpen?.(opened&&mode==='trade'&&tab==='stock');modal.setAttribute('aria-busy',String(busy||!!loading));summary.replaceChildren();tabs.replaceChildren();content.replaceChildren();
+   if(opened&&mode==='trade'&&tab==='stock')acknowledge();
    if(!state){content.append(el('p','supply-empty',loading?'Tedarik defteri açılıyor…':'Tedarik bilgileri henüz yüklenmedi.'));return;}
    for(const [label,value]of [['Boş işçi',state.free_workers+' / '+state.workers],['Görevde',state.busy_workers],['Seviye',state.level]]){const box=el('div');box.append(el('small','',label),el('strong','',value));summary.append(box);}
    const refreshButton=button('Yenile',refresh,'supply-secondary');refreshButton.disabled=disabled();summary.append(refreshButton);
@@ -82,7 +115,7 @@ var LudusSupply=(()=>{
   }
   function pageSlice(items,type){
    const width=content.clientWidth||Math.min(innerWidth-32,1000),height=content.clientHeight||Math.min(innerHeight-168,510);
-   let cols=1,rows=1;if(type==='stock'){cols=width<560?2:4;rows=Math.max(1,Math.min(3,Math.floor((height-72)/100)));}else if(type==='craft'){cols=width<460?1:width<780?2:3;}else rows=Math.max(1,Math.min(3,Math.floor((height-64)/112)));
+   let cols=1,rows=1;if(type==='stock'){cols=width<560?2:4;rows=Math.max(1,Math.min(3,Math.floor((height-(mode==='trade'&&state.deliveries?.length?108:72))/100)));}else if(type==='craft'){cols=width<460?1:width<780?2:3;}else rows=Math.max(1,Math.min(3,Math.floor((height-64)/112)));
    const size=cols*rows,pages=Math.max(1,Math.ceil(items.length/size));page=Math.max(0,Math.min(page,pages-1));return {items:items.slice(page*size,(page+1)*size),pages,cols,rows};
   }
   function pager(pages){
@@ -99,6 +132,7 @@ var LudusSupply=(()=>{
     card.append(picture(j.destination,'','supply-job-art'),heading,action);list.append(card);}content.append(list);listFooter('Dönen yükler otomatik aktarılır. Son 10 teslimat burada görünür.',data.pages);
   }
   function renderStock(){
+   if(mode==='trade'&&state.deliveries?.length){const latest=state.deliveries[0],line=el('div','supply-arrival'),text=el('span');text.append(el('small','','SON TESLİMAT'),el('strong','',names(latest.cargo)));const all=button('Teslimatlar',()=>{tab='jobs';page=0;render()},'supply-secondary');line.append(text,all);content.append(line);}
    const data=pageSlice(state.resources.filter(r=>mode!=='forge'||!r.food),'stock'),grid=el('div','supply-stock');grid.style.setProperty('--supply-cols',data.cols);grid.style.setProperty('--supply-rows',data.rows);
    for(const r of data.items){const card=el('article','supply-stock-card'),glyph=el('span','supply-stock-icon');glyph.innerHTML=icon(routeIcon(r.sku==='leather'||r.sku==='meat'?'hunt':r.sku==='beer'?'wine':r.sku));card.append(glyph,el('small','',r.food?'GIDA':'MALZEME'),el('h2','',r.name),el('strong','',num(r.quantity)));grid.append(card);}content.append(grid);listFooter('Gıda ve üretim malzemeleri burada. Ürün başına sınır: 50.000.',data.pages);
   }
@@ -121,12 +155,13 @@ var LudusSupply=(()=>{
    if(!busy&&!loading&&!pending&&((due&&Date.now()-lastRefresh>5000)||(opened&&Date.now()-lastRefresh>60000))){lastRefresh=Date.now();refresh();}
   }
   modal.addEventListener('pointerdown',e=>e.stopPropagation());
-  document.addEventListener('keydown',e=>{if(!opened)return;if(artOpen){if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();closeArt();}else if(e.key==='Tab'){e.preventDefault();galleryClose.focus();}return;}if(e.key==='Escape'){e.preventDefault();e.stopPropagation();if(tab==='map'&&selected)backToMap();else close();}if(e.key==='Tab'){const all=[...modal.querySelectorAll('button:not(:disabled),input:not(:disabled),select,a[href]')].filter(n=>!n.hidden&&n.getClientRects().length);if(e.shiftKey&&document.activeElement===all[0]){e.preventDefault();all.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===all.at(-1)){e.preventDefault();all[0]?.focus();}}},true);
+  document.addEventListener('keydown',e=>{if(!opened)return;if(artOpen){artKey(e);return;}if(e.key==='Escape'){e.preventDefault();e.stopPropagation();if(tab==='map'&&selected)backToMap();else close();}if(e.key==='Tab'){const all=[...modal.querySelectorAll('button:not(:disabled),input:not(:disabled),select,a[href]')].filter(n=>!n.hidden&&n.getClientRects().length);if(e.shiftKey&&document.activeElement===all[0]){e.preventDefault();all.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===all.at(-1)){e.preventDefault();all[0]?.focus();}}},true);
   if(ctx.T&&ctx.canvas){let down=null;const ray=new ctx.T.Raycaster(),pointer=new ctx.T.Vector2();ctx.canvas.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY]});ctx.canvas.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>7||mode!=='trade'||!ctx.inRoom?.()||ctx.blocked?.())return;const root=ctx.chestRoot?.();if(!root||Math.hypot(ctx.player.x-chestPoint.x,ctx.player.z-chestPoint.z)>3.5)return;const r=ctx.canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,ctx.camera);if(ray.intersectObject(root,true).length)open('stock');});}
   ctx.ready.then(()=>refresh()).catch(()=>{});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state?.jobs.length)refresh();});
-  window.addEventListener('resize',()=>{if(opened)render();});
-  return {enter,leave,tick,open,close,refresh,get state(){return state;},get pending(){return pending;}};
+  window.addEventListener('resize',()=>{if(opened)render();if(artOpen){paintArt();beginGesture();}});
+  window.addEventListener('storage',e=>{if(e.key!=='ludus-supply-seen-v88:'+owner)return;try{const ids=JSON.parse(e.newValue||'[]');if(Array.isArray(ids)){for(const id of ids)if(typeof id==='string')seenDeliveries.add(id);updateChest();}}catch{}});
+  return {enter,leave,tick,open,close,refresh,get state(){return state;},get pending(){return pending;},get attention(){return unseen().length>0;}};
  }
  return {create};
 })();

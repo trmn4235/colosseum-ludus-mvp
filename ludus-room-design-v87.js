@@ -71,9 +71,21 @@ var LudusRoomDesign=(()=>{
    box(m.ivory,0,1.46,back+.27,9.7,.12,.11);box(m.gold,0,1.56,back+.29,9.7,.026,.025);
    for(const side of [-1,1]){box(pale,side*4.81,2.65,center,.05,4.65,depth-.3);box(tone,side*4.77,.72,center,.05,1.4,depth-.3);box(m.ivory,side*4.73,1.46,center,.10,.12,depth-.3);box(m.gold,side*4.70,1.56,center,.023,.026,depth-.3);box(pale,side*4.73,4.67,center,.22,.23,depth-.3);}
    box(pale,0,4.67,back+.32,9.68,.24,.26);box(m.gold,0,4.51,back+.37,9.6,.035,.08);
+   // Complete the courtyard-facing wall. Its central opening keeps the exit badge visible.
+   for(const side of [-1,1]){
+    box(pale,side*3.06,2.32,4.34,3.60,4.62,.035);box(tone,side*3.08,.72,4.30,3.53,1.40,.035);box(m.ivory,side*3.08,1.46,4.25,3.53,.12,.12);
+    box(pale,side*1.15,1.48,4.23,.24,2.96,.22);box(m.gold,side*1.15,.24,4.095,.26,.05,.035);box(m.gold,side*1.15,2.76,4.095,.26,.045,.035);
+   }
+   box(pale,0,3.84,4.34,2.55,1.61,.035);box(m.wood,0,1.43,4.34,2.02,2.86,.035);
+   for(const x of [-.78,-.52,-.26,0,.26,.52,.78])box(m.dark,x,1.43,4.315,.009,2.82,.012);
+   for(const side of [-1,1]){for(const y of [.55,2.25]){box(m.iron,side*.54,y,4.29,.81,.075,.03);for(const x of [.25,.79])put(g.cyl,m.gold,side*x,y,4.265,.018,.032,.018,Math.PI/2);}
+    put(g.ring,m.gold,side*.66,1.37,4.25,.07,.10,.07);boundsAt('entry-jamb',side*1.15,4.21,.25,.24);
+   }
+   box(pale,0,3.05,4.21,2.65,.22,.30);box(m.gold,0,3.19,4.16,2.67,.035,.30);put(g.pediment,pale,0,3.22,4.12,2.55,1.10,1);
+   box(pale,0,4.67,4.28,9.67,.24,.22);box(m.gold,0,4.51,4.19,9.60,.035,.055);
    for(let z=back+1.2;z<3.5;z+=2.7)box(kind==='clan'?pale:m.wood,0,4.79,z,9.6,.18,.20);
    for(const side of [-1,1])for(const z of [back+1.05,2.9]){box(pale,side*4.59,2.07,z,.28,4.14,.34);box(m.gold,side*4.56,1.72,z,.32,.045,.37);}
-   features.push('mosaic','plaster','dado','cornice');
+   features.push('mosaic','plaster','dado','cornice','courtyard-door');
    if(kind==='office'){
     for(const x of [-1.55,1.55])column(x,back+.48,3.95);put(g.pediment,pale,0,4.13,back+.29,3.8,1.1,1);crest(0,3.05,back+.31,1.58);
     shelf(-3.33,back+.68,2.1,2.72,3);boundsAt('archive',-3.33,back+.68,2.3,.85);
@@ -105,7 +117,7 @@ var LudusRoomDesign=(()=>{
     for(let i=0;i<7;i++)put(g.sphere,i%3?m.coal:m.ember,-3.55+i*.19,1.50,back+.96+(i%2)*.22,.16,.08,.14);
     boundsAt('hearth',-2.95,back+.88,2.25,1.6);
     cyl(m.wood,-2.8,.41,-.65,.45,.82);for(const y of [.12,.69])cyl(m.iron,-2.8,y,-.65,.456,.06);box(m.iron,-2.8,.90,-.65,.70,.16,.46);box(m.iron,-2.8,1.05,-.65,.38,.21,.30);box(m.iron,-2.8,1.21,-.65,.91,.17,.41);put(g.cone,m.iron,-2.18,1.20,-.65,.19,.49,.19,0,0,-Math.PI/2);boundsAt('anvil',-2.65,-.65,1.35,.98);
-    bench(0,0,1.92,1.06,.98);box(m.linen,.38,1.06,.06,.68,.013,.68);box(m.gold,.49,1.082,.06,.11,.025,.36);boundsAt('enhancement-bench',0,0,1.97,1.1);
+    bench(0,0,1.92,1.06,1.02);box(m.linen,.38,1.102,.06,.68,.013,.68);box(m.gold,.49,1.122,.06,.11,.025,.36);boundsAt('enhancement-bench',0,0,1.97,1.1);
     shelf(2.99,back+.63,2.25,2.75,3);boundsAt('materials-rack',2.99,back+.63,2.43,.83);
     for(let i=0;i<5;i++){box(m.iron,2.18+i*.37,.40,back+.65,.30,.15,.32);box(m.gold,2.18+i*.37,.54,back+.65,.25,.12,.28);roll(2.16+i*.39,1.33,back+.65,.45);box(i%2?m.red:m.linen,2.18+i*.38,2.15,back+.65,.30,.30,.43);}
     box(m.wood,.10,2.55,back+.26,2.37,1.66,.07);for(let i=0;i<5;i++){const x=-.77+i*.43;box(m.iron,x,2.52,back+.36,.055,.94,.06);box(i%2?m.gold:m.iron,x,2.94,back+.38,.26,.13,.14);}crest(.10,3.88,back+.28,.73);
