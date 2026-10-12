@@ -1,0 +1,96 @@
+// Run the shipped SQL against PostgreSQL (PGlite), including permissions and replay.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{randomUUID}=require('node:crypto');
+const {PGlite}=require(process.env.LUDUS_PGLITE_MODULE||'@electric-sql/pglite');
+const root=path.resolve(__dirname,'..'),A=randomUUID(),B=randomUUID();
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const migration=n=>read('supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_'+n+'.sql')));
+function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.match(new RegExp('create or replace function '+escaped+'\\([^;]+?\\$\\$[\\s\\S]+?\\$\\$;','i'));assert.ok(m,name);return m[0];}
+(async()=>{
+ const db=new PGlite(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;
+ await db.exec(`create role anon;create role authenticated;create schema auth;create schema ludus_private;
+ create function auth.uid()returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create function auth.jwt()returns jsonb language sql stable as $$select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;
+ grant usage on schema auth to authenticated;grant execute on function auth.uid(),auth.jwt()to authenticated;
+ create table ludus_accounts(user_id uuid primary key,gold bigint default 10000,diamonds integer default 0,stones_version integer default 0,ludus_name text default 'Test');
+ create table ludus_gladiators(id uuid primary key default gen_random_uuid(),owner_id uuid references ludus_accounts(user_id),name text,class text);
+ create table ludus_items(id uuid primary key default gen_random_uuid(),owner_id uuid,kind text,model text,enhancement integer default 0);
+ create table ludus_shop_catalog(sku text primary key,name text,kind text,model text);
+ create table ludus_stone_catalog(family text,stone_id integer);
+ create table ludus_stones(owner_id uuid,family text,stone_id integer,quantity integer,primary key(owner_id,family,stone_id));
+ insert into ludus_stone_catalog values('sapphire',1),('emerald',1),('ruby',1);`);
+ const products={'gladius':['weapon','gladius'],'sica':['weapon','sica'],'scissor':['weapon','scissor'],'spear':['weapon','spear'],'trident':['weapon','trident'],'mace':['weapon','mace'],'whip':['weapon','whip'],'net':['weapon','net'],'shield-medium':['shield','round'],'shield-large':['shield','large'],'helmet-roman':['helmet','roman'],'helmet-gold':['helmet','gold'],'helmet-silver':['helmet','silver'],'helmet-winged':['helmet','winged'],'chest':['chest','gladiator_chest'],'chest-plate':['chest','chest_plate'],'gloves':['gloves','armor_shoulder'],'shoulder-armor':['gloves','shoulder_armor'],'legs':['legs','starter']};
+ for(const [sku,[kind,model]]of Object.entries(products))await q('insert into ludus_shop_catalog values($1,$1,$2,$3)',[sku,kind,model]);
+ const levels=read('ludus-level-v37.sql');await db.exec(levels.slice(levels.indexOf('create schema'),levels.indexOf('-- New EXP')));
+ for(const name of ['level_deliver_gladiator','level_claim','level_state'])await db.exec(fn(levels,'ludus_private.'+name));
+ await db.exec(fn(levels,'public.ludus_progress'));
+ await db.exec('revoke all on function public.ludus_progress(text,integer)from public,anon;grant execute on function public.ludus_progress(text,integer)to authenticated');
+ for(const name of ['dining_food_v55','dining_meals_v56','dining_nutrition_v57'])await db.exec(migration(name));
+ await db.exec(fn(migration('dining_recovery_balance_v59'),'ludus_food_private.recovery_bonus_v59'));
+ for(const name of ['menu_v55','combat_bonus_v60','api_v55'])await db.exec(fn(migration('combat_food_stamina_v60'),'ludus_food_private.'+name));
+ await q('insert into ludus_accounts(user_id)values($1),($2)',[A,B]);
+ await q("insert into ludus_gladiators(owner_id,name,class)values($1,'Tester','secutor')",[A]);
+ await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
+ await q('select ludus_progress()');await q('select ludus_food_state()');
+ // Seed a previously claimed level-five reward and previously purchased food.
+ await q('update ludus_progression set experience=ludus_private.level_threshold(5)where owner_id=$1',[A]);
+ await q('select ludus_progress()');await q('select ludus_progress(\'claim\',5)');
+ const oldBuy=randomUUID();await q("select ludus_food_buy('bread',3,$1)",[oldBuy]);
+ const goldBefore=(await q('select gold from ludus_accounts where user_id=$1',[A]))[0].gold;
+ const sql=migration('gathering_v85');await db.exec(sql);await db.exec(sql);
+ assert.equal((await q('select gold from ludus_accounts where user_id=$1',[A]))[0].gold,goldBefore);
+ await db.exec('set role authenticated');
+ const call=async(action='state',key=null,workers=1,id=randomUUID())=>(await q('select ludus_supply($1,$2,$3,$4)as s',[action,key,workers,id]))[0].s;
+ let s=await call();assert.equal(s.workers,1);assert.equal(s.resources.length,12);assert.equal(s.destinations.length,11);assert.equal(s.recipes.length,19);
+ assert.equal(s.resources.find(r=>r.sku==='copper').quantity,0);
+ await assert.rejects(()=>q('select * from ludus_supply_private.stock'),/permission denied/);
+ await assert.rejects(()=>q('select ludus_supply_private.worker_count($1)',[A]),/permission denied/);
+ await assert.rejects(()=>call('send','iron',0),/boş işçi/);
+ await assert.rejects(()=>call('send','iron',2),/boş işçi/);
+ await assert.rejects(()=>call('send','iron',null),/boş işçi/);
+ const sendId=randomUUID();s=await call('send','iron',1,sendId);const job=s.jobs[0];assert.equal(s.free_workers,0);assert.equal(job.cargo.iron,12);
+ assert.equal(Date.parse(job.ends_at)-Date.parse(job.started_at),3600000);
+ s=await call('send','iron',1,sendId);assert.equal(s.jobs.length,1);assert.equal(s.result.replayed,true);
+ await assert.rejects(()=>call('send','copper',1,sendId),/İşlem kimliği/);
+ await assert.rejects(()=>call('claim',job.id),/henüz dönmedi/);
+ await assert.rejects(()=>call('send','iron'),/boş işçi/);
+ await q("select set_config('request.jwt.claim.sub',$1,false)",[B]);await call();await assert.rejects(()=>call('claim',job.id),/Sefer bulunamadı/);
+ await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);await db.exec('reset role');
+ await q("update ludus_supply_private.jobs set started_at=started_at-interval'2 hours',ends_at=ends_at-interval'2 hours'where id=$1",[job.id]);
+ await db.exec('set role authenticated');const claimId=randomUUID();s=await call('claim',job.id,1,claimId);assert.equal(s.resources.find(r=>r.sku==='iron').quantity,12);assert.equal(s.free_workers,1);
+ await call('claim',job.id,1,claimId);s=await call('claim',job.id);assert.equal(s.resources.find(r=>r.sku==='iron').quantity,12);
+ // Failure after consuming an earlier recipe input must roll back every input.
+ await assert.rejects(()=>call('craft','gladius'),/malzemelerin eksik/);s=await call();assert.equal(s.resources.find(r=>r.sku==='iron').quantity,12);
+ await db.exec('reset role');await q("update ludus_supply_private.stock set quantity=20 where owner_id=$1 and sku in('wood','leather')",[A]);await db.exec('set role authenticated');
+ const craftId=randomUUID();s=await call('craft','gladius',1,craftId);const item=s.result.item_id;
+ s=await call('craft','gladius',1,craftId);assert.equal(s.result.item_id,item);assert.equal(s.resources.find(r=>r.sku==='iron').quantity,6);
+ await assert.rejects(()=>q("select ludus_food_buy('bread',1,gen_random_uuid())"),/satışı kaldırıldı/);
+ await assert.rejects(()=>q("select ludus_food_buy('meal',1,gen_random_uuid())"),/satışı kaldırıldı/);
+ await q("select ludus_food_buy('bread',3,$1)",[oldBuy]);
+ await db.exec('reset role');
+ const menu=async(stock,crew=1)=>(await q('select ludus_food_private.menu_v55($1,$2)as m',[crew,JSON.stringify(Object.entries(stock).map(([sku,quantity])=>({sku,quantity})))]))[0].m;
+ let m=await menu({egg:2,apple:4});assert.equal(m.stamina_bonus_percent,8);assert.equal(m.olive_oil_used,0);
+ m=await menu({egg:2,apple:4,olive_oil:1});assert.equal(m.stamina_bonus_percent,12);assert.equal(m.olive_oil_used,1);assert.equal(m.units,100);
+ for(const stock of [{grain:5,olive_oil:10},{egg:5,olive_oil:10},{apple:1,olive_oil:10},{olive_oil:10}]){m=await menu(stock);assert.equal(m.olive_oil_used,0);assert.notEqual(m.stamina_bonus_percent,12);}
+ m=await menu({egg:4,apple:8,olive_oil:1},2);assert.equal(m.olive_oil_used,0);assert.equal(m.stamina_bonus_percent,8);
+ m=await menu({egg:2,apple:4,olive_oil:2},0);assert.equal(m.olive_oil_used,0);
+ // Two days' nutrition, but only one day's oil: oil is spent only on the first top menu.
+ await q('update ludus_food_stock set quantity=0 where owner_id=$1',[A]);
+ for(const [sku,n]of Object.entries({egg:4,apple:8,olive_oil:1}))await q('update ludus_food_stock set quantity=$3 where owner_id=$1 and sku=$2',[A,sku,n]);
+ await q('update ludus_food_house set settled_day=settled_day-2 where owner_id=$1',[A]);
+ await db.exec('set role authenticated');let food=(await q('select ludus_food_state()as s'))[0].s;
+ assert.equal(food.items.find(i=>i.sku==='olive_oil').quantity,0);assert.equal(food.last_menu.stamina_bonus_percent,8);assert.equal(food.history[1].menu.stamina_bonus_percent,12);
+ // Exact ten milestone grants, no duplicate currency for repeated claims.
+ await db.exec('reset role');await q('update ludus_progression set experience=ludus_private.level_threshold(50)where owner_id=$1',[A]);await db.exec('set role authenticated');
+ const rewards=(await q("select ludus_progress('claim',null)as s"))[0].s;
+ assert.deepEqual(rewards.rewards.filter(r=>r.workers).map(r=>r.level),[5,10,15,20,25,30,35,40,45,50]);assert.equal(rewards.workers,10);
+ const balance=rewards.wallet.gold;assert.equal((await q("select ludus_progress('claim',null)as s"))[0].s.wallet.gold,balance);
+ s=await call('send','hunt',10);assert.equal(s.jobs[0].cargo.meat,80);assert.equal(s.jobs[0].cargo.leather,60);
+ const hunt=s.jobs[0];await db.exec('reset role');await q("update ludus_supply_private.jobs set started_at=started_at-interval'2 hours',ends_at=ends_at-interval'2 hours'where id=$1",[hunt.id]);
+ await q("update ludus_food_stock set quantity=50000 where owner_id=$1 and sku='meat'",[A]);await db.exec('set role authenticated');
+ await assert.rejects(()=>call('claim',hunt.id),/deposu dolu/);s=await call();assert.equal(s.jobs.length,1);assert.equal(s.resources.find(r=>r.sku==='leather').quantity,18);
+ await db.exec('reset role');await q("update ludus_food_stock set quantity=0 where owner_id=$1 and sku='meat'",[A]);await db.exec('set role authenticated');
+ s=await call('claim',hunt.id);assert.equal(s.resources.find(r=>r.sku==='meat').quantity,80);assert.equal(s.resources.find(r=>r.sku==='leather').quantity,78);
+ await q(`select set_config('request.jwt.claims','{"is_anonymous":true}',false)`);await assert.rejects(()=>call(),/giriş yap/);
+ await db.exec('reset role;set role anon');await assert.rejects(()=>call(),/permission denied/);
+ await db.close();console.log('V85 PASS: 10 milestone workers; old rewards preserved; timed/multi-worker cargo; isolation; replay; capacity rollback; basic crafting; oil only on top menus; retired purchases blocked.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

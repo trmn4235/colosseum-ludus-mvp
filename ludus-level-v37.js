@@ -29,10 +29,10 @@ var LudusLevels = (() => {
    $('levelNumber').textContent=String(state.level);$('levelAmount').textContent=state.level<50?number(state.current_exp)+' / '+number(state.next_exp)+' EXP':'Son seviye';
    const percent=state.level<50?Math.min(100,state.current_exp/state.next_exp*100):100;
    $('levelFill').style.width=percent+'%';$('levelMeter').setAttribute('aria-valuenow',String(Math.round(percent)));
-   $('levelGranted').textContent=String(state.granted_gladiators);$('levelOwned').textContent=String(state.owned_gladiators);
+   $('levelGranted').textContent=String(state.granted_gladiators);if($('levelWorkers'))$('levelWorkers').textContent=String(state.workers||0)+' / 10';$('levelOwned').textContent=String(state.owned_gladiators);
    $('levelBattle').textContent=number(state.battle_exp_today)+' / 2.500 EXP';
    const next=state.rewards.find(r=>r.level>state.level&&r.gladiators);
-   $('levelNext').textContent=next?'Seviye '+next.level+' · +1 gladyatör hakkı':'Bütün gladyatör hakları açıldı';
+   $('levelNext').textContent=next?'Seviye '+next.level+' · +1 gladyatör hakkı':'Bütün gladyatör hakları açıldı';if($('levelNextWorker'))$('levelNextWorker').textContent=state.next_worker_level?'Seviye '+state.next_worker_level+' · +1 işçi':'Bütün işçi ödülleri açıldı';
    $('levelClaimAll').disabled=busy||!!pending||!state.claimable_count;
    $('levelClaimAll').textContent=state.claimable_count?'Ödülleri al · '+state.claimable_count:state.level===1?'Henüz ödül açılmadı':'Ödüller alındı';
    $('levelPending').textContent=state.pending_gladiator_count?state.pending_gladiator_count+' gladyatör hakkı saklı. Uygun gladyatör ve yer olduğunda alabilirsin.':'';
@@ -40,7 +40,7 @@ var LudusLevels = (() => {
    $('levelRows').replaceChildren();
    for(const r of state.rewards.slice(page*size,(page+1)*size)){
     const tr=document.createElement('tr');tr.dataset.level=String(r.level);tr.dataset.state=r.claimed?'claimed':r.unlocked?'ready':'locked';
-    tr.append(cell(r.level),cell(r.diamonds),cell(r.sapphire||'—'),cell(r.emerald||'—'),cell(r.ruby||'—'),cell(number(r.denarius)),cell(r.items),cell(r.gladiators||'—'));
+    tr.append(cell(r.level),cell(r.diamonds),cell(r.sapphire||'—'),cell(r.emerald||'—'),cell(r.ruby||'—'),cell(number(r.denarius)),cell(r.items),cell(r.gladiators||'—'),cell(r.workers||'—'));
     const action=document.createElement('td'),button=document.createElement('button');button.type='button';button.className='level-claim';
     button.textContent=r.claimable?'Al':r.gladiator_pending?'Hak saklı':r.claimed?'Alındı':'Kilitli';
     button.disabled=busy||!!pending||!r.claimable;button.setAttribute('aria-label','Seviye '+r.level+' ödüllerini al');button.onclick=()=>claim(r.level);action.append(button);tr.append(action);$('levelRows').append(tr);
