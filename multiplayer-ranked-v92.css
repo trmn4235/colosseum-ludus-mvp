@@ -1,0 +1,56 @@
+/* The two ranked modes are announcements; only the existing beta opens a match. */
+body[data-roman-screen="savas"] #panel-multi{
+  display:grid;grid-template-columns:minmax(0,.62fr) repeat(2,minmax(0,1fr));
+  gap:clamp(9px,1.4vw,22px);width:min(1280px,92%);flex:1;min-height:0;
+  padding:2px 0 6px;align-items:center;container-type:inline-size;
+}
+.multiplayer-open{display:flex;flex-direction:column;align-items:center;gap:10px;min-height:0;height:100%;max-height:540px;justify-content:center}
+body[data-roman-screen="savas"] #panel-multi .mode{flex:none;width:100%;max-height:calc(100% - 54px);aspect-ratio:3/4!important}
+.multiplayer-open-label{margin:0;color:#e9d3a1;font:11px/1.2 Arial,Helvetica,sans-serif;letter-spacing:2px;text-align:center}
+.multiplayer-live{display:flex;align-items:center;gap:8px;color:#f8e5b4;font:700 12px/1.2 Arial,Helvetica,sans-serif;letter-spacing:1.4px;white-space:nowrap}
+.multiplayer-live::before{content:"";width:6px;height:6px;border-radius:50%;background:#b9d69f;box-shadow:0 0 9px #b9d69f60}
+.multiplayer-live small{color:#c4ad87;font-size:9px;letter-spacing:1px;border-left:1px solid #a98c5966;padding-left:8px}
+.ranked-card{display:grid;grid-template-rows:minmax(0,1fr) auto auto;height:100%;max-height:min(540px,calc(25cqw + 220px));min-width:0;min-height:0;overflow:hidden;border:1px solid #c7a468;border-radius:7px;background:#361019;box-shadow:0 8px 24px #12080aaa,0 0 0 3px #4c252177;color:#f8edce;isolation:isolate}
+.ranked-art{position:relative;min-height:0;overflow:hidden;background:#8a6344}
+.ranked-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 45%}
+.ranked-art::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px #ffe1a433;background:linear-gradient(180deg,#1a0c1033,transparent 22%,transparent 75%,#3b141a99)}
+.ranked-emblem{position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:5px;background:#41131cea;border:1px solid #d9ba7b99;border-radius:3px;padding:5px 8px;color:#f7dfa3;font:700 10px/1 Arial,Helvetica,sans-serif;letter-spacing:1.6px;z-index:1;box-shadow:0 2px 7px #0005}
+.ranked-emblem svg{height:15px;width:15px;fill:none;stroke:currentColor;stroke-width:1.6}
+.ranked-copy{padding:15px 20px 13px;background:radial-gradient(ellipse at 50% 0,#74283566,transparent 70%),linear-gradient(#501b25,#321018);border-top:1px solid #bb934f}
+.ranked-kicker{font:700 10px/1.2 Arial,Helvetica,sans-serif!important;letter-spacing:2px;color:#d3b477!important;margin:0 0 5px!important}
+.ranked-copy h2{font:700 clamp(19px,3.5dvh,27px)/1.12 Georgia,"Times New Roman",serif;margin:0 0 7px;color:#fff0ca;letter-spacing:.3px}
+.ranked-description{font:13px/1.4 Arial,Helvetica,sans-serif!important;color:#eadcc1!important;margin:0!important;min-height:2.8em}
+.ranked-rule{display:flex;align-items:baseline;justify-content:space-between;gap:5px;margin-top:8px;padding:7px 0;border-top:1px solid #d4b06a33;color:#cbb89a;font:12px/1.2 Arial,Helvetica,sans-serif}
+.ranked-rule strong{font:700 19px/1 Georgia,serif;color:#f6d68f;white-space:nowrap}
+.ranked-rule strong small{font:10px Arial,Helvetica,sans-serif;font-weight:400;color:#e4d0aa}
+.ranked-points{display:grid;grid-template-columns:1fr 1fr;margin:4px 0 0;border:1px solid #d4b06a33;border-radius:3px;background:#1f0b1144}
+.ranked-points div{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;gap:5px;min-width:0}
+.ranked-points div+div{border-left:1px solid #d4b06a33}
+.ranked-points dt{font:10px/1.2 Arial,Helvetica,sans-serif;color:#d9c8ac}
+.ranked-points dd{font:700 22px/1 Georgia,serif;letter-spacing:.5px;margin:0;color:#d5e9ae;white-space:nowrap}
+.ranked-points .ranked-loss dd{color:#f2c3ac}
+.ranked-soon{display:flex;align-items:center;justify-content:center;gap:9px;margin:0!important;min-height:30px;padding:7px;background:linear-gradient(90deg,#6a44232b,#bb8d462b,#6a44232b);border-top:1px solid #ad87464d;color:#e7ca8b!important;font:700 10px/1.2 Arial,Helvetica,sans-serif!important;letter-spacing:3px}
+.ranked-soon::before,.ranked-soon::after{content:"";width:24px;height:1px;background:#b9934f88}
+@media(max-height:500px){
+  body[data-roman-screen="savas"] #panel-multi{width:94%;padding-bottom:2px;gap:10px}
+  .multiplayer-open{gap:6px}.multiplayer-open-label{font-size:8px;letter-spacing:1.1px}.multiplayer-live{font-size:9px;letter-spacing:1px}.multiplayer-live small{font-size:8px}
+  body[data-roman-screen="savas"] #panel-multi .mode{max-height:calc(100% - 40px)}
+  .ranked-emblem{top:6px;left:6px;font-size:8px;padding:4px 6px;letter-spacing:1px}.ranked-emblem svg{height:11px;width:11px}
+  .ranked-art img{object-position:center 12%}
+  .ranked-copy{padding:9px 11px 8px}.ranked-kicker{font-size:8px!important;letter-spacing:1.4px;margin-bottom:3px!important}
+  .ranked-copy h2{font-size:20px;margin-bottom:4px}.ranked-description{font-size:11px!important;line-height:1.25!important;min-height:2.5em}
+  .ranked-rule{font-size:10px;margin-top:4px;padding:5px 0}.ranked-rule strong{font-size:16px}.ranked-rule strong small{font-size:9px}
+  .ranked-points{margin-top:2px}.ranked-points div{padding:6px 7px;gap:3px}.ranked-points dt{font-size:9px}.ranked-points dd{font-size:18px}
+  .ranked-soon{min-height:23px;padding:5px;font-size:9px!important;letter-spacing:2px}
+}
+@media(max-width:700px) and (orientation:landscape){
+  body[data-roman-screen="savas"] #panel-multi{width:96%;grid-template-columns:minmax(0,.52fr) repeat(2,minmax(0,1fr));gap:8px}
+  .ranked-copy{padding:7px 8px}.ranked-copy h2{font-size:17px}.ranked-points div{padding:5px}.ranked-points dt{font-size:8px}
+  .multiplayer-open-label{font-size:7px}.multiplayer-live{font-size:8px;gap:4px}.multiplayer-live small{font-size:7px;padding-left:4px}
+}
+@media(max-height:350px){
+  .ranked-copy{padding:6px 7px}.ranked-copy h2{font-size:16px;margin-bottom:3px}.ranked-kicker{font-size:7px!important;margin-bottom:2px!important;letter-spacing:1px}
+  .ranked-description{font-size:10px!important}.ranked-rule{margin-top:3px;padding:4px 0;font-size:9px}.ranked-rule strong{font-size:15px}
+  .ranked-points div{padding:4px 5px}.ranked-points dd{font-size:16px}.ranked-soon{min-height:20px;font-size:8px!important;padding:4px}
+  .ranked-emblem{font-size:7px;padding:3px 4px;top:4px;left:4px}
+}
