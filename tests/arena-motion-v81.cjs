@@ -1,6 +1,6 @@
 /* Real pages/assets with isolated account fixtures; never creates a production battle. */
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
-const {chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright'),exercise=require('../gladiator-exercise-v46.js');
+const {chromium,webkit}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright'),exercise=require('../gladiator-exercise-v46.js');
 const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/arena-motion-v81',owner='00000000-0000-4000-8000-000000000001',battle='00000000-0000-4000-8000-000000000078';
 const fighters=Object.keys(exercise.profiles).map((type,i)=>({id:'g'+i,name:i?'Gladyatör '+i:'Cassius',class:type,owner_id:owner,overall:50,level:1,status:'available',session:null,stat_version:46,base_stats:exercise.profile(type),fatigue_value:0,exercise_units:0}));
 const receipt={gold:100,diamonds:1,stone:{name:'Safir II'},kind:'legs',ludus_exp:100,extracted:Array.from({length:6},()=>({}))};
@@ -11,18 +11,35 @@ let cleanup=async()=>{};
 async function main(){
  fs.mkdirSync(out,{recursive:true});
  const server=http.createServer((req,res)=>{const filename=path.resolve(root,'.'+new URL(req.url,'http://local').pathname);if(!filename.startsWith(root+'/')||!fs.existsSync(filename)||!fs.statSync(filename).isFile()){res.writeHead(404).end();return;}let body=fs.readFileSync(filename);
-  if(filename.endsWith('/arena.html'))body=Buffer.from(body.toString().replace('function frame(now){const cpuStart', 'function frame(now){if(window.__freezeFrame)return;const cpuStart').replace('var LudusBattle=(function(){',fixture+'\nLudusClient.create=()=>window.__fixtureClient;var LudusBattle=(function(){').replace('mainMenu();Promise.all([LudusBattle.load()',"window.__arena={combat,renderer,scene,camera,showResult,hud,saveReward,freeze:()=>{paused=true;window.__freezeFrame=true;},get started(){return started;}};mainMenu();Promise.all([LudusBattle.load()"));
+  if(filename.endsWith('/arena.html'))body=Buffer.from(body.toString().replace('function frame(now){const cpuStart', 'function frame(now){if(window.__freezeFrame)return;const cpuStart').replace('var LudusBattle=(function(){',fixture+'\nLudusClient.create=()=>window.__fixtureClient;var LudusBattle=(function(){').replace('mainMenu();Promise.all([LudusBattle.load()',"window.__arena={combat,renderer,scene,camera,showResult,hud,saveReward,models,events,step:(dt)=>{paused=false;window.__freezeFrame=false;frame(last+dt*1000);paused=true;window.__freezeFrame=true;},freeze:()=>{paused=true;window.__freezeFrame=true;},get started(){return started;}};mainMenu();Promise.all([LudusBattle.load()"));
   if(filename.endsWith('/ludus.html'))body=Buffer.from(body.toString().replace('const accountClient=supabase.createClient','let accountClient=supabase.createClient').replace('const accountReady=(async()=>{',fixture+'\nconst accountReady=(async()=>{accountClient=window.__fixtureClient;').replace('function frame(now){requestAnimationFrame(frame);','function frame(now){requestAnimationFrame(frame);if(window.__freezeFrame)return;'));
   res.writeHead(200,{'content-type':mime[path.extname(filename)]||'application/octet-stream','cache-control':'no-store'}).end(body);
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
- const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/tmp/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader']});cleanup=async()=>{await browser.close();await new Promise(r=>server.close(r));};
+ const browser=process.env.LUDUS_TEST_ENGINE==='webkit'?await webkit.launch({headless:true}):await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/tmp/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader']});cleanup=async()=>{await browser.close();await new Promise(r=>server.close(r));};
  const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,deviceScaleFactor:2});await context.route('https://**',r=>r.abort());
  const arena=await context.newPage(),errors=[];arena.on('pageerror',e=>{errors.push(e.message);console.error('Browser:',e.message)});
  await arena.goto(base+'/arena.html?battle='+battle);await arena.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:30000}).catch(async e=>{console.error(await arena.evaluate(()=>({url:location.href,arena:!!window.__arena,text:document.body.innerText.slice(-1800)})));throw e});
  await arena.evaluate(()=>__arena.freeze());assert.equal(await arena.evaluate(()=>__arena.renderer.getPixelRatio()),1.25);
  const hud=await arena.locator('.vitals').boundingBox(),icon=await arena.locator('.vital-icon').first().boundingBox();assert.equal(Math.round(icon.width),20);assert.ok(icon.x>=0&&icon.x<8);assert.ok(hud.x<25);
  await arena.screenshot({path:out+'/hud-844.png'});
+ const continuous=await arena.evaluate(()=>{
+  // Controlled simulation steps must not flood a software GPU with queued raster passes.
+  const render=__arena.renderer.render;__arena.renderer.render=()=>{};
+  const results=[];try{for(const fps of [30,60]){
+   const initial=__arena.combat.time;let maximumPositionError=0;
+   for(let i=0;i<fps;i++){
+    if(i%5===0){__arena.combat.events.push({type:'hit',id:1,source:0,damage:1,metal:true});__arena.events();}
+    __arena.step(1/fps);
+    for(let k=0;k<__arena.models.length;k++){const f=__arena.combat.fighters[k],m=__arena.models[k];if(f.hp>0&&!['dodge','knocked'].includes(f.action))maximumPositionError=Math.max(maximumPositionError,Math.abs(m.root.position.x-f.x),Math.abs(m.root.position.z-f.z));}
+   }
+   results.push({fps,simulationSeconds:__arena.combat.time-initial,maximumPositionError});
+  }return results;}finally{__arena.renderer.render=render;}
+ });
+ assert.ok(continuous.every(r=>Math.abs(r.simulationSeconds-1)<1/60+.000001),'impacts never stop the running battle');
+ assert.ok(continuous.every(r=>r.maximumPositionError<1e-7),'distant roots follow every rendered frame');
+ console.log(JSON.stringify({engine:process.env.LUDUS_TEST_ENGINE||'chromium',continuous,frameTiming:'controlled steps; not measured device FPS'}));
+
  if(process.env.LUDUS_MOTION_PREVIEW){
   await arena.evaluate(()=>{
    const T=THREE,scene=new T.Scene();scene.background=new T.Color('#ded8c9');scene.add(new T.HemisphereLight(0xffffff,0x7c6547,2));const light=new T.DirectionalLight(0xffffff,2);light.position.set(2,5,3);scene.add(light);

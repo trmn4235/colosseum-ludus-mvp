@@ -1,8 +1,9 @@
 /* CPU-only scene-graph validation. No browser, GPU, production account or pixel renderer. */
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{performance}=require('node:perf_hooks');
 const root=path.resolve(process.env.LUDUS_PERF_ROOT||path.join(__dirname,'..'));
-function scripts(page){const html=fs.readFileSync(path.join(root,page),'utf8');return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)].map(m=>({attrs:m[1],text:m[2]}));}
-async function rigRuntime(page='arena.html'){
+function scripts(page,base=root){const html=fs.readFileSync(path.join(base,page),'utf8');return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)].map(m=>({attrs:m[1],text:m[2]}));}
+async function rigRuntime(page='arena.html',options={}){
+ const root=path.resolve(options.root||process.env.LUDUS_PERF_ROOT||path.join(__dirname,'..'));
  const context=vm.createContext({console:{log(){},warn(){},error(){}},URL,TextDecoder,TextEncoder,ArrayBuffer,Uint8Array,Uint16Array,Uint32Array,Float32Array,Float64Array,Int8Array,Int16Array,Int32Array,DataView,Blob,AbortController,Response,setTimeout,clearTimeout,performance});context.self=context;
  const paint=new Proxy({}, {get:(o,k)=>k==='canvas'?{}:()=>paint});
  context.document={baseURI:'https://fixture.invalid/',getElementById:()=>({textContent:''}),createElement:()=>({width:256,height:256,getContext:()=>paint})};
@@ -12,13 +13,14 @@ async function rigRuntime(page='arena.html'){
  T.TextureLoader.prototype.load=function(url,onload){const t=new T.Texture();onload?.(t);return t;};
  context.ArenaAssetLoad=async name=>{const p=new URL(name,'https://fixture.invalid/').pathname.slice(1),bytes=fs.readFileSync(root+'/'+p);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};
  context.ArenaAssets={warmArena(){}};
- const source=scripts(page),combat=scripts('arena.html').find(s=>s.text.includes('var ArenaClasses='));
+ const source=scripts(page,root),combat=scripts('arena.html',root).find(s=>s.text.includes('var ArenaClasses='));
  const marker="if(typeof module!=='undefined')module.exports=install;else install(root.ArenaCombat,root.ArenaClasses);",ending="})(typeof window!=='undefined'?window:globalThis);";
  const start=combat.text.indexOf('var ArenaClasses='),finish=combat.text.indexOf(ending,combat.text.indexOf(marker,start))+ending.length;vm.runInContext(combat.text.slice(start,finish),context);
  const graphics=source.find(s=>s.text.includes('var ImportedGladiator=')),endMarker="return {load,create,animate,dispose,get loaded(){return !!template;}};",end=graphics.text.indexOf('})();',graphics.text.indexOf(endMarker))+5;
  vm.runInContext(graphics.text.slice(0,end),context);
  context.ArenaAssetLoad=async name=>{const p=new URL(name,'https://fixture.invalid/').pathname.slice(1),bytes=fs.readFileSync(root+'/'+p);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};context.ArenaAssets.warmArena=()=>{};
- for(const name of ['arena-fall-motion-v39.js','arena-ground-fall-v39.js','arena-roll-motion-v72.js','arena-roll-v72.js','arena-locomotion-data-v81.js','arena-locomotion-v81.js'])vm.runInContext(fs.readFileSync(root+'/'+name,'utf8'),context);
+ const locomotion=source.map(s=>s.attrs.match(/\bsrc=["']([^"'?]+)/)?.[1]).filter(name=>/^arena-locomotion(?:-data)?-v\d+\.js$/.test(name||''));
+ for(const name of ['arena-fall-motion-v39.js','arena-ground-fall-v39.js','arena-roll-motion-v72.js','arena-roll-v72.js',...locomotion])vm.runInContext(fs.readFileSync(root+'/'+name,'utf8'),context);
  if(page==='ludus.html')vm.runInContext(fs.readFileSync(root+'/training-motion-v50.js','utf8'),context);
  await context.ImportedGladiator.load(()=>{});return context;
 }

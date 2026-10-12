@@ -1,0 +1,65 @@
+{
+  "note": "Real geometry/rig with placeholder textures. CPU matrix traversal counts and pose equality, not GPU/device FPS.",
+  "pages": [
+    {
+      "page": "arena.html",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 2934288,
+        "treeUpdates": 930339
+      },
+      "after": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 930339
+      }
+    },
+    {
+      "page": "savas.html",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 2934288,
+        "treeUpdates": 930339
+      },
+      "after": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 930339
+      }
+    },
+    {
+      "page": "multiplayer.html",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 2934288,
+        "treeUpdates": 930339
+      },
+      "after": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 930339
+      }
+    },
+    {
+      "page": "ludus.html",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 1736476,
+        "treeUpdates": 759709
+      },
+      "after": {
+        "worldUpdates": 1691404,
+        "treeUpdates": 759709
+      }
+    }
+  ]
+}

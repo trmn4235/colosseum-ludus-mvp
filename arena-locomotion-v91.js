@@ -1,4 +1,5 @@
-/* Human CMU capture, phase-aligned speed blending. Combat remains authoritative. */
+/* Human CMU capture, phase-aligned speed blending. Combat remains authoritative.
+   V94: update each changed bone only; child world queries and the final root pass propagate it. */
 var ArenaLocomotion=(function(){
  let T,v,n,o,end,q,q2,world,target,parent,up;
  const links={UpLeg:'Leg',Leg:'Foot',Foot:'ToeBase',Arm:'ForeArm',ForeArm:'Hand'};
@@ -31,7 +32,7 @@ var ArenaLocomotion=(function(){
    const bone=m.bones[key],rest=m.rest.get(key);if(!bone||!rest)continue;
    sample(first,key,phase,q,true);sample(second,key,phase,target,true);q.slerp(target,amount);
    target.copy(world).multiply(q).multiply(rest.p).multiply(rest.q);
-   bone.getWorldQuaternion(q);q.slerp(target,weight);bone.quaternion.copy(bone.parent.getWorldQuaternion(parent).invert().multiply(q));bone.updateWorldMatrix(false,true);
+   bone.getWorldQuaternion(q);q.slerp(target,weight);bone.quaternion.copy(bone.parent.getWorldQuaternion(parent).invert().multiply(q));bone.updateWorldMatrix(false,false);
   }
   const sideHeading=Math.max(-.7,Math.min(.7,reverse?Math.atan2(Math.sin(heading-Math.PI),Math.cos(heading-Math.PI)):heading));
   for(const suffix of Object.keys(links))for(const side of ['Left','Right']){
@@ -45,7 +46,7 @@ var ArenaLocomotion=(function(){
    bone.getWorldPosition(o);child.getWorldPosition(end).sub(o).normalize();v.lerp(end,1-weight).normalize();alignBone(bone,child,o.add(v));
   }
   if(f.shield&&f.shieldHeldBy==null&&!f.blocking&&!(f.guardFlash>0)&&!(f.absoluteBlockUntil>time)){
-   const hand=m.bones.LeftHand,rest=m.rest.get('LeftHand');if(hand&&rest){target.copy(world).multiply(rest.p).multiply(rest.q);hand.getWorldQuaternion(q);q.slerp(target,weight);hand.quaternion.copy(hand.parent.getWorldQuaternion(parent).invert().multiply(q));hand.updateWorldMatrix(false,true);}
+   const hand=m.bones.LeftHand,rest=m.rest.get('LeftHand');if(hand&&rest){target.copy(world).multiply(rest.p).multiply(rest.q);hand.getWorldQuaternion(q);q.slerp(target,weight);hand.quaternion.copy(hand.parent.getWorldQuaternion(parent).invert().multiply(q));hand.updateWorldMatrix(false,false);}
   }
   // Anatomical floor clearance; running keeps a measured airborne phase.
   let lowest=Infinity,restHeight=Infinity;

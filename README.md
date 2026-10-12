@@ -2,6 +2,10 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## Arena hareket akıcılığı V94
+
+Uzak karakterlerin 30 Hz animasyon zamanlayıcısındaki süre kaybı düzeltildi; konumlar her karede güncelleniyor. Darbe ve blok sırasında bütün savaşı durduran efekt kaldırıldı. Ortak iskelet hesaplarında tekrarlanan alt ağaç güncellemeleri azaltıldı. 86 kontrol, Chromium/WebKit hareket kontrolleri ve dört sayfa/yedi sınıfta eski pozlarla karşılaştırma geçti. [Değişiklikler ve ölçüm sınırları](docs/performance-v94/README.md). Fiziksel telefonda FPS kazanımı henüz ölçülmedi.
+
 ## Genel performans V84
 
 414 dosyanın envanteri çıkarıldı. Ortak Three.js/Supabase kütüphaneleri ve tekrar eden UI görselleri ayrı cache'lenebilir kaynaklar oldu; toplam HTML kaynağı 9,23 → 2,04 MB. Karakter matematik nesneleri yeniden kullanılıyor, ekipman/gölge taramaları ve değişmeyen DOM yazmaları azaltılıyor, kamera dışındaki karakterler çizimden çıkarılıyor. Gizli sekmeler ve önizlemeler sınırlandı; önizleme kaynakları kapanışta temizleniyor. Aynı sayfadaki standart Supabase istemcileri ve eşzamanlı kullanıcı sorguları birleştiriliyor.
