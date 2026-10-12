@@ -15,7 +15,7 @@ var LudusSupply=(()=>{
  const uses={iron:'Silah ve zırh üretimi için demir.',copper:'Basic ekipman üretimi için bakır.',wood:'Silah, kalkan ve ekipman için odun.',hunt:'Yemekhaneye et, demirciye deri sağlar.',linen:'Ekipman üretimi için keten.',grain:'Yemekhanenin tahıl stoğunu tamamlar.',apple:'Yemekhanenin meyve stoğunu tamamlar.',fish:'Yemekhaneye balık sağlar.',egg:'Yemekhaneye yumurta sağlar.',wine:'Yemekhane için şarap getirir.',olive_oil:'Yalnızca en yüksek kalite menüde kullanılır.'};
  function picture(id,alt,cls=''){const img=el('img',cls);img.src=artRoot+id+'.webp';img.alt=alt;img.width=1200;img.height=800;img.decoding='async';img.draggable=false;return img;}
  function create(ctx){
-  let state=null,owner=null,key=null,pending=null,busy=false,loading=null,opened=false,mode='trade',tab='map',selected=null,workers=1,filter='all',page=0,lastFocus=null,offset=0,lastRefresh=0,lastTick=0,artOpen=false,artFocus=null,artReturn='.supply-art-expand',seenDeliveries=new Set();
+  let state=null,owner=null,key=null,pending=null,busy=false,loading=null,opened=false,mode='trade',tab='map',selected=null,workers=1,filter='all',craftSelection=null,page=0,lastFocus=null,offset=0,lastRefresh=0,lastTick=0,artOpen=false,artFocus=null,artReturn='.supply-art-expand',seenDeliveries=new Set();
   const opener=button('',()=>open(),'room-world-action supply-open');opener.hidden=true;opener.id='supplyOpen';document.body.append(opener);
   const chestOpener=button('',()=>open('stock'),'room-world-action supply-open');chestOpener.id='supplyChestOpen';chestOpener.hidden=true;chestOpener.innerHTML=icon('chest');chestOpener.title='Tedarik kasasını aç';chestOpener.setAttribute('aria-label',chestOpener.title);document.body.append(chestOpener);const chestCount=el('span','supply-chest-count');chestCount.hidden=true;chestCount.setAttribute('aria-hidden','true');chestOpener.append(chestCount);
   const modal=el('section','supply-modal');modal.id='supplyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','supplyTitle');
@@ -23,7 +23,8 @@ var LudusSupply=(()=>{
   const title=el('h1','','Roma ve çevresi');title.id='supplyTitle';heading.append(title);
   const closeButton=button('×',close,'supply-close');closeButton.setAttribute('aria-label','Pencereyi kapat');head.append(heading,closeButton);
   const summary=el('div','supply-summary'),tabs=el('nav','supply-tabs'),content=el('div','supply-content'),footer=el('footer','supply-footer'),status=el('p','supply-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  const retry=button('Yeniden dene',()=>pending?submit():refresh(),'supply-secondary');retry.hidden=true;footer.append(status,retry);frame.append(head,summary,tabs,content,footer);modal.append(frame);document.body.append(modal);
+  tabs.setAttribute('aria-label','Tedarik bölümleri');head.insertBefore(tabs,closeButton);
+  const retry=button('Yeniden dene',()=>pending?submit():refresh(),'supply-secondary');retry.hidden=true;footer.append(status,retry);frame.append(head,summary,content,footer);modal.append(frame);document.body.append(modal);
   const gallery=el('section','supply-gallery');gallery.hidden=true;gallery.setAttribute('role','dialog');gallery.setAttribute('aria-modal','true');gallery.setAttribute('aria-label','Bölge görseli');
   const galleryBar=el('div','supply-gallery-bar'),galleryName=el('span'),galleryClose=button('×',closeArt,'supply-gallery-close');galleryClose.setAttribute('aria-label','Görseli kapat');galleryBar.append(galleryName,galleryClose);
   const galleryStage=el('div','supply-gallery-stage'),galleryImage=el('img','supply-gallery-image');galleryImage.alt='';galleryImage.draggable=false;galleryStage.append(galleryImage);
@@ -77,10 +78,10 @@ var LudusSupply=(()=>{
   function disabled(){return busy||!!pending||!!loading;}
   function render(){
    const active=document.activeElement,focusId=content.contains(active)?active.id:null;
-   title.textContent=mode==='forge'?'Demirci':tab==='stock'?'Tedarik kasası':'Tedarik';ctx.onChestOpen?.(opened&&mode==='trade'&&tab==='stock');modal.setAttribute('aria-busy',String(busy||!!loading));summary.replaceChildren();tabs.replaceChildren();content.replaceChildren();
+   title.textContent=mode==='forge'?'Demirci':tab==='stock'?'Tedarik kasası':'Tedarik';ctx.onChestOpen?.(opened&&mode==='trade'&&tab==='stock');modal.setAttribute('aria-busy',String(busy||!!loading));modal.dataset.view=tab==='map'&&selected?'destination':tab;modal.dataset.mode=mode;summary.replaceChildren();tabs.replaceChildren();content.replaceChildren();frame.insertBefore(summary,content);footer.hidden=!status.textContent&&retry.hidden;
    if(opened&&mode==='trade'&&tab==='stock')acknowledge();
    if(!state){content.append(el('p','supply-empty',loading?'Tedarik defteri açılıyor…':'Tedarik bilgileri henüz yüklenmedi.'));return;}
-   for(const [label,value]of [['Boş işçi',state.free_workers+' / '+state.workers],['Görevde',state.busy_workers],['Seviye',state.level]]){const box=el('div');box.append(el('small','',label),el('strong','',value));summary.append(box);}
+   for(const [label,value]of [['Boş işçi',state.free_workers+' / '+state.workers],['Seferde',state.busy_workers],['Ludus seviyesi',state.level]]){const box=el('div');box.append(el('small','',label),el('strong','',value));summary.append(box);}
    const refreshButton=button('Yenile',refresh,'supply-secondary');refreshButton.disabled=disabled();summary.append(refreshButton);
    const choices=mode==='forge'?[['craft','Basic üretim'],['stock','Malzemeler']]:[['map','Roma haritası'],['jobs','Seferler · '+state.jobs.length],['stock','Kasa']];
    for(const [value,label]of choices){const b=button(label,()=>{tab=value;page=0;selected=null;render();tabs.querySelector('[aria-pressed=true]')?.focus()});b.setAttribute('aria-pressed',String(tab===value));tabs.append(b);}
@@ -94,12 +95,12 @@ var LudusSupply=(()=>{
   function choose(id){selected=id;render();content.querySelector('.supply-back')?.focus({preventScroll:true});}
   function backToMap(){const old=selected;selected=null;render();content.querySelector('[data-destination="'+old+'"]')?.focus({preventScroll:true});}
   function renderMap(){
-   const overview=el('div','supply-overview'),intro=el('div','supply-map-intro');intro.append(el('h2','','Roma ve çevresi'),el('span','','Bir bölgeye dokun'));
-   const artButton=button('Haritayı büyüt',()=>showArt('rome-map','Roma ve çevresi'),'supply-secondary supply-map-expand');intro.append(artButton);
+   const overview=el('div','supply-overview'),side=el('aside','supply-map-sidebar'),intro=el('div','supply-map-intro');intro.append(el('small','supply-kicker','TEDARİK BÖLGELERİ'),el('h2','','Roma ve çevresi'),el('p','','Bir simgeye dokun, bölgeyi keşfet.'));
+   const artButton=button('Haritayı incele',()=>showArt('rome-map','Roma ve çevresi'),'supply-secondary supply-map-expand');
    const area=el('div','supply-map-area'),map=el('div','supply-map');map.setAttribute('aria-label','Roma çevresindeki tedarik bölgeleri');map.append(picture('rome-map','Kolezyum, Forum ve Tiber çevresinde Roma','supply-map-art'));
    for(const d of state.destinations){const node=button('',()=>choose(d.id),'supply-node'),p=positions[d.id]||[d.x,d.y];node.dataset.destination=d.id;node.style.left=p[0]+'%';node.style.top=p[1]+'%';node.title=d.name;node.setAttribute('aria-label',d.name+' · Bölgeyi aç');const glyph=el('span','supply-node-icon');glyph.innerHTML=icon(routeIcon(d.id));node.append(glyph,el('span','supply-node-name',shortNames[d.id]||d.name));map.append(node);}
    area.append(map);
-   const controls=el('div','supply-map-controls'),label=el('label','supply-region-picker','Bölge'),select=el('select');select.setAttribute('aria-label','Tedarik bölgesi seç');select.id='supplyRegion';const empty=el('option','','Bölge seç…');empty.value='';select.append(empty);for(const d of state.destinations){const o=el('option','',d.name);o.value=d.id;select.append(o);}select.onchange=()=>{if(select.value)choose(select.value)};label.append(select);controls.append(label,reward());overview.append(intro,area,controls);content.append(overview);
+   const controls=el('div','supply-map-controls'),label=el('label','supply-region-picker','Bölge seçimi'),select=el('select');select.setAttribute('aria-label','Tedarik bölgesi seç');select.id='supplyRegion';const empty=el('option','','Bölge seç…');empty.value='';select.append(empty);for(const d of state.destinations){const o=el('option','',d.name);o.value=d.id;select.append(o);}select.onchange=()=>{if(select.value)choose(select.value)};label.append(select);controls.append(label,artButton,reward());side.append(intro,summary,controls);overview.append(area,side);content.append(overview);
   }
   function renderDestination(){
    const d=state.destinations.find(d=>d.id===selected);if(!d){selected=null;renderMap();return;}
@@ -113,10 +114,8 @@ var LudusSupply=(()=>{
    function step(delta){input.value=String(Math.max(1,Math.min(state.free_workers,Number(input.value)+delta)));update();}
    function update(){const n=Number(input.value),valid=Number.isInteger(n)&&n>=1&&n<=state.free_workers;if(valid)workers=n;preview.textContent=valid?'Dönüş yükü: '+names(d.yields,n):state.free_workers?'1–'+state.free_workers+' arasında işçi seç.':'Boş işçi bulunmuyor.';send.disabled=disabled()||!valid;less.disabled=input.disabled||n<=1;more.disabled=input.disabled||n>=state.free_workers;}input.oninput=update;update();side.append(preview,send,el('small','supply-trip-note','Dönüşte ürünler kasaya otomatik eklenir.'),reward());layout.append(scene,side);content.append(layout);
   }
-  function pageSlice(items,type){
-   const width=content.clientWidth||Math.min(innerWidth-32,1000),height=content.clientHeight||Math.min(innerHeight-168,510);
-   let cols=1,rows=1;if(type==='stock'){cols=width<560?2:4;rows=Math.max(1,Math.min(3,Math.floor((height-(mode==='trade'&&state.deliveries?.length?108:72))/100)));}else if(type==='craft'){cols=width<460?1:width<780?2:3;}else rows=Math.max(1,Math.min(3,Math.floor((height-64)/112)));
-   const size=cols*rows,pages=Math.max(1,Math.ceil(items.length/size));page=Math.max(0,Math.min(page,pages-1));return {items:items.slice(page*size,(page+1)*size),pages,cols,rows};
+  function pageSlice(items){
+   const height=content.clientHeight||Math.min(innerHeight-168,510),rows=Math.max(1,Math.min(3,Math.floor((height-64)/112))),pages=Math.max(1,Math.ceil(items.length/rows));page=Math.max(0,Math.min(page,pages-1));return {items:items.slice(page*rows,(page+1)*rows),pages,rows};
   }
   function pager(pages){
    const nav=el('nav','supply-pagination');nav.setAttribute('aria-label','Liste sayfaları');
@@ -126,22 +125,32 @@ var LudusSupply=(()=>{
   function renderJobs(){
    const rows=[...state.jobs.map(j=>({...j,delivered:false})),...(state.deliveries||[]).map(j=>({...j,delivered:true}))];
    if(!rows.length){const empty=el('div','supply-empty');empty.append(el('h2','','İlk seferini başlat'),el('p','','Dönen işçiler ürünleri kasaya otomatik bırakır.'),button('Roma haritasını aç',()=>{tab='map';selected=null;render()},'supply-primary'));content.append(empty);return;}
-   const data=pageSlice(rows,'jobs'),list=el('div','supply-jobs');list.style.setProperty('--supply-rows',data.rows);
+   const data=pageSlice(rows),list=el('div','supply-jobs');list.style.setProperty('--supply-rows',data.rows);
    for(const j of data.items){const card=el('article','supply-job'),heading=el('div','supply-job-info'),d=state.destinations.find(d=>d.id===j.destination);heading.append(el('h2','',d?.name||j.destination),el('small','',j.workers+' işçi · '+names(j.cargo)));const time=el('p','supply-countdown',j.delivered?'Kasaya eklendi':remaining(j));if(!j.delivered)time.dataset.job=j.id;else card.dataset.delivered=j.id;heading.append(time);
     const action=button(j.delivered?'Kasayı aç':'Kasaya otomatik',()=>{tab='stock';page=0;render()},j.delivered?'supply-secondary':'supply-auto-label');action.disabled=!j.delivered;
     card.append(picture(j.destination,'','supply-job-art'),heading,action);list.append(card);}content.append(list);listFooter('Dönen yükler otomatik aktarılır. Son 10 teslimat burada görünür.',data.pages);
   }
   function renderStock(){
+   const items=state.resources.filter(r=>mode!=='forge'||!r.food),layout=el('div','supply-vault'),side=el('aside','supply-vault-side'),emblem=el('img','supply-vault-emblem');emblem.src='assets/supply-v89/vault.svg';emblem.alt='';side.append(el('small','supply-kicker','LUDUS HAZİNESİ'),emblem,el('h2','',mode==='forge'?'Üretim stoğu':'Tedarik kasası'),el('p','','Seferlerden dönen ürünler burada saklanır.'));
+   const totals=el('div','supply-vault-totals');for(const [label,list]of [['Malzeme',items.filter(r=>!r.food)],['Gıda',items.filter(r=>r.food)]])if(list.length){const row=el('div');row.append(el('span','',label),el('strong','',num(list.reduce((n,r)=>n+Number(r.quantity||0),0))));totals.append(row);}side.append(totals,el('small','supply-vault-limit','Her ürün için 50.000 kapasite'));
+   const grid=el('div','supply-stock');grid.dataset.count=items.length;
+   for(const r of items){const card=el('article','supply-stock-card');card.dataset.resource=r.sku;card.dataset.empty=String(!r.quantity);const details=el('div','supply-stock-label');details.append(el('small','',r.food?'GIDA':'MALZEME'),el('h2','',r.name));card.append(resourceArt(r.sku,'supply-stock-icon'),details,el('strong','',num(r.quantity)));grid.append(card);}layout.append(side,grid);content.append(layout);
    if(mode==='trade'&&state.deliveries?.length){const latest=state.deliveries[0],line=el('div','supply-arrival'),text=el('span');text.append(el('small','','SON TESLİMAT'),el('strong','',names(latest.cargo)));const all=button('Teslimatlar',()=>{tab='jobs';page=0;render()},'supply-secondary');line.append(text,all);content.append(line);}
-   const data=pageSlice(state.resources.filter(r=>mode!=='forge'||!r.food),'stock'),grid=el('div','supply-stock');grid.style.setProperty('--supply-cols',data.cols);grid.style.setProperty('--supply-rows',data.rows);
-   for(const r of data.items){const card=el('article','supply-stock-card'),glyph=el('span','supply-stock-icon');glyph.innerHTML=icon(routeIcon(r.sku==='leather'||r.sku==='meat'?'hunt':r.sku==='beer'?'wine':r.sku));card.append(glyph,el('small','',r.food?'GIDA':'MALZEME'),el('h2','',r.name),el('strong','',num(r.quantity)));grid.append(card);}content.append(grid);listFooter('Gıda ve üretim malzemeleri burada. Ürün başına sınır: 50.000.',data.pages);
   }
+  function resourceArt(sku,cls){const img=el('img',cls);img.src=['iron','copper','wood','leather','linen'].includes(sku)?'assets/supply-v89/'+sku+'.svg':'assets/dining/icons/'+sku+'-v57.svg';img.alt='';img.width=96;img.height=96;img.draggable=false;return img;}
+  function equipmentArt(recipe,cls){const art=el('span',cls);art.setAttribute('aria-hidden','true');art.innerHTML=globalThis.LudusSupplyIcons?.svg(recipe)||icon('forge');return art;}
+  function canCraft(recipe){return Object.entries(recipe.ingredients).every(([sku,n])=>(resource(sku)?.quantity||0)>=n);}
   function renderCraft(){
-   const label=el('label','supply-filter','Ekipman türü'),select=el('select');select.id='supplyCraftFilter';for(const [v,n]of [['all','Tüm ekipmanlar'],...Object.entries(kindNames)]){const option=el('option','',n);option.value=v;select.append(option);}select.value=filter;select.onchange=()=>{filter=select.value;page=0;render()};label.append(select);
-   const data=pageSlice(state.recipes.filter(r=>filter==='all'||r.kind===filter),'craft'),grid=el('div','supply-recipes');grid.style.setProperty('--supply-cols',data.cols);
-   for(const r of data.items){const card=el('article','supply-recipe');card.append(el('small','supply-kicker',kindNames[r.kind]+' · BASIC +0'),el('h2','',r.name));const requirements=el('ul');let enough=true;
-    for(const [sku,n]of Object.entries(r.ingredients)){const stock=resource(sku),ok=(stock?.quantity||0)>=n;enough&&=ok;const li=el('li',ok?'':'supply-missing',(stock?.name||sku)+' · '+num(stock?.quantity)+' / '+n);requirements.append(li);}
-    const craft=button(enough?'Üret':'Malzeme eksik',()=>act('craft',r.sku),'supply-primary');craft.dataset.craft=r.sku;craft.disabled=disabled()||!enough;card.append(requirements,craft);grid.append(card);}content.append(grid);const foot=el('div','supply-list-footer supply-craft-footer');foot.append(label,pager(data.pages));content.append(foot);
+   const recipes=state.recipes.filter(r=>filter==='all'||r.kind===filter),layout=el('div','supply-workshop'),catalog=el('div','supply-catalog'),bar=el('div','supply-catalog-bar'),label=el('label','supply-filter','Ekipman'),select=el('select');select.id='supplyCraftFilter';for(const [v,n]of [['all','Tüm ekipmanlar'],...Object.entries(kindNames)]){const option=el('option','',n);option.value=v;select.append(option);}select.value=filter;select.onchange=()=>{filter=select.value;render()};label.append(select);bar.append(label,el('small','',recipes.length+' tasarım · Basic +0'));catalog.append(bar);
+   if(!recipes.some(r=>r.sku===craftSelection))craftSelection=recipes[0]?.sku||null;
+   const grid=el('div','supply-recipes');grid.style.setProperty('--supply-rows',Math.max(1,Math.ceil(recipes.length/5)));
+   for(const r of recipes){const card=button('',()=>{craftSelection=r.sku;render();document.getElementById('supplyRecipe-'+r.sku)?.focus({preventScroll:true});},'supply-recipe');card.id='supplyRecipe-'+r.sku;card.dataset.recipe=r.sku;card.setAttribute('aria-pressed',String(craftSelection===r.sku));card.setAttribute('aria-label',r.name+' · Malzemeleri incele');card.append(equipmentArt(r,'supply-equipment-art'),el('span','supply-recipe-name',r.name));if(canCraft(r)){const ready=el('span','supply-craft-ready','✓');ready.title='Malzemeler hazır';card.append(ready);}grid.append(card);}catalog.append(grid);
+   const selectedRecipe=recipes.find(r=>r.sku===craftSelection),detail=el('aside','supply-craft-detail');detail.setAttribute('aria-label','Seçili ekipmanın üretim bilgileri');
+   if(selectedRecipe){const r=selectedRecipe,top=el('div','supply-craft-heading'),name=el('div');name.append(el('small','supply-kicker',kindNames[r.kind]+' · BASIC +0'),el('h2','',r.name));top.append(equipmentArt(r,'supply-detail-art'),name);detail.append(top,el('p','supply-ingredients-title','GEREKLİ MALZEMELER'));
+    const requirements=el('ul','supply-ingredients');for(const [sku,n]of Object.entries(r.ingredients)){const stock=resource(sku),ok=(stock?.quantity||0)>=n,li=el('li',ok?'':'supply-missing'),quantity=el('span','supply-ingredient-count');quantity.append(el('b','',num(stock?.quantity)),document.createTextNode(' / '+n));li.append(resourceArt(sku,''),el('span','',stock?.name||sku),quantity);requirements.append(li);}
+    const enough=canCraft(r),craft=button(enough?'Üret':'Malzeme eksik',()=>act('craft',r.sku),'supply-primary');craft.dataset.craft=r.sku;craft.disabled=disabled()||!enough;detail.append(requirements,el('small','supply-craft-hint','Stok / Gereken · Üretilen eşya envantere eklenir.'),craft);
+   }else detail.append(el('p','supply-note','Bu türde üretim seçeneği bulunmuyor.'));
+   layout.append(catalog,detail);content.append(layout);
   }
   async function open(view){if(opened||ctx.blocked?.()||!ctx.inRoom?.())return;if(view==='stock'){tab='stock';page=0;}opened=true;lastFocus=document.activeElement;modal.hidden=false;ctx.onOpen?.();closeButton.focus();render();await refresh();}
   function close(){if(!opened)return;closeArt();opened=false;ctx.onChestOpen?.(false);modal.hidden=true;ctx.onClose?.();if(lastFocus?.isConnected&&!lastFocus.hidden)lastFocus.focus();}

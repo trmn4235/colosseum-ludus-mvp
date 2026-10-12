@@ -18,3 +18,11 @@ body[data-roman-screen="savas"] #modePage .modes[data-arena-panel="multi"]{grid-
 body[data-roman-screen="savas"]{grid-template-rows:48px minmax(0,1fr)!important}
 /* Naval artwork stays fully visible, including both sides' sails and crews. */
 .clan-card img[src*="clan-water-"]{object-fit:contain;background:radial-gradient(ellipse at center,#7b3c30,#3b1019)}
+
+/* V89: team counts are written as teams and members, never multiplication. */
+.clan-card figcaption{padding:9px 5px 8px;background:linear-gradient(#651d2b,#390d17);line-height:1.15}
+.clan-card small{font:clamp(8px,1.6dvh,12px) Georgia,serif;letter-spacing:1.4px;color:#d2b982}
+.clan-card strong{font:700 clamp(18px,4.8dvh,35px)/1.15 Georgia,serif;letter-spacing:1px;margin:3px 0}
+.clan-team-detail{display:block;font:clamp(9px,2dvh,14px)/1.35 Arial,Helvetica,sans-serif;color:#f2e4c6;white-space:nowrap}
+.clan-team-detail b{font-weight:700;color:#ffe1a0}.clan-total{display:block;font:clamp(8px,1.6dvh,11px)/1.2 Arial,Helvetica,sans-serif;color:#bfab8f;margin-top:5px}
+@media(max-height:420px){.clan-card figcaption{padding:5px 3px}.clan-card strong{font-size:20px;margin:2px 0}.clan-card small{font-size:8px;letter-spacing:1px}.clan-team-detail{font-size:10px}.clan-total{font-size:8px;margin-top:3px}}
