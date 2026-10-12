@@ -2,6 +2,12 @@
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 
+## Genel performans V84
+
+414 dosyanın envanteri çıkarıldı. Ortak Three.js/Supabase kütüphaneleri ve tekrar eden UI görselleri ayrı cache'lenebilir kaynaklar oldu; toplam HTML kaynağı 9,23 → 2,04 MB. Karakter matematik nesneleri yeniden kullanılıyor, ekipman/gölge taramaları ve değişmeyen DOM yazmaları azaltılıyor, kamera dışındaki karakterler çizimden çıkarılıyor. Gizli sekmeler ve önizlemeler sınırlandı; önizleme kaynakları kapanışta temizleniyor. Aynı sayfadaki standart Supabase istemcileri ve eşzamanlı kullanıcı sorguları birleştiriliyor.
+
+[Ayrıntılı inceleme, ham sonuçlar ve tekrar üretme komutları](docs/performance-v84/README.md). Dört 3D sayfasındaki örnek kemik matrisleri ve mevcut model/görsel baytları aynı. CPU ölçümleri karışık; fiziksel telefon FPS/GPU ölçümü yapılmadı. Survival'ın sonu 0 olan aşamalarda `stage/10`, diğerlerinde 1 rakip kuralı korunuyor. SQL değişikliği gerekmiyor.
+
 ## Mobile loading
 
 The anonymous login screen does not request GLBs. In the measured two-fighter Ludus fixture, cold uncompressed source payload falls from 87.40 MiB to 49.85 MiB (43.0%). The arena GLB waits for arena navigation; desk, wardrobe, books and clan chest load on room entry. Four renderer pages share byte-identical, content-addressed equipment/PBR resources, and Ludus reuses the existing persistent cache for the large owner model. The two office books share geometry/materials with independent transforms.

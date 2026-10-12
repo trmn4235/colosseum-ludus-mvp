@@ -57,7 +57,7 @@ def audit(file):
         image_rows.append({'name':image.get('name',''), 'width':w, 'height':h, 'encodedBytes':len(content), 'rgbaWithMipmapsEstimateBytes':round(w*h*4*4/3), 'sha256':hashlib.sha256(content).hexdigest()})
     return {'file':str(file.relative_to(ROOT)), 'bytes':len(data), 'uniquePrimitiveVertices':vertices, 'uniquePrimitiveTriangles':triangles, 'primitives':primitives, 'meshNodes':sum('mesh' in n for n in doc.get('nodes', [])), 'morphTargetCountAcrossPrimitives':morph_targets, 'accessorUncompressedBytes':sum(a['count']*COMPONENT_BYTES[a['componentType']]*TYPE_SIZE[a['type']] for a in accessors), 'embeddedImageBytes':sum(i.get('encodedBytes',0) for i in image_rows), 'rgbaWithMipmapsEstimateBytes':sum(i.get('rgbaWithMipmapsEstimateBytes',0) for i in image_rows), 'images':image_rows, 'extensionsRequired':doc.get('extensionsRequired', []), 'extensionsUsed':doc.get('extensionsUsed', [])}
 
-assets = [audit(f) for f in sorted(ROOT.glob('*.glb'))] + [audit(f) for f in sorted((ROOT/'assets/equipment').glob('*.glb'))]
+assets = [audit(f) for f in sorted(ROOT.rglob('*.glb'))]
 duplicates = {}
 for asset in assets:
     for image in asset['images']:

@@ -4,14 +4,14 @@
  function inject(text){const s=document.createElement('script');let fault;const capture=e=>{fault=e.error||Error(e.message);};root.addEventListener('error',capture);s.textContent=text;document.head.append(s);s.remove();root.removeEventListener('error',capture);if(fault)throw fault;}
  function script(url){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=url;s.onload=resolve;s.onerror=()=>reject(Error('Dosya yüklenemedi: '+url));document.head.append(s);});}
  async function boot(){
-  const response=await fetch('ludus.html?v=revision51');if(!response.ok)throw Error('Avlu dosyası alınamadı.');const html=await response.text(),doc=new DOMParser().parseFromString(html,'text/html'),scripts=[...doc.scripts];
-  const lib=scripts.find(s=>s.textContent.includes('Copyright © 2010-2023 three.js authors'))?.textContent;
+  const response=await fetch('ludus.html?v=revision84');if(!response.ok)throw Error('Avlu dosyası alınamadı.');const html=await response.text(),doc=new DOMParser().parseFromString(html,'text/html'),scripts=[...doc.scripts];
+  const lib=scripts.find(s=>s.textContent.includes('Copyright © 2010-2023 three.js authors'))?.textContent,libNode=scripts.find(s=>(s.getAttribute('src')||'').split('?')[0]==='owner-three-r160.js');
   const source=scripts.find(s=>s.textContent.includes('var ImportedGladiator='))?.textContent;
   const marker="(function(){\n'use strict';const T=THREE,$=id=>document.getElementById(id),canvas=$('scene');let renderer;";
   const start=source?.indexOf('var ARENA_ASSET_BASE='),sceneStart=source?.indexOf(marker),end=source?.indexOf('const player={x:0,z:7',sceneStart);
-  if(!lib||start<0||sceneStart<start||end<sceneStart)throw Error('Avlu sürümü bu denemeyle uyumlu değil.');
-  inject(lib);inject(scripts.find(s=>s.textContent.includes('var LudusClanEmblems='))?.textContent||'');
-  await script('training-motion-v50.js?v=50');await script('arena-fall-motion-v39.js?v=revision39');await script('arena-ground-fall-v39.js?v=revision41');await script('ludus-city-v29.js?v=revision39');
+  if((!lib&&!libNode)||start<0||sceneStart<start||end<sceneStart)throw Error('Avlu sürümü bu denemeyle uyumlu değil.');
+  if(lib)inject(lib);else await script(libNode.getAttribute('src'));inject(scripts.find(s=>s.textContent.includes('var LudusClanEmblems='))?.textContent||'');
+  await script('training-motion-v50.js?v=50');await script('arena-fall-motion-v39.js?v=revision39');await script('arena-ground-fall-v39.js?v=revision84');await script('ludus-city-v29.js?v=revision39');
   let core=source.slice(start,sceneStart);
   // The existing rig's hand solver also plants the wooden practice blade in guard.
   const guardPoint='m.trail.material.opacity=strike?.active?.2:0;';

@@ -1,0 +1,124 @@
+{
+  "vendors": {
+    "assets/runtime/supabase-59d39487c358.js": {
+      "sha256": "59d39487c3589843b410322d8a3d562ce022aba1e5ccb16898ef3fb2a0da2ecd",
+      "bytes": 217945,
+      "pages": [
+        "multiplayer.html",
+        "gorevler.html",
+        "ludus.html",
+        "pazar.html",
+        "gelistirmeler.html",
+        "index.html",
+        "savas.html",
+        "arena.html",
+        "klan.html",
+        "ludus-seviye.html"
+      ]
+    },
+    "owner-three-r160.js": {
+      "sha256": "a894033d333aef8fa0150156cc209e20c90eed4d2f429fb6539d81eb4665bf24",
+      "bytes": 811253,
+      "pages": [
+        "multiplayer.html",
+        "ludus.html",
+        "savas.html",
+        "arena.html"
+      ]
+    }
+  },
+  "images": {
+    "assets/textures/shared-ui-91a94259c0b5.webp": {
+      "sha256": "91a94259c0b58657f86639cd5b14fa412546ce71e898533afa1e9af20ddc1559",
+      "bytes": 242594,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "multiplayer.html",
+        "pazar.html",
+        "savas.html"
+      ],
+      "occurrences": 5
+    },
+    "assets/textures/shared-ui-3e9fab30d191.webp": {
+      "sha256": "3e9fab30d191d929aa53f45427a206b410cb5f0c8d087aefe9ead35671e64854",
+      "bytes": 7362,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 5
+    },
+    "assets/textures/shared-ui-a65625344d40.webp": {
+      "sha256": "a65625344d408f264b2cebcdc29c9f900beb525b2f688bdeb1132d02b341d5bc",
+      "bytes": 10034,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 5
+    },
+    "assets/textures/shared-ui-6f464bdefb69.webp": {
+      "sha256": "6f464bdefb69ec7da787920000427179ea6e591a3675562cd9495f06295325cc",
+      "bytes": 11526,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 5
+    },
+    "assets/textures/shared-ui-12c0d9fa4cf2.webp": {
+      "sha256": "12c0d9fa4cf2fca98fdaf4c2119bcbe0654f221d5cd2211c6c150a162ce1f661",
+      "bytes": 8406,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 5
+    },
+    "assets/textures/shared-ui-89bcf1e90f16.webp": {
+      "sha256": "89bcf1e90f1603641809aacc8412c105c2c337192e9233e2b881d7a5985aa122",
+      "bytes": 9054,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 3
+    },
+    "assets/textures/shared-ui-730d42485f3a.webp": {
+      "sha256": "730d42485f3a3246b7800d290f97f15ada246f2c2a9851f5b5d315dc5e2e27c3",
+      "bytes": 10270,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 3
+    },
+    "assets/textures/shared-ui-265d36601366.webp": {
+      "sha256": "265d366013669e1d07334d94fe4949ddc60b262fef29928cbef603ebb254af43",
+      "bytes": 7044,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 3
+    },
+    "assets/textures/shared-ui-3c831205a71f.webp": {
+      "sha256": "3c831205a71f385aaed20ad4150c23f5d4ad647c2011d6e8aeb6858cae8dd651",
+      "bytes": 6488,
+      "pages": [
+        "gelistirmeler.html",
+        "klan.html",
+        "pazar.html"
+      ],
+      "occurrences": 3
+    }
+  }
+}

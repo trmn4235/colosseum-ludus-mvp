@@ -57,7 +57,7 @@ return {load,prepare};
 
 (()=>{
  'use strict';
- const $=id=>document.getElementById(id),client=supabase.createClient(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey);
+ const $=id=>document.getElementById(id),client=(globalThis.LudusClient?.create||supabase.createClient)(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey);
  const icons={
  target:'<circle cx="12" cy="12" r="6"/><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/>',
  hand:'<path d="M4 9a8 8 0 0 1 14-3l2 3M20 3v6h-6M20 15a8 8 0 0 1-14 3l-2-3M4 21v-6h6"/>',
@@ -146,7 +146,7 @@ return {load,prepare};
   if(!r){if(!selection?.gladiator)throw Error('Önce gladyatörünü seç.');r=await rpc({p_action:'join',p_gladiator:selection.gladiator,p_slots:selection.slots||{}});}if(r.error)throw r.error;sessionStorage.setItem('ludus-match-room',r.data.id);showState(r.data);pending=false;step();}
   catch(e){message(e.message||'Maç başlatılamadı.');$('queueMessage').textContent=e.message||'Bağlantı kurulamadı.';$('mpRetry').hidden=false;}finally{pending=false;}
  }
- function travelBack(){if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision76';}
+ function travelBack(){if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision84';}
  async function leave(){if($('mpBack').disabled)return;stopped=true;$('mpBack').disabled=$('queueCancel').disabled=true;try{while(pending)await new Promise(r=>setTimeout(r,20));if(room&&room.status!=='finished'){const r=await rpc({p_action:'leave',p_room:room.id});if(r.error)throw r.error;}sessionStorage.removeItem('ludus-match-room');travelBack();}catch(e){message('Çıkış kaydedilemedi. Tekrar dene.');$('mpBack').disabled=$('queueCancel').disabled=false;stopped=false;step();}}
  $('mpBack').onclick=$('queueCancel').onclick=leave;$('mpRetry').onclick=()=>{$('mpRetry').hidden=true;join();};$('resultBack').onclick=travelBack;
  const stick=$('duelStick');let pointer=null;
@@ -176,7 +176,7 @@ return {load,prepare};
  function clear(){keys.clear();blockPointers.clear();resetStick();attackGesture=null;$('duelRegionHint').hidden=true;attacks=0;attackId=null;dodge=false;dodgeId=null;special=false;specialId=null;specialHand=null;specialTarget=null;setBlock(false);}
  window.addEventListener('blur',clear);document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();});
  $('duelControls').addEventListener('contextmenu',e=>e.preventDefault());
- function frame(t){requestAnimationFrame(frame);const dt=Math.min(.05,(t-last)/1000);last=t;updateLobby();if(!renderer)return;const c=$('duelCanvas'),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*renderer.getPixelRatio())||c.height!==Math.round(h*renderer.getPixelRatio())){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+ function frame(t){requestAnimationFrame(frame);const dt=Math.min(.05,(t-last)/1000);last=t;if(document.hidden)return;updateLobby();if(!renderer)return;const c=$('duelCanvas'),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*renderer.getPixelRatio())||c.height!==Math.round(h*renderer.getPixelRatio())){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
   if(room?.status!=='waiting'&&states.size){for(const p of room.players){const f=states.get(p.owner),m=models.get(p.owner);if(!f||!m)continue;if((p.gear_serial||0)!==f._gearSerial){LudusLoadout.apply(f,p.gladiator,p.items);f._gearSerial=p.gear_serial||0;}f.x+=(p.x-f.x)*(1-Math.exp(-dt*16));f.z+=(p.z-f.z)*(1-Math.exp(-dt*16));f.angle+=Math.atan2(Math.sin(p.angle-f.angle),Math.cos(p.angle-f.angle))*(1-Math.exp(-dt*16));f.hp=p.hp;f.maxHp=p.maxHp??100;f.maxStamina=p.maxStamina??100;f.stamina=p.stamina??100;f.move=p.move||0;f.walk=(f.walk||0)+dt*f.move*7;f.blocking=p.block;f.reaction=Math.max(0,(f.reaction||0)-dt);f.passiveEvade=Math.max(0,(f.passiveEvade||0)-dt);f.guardFlash=Math.max(0,(f.guardFlash||0)-dt);if(f.hp<f._hp){f.reaction=.32;f.lastRegion=p.hit_region||'chest';}f._hp=f.hp;
    const serverTime=Date.now()+clockOffset;
    if(p.serial!==f._serial){f._serial=p.serial;f.action='attack';f.timer=0;f.attackRegion=p.strike_region||'chest';f.attackWeapon=p.strike_weapon||f.weapon;f.attackLeft=p.strike_hand==='off_hand';f.chain=1+(Math.max(1,p.serial)-1)%3;f.recoilSample=null;
@@ -203,7 +203,7 @@ return {load,prepare};
    for(const[key,mesh]of projectileViews)if(!liveShots.has(key)){scene.remove(mesh);projectileViews.delete(key);}
    const p=me(),f=states.get(owner),r=target();$('duelAttack').classList.toggle('counter-ready',room.combat_version===23&&Date.parse(p?.counter_until)>Date.now()+clockOffset&&p?.counter_target===r?.owner);if(f){const dx=(r?.x??0)-f.x,dz=(r?.z??-1)-f.z,len=Math.max(.01,Math.hypot(dx,dz)),goal=new THREE.Vector3(f.x-dx/len*4.2,3.1,f.z-dz/len*4.2);camera.position.lerp(goal,1-Math.exp(-dt*7));camera.lookAt(f.x+dx*.2,1.1,f.z+dz*.2);}
    for(const p of room.players){let line=whipLines.get(p.owner);const victim=room.players.find(x=>x.owner===p.pull_target&&x.pull_from===p.owner);if(!victim){if(line)line.visible=false;continue;}if(!line){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3));line=new THREE.Line(g,new THREE.LineBasicMaterial({color:0x503521}));line.frustumCulled=false;whipLines.set(p.owner,line);scene.add(line);}line.visible=true;const a=states.get(p.owner),b=states.get(victim.owner);if(a&&b){line.geometry.attributes.position.array.set([a.x,1.15,a.z,b.x,.35,b.z]);line.geometry.attributes.position.needsUpdate=true;}}
-  }else{camera.position.set(0,4.5,9);camera.lookAt(0,0,0);}renderer.render(scene,camera);
+  }else{camera.position.set(0,4.5,9);camera.lookAt(0,0,0);}if(typeof GamePerformance!=='undefined'){GamePerformance.beginVisibility(camera);for(const [who,m]of models)GamePerformance.characterVisibility(m,who===owner);}renderer.render(scene,camera);
  }
  async function boot(){try{await prepare();if(!stopped)await join();}catch(e){message('Arena yüklenemedi. '+e.message);$('queueMessage').textContent='Arena yüklenemedi. Bağlantını kontrol edip tekrar dene.';$('mpRetry').hidden=false;}}
  $('mpRetry').onclick=()=>{$('mpRetry').hidden=true;stopped=false;boot();};

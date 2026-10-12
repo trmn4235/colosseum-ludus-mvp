@@ -9,7 +9,7 @@ var LudusViewSettings=(()=>{
   dialog.innerHTML='<form method="dialog"><header><h2 id="ludusSettingsTitle">Ayarlar</h2><button aria-label="Ayarları kapat" value="close">✕</button></header><label for="cameraPreset">Kamera uzaklığı</label><select id="cameraPreset">'+Object.entries(presets).map(([id,p])=>'<option value="'+id+'">'+p.label+'</option>').join('')+'</select><label for="combatControlPreset">Dövüş kontrol düzeni</label><select id="combatControlPreset"></select><p>Klasik: saldırıyı kaydır, savunmayı basılı tut. Bölgesel: modu seç, vücut bölgesine dokun.</p><p>Kamera duvarlara yaklaşınca otomatik olarak öne gelir.</p><button type="button" id="viewModeToggle">Genel görünüme geç</button><div class="settings-actions"><button type="button" id="accountSettings">Hesap ayarları</button><button value="close">Oyuna dön</button></div></form>';
   document.body.append(dialog);CombatControlSettings.bind(dialog.querySelector('#combatControlPreset'));const select=dialog.querySelector('#cameraPreset');select.value=load();
   select.onchange=()=>{try{localStorage.setItem(key,select.value);}catch{}onChange(presets[select.value]);};
-  dialog.querySelector('#accountSettings').onclick=()=>{location.href=new URL('index.html?v=revision44',location.href).href;};
+  dialog.querySelector('#accountSettings').onclick=()=>{location.href=new URL('index.html?v=revision84',location.href).href;};
   const viewToggle=dialog.querySelector('#viewModeToggle');viewToggle.hidden=!onViewToggle;viewToggle.onclick=()=>{dialog.close();finish();onViewToggle?.();};
   let active=false;const finish=()=>{if(active){active=false;onClose();}};
   dialog.querySelector('form').addEventListener('submit',finish);dialog.addEventListener('close',finish);dialog.addEventListener('cancel',finish);

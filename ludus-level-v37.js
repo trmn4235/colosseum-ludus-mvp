@@ -14,7 +14,7 @@ var LudusLevels = (() => {
  function badge(state){return 'Sv. '+state.level+' · '+number(state.current_exp)+' / '+number(state.next_exp)+' EXP';}
  async function mount(){
   const $=id=>document.getElementById(id);if(!$('levelPaper'))return;
-  const client=supabase.createClient('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
+  const client=(globalThis.LudusClient?.create||supabase.createClient)('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
   let owner=null,state=null,busy=false,pending=null,page=0,loaded=false;
   const prefix='ludus-level-pending-v37:';
   const message=text=>{$('levelMessage').textContent=text||'';if(state)render();};

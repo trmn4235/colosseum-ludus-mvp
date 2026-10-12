@@ -1,5 +1,5 @@
 (()=>{
- const $=id=>document.getElementById(id),client=supabase.createClient(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey),storageKey='ludus-pending-purchase-v2';
+ const $=id=>document.getElementById(id),client=(globalThis.LudusClient?.create||supabase.createClient)(ARENA_SUPABASE_CONFIG.url,ARENA_SUPABASE_CONFIG.publishableKey),storageKey='ludus-pending-purchase-v2';
  const categories=['Silahlar','Kalkanlar','Miğferler','Göğüs Zırhı','Omuzluk','Bacaklık','Gıda'];
  let catalog=[],category=categories[0],owner=null,busy=true,pending=null,coins=0,productPage=0,foodState=null; 
  globalThis.LudusNavigation?.register(()=>({category,productPage}));

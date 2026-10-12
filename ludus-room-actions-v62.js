@@ -7,7 +7,7 @@ var LudusRoomActions=(()=>{
  function place(button,point,ctx,visible,maxDistance=3.5){
   button.hidden=!visible||ctx.blocked()||Math.hypot(ctx.player.x-point.x,ctx.player.z-point.z)>maxDistance;
   if(button.hidden)return;
-  const p=point.clone().project(ctx.camera),r=ctx.canvas.getBoundingClientRect();
+  const p=point.clone().project(ctx.camera),r=(typeof GamePerformance!=='undefined'?GamePerformance.rect(ctx.canvas):ctx.canvas.getBoundingClientRect());
   button.hidden=p.z< -1||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;
   if(!button.hidden){button.style.left=Math.max(24,Math.min(innerWidth-24,r.left+(p.x+1)*r.width/2))+'px';button.style.top=Math.max(26,Math.min(innerHeight-26,r.top+(1-p.y)*r.height/2))+'px';}
  }

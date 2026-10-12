@@ -1,0 +1,5099 @@
+{
+  "baselineCommit": "7de1ba4289b9f942d583120ae8b0c07f3c5342b1",
+  "scope": "All files tracked by the baseline; added V84 files are listed in the commit diff.",
+  "trackedFiles": 414,
+  "extensions": {
+    ".cjs": 75,
+    ".css": 22,
+    ".glb": 29,
+    ".html": 14,
+    ".jpeg": 1,
+    ".jpg": 5,
+    ".js": 39,
+    ".json": 9,
+    ".md": 27,
+    ".png": 43,
+    ".py": 4,
+    ".sql": 34,
+    ".svg": 14,
+    ".txt": 2,
+    ".webmanifest": 1,
+    ".webp": 94,
+    ".zip": 1
+  },
+  "areas": {
+    "asset": 161,
+    "configuration": 4,
+    "database": 28,
+    "documentation": 61,
+    "page": 14,
+    "runtime": 39,
+    "style": 22,
+    "verification": 85
+  },
+  "files": [
+    {
+      "file": "ANIMATION_ASSETS.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2722,
+      "afterBytes": 2722,
+      "unchanged": true,
+      "beforeSha256": "83edd3296fe0204ad97ae056d4bd4e437a4331136f25b11603b76d01cf6e9d0c",
+      "afterSha256": "83edd3296fe0204ad97ae056d4bd4e437a4331136f25b11603b76d01cf6e9d0c"
+    },
+    {
+      "file": "CITY_ASSETS.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 5133,
+      "afterBytes": 5133,
+      "unchanged": true,
+      "beforeSha256": "41bb26e76abf8723f457fe619b4756a043357e7a5800b4dd01e85bffaec65469",
+      "afterSha256": "41bb26e76abf8723f457fe619b4756a043357e7a5800b4dd01e85bffaec65469"
+    },
+    {
+      "file": "CLAN_VAULT_ASSETS.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 913,
+      "afterBytes": 913,
+      "unchanged": true,
+      "beforeSha256": "201e3158320447deb47fe5ab37eeda6356331af5c9db973c05e38daf491bbde6",
+      "afterSha256": "201e3158320447deb47fe5ab37eeda6356331af5c9db973c05e38daf491bbde6"
+    },
+    {
+      "file": "COLOSSEUM_ARENA_01.zip",
+      "area": "asset",
+      "extension": ".zip",
+      "beforeBytes": 187224,
+      "afterBytes": 187224,
+      "unchanged": true,
+      "beforeSha256": "673af015355d44fd690554b9a9b41c4caab1a3400f709bdcf021b3080356b0dc",
+      "afterSha256": "673af015355d44fd690554b9a9b41c4caab1a3400f709bdcf021b3080356b0dc"
+    },
+    {
+      "file": "Colosseum.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 15825436,
+      "afterBytes": 15825436,
+      "unchanged": true,
+      "beforeSha256": "f6eaebdc6f354dc36f9794e1e1ec383b06d514d7764801f6a5df3d086fa7a804",
+      "afterSha256": "f6eaebdc6f354dc36f9794e1e1ec383b06d514d7764801f6a5df3d086fa7a804"
+    },
+    {
+      "file": "DINING_ASSETS.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2786,
+      "afterBytes": 2786,
+      "unchanged": true,
+      "beforeSha256": "88b8e63d5a9774912a9a0512eb1bbe5dd99af8ecdf9de12c16daf0460dabce4a",
+      "afterSha256": "88b8e63d5a9774912a9a0512eb1bbe5dd99af8ecdf9de12c16daf0460dabce4a"
+    },
+    {
+      "file": "IMPERIAL_ASSETS.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 3055,
+      "afterBytes": 3055,
+      "unchanged": true,
+      "beforeSha256": "d5cb07bf737fa69a8126a2bbdb9b520a096a78060b40db6d33d8291e22c29a7e",
+      "afterSha256": "d5cb07bf737fa69a8126a2bbdb9b520a096a78060b40db6d33d8291e22c29a7e"
+    },
+    {
+      "file": "OWNER_ASSETS.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 3911,
+      "afterBytes": 3911,
+      "unchanged": true,
+      "beforeSha256": "fbcd7b5053153b44e92a40fe3eacd6f0ebe0aafb5f457de4a4888762414c8f64",
+      "afterSha256": "fbcd7b5053153b44e92a40fe3eacd6f0ebe0aafb5f457de4a4888762414c8f64"
+    },
+    {
+      "file": "README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 27159,
+      "afterBytes": 28142,
+      "unchanged": false,
+      "beforeSha256": "e14d62a4eb72478081504c29853f50e56b3b2e4ea2bca145b06157b96d0ab440",
+      "afterSha256": "77fce88c3a50131664d6a3bfb71720feb8c507aed3d272efa8416f64e2778ca0"
+    },
+    {
+      "file": "app-icon.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 30764,
+      "afterBytes": 30764,
+      "unchanged": true,
+      "beforeSha256": "a9ff7dedccf061494ecb3bb7f68fdb245af14f9bd89942ddfcf66649073d8369",
+      "afterSha256": "a9ff7dedccf061494ecb3bb7f68fdb245af14f9bd89942ddfcf66649073d8369",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "arena-art-v69.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 4398,
+      "afterBytes": 4398,
+      "unchanged": true,
+      "beforeSha256": "40c5f6d3d1989d20f34c176fb1c97ee3a40d8d8302e95d15c1c8b83c82a861f3",
+      "afterSha256": "40c5f6d3d1989d20f34c176fb1c97ee3a40d8d8302e95d15c1c8b83c82a861f3",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-colosseum.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2750256,
+      "afterBytes": 2750256,
+      "unchanged": true,
+      "beforeSha256": "2b3ccf838767c105e6773492e4d455af9b6b571ce883340fcfa956f1029336da",
+      "afterSha256": "2b3ccf838767c105e6773492e4d455af9b6b571ce883340fcfa956f1029336da",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "arena-controls-v43.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 4800,
+      "afterBytes": 4800,
+      "unchanged": true,
+      "beforeSha256": "945a36107a8233881c3930bd9d79523d088d4bffffac23b3b46b089961b58bea",
+      "afterSha256": "945a36107a8233881c3930bd9d79523d088d4bffffac23b3b46b089961b58bea",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-controls-v43.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 4895,
+      "afterBytes": 4895,
+      "unchanged": true,
+      "beforeSha256": "5e4b8c416807b1f9e62a3554be3430c03d833ea5370a6cfa3fe812c76abe8e0a",
+      "afterSha256": "5e4b8c416807b1f9e62a3554be3430c03d833ea5370a6cfa3fe812c76abe8e0a",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-entrance-v70.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 1369,
+      "afterBytes": 1369,
+      "unchanged": true,
+      "beforeSha256": "fbdc4447b43a1347a863377b7071f9a616afb49656574b984345642859a59c61",
+      "afterSha256": "fbdc4447b43a1347a863377b7071f9a616afb49656574b984345642859a59c61",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-fall-motion-v39.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 82411,
+      "afterBytes": 82411,
+      "unchanged": true,
+      "beforeSha256": "e550b6af2dab77c92c58da2e5099f53c8a0f79d71ca0017e10abf576fc9f2776",
+      "afterSha256": "e550b6af2dab77c92c58da2e5099f53c8a0f79d71ca0017e10abf576fc9f2776",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-ground-fall-v39.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 7311,
+      "afterBytes": 7286,
+      "unchanged": false,
+      "beforeSha256": "2a0943b53d4caf4057d604990c0f160ae963852727dd4b0ef556f8d07c3fffbf",
+      "afterSha256": "cb6dbf885107cc665fcb98f2f4cb81f5426ed639d994894f3066202372b60633",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-locomotion-data-v81.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 41308,
+      "afterBytes": 41308,
+      "unchanged": true,
+      "beforeSha256": "3098aba54a87d846a85de27345ebf0a20ac41320364cfe2683d4afb544df43fc",
+      "afterSha256": "3098aba54a87d846a85de27345ebf0a20ac41320364cfe2683d4afb544df43fc",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-locomotion-v81.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 2645,
+      "afterBytes": 2645,
+      "unchanged": true,
+      "beforeSha256": "6b4fb9e2d6787521aa2e5d04a81ad3ecfd73151d428e0d3f12fae760b5d666c0",
+      "afterSha256": "6b4fb9e2d6787521aa2e5d04a81ad3ecfd73151d428e0d3f12fae760b5d666c0",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-render-profile-v78.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 497,
+      "afterBytes": 497,
+      "unchanged": true,
+      "beforeSha256": "03088b9696a000db8e8c80c9a64c31dd6cba72aa4ccf4f076d1ecb6c5b5ab858",
+      "afterSha256": "03088b9696a000db8e8c80c9a64c31dd6cba72aa4ccf4f076d1ecb6c5b5ab858",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-results-v78.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 6156,
+      "afterBytes": 6156,
+      "unchanged": true,
+      "beforeSha256": "6211dbdfd05037443a24879c59ec4bedf375ea579a6ccf74ef76bbfea98cffac",
+      "afterSha256": "6211dbdfd05037443a24879c59ec4bedf375ea579a6ccf74ef76bbfea98cffac",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-results-v78.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 3963,
+      "afterBytes": 3963,
+      "unchanged": true,
+      "beforeSha256": "1aa9fe0b224cc002ef85a4647c629f109c0da1d6290942cf4da39486c028c111",
+      "afterSha256": "1aa9fe0b224cc002ef85a4647c629f109c0da1d6290942cf4da39486c028c111",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-results-v83.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 4237,
+      "afterBytes": 4237,
+      "unchanged": true,
+      "beforeSha256": "1f35930c6f33fb700c84e3a089cc2d14dac68823bb451051bba1e939ed172ef1",
+      "afterSha256": "1f35930c6f33fb700c84e3a089cc2d14dac68823bb451051bba1e939ed172ef1",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-roll-motion-v72.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 51070,
+      "afterBytes": 51070,
+      "unchanged": true,
+      "beforeSha256": "59e2828f206fe41a5c66a4730c8ba388f2a1562fc6f4a398e2e182a97eaebcac",
+      "afterSha256": "59e2828f206fe41a5c66a4730c8ba388f2a1562fc6f4a398e2e182a97eaebcac",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-roll-v72.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 3933,
+      "afterBytes": 4133,
+      "unchanged": false,
+      "beforeSha256": "c02e061c2f2df71b495ca6c16f6b80ecc077294f242e0ce2ebfeccb6cd9d62c0",
+      "afterSha256": "298cd5d8111703b1f54d09973fca040c9258cc7ac61092ab84d28cb47248baa6",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-tabs-v81.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 2650,
+      "afterBytes": 2650,
+      "unchanged": true,
+      "beforeSha256": "b691b31337153abb6a64d63f44aff6fc29043099c4d3839385c7ac497c68f242",
+      "afterSha256": "b691b31337153abb6a64d63f44aff6fc29043099c4d3839385c7ac497c68f242",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-tabs-v81.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 1127,
+      "afterBytes": 1127,
+      "unchanged": true,
+      "beforeSha256": "65bbf99bcb8660349e1e18c98673c89efe972ce341f610d44e916fa0d3e61f79",
+      "afterSha256": "65bbf99bcb8660349e1e18c98673c89efe972ce341f610d44e916fa0d3e61f79",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-tabs-v82.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 2847,
+      "afterBytes": 2847,
+      "unchanged": true,
+      "beforeSha256": "97c97ed21188af6cd1cec94a1e5f85766755075c8cdf9e5987bef3b3f165746c",
+      "afterSha256": "97c97ed21188af6cd1cec94a1e5f85766755075c8cdf9e5987bef3b3f165746c",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena-title-v71.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 2042,
+      "afterBytes": 2042,
+      "unchanged": true,
+      "beforeSha256": "d4d2b7b1c14839d0703c99fb276c6a602901411b6dd6f74272ae6264a7567c8a",
+      "afterSha256": "d4d2b7b1c14839d0703c99fb276c6a602901411b6dd6f74272ae6264a7567c8a",
+      "sourceSignals": {}
+    },
+    {
+      "file": "arena.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 1490164,
+      "afterBytes": 463897,
+      "unchanged": false,
+      "beforeSha256": "32cd6ac56d83d06b894a5fe263dbb39f52df3e779851a5ed8f7e5ddea1d634f8",
+      "afterSha256": "976ce76f43ab6d3e56e51735e02d0a4b8fa9adc56556152802158072932d6036",
+      "sourceSignals": {
+        "animationFrames": 2,
+        "intervals": 1,
+        "layoutReads": 1,
+        "clientCreation": 3,
+        "userChecks": 3,
+        "modelLoads": 11,
+        "sceneTraversals": 17
+      }
+    },
+    {
+      "file": "asset-credits-v21.txt",
+      "area": "documentation",
+      "extension": ".txt",
+      "beforeBytes": 238,
+      "afterBytes": 238,
+      "unchanged": true,
+      "beforeSha256": "b38e41ffcd2f57fde091171fe0fce49e9978b4acb692728d581c66e578c0fe31",
+      "afterSha256": "b38e41ffcd2f57fde091171fe0fce49e9978b4acb692728d581c66e578c0fe31"
+    },
+    {
+      "file": "assets/arena-entrance-v70.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 1407562,
+      "afterBytes": 1407562,
+      "unchanged": true,
+      "beforeSha256": "adbabd6446b479fa42bcd93e470d80521e95e117069bb27f9bc9a051c25b78b5",
+      "afterSha256": "adbabd6446b479fa42bcd93e470d80521e95e117069bb27f9bc9a051c25b78b5",
+      "image": {
+        "width": 1858,
+        "height": 846,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/arena-modes-v69.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 1918462,
+      "afterBytes": 1918462,
+      "unchanged": true,
+      "beforeSha256": "82e4365e344591c917f33b8e7d9d79bdfc75d7ff430a50dd75a0b046db5c5103",
+      "afterSha256": "82e4365e344591c917f33b8e7d9d79bdfc75d7ff430a50dd75a0b046db5c5103",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/arena-result-v78.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 362380,
+      "afterBytes": 362380,
+      "unchanged": true,
+      "beforeSha256": "432d3eb8fa60af8cea0b0500b858157bfa5aec9080728cf5472b163da7d618f6",
+      "afterSha256": "432d3eb8fa60af8cea0b0500b858157bfa5aec9080728cf5472b163da7d618f6",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/arena-title-crest-v71.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 1953,
+      "afterBytes": 1953,
+      "unchanged": true,
+      "beforeSha256": "3027714d9b1c47f7cc46258eea68420268d2b224d1bf513fbb117afbab78882c",
+      "afterSha256": "3027714d9b1c47f7cc46258eea68420268d2b224d1bf513fbb117afbab78882c"
+    },
+    {
+      "file": "assets/city/rome-backdrop-87af8072b91e.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 2132660,
+      "afterBytes": 2132660,
+      "unchanged": true,
+      "beforeSha256": "87af8072b91ed96eb2e10c168f7de94521da806141ca1eb2660c3e319d53b2dd",
+      "afterSha256": "87af8072b91ed96eb2e10c168f7de94521da806141ca1eb2660c3e319d53b2dd",
+      "image": {
+        "width": 2048,
+        "height": 2048,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/city/rome-backdrop-v39.json",
+      "area": "configuration",
+      "extension": ".json",
+      "beforeBytes": 39807,
+      "afterBytes": 39807,
+      "unchanged": true,
+      "beforeSha256": "82a0754b77eea2fbbfc6394b8262d01734c74991e266a1f2eae318f75767b674",
+      "afterSha256": "82a0754b77eea2fbbfc6394b8262d01734c74991e266a1f2eae318f75767b674",
+      "sourceSignals": {}
+    },
+    {
+      "file": "assets/clan-sand-10x4-v81.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 151478,
+      "afterBytes": 151478,
+      "unchanged": true,
+      "beforeSha256": "2482e5dbc55b47b69416df3f36b291e2468ee18ffdb5b12e0234a35a9ed6e5af",
+      "afterSha256": "2482e5dbc55b47b69416df3f36b291e2468ee18ffdb5b12e0234a35a9ed6e5af",
+      "image": {
+        "width": 640,
+        "height": 787,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/clan-sand-20x20-v81.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 166208,
+      "afterBytes": 166208,
+      "unchanged": true,
+      "beforeSha256": "80e6ac7b5908cd187f1864ba93e388ccc2269bcf7d1c58d87a693016e8f143ad",
+      "afterSha256": "80e6ac7b5908cd187f1864ba93e388ccc2269bcf7d1c58d87a693016e8f143ad",
+      "image": {
+        "width": 640,
+        "height": 787,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/clan-water-10x4-v81.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 162560,
+      "afterBytes": 162560,
+      "unchanged": true,
+      "beforeSha256": "cf1f71a016851aeb5f124c03b0841e6758271057bf8e8461d7e332cb3fbe9160",
+      "afterSha256": "cf1f71a016851aeb5f124c03b0841e6758271057bf8e8461d7e332cb3fbe9160",
+      "image": {
+        "width": 640,
+        "height": 787,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/clan-water-20x2-v81.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 152664,
+      "afterBytes": 152664,
+      "unchanged": true,
+      "beforeSha256": "d911781b6a42bf43aaf9ef7db23d12cd0efbf6a85a19b1bda76ab4f39f85cecb",
+      "afterSha256": "d911781b6a42bf43aaf9ef7db23d12cd0efbf6a85a19b1bda76ab4f39f85cecb",
+      "image": {
+        "width": 640,
+        "height": 787,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/colosseum-magnus-login-v40.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 443110,
+      "afterBytes": 443110,
+      "unchanged": true,
+      "beforeSha256": "b11e85931c7f36d0aaa83d541e2b8d158f5528be001981755325802af44f44d7",
+      "afterSha256": "b11e85931c7f36d0aaa83d541e2b8d158f5528be001981755325802af44f44d7",
+      "image": {
+        "width": 1536,
+        "height": 711,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/dining/dining-kit-v53.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 398500,
+      "afterBytes": 398500,
+      "unchanged": true,
+      "beforeSha256": "2f6c7ea1c3719026d2a5a2d10437cac95a4a00ec1e3087e424bab02184184e2e",
+      "afterSha256": "2f6c7ea1c3719026d2a5a2d10437cac95a4a00ec1e3087e424bab02184184e2e"
+    },
+    {
+      "file": "assets/dining/dining-kit-v54.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 412984,
+      "afterBytes": 412984,
+      "unchanged": true,
+      "beforeSha256": "52e2b3eaec15582edeef2ea3863259ce51a79abd4b83d13d646923777dd7ffa5",
+      "afterSha256": "52e2b3eaec15582edeef2ea3863259ce51a79abd4b83d13d646923777dd7ffa5"
+    },
+    {
+      "file": "assets/dining/icons/apple-v55.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2497,
+      "afterBytes": 2497,
+      "unchanged": true,
+      "beforeSha256": "9f730b07e7599adb89b781a6314a99c87d8049e339d12a60f1437da20e050ca9",
+      "afterSha256": "9f730b07e7599adb89b781a6314a99c87d8049e339d12a60f1437da20e050ca9",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "file": "assets/dining/icons/apple-v56.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 472,
+      "afterBytes": 472,
+      "unchanged": true,
+      "beforeSha256": "8c1fe8a94d94243ba89e5b5db7780cfd8bf02ce9076ac9b5301667ecac1e1dfc",
+      "afterSha256": "8c1fe8a94d94243ba89e5b5db7780cfd8bf02ce9076ac9b5301667ecac1e1dfc"
+    },
+    {
+      "file": "assets/dining/icons/apple-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 472,
+      "afterBytes": 472,
+      "unchanged": true,
+      "beforeSha256": "8c1fe8a94d94243ba89e5b5db7780cfd8bf02ce9076ac9b5301667ecac1e1dfc",
+      "afterSha256": "8c1fe8a94d94243ba89e5b5db7780cfd8bf02ce9076ac9b5301667ecac1e1dfc"
+    },
+    {
+      "file": "assets/dining/icons/beer-v55.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 3159,
+      "afterBytes": 3159,
+      "unchanged": true,
+      "beforeSha256": "5c453239bc75cfd2659af0da68a3fb604369d37c8612d4d24e206fb7a19bd2ef",
+      "afterSha256": "5c453239bc75cfd2659af0da68a3fb604369d37c8612d4d24e206fb7a19bd2ef",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "file": "assets/dining/icons/beer-v56.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 634,
+      "afterBytes": 634,
+      "unchanged": true,
+      "beforeSha256": "d167a3718a97120de9fa0dc23610a647d363abb3b4f3b58315a83db90d5557ca",
+      "afterSha256": "d167a3718a97120de9fa0dc23610a647d363abb3b4f3b58315a83db90d5557ca"
+    },
+    {
+      "file": "assets/dining/icons/beer-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 395,
+      "afterBytes": 395,
+      "unchanged": true,
+      "beforeSha256": "763abb9bb8a5479aefc85effe0df2e67f1245b53327077eba34181c2e30390cc",
+      "afterSha256": "763abb9bb8a5479aefc85effe0df2e67f1245b53327077eba34181c2e30390cc"
+    },
+    {
+      "file": "assets/dining/icons/bread-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 376,
+      "afterBytes": 376,
+      "unchanged": true,
+      "beforeSha256": "e81e8ddbc1a95b55e5ce8a20faeabb47615c5ebb6d55e96a4f7533f66bc12203",
+      "afterSha256": "e81e8ddbc1a95b55e5ce8a20faeabb47615c5ebb6d55e96a4f7533f66bc12203"
+    },
+    {
+      "file": "assets/dining/icons/egg-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 353,
+      "afterBytes": 353,
+      "unchanged": true,
+      "beforeSha256": "4633d9b15e7aee300cc00e5576965819d9c286bc94bea914622683024fe07fbf",
+      "afterSha256": "4633d9b15e7aee300cc00e5576965819d9c286bc94bea914622683024fe07fbf"
+    },
+    {
+      "file": "assets/dining/icons/fish-v55.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 1708,
+      "afterBytes": 1708,
+      "unchanged": true,
+      "beforeSha256": "c7899040004f1dd9ff26332b4f545874f43ba7803893f3479de35948270f86bb",
+      "afterSha256": "c7899040004f1dd9ff26332b4f545874f43ba7803893f3479de35948270f86bb",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "file": "assets/dining/icons/fish-v56.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 535,
+      "afterBytes": 535,
+      "unchanged": true,
+      "beforeSha256": "b7aec65218515b894db9fa629ca746c6c6e686e9655d8a7ec31a069d2ed5572e",
+      "afterSha256": "b7aec65218515b894db9fa629ca746c6c6e686e9655d8a7ec31a069d2ed5572e"
+    },
+    {
+      "file": "assets/dining/icons/fish-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 535,
+      "afterBytes": 535,
+      "unchanged": true,
+      "beforeSha256": "b7aec65218515b894db9fa629ca746c6c6e686e9655d8a7ec31a069d2ed5572e",
+      "afterSha256": "b7aec65218515b894db9fa629ca746c6c6e686e9655d8a7ec31a069d2ed5572e"
+    },
+    {
+      "file": "assets/dining/icons/grain-v55.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 3703,
+      "afterBytes": 3703,
+      "unchanged": true,
+      "beforeSha256": "1e00947360c1dd5ed88a97d6ab63c9207fafaf5da9e0f41f8f45780c90862537",
+      "afterSha256": "1e00947360c1dd5ed88a97d6ab63c9207fafaf5da9e0f41f8f45780c90862537",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "file": "assets/dining/icons/grain-v56.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 498,
+      "afterBytes": 498,
+      "unchanged": true,
+      "beforeSha256": "21a98072448317a6b697e48b013905bab19776132625f6da54a99fde8350f643",
+      "afterSha256": "21a98072448317a6b697e48b013905bab19776132625f6da54a99fde8350f643"
+    },
+    {
+      "file": "assets/dining/icons/grain-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 498,
+      "afterBytes": 498,
+      "unchanged": true,
+      "beforeSha256": "21a98072448317a6b697e48b013905bab19776132625f6da54a99fde8350f643",
+      "afterSha256": "21a98072448317a6b697e48b013905bab19776132625f6da54a99fde8350f643"
+    },
+    {
+      "file": "assets/dining/icons/meal-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 654,
+      "afterBytes": 654,
+      "unchanged": true,
+      "beforeSha256": "06dd0f1c15fa67996c2647d29f90a22d9a8ef05f3dc953defb1965054ba6e462",
+      "afterSha256": "06dd0f1c15fa67996c2647d29f90a22d9a8ef05f3dc953defb1965054ba6e462"
+    },
+    {
+      "file": "assets/dining/icons/meat-v55.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2524,
+      "afterBytes": 2524,
+      "unchanged": true,
+      "beforeSha256": "e343ddbf61b5a01bd52ccc8edcf4755a4cdf4b3e386b0ecae5352390f7f96238",
+      "afterSha256": "e343ddbf61b5a01bd52ccc8edcf4755a4cdf4b3e386b0ecae5352390f7f96238",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "file": "assets/dining/icons/meat-v56.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 599,
+      "afterBytes": 599,
+      "unchanged": true,
+      "beforeSha256": "c7d71e38fb90d50e377dde3e0952060f6d2e8b4f38a575999c919a6f1f7e770c",
+      "afterSha256": "c7d71e38fb90d50e377dde3e0952060f6d2e8b4f38a575999c919a6f1f7e770c"
+    },
+    {
+      "file": "assets/dining/icons/meat-v57.svg",
+      "area": "asset",
+      "extension": ".svg",
+      "beforeBytes": 599,
+      "afterBytes": 599,
+      "unchanged": true,
+      "beforeSha256": "c7d71e38fb90d50e377dde3e0952060f6d2e8b4f38a575999c919a6f1f7e770c",
+      "afterSha256": "c7d71e38fb90d50e377dde3e0952060f6d2e8b4f38a575999c919a6f1f7e770c"
+    },
+    {
+      "file": "assets/equipment/armor_shoulder-c17b1581ca44.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 511996,
+      "afterBytes": 511996,
+      "unchanged": true,
+      "beforeSha256": "c17b1581ca449b74422b60640bd4cb39af91d5918748ef0226b5b70216061c55",
+      "afterSha256": "c17b1581ca449b74422b60640bd4cb39af91d5918748ef0226b5b70216061c55"
+    },
+    {
+      "file": "assets/equipment/chest_plate-6376ad0c8654.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 263528,
+      "afterBytes": 263528,
+      "unchanged": true,
+      "beforeSha256": "6376ad0c8654e4030ae326eecc91f881f69f8b66bfa7d390ed4d5d1e93581f30",
+      "afterSha256": "6376ad0c8654e4030ae326eecc91f881f69f8b66bfa7d390ed4d5d1e93581f30"
+    },
+    {
+      "file": "assets/equipment/gladiator-9bcb0ac9d566.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 447244,
+      "afterBytes": 447244,
+      "unchanged": true,
+      "beforeSha256": "9bcb0ac9d56695da631f80944fc5175100cfe6002ef490d29e2b9016f0f1bd78",
+      "afterSha256": "9bcb0ac9d56695da631f80944fc5175100cfe6002ef490d29e2b9016f0f1bd78"
+    },
+    {
+      "file": "assets/equipment/gladiator_chest-e2f685b66fb6.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 1212096,
+      "afterBytes": 1212096,
+      "unchanged": true,
+      "beforeSha256": "e2f685b66fb67d8f54722651c6400bbbf433947cdc9e95a4dc3f2b29d3ee5a22",
+      "afterSha256": "e2f685b66fb67d8f54722651c6400bbbf433947cdc9e95a4dc3f2b29d3ee5a22"
+    },
+    {
+      "file": "assets/equipment/knights-e30cc69af0fd.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 612424,
+      "afterBytes": 612424,
+      "unchanged": true,
+      "beforeSha256": "e30cc69af0fd59456b00eff3582ff56356943a840dfbce5eaef7b78347bc691a",
+      "afterSha256": "e30cc69af0fd59456b00eff3582ff56356943a840dfbce5eaef7b78347bc691a"
+    },
+    {
+      "file": "assets/equipment/roman-6d187d4b7f8c.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 601112,
+      "afterBytes": 601112,
+      "unchanged": true,
+      "beforeSha256": "6d187d4b7f8ce9ebe0148bb8ed1e58b447ac62a7a6ace31970495e5e15952d37",
+      "afterSha256": "6d187d4b7f8ce9ebe0148bb8ed1e58b447ac62a7a6ace31970495e5e15952d37"
+    },
+    {
+      "file": "assets/equipment/shoulder_armor-a71778444187.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 251676,
+      "afterBytes": 251676,
+      "unchanged": true,
+      "beforeSha256": "a71778444187c3917a915405473157985ac13bb42665b6c6776cdca0c5021d9b",
+      "afterSha256": "a71778444187c3917a915405473157985ac13bb42665b6c6776cdca0c5021d9b"
+    },
+    {
+      "file": "assets/equipment/winged-111637d14990.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 520556,
+      "afterBytes": 520556,
+      "unchanged": true,
+      "beforeSha256": "111637d14990f9791d862941a9ff7de801d17358f07e184dea6492c694affca4",
+      "afterSha256": "111637d14990f9791d862941a9ff7de801d17358f07e184dea6492c694affca4"
+    },
+    {
+      "file": "assets/gladiator-preparation-v69.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 1504906,
+      "afterBytes": 1504906,
+      "unchanged": true,
+      "beforeSha256": "488ad95b70489d07b35d7c5dd7b229aadf8419e5e531ebc76945029435b202f7",
+      "afterSha256": "488ad95b70489d07b35d7c5dd7b229aadf8419e5e531ebc76945029435b202f7",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/market/forum-rome-v66.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 422420,
+      "afterBytes": 422420,
+      "unchanged": true,
+      "beforeSha256": "934372fb95c0c87597e3431a720735cb9e1723b19750ff34333b9875a021343e",
+      "afterSha256": "934372fb95c0c87597e3431a720735cb9e1723b19750ff34333b9875a021343e",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/mobile-asset-manifest.json",
+      "area": "configuration",
+      "extension": ".json",
+      "beforeBytes": 11492,
+      "afterBytes": 11492,
+      "unchanged": true,
+      "beforeSha256": "e9370b6944cb92cef1d8a533a4e7548ea2dd68b1734087a5384d31d04731b548",
+      "afterSha256": "e9370b6944cb92cef1d8a533a4e7548ea2dd68b1734087a5384d31d04731b548",
+      "sourceSignals": {}
+    },
+    {
+      "file": "assets/multiplayer-poster-v69.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 1944932,
+      "afterBytes": 1944932,
+      "unchanged": true,
+      "beforeSha256": "0cfb84307abcdc9221d7f089a565d7a2855c6dbf6afd67adffb4d99f0c5c7f6a",
+      "afterSha256": "0cfb84307abcdc9221d7f089a565d7a2855c6dbf6afd67adffb4d99f0c5c7f6a",
+      "image": {
+        "width": 1086,
+        "height": 1448,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/survival-poster-v83.jpeg",
+      "area": "asset",
+      "extension": ".jpeg",
+      "beforeBytes": 499501,
+      "afterBytes": 499501,
+      "unchanged": true,
+      "beforeSha256": "8516ddb8bea691e625b178398ce327825a022f677ae15c9e2294596b271925c5",
+      "afterSha256": "8516ddb8bea691e625b178398ce327825a022f677ae15c9e2294596b271925c5",
+      "image": {
+        "width": 1086,
+        "height": 1448,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/armor_shoulder-265d36601366.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7044,
+      "afterBytes": 7044,
+      "unchanged": true,
+      "beforeSha256": "265d366013669e1d07334d94fe4949ddc60b262fef29928cbef603ebb254af43",
+      "afterSha256": "265d366013669e1d07334d94fe4949ddc60b262fef29928cbef603ebb254af43",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/brown_leather-nor_gl-3e1524121f58.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 64848,
+      "afterBytes": 64848,
+      "unchanged": true,
+      "beforeSha256": "3e1524121f581e4f89dc348b182d0771a7c04a044ffca31c609423aac2097228",
+      "afterSha256": "3e1524121f581e4f89dc348b182d0771a7c04a044ffca31c609423aac2097228",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/brown_leather-rough-db921d8e689c.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 108620,
+      "afterBytes": 108620,
+      "unchanged": true,
+      "beforeSha256": "db921d8e689ceaf9c9fd76f0364ec0a8608e6362652bf4530ed72f5bea43b3f7",
+      "afterSha256": "db921d8e689ceaf9c9fd76f0364ec0a8608e6362652bf4530ed72f5bea43b3f7",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/chest_plate-730d42485f3a.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 10270,
+      "afterBytes": 10270,
+      "unchanged": true,
+      "beforeSha256": "730d42485f3a3246b7800d290f97f15ada246f2c2a9851f5b5d315dc5e2e27c3",
+      "afterSha256": "730d42485f3a3246b7800d290f97f15ada246f2c2a9851f5b5d315dc5e2e27c3",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/gladiator-3e9fab30d191.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7362,
+      "afterBytes": 7362,
+      "unchanged": true,
+      "beforeSha256": "3e9fab30d191d929aa53f45427a206b410cb5f0c8d087aefe9ead35671e64854",
+      "afterSha256": "3e9fab30d191d929aa53f45427a206b410cb5f0c8d087aefe9ead35671e64854",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/gladiator_chest-89bcf1e90f16.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 9054,
+      "afterBytes": 9054,
+      "unchanged": true,
+      "beforeSha256": "89bcf1e90f1603641809aacc8412c105c2c337192e9233e2b881d7a5985aa122",
+      "afterSha256": "89bcf1e90f1603641809aacc8412c105c2c337192e9233e2b881d7a5985aa122",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/hoplomachus-2016b8441dd6.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 6672,
+      "afterBytes": 6672,
+      "unchanged": true,
+      "beforeSha256": "2016b8441dd69288403c9ac4c419ee464dd4554cf2e9666a1d7e79fa178a1df4",
+      "afterSha256": "2016b8441dd69288403c9ac4c419ee464dd4554cf2e9666a1d7e79fa178a1df4",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/textures/knights-a65625344d40.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 10034,
+      "afterBytes": 10034,
+      "unchanged": true,
+      "beforeSha256": "a65625344d408f264b2cebcdc29c9f900beb525b2f688bdeb1132d02b341d5bc",
+      "afterSha256": "a65625344d408f264b2cebcdc29c9f900beb525b2f688bdeb1132d02b341d5bc",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/murmillo-3e675f23b653.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7356,
+      "afterBytes": 7356,
+      "unchanged": true,
+      "beforeSha256": "3e675f23b6538ac9b6096f8033516e2ff9b1d1a6ead5e7abb9522a2628e73ce5",
+      "afterSha256": "3e675f23b6538ac9b6096f8033516e2ff9b1d1a6ead5e7abb9522a2628e73ce5",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/textures/provocator-07d7518a15c4.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7200,
+      "afterBytes": 7200,
+      "unchanged": true,
+      "beforeSha256": "07d7518a15c45e30f3593ea5099b7d363ffe124085b5bfa739a5fa02839467bf",
+      "afterSha256": "07d7518a15c45e30f3593ea5099b7d363ffe124085b5bfa739a5fa02839467bf",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/textures/retiarius-4f388b00bb43.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7122,
+      "afterBytes": 7122,
+      "unchanged": true,
+      "beforeSha256": "4f388b00bb43bb9a2cbf6300190102d08f46fcb90a4ab81f9c3bd6c0f0c812bb",
+      "afterSha256": "4f388b00bb43bb9a2cbf6300190102d08f46fcb90a4ab81f9c3bd6c0f0c812bb",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/textures/roman-12c0d9fa4cf2.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 8406,
+      "afterBytes": 8406,
+      "unchanged": true,
+      "beforeSha256": "12c0d9fa4cf2fca98fdaf4c2119bcbe0654f221d5cd2211c6c150a162ce1f661",
+      "afterSha256": "12c0d9fa4cf2fca98fdaf4c2119bcbe0654f221d5cd2211c6c150a162ce1f661",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/sand_01-diff-05b825608ef2.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 40496,
+      "afterBytes": 40496,
+      "unchanged": true,
+      "beforeSha256": "05b825608ef204824e17d63e8a7cffe4b84fcf9eea65184d0231518178c2f348",
+      "afterSha256": "05b825608ef204824e17d63e8a7cffe4b84fcf9eea65184d0231518178c2f348",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/sand_01-diff-8aecb3769d72.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 71456,
+      "afterBytes": 71456,
+      "unchanged": true,
+      "beforeSha256": "8aecb3769d728aadf96574bdee876281641d4b1792e68b86ff30f816acc5461e",
+      "afterSha256": "8aecb3769d728aadf96574bdee876281641d4b1792e68b86ff30f816acc5461e",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/sand_01-nor_gl-6616ebcba18d.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 100628,
+      "afterBytes": 100628,
+      "unchanged": true,
+      "beforeSha256": "6616ebcba18d54cb75145afcc4e59d50993192ad94544137f9115f90e8c9192d",
+      "afterSha256": "6616ebcba18d54cb75145afcc4e59d50993192ad94544137f9115f90e8c9192d",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/sand_01-nor_gl-694c0d6327db.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 91246,
+      "afterBytes": 91246,
+      "unchanged": true,
+      "beforeSha256": "694c0d6327dbc88f7fea4fdd7148dbfb4f737f217b2fe232686109828231402e",
+      "afterSha256": "694c0d6327dbc88f7fea4fdd7148dbfb4f737f217b2fe232686109828231402e",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/sand_01-rough-13596e2e2ff4.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 11310,
+      "afterBytes": 11310,
+      "unchanged": true,
+      "beforeSha256": "13596e2e2ff4a76f2b14cfeb5d6a5890e5fc5211cb7bdcbeecbc575dcb55a779",
+      "afterSha256": "13596e2e2ff4a76f2b14cfeb5d6a5890e5fc5211cb7bdcbeecbc575dcb55a779",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/sand_01-rough-a75cb02d64ea.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 22524,
+      "afterBytes": 22524,
+      "unchanged": true,
+      "beforeSha256": "a75cb02d64ea4728f46ba3038d74d47bba6667119d9d47c4249eb2c92ea0d9c1",
+      "afterSha256": "a75cb02d64ea4728f46ba3038d74d47bba6667119d9d47c4249eb2c92ea0d9c1",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/scissor-13a6b2685a92.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 6732,
+      "afterBytes": 6732,
+      "unchanged": true,
+      "beforeSha256": "13a6b2685a929efdd906184113e971843bf6ec275b9728b5592831f28e29bd4b",
+      "afterSha256": "13a6b2685a929efdd906184113e971843bf6ec275b9728b5592831f28e29bd4b",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/textures/secutor-c0a735b063c1.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7408,
+      "afterBytes": 7408,
+      "unchanged": true,
+      "beforeSha256": "c0a735b063c1c62de30969ad1cf92afc3e4ef90af665ec4f72b5eee7107e3d81",
+      "afterSha256": "c0a735b063c1c62de30969ad1cf92afc3e4ef90af665ec4f72b5eee7107e3d81",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/textures/shoulder_armor-3c831205a71f.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 6488,
+      "afterBytes": 6488,
+      "unchanged": true,
+      "beforeSha256": "3c831205a71f385aaed20ad4150c23f5d4ad647c2011d6e8aeb6858cae8dd651",
+      "afterSha256": "3c831205a71f385aaed20ad4150c23f5d4ad647c2011d6e8aeb6858cae8dd651",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/stone_wall_02-diff-48c8a82a57aa.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 19318,
+      "afterBytes": 19318,
+      "unchanged": true,
+      "beforeSha256": "48c8a82a57aaa8314c7171dfbff592821a681dd07c3fef996319c5a74874a8c1",
+      "afterSha256": "48c8a82a57aaa8314c7171dfbff592821a681dd07c3fef996319c5a74874a8c1",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/stone_wall_02-diff-978ee90ff99a.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 34626,
+      "afterBytes": 34626,
+      "unchanged": true,
+      "beforeSha256": "978ee90ff99a76adebcd12163bf3872d2f0d5ad0a50f78ddafd4f0ef1b69f3d8",
+      "afterSha256": "978ee90ff99a76adebcd12163bf3872d2f0d5ad0a50f78ddafd4f0ef1b69f3d8",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/stone_wall_02-nor_gl-280beb967583.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 108142,
+      "afterBytes": 108142,
+      "unchanged": true,
+      "beforeSha256": "280beb96758310746e4475339de58a8f62852e8da81c4832a2301080c6dfd7f8",
+      "afterSha256": "280beb96758310746e4475339de58a8f62852e8da81c4832a2301080c6dfd7f8",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/stone_wall_02-nor_gl-7a19d5f27a5c.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 78314,
+      "afterBytes": 78314,
+      "unchanged": true,
+      "beforeSha256": "7a19d5f27a5c0e7d9268ca601b1ff46a300e7117c3af3fc0c90f4ffacf07fc6c",
+      "afterSha256": "7a19d5f27a5c0e7d9268ca601b1ff46a300e7117c3af3fc0c90f4ffacf07fc6c",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/stone_wall_02-rough-0d9b4ef4bd03.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 13790,
+      "afterBytes": 13790,
+      "unchanged": true,
+      "beforeSha256": "0d9b4ef4bd033e2d8bf9b44ab1a5d466a27141f36341b33a3f432b5b28295dba",
+      "afterSha256": "0d9b4ef4bd033e2d8bf9b44ab1a5d466a27141f36341b33a3f432b5b28295dba",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/stone_wall_02-rough-80ee9e48aba5.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 1314,
+      "afterBytes": 1314,
+      "unchanged": true,
+      "beforeSha256": "80ee9e48aba5e7606a19db1a265b00051b0d28412eb631c6c49d1bbc9a2330dd",
+      "afterSha256": "80ee9e48aba5e7606a19db1a265b00051b0d28412eb631c6c49d1bbc9a2330dd",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/thraex-cda03a764bfa.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 6780,
+      "afterBytes": 6780,
+      "unchanged": true,
+      "beforeSha256": "cda03a764bfa96b21bb4fef071dec548bdb84ecc8a9d1660250f3af506d4ffd2",
+      "afterSha256": "cda03a764bfa96b21bb4fef071dec548bdb84ecc8a9d1660250f3af506d4ffd2",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "file": "assets/textures/white_plaster_02-diff-6aa57de97b10.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 35452,
+      "afterBytes": 35452,
+      "unchanged": true,
+      "beforeSha256": "6aa57de97b102277f5e9295247084c6842f8523389ccc83eacfd1b141204a77a",
+      "afterSha256": "6aa57de97b102277f5e9295247084c6842f8523389ccc83eacfd1b141204a77a",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/white_plaster_02-nor_gl-dcd2b93a4cbb.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 29274,
+      "afterBytes": 29274,
+      "unchanged": true,
+      "beforeSha256": "dcd2b93a4cbbe27dc0f2d0bd28a5e8e329c948cf5fc12d38012aa32026c0c6fe",
+      "afterSha256": "dcd2b93a4cbbe27dc0f2d0bd28a5e8e329c948cf5fc12d38012aa32026c0c6fe",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/white_plaster_02-rough-1e05c5521169.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7226,
+      "afterBytes": 7226,
+      "unchanged": true,
+      "beforeSha256": "1e05c55211698c434063ce19d4dcd4ea59e4f3d3ab5243b1f141f94ce7ed36a5",
+      "afterSha256": "1e05c55211698c434063ce19d4dcd4ea59e4f3d3ab5243b1f141f94ce7ed36a5",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 65722,
+      "afterBytes": 65722,
+      "unchanged": true,
+      "beforeSha256": "291a56b4ab78d7ff5c81abfa5dde645c61fb1d535e1cde480ea9ecc7bff2ca6f",
+      "afterSha256": "291a56b4ab78d7ff5c81abfa5dde645c61fb1d535e1cde480ea9ecc7bff2ca6f",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/white_sandstone_blocks_02-nor_gl-ca837027cc37.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 44192,
+      "afterBytes": 44192,
+      "unchanged": true,
+      "beforeSha256": "ca837027cc377a096c0e2d34e1aad7ec3db8ff3251dd5674e2608977296df9d6",
+      "afterSha256": "ca837027cc377a096c0e2d34e1aad7ec3db8ff3251dd5674e2608977296df9d6",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/white_sandstone_blocks_02-rough-4b0a136337d7.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 40818,
+      "afterBytes": 40818,
+      "unchanged": true,
+      "beforeSha256": "4b0a136337d7b7fd0dfae56c2c4938d40d3e52c5e8fa3ea0d13bbff2ec749806",
+      "afterSha256": "4b0a136337d7b7fd0dfae56c2c4938d40d3e52c5e8fa3ea0d13bbff2ec749806",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/winged-6f464bdefb69.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 11526,
+      "afterBytes": 11526,
+      "unchanged": true,
+      "beforeSha256": "6f464bdefb69ec7da787920000427179ea6e591a3675562cd9495f06295325cc",
+      "afterSha256": "6f464bdefb69ec7da787920000427179ea6e591a3675562cd9495f06295325cc",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/wooden_gate-diff-67741a5af1f9.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 18786,
+      "afterBytes": 18786,
+      "unchanged": true,
+      "beforeSha256": "67741a5af1f97ac3fd9ae9a1ea5cd194e9c6fb06e13dc083dc6515b2431bc636",
+      "afterSha256": "67741a5af1f97ac3fd9ae9a1ea5cd194e9c6fb06e13dc083dc6515b2431bc636",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/wooden_gate-nor_gl-9c9095cd8a7d.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 14094,
+      "afterBytes": 14094,
+      "unchanged": true,
+      "beforeSha256": "9c9095cd8a7d0cc473b9300098e068328ed94ae01f007386ae713cf3256beb42",
+      "afterSha256": "9c9095cd8a7d0cc473b9300098e068328ed94ae01f007386ae713cf3256beb42",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "assets/textures/wooden_gate-rough-f62304f04b81.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 37576,
+      "afterBytes": 37576,
+      "unchanged": true,
+      "beforeSha256": "f62304f04b81aefde80ba7fb85b5d9d6716a56d0c7f57566c146f08ca37f570c",
+      "afterSha256": "f62304f04b81aefde80ba7fb85b5d9d6716a56d0c7f57566c146f08ca37f570c",
+      "image": {
+        "width": 512,
+        "height": 512,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-chest-v35.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 378472,
+      "afterBytes": 378472,
+      "unchanged": true,
+      "beforeSha256": "c0ac26148a55bc6d035b99545752e281976b01d3db155c17f7c281d5964d1072",
+      "afterSha256": "c0ac26148a55bc6d035b99545752e281976b01d3db155c17f7c281d5964d1072"
+    },
+    {
+      "file": "clan-equipment-0-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 242594,
+      "afterBytes": 242594,
+      "unchanged": true,
+      "beforeSha256": "91a94259c0b58657f86639cd5b14fa412546ce71e898533afa1e9af20ddc1559",
+      "afterSha256": "91a94259c0b58657f86639cd5b14fa412546ce71e898533afa1e9af20ddc1559",
+      "image": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-1-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7362,
+      "afterBytes": 7362,
+      "unchanged": true,
+      "beforeSha256": "3e9fab30d191d929aa53f45427a206b410cb5f0c8d087aefe9ead35671e64854",
+      "afterSha256": "3e9fab30d191d929aa53f45427a206b410cb5f0c8d087aefe9ead35671e64854",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-2-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 10034,
+      "afterBytes": 10034,
+      "unchanged": true,
+      "beforeSha256": "a65625344d408f264b2cebcdc29c9f900beb525b2f688bdeb1132d02b341d5bc",
+      "afterSha256": "a65625344d408f264b2cebcdc29c9f900beb525b2f688bdeb1132d02b341d5bc",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-3-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 11526,
+      "afterBytes": 11526,
+      "unchanged": true,
+      "beforeSha256": "6f464bdefb69ec7da787920000427179ea6e591a3675562cd9495f06295325cc",
+      "afterSha256": "6f464bdefb69ec7da787920000427179ea6e591a3675562cd9495f06295325cc",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-4-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 8406,
+      "afterBytes": 8406,
+      "unchanged": true,
+      "beforeSha256": "12c0d9fa4cf2fca98fdaf4c2119bcbe0654f221d5cd2211c6c150a162ce1f661",
+      "afterSha256": "12c0d9fa4cf2fca98fdaf4c2119bcbe0654f221d5cd2211c6c150a162ce1f661",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-5-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 9054,
+      "afterBytes": 9054,
+      "unchanged": true,
+      "beforeSha256": "89bcf1e90f1603641809aacc8412c105c2c337192e9233e2b881d7a5985aa122",
+      "afterSha256": "89bcf1e90f1603641809aacc8412c105c2c337192e9233e2b881d7a5985aa122",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-6-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 10270,
+      "afterBytes": 10270,
+      "unchanged": true,
+      "beforeSha256": "730d42485f3a3246b7800d290f97f15ada246f2c2a9851f5b5d315dc5e2e27c3",
+      "afterSha256": "730d42485f3a3246b7800d290f97f15ada246f2c2a9851f5b5d315dc5e2e27c3",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-7-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 7044,
+      "afterBytes": 7044,
+      "unchanged": true,
+      "beforeSha256": "265d366013669e1d07334d94fe4949ddc60b262fef29928cbef603ebb254af43",
+      "afterSha256": "265d366013669e1d07334d94fe4949ddc60b262fef29928cbef603ebb254af43",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-8-v35.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 6488,
+      "afterBytes": 6488,
+      "unchanged": true,
+      "beforeSha256": "3c831205a71f385aaed20ad4150c23f5d4ad647c2011d6e8aeb6858cae8dd651",
+      "afterSha256": "3c831205a71f385aaed20ad4150c23f5d4ad647c2011d6e8aeb6858cae8dd651",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "clan-equipment-v35.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 12227,
+      "afterBytes": 12227,
+      "unchanged": true,
+      "beforeSha256": "141c1879df0e457f97f738c62198dd3831c79592adacf5e61b4df2e9b31d39cf",
+      "afterSha256": "141c1879df0e457f97f738c62198dd3831c79592adacf5e61b4df2e9b31d39cf",
+      "sourceSignals": {}
+    },
+    {
+      "file": "clan-v22-verify.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 4959,
+      "afterBytes": 4959,
+      "unchanged": true,
+      "beforeSha256": "a47e45356e1456e7c363e19a77279bd31ed438f553fec8a466fee741981d2918",
+      "afterSha256": "a47e45356e1456e7c363e19a77279bd31ed438f553fec8a466fee741981d2918",
+      "sourceSignals": {}
+    },
+    {
+      "file": "clan-vault-v35.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 12830,
+      "afterBytes": 12830,
+      "unchanged": true,
+      "beforeSha256": "3f4c34895ef36f459ce5f1047ff5fee82cd4ff9f7f1f3fe656edc4bf6874ca44",
+      "afterSha256": "3f4c34895ef36f459ce5f1047ff5fee82cd4ff9f7f1f3fe656edc4bf6874ca44",
+      "sourceSignals": {}
+    },
+    {
+      "file": "clan-vault-v35.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 15774,
+      "afterBytes": 15846,
+      "unchanged": false,
+      "beforeSha256": "da02cd11db93a4328961f3224b8d59db2cad70481eed08dad1692cd57c1a96f2",
+      "afterSha256": "13bdb06de8d6cd508fe789221e193ef996c5fad57ab0a19354a33230fea23e12",
+      "sourceSignals": {
+        "layoutReads": 1,
+        "modelLoads": 1,
+        "sceneTraversals": 1
+      }
+    },
+    {
+      "file": "colosseum-city-v29.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 5560344,
+      "afterBytes": 5560344,
+      "unchanged": true,
+      "beforeSha256": "3a96aa4f985caa784cdf7a9847c477771e47bb61455db867783d860e53171bb9",
+      "afterSha256": "3a96aa4f985caa784cdf7a9847c477771e47bb61455db867783d860e53171bb9"
+    },
+    {
+      "file": "combat-control-settings-v44.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 1104,
+      "afterBytes": 1104,
+      "unchanged": true,
+      "beforeSha256": "12502373bcca65ad1179cfa7ffe0e426d905739be55a523a1fb732dfca59be1e",
+      "afterSha256": "12502373bcca65ad1179cfa7ffe0e426d905739be55a523a1fb732dfca59be1e",
+      "sourceSignals": {}
+    },
+    {
+      "file": "combat-inspector-v74.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 1577,
+      "afterBytes": 1577,
+      "unchanged": true,
+      "beforeSha256": "7561f4719aed039d66564973ff400b8ac456e5da321129d1700a44c10ab2e766",
+      "afterSha256": "7561f4719aed039d66564973ff400b8ac456e5da321129d1700a44c10ab2e766",
+      "sourceSignals": {}
+    },
+    {
+      "file": "combat-inspector-v74.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 8716,
+      "afterBytes": 8716,
+      "unchanged": true,
+      "beforeSha256": "7206d5da7fd41c1866de124810c782b07381f0b712c3d86ca2ecdc043230552e",
+      "afterSha256": "7206d5da7fd41c1866de124810c782b07381f0b712c3d86ca2ecdc043230552e",
+      "sourceSignals": {}
+    },
+    {
+      "file": "d7e37f45-6781-4a6a-92c4-1257e9f55e40_8e25d42ea47e696de77e16317a3db85d.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 4293064,
+      "afterBytes": 4293064,
+      "unchanged": true,
+      "beforeSha256": "fd72dddc05c5d1e69efcfc27808e3757a5985d8f1f03fbc01b5760d2265454e2",
+      "afterSha256": "fd72dddc05c5d1e69efcfc27808e3757a5985d8f1f03fbc01b5760d2265454e2"
+    },
+    {
+      "file": "dining-food-v55.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 5593,
+      "afterBytes": 5593,
+      "unchanged": true,
+      "beforeSha256": "d6d7601194719f634199f623b80e4027895f6233b5e6e6d406c0209bbc585076",
+      "afterSha256": "d6d7601194719f634199f623b80e4027895f6233b5e6e6d406c0209bbc585076",
+      "sourceSignals": {}
+    },
+    {
+      "file": "dining-food-v55.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 12761,
+      "afterBytes": 12761,
+      "unchanged": true,
+      "beforeSha256": "e3073d1993f81818afa507ce43a6bc40364dddff4b79f9399adbc6bb7ca3a696",
+      "afterSha256": "e3073d1993f81818afa507ce43a6bc40364dddff4b79f9399adbc6bb7ca3a696",
+      "sourceSignals": {}
+    },
+    {
+      "file": "docs/arena-art-v69/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2450,
+      "afterBytes": 2450,
+      "unchanged": true,
+      "beforeSha256": "1f955ce5024438f6e5123d333000ccb9096317db660ad797a19b2724deb9f7cc",
+      "afterSha256": "1f955ce5024438f6e5123d333000ccb9096317db660ad797a19b2724deb9f7cc"
+    },
+    {
+      "file": "docs/arena-art-v69/queue-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 253080,
+      "afterBytes": 253080,
+      "unchanged": true,
+      "beforeSha256": "d5c62bc7c45b6fc8d04fad89ef3dc4ce88e53e664abb870fd173f5feab4ec907",
+      "afterSha256": "d5c62bc7c45b6fc8d04fad89ef3dc4ce88e53e664abb870fd173f5feab4ec907",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/arena-art-v69/selection-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 406018,
+      "afterBytes": 406018,
+      "unchanged": true,
+      "beforeSha256": "e6d9b01ce631379ade779908240d7c134fba4fbceaa5bb909d083d6f736cc3e1",
+      "afterSha256": "e6d9b01ce631379ade779908240d7c134fba4fbceaa5bb909d083d6f736cc3e1",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/arena-combat-v72/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2822,
+      "afterBytes": 2822,
+      "unchanged": true,
+      "beforeSha256": "143d31a4cd9c3e6675099a20f25ee9bb63ef8b96c064ee68597fb43eef0c4b22",
+      "afterSha256": "143d31a4cd9c3e6675099a20f25ee9bb63ef8b96c064ee68597fb43eef0c4b22"
+    },
+    {
+      "file": "docs/arena-combat-v72/backward-rise.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 48401,
+      "afterBytes": 48401,
+      "unchanged": true,
+      "beforeSha256": "47b2b0268226dfab73c7a95a4e71b80bb3009231079b36d39e2eca0ff641d69f",
+      "afterSha256": "47b2b0268226dfab73c7a95a4e71b80bb3009231079b36d39e2eca0ff641d69f",
+      "image": {
+        "width": 1000,
+        "height": 600,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/arena-combat-v72/bot-comparison.json",
+      "area": "documentation",
+      "extension": ".json",
+      "beforeBytes": 843,
+      "afterBytes": 843,
+      "unchanged": true,
+      "beforeSha256": "e0532e0e8ed006ec9040798c8ac6972b2bef098c5d0a347240d4778128df80f4",
+      "afterSha256": "e0532e0e8ed006ec9040798c8ac6972b2bef098c5d0a347240d4778128df80f4"
+    },
+    {
+      "file": "docs/arena-combat-v72/forward-inverted.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 37817,
+      "afterBytes": 37817,
+      "unchanged": true,
+      "beforeSha256": "58ec4a1e2459d181eb3d4667a0a2f26ad16807b51d1027b6e24937fa91a86cde",
+      "afterSha256": "58ec4a1e2459d181eb3d4667a0a2f26ad16807b51d1027b6e24937fa91a86cde",
+      "image": {
+        "width": 1000,
+        "height": 600,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/arena-combat-v72/motion-metrics.json",
+      "area": "documentation",
+      "extension": ".json",
+      "beforeBytes": 83958,
+      "afterBytes": 83958,
+      "unchanged": true,
+      "beforeSha256": "018ef3558b34c4ea77e67defbca4050368961e2be51e53f88e4c10e630cd3e7d",
+      "afterSha256": "018ef3558b34c4ea77e67defbca4050368961e2be51e53f88e4c10e630cd3e7d"
+    },
+    {
+      "file": "docs/arena-combat-v72/side-finish.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 49185,
+      "afterBytes": 49185,
+      "unchanged": true,
+      "beforeSha256": "6a63f140dda7c6c3978e81a606e307e0045085bdc7ac2ad5701a3bb6c7c4d4b8",
+      "afterSha256": "6a63f140dda7c6c3978e81a606e307e0045085bdc7ac2ad5701a3bb6c7c4d4b8",
+      "image": {
+        "width": 1000,
+        "height": 600,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/arena-entrance-v70/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 1551,
+      "afterBytes": 1551,
+      "unchanged": true,
+      "beforeSha256": "d68d19f17989a71e360a5387b9046678b2c9b5148d67e37f58518608fb24b1ae",
+      "afterSha256": "d68d19f17989a71e360a5387b9046678b2c9b5148d67e37f58518608fb24b1ae"
+    },
+    {
+      "file": "docs/arena-entrance-v70/selection-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 573518,
+      "afterBytes": 573518,
+      "unchanged": true,
+      "beforeSha256": "370982f018c607b65162c61d8571707fead8ccde3f1938ec0bc73d51ee36960c",
+      "afterSha256": "370982f018c607b65162c61d8571707fead8ccde3f1938ec0bc73d51ee36960c",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/arena-stats-v73/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2873,
+      "afterBytes": 2873,
+      "unchanged": true,
+      "beforeSha256": "c6e23851d4fdf2adc26fdc104c52276ed33e3b51f0aeaed59bf25f3a9763d579",
+      "afterSha256": "c6e23851d4fdf2adc26fdc104c52276ed33e3b51f0aeaed59bf25f3a9763d579"
+    },
+    {
+      "file": "docs/arena-stats-v74/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2641,
+      "afterBytes": 2641,
+      "unchanged": true,
+      "beforeSha256": "425cfbdadc21850b9f5ee8e97dfe913dabf6ded02352f94640719d4a47031e26",
+      "afterSha256": "425cfbdadc21850b9f5ee8e97dfe913dabf6ded02352f94640719d4a47031e26"
+    },
+    {
+      "file": "docs/arena-stats-v75/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2899,
+      "afterBytes": 2899,
+      "unchanged": true,
+      "beforeSha256": "264381dab25fb46db9135a3a86daf1104029e445bbf013eaef942c66f13a770c",
+      "afterSha256": "264381dab25fb46db9135a3a86daf1104029e445bbf013eaef942c66f13a770c"
+    },
+    {
+      "file": "docs/arena-stats-v76/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 3497,
+      "afterBytes": 3497,
+      "unchanged": true,
+      "beforeSha256": "6a4654816502f919b8dd6472bac8dd5b2dbb71e959e9a23f11195f68ae8bd001",
+      "afterSha256": "6a4654816502f919b8dd6472bac8dd5b2dbb71e959e9a23f11195f68ae8bd001"
+    },
+    {
+      "file": "docs/arena-stats-v77/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 3463,
+      "afterBytes": 3463,
+      "unchanged": true,
+      "beforeSha256": "41b1ca56e17be20f0667371290b076000adcbc3271faebf45909d6ff1cfdd96e",
+      "afterSha256": "41b1ca56e17be20f0667371290b076000adcbc3271faebf45909d6ff1cfdd96e"
+    },
+    {
+      "file": "docs/arena-title-v71/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 1261,
+      "afterBytes": 1261,
+      "unchanged": true,
+      "beforeSha256": "be8830256b747f02cddacce1d95adaab6b74acd6e843c9b5fdda608813df595f",
+      "afterSha256": "be8830256b747f02cddacce1d95adaab6b74acd6e843c9b5fdda608813df595f"
+    },
+    {
+      "file": "docs/arena-title-v71/selection-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 572485,
+      "afterBytes": 572485,
+      "unchanged": true,
+      "beforeSha256": "0805f64fe2718eb9a0f0bf3dbbd8636471191f982ecf7467f6c04a31e0375b92",
+      "afterSha256": "0805f64fe2718eb9a0f0bf3dbbd8636471191f982ecf7467f6c04a31e0375b92",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/arena-ui-v78/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2404,
+      "afterBytes": 2404,
+      "unchanged": true,
+      "beforeSha256": "b548d5dd30b839351dbcaacd2b13d079f52feebefa613ff2decb9aaede9ba83c",
+      "afterSha256": "b548d5dd30b839351dbcaacd2b13d079f52feebefa613ff2decb9aaede9ba83c"
+    },
+    {
+      "file": "docs/arena-v81/ANIMATION-LICENSE.txt",
+      "area": "documentation",
+      "extension": ".txt",
+      "beforeBytes": 7048,
+      "afterBytes": 7048,
+      "unchanged": true,
+      "beforeSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "afterSha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "docs/arena-v81/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2484,
+      "afterBytes": 2484,
+      "unchanged": true,
+      "beforeSha256": "31b7fa23a62db7a78960658429302707fbe40cd9808c54e1cafce4c7e81bdbd8",
+      "afterSha256": "31b7fa23a62db7a78960658429302707fbe40cd9808c54e1cafce4c7e81bdbd8"
+    },
+    {
+      "file": "docs/city-performance/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 6416,
+      "afterBytes": 6416,
+      "unchanged": true,
+      "beforeSha256": "0db06afdc10d209e3d062be6748103b7da48ed5b3c48e44535203dd35a1135d3",
+      "afterSha256": "0db06afdc10d209e3d062be6748103b7da48ed5b3c48e44535203dd35a1135d3"
+    },
+    {
+      "file": "docs/city-performance/after-city-centre.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 345628,
+      "afterBytes": 345628,
+      "unchanged": true,
+      "beforeSha256": "b6b9b5952b60dfe8c90650d0e42fe09393d42db84ba78355e1f634c73c8029ff",
+      "afterSha256": "b6b9b5952b60dfe8c90650d0e42fe09393d42db84ba78355e1f634c73c8029ff",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/city-performance/after-gallery-left-0.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 496352,
+      "afterBytes": 496352,
+      "unchanged": true,
+      "beforeSha256": "4c9f0b5181585279a7208cffe30a3c1643b12b23413d707259cee9ed55b42580",
+      "afterSha256": "4c9f0b5181585279a7208cffe30a3c1643b12b23413d707259cee9ed55b42580",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/city-performance/after-gallery-right-6.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 503454,
+      "afterBytes": 503454,
+      "unchanged": true,
+      "beforeSha256": "f489217f45a542c760150c78a12f20396b4ac34abb426938688f9f6a8d6e5cb9",
+      "afterSha256": "f489217f45a542c760150c78a12f20396b4ac34abb426938688f9f6a8d6e5cb9",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/city-performance/before-city-centre.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 348049,
+      "afterBytes": 348049,
+      "unchanged": true,
+      "beforeSha256": "2785799ef4f1b279c20956de82bcc6ebb804f75ba3d1402efcfdfb5bb75ea6e1",
+      "afterSha256": "2785799ef4f1b279c20956de82bcc6ebb804f75ba3d1402efcfdfb5bb75ea6e1",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/city-performance/before-gallery-left-0.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 496843,
+      "afterBytes": 496843,
+      "unchanged": true,
+      "beforeSha256": "0e136e99b86c424fa8f02b888f7919529bf22fccbfca37f441da5363cc235392",
+      "afterSha256": "0e136e99b86c424fa8f02b888f7919529bf22fccbfca37f441da5363cc235392",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/city-performance/before-gallery-right-6.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 504458,
+      "afterBytes": 504458,
+      "unchanged": true,
+      "beforeSha256": "75f3c45210ab58bb7ac80414cd3eaceeb402915ecff83c097de3d0ebc0e6bfab",
+      "afterSha256": "75f3c45210ab58bb7ac80414cd3eaceeb402915ecff83c097de3d0ebc0e6bfab",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/city-performance/measurement.json",
+      "area": "documentation",
+      "extension": ".json",
+      "beforeBytes": 67138,
+      "afterBytes": 67138,
+      "unchanged": true,
+      "beforeSha256": "096c6dbe4080d8ffaa02922a46d7850866a6e763be97b9a4d8fbfdfc7a5c276a",
+      "afterSha256": "096c6dbe4080d8ffaa02922a46d7850866a6e763be97b9a4d8fbfdfc7a5c276a"
+    },
+    {
+      "file": "docs/forum-market-v66/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 3904,
+      "afterBytes": 3904,
+      "unchanged": true,
+      "beforeSha256": "32adc99dd6f61a400c84f569563f4e95e580d0bc61bc725e996138b5cbc38b21",
+      "afterSha256": "32adc99dd6f61a400c84f569563f4e95e580d0bc61bc725e996138b5cbc38b21"
+    },
+    {
+      "file": "docs/forum-market-v67/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 1879,
+      "afterBytes": 1879,
+      "unchanged": true,
+      "beforeSha256": "6188e77344906843629546695efd868bb0a0eb5ee4f82fe8b098bfe6c583b4c1",
+      "afterSha256": "6188e77344906843629546695efd868bb0a0eb5ee4f82fe8b098bfe6c583b4c1"
+    },
+    {
+      "file": "docs/forum-market-v67/create-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 69750,
+      "afterBytes": 69750,
+      "unchanged": true,
+      "beforeSha256": "11c0d15e5ce839850f3711a68907b58faccc8a12522719f54dbf2b8f0a49c8fd",
+      "afterSha256": "11c0d15e5ce839850f3711a68907b58faccc8a12522719f54dbf2b8f0a49c8fd",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/forum-market-v67/forum-empty.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 88319,
+      "afterBytes": 88319,
+      "unchanged": true,
+      "beforeSha256": "4f84ca06bbb25c6ce39e530d370f2b0f2d43d5e455f0c3b5577d7cbb60831e7b",
+      "afterSha256": "4f84ca06bbb25c6ce39e530d370f2b0f2d43d5e455f0c3b5577d7cbb60831e7b",
+      "image": {
+        "width": 1536,
+        "height": 706,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/forum-market-v67/forum-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 64822,
+      "afterBytes": 64822,
+      "unchanged": true,
+      "beforeSha256": "c3532c5b75471bedab755adb55a30588aa53edf22f1d6c92e90dd69a74dc5087",
+      "afterSha256": "c3532c5b75471bedab755adb55a30588aa53edf22f1d6c92e90dd69a74dc5087",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/login-panel-v80/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 1140,
+      "afterBytes": 1140,
+      "unchanged": true,
+      "beforeSha256": "52518e06d6069c04570a08b9e389ba95d5be717b928f06f5b195daf742063223",
+      "afterSha256": "52518e06d6069c04570a08b9e389ba95d5be717b928f06f5b195daf742063223"
+    },
+    {
+      "file": "docs/mobile-performance/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 11929,
+      "afterBytes": 11929,
+      "unchanged": true,
+      "beforeSha256": "bbb7cebd897e07c4ea84766eb4d230f3973cde915c33cd110790d4bb3689a4e4",
+      "afterSha256": "bbb7cebd897e07c4ea84766eb4d230f3973cde915c33cd110790d4bb3689a4e4"
+    },
+    {
+      "file": "docs/mobile-performance/after-clan.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 532159,
+      "afterBytes": 532159,
+      "unchanged": true,
+      "beforeSha256": "480bf92cf27666bb2fc178d1bb42d4f245197455051a2961e0ad95a15be3c421",
+      "afterSha256": "480bf92cf27666bb2fc178d1bb42d4f245197455051a2961e0ad95a15be3c421",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/mobile-performance/after-courtyard.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 471050,
+      "afterBytes": 471050,
+      "unchanged": true,
+      "beforeSha256": "d29d18d0bab05bcd97ac023f5d6d88dea48e985bf52da151c77c5d5d04d11265",
+      "afterSha256": "d29d18d0bab05bcd97ac023f5d6d88dea48e985bf52da151c77c5d5d04d11265",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/mobile-performance/after-office.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 519529,
+      "afterBytes": 519529,
+      "unchanged": true,
+      "beforeSha256": "74faf29d059d64bb25df6ce43c70322d08e96f01e62a7068bce136d2a9287314",
+      "afterSha256": "74faf29d059d64bb25df6ce43c70322d08e96f01e62a7068bce136d2a9287314",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/mobile-performance/assets.json",
+      "area": "documentation",
+      "extension": ".json",
+      "beforeBytes": 63310,
+      "afterBytes": 63310,
+      "unchanged": true,
+      "beforeSha256": "aac001bfe5c6d6d15d089d8e254b1a25e0942cf3b2ff46ff19cdf16de2268b71",
+      "afterSha256": "aac001bfe5c6d6d15d089d8e254b1a25e0942cf3b2ff46ff19cdf16de2268b71"
+    },
+    {
+      "file": "docs/mobile-performance/before-clan.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 532140,
+      "afterBytes": 532140,
+      "unchanged": true,
+      "beforeSha256": "a92ef46548cc5e291476dcf2d9ace4bfb78847726c1c3635d2fe1e7831f18781",
+      "afterSha256": "a92ef46548cc5e291476dcf2d9ace4bfb78847726c1c3635d2fe1e7831f18781",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/mobile-performance/before-courtyard.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 470938,
+      "afterBytes": 470938,
+      "unchanged": true,
+      "beforeSha256": "e87bed5b941baa3568e964c55f79f1dfe8019c886af7522bc80cd57795505226",
+      "afterSha256": "e87bed5b941baa3568e964c55f79f1dfe8019c886af7522bc80cd57795505226",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/mobile-performance/before-office.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 519506,
+      "afterBytes": 519506,
+      "unchanged": true,
+      "beforeSha256": "79e1965ea2f332351db803621d3b41c85d0b48641eec9510af3c553ad83e935f",
+      "afterSha256": "79e1965ea2f332351db803621d3b41c85d0b48641eec9510af3c553ad83e935f",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/mobile-performance/login-measurement.json",
+      "area": "documentation",
+      "extension": ".json",
+      "beforeBytes": 514,
+      "afterBytes": 514,
+      "unchanged": true,
+      "beforeSha256": "db0e6325d73709d3d9914e1266af3b4638f6dc802f58bcd7e445c480f799067b",
+      "afterSha256": "db0e6325d73709d3d9914e1266af3b4638f6dc802f58bcd7e445c480f799067b"
+    },
+    {
+      "file": "docs/mobile-performance/measurement.json",
+      "area": "documentation",
+      "extension": ".json",
+      "beforeBytes": 33044,
+      "afterBytes": 33044,
+      "unchanged": true,
+      "beforeSha256": "b1a83f82ecdf50d19e11dc04f58dd4fdc77b23fefc539f1a5b61efb6e2357753",
+      "afterSha256": "b1a83f82ecdf50d19e11dc04f58dd4fdc77b23fefc539f1a5b61efb6e2357753"
+    },
+    {
+      "file": "docs/roman-theme-v68/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2804,
+      "afterBytes": 2804,
+      "unchanged": true,
+      "beforeSha256": "9033283dcb775f14c04def96e6bfd34b8edcb53aa3b9c7a454ba08e4f2d7ce5d",
+      "afterSha256": "9033283dcb775f14c04def96e6bfd34b8edcb53aa3b9c7a454ba08e4f2d7ce5d"
+    },
+    {
+      "file": "docs/roman-theme-v68/clan-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 60232,
+      "afterBytes": 60232,
+      "unchanged": true,
+      "beforeSha256": "7158930d018526e236cf12a88106b0b95c1536ee96aa4a528dca717548669946",
+      "afterSha256": "7158930d018526e236cf12a88106b0b95c1536ee96aa4a528dca717548669946",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/roman-theme-v68/gladiator-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 143172,
+      "afterBytes": 143172,
+      "unchanged": true,
+      "beforeSha256": "4886b4d6c9265e775fe5f5f3a3bb13fae4758bbf2b6659f316a4cac79d9b2d26",
+      "afterSha256": "4886b4d6c9265e775fe5f5f3a3bb13fae4758bbf2b6659f316a4cac79d9b2d26",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/roman-theme-v68/imperial-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 194012,
+      "afterBytes": 194012,
+      "unchanged": true,
+      "beforeSha256": "855c74cfbc977d14e071740478b44b27166a1dd6b0c5daae5da4588bf5334f29",
+      "afterSha256": "855c74cfbc977d14e071740478b44b27166a1dd6b0c5daae5da4588bf5334f29",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/roman-theme-v68/missions-mobile.png",
+      "area": "documentation",
+      "extension": ".png",
+      "beforeBytes": 48864,
+      "afterBytes": 48864,
+      "unchanged": true,
+      "beforeSha256": "2ec5027b1183abce67ae26392c68bb818b0365defb60ffb1eb499aef83a749a8",
+      "afterSha256": "2ec5027b1183abce67ae26392c68bb818b0365defb60ffb1eb499aef83a749a8",
+      "image": {
+        "width": 844,
+        "height": 390,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "docs/survival-v83/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 2741,
+      "afterBytes": 2741,
+      "unchanged": true,
+      "beforeSha256": "7cca828802c99e6e41ce54153b7cc40b89959760666ce5c95af263e445b56fc7",
+      "afterSha256": "7cca828802c99e6e41ce54153b7cc40b89959760666ce5c95af263e445b56fc7"
+    },
+    {
+      "file": "docs/ui-design-system.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 3343,
+      "afterBytes": 3343,
+      "unchanged": true,
+      "beforeSha256": "a997139f4a2a40cd47088f47fce99b63ea8fef3aa6983c1a56a4d1ed4ca9727d",
+      "afterSha256": "a997139f4a2a40cd47088f47fce99b63ea8fef3aa6983c1a56a4d1ed4ca9727d"
+    },
+    {
+      "file": "docs/ui-revisions-v79/README.md",
+      "area": "documentation",
+      "extension": ".md",
+      "beforeBytes": 1982,
+      "afterBytes": 1982,
+      "unchanged": true,
+      "beforeSha256": "d08cd52b0825dc107fe162f1869305c24912eea8383a4124804941e0b1b36555",
+      "afterSha256": "d08cd52b0825dc107fe162f1869305c24912eea8383a4124804941e0b1b36555"
+    },
+    {
+      "file": "forum-market-v66.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 27330,
+      "afterBytes": 27330,
+      "unchanged": true,
+      "beforeSha256": "e23933764ffa1eecb9a903b7dbc208df48c89ad7f6cbf574e28c9d82e9316c52",
+      "afterSha256": "e23933764ffa1eecb9a903b7dbc208df48c89ad7f6cbf574e28c9d82e9316c52",
+      "sourceSignals": {}
+    },
+    {
+      "file": "forum-market-v66.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 30084,
+      "afterBytes": 30084,
+      "unchanged": true,
+      "beforeSha256": "f4ce29ad2539f1cca31f038e7be8022ada04be4e797f9932dd72ea3b419be8ac",
+      "afterSha256": "f4ce29ad2539f1cca31f038e7be8022ada04be4e797f9932dd72ea3b419be8ac",
+      "sourceSignals": {
+        "layoutReads": 1
+      }
+    },
+    {
+      "file": "gelistirmeler.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 768768,
+      "afterBytes": 84363,
+      "unchanged": false,
+      "beforeSha256": "1cc5fb5698912ac109885f4cf01be9f6e32fc2773e05c255470b5beaef4d4336",
+      "afterSha256": "425d35e0dfaa277a7d930fb9e5962e9fae9a6d213961a05211e1857650a03456",
+      "sourceSignals": {
+        "intervals": 1,
+        "clientCreation": 2,
+        "userChecks": 2
+      }
+    },
+    {
+      "file": "gladiator-arena-empty-v48.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 363810,
+      "afterBytes": 363810,
+      "unchanged": true,
+      "beforeSha256": "a7ce2aad89c39a4216ddf9c09c7aabe812beae3e0380809eee99efd4b8f1f426",
+      "afterSha256": "a7ce2aad89c39a4216ddf9c09c7aabe812beae3e0380809eee99efd4b8f1f426",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "gladiator-exercise-v46.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 17252,
+      "afterBytes": 17252,
+      "unchanged": true,
+      "beforeSha256": "a98dfb3cad3404c3f66b1b6086052a5882191d1e158624af14a3525ccca857b3",
+      "afterSha256": "a98dfb3cad3404c3f66b1b6086052a5882191d1e158624af14a3525ccca857b3",
+      "sourceSignals": {}
+    },
+    {
+      "file": "gladiator-exercise-v46.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 17705,
+      "afterBytes": 17705,
+      "unchanged": true,
+      "beforeSha256": "bae69d74c995bc1f222cb1af627f565095b8a8ee4a241dd9ad137c5ae793400b",
+      "afterSha256": "bae69d74c995bc1f222cb1af627f565095b8a8ee4a241dd9ad137c5ae793400b",
+      "sourceSignals": {}
+    },
+    {
+      "file": "gladiator-mobile.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 11908916,
+      "afterBytes": 11908916,
+      "unchanged": true,
+      "beforeSha256": "949112cc72a197cd7122bff696f113c4e5357137b0093c1a1ee4bb893c8a2425",
+      "afterSha256": "949112cc72a197cd7122bff696f113c4e5357137b0093c1a1ee4bb893c8a2425"
+    },
+    {
+      "file": "gladiators-courtyard.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2669160,
+      "afterBytes": 2669160,
+      "unchanged": true,
+      "beforeSha256": "ea3cb9167d0318f24092d78ffd4cdecb9aa0835cc69657a520182e71aa22b711",
+      "afterSha256": "ea3cb9167d0318f24092d78ffd4cdecb9aa0835cc69657a520182e71aa22b711",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "gorevler.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 267193,
+      "afterBytes": 49344,
+      "unchanged": false,
+      "beforeSha256": "49880ed47d4e8a2713fab76be29bb7895e98b38c0a86d6c6b70c058c6370e169",
+      "afterSha256": "e3a979487e35317716fa6361969a6724271117c24fc957eec264b7af9fd807b8",
+      "sourceSignals": {
+        "intervals": 2,
+        "clientCreation": 2,
+        "userChecks": 2
+      }
+    },
+    {
+      "file": "guild-courtyard.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2815202,
+      "afterBytes": 2815202,
+      "unchanged": true,
+      "beforeSha256": "5d582a32fa97b63fa1ac70a6e862b81b992846348feaebbd3ce2a1d807afead1",
+      "afterSha256": "5d582a32fa97b63fa1ac70a6e862b81b992846348feaebbd3ce2a1d807afead1",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "home-courtyard.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2952402,
+      "afterBytes": 2952402,
+      "unchanged": true,
+      "beforeSha256": "b2a4d5bbaad215f4630a24b0e2b4a3b8efdb7a3420a2d4252faf34022e9cceb9",
+      "afterSha256": "b2a4d5bbaad215f4630a24b0e2b4a3b8efdb7a3420a2d4252faf34022e9cceb9",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-cycle-v45.json",
+      "area": "configuration",
+      "extension": ".json",
+      "beforeBytes": 6593,
+      "afterBytes": 6593,
+      "unchanged": true,
+      "beforeSha256": "c1a815365d54e6a59cf6715b4050620e17624696a607f7558b03fbc16ded8f1f",
+      "afterSha256": "c1a815365d54e6a59cf6715b4050620e17624696a607f7558b03fbc16ded8f1f",
+      "sourceSignals": {}
+    },
+    {
+      "file": "imperial-desk-v31.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 3233536,
+      "afterBytes": 3233536,
+      "unchanged": true,
+      "beforeSha256": "5a57e4b1d7b10b0a28be54cf79bac16e28a6d27573b79f709278e99078fa952e",
+      "afterSha256": "5a57e4b1d7b10b0a28be54cf79bac16e28a6d27573b79f709278e99078fa952e"
+    },
+    {
+      "file": "imperial-missions-v31.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 17749,
+      "afterBytes": 17749,
+      "unchanged": true,
+      "beforeSha256": "5f254732afcc969b262f81503a43efff7f6a668c1326dedb8e525136a1bf7e82",
+      "afterSha256": "5f254732afcc969b262f81503a43efff7f6a668c1326dedb8e525136a1bf7e82",
+      "sourceSignals": {}
+    },
+    {
+      "file": "imperial-missions-v31.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 30103,
+      "afterBytes": 30175,
+      "unchanged": false,
+      "beforeSha256": "3697e465f075444a840a596ad164ed5d4c2b219a5d9e5fb329e65a7eeba5510e",
+      "afterSha256": "0c4071d457c485e893cfeb5324e16c28768339d2363d01f7b31158f038c81b21",
+      "sourceSignals": {
+        "layoutReads": 3,
+        "modelLoads": 2,
+        "sceneTraversals": 2
+      }
+    },
+    {
+      "file": "imperial-missions/gun01-kolay-aventinus-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 357902,
+      "afterBytes": 357902,
+      "unchanged": true,
+      "beforeSha256": "6c90b2e7b7e89c142fb7bd392ba6557bdc577df46fc39d566034a7e354b8b2e3",
+      "afterSha256": "6c90b2e7b7e89c142fb7bd392ba6557bdc577df46fc39d566034a7e354b8b2e3",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun01-kolay-aventinus-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 149192,
+      "afterBytes": 149192,
+      "unchanged": true,
+      "beforeSha256": "3bbc5c33fe179590cb31140209dd7f9dddfc5b72f0eeb7eaa9e794e43e2dbd2b",
+      "afterSha256": "3bbc5c33fe179590cb31140209dd7f9dddfc5b72f0eeb7eaa9e794e43e2dbd2b",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun01-orta-palmyra-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 370848,
+      "afterBytes": 370848,
+      "unchanged": true,
+      "beforeSha256": "32dc3a1d72ba07c206376138c4e5fbb83ff581baf6f77a77749c5b79fe4b5d85",
+      "afterSha256": "32dc3a1d72ba07c206376138c4e5fbb83ff581baf6f77a77749c5b79fe4b5d85",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun01-orta-palmyra-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 160722,
+      "afterBytes": 160722,
+      "unchanged": true,
+      "beforeSha256": "761f09b6ccf2a91154c2c7b634d48916c6451b017fa8ff1434f8067d3bf5761e",
+      "afterSha256": "761f09b6ccf2a91154c2c7b634d48916c6451b017fa8ff1434f8067d3bf5761e",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun01-zor-nisibis-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 460396,
+      "afterBytes": 460396,
+      "unchanged": true,
+      "beforeSha256": "94b05f7504351205aaaa5fc5dde18a7e3d21915ea295aa333715d7186c01c14a",
+      "afterSha256": "94b05f7504351205aaaa5fc5dde18a7e3d21915ea295aa333715d7186c01c14a",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun01-zor-nisibis-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 200640,
+      "afterBytes": 200640,
+      "unchanged": true,
+      "beforeSha256": "a9d2de773ab0b3ffd618a8dbb3f3a5ab2c371c90655bb12b986ac3efc883083b",
+      "afterSha256": "a9d2de773ab0b3ffd618a8dbb3f3a5ab2c371c90655bb12b986ac3efc883083b",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun02-kolay-hamam-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 371356,
+      "afterBytes": 371356,
+      "unchanged": true,
+      "beforeSha256": "2d7d7f54a0e6902b2a221ff0cbd393de2cb242206f1bee44b6d8ac700b41c152",
+      "afterSha256": "2d7d7f54a0e6902b2a221ff0cbd393de2cb242206f1bee44b6d8ac700b41c152",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun02-kolay-hamam-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 164498,
+      "afterBytes": 164498,
+      "unchanged": true,
+      "beforeSha256": "f95375f65cca437aba398a18981701bca8f7d7f6ab35d93cf6b424393e4e54b4",
+      "afterSha256": "f95375f65cca437aba398a18981701bca8f7d7f6ab35d93cf6b424393e4e54b4",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun02-orta-pompeii-vergi-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 405486,
+      "afterBytes": 405486,
+      "unchanged": true,
+      "beforeSha256": "8d1f39b4fe7bc39acebd9de3dbf74a141129f330a2588b5d150c14fd943a4583",
+      "afterSha256": "8d1f39b4fe7bc39acebd9de3dbf74a141129f330a2588b5d150c14fd943a4583",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun02-orta-pompeii-vergi-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 167854,
+      "afterBytes": 167854,
+      "unchanged": true,
+      "beforeSha256": "35d6d3f842ec256169306646ecaf3dde743a4d794dce58f1711b5fc926a381e7",
+      "afterSha256": "35d6d3f842ec256169306646ecaf3dde743a4d794dce58f1711b5fc926a381e7",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun02-zor-aktium-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 436460,
+      "afterBytes": 436460,
+      "unchanged": true,
+      "beforeSha256": "fc08906bf3e5e6d4df7174fab641b1e2606213316317bc74226dd5d8db407f84",
+      "afterSha256": "fc08906bf3e5e6d4df7174fab641b1e2606213316317bc74226dd5d8db407f84",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun02-zor-aktium-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 184486,
+      "afterBytes": 184486,
+      "unchanged": true,
+      "beforeSha256": "9c36669b9d44a165c151b85d9b4caa4acaab2cb4d8fb8a73971283d8fd641766",
+      "afterSha256": "9c36669b9d44a165c151b85d9b4caa4acaab2cb4d8fb8a73971283d8fd641766",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun03-cannae-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 480680,
+      "afterBytes": 480680,
+      "unchanged": true,
+      "beforeSha256": "f023c9c3d59da0d60e5cabb3c67fc6ea03153d3b03fcce3c61750b8019b136f2",
+      "afterSha256": "f023c9c3d59da0d60e5cabb3c67fc6ea03153d3b03fcce3c61750b8019b136f2",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun03-cannae-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 203322,
+      "afterBytes": 203322,
+      "unchanged": true,
+      "beforeSha256": "63fc98211bb92438630cb3d8f137269b06acd00b086589f6ac28f4b6c69111d2",
+      "afterSha256": "63fc98211bb92438630cb3d8f137269b06acd00b086589f6ac28f4b6c69111d2",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun03-kudus-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 401236,
+      "afterBytes": 401236,
+      "unchanged": true,
+      "beforeSha256": "e8c932407fc0075d01d256d63264ba18e5cee35bbf0453d2a9a2dacf41e2952a",
+      "afterSha256": "e8c932407fc0075d01d256d63264ba18e5cee35bbf0453d2a9a2dacf41e2952a",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun03-kudus-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 169036,
+      "afterBytes": 169036,
+      "unchanged": true,
+      "beforeSha256": "64593f0d6f2d36ec6baea2047f79d3ac9ab878040c53d4145ea61d417e013bf0",
+      "afterSha256": "64593f0d6f2d36ec6baea2047f79d3ac9ab878040c53d4145ea61d417e013bf0",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun03-masada-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 429936,
+      "afterBytes": 429936,
+      "unchanged": true,
+      "beforeSha256": "6329ea51cf46b3ce66f7288f74aec9294535e903ce5059a452e6e594c15827ca",
+      "afterSha256": "6329ea51cf46b3ce66f7288f74aec9294535e903ce5059a452e6e594c15827ca",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun03-masada-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 170624,
+      "afterBytes": 170624,
+      "unchanged": true,
+      "beforeSha256": "40c86997c894c85c60b41b4e73a9bbd93284151aeb4909963c37c15e58011c5d",
+      "afterSha256": "40c86997c894c85c60b41b4e73a9bbd93284151aeb4909963c37c15e58011c5d",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun04-kolay-traianus-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 449486,
+      "afterBytes": 449486,
+      "unchanged": true,
+      "beforeSha256": "28594a460aefd1f9560f92e50fbf57fba7204b74358f7dd2647a49697a5c62af",
+      "afterSha256": "28594a460aefd1f9560f92e50fbf57fba7204b74358f7dd2647a49697a5c62af",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun04-kolay-traianus-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 192180,
+      "afterBytes": 192180,
+      "unchanged": true,
+      "beforeSha256": "c4a09f92763594c248ae83bdfce45726240412d55c0d25c96d25ae25a1c99b3c",
+      "afterSha256": "c4a09f92763594c248ae83bdfce45726240412d55c0d25c96d25ae25a1c99b3c",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun04-orta-portus-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 389250,
+      "afterBytes": 389250,
+      "unchanged": true,
+      "beforeSha256": "ba3823eb5a03a82906a377a9de47035207feddf10fa77dcf3a7d6f4fabd73e43",
+      "afterSha256": "ba3823eb5a03a82906a377a9de47035207feddf10fa77dcf3a7d6f4fabd73e43",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun04-orta-portus-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 165238,
+      "afterBytes": 165238,
+      "unchanged": true,
+      "beforeSha256": "533adada2a48675aeff0aed478053abe1e1679c5063138e4d7d77aaa63a7ef7a",
+      "afterSha256": "533adada2a48675aeff0aed478053abe1e1679c5063138e4d7d77aaa63a7ef7a",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun04-zor-subura-detay.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 385426,
+      "afterBytes": 385426,
+      "unchanged": true,
+      "beforeSha256": "18e9fe7748a6e94d5e7f12c7c695b2ddb2e61f4c0ff1ae803295d279b5e86bd7",
+      "afterSha256": "18e9fe7748a6e94d5e7f12c7c695b2ddb2e61f4c0ff1ae803295d279b5e86bd7",
+      "image": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-missions/gun04-zor-subura-kart.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 167240,
+      "afterBytes": 167240,
+      "unchanged": true,
+      "beforeSha256": "5b2a7cf03db48cce575a46308404c3f25f159338e453b772f7d7f9130d673443",
+      "afterSha256": "5b2a7cf03db48cce575a46308404c3f25f159338e453b772f7d7f9130d673443",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portrait-hoplomachus-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 10382,
+      "afterBytes": 10382,
+      "unchanged": true,
+      "beforeSha256": "9094cbe0940a3b1a6900f22b6e508b59a9491da0cf7e168c0e4fbf33416e3fe0",
+      "afterSha256": "9094cbe0940a3b1a6900f22b6e508b59a9491da0cf7e168c0e4fbf33416e3fe0",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portrait-murmillo-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 13784,
+      "afterBytes": 13784,
+      "unchanged": true,
+      "beforeSha256": "7654d3ac8946f21d6580fb2f9c5f53f9467f70c036cd3b8af3c49d88b264e718",
+      "afterSha256": "7654d3ac8946f21d6580fb2f9c5f53f9467f70c036cd3b8af3c49d88b264e718",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portrait-provocator-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 13024,
+      "afterBytes": 13024,
+      "unchanged": true,
+      "beforeSha256": "22205daf0ebe436b2cc95373abe6d20459f4b219fa8db2a5aaddd9fd9e303439",
+      "afterSha256": "22205daf0ebe436b2cc95373abe6d20459f4b219fa8db2a5aaddd9fd9e303439",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portrait-retiarius-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 8436,
+      "afterBytes": 8436,
+      "unchanged": true,
+      "beforeSha256": "40b15a760b306fec47d57349bef73e3a27c684f67b471a0fd593b697369d899f",
+      "afterSha256": "40b15a760b306fec47d57349bef73e3a27c684f67b471a0fd593b697369d899f",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portrait-scissor-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 9378,
+      "afterBytes": 9378,
+      "unchanged": true,
+      "beforeSha256": "22841912cfcc9a5760441446df12b1d36887cdcecef23203af163789bc62f568",
+      "afterSha256": "22841912cfcc9a5760441446df12b1d36887cdcecef23203af163789bc62f568",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portrait-secutor-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 13224,
+      "afterBytes": 13224,
+      "unchanged": true,
+      "beforeSha256": "56d428bc3ee04ce724e46d40ca6bfb01bffad4d2e36fec618bca32534eba8468",
+      "afterSha256": "56d428bc3ee04ce724e46d40ca6bfb01bffad4d2e36fec618bca32534eba8468",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portrait-thraex-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 10684,
+      "afterBytes": 10684,
+      "unchanged": true,
+      "beforeSha256": "3e59dc637f8de1e9802e1eb9d1d3c701e66eeedc34ae313d53cd65862f63da4e",
+      "afterSha256": "3e59dc637f8de1e9802e1eb9d1d3c701e66eeedc34ae313d53cd65862f63da4e",
+      "image": {
+        "width": 256,
+        "height": 256,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-portus-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 123002,
+      "afterBytes": 123002,
+      "unchanged": true,
+      "beforeSha256": "172655af3f32d7f6be1a7b774e5c4e779e24e848aff7ebe13d982a48049a085c",
+      "afterSha256": "172655af3f32d7f6be1a7b774e5c4e779e24e848aff7ebe13d982a48049a085c",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-subura-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 128564,
+      "afterBytes": 128564,
+      "unchanged": true,
+      "beforeSha256": "1303e22170f96cbe3f73d35dde5a5435fa1cd4ccb63d1aedbdc5c148b9ee1543",
+      "afterSha256": "1303e22170f96cbe3f73d35dde5a5435fa1cd4ccb63d1aedbdc5c148b9ee1543",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "imperial-trajan-v31.webp",
+      "area": "asset",
+      "extension": ".webp",
+      "beforeBytes": 147424,
+      "afterBytes": 147424,
+      "unchanged": true,
+      "beforeSha256": "c28fbf1213c9d1d3ed57f9a62a9903b9168b5e955f8cc04371b9b74ec4e5d377",
+      "afterSha256": "c28fbf1213c9d1d3ed57f9a62a9903b9168b5e955f8cc04371b9b74ec4e5d377",
+      "image": {
+        "width": 960,
+        "height": 640,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "index.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 265515,
+      "afterBytes": 47666,
+      "unchanged": false,
+      "beforeSha256": "a605ee06d3eb5c280f9b08eb8db076d864455654f70db9674037b12fea5d6243",
+      "afterSha256": "1e4f6640ecec49340c3603567575958bf2e08a3ac072e83afb6ba393cc167882",
+      "sourceSignals": {
+        "intervals": 2,
+        "clientCreation": 2,
+        "userChecks": 2
+      }
+    },
+    {
+      "file": "inventory-armory.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2793394,
+      "afterBytes": 2793394,
+      "unchanged": true,
+      "beforeSha256": "4d5c94c286cb1d9baa5739ad19c998577fbbf382e14f5ad04c52221b936ceda0",
+      "afterSha256": "4d5c94c286cb1d9baa5739ad19c998577fbbf382e14f5ad04c52221b936ceda0",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "klan.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 705692,
+      "afterBytes": 70982,
+      "unchanged": false,
+      "beforeSha256": "81027caf5bfcff77dd59b08cc202ac577ba69a9d12976621e439f80188584741",
+      "afterSha256": "86fa3fd7ad2ea06089934485fba286de0171396fcda02b8f0d9d74ea0ee2101c",
+      "sourceSignals": {
+        "intervals": 1,
+        "clientCreation": 1,
+        "userChecks": 1
+      }
+    },
+    {
+      "file": "kurulum.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 20128,
+      "afterBytes": 20128,
+      "unchanged": true,
+      "beforeSha256": "bc7d597bf406e6f5988654d8dd2aa3217452033f4c7d75b324dbd2f1b569529d",
+      "afterSha256": "bc7d597bf406e6f5988654d8dd2aa3217452033f4c7d75b324dbd2f1b569529d",
+      "sourceSignals": {}
+    },
+    {
+      "file": "login-intro-v40.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 7439,
+      "afterBytes": 7439,
+      "unchanged": true,
+      "beforeSha256": "3ec2d3f718d6fdb934b01666e6599378faf26e939bab47a774a9ac8db160be93",
+      "afterSha256": "3ec2d3f718d6fdb934b01666e6599378faf26e939bab47a774a9ac8db160be93",
+      "sourceSignals": {}
+    },
+    {
+      "file": "login-intro-v40.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 2139,
+      "afterBytes": 2139,
+      "unchanged": true,
+      "beforeSha256": "1874904dcb01ab57149f1ce08afc8559a6b6995a5775eb3c1195f1aa6755b764",
+      "afterSha256": "1874904dcb01ab57149f1ce08afc8559a6b6995a5775eb3c1195f1aa6755b764",
+      "sourceSignals": {
+        "animationFrames": 2
+      }
+    },
+    {
+      "file": "ludus-city-v29.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 7894,
+      "afterBytes": 7894,
+      "unchanged": true,
+      "beforeSha256": "7e91e398c1e582bda0c0efd78903b7294d41526c09ce247fbdf890f01ea4d027",
+      "afterSha256": "7e91e398c1e582bda0c0efd78903b7294d41526c09ce247fbdf890f01ea4d027",
+      "sourceSignals": {
+        "modelLoads": 2,
+        "sceneTraversals": 3
+      }
+    },
+    {
+      "file": "ludus-clan-vault-v35.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 10239,
+      "afterBytes": 10239,
+      "unchanged": true,
+      "beforeSha256": "60c4ee987b2a0d5ca67e3b06cd9cc3e2858df0002ddc2f3541fa9fff71d38ccd",
+      "afterSha256": "60c4ee987b2a0d5ca67e3b06cd9cc3e2858df0002ddc2f3541fa9fff71d38ccd",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-dining-v53.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 3631,
+      "afterBytes": 3631,
+      "unchanged": true,
+      "beforeSha256": "34bfc1f01831f62a4abb1633fcc31f17d2b8995e3ae11956e91aa5b68102b94c",
+      "afterSha256": "34bfc1f01831f62a4abb1633fcc31f17d2b8995e3ae11956e91aa5b68102b94c",
+      "sourceSignals": {
+        "modelLoads": 1,
+        "sceneTraversals": 2
+      }
+    },
+    {
+      "file": "ludus-door-icons-v41.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 2567,
+      "afterBytes": 2567,
+      "unchanged": true,
+      "beforeSha256": "db2dc71c8a23708525ad9f7d9c3225b322926542ede2e433f8b37aef68c893ef",
+      "afterSha256": "db2dc71c8a23708525ad9f7d9c3225b322926542ede2e433f8b37aef68c893ef",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-imperial-v31.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 14445,
+      "afterBytes": 14445,
+      "unchanged": true,
+      "beforeSha256": "a19f4740e5bffbd547d74a1f6830ecb5ce2d6062e57980a1ab2a7cfabb3a712a",
+      "afterSha256": "a19f4740e5bffbd547d74a1f6830ecb5ce2d6062e57980a1ab2a7cfabb3a712a",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-level-runtime-v37.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 220833,
+      "afterBytes": 220833,
+      "unchanged": true,
+      "beforeSha256": "23078f4b1d8a4319e6ad1bff2c4a8f96b7d52a03dcdf3c96ce63bf981df81e7b",
+      "afterSha256": "23078f4b1d8a4319e6ad1bff2c4a8f96b7d52a03dcdf3c96ce63bf981df81e7b",
+      "sourceSignals": {
+        "intervals": 2,
+        "userChecks": 6
+      }
+    },
+    {
+      "file": "ludus-level-v37.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 5080,
+      "afterBytes": 5080,
+      "unchanged": true,
+      "beforeSha256": "4a27cc3881d72c061fb7e8725a4ac6e20b9ff1d3b8cc8801e530f8ab3b85900b",
+      "afterSha256": "4a27cc3881d72c061fb7e8725a4ac6e20b9ff1d3b8cc8801e530f8ab3b85900b",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-level-v37.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 6939,
+      "afterBytes": 6973,
+      "unchanged": false,
+      "beforeSha256": "acafca86991c0d623e50b1274a6a7985bc36ee2adac67dfb266b2183077cb98c",
+      "afterSha256": "a2e060bd31693801d4e06e5169f740bbfb14b5659ea78530c255e38eb6808998",
+      "sourceSignals": {
+        "userChecks": 1
+      }
+    },
+    {
+      "file": "ludus-level-v37.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 31498,
+      "afterBytes": 31498,
+      "unchanged": true,
+      "beforeSha256": "4b6b4f2f7c20dbb93303560019e76d2d1a26c5fa0bcaf06ddf49546bd38e55d1",
+      "afterSha256": "4b6b4f2f7c20dbb93303560019e76d2d1a26c5fa0bcaf06ddf49546bd38e55d1",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-management.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2694724,
+      "afterBytes": 2694724,
+      "unchanged": true,
+      "beforeSha256": "33c65e46488852402d1ad26f008cbaa6ce89193471ae6adbcf934b19211d0583",
+      "afterSha256": "33c65e46488852402d1ad26f008cbaa6ce89193471ae6adbcf934b19211d0583",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "ludus-messages-v41.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 4235,
+      "afterBytes": 4235,
+      "unchanged": true,
+      "beforeSha256": "52e3ff9c3ce9edef1efac7cd19e9f1ce6963dd84548ca505c5a00e7086948f39",
+      "afterSha256": "52e3ff9c3ce9edef1efac7cd19e9f1ce6963dd84548ca505c5a00e7086948f39",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-messages-v41.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 6744,
+      "afterBytes": 6744,
+      "unchanged": true,
+      "beforeSha256": "1730bfba850e446584cf1765789bd28a715390dd92962c379ae3cc2db8159114",
+      "afterSha256": "1730bfba850e446584cf1765789bd28a715390dd92962c379ae3cc2db8159114",
+      "sourceSignals": {
+        "intervals": 1,
+        "layoutReads": 1
+      }
+    },
+    {
+      "file": "ludus-messages-v41.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 6736,
+      "afterBytes": 6736,
+      "unchanged": true,
+      "beforeSha256": "67d80ef721047f059f5c01f6bbe3c0fada817b13f56ed9d838249debe375965e",
+      "afterSha256": "67d80ef721047f059f5c01f6bbe3c0fada817b13f56ed9d838249debe375965e",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-multiplayer-v36.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 23432,
+      "afterBytes": 23432,
+      "unchanged": true,
+      "beforeSha256": "9319306d9fcd26ba2638ea4a8b76dcb46e4e8e17eeecc86b52e2f647b7d20c40",
+      "afterSha256": "9319306d9fcd26ba2638ea4a8b76dcb46e4e8e17eeecc86b52e2f647b7d20c40",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-rest-v64.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 9473,
+      "afterBytes": 9473,
+      "unchanged": true,
+      "beforeSha256": "c5443cb6f54d778a704f77952166fb0ecb78a4679a980162b96a3294033084a2",
+      "afterSha256": "c5443cb6f54d778a704f77952166fb0ecb78a4679a980162b96a3294033084a2",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-room-actions-v62.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 1180,
+      "afterBytes": 1180,
+      "unchanged": true,
+      "beforeSha256": "4f6f91a2c5dd4fec44318283fa6af832aaed5f962954a89ea03e8e8c0926bcd3",
+      "afterSha256": "4f6f91a2c5dd4fec44318283fa6af832aaed5f962954a89ea03e8e8c0926bcd3",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-room-actions-v62.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 3839,
+      "afterBytes": 3911,
+      "unchanged": false,
+      "beforeSha256": "32d0fbd0d8d448e71ef8b050f19ffee20eb80e5f23ceb7691018174ee19cf408",
+      "afterSha256": "3a77a43d7429aac3d67f1be65919351563964fa9f25f6ac20b6a441c639c2a6c",
+      "sourceSignals": {
+        "layoutReads": 1,
+        "modelLoads": 1,
+        "sceneTraversals": 1
+      }
+    },
+    {
+      "file": "ludus-settings-v29.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 2554,
+      "afterBytes": 2554,
+      "unchanged": false,
+      "beforeSha256": "63cd083a26efea14f6570a67e76fc0c359a3cd7df692ee522cb238a2520929c5",
+      "afterSha256": "532f6122ec48d189d4923f0eb8195a2a0abc060826efa245af00721b51f96336",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-seviye.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 2471,
+      "afterBytes": 2586,
+      "unchanged": false,
+      "beforeSha256": "56ebb733827b41306456b09b2109f25837d1693ca1a0863ef4069e2b43d01eeb",
+      "afterSha256": "a54fb93ac6c7ffe8a2efae8b1f265a1e76045da2e034282b2a3fe1854639593d",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-v20.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 10380,
+      "afterBytes": 10380,
+      "unchanged": true,
+      "beforeSha256": "4710995b10da79d5fe3f0198d66a4ecfb3a0f5514a04d2be4d50167196930ab5",
+      "afterSha256": "4710995b10da79d5fe3f0198d66a4ecfb3a0f5514a04d2be4d50167196930ab5",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-v21.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 11105,
+      "afterBytes": 11105,
+      "unchanged": true,
+      "beforeSha256": "c869f211ce7dbf5e5c85021119973847d057061ea7592e5eff04b1edb56d330f",
+      "afterSha256": "c869f211ce7dbf5e5c85021119973847d057061ea7592e5eff04b1edb56d330f",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-v22.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 47282,
+      "afterBytes": 47282,
+      "unchanged": true,
+      "beforeSha256": "2a967f9ae2fee67a08ed0ceac16bb720c2b0784eb06a3c2de4d91c3c46df5620",
+      "afterSha256": "2a967f9ae2fee67a08ed0ceac16bb720c2b0784eb06a3c2de4d91c3c46df5620",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus-v23.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 18086,
+      "afterBytes": 18086,
+      "unchanged": true,
+      "beforeSha256": "052f260623c30dd0d9117fe881419fa3ea9dad44673fe6eaae9dfc4aa8d61dc6",
+      "afterSha256": "052f260623c30dd0d9117fe881419fa3ea9dad44673fe6eaae9dfc4aa8d61dc6",
+      "sourceSignals": {}
+    },
+    {
+      "file": "ludus.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 1419292,
+      "afterBytes": 392153,
+      "unchanged": false,
+      "beforeSha256": "b05199c74bd4b2054d2ea6e8afc4439d1b20b97946dea9d021cd3f3bf3f07bca",
+      "afterSha256": "a062d384d99216cf4dd5030804df07d4c8622d024266f68a5dad6b1b3243e1e7",
+      "sourceSignals": {
+        "animationFrames": 4,
+        "intervals": 2,
+        "layoutReads": 1,
+        "clientCreation": 2,
+        "userChecks": 3,
+        "modelLoads": 9,
+        "sceneTraversals": 16
+      }
+    },
+    {
+      "file": "manifest.webmanifest",
+      "area": "configuration",
+      "extension": ".webmanifest",
+      "beforeBytes": 470,
+      "afterBytes": 470,
+      "unchanged": false,
+      "beforeSha256": "b5d7050718861d1fa01254992cc04ebc745572bdd534ca63075cbe0e4389b68d",
+      "afterSha256": "db8cb40b69aebdd05936bb5e84c73180219d97ca6c34150c11ce9c8d3d35781b",
+      "sourceSignals": {}
+    },
+    {
+      "file": "market-courtyard.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2779880,
+      "afterBytes": 2779880,
+      "unchanged": true,
+      "beforeSha256": "0982bdbcab349741ab3d3ebd2f415ecdd017f2f7c272f6597738227a0bf3c1cc",
+      "afterSha256": "0982bdbcab349741ab3d3ebd2f415ecdd017f2f7c272f6597738227a0bf3c1cc",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "market-v56.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 7729,
+      "afterBytes": 7763,
+      "unchanged": false,
+      "beforeSha256": "ebab5698466ab50f706445e476157468def85967a87e65523cda6687938be711",
+      "afterSha256": "ee972d1c7e6ef51f3f48c685ea653c20db657474f6d0609cdd627eb27224eb51",
+      "sourceSignals": {
+        "userChecks": 1
+      }
+    },
+    {
+      "file": "messages-courtyard.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2695903,
+      "afterBytes": 2695903,
+      "unchanged": true,
+      "beforeSha256": "e3a3ec904feabe1af42ed89469bd6cab843a6a5139d9f5ea57d1a56c77fd4143",
+      "afterSha256": "e3a3ec904feabe1af42ed89469bd6cab843a6a5139d9f5ea57d1a56c77fd4143",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "missions-courtyard.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2623282,
+      "afterBytes": 2623282,
+      "unchanged": true,
+      "beforeSha256": "d8134a2a7f1e4eb891a404f42ce52ae12ec81674aa7c5ae49e983ff99bce9ee0",
+      "afterSha256": "d8134a2a7f1e4eb891a404f42ce52ae12ec81674aa7c5ae49e983ff99bce9ee0",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "multiplayer-v36.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 6164,
+      "afterBytes": 6164,
+      "unchanged": true,
+      "beforeSha256": "d31283d248bfa5c25b9bf53bad26ad32169784e891e057801a66803d8914731e",
+      "afterSha256": "d31283d248bfa5c25b9bf53bad26ad32169784e891e057801a66803d8914731e",
+      "sourceSignals": {}
+    },
+    {
+      "file": "multiplayer-v36.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 29836,
+      "afterBytes": 30056,
+      "unchanged": false,
+      "beforeSha256": "72b535e5c4447313ba299cb1b39778ee5e543beeb1c3dd3a59859e66bcd54bfa",
+      "afterSha256": "44b9e91dde422b55afbaba7f35327e6d72eb643589352ec58ec51d2107e107c8",
+      "sourceSignals": {
+        "animationFrames": 2,
+        "layoutReads": 2,
+        "userChecks": 1,
+        "modelLoads": 2,
+        "sceneTraversals": 2
+      }
+    },
+    {
+      "file": "multiplayer.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 1755030,
+      "afterBytes": 404885,
+      "unchanged": false,
+      "beforeSha256": "9c3c662df3cf7b9e221fbcc69d066c8d2f3ae337b294de78c87bd53464cace82",
+      "afterSha256": "77d60af5cd061cf16d7039d1a49d539cb2e982d9e85be03527c076d54388314b",
+      "sourceSignals": {
+        "intervals": 1,
+        "clientCreation": 1,
+        "userChecks": 2,
+        "modelLoads": 9,
+        "sceneTraversals": 14
+      }
+    },
+    {
+      "file": "office-daily-book-v32.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 178704,
+      "afterBytes": 178704,
+      "unchanged": true,
+      "beforeSha256": "5f5443d28b3ae1dcb7d4324fe23e63935f5bd67802a197c350f8d807b6a1570a",
+      "afterSha256": "5f5443d28b3ae1dcb7d4324fe23e63935f5bd67802a197c350f8d807b6a1570a"
+    },
+    {
+      "file": "office-wardrobe-v32.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 886552,
+      "afterBytes": 886552,
+      "unchanged": true,
+      "beforeSha256": "1a28c995f4e610bfd8d81c1e5b9dc388769c4e6ecf94e7c3e14293d1e576741f",
+      "afterSha256": "1a28c995f4e610bfd8d81c1e5b9dc388769c4e6ecf94e7c3e14293d1e576741f"
+    },
+    {
+      "file": "owner-avatar.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 4542,
+      "afterBytes": 4542,
+      "unchanged": true,
+      "beforeSha256": "d642c19bf7dbf2fda85142edc970d86541747e73f19f59c9f0df9ce60ac2c5da",
+      "afterSha256": "d642c19bf7dbf2fda85142edc970d86541747e73f19f59c9f0df9ce60ac2c5da",
+      "sourceSignals": {}
+    },
+    {
+      "file": "owner-avatar.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 17760,
+      "afterBytes": 18549,
+      "unchanged": false,
+      "beforeSha256": "fb63b42b3cfeef4d0cfbc9529c0d8ed88d75b60b2b14745fde623248074344ec",
+      "afterSha256": "e000c4defb11bc94c838cec31ea1f6353465b8d8a0da9e0b78270e954478c6bc",
+      "sourceSignals": {
+        "animationFrames": 2,
+        "layoutReads": 1,
+        "modelLoads": 2,
+        "sceneTraversals": 3
+      }
+    },
+    {
+      "file": "owner-gait-v30.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 437,
+      "afterBytes": 437,
+      "unchanged": true,
+      "beforeSha256": "529bddeba6088e50c6762d724bf4315386a612c0e293d4cc58d6d7b09f20f70b",
+      "afterSha256": "529bddeba6088e50c6762d724bf4315386a612c0e293d4cc58d6d7b09f20f70b",
+      "sourceSignals": {}
+    },
+    {
+      "file": "owner-makehuman-v27.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 21411012,
+      "afterBytes": 21411012,
+      "unchanged": true,
+      "beforeSha256": "dde7c431c08cb3996b9dc72d6e2bd615bee523ce941b32fb8aa95a125f5a6725",
+      "afterSha256": "dde7c431c08cb3996b9dc72d6e2bd615bee523ce941b32fb8aa95a125f5a6725"
+    },
+    {
+      "file": "owner-preview-v27.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 2702,
+      "afterBytes": 2695,
+      "unchanged": false,
+      "beforeSha256": "efa8b4a4db65424d69b23f5f27bd36c42056ead716b82cbbf25d704dc30c2397",
+      "afterSha256": "3c1c0165ecb8de5128442625f1b39112fcae9a9bb597b8af78d62ad01dfe140c",
+      "sourceSignals": {
+        "animationFrames": 2
+      }
+    },
+    {
+      "file": "owner-run-v30.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 52932,
+      "afterBytes": 52932,
+      "unchanged": true,
+      "beforeSha256": "08dbe2a339199af38731ed956ab6705cc9df0a29cbce432e174b906a892bad6e",
+      "afterSha256": "08dbe2a339199af38731ed956ab6705cc9df0a29cbce432e174b906a892bad6e"
+    },
+    {
+      "file": "owner-skin-dark-v27.jpg",
+      "area": "asset",
+      "extension": ".jpg",
+      "beforeBytes": 107298,
+      "afterBytes": 107298,
+      "unchanged": true,
+      "beforeSha256": "815e069912ffa0d2ced802ae1f89e2c04a989b2c1e5c6b33b7215cba30ea620c",
+      "afterSha256": "815e069912ffa0d2ced802ae1f89e2c04a989b2c1e5c6b33b7215cba30ea620c",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "owner-skin-light-v27.jpg",
+      "area": "asset",
+      "extension": ".jpg",
+      "beforeBytes": 134915,
+      "afterBytes": 134915,
+      "unchanged": true,
+      "beforeSha256": "0d84f8b8e204b9b71019f588ed7444c26da70c81cebbf495bd79e050c1e18593",
+      "afterSha256": "0d84f8b8e204b9b71019f588ed7444c26da70c81cebbf495bd79e050c1e18593",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "owner-three-r160.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 811253,
+      "afterBytes": 811253,
+      "unchanged": true,
+      "beforeSha256": "a894033d333aef8fa0150156cc209e20c90eed4d2f429fb6539d81eb4665bf24",
+      "afterSha256": "a894033d333aef8fa0150156cc209e20c90eed4d2f429fb6539d81eb4665bf24",
+      "sourceSignals": {
+        "animationFrames": 2,
+        "modelLoads": 31,
+        "sceneTraversals": 8
+      }
+    },
+    {
+      "file": "pantheon-city-v29.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 3204960,
+      "afterBytes": 3204960,
+      "unchanged": true,
+      "beforeSha256": "16e04e58ce8535b8fb6a7afb8c41fa4c9194887d0c88c1854a72a177b00e3a51",
+      "afterSha256": "16e04e58ce8535b8fb6a7afb8c41fa4c9194887d0c88c1854a72a177b00e3a51"
+    },
+    {
+      "file": "pazar.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 755029,
+      "afterBytes": 70627,
+      "unchanged": false,
+      "beforeSha256": "5cc45cefa4955f27f88fe0c28d6226a530d5f65c7b7310669e353e367c1f0ca5",
+      "afterSha256": "df5b91d640a1e053a37791f69634b44f48bb0e8501f1b70426f8dcf14f81d84a",
+      "sourceSignals": {
+        "intervals": 1,
+        "clientCreation": 1,
+        "userChecks": 1
+      }
+    },
+    {
+      "file": "roman-theme-v68.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 25218,
+      "afterBytes": 25218,
+      "unchanged": true,
+      "beforeSha256": "9675239ab9991646f04ec81f8aff2b7edb0aa4e83734cfceaa263412548cc76a",
+      "afterSha256": "9675239ab9991646f04ec81f8aff2b7edb0aa4e83734cfceaa263412548cc76a",
+      "sourceSignals": {}
+    },
+    {
+      "file": "roman-ui-v56.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 6830,
+      "afterBytes": 6830,
+      "unchanged": true,
+      "beforeSha256": "73c74b29e107cd17ee3a5295931a48ea097a8570760be51d5f42023e721f42cb",
+      "afterSha256": "73c74b29e107cd17ee3a5295931a48ea097a8570760be51d5f42023e721f42cb",
+      "sourceSignals": {}
+    },
+    {
+      "file": "roman_legionnaire_helmet.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 4109864,
+      "afterBytes": 4109864,
+      "unchanged": true,
+      "beforeSha256": "600ae2b3ffeebccceffe15d0fc1e64dd16ae6647280a212a0a416ced75223b21",
+      "afterSha256": "600ae2b3ffeebccceffe15d0fc1e64dd16ae6647280a212a0a416ced75223b21"
+    },
+    {
+      "file": "roman_scutum_shield.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 4394088,
+      "afterBytes": 4394088,
+      "unchanged": true,
+      "beforeSha256": "df8791f7ac7c59c64600578772f34cb82e6089cdd0497404dcd7fb628965f06a",
+      "afterSha256": "df8791f7ac7c59c64600578772f34cb82e6089cdd0497404dcd7fb628965f06a"
+    },
+    {
+      "file": "roman_shield.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 2941088,
+      "afterBytes": 2941088,
+      "unchanged": true,
+      "beforeSha256": "c8444b6f753f8cffc17d35994e3e441ca39c06098187fa03e95f03380eedbd2f",
+      "afterSha256": "c8444b6f753f8cffc17d35994e3e441ca39c06098187fa03e95f03380eedbd2f"
+    },
+    {
+      "file": "roman_spatha.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 1942872,
+      "afterBytes": 1942872,
+      "unchanged": true,
+      "beforeSha256": "94e67eee3290dd9b9de7d04a003bed29735ddc7b4f323b10dfb921fefdfccf44",
+      "afterSha256": "94e67eee3290dd9b9de7d04a003bed29735ddc7b4f323b10dfb921fefdfccf44"
+    },
+    {
+      "file": "rome-forum-v30.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 2439968,
+      "afterBytes": 2439968,
+      "unchanged": true,
+      "beforeSha256": "536d3c905d6c3f10c2c2508f9d1c809632913064e06607f4fc906bcd59ccd0e0",
+      "afterSha256": "536d3c905d6c3f10c2c2508f9d1c809632913064e06607f4fc906bcd59ccd0e0"
+    },
+    {
+      "file": "rome-gateway-v30.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 3988060,
+      "afterBytes": 3988060,
+      "unchanged": true,
+      "beforeSha256": "8f3cbf330557a29dd6a010fe7d1f90e23753e36ea4936310e7e06e23a5048df6",
+      "afterSha256": "8f3cbf330557a29dd6a010fe7d1f90e23753e36ea4936310e7e06e23a5048df6"
+    },
+    {
+      "file": "rome-insula-v30.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 2931200,
+      "afterBytes": 2931200,
+      "unchanged": true,
+      "beforeSha256": "95c07aa754641ae6f17faf68cbf090668f7bba6473a2fe13e9e1ee40d0450209",
+      "afterSha256": "95c07aa754641ae6f17faf68cbf090668f7bba6473a2fe13e9e1ee40d0450209"
+    },
+    {
+      "file": "rome-roof-diff-v29.jpg",
+      "area": "asset",
+      "extension": ".jpg",
+      "beforeBytes": 1105673,
+      "afterBytes": 1105673,
+      "unchanged": true,
+      "beforeSha256": "1b30c1f0a9d3f761afb1354d95b36990fc670fac5f811889af8cb2ab682c8e66",
+      "afterSha256": "1b30c1f0a9d3f761afb1354d95b36990fc670fac5f811889af8cb2ab682c8e66",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "rome-roof-nor_gl-v29.jpg",
+      "area": "asset",
+      "extension": ".jpg",
+      "beforeBytes": 883229,
+      "afterBytes": 883229,
+      "unchanged": true,
+      "beforeSha256": "1eb4e911e3d1b38c7c3b06bdecb6fde5f9646dca5498caf67ffa651cb6cb8d8c",
+      "afterSha256": "1eb4e911e3d1b38c7c3b06bdecb6fde5f9646dca5498caf67ffa651cb6cb8d8c",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "rome-sky-v29.jpg",
+      "area": "asset",
+      "extension": ".jpg",
+      "beforeBytes": 441354,
+      "afterBytes": 441354,
+      "unchanged": true,
+      "beforeSha256": "867672ff755d17fa76bd4c76547b9b17f6933fc53005c2c57d467e1299895ad3",
+      "afterSha256": "867672ff755d17fa76bd4c76547b9b17f6933fc53005c2c57d467e1299895ad3",
+      "image": {
+        "width": 4096,
+        "height": 2048,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "rome-temple-v30.glb",
+      "area": "asset",
+      "extension": ".glb",
+      "beforeBytes": 1176116,
+      "afterBytes": 1176116,
+      "unchanged": true,
+      "beforeSha256": "b9dcf460785fe4bdf5632dbe32898f407f4e5cde0a34ed7fadfb02fa7c8d183b",
+      "afterSha256": "b9dcf460785fe4bdf5632dbe32898f407f4e5cde0a34ed7fadfb02fa7c8d183b"
+    },
+    {
+      "file": "savas.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 1766261,
+      "afterBytes": 416053,
+      "unchanged": false,
+      "beforeSha256": "5074bf439fd8cb8d963e51e2f5bc3a2d6fcd250659d4121676aab37987b61f54",
+      "afterSha256": "b6c031b56bb89138290db486aaacc3a9785797a2ca14f84ce56d276d47918cf8",
+      "sourceSignals": {
+        "animationFrames": 2,
+        "intervals": 1,
+        "clientCreation": 2,
+        "userChecks": 3,
+        "modelLoads": 9,
+        "sceneTraversals": 14
+      }
+    },
+    {
+      "file": "supabase/migrations/20261008220535_imperial_four_day_cycle.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 24956,
+      "afterBytes": 24956,
+      "unchanged": true,
+      "beforeSha256": "b5cae7c5a916c0df8ba41bec8fce72b04b8cca55a77d28ccec9847c5adccf81b",
+      "afterSha256": "b5cae7c5a916c0df8ba41bec8fce72b04b8cca55a77d28ccec9847c5adccf81b",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261008234312_gladiator_exercise_v46.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 58381,
+      "afterBytes": 58381,
+      "unchanged": true,
+      "beforeSha256": "6f087dc552e8d71afb50673265ad8ba0f4b8b3cafcf740936d814a7a76896f01",
+      "afterSha256": "6f087dc552e8d71afb50673265ad8ba0f4b8b3cafcf740936d814a7a76896f01",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261009005058_gladiator_equipment_v49.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 3523,
+      "afterBytes": 3523,
+      "unchanged": true,
+      "beforeSha256": "0d717bcf8ac5e0ba19172d2a8f20f4718a806f65803fdb822b1a20cf68b39ff0",
+      "afterSha256": "0d717bcf8ac5e0ba19172d2a8f20f4718a806f65803fdb822b1a20cf68b39ff0",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261009040911_targeted_training_v51.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 2924,
+      "afterBytes": 2924,
+      "unchanged": true,
+      "beforeSha256": "9012e3732cc890e442391c1ec8653cd169c8273fa5112c977e95448c2f9a9b6d",
+      "afterSha256": "9012e3732cc890e442391c1ec8653cd169c8273fa5112c977e95448c2f9a9b6d",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261009223844_dining_food_v55.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 12114,
+      "afterBytes": 12114,
+      "unchanged": true,
+      "beforeSha256": "faa9b4f17e79ec3a06902666641ef93a0c0cc142093b875da05b5b9b9742f4aa",
+      "afterSha256": "faa9b4f17e79ec3a06902666641ef93a0c0cc142093b875da05b5b9b9742f4aa",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261010003352_dining_meals_v56.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 7958,
+      "afterBytes": 7958,
+      "unchanged": true,
+      "beforeSha256": "74047c9b759c47b1f97503fe640a0bf982bffb402a76c9a0deb1fb4dd516c5b4",
+      "afterSha256": "74047c9b759c47b1f97503fe640a0bf982bffb402a76c9a0deb1fb4dd516c5b4",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261010011048_dining_nutrition_v57.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 11003,
+      "afterBytes": 11003,
+      "unchanged": true,
+      "beforeSha256": "b6121ae432bbea811ffa0eb0f6a84270687d947b8fe20dcdab2184707e3f192d",
+      "afterSha256": "b6121ae432bbea811ffa0eb0f6a84270687d947b8fe20dcdab2184707e3f192d",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261010013835_dining_recovery_v58.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 12074,
+      "afterBytes": 12074,
+      "unchanged": true,
+      "beforeSha256": "c08f7d88eb0726f2aa0d3c957126394249ee26fb07c6ad606ea997a9e02b58ac",
+      "afterSha256": "c08f7d88eb0726f2aa0d3c957126394249ee26fb07c6ad606ea997a9e02b58ac",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261010021028_dining_recovery_balance_v59.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 14142,
+      "afterBytes": 14142,
+      "unchanged": true,
+      "beforeSha256": "d340164139c4b86f809b7cca4b4e0f33a4a2b7aa65f36f22bc979737a954efa0",
+      "afterSha256": "d340164139c4b86f809b7cca4b4e0f33a4a2b7aa65f36f22bc979737a954efa0",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261010024536_combat_food_stamina_v60.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 37087,
+      "afterBytes": 37087,
+      "unchanged": true,
+      "beforeSha256": "8b93e5d0c280479c6345e4ab3ecf6051fbc77345fef890552e6d29cc27627d41",
+      "afterSha256": "8b93e5d0c280479c6345e4ab3ecf6051fbc77345fef890552e6d29cc27627d41",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261010185142_forum_market_v66.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 18048,
+      "afterBytes": 18048,
+      "unchanged": true,
+      "beforeSha256": "f3b15cef7be2ef5ed3bb05fa56f8484df29904272f36111bb6548c38b120a394",
+      "afterSha256": "f3b15cef7be2ef5ed3bb05fa56f8484df29904272f36111bb6548c38b120a394",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261010190531_forum_market_comparisons_v66.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 4988,
+      "afterBytes": 4988,
+      "unchanged": true,
+      "beforeSha256": "e54b65590c0fb19ba16b6dd9fcb301c6e6dab2cd76e1f11dd7f63a0c34a3a1d9",
+      "afterSha256": "e54b65590c0fb19ba16b6dd9fcb301c6e6dab2cd76e1f11dd7f63a0c34a3a1d9",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261011141358_combat_stats_v73.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 38220,
+      "afterBytes": 38220,
+      "unchanged": true,
+      "beforeSha256": "1ae0dfd42b1b0cc91fe018614ae80fdf2636f264eac727c446f31322a7b50c1c",
+      "afterSha256": "1ae0dfd42b1b0cc91fe018614ae80fdf2636f264eac727c446f31322a7b50c1c",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261011145809_combat_stats_v74.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 31919,
+      "afterBytes": 31919,
+      "unchanged": true,
+      "beforeSha256": "6b84b6c46427eff001e524777652ba9d2567c21b2579225cc6d30c0461bedf1d",
+      "afterSha256": "6b84b6c46427eff001e524777652ba9d2567c21b2579225cc6d30c0461bedf1d",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261011151009_combat_stats_v75.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 30790,
+      "afterBytes": 30790,
+      "unchanged": true,
+      "beforeSha256": "a507738ddd6fe547dab2b2d15d0703284cb80102538c971630b111595b3f8f09",
+      "afterSha256": "a507738ddd6fe547dab2b2d15d0703284cb80102538c971630b111595b3f8f09",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261011162845_online_projectiles_v76.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 37897,
+      "afterBytes": 37897,
+      "unchanged": true,
+      "beforeSha256": "f69c4b3e195b4e2616121f8f069ad174060a7d73bcc9e1d3c3904657f965d29a",
+      "afterSha256": "f69c4b3e195b4e2616121f8f069ad174060a7d73bcc9e1d3c3904657f965d29a",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261011172027_arena_completion_v77.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 38300,
+      "afterBytes": 38300,
+      "unchanged": true,
+      "beforeSha256": "2f42081755a03311a75819c0a985b3a95acb12e6dec940fd83ba49efc0a768b0",
+      "afterSha256": "2f42081755a03311a75819c0a985b3a95acb12e6dec940fd83ba49efc0a768b0",
+      "sourceSignals": {}
+    },
+    {
+      "file": "supabase/migrations/20261012033047_survival_v83.sql",
+      "area": "database",
+      "extension": ".sql",
+      "beforeBytes": 6973,
+      "afterBytes": 6973,
+      "unchanged": true,
+      "beforeSha256": "35ad645dcd5ef905d07cabfb73c819d76faf5639c044707ada7ec9f91544b049",
+      "afterSha256": "35ad645dcd5ef905d07cabfb73c819d76faf5639c044707ada7ec9f91544b049",
+      "sourceSignals": {}
+    },
+    {
+      "file": "survival-v83.css",
+      "area": "style",
+      "extension": ".css",
+      "beforeBytes": 1892,
+      "afterBytes": 1892,
+      "unchanged": true,
+      "beforeSha256": "9e44d1c01596cebc915b447be246fce2958c933f7cf05cf18d48481397972196",
+      "afterSha256": "9e44d1c01596cebc915b447be246fce2958c933f7cf05cf18d48481397972196",
+      "sourceSignals": {}
+    },
+    {
+      "file": "survival-v83.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 2838,
+      "afterBytes": 2838,
+      "unchanged": true,
+      "beforeSha256": "79eb20ed68c0eebb7446a80c5f3bef5e541a6358794d444e5f6bb6d08df32bf2",
+      "afterSha256": "79eb20ed68c0eebb7446a80c5f3bef5e541a6358794d444e5f6bb6d08df32bf2",
+      "sourceSignals": {}
+    },
+    {
+      "file": "tests/arena-art-v69.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5139,
+      "afterBytes": 5139,
+      "unchanged": true,
+      "beforeSha256": "21dab7865cb6e35fb973502c45fe33d93f38211004d8cf4e79dfd89678fc69cb",
+      "afterSha256": "21dab7865cb6e35fb973502c45fe33d93f38211004d8cf4e79dfd89678fc69cb"
+    },
+    {
+      "file": "tests/arena-completion-ui-v77.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 8486,
+      "afterBytes": 8486,
+      "unchanged": true,
+      "beforeSha256": "0ee003caa6cc742505875ebd936a12a44c35b9ac8c9aacdb9619af94f85baf49",
+      "afterSha256": "0ee003caa6cc742505875ebd936a12a44c35b9ac8c9aacdb9619af94f85baf49"
+    },
+    {
+      "file": "tests/arena-completion-v77.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5131,
+      "afterBytes": 5131,
+      "unchanged": true,
+      "beforeSha256": "0a23a1c249a0d9a95334bf7f0ed97df7c1d75ca980dd6818cd86bbf8f9bf4d60",
+      "afterSha256": "0a23a1c249a0d9a95334bf7f0ed97df7c1d75ca980dd6818cd86bbf8f9bf4d60"
+    },
+    {
+      "file": "tests/arena-motion-v81.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6546,
+      "afterBytes": 6546,
+      "unchanged": true,
+      "beforeSha256": "f06f1acb8f5fb719c992ce887cae9e33446fc2779d1d0f3b1891284abd27c1ae",
+      "afterSha256": "f06f1acb8f5fb719c992ce887cae9e33446fc2779d1d0f3b1891284abd27c1ae"
+    },
+    {
+      "file": "tests/arena-roll-v72.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5920,
+      "afterBytes": 5920,
+      "unchanged": true,
+      "beforeSha256": "e050c62bc55e638ef404831dac01d6f4bcc3842bb441df50ed8aa34b5ae4efa0",
+      "afterSha256": "e050c62bc55e638ef404831dac01d6f4bcc3842bb441df50ed8aa34b5ae4efa0"
+    },
+    {
+      "file": "tests/arena-tabs-v81.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 3161,
+      "afterBytes": 3161,
+      "unchanged": true,
+      "beforeSha256": "51b526ac4caf488b59c6f5362334ca45079c928ac7d0b45d9afaccc8ab779a97",
+      "afterSha256": "51b526ac4caf488b59c6f5362334ca45079c928ac7d0b45d9afaccc8ab779a97"
+    },
+    {
+      "file": "tests/arena-ui-v78.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 10323,
+      "afterBytes": 10323,
+      "unchanged": true,
+      "beforeSha256": "8e3e9faa19acfe28a9fb71d79abf29a06f622c63b9dfbce4402df8ebe67c692e",
+      "afterSha256": "8e3e9faa19acfe28a9fb71d79abf29a06f622c63b9dfbce4402df8ebe67c692e"
+    },
+    {
+      "file": "tests/arena-ui-v78.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2460,
+      "afterBytes": 2460,
+      "unchanged": true,
+      "beforeSha256": "9b4b70e0a5c693a6549abb20b9da2dfdbbd25d6c7f3cf6da2ab2c8e114c60dc9",
+      "afterSha256": "9b4b70e0a5c693a6549abb20b9da2dfdbbd25d6c7f3cf6da2ab2c8e114c60dc9"
+    },
+    {
+      "file": "tests/bot-defense-v72.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 4715,
+      "afterBytes": 4715,
+      "unchanged": true,
+      "beforeSha256": "7ab6a226266cc3ce382400c56ba08f496847ee2f93f70744fda5497f0fa8311a",
+      "afterSha256": "7ab6a226266cc3ce382400c56ba08f496847ee2f93f70744fda5497f0fa8311a"
+    },
+    {
+      "file": "tests/clan-room-v35.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5796,
+      "afterBytes": 5796,
+      "unchanged": true,
+      "beforeSha256": "462e9cda3eb7cc032f40c3a34800870378ba5c55323d0410680c6f80a0841079",
+      "afterSha256": "462e9cda3eb7cc032f40c3a34800870378ba5c55323d0410680c6f80a0841079"
+    },
+    {
+      "file": "tests/clan-vault-v35.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 11165,
+      "afterBytes": 11165,
+      "unchanged": true,
+      "beforeSha256": "10514fe6066f82d209ff9ebafd7998d85f37fc9231ce05238cef541da38b0db7",
+      "afterSha256": "10514fe6066f82d209ff9ebafd7998d85f37fc9231ce05238cef541da38b0db7"
+    },
+    {
+      "file": "tests/clan-vault-v35.sql",
+      "area": "verification",
+      "extension": ".sql",
+      "beforeBytes": 11495,
+      "afterBytes": 11495,
+      "unchanged": true,
+      "beforeSha256": "c3d98221b5f961d000aa11930743fc6fda94d2c4d7e1692fa86396352ce0e2ce",
+      "afterSha256": "c3d98221b5f961d000aa11930743fc6fda94d2c4d7e1692fa86396352ce0e2ce"
+    },
+    {
+      "file": "tests/combat-feel-v23.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5933,
+      "afterBytes": 5933,
+      "unchanged": true,
+      "beforeSha256": "38d8a28142743901289b959b650845bcaaea7a2db958d38711c2482acfc836c9",
+      "afterSha256": "38d8a28142743901289b959b650845bcaaea7a2db958d38711c2482acfc836c9"
+    },
+    {
+      "file": "tests/combat-food-v60.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 12568,
+      "afterBytes": 12568,
+      "unchanged": true,
+      "beforeSha256": "52c3176fe1a0aa4228549240328df9b3e86132e3eb9d58b8814c505e0bbe2611",
+      "afterSha256": "52c3176fe1a0aa4228549240328df9b3e86132e3eb9d58b8814c505e0bbe2611"
+    },
+    {
+      "file": "tests/combat-inspector-ui-v74.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 3458,
+      "afterBytes": 3458,
+      "unchanged": true,
+      "beforeSha256": "bc1075c72e6f5c7b036bb89cba2cbd2b5908e6a74e5693f2294bfb13dd541d07",
+      "afterSha256": "bc1075c72e6f5c7b036bb89cba2cbd2b5908e6a74e5693f2294bfb13dd541d07"
+    },
+    {
+      "file": "tests/combat-stats-v73.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 17470,
+      "afterBytes": 17470,
+      "unchanged": true,
+      "beforeSha256": "d354e8d80d9dbbd1cbc5620847d8ce08e4adff6bef9fdb9914e5c1a34d691aa7",
+      "afterSha256": "d354e8d80d9dbbd1cbc5620847d8ce08e4adff6bef9fdb9914e5c1a34d691aa7"
+    },
+    {
+      "file": "tests/combat-stats-v74.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2203,
+      "afterBytes": 2203,
+      "unchanged": true,
+      "beforeSha256": "64b579f691fa48cf4c669b1e69a247257371818d8c58d5738e125cfbab0d1bde",
+      "afterSha256": "64b579f691fa48cf4c669b1e69a247257371818d8c58d5738e125cfbab0d1bde"
+    },
+    {
+      "file": "tests/combat-stats-v75.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5458,
+      "afterBytes": 5458,
+      "unchanged": true,
+      "beforeSha256": "ed60a7358e2f80ba4cbc77189036149bff9a00fd8d80297c3beda97d84361bb3",
+      "afterSha256": "ed60a7358e2f80ba4cbc77189036149bff9a00fd8d80297c3beda97d84361bb3"
+    },
+    {
+      "file": "tests/controls-v43.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5934,
+      "afterBytes": 5934,
+      "unchanged": true,
+      "beforeSha256": "1d4c349a595013294df60d19fbadaa3ae72b6a6f131b1d66946cc509ba0c1b90",
+      "afterSha256": "1d4c349a595013294df60d19fbadaa3ae72b6a6f131b1d66946cc509ba0c1b90"
+    },
+    {
+      "file": "tests/death-hud-v41.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 12061,
+      "afterBytes": 12061,
+      "unchanged": true,
+      "beforeSha256": "ee5d33ad23b4936d0ccc0448f1a03b5b2dc55591a93376c85c56423443f34f04",
+      "afterSha256": "ee5d33ad23b4936d0ccc0448f1a03b5b2dc55591a93376c85c56423443f34f04"
+    },
+    {
+      "file": "tests/death-v41.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2876,
+      "afterBytes": 2876,
+      "unchanged": true,
+      "beforeSha256": "c33b4c3de8393d900565e2c6f95a7db57fe4bc68e779d661f356d1775e3ff290",
+      "afterSha256": "c33b4c3de8393d900565e2c6f95a7db57fe4bc68e779d661f356d1775e3ff290"
+    },
+    {
+      "file": "tests/dining-food-ui-v55.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7265,
+      "afterBytes": 7265,
+      "unchanged": true,
+      "beforeSha256": "1dd5347cc61bacbfc700c4158b262ca0baefa0967b3c26b495c756ebd0464134",
+      "afterSha256": "1dd5347cc61bacbfc700c4158b262ca0baefa0967b3c26b495c756ebd0464134"
+    },
+    {
+      "file": "tests/dining-food-ui-v56.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7339,
+      "afterBytes": 7339,
+      "unchanged": true,
+      "beforeSha256": "53babfe311ae8d43a7343be5dcbf39678f06a6472e13353879b521fc65bf398d",
+      "afterSha256": "53babfe311ae8d43a7343be5dcbf39678f06a6472e13353879b521fc65bf398d"
+    },
+    {
+      "file": "tests/dining-food-ui-v57.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 9181,
+      "afterBytes": 9181,
+      "unchanged": true,
+      "beforeSha256": "00c7d12583441c5281da18a0f87b86b916f8187157a508422ffb6141ecc1b791",
+      "afterSha256": "00c7d12583441c5281da18a0f87b86b916f8187157a508422ffb6141ecc1b791"
+    },
+    {
+      "file": "tests/dining-food-v55.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5695,
+      "afterBytes": 5695,
+      "unchanged": true,
+      "beforeSha256": "09ea77dfa049a9793ce78d2dbc926c472c9f2dc9922ee7a9d7fc1abe1344ae2a",
+      "afterSha256": "09ea77dfa049a9793ce78d2dbc926c472c9f2dc9922ee7a9d7fc1abe1344ae2a"
+    },
+    {
+      "file": "tests/dining-meals-v56.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6450,
+      "afterBytes": 6450,
+      "unchanged": true,
+      "beforeSha256": "9da9932beb429eca9d3a4552fdbf96fa063dc9dc1accf3814b5af1ad2dfb3ee4",
+      "afterSha256": "9da9932beb429eca9d3a4552fdbf96fa063dc9dc1accf3814b5af1ad2dfb3ee4"
+    },
+    {
+      "file": "tests/dining-nutrition-v57.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7278,
+      "afterBytes": 7278,
+      "unchanged": true,
+      "beforeSha256": "02406e63a80d19d6c76ab71f46bf214d6c646a06ad804a761466db08eaae972c",
+      "afterSha256": "02406e63a80d19d6c76ab71f46bf214d6c646a06ad804a761466db08eaae972c"
+    },
+    {
+      "file": "tests/dining-recovery-v58.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6545,
+      "afterBytes": 6545,
+      "unchanged": true,
+      "beforeSha256": "e0c2f282ccead4ca1f61212fa9eb23334bd2901aba3e83f4258ee49ad6186590",
+      "afterSha256": "e0c2f282ccead4ca1f61212fa9eb23334bd2901aba3e83f4258ee49ad6186590"
+    },
+    {
+      "file": "tests/dining-recovery-v59.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7578,
+      "afterBytes": 7578,
+      "unchanged": true,
+      "beforeSha256": "21d06c15b6351a680552fca8ce3e1e1d5f6631cc22d11d1f198dcaf25221b076",
+      "afterSha256": "21d06c15b6351a680552fca8ce3e1e1d5f6631cc22d11d1f198dcaf25221b076"
+    },
+    {
+      "file": "tests/dining-room-v53.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7393,
+      "afterBytes": 7393,
+      "unchanged": true,
+      "beforeSha256": "707a58fef297cf75bc42d4f7175b19a840d7b4c6ca191847f48910de256a062a",
+      "afterSha256": "707a58fef297cf75bc42d4f7175b19a840d7b4c6ca191847f48910de256a062a"
+    },
+    {
+      "file": "tests/equipment-arena-v30.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 3288,
+      "afterBytes": 3288,
+      "unchanged": true,
+      "beforeSha256": "3c3216c67ede0b33eae606fc3c201a04f08849a7906c4bf5aacde7f67e1d8cde",
+      "afterSha256": "3c3216c67ede0b33eae606fc3c201a04f08849a7906c4bf5aacde7f67e1d8cde"
+    },
+    {
+      "file": "tests/fixtures/gladiator-v46.sql",
+      "area": "verification",
+      "extension": ".sql",
+      "beforeBytes": 10702,
+      "afterBytes": 10702,
+      "unchanged": true,
+      "beforeSha256": "b46d4015662dfd62a30b0a4fd126d89086263fda2f2a5a2f55fc66a79fc88eaf",
+      "afterSha256": "b46d4015662dfd62a30b0a4fd126d89086263fda2f2a5a2f55fc66a79fc88eaf"
+    },
+    {
+      "file": "tests/forum-market-layout-v67.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 8484,
+      "afterBytes": 8484,
+      "unchanged": true,
+      "beforeSha256": "a00ef61fd75b83ccf9b5d2a560013b75090f7551247f4024435a398dec3f6ae0",
+      "afterSha256": "a00ef61fd75b83ccf9b5d2a560013b75090f7551247f4024435a398dec3f6ae0"
+    },
+    {
+      "file": "tests/forum-market-runtime-v66.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6677,
+      "afterBytes": 6677,
+      "unchanged": true,
+      "beforeSha256": "115b4e2b5c34c3c437d514e72300dc5d5312dbc8967ef96ce8d704a041d67751",
+      "afterSha256": "115b4e2b5c34c3c437d514e72300dc5d5312dbc8967ef96ce8d704a041d67751"
+    },
+    {
+      "file": "tests/forum-market-v66.sql",
+      "area": "verification",
+      "extension": ".sql",
+      "beforeBytes": 9077,
+      "afterBytes": 9077,
+      "unchanged": true,
+      "beforeSha256": "ded87144307361576e484756871595e715e4bbe7306f1268f8ab70ebc92e5f56",
+      "afterSha256": "ded87144307361576e484756871595e715e4bbe7306f1268f8ab70ebc92e5f56"
+    },
+    {
+      "file": "tests/forum-market-v66.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 4235,
+      "afterBytes": 4235,
+      "unchanged": true,
+      "beforeSha256": "85b2daff348a5bf87aa250a90645dd60892154d9c64b08643c2681fef39f379e",
+      "afterSha256": "85b2daff348a5bf87aa250a90645dd60892154d9c64b08643c2681fef39f379e"
+    },
+    {
+      "file": "tests/gladiator-detail-preview-v47.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 3993,
+      "afterBytes": 3993,
+      "unchanged": true,
+      "beforeSha256": "22338307bff57601f6447731c8cae544b86f982a0bf63e7691d0e8e320396b36",
+      "afterSha256": "22338307bff57601f6447731c8cae544b86f982a0bf63e7691d0e8e320396b36"
+    },
+    {
+      "file": "tests/gladiator-equipment-ui-v49.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6694,
+      "afterBytes": 6694,
+      "unchanged": true,
+      "beforeSha256": "221e288d672b1dfa51093f7c1ab37449cf97cd65668b1bff928afa51a8f68d00",
+      "afterSha256": "221e288d672b1dfa51093f7c1ab37449cf97cd65668b1bff928afa51a8f68d00"
+    },
+    {
+      "file": "tests/gladiator-equipment-v49.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 4570,
+      "afterBytes": 4570,
+      "unchanged": true,
+      "beforeSha256": "16f83ddb496407e8e3cfc7eba081c3e35504db28ae87fd1a5e16d7701de170b6",
+      "afterSha256": "16f83ddb496407e8e3cfc7eba081c3e35504db28ae87fd1a5e16d7701de170b6"
+    },
+    {
+      "file": "tests/gladiator-exercise-ui-v46.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 9730,
+      "afterBytes": 9730,
+      "unchanged": true,
+      "beforeSha256": "ae9aeb975ff49c5c827b9438db8401ed0d96e2e39de2d6dedf6337a8e17b7801",
+      "afterSha256": "ae9aeb975ff49c5c827b9438db8401ed0d96e2e39de2d6dedf6337a8e17b7801"
+    },
+    {
+      "file": "tests/gladiator-exercise-v46.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 10076,
+      "afterBytes": 10076,
+      "unchanged": true,
+      "beforeSha256": "1251e032ccfa2c723ada669e32063e632608f758a39ab11f1058ca9a8267115f",
+      "afterSha256": "1251e032ccfa2c723ada669e32063e632608f758a39ab11f1058ca9a8267115f"
+    },
+    {
+      "file": "tests/imperial-cycle-ui-v45.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 9950,
+      "afterBytes": 9950,
+      "unchanged": true,
+      "beforeSha256": "9c46fbca4f98386067212d50ed13fb414a0007a66fbe68b775a9027fb377955c",
+      "afterSha256": "9c46fbca4f98386067212d50ed13fb414a0007a66fbe68b775a9027fb377955c"
+    },
+    {
+      "file": "tests/imperial-cycle-v45.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 11538,
+      "afterBytes": 11538,
+      "unchanged": true,
+      "beforeSha256": "848f9e5985d0f6db7c80a5b7f631d1559b6129ed6e1293963d681b567a210073",
+      "afterSha256": "848f9e5985d0f6db7c80a5b7f631d1559b6129ed6e1293963d681b567a210073"
+    },
+    {
+      "file": "tests/imperial-daily-ui-v47.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5906,
+      "afterBytes": 5906,
+      "unchanged": true,
+      "beforeSha256": "0b58e27b398ba45d43ff3c912ad19785df8454651cd9ce16d3e4818adb36042e",
+      "afterSha256": "0b58e27b398ba45d43ff3c912ad19785df8454651cd9ce16d3e4818adb36042e"
+    },
+    {
+      "file": "tests/imperial-layout-v32.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 9934,
+      "afterBytes": 9934,
+      "unchanged": true,
+      "beforeSha256": "55dfa3b46023de4e35fa5b55455239afd03b2aef0caeced73e783a16129eb4dd",
+      "afterSha256": "55dfa3b46023de4e35fa5b55455239afd03b2aef0caeced73e783a16129eb4dd"
+    },
+    {
+      "file": "tests/imperial-layout-v33.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 8231,
+      "afterBytes": 8231,
+      "unchanged": true,
+      "beforeSha256": "1e7bba931b2d89bc7650bbcb4b1491fc4f1302138294b703e3e06544c8b906a6",
+      "afterSha256": "1e7bba931b2d89bc7650bbcb4b1491fc4f1302138294b703e3e06544c8b906a6"
+    },
+    {
+      "file": "tests/imperial-office-v33.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7830,
+      "afterBytes": 7830,
+      "unchanged": true,
+      "beforeSha256": "4fc02c36090d8c7d928affd07d9af3b823a83e60889bc96aa84bc269e785a112",
+      "afterSha256": "4fc02c36090d8c7d928affd07d9af3b823a83e60889bc96aa84bc269e785a112"
+    },
+    {
+      "file": "tests/login-intro-v40.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 8917,
+      "afterBytes": 8917,
+      "unchanged": true,
+      "beforeSha256": "52f10eaa53090ac0fcc225975a681a3d354a07133d19e6d84bc84ec6ea721a48",
+      "afterSha256": "52f10eaa53090ac0fcc225975a681a3d354a07133d19e6d84bc84ec6ea721a48"
+    },
+    {
+      "file": "tests/login-settings-v44.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 8545,
+      "afterBytes": 8545,
+      "unchanged": true,
+      "beforeSha256": "f444877d550eb91932415602d041da9e30d0711ab24703e98d797e27e90a6814",
+      "afterSha256": "f444877d550eb91932415602d041da9e30d0711ab24703e98d797e27e90a6814"
+    },
+    {
+      "file": "tests/ludus-city-backdrop.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 12231,
+      "afterBytes": 12231,
+      "unchanged": true,
+      "beforeSha256": "a6ae267fe1d675b4b33bb937966d23d7f8907421547041c0ee56dc5f33efffa4",
+      "afterSha256": "a6ae267fe1d675b4b33bb937966d23d7f8907421547041c0ee56dc5f33efffa4"
+    },
+    {
+      "file": "tests/ludus-city-backdrop.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2001,
+      "afterBytes": 2001,
+      "unchanged": true,
+      "beforeSha256": "2c1acb89fad32f387ece3152c1f7e46c4ffef8b7790a204f4fa12174cdf93143",
+      "afterSha256": "2c1acb89fad32f387ece3152c1f7e46c4ffef8b7790a204f4fa12174cdf93143"
+    },
+    {
+      "file": "tests/ludus-city-v29.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2817,
+      "afterBytes": 2817,
+      "unchanged": true,
+      "beforeSha256": "10f9fb1de6a51e578e2961eb1f3d57dcd37e2a0f2165261d2feba202f4af1624",
+      "afterSha256": "10f9fb1de6a51e578e2961eb1f3d57dcd37e2a0f2165261d2feba202f4af1624"
+    },
+    {
+      "file": "tests/ludus-level-live-v37.sql",
+      "area": "verification",
+      "extension": ".sql",
+      "beforeBytes": 4411,
+      "afterBytes": 4411,
+      "unchanged": true,
+      "beforeSha256": "1bb14c9cfc685e2da137858052781ca056fdc9c94d65dcc4718b15b006682161",
+      "afterSha256": "1bb14c9cfc685e2da137858052781ca056fdc9c94d65dcc4718b15b006682161"
+    },
+    {
+      "file": "tests/ludus-level-office-v37.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2027,
+      "afterBytes": 2027,
+      "unchanged": true,
+      "beforeSha256": "694a0f9c961f9e4a198f1d44e2eed43aa570cfa99df8996c6bf747ab30fad2a4",
+      "afterSha256": "694a0f9c961f9e4a198f1d44e2eed43aa570cfa99df8996c6bf747ab30fad2a4"
+    },
+    {
+      "file": "tests/ludus-level-ui-v37.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6105,
+      "afterBytes": 6105,
+      "unchanged": true,
+      "beforeSha256": "f394823da91ba1b130dbe62774dff6c112c286a00db7eea572751fe56438a25e",
+      "afterSha256": "f394823da91ba1b130dbe62774dff6c112c286a00db7eea572751fe56438a25e"
+    },
+    {
+      "file": "tests/ludus-level-v37.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 11819,
+      "afterBytes": 11819,
+      "unchanged": true,
+      "beforeSha256": "b6056804fb6bd1cb95396e971a589f51209b0d6e981a3bfacdf8f458f89daf27",
+      "afterSha256": "b6056804fb6bd1cb95396e971a589f51209b0d6e981a3bfacdf8f458f89daf27"
+    },
+    {
+      "file": "tests/market-food-v56.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6961,
+      "afterBytes": 6961,
+      "unchanged": true,
+      "beforeSha256": "f3c25d17ad3add2032a2a42411e90850a227a7d57551b7f9991d6cf633b9dedc",
+      "afterSha256": "f3c25d17ad3add2032a2a42411e90850a227a7d57551b7f9991d6cf633b9dedc"
+    },
+    {
+      "file": "tests/market-food-v57.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 8034,
+      "afterBytes": 8034,
+      "unchanged": true,
+      "beforeSha256": "137a2d7ce9e1b048dea582eb5c5473ccc2574a53a22ecc8941470984d68ad187",
+      "afterSha256": "137a2d7ce9e1b048dea582eb5c5473ccc2574a53a22ecc8941470984d68ad187"
+    },
+    {
+      "file": "tests/messages-v41.sql",
+      "area": "verification",
+      "extension": ".sql",
+      "beforeBytes": 5251,
+      "afterBytes": 5251,
+      "unchanged": true,
+      "beforeSha256": "310d75fa6919d5e324d61ec2e003d20e390a6ae1ebfd58cd86a5a1719717d6e7",
+      "afterSha256": "310d75fa6919d5e324d61ec2e003d20e390a6ae1ebfd58cd86a5a1719717d6e7"
+    },
+    {
+      "file": "tests/mobile-assets.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2881,
+      "afterBytes": 2881,
+      "unchanged": true,
+      "beforeSha256": "d3ab0b6fbf3307024185e9fa37633b3948a9f03abe3376cb767ba96116247716",
+      "afterSha256": "d3ab0b6fbf3307024185e9fa37633b3948a9f03abe3376cb767ba96116247716"
+    },
+    {
+      "file": "tests/mobile-loading.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 11681,
+      "afterBytes": 11681,
+      "unchanged": true,
+      "beforeSha256": "4ca9a603323954048d817f6ba481551d9b3a4ebdd8e9e08a25fe24fe2f28779c",
+      "afterSha256": "4ca9a603323954048d817f6ba481551d9b3a4ebdd8e9e08a25fe24fe2f28779c"
+    },
+    {
+      "file": "tests/mobile-login.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2082,
+      "afterBytes": 2082,
+      "unchanged": true,
+      "beforeSha256": "692ee7369dbd49fc591bc9d9ff86212330d4a1fccdd710dab5389f231f9c0f7f",
+      "afterSha256": "692ee7369dbd49fc591bc9d9ff86212330d4a1fccdd710dab5389f231f9c0f7f"
+    },
+    {
+      "file": "tests/movement-v39.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 1728,
+      "afterBytes": 1728,
+      "unchanged": true,
+      "beforeSha256": "23e278c3a1c7c5f2ef3ac64446b322064b9a7cc5bb120a4c69a87b0cb92fc232",
+      "afterSha256": "23e278c3a1c7c5f2ef3ac64446b322064b9a7cc5bb120a4c69a87b0cb92fc232"
+    },
+    {
+      "file": "tests/multiplayer-ui-v36.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 11928,
+      "afterBytes": 11928,
+      "unchanged": true,
+      "beforeSha256": "c29a52fae6882b7d30e7d95351b3a4b0dfa72e9f9b38a686323749811aaee499",
+      "afterSha256": "c29a52fae6882b7d30e7d95351b3a4b0dfa72e9f9b38a686323749811aaee499"
+    },
+    {
+      "file": "tests/multiplayer-v23.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 5495,
+      "afterBytes": 5495,
+      "unchanged": true,
+      "beforeSha256": "79b82609607227d2d131a323590b1fff33e53625b9ba954774974ae28a752b70",
+      "afterSha256": "79b82609607227d2d131a323590b1fff33e53625b9ba954774974ae28a752b70"
+    },
+    {
+      "file": "tests/multiplayer-v36.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 9036,
+      "afterBytes": 9036,
+      "unchanged": true,
+      "beforeSha256": "e5f15f77a7a3cae68bc52370a69b7ef4e90eb03de2b22d60474f0c81cfe7a66d",
+      "afterSha256": "e5f15f77a7a3cae68bc52370a69b7ef4e90eb03de2b22d60474f0c81cfe7a66d"
+    },
+    {
+      "file": "tests/multiplayer-v36.sql",
+      "area": "verification",
+      "extension": ".sql",
+      "beforeBytes": 5231,
+      "afterBytes": 5231,
+      "unchanged": true,
+      "beforeSha256": "1d207722cbd4e45319765211f15510458b9317c138e91269e77f89ffc1f92b62",
+      "afterSha256": "1d207722cbd4e45319765211f15510458b9317c138e91269e77f89ffc1f92b62"
+    },
+    {
+      "file": "tests/online-projectiles-ui-v76.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 8374,
+      "afterBytes": 8374,
+      "unchanged": true,
+      "beforeSha256": "f01c9af782c4d079429bd7cf3405f897b609448464b231278751132adc717aff",
+      "afterSha256": "f01c9af782c4d079429bd7cf3405f897b609448464b231278751132adc717aff"
+    },
+    {
+      "file": "tests/online-projectiles-v76.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 9263,
+      "afterBytes": 9263,
+      "unchanged": true,
+      "beforeSha256": "505400f98a4da364fe69707443a4780068a310ff216029f34496dea21245d281",
+      "afterSha256": "505400f98a4da364fe69707443a4780068a310ff216029f34496dea21245d281"
+    },
+    {
+      "file": "tests/owner-avatar-v26.test.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 2638,
+      "afterBytes": 2638,
+      "unchanged": true,
+      "beforeSha256": "1bf11fe44e1306d49005a08b75083273abbf42abfc488792ed48bc4c8329fefc",
+      "afterSha256": "1bf11fe44e1306d49005a08b75083273abbf42abfc488792ed48bc4c8329fefc"
+    },
+    {
+      "file": "tests/survival-v83.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6414,
+      "afterBytes": 6414,
+      "unchanged": true,
+      "beforeSha256": "12eb7a52ab830ff27b8b1e1e6753bf6348059794c7c4e4127dc6304520c6aecf",
+      "afterSha256": "12eb7a52ab830ff27b8b1e1e6753bf6348059794c7c4e4127dc6304520c6aecf"
+    },
+    {
+      "file": "tests/targeted-training-v51.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 3489,
+      "afterBytes": 3489,
+      "unchanged": true,
+      "beforeSha256": "3e2c552f1386979f95c90021494aaaf6871d5337201086aace937a9aff60b163",
+      "afterSha256": "3e2c552f1386979f95c90021494aaaf6871d5337201086aace937a9aff60b163"
+    },
+    {
+      "file": "tests/theme-fixture-v68.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 458,
+      "afterBytes": 458,
+      "unchanged": true,
+      "beforeSha256": "eeec8daa61260aafcc7ad9012d39b8ccfd5cd69c23ad2cdfcfcf174a70360a41",
+      "afterSha256": "eeec8daa61260aafcc7ad9012d39b8ccfd5cd69c23ad2cdfcfcf174a70360a41"
+    },
+    {
+      "file": "tests/theme-pages-v68.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7698,
+      "afterBytes": 7698,
+      "unchanged": true,
+      "beforeSha256": "43e4d71c00585d669b2b41652c5b6142a307210f575da567f2719492815b5bef",
+      "afterSha256": "43e4d71c00585d669b2b41652c5b6142a307210f575da567f2719492815b5bef"
+    },
+    {
+      "file": "tests/training-preview-v51.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 4631,
+      "afterBytes": 4631,
+      "unchanged": true,
+      "beforeSha256": "3bbc39bc0041cc4906a1f2ce2524038a0060bf764fed1ba438f0aae61a990b2b",
+      "afterSha256": "3bbc39bc0041cc4906a1f2ce2524038a0060bf764fed1ba438f0aae61a990b2b"
+    },
+    {
+      "file": "tests/training-test-v50.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 6508,
+      "afterBytes": 6508,
+      "unchanged": true,
+      "beforeSha256": "399926ee2fbe5aee4c0eed35180029559d204f831c3ff38524d475318bcc20a2",
+      "afterSha256": "399926ee2fbe5aee4c0eed35180029559d204f831c3ff38524d475318bcc20a2"
+    },
+    {
+      "file": "tests/training-yard-v51.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 23039,
+      "afterBytes": 23039,
+      "unchanged": true,
+      "beforeSha256": "e20686cc3520a5c3ff06fd8ee1f20f04a35277f567c702e98c32604b2f759e6a",
+      "afterSha256": "e20686cc3520a5c3ff06fd8ee1f20f04a35277f567c702e98c32604b2f759e6a"
+    },
+    {
+      "file": "tests/ui-revisions-v79.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 9961,
+      "afterBytes": 9961,
+      "unchanged": true,
+      "beforeSha256": "8b0eedbaec153e4ab516936f72614bf9eed93ea2a4dfb02ffc9dd96bb29b17ec",
+      "afterSha256": "8b0eedbaec153e4ab516936f72614bf9eed93ea2a4dfb02ffc9dd96bb29b17ec"
+    },
+    {
+      "file": "tools/bake-city-backdrop.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 7583,
+      "afterBytes": 7583,
+      "unchanged": true,
+      "beforeSha256": "5d29a80f1ae849e6125aec6fdec0ea314bbee5e6e3dfc0ae1d7837206afdb717",
+      "afterSha256": "5d29a80f1ae849e6125aec6fdec0ea314bbee5e6e3dfc0ae1d7837206afdb717"
+    },
+    {
+      "file": "tools/bake-fall-motion-v39.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 3339,
+      "afterBytes": 3339,
+      "unchanged": true,
+      "beforeSha256": "08f35a0af09d0bf4b57f2253c98596688914348c2271008afe8bcf2cf0d55c15",
+      "afterSha256": "08f35a0af09d0bf4b57f2253c98596688914348c2271008afe8bcf2cf0d55c15"
+    },
+    {
+      "file": "tools/bake-roll-motion-v72.cjs",
+      "area": "verification",
+      "extension": ".cjs",
+      "beforeBytes": 3375,
+      "afterBytes": 3375,
+      "unchanged": true,
+      "beforeSha256": "62aefd69063ee787444ebf59f6010722b26cdacbde1f842082b216d458883ab2",
+      "afterSha256": "62aefd69063ee787444ebf59f6010722b26cdacbde1f842082b216d458883ab2"
+    },
+    {
+      "file": "tools/build-dining-kit-v53.py",
+      "area": "verification",
+      "extension": ".py",
+      "beforeBytes": 5233,
+      "afterBytes": 5233,
+      "unchanged": true,
+      "beforeSha256": "2fefdb7b7cc0a5fcb56212431c67b5eec13878f0fadc8abc38e509f49bd4b8bb",
+      "afterSha256": "2fefdb7b7cc0a5fcb56212431c67b5eec13878f0fadc8abc38e509f49bd4b8bb"
+    },
+    {
+      "file": "tools/extract-locomotion-v81.py",
+      "area": "verification",
+      "extension": ".py",
+      "beforeBytes": 2655,
+      "afterBytes": 2655,
+      "unchanged": true,
+      "beforeSha256": "c6d588cc6671f4bfd27449b20cf1473742146ebc5e16da8e18601708f2dc5773",
+      "afterSha256": "c6d588cc6671f4bfd27449b20cf1473742146ebc5e16da8e18601708f2dc5773"
+    },
+    {
+      "file": "tools/mobile-asset-audit.py",
+      "area": "verification",
+      "extension": ".py",
+      "beforeBytes": 3925,
+      "afterBytes": 3856,
+      "unchanged": false,
+      "beforeSha256": "c135a3a3a1b5cad4b2e8bf2d59669f9b1fc5643533180bc2c484a6ac6fa76cd0",
+      "afterSha256": "6fceb9d8913972292a2b55d7a74b0f849f6396edded7ef88d0d497061612aa17"
+    },
+    {
+      "file": "tools/training-test-server-v50.py",
+      "area": "verification",
+      "extension": ".py",
+      "beforeBytes": 2040,
+      "afterBytes": 2040,
+      "unchanged": true,
+      "beforeSha256": "056b72b757f2f73c292c8e4122c3563e9020091b4e8be4bb0b9cb9bc5e230651",
+      "afterSha256": "056b72b757f2f73c292c8e4122c3563e9020091b4e8be4bb0b9cb9bc5e230651"
+    },
+    {
+      "file": "training-motion-v50.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 10890,
+      "afterBytes": 10890,
+      "unchanged": true,
+      "beforeSha256": "d4b22f7a56bc6b7cc3528c7240cd1baedb8df6387d7d38a74222d67b6e6c2588",
+      "afterSha256": "d4b22f7a56bc6b7cc3528c7240cd1baedb8df6387d7d38a74222d67b6e6c2588",
+      "sourceSignals": {}
+    },
+    {
+      "file": "training-preview-v51.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 5350,
+      "afterBytes": 5350,
+      "unchanged": false,
+      "beforeSha256": "ccf90de684e6d8bbbb252863fc214b9cb4c82bbfba933b2aae45ca052f6f3a3c",
+      "afterSha256": "e1c5726763984ef28100f03200f7a04f799163803f878b333c07c394c0306dca",
+      "sourceSignals": {}
+    },
+    {
+      "file": "training-props-v50.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 6940,
+      "afterBytes": 6940,
+      "unchanged": true,
+      "beforeSha256": "834e117be749524e635eee6dd565c082f2ff837d0c3100ffd01923d1e68d02b2",
+      "afterSha256": "834e117be749524e635eee6dd565c082f2ff837d0c3100ffd01923d1e68d02b2",
+      "sourceSignals": {}
+    },
+    {
+      "file": "training-test-v50.html",
+      "area": "page",
+      "extension": ".html",
+      "beforeBytes": 4886,
+      "afterBytes": 4886,
+      "unchanged": false,
+      "beforeSha256": "8e32b4483e7909e2fa573e7748e8a176b1fb2c3813d7ff682a0a7b3fe9aa85c3",
+      "afterSha256": "896d9456ebe4fe51f2c3dc694ea265be71516c5568dfe0cf82c50a6c6b942d68",
+      "sourceSignals": {}
+    },
+    {
+      "file": "training-test-v50.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 15160,
+      "afterBytes": 15317,
+      "unchanged": false,
+      "beforeSha256": "97bfebe9eb7326431ae1f69580c468b366af00b6b82e1bda9b2d8cbc2e101a59",
+      "afterSha256": "3485441f40bb5a0db3ec2f349d1fe7f96d2a9aaaeac13af93ec2bee878eebec9",
+      "sourceSignals": {
+        "animationFrames": 5,
+        "sceneTraversals": 1
+      }
+    },
+    {
+      "file": "training-yard-v51.js",
+      "area": "runtime",
+      "extension": ".js",
+      "beforeBytes": 13322,
+      "afterBytes": 13322,
+      "unchanged": true,
+      "beforeSha256": "dec9ccb520eac8bf303fe95baefbfe5c399f7a45d051fc0efe55ef5245a8ecc1",
+      "afterSha256": "dec9ccb520eac8bf303fe95baefbfe5c399f7a45d051fc0efe55ef5245a8ecc1",
+      "sourceSignals": {}
+    },
+    {
+      "file": "training-yard.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2708365,
+      "afterBytes": 2708365,
+      "unchanged": true,
+      "beforeSha256": "db7a7c110a41753d57619eac860bca9bf95d0c92b10aaa87ca8080de3308e125",
+      "afterSha256": "db7a7c110a41753d57619eac860bca9bf95d0c92b10aaa87ca8080de3308e125",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "upgrade-forge.png",
+      "area": "asset",
+      "extension": ".png",
+      "beforeBytes": 2810745,
+      "afterBytes": 2810745,
+      "unchanged": true,
+      "beforeSha256": "a4e3f60f29e5b2bdf454a8b345831514b6d5650542422665c3e81a8611de60cb",
+      "afterSha256": "a4e3f60f29e5b2bdf454a8b345831514b6d5650542422665c3e81a8611de60cb",
+      "image": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB"
+      }
+    }
+  ]
+}
