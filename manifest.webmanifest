@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Colosseum&Magnus",
   "short_name": "Colosseum&Magnus",
-  "start_url": "./index.html?v=revision93",
+  "start_url": "./index.html?v=revision95",
   "scope": "./",
   "display": "standalone",
   "display_override": [

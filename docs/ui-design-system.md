@@ -1,4 +1,4 @@
-# Colosseum & Ludus — Arayüz tasarım kuralları
+# Colosseum&Magnus — Arayüz tasarım kuralları
 
 Oyunun arayüz paleti **beyaz, bordo ve altındır**. Ortak renk kaynağı
 `roman-ui-v56.css` içindeki `--ui-*` değişkenleridir. Yeni arayüzler renkleri
