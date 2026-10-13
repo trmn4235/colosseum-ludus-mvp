@@ -138,7 +138,7 @@ var LudusSupply=(()=>{
    for(const r of items){const card=el('article','supply-stock-card');card.dataset.resource=r.sku;card.dataset.empty=String(!r.quantity);const details=el('div','supply-stock-label');details.append(el('small','',r.food?'GIDA':'MALZEME'),el('h2','',r.name));card.append(resourceArt(r.sku,'supply-stock-icon'),details,el('strong','',num(r.quantity)));grid.append(card);}layout.append(side,grid);content.append(layout);
    if(mode==='trade'&&state.deliveries?.length){const latest=state.deliveries[0],line=el('div','supply-arrival'),text=el('span');text.append(el('small','','SON TESLİMAT'),el('strong','',names(latest.cargo)));const all=button('Teslimatlar',()=>{tab='jobs';page=0;render()},'supply-secondary');line.append(text,all);content.append(line);}
   }
-  function resourceArt(sku,cls){const img=el('img',cls);img.src=['iron','copper','wood','leather','linen'].includes(sku)?'assets/supply-v89/'+sku+'.svg':'assets/dining/icons/'+sku+'-v57.svg';img.alt='';img.width=96;img.height=96;img.draggable=false;return img;}
+  function resourceArt(sku,cls){const img=el('img',cls);img.src='assets/resource-icons-v95/'+sku+'.webp';img.alt='';img.width=96;img.height=96;img.decoding='async';img.draggable=false;return img;}
   function equipmentArt(recipe,cls){const art=el('span',cls);art.setAttribute('aria-hidden','true');art.innerHTML=globalThis.LudusSupplyIcons?.svg(recipe)||icon('forge');return art;}
   function canCraft(recipe){return Object.entries(recipe.ingredients).every(([sku,n])=>(resource(sku)?.quantity||0)>=n);}
   function renderCraft(){
