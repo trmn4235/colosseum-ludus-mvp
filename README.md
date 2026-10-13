@@ -1,4 +1,8 @@
-# Colosseum & Ludus
+# Colosseum&Magnus
+
+## Marka adı V95
+
+Oyunun marka adı bütün etkin ekranlarda **Colosseum&Magnus** olarak birleştirildi. Sekme ve uygulama başlıkları, yatay ekran uyarıları, arena ve klan ekranları, gladyatör ve tedarik panelleri ile proje dokümantasyonu aynı adı kullanır. Ludus, gladyatör okulunun oyun içi adıdır.
 
 Static mobile gladiator game served by GitHub Pages. Supabase owns accounts, equipment and multiplayer match state.
 

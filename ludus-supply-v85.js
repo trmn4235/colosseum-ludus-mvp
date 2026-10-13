@@ -20,7 +20,7 @@ var LudusSupply=(()=>{
   const opener=button('',()=>open(),'room-world-action supply-open');opener.hidden=true;opener.id='supplyOpen';document.body.append(opener);
   const chestOpener=button('',()=>open('stock'),'room-world-action supply-open');chestOpener.id='supplyChestOpen';chestOpener.hidden=true;chestOpener.innerHTML=icon('chest');chestOpener.title='Tedarik kasasını aç';chestOpener.setAttribute('aria-label',chestOpener.title);document.body.append(chestOpener);const chestCount=el('span','supply-chest-count');chestCount.hidden=true;chestCount.setAttribute('aria-hidden','true');chestOpener.append(chestCount);
   const modal=el('section','supply-modal');modal.id='supplyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','supplyTitle');
-  const frame=el('div','supply-frame'),head=el('header','supply-head'),heading=el('div');heading.append(el('small','','COLOSSEUM & LUDUS'));
+  const frame=el('div','supply-frame'),head=el('header','supply-head'),heading=el('div');heading.append(el('small','','Colosseum&Magnus'));
   const title=el('h1','','Roma ve çevresi');title.id='supplyTitle';heading.append(title);
   const closeButton=button('×',close,'supply-close');closeButton.setAttribute('aria-label','Pencereyi kapat');head.append(heading,closeButton);
   const summary=el('div','supply-summary'),tabs=el('nav','supply-tabs'),content=el('div','supply-content'),footer=el('footer','supply-footer'),status=el('p','supply-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
