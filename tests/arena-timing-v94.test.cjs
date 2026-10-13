@@ -21,6 +21,16 @@ for(const [label,intervals] of Object.entries({'60 Hz':[1/60],'60.24 Hz':[.0166]
  });
 }
 test('nearby characters animate every display frame',()=>{const f=fixture(2);for(let n=0;n<240;n++)f.animate(f.fighter,f.model,n/120,1/120);assert.equal(f.poses.length,240);});
+test('offscreen skeletons rest while world movement continues, then resume immediately',()=>{
+ const f=fixture(20);f.model.root.visible=false;
+ for(let n=0;n<120;n++){f.fighter.z+=.05;f.animate(f.fighter,f.model,n/60,1/60);assert.equal(f.model.root.position.z,f.fighter.z);}
+ assert.equal(f.poses.length,0);f.model.root.visible=true;f.animate(f.fighter,f.model,2,1/60);
+ assert.equal(f.poses.length,1);assert.ok(f.poses[0].dt<=.05,'returning poses do not jump through two seconds of animation');
+});
+test('nearby fighters keep their pose and shadow updates even outside the view',()=>{
+ const f=fixture(2);f.model.root.visible=false;
+ for(let n=0;n<30;n++)f.animate(f.fighter,f.model,n/60,1/60);assert.equal(f.poses.length,30);
+});
 test('attack, guard, reaction, movement and death transitions render immediately',()=>{
  const f=fixture();let t=0;const frame=()=>f.animate(f.fighter,f.model,t+=.005,.005);frame();
  for(const change of [{action:'attack'},{blocking:true},{reaction:.32},{move:0},{hp:0}]){const before=f.poses.length;Object.assign(f.fighter,change);frame();assert.equal(f.poses.length,before+1,JSON.stringify(change));}

@@ -19,7 +19,7 @@ var GamePerformance=(()=>{
  }
  let visibilityMath;
  function beginVisibility(camera){const T=THREE;if(!visibilityMath)visibilityMath={matrix:new T.Matrix4(),frustum:new T.Frustum(),sphere:new T.Sphere(new T.Vector3(),6)};camera.updateMatrixWorld();visibilityMath.matrix.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);visibilityMath.frustum.setFromProjectionMatrix(visibilityMath.matrix);metrics.culledCharacters=0;}
- function characterVisibility(model,keep=false){const s=visibilityMath;if(!s)return;model.root.getWorldPosition(s.sphere.center);s.sphere.center.y+=1.1;s.sphere.radius=6;model.root.visible=keep||s.frustum.intersectsSphere(s.sphere);if(!model.root.visible)metrics.culledCharacters++;}
+ function characterVisibility(model,keep=false,fighter=null){const s=visibilityMath;if(!s)return;if(fighter)s.sphere.center.set(fighter.x,0,fighter.z);else model.root.getWorldPosition(s.sphere.center);s.sphere.center.y+=1.1;s.sphere.radius=6;model.root.visible=keep||s.frustum.intersectsSphere(s.sphere);if(!model.root.visible)metrics.culledCharacters++;}
  return {beginFrame,rect,hidden,text,html,style,attr,toggle,characterShadows,beginVisibility,characterVisibility,metrics};
 })();
 if(typeof module!=='undefined')module.exports=GamePerformance;

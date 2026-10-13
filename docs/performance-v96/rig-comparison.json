@@ -1,0 +1,73 @@
+{
+  "note": "Real geometry/rig with placeholder textures. CPU matrix traversal counts and pose equality, not GPU/device FPS.",
+  "pages": [
+    {
+      "page": "arena.html",
+      "visibleBodyDraws": "5 → 1",
+      "skeletons": "8 → 1",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 930339
+      },
+      "after": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 869033
+      }
+    },
+    {
+      "page": "savas.html",
+      "visibleBodyDraws": "5 → 1",
+      "skeletons": "8 → 1",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 930339
+      },
+      "after": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 869033
+      }
+    },
+    {
+      "page": "multiplayer.html",
+      "visibleBodyDraws": "5 → 1",
+      "skeletons": "8 → 1",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 930339
+      },
+      "after": {
+        "worldUpdates": 2631696,
+        "treeUpdates": 869033
+      }
+    },
+    {
+      "page": "ludus.html",
+      "visibleBodyDraws": "5 → 1",
+      "skeletons": "8 → 1",
+      "classes": 7,
+      "scenarios": 9,
+      "comparedValues": 287280,
+      "maximumError": 0,
+      "before": {
+        "worldUpdates": 1691404,
+        "treeUpdates": 759709
+      },
+      "after": {
+        "worldUpdates": 1691404,
+        "treeUpdates": 709638
+      }
+    }
+  ]
+}
