@@ -3,3 +3,13 @@ CC0-1.0
 https://polyhaven.com/a/white_sandstone_blocks_02
 512px optimized diffuse, OpenGL normal and roughness maps.
 Roman architectural geometry and matchmaking UI: project original.
+
+Previz-Lowpoly Colosseum with concept textures — Neberkenezer
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30
+Scale, static geometry batching and lighting adapted.
+
+Gladiator — huyunited
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c
+Textures resized; body parts batched; scale, equipment and animation adapted.

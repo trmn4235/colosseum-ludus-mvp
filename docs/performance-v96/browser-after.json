@@ -1,0 +1,15 @@
+{
+  "current": true,
+  "comparison": {
+    "calls": 222,
+    "triangles": 1305128,
+    "bodyMeshes": 20,
+    "skeletons": 20,
+    "geometries": 149,
+    "textures": 103,
+    "pausedPoses": 0
+  },
+  "errors": [],
+  "engine": "chromium",
+  "note": "Software-rendered browser, deterministic scene. Draw counts are not phone FPS."
+}

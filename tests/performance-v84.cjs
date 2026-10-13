@@ -8,6 +8,7 @@ async function rigRuntime(page='arena.html',options={}){
  const paint=new Proxy({}, {get:(o,k)=>k==='canvas'?{}:()=>paint});
  context.document={baseURI:'https://fixture.invalid/',getElementById:()=>({textContent:''}),createElement:()=>({width:256,height:256,getContext:()=>paint})};
  vm.runInContext(fs.readFileSync(root+'/owner-three-r160.js','utf8'),context);
+ if(fs.existsSync(root+'/arena-runtime-v96.js'))vm.runInContext(fs.readFileSync(root+'/arena-runtime-v96.js','utf8'),context);
  const T=context.THREE,OriginalLoader=T.GLTFLoader;
  T.GLTFLoader=class extends OriginalLoader{constructor(...args){super(...args);this.register(()=>({name:'CPU_TEXTURE_PLACEHOLDERS',loadTexture:()=>Promise.resolve(new T.Texture())}));}};
  T.TextureLoader.prototype.load=function(url,onload){const t=new T.Texture();onload?.(t);return t;};
