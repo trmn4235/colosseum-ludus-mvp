@@ -24,3 +24,19 @@ body.naval-active #toast{bottom:142px;max-width:min(360px,50vw)}
 body[data-roman-screen="savas"] #modePage .arena-card-grid[data-arena-panel="single"]{grid-template-columns:repeat(4,minmax(0,1fr))!important;width:min(96%,1126px,calc((var(--game-height,100dvh) - 126px)*3 + 3*var(--card-gap)))!important}
 .arena-choice-art.art-naval{background-image:url('assets/clan-water-20x2-v81.webp');background-size:contain;background-position:center;background-color:#351823}
 @media(max-height:390px){#navalStatus{top:58px;font-size:10px}#navalHelm{padding:6px 10px;min-height:40px;font-size:12px}#navalBridge{width:50px;height:50px}#navalBridge span{top:52px}#navalSailing{right:18px;bottom:20px}}
+/* V101: the helm uses the same size as the anatomical head control. */
+body.naval-active{--naval-unit:clamp(42px,10.5dvh,72px);--naval-bottom:max(34px,calc(env(safe-area-inset-bottom) + 28px))}
+#navalHelm{bottom:var(--naval-bottom);width:var(--naval-unit);height:var(--naval-unit);min-height:0;padding:0;justify-content:center;border-radius:50%;gap:0}
+#navalHelm svg{width:55%;height:55%}
+#navalHelm[aria-pressed="true"]{background:radial-gradient(#a77a30,#583b16);border-color:#ffe4a4;box-shadow:0 0 8px #e9c47355}
+#navalJump{bottom:var(--naval-bottom)}
+#navalJavelin{bottom:calc(var(--naval-bottom) + var(--naval-unit) + 9px)}
+body.naval-active #teamScore{top:auto;bottom:max(5px,env(safe-area-inset-bottom));font:700 9px/1.15 Arial,sans-serif;gap:9px;padding:4px 8px;border-radius:6px;white-space:nowrap}
+body.naval-active #navalStatus{top:max(12px,env(safe-area-inset-top));font-size:10px;padding:4px 9px}
+body.naval-active #toast.energy-warning{font:9px/1.3 Arial,sans-serif;padding:4px 7px;max-width:210px}
+#pauseMenu #cameraPerspective{font:12px Arial,sans-serif;max-width:95%;color:#f4dfae;background:#32241d;border:1px solid #bd9c61;padding:8px;min-height:36px;margin:8px}
+@media(max-width:760px){body.naval-active #teamScore{left:calc(50% - 30px);font-size:8px;gap:7px}}
+@media(max-height:350px){body.naval-active{--naval-unit:37px}}
+
+/* Keep the projected boarding caption above the icon and clear of bottom controls. */
+#navalBridge span{top:auto;bottom:calc(100% + 5px)}

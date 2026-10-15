@@ -1,0 +1,548 @@
+{
+  "initial": {
+    "ships": 4,
+    "fighters": 20,
+    "counts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "calls": 336,
+    "triangles": 1441912
+  },
+  "boatAsset": {
+    "meshes": 36,
+    "geometries": 9,
+    "textures": 7,
+    "skinned": 0,
+    "triangles": 24328,
+    "misses": []
+  },
+  "outfit": {
+    "triangles": 43144,
+    "textures": 9,
+    "sails": [
+      {
+        "height": 3.8600001335144043,
+        "map": "ff166bd7-e131-426f-bb78-e38615a34762",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.8600001335144043,
+        "map": "2cb30f08-9662-4f00-b203-daf12d7a91e6",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.8600001335144043,
+        "map": "d6a15cbf-ecc2-4f1c-91a9-d10ba698f344",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.8600001335144043,
+        "map": "3061e751-497d-4c19-9ce3-54869d278951",
+        "flag": false,
+        "rack": 8
+      }
+    ],
+    "cameraDistance": 4.3231805162367785
+  },
+  "hudLayout": {
+    "helm": 42,
+    "head": 42,
+    "text": "",
+    "teamY": 364.65625,
+    "height": 390,
+    "energyFont": 9,
+    "areaRatio": 2.0000000000000004
+  },
+  "eyeView": {
+    "mode": "first",
+    "saved": "first",
+    "height": 1.9169242125734132,
+    "eyeHeight": 1.9169242125734132,
+    "mask": 1,
+    "helmetVisible": false,
+    "fov": 68,
+    "armMeshes": 1,
+    "otherActorMask": false
+  },
+  "boatRequests": 1,
+  "errors": [],
+  "viewports": 4,
+  "jumpApex": {
+    "height": 1.1198815397583606,
+    "renderHeight": 1.1198815397583606,
+    "shadow": false,
+    "ship": 0,
+    "footHeight": 1.357231674123694,
+    "elapsed": 0.4833333333333333
+  },
+  "controls": "menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume",
+  "note": "Chromium with software GPU. Not a physical phone FPS measurement.",
+  "finalCameraChecks": {
+    "hudLayout": {
+      "helm": 42,
+      "head": 42,
+      "text": "",
+      "teamY": 364.65625,
+      "height": 390,
+      "energyFont": 9,
+      "areaRatio": 2.0000000000000004
+    },
+    "eyeView": {
+      "mode": "first",
+      "saved": "first",
+      "height": 1.9169242125734132,
+      "eyeHeight": 1.9169242125734132,
+      "mask": 1,
+      "helmetVisible": false,
+      "fov": 68,
+      "armMeshes": 1,
+      "otherActorMask": false
+    },
+    "lookingDown": {
+      "direction": [
+        0.2247105063599533,
+        -0.4617791755414826,
+        0.8580589614750737
+      ],
+      "mask": 1,
+      "eye": [
+        -7.558870065611672,
+        1.9169254403238902,
+        -17.29531930720504
+      ],
+      "p": {
+        "x": -7.594424699133069,
+        "z": -17.326381398986687
+      }
+    },
+    "deathSpectator": true,
+    "errors": []
+  },
+  "finalLayoutChecks": {
+    "layouts": [
+      {
+        "width": 667,
+        "height": 375,
+        "rects": [
+          {
+            "id": "navalHelm",
+            "visible": true,
+            "left": 312.5,
+            "right": 354.5,
+            "top": 299,
+            "bottom": 341
+          },
+          {
+            "id": "navalJump",
+            "visible": true,
+            "left": 189.5,
+            "right": 245.5,
+            "top": 280,
+            "bottom": 341
+          },
+          {
+            "id": "navalJavelin",
+            "visible": true,
+            "left": 304.5,
+            "right": 362.5,
+            "top": 225,
+            "bottom": 290
+          },
+          {
+            "id": "navalBridge",
+            "visible": true,
+            "left": 238.921875,
+            "right": 288.921875,
+            "top": 135,
+            "bottom": 185
+          },
+          {
+            "id": "teamScore",
+            "visible": true,
+            "left": 210.8671875,
+            "right": 396.1328125,
+            "top": 350.8125,
+            "bottom": 370
+          },
+          {
+            "id": "stick",
+            "visible": true,
+            "left": 22,
+            "right": 118,
+            "top": 263,
+            "bottom": 359
+          },
+          {
+            "id": "attack",
+            "visible": true,
+            "left": 464.5,
+            "right": 506.5,
+            "top": 222,
+            "bottom": 292.5
+          },
+          {
+            "id": "block",
+            "visible": true,
+            "left": 464.5,
+            "right": 506.5,
+            "top": 292.5,
+            "bottom": 363
+          },
+          {
+            "id": "dodge",
+            "visible": true,
+            "left": 514,
+            "right": 580.75,
+            "top": 172.5,
+            "bottom": 202.734375
+          },
+          {
+            "id": "special",
+            "visible": true,
+            "left": 588.25,
+            "right": 655,
+            "top": 172.5,
+            "bottom": 202.734375
+          },
+          {
+            "id": "hand",
+            "visible": true,
+            "left": 544.75,
+            "right": 574.75,
+            "top": 172.5,
+            "bottom": 202.5
+          },
+          {
+            "id": "target",
+            "visible": true,
+            "left": 424.5,
+            "right": 454.5,
+            "top": 333,
+            "bottom": 363
+          }
+        ],
+        "overlaps": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "rects": [
+          {
+            "id": "navalHelm",
+            "visible": true,
+            "left": 401,
+            "right": 443,
+            "top": 314,
+            "bottom": 356
+          },
+          {
+            "id": "navalJump",
+            "visible": true,
+            "left": 278,
+            "right": 334,
+            "top": 295,
+            "bottom": 356
+          },
+          {
+            "id": "navalJavelin",
+            "visible": true,
+            "left": 393,
+            "right": 451,
+            "top": 240,
+            "bottom": 305
+          },
+          {
+            "id": "navalBridge",
+            "visible": true,
+            "left": 334.265625,
+            "right": 384.265625,
+            "top": 150,
+            "bottom": 200
+          },
+          {
+            "id": "teamScore",
+            "visible": true,
+            "left": 317.21875,
+            "right": 526.78125,
+            "top": 364.65625,
+            "bottom": 385
+          },
+          {
+            "id": "stick",
+            "visible": true,
+            "left": 22,
+            "right": 118,
+            "top": 278,
+            "bottom": 374
+          },
+          {
+            "id": "attack",
+            "visible": true,
+            "left": 640.609375,
+            "right": 682.609375,
+            "top": 236.40625,
+            "bottom": 307.203125
+          },
+          {
+            "id": "block",
+            "visible": true,
+            "left": 640.609375,
+            "right": 682.609375,
+            "top": 307.203125,
+            "bottom": 378
+          },
+          {
+            "id": "dodge",
+            "visible": true,
+            "left": 690.40625,
+            "right": 757.296875,
+            "top": 186.609375,
+            "bottom": 216.84375
+          },
+          {
+            "id": "special",
+            "visible": true,
+            "left": 765.109375,
+            "right": 832,
+            "top": 186.609375,
+            "bottom": 216.84375
+          },
+          {
+            "id": "hand",
+            "visible": true,
+            "left": 721.296875,
+            "right": 751.296875,
+            "top": 186.609375,
+            "bottom": 216.609375
+          },
+          {
+            "id": "target",
+            "visible": true,
+            "left": 600.609375,
+            "right": 630.609375,
+            "top": 348,
+            "bottom": 378
+          }
+        ],
+        "overlaps": []
+      },
+      {
+        "width": 932,
+        "height": 430,
+        "rects": [
+          {
+            "id": "navalHelm",
+            "visible": true,
+            "left": 443.4296875,
+            "right": 488.5703125,
+            "top": 350.859375,
+            "bottom": 396
+          },
+          {
+            "id": "navalJump",
+            "visible": true,
+            "left": 322,
+            "right": 378,
+            "top": 335,
+            "bottom": 396
+          },
+          {
+            "id": "navalJavelin",
+            "visible": true,
+            "left": 437,
+            "right": 495,
+            "top": 276.859375,
+            "bottom": 341.859375
+          },
+          {
+            "id": "navalBridge",
+            "visible": true,
+            "left": 374.46875,
+            "right": 433.46875,
+            "top": 171.484375,
+            "bottom": 230.484375
+          },
+          {
+            "id": "teamScore",
+            "visible": true,
+            "left": 361.21875,
+            "right": 570.78125,
+            "top": 404.65625,
+            "bottom": 425
+          },
+          {
+            "id": "stick",
+            "visible": true,
+            "left": 22,
+            "right": 118,
+            "top": 318,
+            "bottom": 414
+          },
+          {
+            "id": "attack",
+            "visible": true,
+            "left": 713.609375,
+            "right": 758.75,
+            "top": 265.359375,
+            "bottom": 341.671875
+          },
+          {
+            "id": "block",
+            "visible": true,
+            "left": 713.609375,
+            "right": 758.75,
+            "top": 341.6875,
+            "bottom": 418
+          },
+          {
+            "id": "dodge",
+            "visible": true,
+            "left": 767.359375,
+            "right": 839.375,
+            "top": 211.609375,
+            "bottom": 244.109375
+          },
+          {
+            "id": "special",
+            "visible": true,
+            "left": 847.984375,
+            "right": 920,
+            "top": 211.609375,
+            "bottom": 244.109375
+          },
+          {
+            "id": "hand",
+            "visible": true,
+            "left": 801.796875,
+            "right": 831.796875,
+            "top": 211.609375,
+            "bottom": 241.609375
+          },
+          {
+            "id": "target",
+            "visible": true,
+            "left": 673.609375,
+            "right": 703.609375,
+            "top": 388,
+            "bottom": 418
+          }
+        ],
+        "overlaps": []
+      },
+      {
+        "width": 1024,
+        "height": 768,
+        "rects": [
+          {
+            "id": "navalHelm",
+            "visible": true,
+            "left": 476,
+            "right": 548,
+            "top": 662,
+            "bottom": 734
+          },
+          {
+            "id": "navalJump",
+            "visible": true,
+            "left": 368,
+            "right": 424,
+            "top": 673,
+            "bottom": 734
+          },
+          {
+            "id": "navalJavelin",
+            "visible": true,
+            "left": 483,
+            "right": 541,
+            "top": 588,
+            "bottom": 653
+          },
+          {
+            "id": "navalBridge",
+            "visible": true,
+            "left": 380.859375,
+            "right": 439.859375,
+            "top": 340.03125,
+            "bottom": 399.03125
+          },
+          {
+            "id": "teamScore",
+            "visible": true,
+            "left": 407.21875,
+            "right": 616.78125,
+            "top": 742.65625,
+            "bottom": 763
+          },
+          {
+            "id": "stick",
+            "visible": true,
+            "left": 30,
+            "right": 156,
+            "top": 615,
+            "bottom": 741
+          },
+          {
+            "id": "attack",
+            "visible": true,
+            "left": 682,
+            "right": 754,
+            "top": 512,
+            "bottom": 634
+          },
+          {
+            "id": "block",
+            "visible": true,
+            "left": 682,
+            "right": 754,
+            "top": 634,
+            "bottom": 756
+          },
+          {
+            "id": "dodge",
+            "visible": true,
+            "left": 768,
+            "right": 883,
+            "top": 426,
+            "bottom": 477.828125
+          },
+          {
+            "id": "special",
+            "visible": true,
+            "left": 897,
+            "right": 1012,
+            "top": 426,
+            "bottom": 477.828125
+          },
+          {
+            "id": "hand",
+            "visible": true,
+            "left": 832,
+            "right": 862,
+            "top": 426,
+            "bottom": 456
+          },
+          {
+            "id": "target",
+            "visible": true,
+            "left": 642,
+            "right": 672,
+            "top": 726,
+            "bottom": 756
+          }
+        ],
+        "overlaps": []
+      }
+    ],
+    "errors": []
+  },
+  "automatedTests": {
+    "passed": 67,
+    "failed": 0
+  }
+}

@@ -7,6 +7,19 @@
     {name:'SİYAH',cloth:'#202329',ink:'#e4d7b6',hud:'#cec8bb',mark:'sun'},
     {name:'YEŞİL',cloth:'#244c3d',ink:'#d4b874',hud:'#9ed1af',mark:'laurel'}
   ];
+  function woodTexture(T){
+    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=256;
+    const c=canvas.getContext('2d');let seed=101;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+    for(let board=0;board<4;board++){
+      const y=board*64,base=96+rand()*27;c.fillStyle=`rgb(${base+34},${base+12},${base-12})`;c.fillRect(0,y,1024,64);
+      for(let line=0;line<140;line++){const yy=y+rand()*64,alpha=.03+rand()*.14;c.strokeStyle=rand()>.5?`rgba(36,24,13,${alpha})`:`rgba(231,209,173,${alpha})`;c.lineWidth=.4+rand()*1.3;c.beginPath();c.moveTo(0,yy);for(let x=0;x<=1024;x+=32)c.lineTo(x,yy+Math.sin(x*.013+line)*1.4+Math.sin(x*.041+line)*.35);c.stroke();}
+      // Sparse knots and staggered plank ends keep the grain from looking tiled.
+      const knotX=140+rand()*730,knotY=y+15+rand()*34;for(let ring=1;ring<=5;ring++){c.strokeStyle='#35241532';c.lineWidth=.7;c.beginPath();c.ellipse(knotX,knotY,ring*6,ring*1.6,.03,0,Math.PI*2);c.stroke();}
+      const joint=(board%2?730:280)+rand()*80;c.fillStyle='#21180e65';c.fillRect(joint,y,1.5,64);c.fillStyle='#d3b88c40';c.fillRect(joint+2,y,1,64);
+      c.fillStyle='#21190f8c';c.fillRect(0,y,1024,1.5);c.fillStyle='#e0c29445';c.fillRect(0,y+2,1024,1);
+    }
+    const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.wrapS=texture.wrapT=T.RepeatWrapping;texture.anisotropy=4;return texture;
+  }
   function sailTexture(T,team){
     const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
     const c=canvas.getContext('2d');c.fillStyle=team.cloth;c.fillRect(0,0,512,512);
@@ -38,11 +51,16 @@
       path([[-45,-83],[8,-83],[-19,-20],[46,-20],[-25,94],[-6,22],[-49,22]]);
       c.lineWidth=5;c.beginPath();c.arc(0,0,92,-.3,Math.PI+.3);c.stroke();
     }
-    c.restore();const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=2;return texture;
+    c.restore();
+    // Soft weathering, sun-faded folds and sewn hems in the same team colour.
+    const light=c.createLinearGradient(0,0,512,0);light.addColorStop(0,'#00000024');light.addColorStop(.24,'#ffffff09');light.addColorStop(.54,'#00000014');light.addColorStop(.8,'#ffffff0d');light.addColorStop(1,'#0000002b');c.fillStyle=light;c.fillRect(0,0,512,512);
+    c.strokeStyle='#d5cdb930';c.lineWidth=.8;for(let y=8;y<512;y+=9){c.beginPath();c.moveTo(17,y);c.lineTo(20,y+3);c.moveTo(492,y);c.lineTo(495,y+3);c.stroke();}
+    const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=2;return texture;
   }
   function create(T,source,materials){
     const group=new T.Group(),wood=materials.wood.clone(),dark=materials.dark,bronze=materials.bronze;
-    wood.color.setHex(0x886548);wood.roughness=.94;
+    wood.map=woodTexture(T);wood.color.setHex(0xc5ad8e);wood.roughness=.9;wood.normalMap=null;wood.bumpMap=wood.map;wood.bumpScale=.018;
+    source.traverse(o=>{if(!o.isMesh||o.userData.navalRole!=='deck')return;const g=o.geometry.clone(),p=g.attributes.position,uv=new Float32Array(p.count*2);for(let i=0;i<p.count;i++){uv[i*2]=p.getZ(i)*.13;uv[i*2+1]=p.getX(i)*.43;}g.setAttribute('uv',new T.BufferAttribute(uv,2));o.geometry=g;o.material=wood;});
     const rope=new T.MeshStandardMaterial({color:0x958366,roughness:1});
     const steel=new T.MeshStandardMaterial({color:0x92978e,roughness:.5,metalness:.65});
     function merge(parts,material,name){
@@ -57,13 +75,14 @@
     function sheer(z){const end=Math.pow(Math.abs(z)/7.7,3);return .58+end*.66;}
     const planks=[],rails=[],bands=[];
     for(const side of [-1,1])for(const interval of [[-7.5,-1.16],[1.16,7.65]]){
-      const count=16,vertices=[],uv=[],indices=[];
+      const count=14,vertices=[],uv=[],indices=[];
       for(let band=0;band<4;band++){
         const first=vertices.length/3;
         for(let i=0;i<=count;i++){const z=interval[0]+(interval[1]-interval[0])*i/count,w=width(z),top=sheer(z);
-          for(const edge of [0,1]){const t=(band+edge)/4,y=-.58+(top+.58)*t+(edge?-.012:.012),x=side*(w-.12+Math.sin(t*Math.PI)*.12);vertices.push(x,y,z);uv.push(z*.23,t*.8);}
+          for(const edge of [0,1]){const t=(band+edge)/4,y=-.58+(top+.58)*t+(edge?-.012:.012),x=side*(w-.12+Math.sin(t*Math.PI)*.12);vertices.push(x,y,z);uv.push(z*.23,t);}
+          for(const edge of [0,1]){const t=(band+edge)/4,y=-.58+(top+.58)*t+(edge?-.012:.012),x=side*(w-.21+Math.sin(t*Math.PI)*.12);vertices.push(x,y,z);uv.push(z*.23,t);}
         }
-        for(let i=0;i<count;i++){const a=first+i*2;indices.push(a,a+1,a+2,a+1,a+3,a+2);}
+        for(let i=0;i<count;i++){const a=first+i*4;indices.push(a,a+1,a+4,a+1,a+5,a+4,a+2,a+6,a+3,a+3,a+6,a+7,a+1,a+3,a+5,a+3,a+7,a+5);}
       }
       const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(vertices,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setIndex(indices);geo.computeVertexNormals();planks.push(geo);
       for(let i=0;i<count;i++){
@@ -77,10 +96,10 @@
     // A high foot leaves the fighting deck visible below a fully opened sail.
     const mast=[rod([0,-.1,5.65],[0,7.65,5.65],.1,8),rod([-3.65,7.12,5.65],[3.65,7.12,5.65],.065,6)];merge(mast,dark,'Mast and yard');
     const rig=[];for(const side of [-1,1]){rig.push(rod([0,7.5,5.65],[side*2.65,.3,4.4],.018));rig.push(rod([side*3.5,7.1,5.65],[side*2.8,3.5,6],.015));}rig.push(rod([0,7.5,5.65],[0,1,7.8],.02));merge(rig,rope,'Standing rigging');
-    const sg=new T.PlaneGeometry(7,3.65,14,10),pos=sg.attributes.position;
-    for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i),u=(x+3.5)/7,v=(y+1.825)/3.65;pos.setXYZ(i,x*(.84+.16*v),y+5.28-.13*Math.sin(Math.PI*u)*(1-v),5.69+.72*Math.sin(Math.PI*u)*Math.sin(Math.PI*v)+.06*Math.sin(u*34)*(1-v));}
+    const sg=new T.PlaneGeometry(7,3.65,18,12),pos=sg.attributes.position;
+    for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i),u=(x+3.5)/7,v=(y+1.825)/3.65;pos.setXYZ(i,x*(.84+.16*v),y+5.28-.21*Math.sin(Math.PI*u)*(1-v),5.69+.86*Math.sin(Math.PI*u)*Math.sin(Math.PI*v)+.055*Math.sin(u*34)*(1-v));}
     sg.computeVertexNormals();const sail=new T.Mesh(sg,new T.MeshStandardMaterial({roughness:.98,side:T.DoubleSide}));sail.name='Open sail';sail.castShadow=false;sail.receiveShadow=true;group.add(sail);
-    const sailMaterials=teams.map(team=>new T.MeshStandardMaterial({map:sailTexture(T,team),roughness:.98,side:T.DoubleSide}));
+    const wind={value:0},sailMaterials=teams.map(team=>{const material=new T.MeshStandardMaterial({map:sailTexture(T,team),roughness:.98,side:T.DoubleSide});material.onBeforeCompile=shader=>{shader.uniforms.sailTime=wind;shader.vertexShader='uniform float sailTime;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nfloat foot=clamp((7.12-position.y)/3.65,0.,1.);transformed.z+=sin(position.x*2.3+sailTime*1.45)*.045*foot*foot;');};material.customProgramCacheKey=()=> 'woven-sail-v101';return material;});
     const rack=new T.Group();rack.name='Javelin rack';rack.position.set(root.NavalSimulation.constants.rackX,0,root.NavalSimulation.constants.rackZ);
     const rackWood=[new T.BoxGeometry(.12,1.05,.12).translate(-.42,.525,0),new T.BoxGeometry(.12,1.05,.12).translate(.42,.525,0),new T.BoxGeometry(1.02,.12,.25).translate(0,.32,0),new T.BoxGeometry(1.02,.12,.25).translate(0,.91,0),new T.BoxGeometry(1.16,.1,.55).translate(0,.05,0)];
     const rackMesh=merge(rackWood,dark,'Rack frame');group.remove(rackMesh);rack.add(rackMesh);
@@ -89,7 +108,7 @@
     for(let i=0;i<8;i++){dummy.position.set(-.35+(i%4)*.23,.62,Math.floor(i/4)*.17-.09);dummy.rotation.x=-.1;dummy.updateMatrix();rackShafts.setMatrixAt(i,dummy.matrix);rackHeads.setMatrixAt(i,dummy.matrix);}
     rack.add(rackShafts,rackHeads);
     group.add(rack);
-    return{group,sailMaterials,javelin:jav};
+    return{group,sailMaterials,wind,javelin:jav};
   }
   root.NavalOutfit={teams,create};
 })(window);
