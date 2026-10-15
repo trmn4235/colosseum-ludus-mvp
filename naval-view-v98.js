@@ -48,40 +48,59 @@
       else{const paint=materials.paint.clone();paint.color.setHex(palette[ship.team]);group.getObjectByName('paint').material=paint;}scene.add(group);
       const sides=[];
       for(const side of [-1,1]){
-        const pivot=new T.Group();pivot.position.set(side*C.halfWidth,.03,0);group.add(pivot);
+        for(const station of C.bridgeStations){
+        const pivot=new T.Group();pivot.position.set(side*C.halfWidth,.03,station);group.add(pivot);
         const plank=new T.Mesh(bridgeGeometry,materials.wood);plank.position.x=side*C.bridgeLength/2;plank.castShadow=plank.receiveShadow=true;pivot.add(plank);
         const seams=new T.Mesh(seamGeometry,materials.dark);seams.position.x=side*C.bridgeLength/2;pivot.add(seams);
         const rail=new T.Mesh(new T.BoxGeometry(C.bridgeLength,.1,.07),materials.bronze);rail.position.set(side*C.bridgeLength/2,.1,C.bridgeWidth/2);pivot.add(rail);const second=rail.clone();second.position.z=-C.bridgeWidth/2;pivot.add(second);
-        bridgeViews.push({ship,side,pivot});
+        bridgeViews.push({ship,side,station,pivot});
+        }
         const role=side<0?'oars-port':'oars-starboard';
         const oars=group.children.find(o=>o.userData.navalRole===role);
         sides.push({side,oars});
       }
-      const gates={value:Array.from({length:3},()=>new T.Vector3())};
+      const gates={value:Array.from({length:8},()=>new T.Vector3())};
       if(outfitted){
         const clip=shader=>{
           shader.uniforms.navalGates=gates;
           shader.vertexShader='varying vec3 vNavalHull;\n'+shader.vertexShader;
           shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvNavalHull=position;');
-          shader.fragmentShader='varying vec3 vNavalHull;uniform vec3 navalGates[3];\n'+shader.fragmentShader;
-          shader.fragmentShader=shader.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nfor(int i=0;i<3;i++){vec3 gate=navalGates[i];if(gate.z>.5&&vNavalHull.x*gate.x>2.35&&abs(vNavalHull.z-gate.y)<1.08&&vNavalHull.y>-.045)discard;}');
+          shader.fragmentShader='varying vec3 vNavalHull;uniform vec3 navalGates[8];\n'+shader.fragmentShader;
+          shader.fragmentShader=shader.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nfor(int i=0;i<8;i++){vec3 gate=navalGates[i];if(gate.z>.5&&vNavalHull.x*gate.x>2.35&&abs(vNavalHull.z-gate.y)<1.34&&vNavalHull.y>-.045)discard;}');
         };
         group.traverse(o=>{if(!o.isMesh||!(o.userData.navalRole==='hull'||['Curved hull strakes','Raised gunwales and ribs','Bronze rubbing strakes'].includes(o.name)))return;
-          o.material=o.material.clone();o.material.onBeforeCompile=clip;o.material.customProgramCacheKey=()=> 'naval-boarding-gates-v100';
-          o.customDepthMaterial=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,side:T.DoubleSide});o.customDepthMaterial.onBeforeCompile=clip;o.customDepthMaterial.customProgramCacheKey=()=> 'naval-boarding-gates-v100';
+          o.material=o.material.clone();o.material.onBeforeCompile=clip;o.material.customProgramCacheKey=()=> 'naval-boarding-gates-v102';
+          o.customDepthMaterial=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,side:T.DoubleSide});o.customDepthMaterial.onBeforeCompile=clip;o.customDepthMaterial.customProgramCacheKey=()=> 'naval-boarding-gates-v102';
         });
       }
       views.push({ship,group,sides,gates,rackShafts:group.getObjectByName('Rack shafts'),rackHeads:group.getObjectByName('Rack heads')});
     }
-    const water=new T.Mesh(new T.CircleGeometry(C.arenaRadius*1.9,96),new T.ShaderMaterial({uniforms:{time:{value:0}},vertexShader:`varying vec3 vWorld;void main(){vec4 world=modelMatrix*vec4(position,1.);vWorld=world.xyz;gl_Position=projectionMatrix*viewMatrix*world;}`,fragmentShader:`uniform float time;varying vec3 vWorld;
-      void main(){vec2 p=vWorld.xz;float a=sin(p.x*1.5+p.y*.8+time*.65+sin(p.y*.2+time*.12)),b=sin(p.y*2.4-p.x*.6+time*.9),c=sin(p.x*.36+p.y*.72-time*.42);
-      vec3 normal=normalize(vec3((a+b)*.1,1.,(b+c)*.12));vec3 view=normalize(cameraPosition-vWorld);float fresnel=pow(1.-max(dot(normal,view),0.),3.);
-      float shine=pow(max(dot(reflect(-normalize(vec3(-.5,1.,.3)),normal),view),0.),100.);
-      vec3 color=mix(vec3(.025,.105,.14),vec3(.15,.30,.31),.48+.1*c+.06*a);color=mix(color,vec3(.35,.49,.53),fresnel*.35);color+=vec3(.8,.74,.5)*shine*.2;
-      gl_FragColor=vec4(color,1.);
-      #include <tonemapping_fragment>
-      #include <colorspace_fragment>
-      }` }));
+    // Precomputed seamless multi-direction ripples: two filtered texture reads per pixel.
+    const rippleSize=256,rippleData=new Uint8Array(rippleSize*rippleSize*4);
+    const waves=[[1,2,.085,.3],[3,-2,.065,1.8],[2,5,.055,2.7],[7,3,.045,.6],[-5,9,.035,4.1],[11,-9,.03,1.2],[17,11,.02,3.5],[-13,19,.018,2.2],[27,-19,.012,.8],[31,23,.009,5.3],[7,-27,.013,4.7],[-21,-11,.018,3.9]];
+    for(let y=0;y<rippleSize;y++)for(let x=0;x<rippleSize;x++){
+      let dx=0,dz=0;for(const [a,b,amp,phase] of waves){const c=Math.cos((a*x+b*y)*Math.PI*2/rippleSize+phase)*amp,d=Math.hypot(a,b);dx+=a/d*c;dz+=b/d*c;}
+      const i=(y*rippleSize+x)*4;rippleData[i]=Math.round((dx*.5+.5)*255);rippleData[i+1]=Math.round((dz*.5+.5)*255);rippleData[i+2]=255;rippleData[i+3]=255;
+    }
+    const rippleMap=new T.DataTexture(rippleData,rippleSize,rippleSize);rippleMap.wrapS=rippleMap.wrapT=T.RepeatWrapping;rippleMap.magFilter=T.LinearFilter;rippleMap.minFilter=T.LinearMipmapLinearFilter;rippleMap.generateMipmaps=true;rippleMap.anisotropy=4;rippleMap.needsUpdate=true;
+    const waterTime={value:0},waterMaterial=new T.MeshStandardMaterial({color:0x264b46,roughness:.29,metalness:.24,envMapIntensity:1});
+    waterMaterial.uniforms={time:waterTime};
+    waterMaterial.onBeforeCompile=shader=>{
+      shader.uniforms.waterTime=waterTime;shader.uniforms.waterRipple={value:rippleMap};
+      shader.vertexShader='varying vec3 navalWaterWorld;\n'+shader.vertexShader;
+      shader.vertexShader=shader.vertexShader.replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nnavalWaterWorld=(modelMatrix*vec4(transformed,1.)).xyz;');
+      shader.fragmentShader='uniform float waterTime;uniform sampler2D waterRipple;varying vec3 navalWaterWorld;\n'+shader.fragmentShader;
+      shader.fragmentShader=shader.fragmentShader.replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
+        vec2 p=navalWaterWorld.xz;float t=waterTime;
+        mat2 rotation=mat2(.8,.6,-.6,.8);
+        vec2 slope=texture2D(waterRipple,p*.023+vec2(t*.002,t*.001)).rg*2.-1.;
+        vec2 detail=texture2D(waterRipple,rotation*p*.047+vec2(-t*.0025,t*.0017)).rg*2.-1.;
+        slope+=vec2(.8*detail.x+.6*detail.y,-.6*detail.x+.8*detail.y)*.55;
+        normal=normalize(mat3(viewMatrix)*normalize(vec3(-slope.x,1.,-slope.y)));
+      `);
+    };
+    waterMaterial.customProgramCacheKey=()=> 'naval-water-ripples-v102';
+    const water=new T.Mesh(new T.CircleGeometry(naval.arenaRadius*1.5,96),waterMaterial);
     water.rotation.x=-Math.PI/2;water.position.y=-.72;water.renderOrder=-1;scene.add(water);
     const wakeGeo=new T.RingGeometry(1,1.08,28,1,0,Math.PI),wakeMat=new T.MeshBasicMaterial({color:0xb6d6c9,transparent:true,opacity:.15,depthWrite:false,side:T.DoubleSide});
     const wakes=naval.ships.map(ship=>{const m=new T.Mesh(wakeGeo,wakeMat.clone());m.rotation.x=-Math.PI/2;m.scale.set(2.7,5,1);m.position.y=-.69;scene.add(m);return{ship,m};});
@@ -110,10 +129,16 @@
     javelinButton.onclick=javelin;
     const javelinViews=new Map(),heldJavelin=outfit?.javelin.clone(true),flightDirection=new T.Vector3(),up=new T.Vector3(0,1,0);
     if(heldJavelin){heldJavelin.rotation.x=.25;heldJavelin.userData.restRotation=.25;}
+    const aimGeometry=new T.BufferGeometry(),aimPositions=new Float32Array(25*3);
+    aimGeometry.setAttribute('position',new T.BufferAttribute(aimPositions,3));
+    const aimLine=new T.Line(aimGeometry,new T.LineBasicMaterial({color:0xffdf62,transparent:true,opacity:.48,depthWrite:false}));
+    aimLine.name='Javelin aim trajectory';aimLine.frustumCulled=false;aimLine.visible=false;scene.add(aimLine);
     function updateJavelins(){
       if(!outfitted)return;
       const f=naval.player(),rack=naval.rack(),target=naval.javelinTarget(),held=f.navJavelin&&f.hp>0,m=options.models?.()[0];
       ui.hidden(javelinButton,(!rack&&!held)||!options.active()||naval.manual||f.hp<=0);
+      const aim=held?naval.javelinAim():null;aimLine.visible=!!aim&&options.active()&&!naval.manual;
+      if(aimLine.visible){for(let i=0;i<25;i++){const q=naval.javelinPoint(aim,aim.length*i/24);aimPositions.set([q.x,q.y,q.z],i*3);}aimGeometry.attributes.position.needsUpdate=true;}
       const canAct=f.action==='idle'&&f.stunUntil<=naval.combat.time&&!f.navJump;
       javelinButton.disabled=!canAct||(held?(!target||f.stamina<C.javelinCost):!rack?.javelins);
       ui.text(javelinButton.querySelector('span'),held?'CİRİT AT':'CİRİT AL');ui.text(javelinButton.querySelector('small'),held?'18 KON':rack?rack.javelins+' / '+C.javelinStock:'');
@@ -129,10 +154,14 @@
       water.material.uniforms.time.value=time;if(outfit?.wind)outfit.wind.value=time;
       for(const v of views){v.group.position.set(v.ship.x,0,v.ship.z);v.group.rotation.y=v.ship.angle;if(v.rackShafts){v.rackShafts.count=v.rackHeads.count=v.ship.javelins;}
         let gate=0;for(const g of v.gates.value)g.set(0,0,0);
-        for(const b of naval.bridges)if(b.to===v.ship.id&&b.phase!=='closed'&&gate<v.gates.value.length){const landing=NavalSimulation.local(v.ship,b.end);v.gates.value[gate++].set(Math.sign(landing.x),landing.z,1);}
+        for(const b of naval.bridges)if((b.to===v.ship.id||b.from===v.ship.id)&&b.phase!=='closed'&&gate<v.gates.value.length){const landing=NavalSimulation.local(v.ship,naval.bridgeEntry(b,v.ship.id));v.gates.value[gate++].set(Math.sign(landing.x),landing.z,1);}
         for(const s of v.sides)s.oars.rotation.z=naval.linked(v.ship)?s.side*.45:Math.sin(time*3.2)*Math.min(.07,Math.abs(v.ship.speed)*.035);}
-      for(const v of bridgeViews){const b=naval.bridges.find(b=>b.from===v.ship.id&&b.side===v.side&&b.phase!=='closed');const open=b?.progress||0;v.pivot.rotation.y=-v.side*(1-open)*Math.PI/2;}
+      for(const v of bridgeViews){const b=naval.bridges.find(b=>b.from===v.ship.id&&b.side===v.side&&(b.station||0)===v.station&&b.phase!=='closed');const open=b?.progress||0;v.pivot.visible=!!b;v.pivot.scale.x=(b?.length||C.bridgeLength)/C.bridgeLength;v.pivot.rotation.y=-v.side*(1-open)*Math.PI/2;}
       for(const v of wakes){const p=NavalSimulation.world(v.ship,0,-5.7);v.m.position.x=p.x;v.m.position.z=p.z;v.m.rotation.z=-v.ship.angle;v.m.material.opacity=Math.min(.22,Math.abs(v.ship.speed)*.08);}
+      // At a distance the uniform's small fittings occupy less than a few pixels.
+      for(const f of naval.combat.fighters){const m=options.models?.()[f.id];if(!m||!f.navalUniform)continue;const near=Math.hypot(f.x-camera.position.x,f.z-camera.position.z)<18;
+        for(const key of ['shoulder','otherShoulder','collar','Leftgreave','Rightgreave']){const slot=m.gear[key];if(slot?.group.userData.navalUniform)slot.group.visible=near&&(key!=='collar'||m.shoulderModel==='armor_shoulder');}
+      }
       const p=naval.player(),active=options.active();ui.hidden(panel,!active||p.hp<=0);
       // A cached V98 page can finish with its old simulation and animation code.
       const target=active&&options.jumpEnabled&&p.hp>0?naval.jumpCandidate?.():null;
@@ -142,14 +171,14 @@
       helm.disabled=!naval.manual&&!naval.canTakeHelm();ui.attr(helm,'aria-pressed',String(naval.manual));ui.attr(helm,'title',(naval.manual?'Dümeni bırak':'Dümeni al')+' · I');ui.attr(helm,'aria-label',naval.manual?'Dümeni bırak':'Dümeni al');
       ui.hidden(sailing,!naval.manual);
       const captain=naval.combat.fighters[naval.ships[0].helm];
-      const message=naval.manual?(naval.linked(naval.ships[0])?'Köprü açık · gemi sabit':'DÜMEN SENDE'):captain?'Dümen: '+captain.name:'Dümen boş';
+      const message=naval.manual?(naval.linked(naval.ships[0])?(naval.bridges.some(b=>(b.from===0||b.to===0)&&b.phase==='closing')?'Köprü toplanıyor':'Geçiş sürüyor · gemi sabit'):'DÜMEN SENDE'):captain?'Dümen: '+captain.name:'Dümen boş';
       ui.text(status,message);
       const action=naval.interaction();ui.hidden(bridge,!action||!active);
-      if(action){const ship=naval.ships[p.shipId],q=NavalSimulation.world(ship,action.side*(C.halfWidth-.2),0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-215,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}
+      if(action){const ship=naval.ships[p.shipId],q=action.point||NavalSimulation.world(ship,action.side*(C.halfWidth-.2),action.station||0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-215,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}
       updateJavelins();
       if(!active)braking=false;
     }
-    return{update,views,water,panel,jump,javelin,javelinViews,heldJavelin,landingMark,get braking(){return braking;}};
+    return{update,views,water,panel,jump,javelin,javelinViews,heldJavelin,aimLine,bridgeViews,landingMark,get braking(){return braking;}};
   }
   root.NavalView={create,load,assetURL};
 })(window);

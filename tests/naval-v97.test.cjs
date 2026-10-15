@@ -31,7 +31,7 @@ test('cached corpse and roll poses follow deck translation and rotation',()=>{
 test('collisions cannot push a hull outside the enlarged arena',()=>{
  const {naval,combat}=fixture(),limit=C.arenaRadius-Math.hypot(C.hullLength,C.hullWidth)-.3;
  Object.assign(naval.ships[0],{x:limit-.1,z:0});Object.assign(naval.ships[1],{x:limit-5,z:0});
- naval.takeHelm();for(let i=0;i<600;i++){naval.step(1/60,{navalThrottle:1,navalSteer:.2});for(const s of naval.ships)assert.ok(Math.hypot(s.x,s.z)<=limit+1e-6);}
+ naval.takeHelm();for(let i=0;i<600;i++){naval.step(1/60,{navalThrottle:1,navalSteer:.2});for(const s of naval.ships)for(const p of naval.hullPoints(s))assert.ok(Math.hypot(p.x,p.z)<=naval.wallRadius(Math.atan2(p.z,p.x))+.001);}
 });
 test('the added water is navigable beyond the old hull boundary',()=>{
  const {naval}=fixture();Object.assign(naval.ships[0],{x:34,z:0,speed:0});naval.takeHelm();naval.step(1/60,{});
@@ -42,13 +42,13 @@ test('landing requires the whole end of the board, parallel decks, and low speed
  for(const change of [{x:16},{x:5},{z:5.3},{angle:.4},{speed:.6},{turn:.2}]){const original={...t};Object.assign(t,change);assert.equal(naval.candidate(0,1),null,JSON.stringify(change));Object.assign(t,original);}
 });
 test('the action is visible only near a valid bridge station; the click revalidates the target',()=>{
- const {naval,p}=moored();assert.equal(naval.interaction()?.kind,'open');p.z=4;assert.equal(naval.interaction(),null);p.z=0;naval.ships[1].z=12;assert.equal(naval.operate(),false);assert.equal(naval.bridges.length,0);
+ const {naval,p}=moored();assert.equal(naval.interaction()?.kind,'open');p.x=0;p.z=4;assert.equal(naval.interaction(),null);p.x=2.1;p.z=0;naval.ships[1].z=12;assert.equal(naval.operate(),false);assert.equal(naval.bridges.length,0);
 });
 test('another hull blocks a bridge even if the distant landing looks valid',()=>{const {naval}=moored();Object.assign(naval.ships[2],{x:5,z:0,angle:Math.PI/2});assert.equal(naval.candidate(0,1),null);});
 test('both port and starboard gates validate independently',()=>{const {naval,p}=moored();naval.ships[1].x=-8;p.x=-2.1;assert.equal(naval.interaction()?.side,-1);assert.ok(naval.operate());assert.equal(naval.bridges[0].side,-1);assert.equal(naval.candidate(0,1),null);});
 test('an opening bridge locks both ships and cannot be opened twice',()=>{
- const {naval,p}=moored(),b=naval.open(0,1);assert.ok(b);assert.equal(naval.open(0,1),null);assert.equal(naval.open(1,-1),null);
- const before=naval.ships.slice(0,2).map(s=>[s.x,s.z,s.angle]);naval.takeHelm();for(let i=0;i<60;i++)naval.step(1/60,{navalThrottle:1,navalSteer:1});assert.deepEqual(naval.ships.slice(0,2).map(s=>[s.x,s.z,s.angle]),before);assert.equal(b.phase,'open');
+ const {naval,p,combat}=moored(),b=naval.open(0,1);assert.ok(b);assert.equal(naval.open(0,1),null);assert.equal(naval.open(1,-1),null);
+ const before=naval.ships.slice(0,2).map(s=>[s.x,s.z,s.angle]);naval.takeHelm();Object.assign(combat.fighters[1],{x:3.7,z:0,navBridge:b.id});for(let i=0;i<60;i++)naval.step(1/60,{navalThrottle:1,navalSteer:1});assert.deepEqual(naval.ships.slice(0,2).map(s=>[s.x,s.z,s.angle]),before);assert.equal(b.phase,'open');
 });
 test('a bridge only becomes walkable after it finishes opening',()=>{
  const {naval,p}=moored(),b=naval.open(0,1);p.x=3.4;naval.bound(p);assert.ok(p.x<C.halfWidth);

@@ -23,3 +23,8 @@ Modified for the game: enlarged and widened hull; open wooden battle deck;
 furled sail and forward mast; reduced oars, rigging and hidden interior;
 baked static geometry without skeleton or animation; simplified meshes and
 resized/recompressed textures. Source authorship and license remain embedded.
+
+Wooden Gate — Amal Kumar / Poly Haven
+CC0-1.0 — https://polyhaven.com/a/wooden_gate
+Existing 512px optimized diffuse, OpenGL normal and roughness maps reused on
+the V102 ship deck, raised strakes, mast and boarding planks. Colour and UV scale adapted.

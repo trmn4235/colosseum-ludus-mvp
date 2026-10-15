@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   const C = Object.freeze({arenaRadius:34.2*Math.SQRT2, halfWidth:2.6, halfLength:5.5,
-    hullWidth:3.5, hullLength:8.4, bridgeLength:3.8, bridgeWidth:1.8,
+    hullWidth:3.5, hullLength:8.4, bridgeLength:3.8, bridgeWidth:2.4, bridgeStations:Object.freeze([-2.8,0,2.8]),
     margin:.34, interactDistance:1.9, openSeconds:.85, berth:8,
     jumpRange:4.6, jumpCost:20, jumpWindup:.12, jumpFlight:.72, jumpHeight:1.12, jumpRecovery:.18,
     javelinStock:8, javelinCost:18, javelinRange:22, javelinSpeed:15, rackX:-1.7, rackZ:-4.3});
@@ -12,6 +12,20 @@
   function world(ship,x,z){const c=Math.cos(ship.angle),s=Math.sin(ship.angle);return{x:ship.x+x*c+z*s,z:ship.z-x*s+z*c};}
   function local(ship,p){const x=p.x-ship.x,z=p.z-ship.z,c=Math.cos(ship.angle),s=Math.sin(ship.angle);return{x:x*c-z*s,z:x*s+z*c};}
   function onDeck(ship,p,margin=C.margin){const q=local(ship,p);return Math.abs(q.x)<=C.halfWidth-margin+1e-7&&Math.abs(q.z)<=C.halfLength-margin+1e-7;}
+  function measureBoundary(segments,count=180){
+    // Intersections with the wall at deck height. Reject incomplete model measurements.
+    const samples=Array.from({length:count},(_,i)=>{
+      const angle=i*2*Math.PI/count,rx=Math.cos(angle),rz=Math.sin(angle);let nearest=Infinity;
+      for(const [a,b] of segments){const dx=b.x-a.x,dz=b.z-a.z,den=rx*dz-rz*dx;if(Math.abs(den)<1e-8)continue;
+        const t=(a.x*dz-a.z*dx)/den,u=(a.x*rz-a.z*rx)/den;
+        if(t>20&&u>=-1e-6&&u<=1+1e-6)nearest=Math.min(nearest,t);
+      }
+      return nearest;
+    });
+    if(samples.filter(Number.isFinite).length<count*.85)return null;
+    // A doorway must not turn into an exit beyond the arena wall.
+    return samples.map((r,i)=>Math.min(r,...[-2,-1,1,2].map(d=>samples[(i+d+count)%count])));
+  }
   function separation(a,b){
     let overlap=Infinity,normal=null;
     for(const angle of [a.angle,b.angle])for(const axis of [{x:Math.cos(angle),z:-Math.sin(angle)},{x:Math.sin(angle),z:Math.cos(angle)}]){
@@ -24,12 +38,13 @@
   }
   class Battle {
     constructor(combat){
-      this.combat=combat;this.arenaRadius=C.arenaRadius;this.manual=false;this.time=0;this.bridges=[];this.nextBridge=1;this.routes=new Map();
+      this.combat=combat;this.arenaRadius=C.arenaRadius;this.boundary=null;this.manual=false;this.time=0;this.bridges=[];this.nextBridge=1;this.routes=new Map();
       const starts=[[-7,-14,.26],[10,-10,-.45],[-15,9,Math.PI-.3],[10,13,Math.PI+.35]];
       this.ships=starts.map(([x,z,angle],id)=>({id,team:id,x,z,angle,speed:0,turn:0,helm:null,throttle:0,steer:0,javelins:C.javelinStock}));
       this.javelins=[];this.nextJavelin=1;
       for(const f of combat.fighters){
-        f.shipId=f.team;f.navBridge=null;f.navJump=null;f.navHeight=0;f.navJumpReady=0;f.navJavelin=false;
+        f.shipId=f.team;f.navBridge=null;f.navRouteBridge=null;
+        if(f.id!==0)f.navalUniform={helmet:!f.helmet,chest:!f.chest,greaves:!f.greaves,shoulders:!f.shoulders};f.navJump=null;f.navHeight=0;f.navJumpReady=0;f.navJavelin=false;
         const positions=[[0,-3.7],[-1.25,-1.7],[1.25,-1.7],[-1.15,2],[1.15,2]],q=positions[f.id%5],s=this.ships[f.shipId];
         Object.assign(f,world(s,q[0],q[1]));f.angle=s.angle;f.navSafe={x:f.x,z:f.z};
       }
@@ -52,13 +67,21 @@
       if(this.combat.enemy(f,locked)&&distance(f,locked)<=C.javelinRange)return locked;
       return this.combat.nearest(f,C.javelinRange);
     }
+    javelinAim(f=this.player()){
+      const target=this.javelinTarget(f);
+      if(!target||this.manual||f.navJump)return null;
+      const pending=this.javelins.find(n=>n.owner===f.id&&!n.launched);
+      const length=Math.min(C.javelinRange,distance(f,target)),angle=Math.atan2(target.x-f.x,target.z-f.z);
+      return{x:f.x,z:f.z,dx:pending?pending.dx:Math.sin(angle),dz:pending?pending.dz:Math.cos(angle),length:pending?pending.aimLength:length,target:target.id};
+    }
+    javelinPoint(aim,travel){return{x:aim.x+aim.dx*travel,y:1.35+.24*Math.sin(Math.PI*travel/C.javelinRange),z:aim.z+aim.dz*travel};}
     throwJavelin(){
-      const f=this.player(),target=this.javelinTarget(f);
-      if(!target||this.manual||f.navJump||f.action!=='idle'||f.stunUntil>this.combat.time||f.stamina<C.javelinCost)return false;
-      f.angle=Math.atan2(target.x-f.x,target.z-f.z);f.action='spearcast';f.timer=0;f.duration=.7;f.attackLeft=false;
+      const f=this.player(),aim=this.javelinAim(f);
+      if(!aim||this.manual||f.navJump||f.action!=='idle'||f.stunUntil>this.combat.time||f.stamina<C.javelinCost)return false;
+      f.angle=Math.atan2(aim.dx,aim.dz);f.action='spearcast';f.timer=0;f.duration=.7;f.attackLeft=false;
       f.stamina-=C.javelinCost;f.regenDelay=1;f.blocking=false;f.guardInput=false;f.guardRegion=null;
-      this.javelins.push({id:this.nextJavelin++,owner:f.id,x:f.x,z:f.z,y:1.35,dx:Math.sin(f.angle),dz:Math.cos(f.angle),age:0,travel:0,launched:false});
-      this.combat.emit('special',{id:f.id,target:target.id,kind:'throw'});return true;
+      this.javelins.push({id:this.nextJavelin++,owner:f.id,x:f.x,z:f.z,y:1.35,dx:aim.dx,dz:aim.dz,aimLength:aim.length,age:0,travel:0,launched:false});
+      this.combat.emit('special',{id:f.id,target:aim.target,kind:'throw'});return true;
     }
     updateJavelins(dt){
       for(let i=this.javelins.length-1;i>=0;i--){
@@ -68,7 +91,7 @@
           n.x=owner.x;n.z=owner.z;if(n.age<.24)continue;n.launched=true;owner.navJavelin=false;
         }
         const px=n.x,pz=n.z,py=n.y,step=C.javelinSpeed*dt;
-        n.travel+=step;n.x+=n.dx*step;n.z+=n.dz*step;n.y=1.35+.24*Math.sin(Math.PI*n.travel/C.javelinRange);
+        n.travel+=step;n.x+=n.dx*step;n.z+=n.dz*step;n.y=this.javelinPoint(n,n.travel).y;
         let hit=false;
         for(const victim of this.combat.fighters){
           if(!this.combat.enemy(owner,victim)||victim.action==='dodge')continue;
@@ -78,7 +101,7 @@
           if(!this.combat.guard(owner,victim,false,point))this.combat.damageProjectileV10(owner,victim,{kind:'spear'},32,'chest',false,point);
           hit=true;break;
         }
-        if(hit||n.travel>=C.javelinRange||Math.hypot(n.x,n.z)>C.arenaRadius+1)this.javelins.splice(i,1);
+        if(hit||n.travel>=C.javelinRange||Math.hypot(n.x,n.z)>this.wallRadius(Math.atan2(n.z,n.x))+1)this.javelins.splice(i,1);
       }
       if(this.player().hp<=0)this.player().navJavelin=false;
     }
@@ -175,52 +198,61 @@
       if(u>=1)this.finishJump(f);
     }
     /* Both landing corners and the final half metre must be inside a side deck. */
-    candidate(shipId,side){
-      const s=this.ships[shipId];if(!s||![-1,1].includes(side))return null;
-      if(this.bridges.some(b=>b.from===shipId&&b.side===side&&b.phase!=='closed'))return null;
+    candidate(shipId,side,station=0){
+      const s=this.ships[shipId];if(!s||![-1,1].includes(side)||!C.bridgeStations.includes(station)||s.boardingHoldUntil>this.time)return null;
+      const entry=world(s,side*(C.halfWidth-.5),station);
+      if(this.bridges.some(b=>b.phase!=='closed'&&(b.from===s.id||b.to===s.id)&&distance(entry,this.bridgeEntry(b,s.id))<C.bridgeWidth+.15))return null;
       if(Math.abs(s.speed)>.32||Math.abs(s.turn)>.09)return null;
-      const end=world(s,side*(C.halfWidth+C.bridgeLength),0);
       for(const t of this.ships){
-        if(t===s||Math.abs(t.speed)>.32||Math.abs(t.turn)>.09)continue;
-        if(this.bridges.some(b=>b.phase!=='closed'&&((b.from===s.id&&b.to===t.id)||(b.to===s.id&&b.from===t.id))))continue;
-        if(Math.abs(Math.sin(t.angle-s.angle))>.12)continue;
-        if(distance(end,world(t,C.rackX,C.rackZ))<1.05)continue;
+        if(t===s||t.boardingHoldUntil>this.time||Math.abs(t.speed)>.32||Math.abs(t.turn)>.09||Math.abs(Math.sin(t.angle-s.angle))>.24)continue;
         const center=local(s,t);if(Math.sign(center.x)!==side||Math.abs(center.x)<C.halfWidth*2+.6)continue;
-        if(![-.5,0].every(dx=>[-1,1].every(z=>onDeck(t,world(s,side*(C.halfWidth+C.bridgeLength+dx),z*C.bridgeWidth/2),.12))))continue;
-        // Another hull must not obstruct the walkway before its landing.
-        let obstructed=false;
-        for(const other of this.ships)if(other!==s&&other!==t)for(let x=C.halfWidth+.15;x<C.halfWidth+C.bridgeLength;x+=.25){
-          if(onDeck(other,world(s,side*x,0),-.2)){obstructed=true;break;}
+        for(const length of [C.bridgeLength,3.2,4.4,4.9]){
+          const end=world(s,side*(C.halfWidth+length),station);
+          if(distance(end,world(t,C.rackX,C.rackZ))<1.05)continue;
+          if(![-.5,0].every(dx=>[-1,1].every(z=>onDeck(t,world(s,side*(C.halfWidth+length+dx),station+z*C.bridgeWidth/2),.12))))continue;
+          if(this.bridges.some(b=>b.phase!=='closed'&&(b.from===t.id||b.to===t.id)&&distance(end,this.bridgeEntry(b,t.id))<C.bridgeWidth+.15))continue;
+          let obstructed=false;
+          for(const other of this.ships)if(other!==s&&other!==t)for(let x=C.halfWidth+.15;x<C.halfWidth+length;x+=.25){
+            if(onDeck(other,world(s,side*x,station),-.2)){obstructed=true;break;}
+          }
+          if(!obstructed)return{from:shipId,to:t.id,side,station,length,end};
         }
-        if(!obstructed)return{from:shipId,to:t.id,side,end};
       }
       return null;
     }
-    nearBridge(f,ship,side){return !f.navBridge&&f.shipId===ship.id&&distance(f,world(ship,side*(C.halfWidth-.5),0))<=C.interactDistance;}
+    bridgeEntry(b,shipId){
+      const s=this.ships[b.from];
+      return world(s,b.side*(shipId===b.from?C.halfWidth-.5:C.halfWidth+(b.length||C.bridgeLength)),b.station||0);
+    }
+    nearBridge(f,ship,side,station=0){return !f.navBridge&&!f.navJump&&f.shipId===ship.id&&distance(f,world(ship,side*(C.halfWidth-.5),station))<=C.interactDistance;}
     interaction(f=this.player()){
-      if(this.combat.finished||f.hp<=0||this.manual||f.action!=='idle'||f.stunUntil>this.combat.time)return null;
+      if(this.combat.finished||f.hp<=0||this.manual||f.navJump||f.action!=='idle'||f.stunUntil>this.combat.time)return null;
       const ship=this.ships[f.shipId];if(!ship)return null;
-      for(const side of [-1,1]){
-        if(!this.nearBridge(f,ship,side))continue;
-        const existing=this.bridges.find(b=>b.from===ship.id&&b.side===side&&b.phase!=='closed');
-        if(existing){if(existing.phase==='open')return{kind:'close',side,bridge:existing.id,blocked:this.occupied(existing)};continue;}
-        const candidate=this.candidate(ship.id,side);if(candidate)return{kind:'open',...candidate};
+      const choices=[];
+      for(const b of this.bridges)if(b.phase==='open'&&(b.from===ship.id||b.to===ship.id)){
+        const point=this.bridgeEntry(b,ship.id),d=distance(f,point);
+        if(d<=C.interactDistance)choices.push({kind:'close',side:b.side,station:b.station||0,bridge:b.id,point,blocked:this.occupied(b),d});
       }
-      return null;
+      for(const side of [-1,1])for(const station of C.bridgeStations){
+        if(!this.nearBridge(f,ship,side,station))continue;
+        const candidate=this.candidate(ship.id,side,station);
+        if(candidate){const point=world(ship,side*(C.halfWidth-.5),station);choices.push({kind:'open',...candidate,point,d:distance(f,point)});}
+      }
+      choices.sort((a,b)=>a.d-b.d);return choices[0]||null;
     }
     operate(){
       const action=this.interaction();if(!action)return false;
-      return action.kind==='close'?this.close(action.bridge):!!this.open(action.from,action.side);
+      return action.kind==='close'?this.close(action.bridge):!!this.open(action.from,action.side,action.station);
     }
-    open(shipId,side){
-      const hit=this.candidate(shipId,side);if(!hit)return null;
+    open(shipId,side,station=0){
+      const hit=this.candidate(shipId,side,station);if(!hit)return null;
       const b={id:this.nextBridge++,...hit,phase:'opening',progress:0};this.bridges.push(b);this.routes.clear();
       for(const id of [b.from,b.to]){const s=this.ships[id];s.speed=s.turn=s.throttle=s.steer=0;}
       return b;
     }
     onBridge(b,p,margin=C.margin){
       const q=local(this.ships[b.from],p),x=q.x*b.side;
-      return x>=C.halfWidth-.7-1e-7&&x<=C.halfWidth+C.bridgeLength+.1+1e-7&&Math.abs(q.z)<=C.bridgeWidth/2-margin+1e-7;
+      return x>=C.halfWidth-.7-1e-7&&x<=C.halfWidth+(b.length||C.bridgeLength)+.1+1e-7&&Math.abs(q.z-(b.station||0))<=C.bridgeWidth/2-margin+1e-7;
     }
     occupied(b){return this.combat.fighters.some(f=>f.hp>0&&(f.navBridge===b.id||this.onBridge(b,f,-.35)));}
     close(id){const b=this.bridges.find(b=>b.id===id);if(!b||b.phase!=='open'||this.occupied(b))return false;b.phase='closing';this.routes.clear();return true;}
@@ -275,7 +307,7 @@
         if(this.onBridge(b,o)){o.navBridge=b.id;o.navSafe={x:o.x,z:o.z};return;}
       }
       const bridge=possible.find(b=>b.id===o.navBridge);
-      if(bridge){const s=this.ships[bridge.from],q=local(s,o);Object.assign(o,world(s,bridge.side*clamp(q.x*bridge.side,C.halfWidth-.7,C.halfWidth+C.bridgeLength),clamp(q.z,-C.bridgeWidth/2+C.margin,C.bridgeWidth/2-C.margin)));}
+      if(bridge){const s=this.ships[bridge.from],q=local(s,o);Object.assign(o,world(s,bridge.side*clamp(q.x*bridge.side,C.halfWidth-.7,C.halfWidth+(bridge.length||C.bridgeLength)),clamp(q.z,(bridge.station||0)-C.bridgeWidth/2+C.margin,(bridge.station||0)+C.bridgeWidth/2-C.margin)));}
       else{const q=local(own,o);Object.assign(o,world(own,clamp(q.x,-C.halfWidth+C.margin,C.halfWidth-C.margin),clamp(q.z,-C.halfLength+C.margin,C.halfLength-C.margin)));o.navBridge=null;}
       o.navSafe={x:o.x,z:o.z};
     }
@@ -288,17 +320,24 @@
         const cost=distance(f,other)+route.length*5;if(cost<best){target=other;path=route;best=cost;}
       }
       if(!target){
-        if(ship.id!==0){for(const side of [-1,1])if(f.id%5===(side<0?1:2)&&this.candidate(ship.id,side)){this.walkTo(f,world(ship,side*(C.halfWidth-.5),0),dt);return;}}
+        if(ship.id!==0){const stations=[...C.bridgeStations].sort((a,b)=>Math.abs(a-C.bridgeStations[f.id%3])-Math.abs(b-C.bridgeStations[f.id%3]));for(const station of stations)for(const side of [-1,1])if(this.candidate(ship.id,side,station)){this.walkTo(f,world(ship,side*(C.halfWidth-.5),station),dt);return;}}
         const k=f.id%5,spot=[[-1.15,2.6],[-1.25,-1.8],[1.25,-1.8],[-1.15,2],[1.15,2]][k];
         this.walkTo(f,world(ship,...spot),dt);return;
       }
       f.target=target.id;f.think=.12;
       if(f.shipId===target.shipId||distance(f,target)<1.8){normal(f,dt);return;}
       const segment=path?.[0];if(!segment)return;
-      const b=segment.bridge,source=this.ships[b.from];
+      const available=this.bridges.filter(b=>b.phase==='open'&&(b.from===f.shipId&&b.to===segment.next||b.to===f.shipId&&b.from===segment.next));
+      let b=available.find(b=>b.id===(f.navBridge||f.navRouteBridge));
+      if(!b){
+        const score=b=>distance(f,this.bridgeEntry(b,f.shipId))+this.combat.fighters.filter(o=>o!==f&&o.hp>0&&(o.navBridge===b.id||o.navRouteBridge===b.id)).length*2.8;
+        available.sort((a,b)=>score(a)-score(b));b=available[0]||segment.bridge;f.navRouteBridge=b.id;
+      }
+      const source=this.ships[b.from],q=local(source,f),length=b.length||C.bridgeLength;
+      const lane=(f.shipId===b.from?.42:-.42),z=(b.station||0)+lane;
       let point;
-      if(f.shipId===b.from){const q=local(source,f);point=world(source,b.side*(q.x*b.side<C.halfWidth-.65?C.halfWidth-.55:C.halfWidth+C.bridgeLength),0);}
-      else{const q=local(source,f);point=world(source,b.side*(q.x*b.side>C.halfWidth+C.bridgeLength-.35?C.halfWidth+C.bridgeLength-.5:C.halfWidth-.65),0);}
+      if(f.shipId===b.from)point=world(source,b.side*(q.x*b.side<C.halfWidth-.65?C.halfWidth-.5:C.halfWidth+length),z);
+      else point=world(source,b.side*(q.x*b.side>C.halfWidth+length-.35?C.halfWidth+length-.5:C.halfWidth-.65),z);
       this.walkTo(f,point,dt);
     }
     walkTo(f,p,dt){const d=distance(f,p);f.blocking=false;f.guardRegion=null;if(d<.12)return;const angle=Math.atan2(p.x-f.x,p.z-f.z);f.angle+=delta(angle,f.angle)*Math.min(1,dt*9);const amount=Math.min(d,dt*2.3*(f.speedBonus||1));f.x+=(p.x-f.x)*amount/d;f.z+=(p.z-f.z)*amount/d;f.move=.65;}
@@ -307,11 +346,38 @@
       const s=this.ships[0];s.throttle=clamp(input.navalThrottle||0,-1,1);s.steer=clamp(input.navalSteer||0,-1,1);
       return{x:0,z:0,block:false,faceAngle:s.angle};
     }
+    depart(ship){
+      ship.boardingHoldUntil=this.time+3;
+      for(const b of this.bridges)if((b.from===ship.id||b.to===ship.id)&&b.phase!=='closed'&&b.phase!=='closing'&&!this.occupied(b)){
+        b.phase='closing';this.routes.clear();
+      }
+    }
+    setBoundary(samples){
+      if(!Array.isArray(samples)||samples.length<32||samples.some(r=>!Number.isFinite(r)||r<20))return false;
+      this.boundary=samples.slice();this.arenaRadius=Math.max(...samples);return true;
+    }
+    wallRadius(angle){
+      if(!this.boundary)return this.arenaRadius;
+      const k=((angle/(2*Math.PI)%1)+1)%1*this.boundary.length,i=Math.floor(k);
+      return Math.min(this.boundary[i],this.boundary[(i+1)%this.boundary.length]);
+    }
+    hullPoints(ship){
+      return [[-C.hullWidth,-C.hullLength],[-C.hullWidth,C.hullLength],[C.hullWidth,-C.hullLength],[C.hullWidth,C.hullLength]].map(([x,z])=>world(ship,x,z));
+    }
+    boundShip(ship){
+      // Constrain the actual oriented footprint, not a nine-metre circle around the centre.
+      for(let pass=0;pass<4;pass++){
+        let worst=0,point=null;
+        for(const p of this.hullPoints(ship)){const r=Math.hypot(p.x,p.z),depth=r-this.wallRadius(Math.atan2(p.z,p.x))+.18;if(depth>worst){worst=depth;point=p;}}
+        if(!point)break;
+        const r=Math.hypot(point.x,point.z);ship.x-=point.x/r*worst;ship.z-=point.z/r*worst;ship.speed=0;
+      }
+    }
     goal(ship){
       if(ship.id===0)return{x:-3,z:-6,angle:.2};
       // Different bearings and staggered, opposing bows replace the straight row.
       const predecessor=this.ships[ship.id===3?1:0],preferred=ship.id===1?1:-1,offset=ship.id===2?-2.8:2.8;
-      const options=[preferred,-preferred].map(side=>{const p=world(predecessor,side*C.berth,offset);let cost=Math.max(0,Math.hypot(p.x,p.z)-(C.arenaRadius-Math.hypot(C.hullLength,C.hullWidth)-1.5))*10+(side===preferred?0:3);
+      const options=[preferred,-preferred].map(side=>{const p=world(predecessor,side*C.berth,offset);let cost=Math.max(0,Math.hypot(p.x,p.z)-(this.wallRadius(Math.atan2(p.z,p.x))-Math.hypot(C.hullLength,C.hullWidth)-1.5))*10+(side===preferred?0:3);
         for(const s of this.ships)if(s!==predecessor&&s!==ship)cost+=Math.max(0,6.5-distance(s,p))*4;
         return{...p,angle:predecessor.angle+Math.PI,cost};});
       options.sort((a,b)=>a.cost-b.cost);return options[0];
@@ -322,6 +388,7 @@
       this.time+=dt;
       if(this.manual&&(!this.capable(this.player())||this.player().shipId!==0))this.releaseHelm();
       const output=this.helmInput(input),previous=this.ships.map(s=>({...s}));
+      if(this.manual&&(Math.abs(this.ships[0].throttle)>.05||Math.abs(this.ships[0].steer)>.05))this.depart(this.ships[0]);
       for(const b of this.bridges){
         if(b.phase==='opening'){b.progress=Math.min(1,b.progress+dt/C.openSeconds);if(b.progress===1){b.phase='open';this.routes.clear();}}
         if(b.phase==='closing'){b.progress=Math.max(0,b.progress-dt/C.openSeconds);if(b.progress===0)b.phase='closed';}
@@ -342,8 +409,7 @@
           if(d>.1){ship.x+=(goal.x-ship.x)*speed*dt/d;ship.z+=(goal.z-ship.z)*speed*dt/d;}
           if(d<.12&&Math.abs(delta(goal.angle,ship.angle))<.02){ship.x=goal.x;ship.z=goal.z;ship.angle=goal.angle;ship.speed=ship.turn=0;}
         }
-        const radius=Math.hypot(ship.x,ship.z),limit=C.arenaRadius-Math.hypot(C.hullLength,C.hullWidth)-.3;
-        if(radius>limit){ship.x*=limit/radius;ship.z*=limit/radius;ship.speed=0;}
+        this.boundShip(ship);
       }
       for(let iteration=0;iteration<4;iteration++){
         for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){
@@ -353,8 +419,7 @@
           a.x-=push.x*ka;a.z-=push.z*ka;b.x+=push.x*kb;b.z+=push.z*kb;a.speed=b.speed=0;
         }
         for(const ship of this.ships)if(!this.linked(ship)){
-          const radius=Math.hypot(ship.x,ship.z),limit=C.arenaRadius-Math.hypot(C.hullLength,C.hullWidth)-.3;
-          if(radius>limit){ship.x*=limit/radius;ship.z*=limit/radius;ship.speed=0;}
+          this.boundShip(ship);
         }
       }
       for(const o of [...this.combat.fighters,...this.combat.drops]){
@@ -368,9 +433,9 @@
       for(const f of this.combat.fighters)this.advanceJump(f);
       // Opposing crews deploy their own boarding bridges only from a valid landing.
       for(const ship of this.ships)if(ship.id!==0&&this.time>8&&this.combat.alive(ship.team)>0){
-        for(const side of [-1,1]){const candidate=this.candidate(ship.id,side);if(!candidate)continue;
-          const crew=this.combat.fighters.find(f=>f.hp>0&&f.team===ship.team&&f.shipId===ship.id&&this.nearBridge(f,ship,side));
-          if(crew)this.open(ship.id,side);
+        for(const side of [-1,1])for(const station of C.bridgeStations){const candidate=this.candidate(ship.id,side,station);if(!candidate)continue;
+          const crew=this.combat.fighters.find(f=>f.hp>0&&f.team===ship.team&&f.shipId===ship.id&&this.nearBridge(f,ship,side,station));
+          if(crew)this.open(ship.id,side,station);
         }
       }
       return output;
@@ -405,6 +470,6 @@
     const tuck=j?.airborne?Math.sin(Math.PI*u):0;
     return {drop:-.12*crouch,lean:.12*tuck,poses:{Spine:[.14*crouch+.08*tuck,0,0],Spine2:[.06*crouch,0,0],LeftUpLeg:[-.48*crouch-.7*tuck,0,0],RightUpLeg:[-.48*crouch-.42*tuck,0,0],LeftLeg:[.9*crouch+1.1*tuck,0,0],RightLeg:[.9*crouch+.8*tuck,0,0],LeftFoot:[-.2*tuck,0,0],RightFoot:[-.2*tuck,0,0],LeftArm:[-.38-.22*tuck,0,-.16],RightArm:[-.35-.4*tuck,0,.18],LeftForeArm:[-.75,0,0],RightForeArm:[-.7,0,0]}};
   }
-  const api={constants:C,Battle,install,world,local,onDeck,separation,jumpPose};
+  const api={constants:C,Battle,install,world,local,onDeck,separation,jumpPose,measureBoundary};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.NavalSimulation=api;
 })(typeof window!=='undefined'?window:globalThis);

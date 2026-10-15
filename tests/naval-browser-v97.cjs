@@ -1,6 +1,6 @@
 /* Real pages/assets with isolated account fixtures; never creates a production battle. */
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
-const {chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright'),exercise=require('../gladiator-exercise-v46.js');
+const {chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES?process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright':'playwright'),exercise=require('../gladiator-exercise-v46.js');
 const root=path.resolve(process.env.LUDUS_TEST_ROOT||path.join(__dirname,'..')),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/naval-v97',owner='00000000-0000-4000-8000-000000000001',battle='00000000-0000-4000-8000-000000000078';
 const fighters=Object.keys(exercise.profiles).map((type,i)=>({id:'g'+i,name:i?'Gladyatör '+i:'Cassius',class:type,owner_id:owner,overall:50,level:1,status:'available',session:null,stat_version:46,base_stats:exercise.profile(type),fatigue_value:0,exercise_units:0}));
 const receipt={gold:100,diamonds:1,stone:{name:'Safir II'},kind:'legs',ludus_exp:100,extracted:Array.from({length:6},()=>({}))};
@@ -27,7 +27,7 @@ async function main(){
   res.writeHead(200,{'content-type':mime[path.extname(filename)]||'application/octet-stream','cache-control':'no-store'}).end(body);
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
- const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/tmp/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader']});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||(fs.existsSync('/tmp/chromium')?'/tmp/chromium':chromium.executablePath()),args:['--no-sandbox','--enable-unsafe-swiftshader']});
  cleanup=async()=>{await browser.close();await new Promise(r=>server.close(r));};
  const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,deviceScaleFactor:1.5});await context.route('https://**',r=>r.abort());
  const page=await context.newPage(),errors=[],boatRequests=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
@@ -44,6 +44,7 @@ async function main(){
  assert.equal(await page.locator('#fatal').isVisible(),false,'the initial naval render must finish without a fatal error');
  assert.deepEqual(errors,[]);
  const initial=await page.evaluate(()=>({ships:__arena.naval.ships.length,fighters:__arena.combat.fighters.length,counts:__arena.naval.ships.map(s=>__arena.combat.fighters.filter(f=>f.team===s.team).length),calls:__arena.renderer.info.render.calls,triangles:__arena.renderer.info.render.triangles}));
+ const wall=await page.evaluate(()=>({measured:!!__arena.naval.boundary,min:Math.min(...(__arena.naval.boundary||[])),max:__arena.naval.arenaRadius,samples:__arena.naval.boundary?.filter((r,i)=>i%5===0),ports:__arena.view.bridgeViews.length,uniforms:__arena.models.slice(1).every(m=>m.gear.chest.group.visible&&m.gear.helmet.group.visible)}));console.log(JSON.stringify({wall}));assert.equal(wall.measured,true);assert.equal(wall.ports,24);assert.equal(wall.uniforms,true);
  assert.equal(initial.ships,4);assert.deepEqual(initial.counts,[5,5,5,5]);assert.equal(initial.fighters,20);
  const boatAsset=await page.evaluate(()=>{
   const views=__arena.view.views,geometries=new Set(),textures=new Set();let skinned=0,triangles=0,meshes=0;
@@ -56,13 +57,17 @@ async function main(){
   for(let x=-C.halfWidth+C.margin;x<=C.halfWidth-C.margin+.01;x+=.28)for(let z=-C.halfLength+C.margin;z<=C.halfLength-C.margin+.01;z+=.28){const q=NavalSimulation.world(ship,x,z);ray.set(new THREE.Vector3(q.x,2,q.z),down);const hit=ray.intersectObjects(decks,false)[0];if(!hit||Math.abs(hit.point.y)>.025)misses.push({x,z,y:hit?.point.y});}
   return{meshes,geometries:geometries.size,textures:textures.size,skinned,triangles,misses};
  });
+ const uniformBudget=await page.evaluate(()=>{let triangles=0;const geometries=new Set();for(const m of __arena.models.slice(1))for(const slot of Object.values(m.gear)){if(!slot.group.userData.navalUniform)continue;slot.group.traverse(o=>{if(o.isMesh){triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;geometries.add(o.geometry.uuid);}});}return{triangles,geometries:geometries.size};});
+ console.log(JSON.stringify({initial,uniformBudget}));assert.ok(uniformBudget.triangles<350000,'shared NPC uniforms stay below 350k total triangles, including hidden distance detail');assert.ok(initial.triangles<1800000,'the initial full-crew render must stay below 1.8M triangles');
+ console.log(JSON.stringify({boatAsset}));
  assert.equal(boatRequests.length,1,'four boats load one shared GLB');
  assert.equal(boatAsset.skinned,0,'the boat must not evaluate a skeleton');
  assert.equal(boatAsset.geometries,boatAsset.meshes/4,'geometry is shared across all four clones');
- assert.ok(boatAsset.textures<=8,'source textures are shared, not copied per ship');
+ assert.ok(boatAsset.textures<=11,'source maps plus three shared photograph/PBR maps stay within the texture budget');
  assert.ok(boatAsset.triangles<40000,'all four boats stay below 40,000 triangles');
  assert.deepEqual(boatAsset.misses,[],'every playable deck sample has a rendered surface');
  await page.evaluate(()=>{document.getElementById('toast').style.transition='none';document.getElementById('toast').style.opacity='0';});await page.screenshot({path:out+'/naval-844.png'});
+ console.log('NAVAL_PREVIEW close '+(await page.screenshot({type:'jpeg',quality:68,scale:'css'})).toString('base64'));
  const outfit=await page.evaluate(()=>{
   let triangles=0;const maps=new Set(),sails=[];
   for(const v of __arena.view.views){v.group.traverse(o=>{if(o.isMesh){triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3*(o.isInstancedMesh?o.count:1);if(o.material.map)maps.add(o.material.map.uuid);}});const sail=v.group.getObjectByName('Open sail');sail.geometry.computeBoundingBox();sails.push({height:sail.geometry.boundingBox.max.y-sail.geometry.boundingBox.min.y,map:sail.material.map.uuid,flag:!!v.group.getObjectByName('paint'),rack:v.rackShafts.count});}
@@ -85,6 +90,7 @@ async function main(){
  await page.evaluate(()=>__arena.setPaused(false));await page.locator('#navalHelm').click();await perspective('third');
  assert.equal(await page.evaluate(()=>__arena.models[0].eyeView.enabled.value),0);assert.equal(await page.evaluate(()=>__arena.camera.layers.isEnabled(1)),true);
  await page.evaluate(()=>{__arena.camera.position.set(24,19,-31);__arena.camera.lookAt(-1,2,0);__arena.renderer.render(__arena.scene,__arena.camera);});await page.screenshot({path:out+'/fleet-sails.png'});
+ console.log('NAVAL_PREVIEW fleet '+(await page.screenshot({type:'jpeg',quality:68,scale:'css'})).toString('base64'));
 
  await page.evaluate(()=>{const s=__arena.naval.ships[0];__arena.camera.position.set(s.x+14,9,s.z-16);__arena.camera.lookAt(s.x,.6,s.z);__arena.renderer.render(__arena.scene,__arena.camera);});
  await page.screenshot({path:out+'/boat-five-crew.png'});
@@ -100,7 +106,7 @@ async function main(){
  await page.evaluate(()=>__arena.setPaused(false));await page.locator('#navalHelm').click();assert.equal(await page.evaluate(()=>__arena.naval.manual),false);assert.ok(await page.evaluate(()=>__arena.naval.ships[0].helm>0));
  // Align two decks, put the player at the hinge, and render the real interaction UI.
  await page.evaluate(()=>{
-   const n=__arena.naval;n.bridges=[];n.time=0;for(const s of n.ships)Object.assign(s,{speed:0,turn:0,angle:0});
+   const n=__arena.naval;n.bridges=[];n.time=0;for(const s of n.ships)Object.assign(s,{speed:0,turn:0,angle:0,boardingHoldUntil:0});
    Object.assign(n.ships[0],{x:0,z:0});Object.assign(n.ships[1],{x:8,z:0});Object.assign(n.ships[2],{x:-18,z:0});Object.assign(n.ships[3],{x:18,z:18});
    for(const f of __arena.combat.fighters){f.shipId=f.team;f.navBridge=null;Object.assign(f,NavalSimulation.world(n.ships[f.shipId],f.id%2?1:-1,f.id%5-2));}
    Object.assign(n.player(),{x:2.1,z:0,action:'idle',stunUntil:0});
@@ -118,6 +124,20 @@ async function main(){
  assert.equal(await page.evaluate(()=>__arena.view.views[1].gates.value[0].y),-2.8,'receiving gate follows the staggered bridge landing');await page.screenshot({path:out+'/bridge-offset.png'});
  await page.evaluate(()=>{__arena.naval.ships[1].z=0;__arena.view.update(1);});
  const crossing=await page.evaluate(()=>{const n=__arena.naval,p=n.player();for(let x=2.1;x<6.6;x+=.08){p.x=x;n.bound(p);}return{ship:p.shipId,bridge:p.navBridge};});assert.equal(crossing.ship,1);assert.equal(crossing.bridge,null);
+ // The forward and aft stations use the same real interaction, rendering and ownership path.
+ for(const station of [-2.8,2.8]){
+  await page.evaluate(station=>{const n=__arena.naval;Object.assign(n.player(),{shipId:0,navBridge:null,x:2.1,z:station,action:'idle',stunUntil:0});__arena.setPaused(false);__arena.view.update(1);},station);
+  assert.equal(await page.evaluate(()=>__arena.naval.interaction()?.station),station);
+  await page.locator('#navalBridge').click();
+  await page.evaluate(()=>{const n=__arena.naval;for(let i=0;i<60;i++)n.step(1/60,{});__arena.view.update(2);});
+  assert.equal(await page.evaluate(station=>__arena.view.views[1].gates.value.some(g=>g.z===1&&Math.abs(g.y-station)<.01),station),true);
+  assert.equal(await page.evaluate(()=>{const n=__arena.naval,p=n.player();for(let x=2.1;x<6.6;x+=.08){p.x=x;n.bound(p);}return p.shipId;}),1);
+ }
+ const multiPort=await page.evaluate(()=>({open:__arena.naval.bridges.filter(b=>b.from===0&&b.to===1&&b.phase==='open').length,visible:__arena.view.bridgeViews.filter(v=>v.ship.id===0&&v.pivot.visible).length}));
+ assert.deepEqual(multiPort,{open:3,visible:3});
+ await page.evaluate(()=>{__arena.camera.position.set(16,12,-15);__arena.camera.lookAt(4,1,0);__arena.renderer.render(__arena.scene,__arena.camera);});
+ console.log('NAVAL_PREVIEW boarding '+(await page.screenshot({type:'jpeg',quality:68,scale:'css'})).toString('base64'));
+
  await page.evaluate(()=>{const n=__arena.naval;n.bridges=[];n.player().shipId=0;n.player().x=2.1;n.player().z=0;n.ships[1].angle=.6;__arena.view.update(1);});assert.equal(await page.locator('#navalBridge').isVisible(),false);
  // A closed-bridge jump uses the real controls, animation and deck model.
  await page.evaluate(()=>{
@@ -175,12 +195,14 @@ async function main(){
  assert.equal(await page.evaluate(()=>__arena.naval.player().navJavelin),true);await page.evaluate(()=>{__arena.view.update(__arena.combat.time);__arena.renderer.render(__arena.scene,__arena.camera);});
  assert.equal(await page.evaluate(()=>__arena.view.views[0].rackShafts.count),7);assert.equal(await page.evaluate(()=>__arena.view.heldJavelin.visible),true);
  await page.screenshot({path:out+'/javelin-ready.png'});
+ const aim=await page.evaluate(()=>{const line=__arena.view.aimLine;return{visible:line.visible,count:line.geometry.attributes.position.count,opacity:line.material.opacity};});assert.equal(aim.visible,true);assert.equal(aim.count,25);assert.ok(aim.opacity<.6);
+ console.log('NAVAL_PREVIEW aim '+(await page.screenshot({type:'jpeg',quality:68,scale:'css'})).toString('base64'));
  await page.locator('#navalJavelin').click();await page.evaluate(()=>__jumpFrames(23));
  assert.equal(await page.evaluate(()=>__arena.naval.javelins.length),1);assert.equal(await page.evaluate(()=>[...__arena.view.javelinViews.values()].some(o=>o.visible)),true);
  const flightAge=await page.evaluate(()=>__arena.naval.javelins[0].age);await page.evaluate(()=>{__arena.setPaused(true);__jumpFrames(10,false);});assert.equal(await page.evaluate(()=>__arena.naval.javelins[0].age),flightAge);
  await page.evaluate(()=>{__arena.setPaused(false);__jumpFrames(55);});
  const afterThrow=await page.evaluate(()=>{const p=__arena.naval.player();return{weapon:p.weapon,offhand:p.offhand,shield:p.shield,hp:__arena.combat.fighters[5].hp,carried:p.navJavelin,projectiles:__arena.naval.javelins.length};});
- assert.ok(afterThrow.hp<equipped.hp,'visible cirit hits the target across the water');assert.equal(afterThrow.weapon,equipped.weapon);assert.equal(afterThrow.offhand,equipped.offhand);assert.equal(afterThrow.shield,equipped.shield);assert.equal(afterThrow.carried,false);assert.equal(afterThrow.projectiles,0);
+ assert.ok(afterThrow.hp<equipped.hp,'visible cirit hits the target across the water');assert.equal(afterThrow.weapon,equipped.weapon);assert.equal(afterThrow.offhand,equipped.offhand);assert.equal(afterThrow.shield,equipped.shield);assert.equal(afterThrow.carried,false);assert.equal(await page.evaluate(()=>__arena.view.aimLine.visible),false);assert.equal(afterThrow.projectiles,0);
  await page.evaluate(()=>{__arena.setPaused(false);const n=__arena.naval;Object.assign(n.player(),{x:NavalSimulation.constants.rackX+.7,z:NavalSimulation.constants.rackZ,action:'idle'});});await page.keyboard.press('KeyF');assert.equal(await page.evaluate(()=>__arena.naval.player().navJavelin),true);await page.keyboard.press('KeyQ');assert.equal(await page.evaluate(()=>__arena.naval.javelins.length),1);await page.evaluate(()=>__jumpFrames(100));
  await perspective('first');
  await page.evaluate(()=>{
@@ -196,7 +218,7 @@ async function main(){
  await page.evaluate(()=>localStorage.setItem('ludus-camera-perspective','first'));
  // The remembered scene survives a same-device resume URL without its arena parameter.
  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__arena?.started,null,{timeout:60000});assert.equal(await page.evaluate(()=>__arena.naval.ships.length),4);await page.evaluate(()=>__arena.freeze());assert.equal(await page.evaluate(()=>__arena.cameraMode),'first');assert.equal(await page.inputValue('#cameraPerspective'),'first');
- fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,outfit,hudLayout,eyeView,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
- console.log(JSON.stringify({initial,boatAsset,errors,out}));await cleanup();
+ fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,outfit,hudLayout,eyeView,wall,aim,uniformBudget,multiPort,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
+ console.log(JSON.stringify({initial,boatAsset,outfit,wall,aim,uniformBudget,multiPort,errors,out}));await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exit(1);});
