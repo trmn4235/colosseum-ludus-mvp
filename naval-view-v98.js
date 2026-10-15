@@ -73,7 +73,7 @@
       }
       views.push({ship,group,sides,gates,rackShafts:group.getObjectByName('Rack shafts'),rackHeads:group.getObjectByName('Rack heads')});
     }
-    const water=new T.Mesh(new T.CircleGeometry(65,96),new T.ShaderMaterial({uniforms:{time:{value:0}},vertexShader:`varying vec3 vWorld;void main(){vec4 world=modelMatrix*vec4(position,1.);vWorld=world.xyz;gl_Position=projectionMatrix*viewMatrix*world;}`,fragmentShader:`uniform float time;varying vec3 vWorld;
+    const water=new T.Mesh(new T.CircleGeometry(C.arenaRadius*1.9,96),new T.ShaderMaterial({uniforms:{time:{value:0}},vertexShader:`varying vec3 vWorld;void main(){vec4 world=modelMatrix*vec4(position,1.);vWorld=world.xyz;gl_Position=projectionMatrix*viewMatrix*world;}`,fragmentShader:`uniform float time;varying vec3 vWorld;
       void main(){vec2 p=vWorld.xz;float a=sin(p.x*1.5+p.y*.8+time*.65+sin(p.y*.2+time*.12)),b=sin(p.y*2.4-p.x*.6+time*.9),c=sin(p.x*.36+p.y*.72-time*.42);
       vec3 normal=normalize(vec3((a+b)*.1,1.,(b+c)*.12));vec3 view=normalize(cameraPosition-vWorld);float fresnel=pow(1.-max(dot(normal,view),0.),3.);
       float shine=pow(max(dot(reflect(-normalize(vec3(-.5,1.,.3)),normal),view),0.),100.);
@@ -85,7 +85,7 @@
     water.rotation.x=-Math.PI/2;water.position.y=-.72;water.renderOrder=-1;scene.add(water);
     const wakeGeo=new T.RingGeometry(1,1.08,28,1,0,Math.PI),wakeMat=new T.MeshBasicMaterial({color:0xb6d6c9,transparent:true,opacity:.15,depthWrite:false,side:T.DoubleSide});
     const wakes=naval.ships.map(ship=>{const m=new T.Mesh(wakeGeo,wakeMat.clone());m.rotation.x=-Math.PI/2;m.scale.set(2.7,5,1);m.position.y=-.69;scene.add(m);return{ship,m};});
-    const panel=document.createElement('div');panel.id='navalControls';panel.innerHTML=`<div id="navalStatus" role="status"></div><button id="navalHelm" title="Dümeni al / bırak · I" aria-label="Dümeni al"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="2"/><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6"/></svg><span>Dümeni al</span></button><button id="navalBridge" title="Geçiş köprüsü · E" hidden aria-label="Köprüyü aç"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m6 29 28-18M6 23l28-18M8 24l3 5M14 20l3 5M20 16l3 5M26 12l3 5M32 8l3 5"/></svg><span>Köprüyü aç</span></button><div id="navalSailing" hidden><span>Yön ve hız: sol kontrol / WASD</span><button id="navalBrake">Yavaşla</button></div>`;
+    const panel=document.createElement('div');panel.id='navalControls';panel.innerHTML=`<div id="navalStatus" role="status"></div><button id="navalHelm" title="Dümeni al / bırak · I" aria-label="Dümeni al"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="2"/><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6"/></svg></button><button id="navalBridge" title="Geçiş köprüsü · E" hidden aria-label="Köprüyü aç"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m6 29 28-18M6 23l28-18M8 24l3 5M14 20l3 5M20 16l3 5M26 12l3 5M32 8l3 5"/></svg><span>Köprüyü aç</span></button><div id="navalSailing" hidden><span>Yön ve hız: sol kontrol / WASD</span><button id="navalBrake">Yavaşla</button></div>`;
     document.getElementById('app').append(panel);
     const jumpButton=document.createElement('button');jumpButton.id='navalJump';jumpButton.hidden=true;jumpButton.title='Karşı gemiye atla · Boşluk';jumpButton.setAttribute('aria-label','Karşı gemiye atla');jumpButton.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="17" cy="5" r="2.6"/><path d="m10 10 7-1 4 6 6-3M17 9l-3 10-7 5M14 19l8 2-1 7M4 28h6M25 28h4"/></svg><span>ATLA</span>';panel.append(jumpButton);
     const landingMark=new T.Mesh(new T.RingGeometry(.36,.45,28),new T.MeshBasicMaterial({color:0xffd963,transparent:true,opacity:.9,depthWrite:false,side:T.DoubleSide}));landingMark.rotation.x=-Math.PI/2;landingMark.visible=false;scene.add(landingMark);
@@ -124,9 +124,9 @@
       for(const n of naval.javelins){let mesh=javelinViews.get(n.id);if(!mesh){mesh=outfit.javelin.clone(true);scene.add(mesh);javelinViews.set(n.id,mesh);}mesh.visible=n.launched;mesh.position.set(n.x,n.y,n.z);flightDirection.set(n.dx,.24*Math.PI/C.javelinRange*Math.cos(Math.PI*n.travel/C.javelinRange),n.dz).normalize();mesh.quaternion.setFromUnitVectors(up,flightDirection);}
     }
     const brake=panel.querySelector('#navalBrake');brake.addEventListener('pointerdown',e=>{e.preventDefault();if(!options.active())return;braking=true;brake.setPointerCapture(e.pointerId);});for(const event of ['pointerup','pointercancel','lostpointercapture'])brake.addEventListener(event,()=>{braking=false;});
-    const point=new T.Vector3(),ui=root.GamePerformance,helmLabel=helm.querySelector('span'),bridgeLabel=bridge.querySelector('span');
+    const point=new T.Vector3(),ui=root.GamePerformance,bridgeLabel=bridge.querySelector('span');
     function update(time){
-      water.material.uniforms.time.value=time;
+      water.material.uniforms.time.value=time;if(outfit?.wind)outfit.wind.value=time;
       for(const v of views){v.group.position.set(v.ship.x,0,v.ship.z);v.group.rotation.y=v.ship.angle;if(v.rackShafts){v.rackShafts.count=v.rackHeads.count=v.ship.javelins;}
         let gate=0;for(const g of v.gates.value)g.set(0,0,0);
         for(const b of naval.bridges)if(b.to===v.ship.id&&b.phase!=='closed'&&gate<v.gates.value.length){const landing=NavalSimulation.local(v.ship,b.end);v.gates.value[gate++].set(Math.sign(landing.x),landing.z,1);}
@@ -139,13 +139,13 @@
       ui.hidden(jumpButton,!target);landingMark.visible=!!target&&active;
       if(target)landingMark.position.set(target.end.x,.075,target.end.z);
       ui.toggle(document.body,'naval-helm',naval.manual&&active);
-      helm.disabled=!naval.manual&&!naval.canTakeHelm();ui.text(helmLabel,naval.manual?'Dümeni bırak':'Dümeni al');ui.attr(helm,'aria-label',naval.manual?'Dümeni bırak':'Dümeni al');
+      helm.disabled=!naval.manual&&!naval.canTakeHelm();ui.attr(helm,'aria-pressed',String(naval.manual));ui.attr(helm,'title',(naval.manual?'Dümeni bırak':'Dümeni al')+' · I');ui.attr(helm,'aria-label',naval.manual?'Dümeni bırak':'Dümeni al');
       ui.hidden(sailing,!naval.manual);
       const captain=naval.combat.fighters[naval.ships[0].helm];
       const message=naval.manual?(naval.linked(naval.ships[0])?'Köprü açık · gemi sabit':'DÜMEN SENDE'):captain?'Dümen: '+captain.name:'Dümen boş';
       ui.text(status,message);
       const action=naval.interaction();ui.hidden(bridge,!action||!active);
-      if(action){const ship=naval.ships[p.shipId],q=NavalSimulation.world(ship,action.side*(C.halfWidth-.2),0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-102,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}
+      if(action){const ship=naval.ships[p.shipId],q=NavalSimulation.world(ship,action.side*(C.halfWidth-.2),0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-215,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}
       updateJavelins();
       if(!active)braking=false;
     }

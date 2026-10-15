@@ -1,8 +1,8 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const N=require('../naval-simulation-v97.js'),C=N.constants;
 const {fixture,moored}=require('./naval-fixture.cjs');
-test('four crews of five start on four decks, with four bot helmsmen and four times the area',()=>{
- const {combat,naval}=fixture();assert.equal(combat.fighters.length,20);assert.equal(naval.ships.length,4);assert.equal((C.arenaRadius/17.1)**2,4);
+test('four crews of five start on four decks, with four bot helmsmen and twice the V100 water area',()=>{
+ const {combat,naval}=fixture();assert.equal(combat.fighters.length,20);assert.equal(naval.ships.length,4);assert.ok(Math.abs((C.arenaRadius/34.2)**2-2)<1e-12);
  for(const s of naval.ships){assert.equal(combat.fighters.filter(f=>f.shipId===s.id).length,5);assert.ok(s.helm>0);for(const f of combat.fighters.filter(f=>f.shipId===s.id))assert.ok(N.onDeck(s,f));}
 });
 test('player takes and releases the helm; a living teammate immediately resumes control',()=>{
@@ -32,6 +32,10 @@ test('collisions cannot push a hull outside the enlarged arena',()=>{
  const {naval,combat}=fixture(),limit=C.arenaRadius-Math.hypot(C.hullLength,C.hullWidth)-.3;
  Object.assign(naval.ships[0],{x:limit-.1,z:0});Object.assign(naval.ships[1],{x:limit-5,z:0});
  naval.takeHelm();for(let i=0;i<600;i++){naval.step(1/60,{navalThrottle:1,navalSteer:.2});for(const s of naval.ships)assert.ok(Math.hypot(s.x,s.z)<=limit+1e-6);}
+});
+test('the added water is navigable beyond the old hull boundary',()=>{
+ const {naval}=fixture();Object.assign(naval.ships[0],{x:34,z:0,speed:0});naval.takeHelm();naval.step(1/60,{});
+ assert.ok(naval.ships[0].x>33.9);assert.ok(Math.hypot(naval.ships[0].x,naval.ships[0].z)+Math.hypot(C.hullLength,C.hullWidth)<C.arenaRadius);
 });
 test('landing requires the whole end of the board, parallel decks, and low speed',()=>{
  const {naval}=moored(),t=naval.ships[1];assert.equal(naval.candidate(0,1)?.to,1);assert.equal(naval.candidate(0,-1),null);

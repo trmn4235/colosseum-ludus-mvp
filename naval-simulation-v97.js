@@ -1,7 +1,7 @@
 /* Four crews share the existing 4x5 combat rules. No account or reward writes. */
 (function (root) {
   'use strict';
-  const C = Object.freeze({arenaRadius:34.2, halfWidth:2.6, halfLength:5.5,
+  const C = Object.freeze({arenaRadius:34.2*Math.SQRT2, halfWidth:2.6, halfLength:5.5,
     hullWidth:3.5, hullLength:8.4, bridgeLength:3.8, bridgeWidth:1.8,
     margin:.34, interactDistance:1.9, openSeconds:.85, berth:8,
     jumpRange:4.6, jumpCost:20, jumpWindup:.12, jumpFlight:.72, jumpHeight:1.12, jumpRecovery:.18,
@@ -311,7 +311,7 @@
       if(ship.id===0)return{x:-3,z:-6,angle:.2};
       // Different bearings and staggered, opposing bows replace the straight row.
       const predecessor=this.ships[ship.id===3?1:0],preferred=ship.id===1?1:-1,offset=ship.id===2?-2.8:2.8;
-      const options=[preferred,-preferred].map(side=>{const p=world(predecessor,side*C.berth,offset);let cost=Math.max(0,Math.hypot(p.x,p.z)-24)*10+(side===preferred?0:3);
+      const options=[preferred,-preferred].map(side=>{const p=world(predecessor,side*C.berth,offset);let cost=Math.max(0,Math.hypot(p.x,p.z)-(C.arenaRadius-Math.hypot(C.hullLength,C.hullWidth)-1.5))*10+(side===preferred?0:3);
         for(const s of this.ships)if(s!==predecessor&&s!==ship)cost+=Math.max(0,6.5-distance(s,p))*4;
         return{...p,angle:predecessor.angle+Math.PI,cost};});
       options.sort((a,b)=>a.cost-b.cost);return options[0];
