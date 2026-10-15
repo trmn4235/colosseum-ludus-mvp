@@ -75,6 +75,11 @@ async function main(){
   return{triangles,textures:maps.size,sails,cameraDistance:Math.hypot(c.position.x-p.x,c.position.z-p.z)};
  });
  console.log(JSON.stringify({outfit}));assert.equal(new Set(outfit.sails.map(s=>s.map)).size,4);assert.ok(outfit.sails.every(s=>s.height>3.5&&!s.flag&&s.rack===8));assert.ok(outfit.triangles<50000,'complete outfitted fleet stays below 50,000 triangles');assert.ok(outfit.cameraDistance<4.5,'V101 camera is closer than V100');
+ if(process.env.LUDUS_TEST_FOCUS==='visual'){
+  const visual=await require('./combat-visual-browser-v105.cjs')(page,out);assert.deepEqual(errors,[]);
+  await page.evaluate(()=>{const a=__arena;a.camera.position.set(24,19,-31);a.camera.lookAt(-1,2,0);a.renderer.render(a.scene,a.camera);});await page.screenshot({path:out+'/fleet-final.png'});
+  fs.writeFileSync(out+'/visual-final-report.json',JSON.stringify({visual,initial,boatAsset,outfit,errors},null,2));await cleanup();return;
+ }
  const hudLayout=await page.evaluate(()=>{const helm=document.getElementById('navalHelm'),head=document.querySelector('[data-region=head]'),team=document.getElementById('teamScore');__arena.toast('Kondisyon bitti, savunman kırıldı.');return{helm:helm.getBoundingClientRect().width,head:head.getBoundingClientRect().width,text:helm.textContent.trim(),teamY:team.getBoundingClientRect().top,height:innerHeight,energyFont:parseFloat(getComputedStyle(document.getElementById('toast')).fontSize),areaRatio:(NavalSimulation.constants.arenaRadius/34.2)**2};});
  assert.equal(hudLayout.text,'');assert.ok(Math.abs(hudLayout.helm-hudLayout.head)<.1);assert.ok(hudLayout.teamY>hudLayout.height*.8);assert.ok(hudLayout.energyFont<=9);assert.ok(Math.abs(hudLayout.areaRatio-2)<1e-12);
  await page.screenshot({path:out+'/compact-energy.png'});
@@ -105,6 +110,8 @@ async function main(){
  await page.evaluate(()=>__arena.setPaused(false));await page.locator('#navalHelm').click();assert.equal(await page.evaluate(()=>__arena.naval.manual),false);assert.ok(await page.evaluate(()=>__arena.naval.ships[0].helm>0));
  const teamRope=await require('./naval-team-rope-browser-v104.cjs')(page,out,perspective);
  fs.writeFileSync(out+'/team-rope-report.json',JSON.stringify(teamRope,null,2));
+ const combatVisuals=await require('./combat-visual-browser-v105.cjs')(page,out);
+ fs.writeFileSync(out+'/combat-visual-report.json',JSON.stringify(combatVisuals,null,2));
  // Align two decks, put the player at the hinge, and render the real interaction UI.
  await page.evaluate(()=>{
    const n=__arena.naval;n.bridges=[];n.time=0;for(const s of n.ships)Object.assign(s,{speed:0,turn:0,angle:0,boardingHoldUntil:0});
