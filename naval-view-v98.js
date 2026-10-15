@@ -159,7 +159,7 @@
       helm.disabled=!naval.manual&&!naval.canTakeHelm();ui.attr(helm,'aria-pressed',String(naval.manual));ui.attr(helm,'title',(naval.manual?'Dümeni bırak':'Dümeni al')+' · I');ui.attr(helm,'aria-label',naval.manual?'Dümeni bırak':'Dümeni al');
       ui.hidden(sailing,!naval.manual);
       const captain=naval.combat.fighters[naval.ships[0].helm];
-      const message=naval.manual?(naval.linked(naval.ships[0])?'Köprü açık · gemi sabit':'DÜMEN SENDE'):captain?'Dümen: '+captain.name:'Dümen boş';
+      const message=naval.manual?(naval.linked(naval.ships[0])?(naval.bridges.some(b=>(b.from===0||b.to===0)&&b.phase==='closing')?'Köprü toplanıyor':'Geçiş sürüyor · gemi sabit'):'DÜMEN SENDE'):captain?'Dümen: '+captain.name:'Dümen boş';
       ui.text(status,message);
       const action=naval.interaction();ui.hidden(bridge,!action||!active);
       if(action){const ship=naval.ships[p.shipId],q=action.point||NavalSimulation.world(ship,action.side*(C.halfWidth-.2),action.station||0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-215,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}

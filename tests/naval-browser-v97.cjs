@@ -44,7 +44,7 @@ async function main(){
  assert.equal(await page.locator('#fatal').isVisible(),false,'the initial naval render must finish without a fatal error');
  assert.deepEqual(errors,[]);
  const initial=await page.evaluate(()=>({ships:__arena.naval.ships.length,fighters:__arena.combat.fighters.length,counts:__arena.naval.ships.map(s=>__arena.combat.fighters.filter(f=>f.team===s.team).length),calls:__arena.renderer.info.render.calls,triangles:__arena.renderer.info.render.triangles}));
- const wall=await page.evaluate(()=>({measured:!!__arena.naval.boundary,min:Math.min(...(__arena.naval.boundary||[])),max:__arena.naval.arenaRadius,ports:__arena.view.bridgeViews.length,uniforms:__arena.models.slice(1).every(m=>m.gear.chest.group.visible&&m.gear.helmet.group.visible)}));console.log(JSON.stringify({wall}));assert.equal(wall.measured,true);assert.equal(wall.ports,24);assert.equal(wall.uniforms,true);
+ const wall=await page.evaluate(()=>({measured:!!__arena.naval.boundary,min:Math.min(...(__arena.naval.boundary||[])),max:__arena.naval.arenaRadius,samples:__arena.naval.boundary?.filter((r,i)=>i%5===0),ports:__arena.view.bridgeViews.length,uniforms:__arena.models.slice(1).every(m=>m.gear.chest.group.visible&&m.gear.helmet.group.visible)}));console.log(JSON.stringify({wall}));assert.equal(wall.measured,true);assert.equal(wall.ports,24);assert.equal(wall.uniforms,true);
  assert.equal(initial.ships,4);assert.deepEqual(initial.counts,[5,5,5,5]);assert.equal(initial.fighters,20);
  const boatAsset=await page.evaluate(()=>{
   const views=__arena.view.views,geometries=new Set(),textures=new Set();let skinned=0,triangles=0,meshes=0;
@@ -57,10 +57,11 @@ async function main(){
   for(let x=-C.halfWidth+C.margin;x<=C.halfWidth-C.margin+.01;x+=.28)for(let z=-C.halfLength+C.margin;z<=C.halfLength-C.margin+.01;z+=.28){const q=NavalSimulation.world(ship,x,z);ray.set(new THREE.Vector3(q.x,2,q.z),down);const hit=ray.intersectObjects(decks,false)[0];if(!hit||Math.abs(hit.point.y)>.025)misses.push({x,z,y:hit?.point.y});}
   return{meshes,geometries:geometries.size,textures:textures.size,skinned,triangles,misses};
  });
+ console.log(JSON.stringify({boatAsset}));
  assert.equal(boatRequests.length,1,'four boats load one shared GLB');
  assert.equal(boatAsset.skinned,0,'the boat must not evaluate a skeleton');
  assert.equal(boatAsset.geometries,boatAsset.meshes/4,'geometry is shared across all four clones');
- assert.ok(boatAsset.textures<=8,'source textures are shared, not copied per ship');
+ assert.ok(boatAsset.textures<=11,'source maps plus three shared photograph/PBR maps stay within the texture budget');
  assert.ok(boatAsset.triangles<40000,'all four boats stay below 40,000 triangles');
  assert.deepEqual(boatAsset.misses,[],'every playable deck sample has a rendered surface');
  await page.evaluate(()=>{document.getElementById('toast').style.transition='none';document.getElementById('toast').style.opacity='0';});await page.screenshot({path:out+'/naval-844.png'});
