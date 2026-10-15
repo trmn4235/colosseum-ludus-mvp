@@ -18,7 +18,7 @@ async function main(){
    .replace('function frame(now){const cpuStart','function frame(now){if(window.__stopLoop)return;const cpuStart')
    .replace('var LudusBattle=(function(){',fixture+'\nLudusClient.create=()=>window.__fixtureClient;var LudusBattle=(function(){')
    .replace('mainMenu();Promise.all([LudusBattle.load()',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,begin,setPaused,toast,
-    get cameraMode(){return cameraMode},
+    animateCharacter,sun,get renderProfile(){return renderProfile},get cameraMode(){return cameraMode},
     get naval(){return naval},get view(){return navalView},
     freeze:()=>{paused=true;window.__stopLoop=true;},
     step:(dt,run=true)=>{paused=!run;window.__stopLoop=false;frame(last+dt*1000);paused=true;window.__stopLoop=true;},
@@ -31,6 +31,8 @@ async function main(){
  cleanup=async()=>{await browser.close();await new Promise(r=>server.close(r));};
  const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,deviceScaleFactor:1.5});await context.route('https://**',r=>r.abort());
  const page=await context.newPage(),errors=[],boatRequests=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+ page.on('requestfailed',r=>{if(r.failure()?.errorText!=='net::ERR_ABORTED')console.error('Request failed:',r.url(),r.failure()?.errorText);});
+ if(process.env.LUDUS_TEST_FOCUS==='performance')await page.addInitScript(()=>{let seed=106;Math.random=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);});
  page.on('request',r=>{if(r.url().includes('/assets/naval/')&&r.url().includes('.glb'))boatRequests.push(r.url());});
  await page.goto(base+'/savas.html?choose=1',{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>document.getElementById('fighterName').textContent==='Cassius');
@@ -42,9 +44,18 @@ async function main(){
 
  // Software WebGL can take over a minute to compile the full arena on a cold run.
  await page.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:120000});await page.evaluate(()=>__arena.freeze());
+ console.log('Naval scene started');
  assert.equal(await page.locator('#fatal').isVisible(),false,'the initial naval render must finish without a fatal error');
  assert.deepEqual(errors,[]);
  const initial=await page.evaluate(()=>({ships:__arena.naval.ships.length,fighters:__arena.combat.fighters.length,counts:__arena.naval.ships.map(s=>__arena.combat.fighters.filter(f=>f.team===s.team).length),calls:__arena.renderer.info.render.calls,triangles:__arena.renderer.info.render.triangles}));
+ if(await page.evaluate(()=>typeof NavalPerformance!=='undefined')){
+  const detail=await page.evaluate(()=>({ready:NavalPerformance.ready,levels:__arena.models.slice(1).map(m=>m.navalBodyLevel),casters:__arena.models.filter(m=>m.shadowEnabledV84).length}));
+  assert.equal(detail.ready,true);assert.ok(detail.levels.some(n=>n===2));assert.ok(detail.casters<=4);assert.ok(initial.triangles<1000000,'20 full crew members stay below 1M rendered triangles');
+ }
+ if(process.env.LUDUS_TEST_FOCUS==='performance'){
+  const performance=await require('./naval-performance-browser-v106.cjs')(page,out);assert.deepEqual(errors,[]);
+  fs.writeFileSync(out+'/performance.json',JSON.stringify({initial,performance,errors},null,2));console.log(JSON.stringify({initial,performance,errors}));await cleanup();return;
+ }
  const wall=await page.evaluate(()=>({measured:!!__arena.naval.boundary,min:Math.min(...(__arena.naval.boundary||[])),max:__arena.naval.arenaRadius,samples:__arena.naval.boundary?.filter((r,i)=>i%5===0),ports:__arena.view.bridgeViews.length,uniforms:__arena.models.slice(1).every(m=>m.gear.chest.group.visible&&m.gear.helmet.group.visible)}));console.log(JSON.stringify({wall}));assert.equal(wall.measured,true);assert.equal(wall.ports,24);assert.equal(wall.uniforms,true);
  assert.equal(initial.ships,4);assert.deepEqual(initial.counts,[5,5,5,5]);assert.equal(initial.fighters,20);
  const boatAsset=await page.evaluate(()=>{
