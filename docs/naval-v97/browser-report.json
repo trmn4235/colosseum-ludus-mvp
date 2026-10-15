@@ -1,0 +1,18 @@
+{
+  "initial": {
+    "ships": 4,
+    "fighters": 20,
+    "counts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "calls": 155,
+    "triangles": 782788
+  },
+  "errors": [],
+  "viewports": 4,
+  "controls": "menu selection, server ticket, take/release, AI takeover, valid and invalid bridge, boarding, pause, resume",
+  "note": "Chromium with software GPU. Not a physical phone FPS measurement."
+}

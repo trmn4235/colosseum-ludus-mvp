@@ -1,0 +1,20 @@
+/* The established gold and burgundy controls, with a gold valid-landing action. */
+#navalControls{position:absolute;inset:0;z-index:15;pointer-events:none;color:#f5e7c8;font-family:Georgia,serif}
+#navalControls[hidden],#navalControls [hidden]{display:none!important}
+#navalControls button{pointer-events:auto;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none}
+#navalHelm{position:absolute;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:9px 16px;min-height:44px;border:1px solid #d0ad61;border-radius:7px;background:linear-gradient(#70283a,#38101d);color:#f4dc9b;font:13px Georgia,serif;box-shadow:0 3px 10px #0007}
+#navalHelm svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.7}#navalHelm:disabled{opacity:.4;cursor:default}
+#navalStatus{position:absolute;top:70px;left:50%;transform:translateX(-50%);background:#142526bf;padding:5px 12px;border-radius:3px;font:11px Arial,sans-serif;white-space:nowrap;text-shadow:0 1px 2px #000}
+#navalBridge{position:absolute;transform:translate(-50%,-50%);width:59px;height:59px;border:2px solid #ffdf69;border-radius:50%;background:radial-gradient(#e4b940,#a06c13);color:#251a07;box-shadow:0 0 18px #efc64e80}
+#navalBridge svg{width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round}
+#navalBridge span{position:absolute;left:50%;top:62px;transform:translateX(-50%);white-space:nowrap;padding:4px 7px;background:#172522e8;border:1px solid #b99b55;border-radius:3px;font:11px Arial,sans-serif;color:#ffe4a0}
+#navalBridge.occupied{filter:saturate(.25);box-shadow:none}
+#navalSailing{position:absolute;right:24px;bottom:32px;display:flex;flex-direction:column;align-items:center;gap:8px}
+#navalSailing span{font:11px Arial,sans-serif;text-shadow:0 1px 3px #000}#navalBrake{width:76px;height:60px;border:1px solid #c8ac6d;border-radius:10px;background:#1c3438e8;color:#f6e3ae;font:14px Georgia,serif}
+.naval-helm #attack,.naval-helm #block,.naval-helm #dodge,.naval-helm #special,.naval-helm #hand,.naval-helm #target,.naval-helm #pickup,.naval-helm #regionHint{visibility:hidden!important;pointer-events:none!important}
+.naval-helm .actions{visibility:hidden!important;pointer-events:none!important}
+body.naval-active #pickup{bottom:74px}
+body.naval-active #toast{bottom:76px;max-width:min(360px,50vw)}
+body[data-roman-screen="savas"] #modePage .arena-card-grid[data-arena-panel="single"]{grid-template-columns:repeat(4,minmax(0,1fr))!important;width:min(96%,1126px,calc((var(--game-height,100dvh) - 126px)*3 + 3*var(--card-gap)))!important}
+.arena-choice-art.art-naval{background-image:url('assets/clan-water-20x2-v81.webp');background-size:contain;background-position:center;background-color:#351823}
+@media(max-height:390px){#navalStatus{top:58px;font-size:10px}#navalHelm{padding:6px 10px;min-height:40px;font-size:12px}#navalBridge{width:50px;height:50px}#navalBridge span{top:52px}#navalSailing{right:18px;bottom:20px}}
