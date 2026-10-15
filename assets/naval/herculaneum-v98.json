@@ -1,0 +1,130 @@
+{
+  "sourceBytes": 22618708,
+  "sourceTriangles": 66776,
+  "bytes": 1460796,
+  "triangles": 7064,
+  "meshes": 12,
+  "materials": 6,
+  "textures": 8,
+  "parts": [
+    {
+      "name": "HB Yard_Hull Trim _0",
+      "role": "mast",
+      "before": 412,
+      "after": 122,
+      "error": 0.001819393364712596
+    },
+    {
+      "name": "0",
+      "role": "sail",
+      "before": 3528,
+      "after": 492,
+      "error": 0.00005271962072583847
+    },
+    {
+      "name": "HB Oar.R.001_Hull Trim _0",
+      "role": "oars-port",
+      "before": 332,
+      "after": 152,
+      "error": 0.002666991902515292
+    },
+    {
+      "name": "HB Oar.R.003_Hull Trim _0",
+      "role": "oars-port",
+      "before": 332,
+      "after": 152,
+      "error": 0.0027129154186695814
+    },
+    {
+      "name": "HB Oar.L.001_Hull Trim _0",
+      "role": "oars-starboard",
+      "before": 332,
+      "after": 152,
+      "error": 0.0025778377894312143
+    },
+    {
+      "name": "HB Oar.L.003_Hull Trim _0",
+      "role": "oars-starboard",
+      "before": 332,
+      "after": 152,
+      "error": 0.0025586255360394716
+    },
+    {
+      "name": "HB Rudder_Hull Trim _0",
+      "role": "rudder",
+      "before": 780,
+      "after": 350,
+      "error": 0.0037144196685403585
+    },
+    {
+      "name": "HB Mast_Hull Trim _0",
+      "role": "mast",
+      "before": 1172,
+      "after": 351,
+      "error": 0.00190555804874748
+    },
+    {
+      "name": "HB Hull_Painted Hull Yellow_0",
+      "role": "hull",
+      "before": 2176,
+      "after": 957,
+      "error": 0.0005457118386402726
+    },
+    {
+      "name": "HB Hull_Painted Hull Trim Red-Yellow_0",
+      "role": "hull",
+      "before": 1358,
+      "after": 597,
+      "error": 0.0009118058369494975
+    },
+    {
+      "name": "HB Hull_Hull_0",
+      "role": "hull",
+      "before": 2406,
+      "after": 1058,
+      "error": 0.000633883464615792
+    },
+    {
+      "name": "HB Keel_Painted Hull Trim Red-Yellow_0",
+      "role": "hull",
+      "before": 1744,
+      "after": 767,
+      "error": 0.00034380206489004195
+    },
+    {
+      "name": "HB Keel_Hull Trim _0",
+      "role": "hull",
+      "before": 792,
+      "after": 347,
+      "error": 0.00045470119221135974
+    },
+    {
+      "name": "HB Wales_Painted Hull Trim Red-Yellow_0",
+      "role": "hull",
+      "before": 2976,
+      "after": 1309,
+      "error": 0.0005028440500609577
+    },
+    {
+      "name": "Battle deck planks",
+      "role": "deck",
+      "before": 192,
+      "after": 58,
+      "error": 0.0009351179469376802
+    },
+    {
+      "name": "Deck backing",
+      "role": "deck",
+      "before": 152,
+      "after": 31,
+      "error": 0.000979217584244907
+    },
+    {
+      "name": "Simplified stays",
+      "role": "rigging",
+      "before": 36,
+      "after": 17,
+      "error": 0.010596934705972672
+    }
+  ]
+}

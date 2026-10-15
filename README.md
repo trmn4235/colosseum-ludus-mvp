@@ -1,5 +1,9 @@
 # Colosseum&Magnus
 
+## Herculaneum teknesi V98
+
+Deniz Savaşı'nda Opus Poly'nin gerçek Herculaneum modeli kullanılıyor. Yaklaşık 16,5 metrelik gövde, beş kişilik takım için geniş ahşap güverte, toplanmış yelken ve sadeleştirilmiş halatlar. Yüklenen kaynak modele göre 66.776 → 7.064 üçgen ve 22,62 → 1,46 MB; dört tekne aynı geometri ve dokuları paylaşır. [Görseller, kaynak lisansı ve doğrulama](docs/naval-v98/README.md).
+
 ## Deniz Savaşı V97
 
 Singleplayer menüsünde dört gemi, her gemide beş gladyatör ve dört kat büyüklüğünde su arenası. Dümeni istediğinde alıp takım arkadaşına bırak; karşı güverteye tam hizalanan tahta köprüyü sarı ikondan açarak savaş. [Kontroller, uygulama ve doğrulama](docs/naval-v97/README.md).

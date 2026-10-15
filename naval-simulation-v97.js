@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   const C = Object.freeze({arenaRadius:34.2, halfWidth:2.6, halfLength:5.5,
-    hullWidth:2.85, hullLength:7, bridgeLength:3.8, bridgeWidth:1.8,
+    hullWidth:3.5, hullLength:8.4, bridgeLength:3.8, bridgeWidth:1.8,
     margin:.34, interactDistance:1.9, openSeconds:.85, berth:8});
   const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
   const delta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
