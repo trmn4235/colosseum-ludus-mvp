@@ -61,7 +61,16 @@ async function main(){
  assert.ok(boatAsset.textures<=8,'source textures are shared, not copied per ship');
  assert.ok(boatAsset.triangles<40000,'all four boats stay below 40,000 triangles');
  assert.deepEqual(boatAsset.misses,[],'every playable deck sample has a rendered surface');
- await page.screenshot({path:out+'/naval-844.png'});
+ await page.evaluate(()=>{document.getElementById('toast').style.transition='none';document.getElementById('toast').style.opacity='0';});await page.screenshot({path:out+'/naval-844.png'});
+ const outfit=await page.evaluate(()=>{
+  let triangles=0;const maps=new Set(),sails=[];
+  for(const v of __arena.view.views){v.group.traverse(o=>{if(o.isMesh){triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3*(o.isInstancedMesh?o.count:1);if(o.material.map)maps.add(o.material.map.uuid);}});const sail=v.group.getObjectByName('Open sail');sail.geometry.computeBoundingBox();sails.push({height:sail.geometry.boundingBox.max.y-sail.geometry.boundingBox.min.y,map:sail.material.map.uuid,flag:!!v.group.getObjectByName('paint'),rack:v.rackShafts.count});}
+  const p=__arena.naval.player(),c=__arena.camera;
+  return{triangles,textures:maps.size,sails,cameraDistance:Math.hypot(c.position.x-p.x,c.position.z-p.z)};
+ });
+ console.log(JSON.stringify({outfit}));assert.equal(new Set(outfit.sails.map(s=>s.map)).size,4);assert.ok(outfit.sails.every(s=>s.height>3.5&&!s.flag&&s.rack===8));assert.ok(outfit.triangles<50000,'complete outfitted fleet stays below 50,000 triangles');assert.ok(outfit.cameraDistance<5.8,'player camera is closer than V99');
+ await page.evaluate(()=>{__arena.camera.position.set(24,19,-31);__arena.camera.lookAt(-1,2,0);__arena.renderer.render(__arena.scene,__arena.camera);});await page.screenshot({path:out+'/fleet-sails.png'});
+
  await page.evaluate(()=>{const s=__arena.naval.ships[0];__arena.camera.position.set(s.x+14,9,s.z-16);__arena.camera.lookAt(s.x,.6,s.z);__arena.renderer.render(__arena.scene,__arena.camera);});
  await page.screenshot({path:out+'/boat-five-crew.png'});
  await page.evaluate(()=>__arena.setPaused(false));await page.locator('#navalHelm').click();
@@ -89,6 +98,10 @@ async function main(){
  await page.locator('#navalBridge').click();assert.equal(await page.evaluate(()=>__arena.naval.bridges[0]?.phase),'opening');
  await page.evaluate(()=>{const n=__arena.naval;for(let i=0;i<60;i++)n.step(1/60,{});__arena.view.update(1);for(let i=0;i<20;i++){const m=__arena.models[i];m.root.visible=true;ImportedGladiator.animate(__arena.combat.fighters[i],m,1,1/60);m.root.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update();});}__arena.renderer.render(__arena.scene,__arena.camera);});
  assert.equal(await page.evaluate(()=>__arena.naval.bridges[0].phase),'open');await page.screenshot({path:out+'/bridge-open.png'});
+ const receivingGate=await page.evaluate(()=>__arena.view.views[1].gates.value[0].toArray());assert.deepEqual(receivingGate,[-1,0,1]);
+ await page.evaluate(()=>{const n=__arena.naval;n.ships[1].z=2.8;__arena.view.update(1);__arena.renderer.render(__arena.scene,__arena.camera);});
+ assert.equal(await page.evaluate(()=>__arena.view.views[1].gates.value[0].y),-2.8,'receiving gate follows the staggered bridge landing');await page.screenshot({path:out+'/bridge-offset.png'});
+ await page.evaluate(()=>{__arena.naval.ships[1].z=0;__arena.view.update(1);});
  const crossing=await page.evaluate(()=>{const n=__arena.naval,p=n.player();for(let x=2.1;x<6.6;x+=.08){p.x=x;n.bound(p);}return{ship:p.shipId,bridge:p.navBridge};});assert.equal(crossing.ship,1);assert.equal(crossing.bridge,null);
  await page.evaluate(()=>{const n=__arena.naval;n.bridges=[];n.player().shipId=0;n.player().x=2.1;n.player().z=0;n.ships[1].angle=.6;__arena.view.update(1);});assert.equal(await page.locator('#navalBridge').isVisible(),false);
  // A closed-bridge jump uses the real controls, animation and deck model.
@@ -99,7 +112,7 @@ async function main(){
   for(const f of __arena.combat.fighters){Object.assign(f,{shipId:f.team,navBridge:null,navJump:null,navHeight:0,navJumpReady:0,stunUntil:0,knockedUntil:0,action:'idle',timer:0,stamina:f.maxStamina,move:0});Object.assign(f,NavalSimulation.world(n.ships[f.shipId],f.id%2?1:-1,f.id%5-2));}
   Object.assign(n.player(),{x:2.1,z:0});__arena.setPaused(false);__arena.view.update(__arena.combat.time);
   for(let i=0;i<20;i++)ImportedGladiator.animate(__arena.combat.fighters[i],__arena.models[i],__arena.combat.time,1/60);
-  document.getElementById('toast').style.opacity='0';__arena.camera.position.set(13,8,-13);__arena.camera.lookAt(4,.6,0);__arena.renderer.render(__arena.scene,__arena.camera);
+  document.getElementById('toast').style.transition='none';document.getElementById('toast').style.opacity='0';__arena.camera.position.set(13,8,-13);__arena.camera.lookAt(4,.6,0);__arena.renderer.render(__arena.scene,__arena.camera);
   window.__jumpFrames=(frames,run=true)=>{const render=__arena.renderer.render;__arena.renderer.render=()=>{};try{for(let i=0;i<frames;i++)__arena.step(1/60,run);}finally{__arena.renderer.render=render;}__arena.renderer.render(__arena.scene,__arena.camera);};
  });
  assert.equal(await page.locator('#navalJump').isVisible(),true);
@@ -128,7 +141,31 @@ async function main(){
   assert.equal(await page.locator('#navalJump').isVisible(),true);
   const overlaps=await page.evaluate(()=>{const a=document.getElementById('navalJump').getBoundingClientRect();return ['navalHelm','stick','attack','block','dodge','special','hand','target'].filter(id=>{const b=document.getElementById(id).getBoundingClientRect();return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;});});
   assert.deepEqual(overlaps,[],'jump control must not cover existing controls at '+w+'px');
+  await page.evaluate(()=>{__arena.naval.player().navJavelin=true;__arena.setPaused(false);__arena.view.update(__arena.combat.time);});
+  const ciritOverlaps=await page.evaluate(()=>{const a=document.getElementById('navalJavelin').getBoundingClientRect();return ['navalHelm','navalJump','stick','attack','block','dodge','special','hand','target'].filter(id=>{const b=document.getElementById(id).getBoundingClientRect();return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;});});
+  assert.deepEqual(ciritOverlaps,[],'cirit control must not overlap at '+w+'px');await page.evaluate(()=>{__arena.naval.player().navJavelin=false;});
  }
+
+ await page.setViewportSize({width:844,height:390});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ const equipped=await page.evaluate(()=>{
+  const n=__arena.naval,p=n.player(),C=NavalSimulation.constants;n.ships[0].javelins=8;
+  Object.assign(p,{shipId:0,x:C.rackX+.7,z:C.rackZ,action:'idle',stunUntil:0,navJavelin:false,navJump:null,navHeight:0,stamina:100});
+  for(const f of __arena.combat.fighters.filter(f=>f.team===1))Object.assign(f,{x:8+(f.id%2),z:3});
+  Object.assign(__arena.combat.fighters[5],{x:8,z:C.rackZ,action:'idle',blocking:false});__arena.combat.lockedTarget=5;
+  __arena.setPaused(false);__jumpFrames(1);__arena.setPaused(false);__arena.view.update(__arena.combat.time);__arena.camera.position.set(5,4,-8);__arena.camera.lookAt(-1,1.1,-2);__arena.renderer.render(__arena.scene,__arena.camera);
+  return{weapon:p.weapon,offhand:p.offhand,shield:p.shield,hp:__arena.combat.fighters[5].hp};
+ });
+ assert.equal(await page.locator('#navalJavelin').isEnabled(),true);await page.locator('#navalJavelin').click();
+ assert.equal(await page.evaluate(()=>__arena.naval.player().navJavelin),true);await page.evaluate(()=>{__arena.view.update(__arena.combat.time);__arena.renderer.render(__arena.scene,__arena.camera);});
+ assert.equal(await page.evaluate(()=>__arena.view.views[0].rackShafts.count),7);assert.equal(await page.evaluate(()=>__arena.view.heldJavelin.visible),true);
+ await page.screenshot({path:out+'/javelin-ready.png'});
+ await page.locator('#navalJavelin').click();await page.evaluate(()=>__jumpFrames(23));
+ assert.equal(await page.evaluate(()=>__arena.naval.javelins.length),1);assert.equal(await page.evaluate(()=>[...__arena.view.javelinViews.values()].some(o=>o.visible)),true);
+ const flightAge=await page.evaluate(()=>__arena.naval.javelins[0].age);await page.evaluate(()=>{__arena.setPaused(true);__jumpFrames(10,false);});assert.equal(await page.evaluate(()=>__arena.naval.javelins[0].age),flightAge);
+ await page.evaluate(()=>{__arena.setPaused(false);__jumpFrames(55);});
+ const afterThrow=await page.evaluate(()=>{const p=__arena.naval.player();return{weapon:p.weapon,offhand:p.offhand,shield:p.shield,hp:__arena.combat.fighters[5].hp,carried:p.navJavelin,projectiles:__arena.naval.javelins.length};});
+ assert.ok(afterThrow.hp<equipped.hp,'visible cirit hits the target across the water');assert.equal(afterThrow.weapon,equipped.weapon);assert.equal(afterThrow.offhand,equipped.offhand);assert.equal(afterThrow.shield,equipped.shield);assert.equal(afterThrow.carried,false);assert.equal(afterThrow.projectiles,0);
+ await page.evaluate(()=>{__arena.setPaused(false);const n=__arena.naval;Object.assign(n.player(),{x:NavalSimulation.constants.rackX+.7,z:NavalSimulation.constants.rackZ,action:'idle'});});await page.keyboard.press('KeyF');assert.equal(await page.evaluate(()=>__arena.naval.player().navJavelin),true);await page.keyboard.press('KeyQ');assert.equal(await page.evaluate(()=>__arena.naval.javelins.length),1);await page.evaluate(()=>__jumpFrames(100));
  await page.evaluate(()=>{
   const n=__arena.naval;__arena.setPaused(false);Object.assign(n.player(),{x:2.1,z:0,stamina:100,navJumpReady:0});n.jump();__jumpFrames(20);
   __arena.combat.damage(__arena.combat.fighters[5],n.player(),100000);__jumpFrames(8);
@@ -141,7 +178,7 @@ async function main(){
  assert.deepEqual(errors,[]);
  // The remembered scene survives a same-device resume URL without its arena parameter.
  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__arena?.started,null,{timeout:60000});assert.equal(await page.evaluate(()=>__arena.naval.ships.length),4);await page.evaluate(()=>__arena.freeze());
- fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
+ fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,outfit,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
  console.log(JSON.stringify({initial,boatAsset,errors,out}));await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exit(1);});

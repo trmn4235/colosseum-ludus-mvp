@@ -16,7 +16,7 @@
     })().catch(error=>{pending=null;throw Error('Tekne modeli yüklenemedi. Sayfayı yeniden aç. '+error.message);});
     return pending;
   }
-  function template(){
+  function template(outfitted){
     if(!source)throw Error('Herculaneum modeli henüz hazır değil.');
     const group=source.clone(true);
     let originalWood;
@@ -24,21 +24,28 @@
     const wood=originalWood.clone();wood.vertexColors=false;wood.color.setHex(0xb7a38a);
     const dark=wood.clone();dark.color.setHex(0x493728);
     const materials={wood,dark,bronze:new T.MeshStandardMaterial({color:0x9a773e,roughness:.65,metalness:.5}),paint:new T.MeshStandardMaterial({color:0xffffff,roughness:.95,side:T.DoubleSide})};
+    let outfit=null;
+    if(outfitted){
+      for(const o of [...group.children])if(['sail','mast','rigging'].includes(o.userData.navalRole))group.remove(o);
+      outfit=root.NavalOutfit.create(T,group,materials);group.add(outfit.group);
+    }
     // Small stern pennants identify the four teams without recolouring the
     // original hull. Every clone shares geometry and all eight source textures.
-    const pole=new T.Mesh(new T.CylinderGeometry(.035,.045,2.8,6),dark);pole.position.set(1.7,1.35,-5.7);pole.castShadow=true;group.add(pole);
+    if(!outfitted){const pole=new T.Mesh(new T.CylinderGeometry(.035,.045,2.8,6),dark);pole.position.set(1.7,1.35,-5.7);pole.castShadow=true;group.add(pole);
     const flagGeo=new T.PlaneGeometry(.85,1.2,2,3),pos=flagGeo.attributes.position;
     for(let i=0;i<pos.count;i++)pos.setZ(i,Math.sin(pos.getX(i)*4+pos.getY(i)*2)*.045);
-    flagGeo.computeVertexNormals();const flag=new T.Mesh(flagGeo,materials.paint);flag.name='paint';flag.position.set(1.27,1.94,-5.7);flag.castShadow=true;group.add(flag);
-    return {group,materials};
+    flagGeo.computeVertexNormals();const flag=new T.Mesh(flagGeo,materials.paint);flag.name='paint';flag.position.set(1.27,1.94,-5.7);flag.castShadow=true;group.add(flag);}
+    return {group,materials,outfit};
   }
   function create(naval,scene,camera,options){
-    const {group:source,materials}=template(),views=[],bridgeViews=[];
+    const outfitted=!!(options.outfitEnabled&&root.NavalOutfit),{group:source,materials,outfit}=template(outfitted),views=[],bridgeViews=[];
     const bridgeGeometry=new T.BoxGeometry(C.bridgeLength,.12,C.bridgeWidth),bridgePlanks=[];
     for(let i=.12;i<C.bridgeLength;i+=.24){const g=new T.BoxGeometry(.025,.016,C.bridgeWidth).translate(i-C.bridgeLength/2,.069,0);bridgePlanks.push(g.toNonIndexed());}
     const seamGeometry=root.ArenaGeometryUtils.mergeGeometries(bridgePlanks,false);bridgePlanks.forEach(g=>g.dispose());
     for(const ship of naval.ships){
-      const group=source.clone(true),paint=materials.paint.clone();paint.color.setHex(palette[ship.team]);group.getObjectByName('paint').material=paint;scene.add(group);
+      const group=source.clone(true);
+      if(outfitted)group.getObjectByName('Open sail').material=outfit.sailMaterials[ship.team];
+      else{const paint=materials.paint.clone();paint.color.setHex(palette[ship.team]);group.getObjectByName('paint').material=paint;}scene.add(group);
       const sides=[];
       for(const side of [-1,1]){
         const pivot=new T.Group();pivot.position.set(side*C.halfWidth,.03,0);group.add(pivot);
@@ -50,7 +57,21 @@
         const oars=group.children.find(o=>o.userData.navalRole===role);
         sides.push({side,oars});
       }
-      views.push({ship,group,sides});
+      const gates={value:Array.from({length:3},()=>new T.Vector3())};
+      if(outfitted){
+        const clip=shader=>{
+          shader.uniforms.navalGates=gates;
+          shader.vertexShader='varying vec3 vNavalHull;\n'+shader.vertexShader;
+          shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvNavalHull=position;');
+          shader.fragmentShader='varying vec3 vNavalHull;uniform vec3 navalGates[3];\n'+shader.fragmentShader;
+          shader.fragmentShader=shader.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nfor(int i=0;i<3;i++){vec3 gate=navalGates[i];if(gate.z>.5&&vNavalHull.x*gate.x>2.35&&abs(vNavalHull.z-gate.y)<1.08&&vNavalHull.y>-.045)discard;}');
+        };
+        group.traverse(o=>{if(!o.isMesh||!(o.userData.navalRole==='hull'||['Curved hull strakes','Raised gunwales and ribs','Bronze rubbing strakes'].includes(o.name)))return;
+          o.material=o.material.clone();o.material.onBeforeCompile=clip;o.material.customProgramCacheKey=()=> 'naval-boarding-gates-v100';
+          o.customDepthMaterial=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,side:T.DoubleSide});o.customDepthMaterial.onBeforeCompile=clip;o.customDepthMaterial.customProgramCacheKey=()=> 'naval-boarding-gates-v100';
+        });
+      }
+      views.push({ship,group,sides,gates,rackShafts:group.getObjectByName('Rack shafts'),rackHeads:group.getObjectByName('Rack heads')});
     }
     const water=new T.Mesh(new T.CircleGeometry(65,96),new T.ShaderMaterial({uniforms:{time:{value:0}},vertexShader:`varying vec3 vWorld;void main(){vec4 world=modelMatrix*vec4(position,1.);vWorld=world.xyz;gl_Position=projectionMatrix*viewMatrix*world;}`,fragmentShader:`uniform float time;varying vec3 vWorld;
       void main(){vec2 p=vWorld.xz;float a=sin(p.x*1.5+p.y*.8+time*.65+sin(p.y*.2+time*.12)),b=sin(p.y*2.4-p.x*.6+time*.9),c=sin(p.x*.36+p.y*.72-time*.42);
@@ -78,11 +99,38 @@
       return false;
     }
     jumpButton.onclick=jump;
+    const javelinButton=document.createElement('button');javelinButton.id='navalJavelin';javelinButton.hidden=true;javelinButton.title='Cirit al · F / Cirit at · Q';javelinButton.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 28 24 7M22 9l2-6 5-1-1 5-6 2M7 21l4 4"/></svg><span>CİRİT AL</span><small></small>';panel.append(javelinButton);
+    function javelin(){
+      if(!outfitted||!options.active()||naval.manual)return false;
+      const held=naval.player().navJavelin,ok=held?naval.throwJavelin():naval.takeJavelin();
+      if(ok){options.clearInput();options.toast(held?'Cirit fırlatıldı.':'Cirit hazır · Yakındaki rakibe fırlat.');}
+      else if(held)options.toast(naval.player().stamina<C.javelinCost?'Cirit için 18 kondisyon gerekiyor.':'Atış için uygun bir rakip bekle.');
+      return ok;
+    }
+    javelinButton.onclick=javelin;
+    const javelinViews=new Map(),heldJavelin=outfit?.javelin.clone(true),flightDirection=new T.Vector3(),up=new T.Vector3(0,1,0);
+    if(heldJavelin){heldJavelin.rotation.x=.25;heldJavelin.userData.restRotation=.25;}
+    function updateJavelins(){
+      if(!outfitted)return;
+      const f=naval.player(),rack=naval.rack(),target=naval.javelinTarget(),held=f.navJavelin&&f.hp>0,m=options.models?.()[0];
+      ui.hidden(javelinButton,(!rack&&!held)||!options.active()||naval.manual||f.hp<=0);
+      const canAct=f.action==='idle'&&f.stunUntil<=naval.combat.time&&!f.navJump;
+      javelinButton.disabled=!canAct||(held?(!target||f.stamina<C.javelinCost):!rack?.javelins);
+      ui.text(javelinButton.querySelector('span'),held?'CİRİT AT':'CİRİT AL');ui.text(javelinButton.querySelector('small'),held?'18 KON':rack?rack.javelins+' / '+C.javelinStock:'');
+      ui.attr(javelinButton,'aria-label',held?'Cirit at':'Silahlıktan cirit al');
+      if(m?.weaponAnchor){if(heldJavelin.parent!==m.weaponAnchor)m.weaponAnchor.add(heldJavelin);for(const child of m.weaponAnchor.children)child.visible=child===heldJavelin?held:!held;}
+      const live=new Set(naval.javelins.map(n=>n.id));
+      for(const [id,mesh] of javelinViews)if(!live.has(id)){scene.remove(mesh);javelinViews.delete(id);}
+      for(const n of naval.javelins){let mesh=javelinViews.get(n.id);if(!mesh){mesh=outfit.javelin.clone(true);scene.add(mesh);javelinViews.set(n.id,mesh);}mesh.visible=n.launched;mesh.position.set(n.x,n.y,n.z);flightDirection.set(n.dx,.24*Math.PI/C.javelinRange*Math.cos(Math.PI*n.travel/C.javelinRange),n.dz).normalize();mesh.quaternion.setFromUnitVectors(up,flightDirection);}
+    }
     const brake=panel.querySelector('#navalBrake');brake.addEventListener('pointerdown',e=>{e.preventDefault();if(!options.active())return;braking=true;brake.setPointerCapture(e.pointerId);});for(const event of ['pointerup','pointercancel','lostpointercapture'])brake.addEventListener(event,()=>{braking=false;});
     const point=new T.Vector3(),ui=root.GamePerformance,helmLabel=helm.querySelector('span'),bridgeLabel=bridge.querySelector('span');
     function update(time){
       water.material.uniforms.time.value=time;
-      for(const v of views){v.group.position.set(v.ship.x,0,v.ship.z);v.group.rotation.y=v.ship.angle;for(const s of v.sides)s.oars.rotation.z=naval.linked(v.ship)?s.side*.45:Math.sin(time*3.2)*Math.min(.07,Math.abs(v.ship.speed)*.035);}
+      for(const v of views){v.group.position.set(v.ship.x,0,v.ship.z);v.group.rotation.y=v.ship.angle;if(v.rackShafts){v.rackShafts.count=v.rackHeads.count=v.ship.javelins;}
+        let gate=0;for(const g of v.gates.value)g.set(0,0,0);
+        for(const b of naval.bridges)if(b.to===v.ship.id&&b.phase!=='closed'&&gate<v.gates.value.length){const landing=NavalSimulation.local(v.ship,b.end);v.gates.value[gate++].set(Math.sign(landing.x),landing.z,1);}
+        for(const s of v.sides)s.oars.rotation.z=naval.linked(v.ship)?s.side*.45:Math.sin(time*3.2)*Math.min(.07,Math.abs(v.ship.speed)*.035);}
       for(const v of bridgeViews){const b=naval.bridges.find(b=>b.from===v.ship.id&&b.side===v.side&&b.phase!=='closed');const open=b?.progress||0;v.pivot.rotation.y=-v.side*(1-open)*Math.PI/2;}
       for(const v of wakes){const p=NavalSimulation.world(v.ship,0,-5.7);v.m.position.x=p.x;v.m.position.z=p.z;v.m.rotation.z=-v.ship.angle;v.m.material.opacity=Math.min(.22,Math.abs(v.ship.speed)*.08);}
       const p=naval.player(),active=options.active();ui.hidden(panel,!active||p.hp<=0);
@@ -98,9 +146,10 @@
       ui.text(status,message);
       const action=naval.interaction();ui.hidden(bridge,!action||!active);
       if(action){const ship=naval.ships[p.shipId],q=NavalSimulation.world(ship,action.side*(C.halfWidth-.2),0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-102,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}
+      updateJavelins();
       if(!active)braking=false;
     }
-    return{update,views,water,panel,jump,landingMark,get braking(){return braking;}};
+    return{update,views,water,panel,jump,javelin,javelinViews,heldJavelin,landingMark,get braking(){return braking;}};
   }
   root.NavalView={create,load,assetURL};
 })(window);

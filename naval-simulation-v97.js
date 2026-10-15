@@ -4,13 +4,14 @@
   const C = Object.freeze({arenaRadius:34.2, halfWidth:2.6, halfLength:5.5,
     hullWidth:3.5, hullLength:8.4, bridgeLength:3.8, bridgeWidth:1.8,
     margin:.34, interactDistance:1.9, openSeconds:.85, berth:8,
-    jumpRange:4.6, jumpCost:20, jumpWindup:.12, jumpFlight:.72, jumpHeight:1.12, jumpRecovery:.18});
+    jumpRange:4.6, jumpCost:20, jumpWindup:.12, jumpFlight:.72, jumpHeight:1.12, jumpRecovery:.18,
+    javelinStock:8, javelinCost:18, javelinRange:22, javelinSpeed:15, rackX:-1.7, rackZ:-4.3});
   const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
   const delta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
   const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
   function world(ship,x,z){const c=Math.cos(ship.angle),s=Math.sin(ship.angle);return{x:ship.x+x*c+z*s,z:ship.z-x*s+z*c};}
   function local(ship,p){const x=p.x-ship.x,z=p.z-ship.z,c=Math.cos(ship.angle),s=Math.sin(ship.angle);return{x:x*c-z*s,z:x*s+z*c};}
-  function onDeck(ship,p,margin=C.margin){const q=local(ship,p);return Math.abs(q.x)<=C.halfWidth-margin&&Math.abs(q.z)<=C.halfLength-margin;}
+  function onDeck(ship,p,margin=C.margin){const q=local(ship,p);return Math.abs(q.x)<=C.halfWidth-margin+1e-7&&Math.abs(q.z)<=C.halfLength-margin+1e-7;}
   function separation(a,b){
     let overlap=Infinity,normal=null;
     for(const angle of [a.angle,b.angle])for(const axis of [{x:Math.cos(angle),z:-Math.sin(angle)},{x:Math.sin(angle),z:Math.cos(angle)}]){
@@ -23,10 +24,12 @@
   }
   class Battle {
     constructor(combat){
-      this.combat=combat;this.manual=false;this.time=0;this.bridges=[];this.nextBridge=1;this.routes=new Map();
-      this.ships=Array.from({length:4},(_,id)=>({id,team:id,x:(id-1.5)*C.berth,z:id%2?-13:13,angle:0,speed:0,turn:0,helm:null,throttle:0,steer:0}));
+      this.combat=combat;this.arenaRadius=C.arenaRadius;this.manual=false;this.time=0;this.bridges=[];this.nextBridge=1;this.routes=new Map();
+      const starts=[[-7,-14,.26],[10,-10,-.45],[-15,9,Math.PI-.3],[10,13,Math.PI+.35]];
+      this.ships=starts.map(([x,z,angle],id)=>({id,team:id,x,z,angle,speed:0,turn:0,helm:null,throttle:0,steer:0,javelins:C.javelinStock}));
+      this.javelins=[];this.nextJavelin=1;
       for(const f of combat.fighters){
-        f.shipId=f.team;f.navBridge=null;f.navJump=null;f.navHeight=0;f.navJumpReady=0;
+        f.shipId=f.team;f.navBridge=null;f.navJump=null;f.navHeight=0;f.navJumpReady=0;f.navJavelin=false;
         const positions=[[0,-3.7],[-1.25,-1.7],[1.25,-1.7],[-1.15,2],[1.15,2]],q=positions[f.id%5],s=this.ships[f.shipId];
         Object.assign(f,world(s,q[0],q[1]));f.angle=s.angle;f.navSafe={x:f.x,z:f.z};
       }
@@ -34,6 +37,51 @@
       for(const ship of this.ships)this.assignCaptain(ship);
     }
     player(){return this.combat.fighters[0];}
+    rack(f=this.player()){
+      if(!f||f.hp<=0||f.navBridge||f.navJump||f.id===0&&this.manual||this.combat.finished)return null;
+      const ship=this.ships[f.shipId];return ship&&distance(f,world(ship,C.rackX,C.rackZ))<=1.65?ship:null;
+    }
+    takeJavelin(){
+      const f=this.player(),rack=this.rack(f);
+      if(!rack||rack.javelins<=0||f.navJavelin||f.action!=='idle'||f.stunUntil>this.combat.time)return false;
+      rack.javelins--;f.navJavelin=true;this.combat.emit('javelinpickup',{id:f.id,ship:rack.id});return true;
+    }
+    javelinTarget(f=this.player()){
+      if(!f||f.hp<=0||!f.navJavelin||this.combat.finished)return null;
+      const locked=this.combat.fighters[this.combat.lockedTarget];
+      if(this.combat.enemy(f,locked)&&distance(f,locked)<=C.javelinRange)return locked;
+      return this.combat.nearest(f,C.javelinRange);
+    }
+    throwJavelin(){
+      const f=this.player(),target=this.javelinTarget(f);
+      if(!target||this.manual||f.navJump||f.action!=='idle'||f.stunUntil>this.combat.time||f.stamina<C.javelinCost)return false;
+      f.angle=Math.atan2(target.x-f.x,target.z-f.z);f.action='spearcast';f.timer=0;f.duration=.7;f.attackLeft=false;
+      f.stamina-=C.javelinCost;f.regenDelay=1;f.blocking=false;f.guardInput=false;f.guardRegion=null;
+      this.javelins.push({id:this.nextJavelin++,owner:f.id,x:f.x,z:f.z,y:1.35,dx:Math.sin(f.angle),dz:Math.cos(f.angle),age:0,travel:0,launched:false});
+      this.combat.emit('special',{id:f.id,target:target.id,kind:'throw'});return true;
+    }
+    updateJavelins(dt){
+      for(let i=this.javelins.length-1;i>=0;i--){
+        const n=this.javelins[i],owner=this.combat.fighters[n.owner];n.age+=dt;
+        if(!n.launched){
+          if(owner.hp<=0||owner.action!=='spearcast'||owner.stunUntil>this.combat.time){if(owner.hp<=0)owner.navJavelin=false;this.javelins.splice(i,1);continue;}
+          n.x=owner.x;n.z=owner.z;if(n.age<.24)continue;n.launched=true;owner.navJavelin=false;
+        }
+        const px=n.x,pz=n.z,py=n.y,step=C.javelinSpeed*dt;
+        n.travel+=step;n.x+=n.dx*step;n.z+=n.dz*step;n.y=1.35+.24*Math.sin(Math.PI*n.travel/C.javelinRange);
+        let hit=false;
+        for(const victim of this.combat.fighters){
+          if(!this.combat.enemy(owner,victim)||victim.action==='dodge')continue;
+          const u=clamp(((victim.x-px)*n.dx+(victim.z-pz)*n.dz)/Math.max(step,.001),0,1);
+          if(Math.hypot(victim.x-(px+n.dx*step*u),victim.z-(pz+n.dz*step*u),(1.35+(victim.navHeight||0))-(py+(n.y-py)*u))>.48)continue;
+          const point={x:victim.x,y:1.35+(victim.navHeight||0),z:victim.z};
+          if(!this.combat.guard(owner,victim,false,point))this.combat.damageProjectileV10(owner,victim,{kind:'spear'},32,'chest',false,point);
+          hit=true;break;
+        }
+        if(hit||n.travel>=C.javelinRange||Math.hypot(n.x,n.z)>C.arenaRadius+1)this.javelins.splice(i,1);
+      }
+      if(this.player().hp<=0)this.player().navJavelin=false;
+    }
     linked(ship){return this.bridges.some(b=>b.phase!=='closed'&&(b.from===ship.id||b.to===ship.id));}
     capable(f){return !!f&&f.hp>0&&!f.navJump&&f.action!=='knocked'&&f.stunUntil<=this.combat.time;}
     assignCaptain(ship){
@@ -70,7 +118,7 @@
         const edge=Math.sign(q.x)*(C.halfWidth-.65);
         for(const inset of [0,.65])for(const offset of [0,.9,-.9,1.8,-1.8]){
           const landing={x:edge-Math.sign(edge)*inset,z:clamp(q.z+offset,-C.halfLength+.7,C.halfLength-.7)},end=world(t,landing.x,landing.z),d=distance(f,end),across=local(s,end);
-          if(d>C.jumpRange||d<1.1||(across.x-origin.x)*side<1.1||Math.abs(across.z-origin.z)>(across.x-origin.x)*side)continue;
+          if(distance(end,world(t,C.rackX,C.rackZ))<.95||d>C.jumpRange||d<1.1||(across.x-origin.x)*side<1.1||Math.abs(across.z-origin.z)>(across.x-origin.x)*side)continue;
           const future={...t,x:t.x+(t.vx||0)*C.jumpFlight,z:t.z+(t.vz||0)*C.jumpFlight,angle:t.angle+t.turn*C.jumpFlight};
           if(distance(f,world(future,landing.x,landing.z))>C.jumpRange)continue;
           if(this.combat.fighters.some(other=>other!==f&&other.hp>0&&(other.shipId===t.id&&!other.navJump&&distance(other,end)<.9||other.navJump?.to===t.id&&distance(world(t,other.navJump.landing.x,other.navJump.landing.z),end)<.9)))continue;
@@ -136,6 +184,7 @@
         if(t===s||Math.abs(t.speed)>.32||Math.abs(t.turn)>.09)continue;
         if(this.bridges.some(b=>b.phase!=='closed'&&((b.from===s.id&&b.to===t.id)||(b.to===s.id&&b.from===t.id))))continue;
         if(Math.abs(Math.sin(t.angle-s.angle))>.12)continue;
+        if(distance(end,world(t,C.rackX,C.rackZ))<1.05)continue;
         const center=local(s,t);if(Math.sign(center.x)!==side||Math.abs(center.x)<C.halfWidth*2+.6)continue;
         if(![-.5,0].every(dx=>[-1,1].every(z=>onDeck(t,world(s,side*(C.halfWidth+C.bridgeLength+dx),z*C.bridgeWidth/2),.12))))continue;
         // Another hull must not obstruct the walkway before its landing.
@@ -171,7 +220,7 @@
     }
     onBridge(b,p,margin=C.margin){
       const q=local(this.ships[b.from],p),x=q.x*b.side;
-      return x>=C.halfWidth-.7&&x<=C.halfWidth+C.bridgeLength+.1&&Math.abs(q.z)<=C.bridgeWidth/2-margin;
+      return x>=C.halfWidth-.7-1e-7&&x<=C.halfWidth+C.bridgeLength+.1+1e-7&&Math.abs(q.z)<=C.bridgeWidth/2-margin+1e-7;
     }
     occupied(b){return this.combat.fighters.some(f=>f.hp>0&&(f.navBridge===b.id||this.onBridge(b,f,-.35)));}
     close(id){const b=this.bridges.find(b=>b.id===id);if(!b||b.phase!=='open'||this.occupied(b))return false;b.phase='closing';this.routes.clear();return true;}
@@ -259,11 +308,12 @@
       return{x:0,z:0,block:false,faceAngle:s.angle};
     }
     goal(ship){
-      if(ship.id===0)return{x:-12,z:0,angle:0};
-      const predecessor=this.ships[ship.id-1];
-      const options=[1,-1].map(side=>{const p=world(predecessor,side*C.berth,0);let cost=Math.max(0,Math.hypot(p.x,p.z)-26)*10+(side===1?0:2);
+      if(ship.id===0)return{x:-3,z:-6,angle:.2};
+      // Different bearings and staggered, opposing bows replace the straight row.
+      const predecessor=this.ships[ship.id===3?1:0],preferred=ship.id===1?1:-1,offset=ship.id===2?-2.8:2.8;
+      const options=[preferred,-preferred].map(side=>{const p=world(predecessor,side*C.berth,offset);let cost=Math.max(0,Math.hypot(p.x,p.z)-24)*10+(side===preferred?0:3);
         for(const s of this.ships)if(s!==predecessor&&s!==ship)cost+=Math.max(0,6.5-distance(s,p))*4;
-        return{...p,angle:predecessor.angle,cost};});
+        return{...p,angle:predecessor.angle+Math.PI,cost};});
       options.sort((a,b)=>a.cost-b.cost);return options[0];
     }
     step(dt,input={}){
@@ -325,7 +375,8 @@
       }
       return output;
     }
-    afterStep(){
+    afterStep(dt=0){
+      if(dt>0)this.updateJavelins(dt);
       for(const f of this.combat.fighters){
         if(f.navJump){
           if(!f.navJump.airborne&&(f.hp<=0||f.action!=='navalJump'||f.stunUntil>this.combat.time))this.cancelJump(f);
@@ -338,10 +389,12 @@
     }
   }
   function install(combat){
-    const naval=new Battle(combat),bound=combat.bound.bind(combat),bot=combat.botStep.bind(combat),tick=combat.tick.bind(combat);
+    const naval=new Battle(combat),bound=combat.bound.bind(combat),bot=combat.botStep.bind(combat),tick=combat.tick.bind(combat),attack=combat.attack.bind(combat),special=combat.special.bind(combat);
     combat.bound=function(f,r){if(this.naval)naval.bound(f);else bound(f,r);};
     combat.botStep=function(f,dt){if(this.naval)naval.botStep(f,dt,bot);else bot(f,dt);};
-    combat.tick=function(dt,input){if(!this.naval)return tick(dt,input);dt=clamp(dt,0,.05);const controls=naval.step(dt,input);tick(dt,controls);naval.afterStep();};
+    combat.attack=function(id,...args){return this.naval&&id===0&&naval.player().navJavelin?naval.throwJavelin():attack(id,...args);};
+    combat.special=function(id=0,...args){return this.naval&&id===0&&naval.player().navJavelin?naval.throwJavelin():special(id,...args);};
+    combat.tick=function(dt,input){if(!this.naval)return tick(dt,input);if(this.finished)return;dt=clamp(dt,0,.05);const controls=naval.step(dt,input);tick(dt,controls);naval.afterStep(dt);};
     return naval;
   }
   function jumpPose(f){
