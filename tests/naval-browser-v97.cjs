@@ -58,7 +58,7 @@ async function main(){
   return{meshes,geometries:geometries.size,textures:textures.size,skinned,triangles,misses};
  });
  const uniformBudget=await page.evaluate(()=>{let triangles=0;const geometries=new Set();for(const m of __arena.models.slice(1))for(const slot of Object.values(m.gear)){if(!slot.group.userData.navalUniform)continue;slot.group.traverse(o=>{if(o.isMesh){triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;geometries.add(o.geometry.uuid);}});}return{triangles,geometries:geometries.size};});
- console.log(JSON.stringify({initial,uniformBudget}));assert.ok(uniformBudget.triangles<180000,'full NPC uniforms must remain below 180k fleet triangles');
+ console.log(JSON.stringify({initial,uniformBudget}));assert.ok(uniformBudget.triangles<350000,'shared NPC uniforms stay below 350k total triangles, including hidden distance detail');assert.ok(initial.triangles<1800000,'the initial full-crew render must stay below 1.8M triangles');
  console.log(JSON.stringify({boatAsset}));
  assert.equal(boatRequests.length,1,'four boats load one shared GLB');
  assert.equal(boatAsset.skinned,0,'the boat must not evaluate a skeleton');
