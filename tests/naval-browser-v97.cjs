@@ -57,6 +57,8 @@ async function main(){
   for(let x=-C.halfWidth+C.margin;x<=C.halfWidth-C.margin+.01;x+=.28)for(let z=-C.halfLength+C.margin;z<=C.halfLength-C.margin+.01;z+=.28){const q=NavalSimulation.world(ship,x,z);ray.set(new THREE.Vector3(q.x,2,q.z),down);const hit=ray.intersectObjects(decks,false)[0];if(!hit||Math.abs(hit.point.y)>.025)misses.push({x,z,y:hit?.point.y});}
   return{meshes,geometries:geometries.size,textures:textures.size,skinned,triangles,misses};
  });
+ const uniformBudget=await page.evaluate(()=>{let triangles=0;const geometries=new Set();for(const m of __arena.models.slice(1))for(const slot of Object.values(m.gear)){if(!slot.group.userData.navalUniform)continue;slot.group.traverse(o=>{if(o.isMesh){triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;geometries.add(o.geometry.uuid);}});}return{triangles,geometries:geometries.size};});
+ console.log(JSON.stringify({initial,uniformBudget}));assert.ok(uniformBudget.triangles<180000,'full NPC uniforms must remain below 180k fleet triangles');
  console.log(JSON.stringify({boatAsset}));
  assert.equal(boatRequests.length,1,'four boats load one shared GLB');
  assert.equal(boatAsset.skinned,0,'the boat must not evaluate a skeleton');
@@ -122,6 +124,20 @@ async function main(){
  assert.equal(await page.evaluate(()=>__arena.view.views[1].gates.value[0].y),-2.8,'receiving gate follows the staggered bridge landing');await page.screenshot({path:out+'/bridge-offset.png'});
  await page.evaluate(()=>{__arena.naval.ships[1].z=0;__arena.view.update(1);});
  const crossing=await page.evaluate(()=>{const n=__arena.naval,p=n.player();for(let x=2.1;x<6.6;x+=.08){p.x=x;n.bound(p);}return{ship:p.shipId,bridge:p.navBridge};});assert.equal(crossing.ship,1);assert.equal(crossing.bridge,null);
+ // The forward and aft stations use the same real interaction, rendering and ownership path.
+ for(const station of [-2.8,2.8]){
+  await page.evaluate(station=>{const n=__arena.naval;Object.assign(n.player(),{shipId:0,navBridge:null,x:2.1,z:station,action:'idle',stunUntil:0});__arena.setPaused(false);__arena.view.update(1);},station);
+  assert.equal(await page.evaluate(()=>__arena.naval.interaction()?.station),station);
+  await page.locator('#navalBridge').click();
+  await page.evaluate(()=>{const n=__arena.naval;for(let i=0;i<60;i++)n.step(1/60,{});__arena.view.update(2);});
+  assert.equal(await page.evaluate(station=>__arena.view.views[1].gates.value.some(g=>g.z===1&&Math.abs(g.y-station)<.01),station),true);
+  assert.equal(await page.evaluate(()=>{const n=__arena.naval,p=n.player();for(let x=2.1;x<6.6;x+=.08){p.x=x;n.bound(p);}return p.shipId;}),1);
+ }
+ const multiPort=await page.evaluate(()=>({open:__arena.naval.bridges.filter(b=>b.from===0&&b.to===1&&b.phase==='open').length,visible:__arena.view.bridgeViews.filter(v=>v.ship.id===0&&v.pivot.visible).length}));
+ assert.deepEqual(multiPort,{open:3,visible:3});
+ await page.evaluate(()=>{__arena.camera.position.set(16,12,-15);__arena.camera.lookAt(4,1,0);__arena.renderer.render(__arena.scene,__arena.camera);});
+ console.log('NAVAL_PREVIEW boarding '+(await page.screenshot({type:'jpeg',quality:68,scale:'css'})).toString('base64'));
+
  await page.evaluate(()=>{const n=__arena.naval;n.bridges=[];n.player().shipId=0;n.player().x=2.1;n.player().z=0;n.ships[1].angle=.6;__arena.view.update(1);});assert.equal(await page.locator('#navalBridge').isVisible(),false);
  // A closed-bridge jump uses the real controls, animation and deck model.
  await page.evaluate(()=>{
@@ -202,7 +218,7 @@ async function main(){
  await page.evaluate(()=>localStorage.setItem('ludus-camera-perspective','first'));
  // The remembered scene survives a same-device resume URL without its arena parameter.
  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__arena?.started,null,{timeout:60000});assert.equal(await page.evaluate(()=>__arena.naval.ships.length),4);await page.evaluate(()=>__arena.freeze());assert.equal(await page.evaluate(()=>__arena.cameraMode),'first');assert.equal(await page.inputValue('#cameraPerspective'),'first');
- fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,outfit,hudLayout,eyeView,wall,aim,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
- console.log(JSON.stringify({initial,boatAsset,wall,aim,errors,out}));await cleanup();
+ fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,outfit,hudLayout,eyeView,wall,aim,uniformBudget,multiPort,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
+ console.log(JSON.stringify({initial,boatAsset,outfit,wall,aim,uniformBudget,multiPort,errors,out}));await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exit(1);});

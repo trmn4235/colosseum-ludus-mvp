@@ -1191,10 +1191,38 @@ var ClassEquipment=(function(){
  const bandGeo=new T.CylinderGeometry(.235,.235,.042,14),teamRings=teamColors.map((_,i)=>new T.RingGeometry(.47,.51,i===0?28:4+i%3));
  function replacePart(slot,template){const old=slot.group,group=template.clone(true);group.position.copy(old.position);group.rotation.copy(old.rotation);slot.anchor.remove(old);slot.anchor.add(group);slot.group=group;}
  function teamHelmet(style,team=0){return LudusHelmets.get(style);}
+ // Empty naval NPC slots use a shared, simplified visual uniform. Inventory gear stays exact.
+ const navalUniformCache=new WeakMap();
+ function navalUniformPart(template){
+  if(navalUniformCache.has(template))return navalUniformCache.get(template);
+  const group=template.clone(true);group.userData.navalUniform=true;
+  group.traverse(mesh=>{
+   if(!mesh.isMesh||mesh.isSkinnedMesh)return;
+   const source=mesh.geometry,pos=source.attributes.position,index=source.index;
+   if((index?.count||pos.count)/3<900)return;
+   source.computeBoundingBox();const cell=source.boundingBox.getSize(new T.Vector3()).length()*.025;
+   if(!cell)return;
+   const bins=new Map(),mapping=[],clusters=[],uv=source.attributes.uv,names=Object.keys(source.attributes);
+   for(let i=0;i<pos.count;i++){
+    const key=[Math.round(pos.getX(i)/cell),Math.round(pos.getY(i)/cell),Math.round(pos.getZ(i)/cell),uv?Math.floor(uv.getX(i)*12):0,uv?Math.floor(uv.getY(i)*12):0].join(':');
+    let id=bins.get(key);if(id===undefined){id=clusters.length;bins.set(key,id);clusters.push({count:0,values:Object.fromEntries(names.map(name=>[name,Array(source.attributes[name].itemSize).fill(0)]))});}
+    const cluster=clusters[id];cluster.count++;mapping[i]=id;
+    for(const name of names){const a=source.attributes[name];for(let k=0;k<a.itemSize;k++)cluster.values[name][k]+=a.getComponent(i,k);}
+   }
+   const indices=[];for(let i=0;i<(index?.count||pos.count);i+=3){const a=mapping[index?index.getX(i):i],b=mapping[index?index.getX(i+1):i+1],c=mapping[index?index.getX(i+2):i+2];if(a!==b&&b!==c&&a!==c)indices.push(a,b,c);}
+   const geometry=new T.BufferGeometry();
+   for(const name of names){const size=source.attributes[name].itemSize,data=new Float32Array(clusters.length*size);
+    clusters.forEach((cluster,i)=>{const v=cluster.values[name].map(x=>x/cluster.count);if(name==='normal'){const len=Math.hypot(...v)||1;for(let k=0;k<v.length;k++)v[k]/=len;}data.set(v,i*size);});
+    geometry.setAttribute(name,new T.BufferAttribute(data,size));
+   }
+   geometry.setIndex(indices);geometry.computeBoundingBox();geometry.computeBoundingSphere();mesh.geometry=geometry;
+  });navalUniformCache.set(template,group);return group;
+ }
+
  function sync(m,f){
   // Plain battle clothing fills empty NPC armour slots visually; it creates no loot or stats.
   const uniform=f.navalUniform,helmetVisible=f.helmet!==false||!!uniform?.helmet,chestVisible=!!f.chest||!!uniform?.chest,greavesVisible=f.greaves!==false||!!uniform?.greaves,shouldersVisible=f.shoulders!==false||!!uniform?.shoulders;
-  const revisionV84=typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0,flagsV84=(f.shield?1:0)|(helmetVisible?2:0)|(chestVisible?4:0)|(greavesVisible?8:0)|(shouldersVisible?16:0)|(f.netBusy?32:0)|(f.hp>0?64:0),s=m.gearStateV84;
+  const revisionV84=typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0,flagsV84=(f.shield?1:0)|(helmetVisible?2:0)|(chestVisible?4:0)|(greavesVisible?8:0)|(shouldersVisible?16:0)|(f.netBusy?32:0)|(f.hp>0?64:0)|(uniform&&!f.helmet?128:0)|(uniform&&!f.chest?256:0)|(uniform&&!f.shoulders?512:0)|(uniform&&!f.greaves?1024:0),s=m.gearStateV84;
   if(s&&m.equippedWeapon===f.weapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===f.weapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
   m.gearStateV84={revision:revisionV84,weapon:f.weapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
 
@@ -1204,9 +1232,10 @@ var ClassEquipment=(function(){
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
   m.gear.left.group.visible=!!f.leftGear&&!(f.leftGear==='net'&&f.netBusy);
   if(m.shieldStyle!==f.shieldStyle){m.shieldStyle=f.shieldStyle;replacePart(m.gear.shield,shield(f.shieldStyle||'secutor'));}
-  const helmetStyle=LudusHelmets.model(f.helmetModel||f.helmetColor||f.helmetStyle,m.type);if(m.helmetStyle!==helmetStyle){m.helmetStyle=helmetStyle;replacePart(m.gear.helmet,LudusHelmets.get(helmetStyle));LudusHelmets.fit(m.gear.helmet,m);}
-  const chestModel=LudusArmour.model('chest',f.chestModel);if(m.chestModel!==chestModel){m.chestModel=chestModel;replacePart(m.gear.chest,LudusArmour.get('chest',chestModel));m.gear.chest.group.position.set(-.025,-.09,chestModel==='chest_plate'?.17:.04);}
-  const shoulderModel=LudusArmour.model('gloves',f.shoulderModel);if(m.shoulderModel!==shoulderModel){m.shoulderModel=shoulderModel;for(const [slot,side]of [['shoulder','right'],['otherShoulder','left'],['collar','collar']])replacePart(m.gear[slot],LudusArmour.get('gloves',shoulderModel,side));m.gear.shoulder.group.scale.x=shoulderModel==='shoulder_armor'?-1:1;m.gear.otherShoulder.group.scale.x=1;}
+  const helmetStyle=LudusHelmets.model(f.helmetModel||f.helmetColor||f.helmetStyle,m.type),helmetUniform=!!uniform?.helmet&&!f.helmet;if(m.helmetStyle!==helmetStyle||m.helmetUniform!==helmetUniform){m.helmetStyle=helmetStyle;m.helmetUniform=helmetUniform;const part=LudusHelmets.get(helmetStyle);replacePart(m.gear.helmet,helmetUniform?navalUniformPart(part):part);LudusHelmets.fit(m.gear.helmet,m);}
+  const chestModel=LudusArmour.model('chest',f.chestModel),chestUniform=!!uniform?.chest&&!f.chest;if(m.chestModel!==chestModel||m.chestUniform!==chestUniform){m.chestModel=chestModel;m.chestUniform=chestUniform;const part=LudusArmour.get('chest',chestModel);replacePart(m.gear.chest,chestUniform?navalUniformPart(part):part);m.gear.chest.group.position.set(-.025,-.09,chestModel==='chest_plate'?.17:.04);}
+  const shoulderModel=LudusArmour.model('gloves',f.shoulderModel),shoulderUniform=!!uniform?.shoulders&&!f.shoulders;if(m.shoulderModel!==shoulderModel||m.shoulderUniform!==shoulderUniform){m.shoulderModel=shoulderModel;m.shoulderUniform=shoulderUniform;for(const [slot,side]of [['shoulder','right'],['otherShoulder','left'],['collar','collar']]){const part=LudusArmour.get('gloves',shoulderModel,side);replacePart(m.gear[slot],shoulderUniform?navalUniformPart(part):part);}m.gear.shoulder.group.scale.x=shoulderModel==='shoulder_armor'?-1:1;m.gear.otherShoulder.group.scale.x=1;}
+  const greaveUniform=!!uniform?.greaves&&!f.greaves;if(uniform&&m.navalGreaves!==greaveUniform){m.navalGreaves=greaveUniform;for(const side of ['Left','Right']){const slot=m.gear[side+'greave'],scale=slot.group.scale.clone(),part=parts(m.type).greave;replacePart(slot,greaveUniform?navalUniformPart(part):part);slot.group.scale.copy(scale);}}
   m.gear.shield.group.visible=!!f.shield;m.gear.helmet.group.visible=helmetVisible;m.gear.chest.group.visible=chestVisible;
   for(const side of ['Left','Right'])m.gear[side+'greave'].group.visible=greavesVisible;for(const key of ['shoulder','otherShoulder','collar'])m.gear[key].group.visible=shouldersVisible&&(key!=='collar'||shoulderModel==='armor_shoulder');
   if(m.team!==f.team){m.team=f.team;const team=f.team||0;m.teamBand.group.clear();const band=new T.Mesh(bandGeo,dark);band.scale.z=.68;m.teamBand.group.add(band);m.teamMark.clear();const ring=new T.Mesh(teamRings[team],ringMaterials[team]);ring.rotation.x=-Math.PI/2;ring.position.y=.035;m.teamMark.add(ring);}
@@ -1930,10 +1959,10 @@ function loadNavalView(){return new Promise((resolve,reject)=>{const s=document.
 function navalCamera(p,yaw,pitch){const distance=naval.manual?7:4.25,height=naval.manual?4.55:2.65;const focus=naval.manual?naval.ships[p.shipId]:p,ahead=naval.manual?1:1.25;return{pos:{x:focus.x-Math.sin(yaw)*distance,y:height+Math.max(0,pitch-.45)*3,z:focus.z-Math.cos(yaw)*distance},focus:{x:focus.x+Math.sin(yaw)*ahead,y:naval.manual?1.7:2.05,z:focus.z+Math.cos(yaw)*ahead}};}
 const cameraLook=new THREE.Vector3(0,1.25,9),cameraRay=new THREE.Raycaster(),eyePosition=new THREE.Vector3();
 let navalWallBoundary=null;
-function makeCameraCollider(model){const cells=new Map(),shoreSegments=[];model.updateMatrixWorld(true);model.traverse(o=>{if(!o.isMesh)return;const g=o.geometry,p=g.attributes.position,index=g.index;for(let i=0;i<(index?index.count:p.count);i+=3){const pts=[0,1,2].map(k=>new THREE.Vector3().fromBufferAttribute(p,index?index.getX(i+k):i+k).applyMatrix4(o.matrixWorld));if(pts.every(v=>v.y>5)||pts.every(v=>v.y<.3)||(!navalRequested&&pts.every(v=>Math.hypot(v.x,v.z)>23)))continue;const normal=new THREE.Vector3().subVectors(pts[1],pts[0]).cross(new THREE.Vector3().subVectors(pts[2],pts[0])).normalize();if(Math.abs(normal.y)>.8)continue;
+function makeCameraCollider(model){const cells=new Map(),shoreSegments=[];model.updateMatrixWorld(true);model.traverse(o=>{if(!o.isMesh)return;const g=o.geometry,p=g.attributes.position,index=g.index;for(let i=0;i<(index?index.count:p.count);i+=3){const pts=[0,1,2].map(k=>new THREE.Vector3().fromBufferAttribute(p,index?index.getX(i+k):i+k).applyMatrix4(o.matrixWorld));if(pts.every(v=>v.y>5)||pts.every(v=>v.y<(navalRequested?-.7:.3))||(!navalRequested&&pts.every(v=>Math.hypot(v.x,v.z)>23)))continue;const normal=new THREE.Vector3().subVectors(pts[1],pts[0]).cross(new THREE.Vector3().subVectors(pts[2],pts[0])).normalize();if(Math.abs(normal.y)>.8)continue;
 if(navalRequested){
- const crossings=[];for(let edge=0;edge<3;edge++){const a=pts[edge],b=pts[(edge+1)%3],dy=b.y-a.y;if(Math.abs(dy)<1e-8)continue;const t=(.4-a.y)/dy;if(t>=0&&t<=1)crossings.push({x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t});}
- if(crossings.length===2)shoreSegments.push(crossings);
+ for(const height of [-.65,0,.4,1.2,2.4]){const crossings=[];for(let edge=0;edge<3;edge++){const a=pts[edge],b=pts[(edge+1)%3],dy=b.y-a.y;if(Math.abs(dy)<1e-8)continue;const t=(height-a.y)/dy;if(t>=0&&t<=1)crossings.push({x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t});}
+ if(crossings.length===2)shoreSegments.push(crossings);}
 }
 const key=Math.floor((pts[0].x+pts[1].x+pts[2].x)/18)+':'+Math.floor((pts[0].z+pts[1].z+pts[2].z)/18);if(!cells.has(key))cells.set(key,[]);for(const v of pts)cells.get(key).push(v.x,v.y,v.z);}});const collider=new THREE.Group(),material=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});for(const vertices of cells.values()){const g=new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.computeBoundingSphere();collider.add(new THREE.Mesh(g,material));}collider.updateMatrixWorld();if(navalRequested)navalWallBoundary=NavalSimulation.measureBoundary(shoreSegments);return collider;}
 function avoidCameraWall(pos,focus){const radius=Math.hypot(pos.x,pos.z);const limit=naval?naval.wallRadius(Math.atan2(pos.z,pos.x))-.3:18;if(radius>limit){pos.x*=limit/radius;pos.z*=limit/radius;}if(!cameraCollider)return;const dir=pos.clone().sub(focus),length=dir.length();dir.normalize();let safe=length;const side=new THREE.Vector3(dir.z,0,-dir.x).normalize().multiplyScalar(.22);for(const offset of [-1,0,1]){const from=focus.clone().addScaledVector(side,offset);cameraRay.set(from,dir);cameraRay.near=.15;cameraRay.far=length+.25;const hit=cameraRay.intersectObject(cameraCollider,true)[0];if(hit)safe=Math.min(safe,Math.max(.35,hit.distance-.28));}if(safe<length)pos.copy(focus).addScaledVector(dir,safe);}

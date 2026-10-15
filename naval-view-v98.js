@@ -75,23 +75,31 @@
       }
       views.push({ship,group,sides,gates,rackShafts:group.getObjectByName('Rack shafts'),rackHeads:group.getObjectByName('Rack heads')});
     }
-    // Shared environment lighting and analytic ripple normals; no extra reflection render.
-    const waterTime={value:0},waterMaterial=new T.MeshStandardMaterial({color:0x254541,roughness:.25,metalness:.3,envMapIntensity:1.2});
+    // Precomputed seamless multi-direction ripples: two filtered texture reads per pixel.
+    const rippleSize=256,rippleData=new Uint8Array(rippleSize*rippleSize*4);
+    const waves=[[1,2,.085,.3],[3,-2,.065,1.8],[2,5,.055,2.7],[7,3,.045,.6],[-5,9,.035,4.1],[11,-9,.03,1.2],[17,11,.02,3.5],[-13,19,.018,2.2],[27,-19,.012,.8],[31,23,.009,5.3],[7,-27,.013,4.7],[-21,-11,.018,3.9]];
+    for(let y=0;y<rippleSize;y++)for(let x=0;x<rippleSize;x++){
+      let dx=0,dz=0;for(const [a,b,amp,phase] of waves){const c=Math.cos((a*x+b*y)*Math.PI*2/rippleSize+phase)*amp,d=Math.hypot(a,b);dx+=a/d*c;dz+=b/d*c;}
+      const i=(y*rippleSize+x)*4;rippleData[i]=Math.round((dx*.5+.5)*255);rippleData[i+1]=Math.round((dz*.5+.5)*255);rippleData[i+2]=255;rippleData[i+3]=255;
+    }
+    const rippleMap=new T.DataTexture(rippleData,rippleSize,rippleSize);rippleMap.wrapS=rippleMap.wrapT=T.RepeatWrapping;rippleMap.magFilter=T.LinearFilter;rippleMap.minFilter=T.LinearMipmapLinearFilter;rippleMap.generateMipmaps=true;rippleMap.anisotropy=4;rippleMap.needsUpdate=true;
+    const waterTime={value:0},waterMaterial=new T.MeshStandardMaterial({color:0x264b46,roughness:.29,metalness:.24,envMapIntensity:1});
     waterMaterial.uniforms={time:waterTime};
     waterMaterial.onBeforeCompile=shader=>{
-      shader.uniforms.waterTime=waterTime;
+      shader.uniforms.waterTime=waterTime;shader.uniforms.waterRipple={value:rippleMap};
       shader.vertexShader='varying vec3 navalWaterWorld;\n'+shader.vertexShader;
       shader.vertexShader=shader.vertexShader.replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nnavalWaterWorld=(modelMatrix*vec4(transformed,1.)).xyz;');
-      shader.fragmentShader='uniform float waterTime;varying vec3 navalWaterWorld;\n'+shader.fragmentShader;
+      shader.fragmentShader='uniform float waterTime;uniform sampler2D waterRipple;varying vec3 navalWaterWorld;\n'+shader.fragmentShader;
       shader.fragmentShader=shader.fragmentShader.replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
         vec2 p=navalWaterWorld.xz;float t=waterTime;
-        vec2 slope=vec2(.045*cos(dot(p,vec2(.83,.52))+t*.72),.04*cos(dot(p,vec2(-.42,1.14))-t*.63));
-        slope+=vec2(.025*cos(dot(p,vec2(3.13,1.74))-t*1.27),.022*cos(dot(p,vec2(-2.32,4.17))+t*1.13));
-        slope+=vec2(.012*cos(dot(p,vec2(9.3,-6.7))+t*1.7),.012*cos(dot(p,vec2(7.1,11.2))-t*1.63));
+        mat2 rotation=mat2(.8,.6,-.6,.8);
+        vec2 slope=texture2D(waterRipple,p*.023+vec2(t*.002,t*.001)).rg*2.-1.;
+        vec2 detail=texture2D(waterRipple,rotation*p*.047+vec2(-t*.0025,t*.0017)).rg*2.-1.;
+        slope+=vec2(.8*detail.x+.6*detail.y,-.6*detail.x+.8*detail.y)*.55;
         normal=normalize(mat3(viewMatrix)*normalize(vec3(-slope.x,1.,-slope.y)));
       `);
     };
-    waterMaterial.customProgramCacheKey=()=> 'naval-water-v102';
+    waterMaterial.customProgramCacheKey=()=> 'naval-water-ripples-v102';
     const water=new T.Mesh(new T.CircleGeometry(naval.arenaRadius*1.5,96),waterMaterial);
     water.rotation.x=-Math.PI/2;water.position.y=-.72;water.renderOrder=-1;scene.add(water);
     const wakeGeo=new T.RingGeometry(1,1.08,28,1,0,Math.PI),wakeMat=new T.MeshBasicMaterial({color:0xb6d6c9,transparent:true,opacity:.15,depthWrite:false,side:T.DoubleSide});
@@ -150,6 +158,10 @@
         for(const s of v.sides)s.oars.rotation.z=naval.linked(v.ship)?s.side*.45:Math.sin(time*3.2)*Math.min(.07,Math.abs(v.ship.speed)*.035);}
       for(const v of bridgeViews){const b=naval.bridges.find(b=>b.from===v.ship.id&&b.side===v.side&&(b.station||0)===v.station&&b.phase!=='closed');const open=b?.progress||0;v.pivot.visible=!!b;v.pivot.scale.x=(b?.length||C.bridgeLength)/C.bridgeLength;v.pivot.rotation.y=-v.side*(1-open)*Math.PI/2;}
       for(const v of wakes){const p=NavalSimulation.world(v.ship,0,-5.7);v.m.position.x=p.x;v.m.position.z=p.z;v.m.rotation.z=-v.ship.angle;v.m.material.opacity=Math.min(.22,Math.abs(v.ship.speed)*.08);}
+      // At a distance the uniform's small fittings occupy less than a few pixels.
+      for(const f of naval.combat.fighters){const m=options.models?.()[f.id];if(!m||!f.navalUniform)continue;const near=Math.hypot(f.x-camera.position.x,f.z-camera.position.z)<18;
+        for(const key of ['shoulder','otherShoulder','collar','Leftgreave','Rightgreave']){const slot=m.gear[key];if(slot?.group.userData.navalUniform)slot.group.visible=near&&(key!=='collar'||m.shoulderModel==='armor_shoulder');}
+      }
       const p=naval.player(),active=options.active();ui.hidden(panel,!active||p.hp<=0);
       // A cached V98 page can finish with its old simulation and animation code.
       const target=active&&options.jumpEnabled&&p.hp>0?naval.jumpCandidate?.():null;
