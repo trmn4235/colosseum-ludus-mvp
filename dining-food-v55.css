@@ -1,11 +1,209 @@
-.food-cauldron[hidden],.food-modal[hidden],.food-retry[hidden]{display:none!important}
-.food-modal{position:fixed;inset:0;z-index:1300;background:#21151bb3;display:flex;align-items:center;justify-content:center;padding:max(8px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));color:#30232a;font:14px Georgia,serif;box-sizing:border-box}
-.food-modal *{box-sizing:border-box}.food-frame{width:min(940px,100%);height:min(660px,100%);display:flex;flex-direction:column;background:#ffffff;border:1px solid #a18452;box-shadow:0 15px 60px #000;border-radius:8px;overflow:hidden}.food-top{pointer-events:auto!important;position:static!important;display:flex!important;justify-content:space-between;align-items:center;text-align:left!important;background:#591823;padding:12px 20px;border-bottom:1px solid #82643d;flex:none}.food-top small{font:10px Arial!important;letter-spacing:2px;color:#e4c77b}.food-top h1{margin:3px 0 0;font:bold 25px Georgia!important;color:#30232a!important}.food-modal button{position:static;border:1px solid #97784c;background:#591823;color:#ffffff;border-radius:4px;padding:8px 12px;cursor:pointer;font:13px Georgia!important;text-transform:none!important;letter-spacing:0!important}.food-modal button:disabled{opacity:.45;cursor:default}.food-modal button:focus-visible,.food-modal input:focus-visible{outline:2px solid #b38b43;outline-offset:2px}.food-modal .food-close{font:26px Arial!important;width:40px;height:38px;padding:0;background:#762b3a}.food-body{flex:1;min-height:0;overflow:auto;padding:12px 20px;overscroll-behavior:contain}.food-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.food-summary>div{padding:8px 12px;background:#faf8f4;border:1px solid #b38b4340;border-radius:4px}.food-summary small{display:block;color:#74656c;font:11px Arial}.food-summary strong{display:block;font-size:23px;margin-top:4px}.food-tabs{display:flex;gap:6px;margin:12px 0}.food-tabs button[aria-pressed=true]{background:#591823;color:#ffffff}.food-rule,.food-note,.food-last{font:12px/1.5 Arial;color:#66565e;margin:10px 0}.food-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.food-card{display:grid;grid-template-columns:76px 1fr;align-items:center;padding:10px;border:1px solid #95764c66;background:#ffffff;border-radius:5px;min-width:0}.food-card img{width:76px;height:76px;object-fit:contain;border-radius:4px;background:#faf8f4}.food-info{padding-left:10px;min-width:0}.food-info h2{margin:0 0 7px;font-size:17px;color:#591823}.food-stock{font:13px Arial;color:#591823}.food-info p{font:11px/1.5 Arial;margin:5px 0;color:#74656c}.food-portion{grid-column:1/-1;font:11px Arial;color:#44714b;padding-top:7px}.food-buy{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.food-buy small{grid-column:1/-1;font:11px Arial;color:#74656c}.food-buy label{font:10px Arial;color:#74656c}.food-buy input{display:block;background:#ffffff;border:1px solid #806441;color:#30232a;padding:7px;width:100%;margin-top:3px;border-radius:3px;font:14px Arial}.food-buy button{align-self:end;padding:9px 6px;min-height:34px}.food-quantities{display:flex;align-items:center;gap:6px;font:11px Arial;margin:8px 0 12px;flex-wrap:wrap}.food-quantities button{padding:6px 10px}.food-status{padding:6px 20px;margin:0;min-height:25px;font:12px/1.4 Arial;color:#44714b;flex:none}.food-status[data-error=true]{color:#a52b42}.food-retry{margin:0 20px 12px;align-self:flex-start}.food-history{font:12px Arial;margin-top:12px;color:#74656c}.food-history summary{cursor:pointer;color:#591823}.food-history p{line-height:1.5}.food-empty{color:#74656c}
-@media(max-height:450px){.food-frame{height:100%}.food-top{padding:7px 16px}.food-top h1{font-size:20px!important}.food-body{padding:8px 16px}.food-summary strong{font-size:18px}.food-summary>div{padding:6px 10px}.food-tabs{margin:8px 0}.food-rule{margin:7px 0}.food-card{padding:7px;grid-template-columns:64px 1fr}.food-card img{width:64px;height:64px}}
-@media(max-width:650px){.food-grid{grid-template-columns:repeat(2,1fr)}.food-body{padding:10px}.food-top{padding:10px}.food-summary{gap:5px}.food-summary>div{padding:7px}.food-summary strong{font-size:18px}.food-info h2{font-size:15px}}
-
-.food-top h1{color:#fff!important}.food-wallet{font:12px Arial;color:#74656c}.food-top .food-close{color:#fff}.food-frame{box-shadow:0 18px 70px #26172140}
-
-.food-value{display:block;font:10px/1.4 Arial;color:#74656c;margin-bottom:5px}
-
-.food-benefit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0;font:12px/1.5 Arial;color:#591823}.food-bonus{min-width:0;border:1px solid #c7a96766;border-top:3px solid #b38b43;background:#fff;padding:9px 12px;border-radius:4px}.food-bonus small{display:block;color:#74656c;font-size:11px}.food-bonus strong{display:block;margin:3px 0;font:bold 24px/1.2 Georgia;color:#591823}.food-bonus span{display:block;font-size:11px;overflow-wrap:anywhere}.food-effect-rule,.food-cost-note{font:11px/1.5 Arial;color:#66565e;margin:6px 0}.food-cost{font:bold 12px/1.5 Arial;color:#591823;margin:10px 0 2px}@media(max-height:450px){.food-bonus{padding:7px 9px}.food-bonus strong{font-size:21px}}@media(max-width:420px){.food-benefit{grid-template-columns:1fr}}
+/* V103: pantry overview and a compact, persistent purchase counter. */
+.food-cauldron[hidden],body[data-roman-screen] #foodModal[hidden],body[data-roman-screen] #foodModal [hidden]{display:none!important}
+body[data-roman-screen] #foodModal{position:fixed;inset:0;z-index:1300;display:flex;align-items:center;justify-content:center;padding:max(8px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:#30232ab3!important;color:#30232a;font:14px/1.4 Arial,sans-serif;box-sizing:border-box}
+body[data-roman-screen] #foodModal *{box-sizing:border-box}
+body[data-roman-screen] #foodModal .food-frame{position:relative;width:min(1100px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden;background:#fff!important;border:1px solid #b38b43!important;border-radius:9px!important;box-shadow:0 20px 70px #190b1a55!important}
+body[data-roman-screen] #foodModal button{position:static;min-height:0;backdrop-filter:none;cursor:pointer;font:inherit;text-transform:none!important;letter-spacing:0!important;touch-action:manipulation;box-shadow:none!important}
+body[data-roman-screen] #foodModal button:disabled{opacity:.45;cursor:default}
+body[data-roman-screen] #foodModal :is(button,input,select):focus-visible{outline:2px solid #b38b43!important;outline-offset:2px}
+body[data-roman-screen] #foodModal .food-top{pointer-events:auto!important;position:static!important;display:flex!important;flex:none;align-items:center;justify-content:space-between;text-align:left!important;padding:17px 24px;background:#591823!important;border-bottom:1px solid #b38b43}
+body[data-roman-screen] #foodModal .food-top small{font:10px/1.3 Arial,sans-serif;letter-spacing:2.6px;color:#e4c77b!important}
+body[data-roman-screen] #foodModal .food-top h1{margin:2px 0 0;font:700 30px/1.1 Georgia,serif!important;letter-spacing:.5px;color:#f1dfab!important}
+body[data-roman-screen] #foodModal :is(.food-close,.food-help-close){display:grid;place-items:center;flex:none;width:36px;height:36px;padding:0;border:1px solid #b38b4380!important;border-radius:50%!important;font:27px/1 Arial,sans-serif!important;background:transparent!important;color:#e4c77b!important}
+body[data-roman-screen] #foodModal .food-body{display:grid;grid-template-columns:minmax(0,1fr) 238px;gap:24px;padding:24px;min-height:0;overflow:auto;overscroll-behavior:contain}
+body[data-roman-screen] #foodModal .food-main{min-width:0}
+body[data-roman-screen] #foodModal .food-summary{display:grid;grid-template-columns:1fr 1.1fr 1.15fr;gap:12px;margin-bottom:23px}
+body[data-roman-screen] #foodModal .food-metric{position:relative;min-width:0;padding:10px 13px 12px;background:#faf8f4!important;border:1px solid #e5ded1!important;border-radius:6px!important}
+body[data-roman-screen] #foodModal .food-metric-head{display:flex;align-items:center;justify-content:space-between;gap:3px;font:12px/1.3 Arial,sans-serif;color:#74656c}
+body[data-roman-screen] #foodModal .food-info-button{display:inline-grid;place-items:center;flex:none;width:28px;height:28px;padding:0;background:transparent!important;border:0!important;border-radius:50%!important;color:#917440!important;font:italic 700 13px/1 Georgia,serif!important}
+body[data-roman-screen] #foodModal .food-info-button::before{content:'';position:absolute;width:16px;height:16px;border:1px solid currentColor;border-radius:50%;opacity:.65}
+body[data-roman-screen] #foodModal .food-info-button:hover{background:#eee7d9!important;color:#591823!important}
+body[data-roman-screen] #foodModal .food-metric-value{display:flex;align-items:baseline;gap:6px;white-space:nowrap;color:#591823;line-height:1.15;margin:0 0 5px}
+body[data-roman-screen] #foodModal .food-metric-value strong{font:700 35px/1.15 Georgia,serif;font-variant-numeric:tabular-nums}
+body[data-roman-screen] #foodModal .food-metric-value>span{font-size:14px}
+body[data-roman-screen] #foodModal .food-metric-detail{display:block;color:#74656c;font:11px/1.3 Arial,sans-serif}
+body[data-roman-screen] #foodModal .food-days[data-low=true] .food-metric-detail{color:#a23c37}
+body[data-roman-screen] #foodModal .food-quality-track{height:5px;border-radius:10px;background:#e9e2d5;margin:11px 0 4px;overflow:hidden}
+body[data-roman-screen] #foodModal .food-quality-track>span{display:block;height:100%;background:#7b8655;border-radius:inherit}
+body[data-roman-screen] #foodModal .food-inventory-head{display:flex;align-items:center;gap:9px;margin:0 0 12px;min-width:0}
+body[data-roman-screen] #foodModal .food-inventory-head h2{margin:0;font:700 20px/1.25 Georgia,serif;color:#591823!important}
+body[data-roman-screen] #foodModal .food-inventory-head>span{margin-left:auto;color:#8b7a70;font-size:11px}
+body[data-roman-screen] #foodModal .food-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+body[data-roman-screen] #foodModal .food-card{min-width:0;overflow:hidden;background:#fff!important;border:1px solid #e5ded1!important;border-radius:6px!important;box-shadow:none!important}
+body[data-roman-screen] #foodModal .food-tile{display:flex;align-items:center;flex-direction:column;width:100%;height:162px;gap:3px;padding:10px 6px 12px;background:#fff!important;border:0!important;border-radius:5px!important;color:#30232a!important;text-align:center;transition:background .15s ease}
+body[data-roman-screen] #foodModal .food-tile[aria-pressed=true]{background:#faf5e9!important;box-shadow:inset 0 0 0 1px #b38b43!important}
+body[data-roman-screen] #foodModal .food-tile:hover{background:#faf8f4!important}
+body[data-roman-screen] #foodModal .food-art{display:grid;place-items:center;height:80px;width:100%;flex:none}
+body[data-roman-screen] #foodModal .food-art img{display:block;width:85px;height:80px;max-width:100%;object-fit:contain;mix-blend-mode:multiply}
+body[data-roman-screen] #foodModal .food-item-text{min-width:0;line-height:1.1}
+body[data-roman-screen] #foodModal .food-item-text h3{margin:2px 0 5px;font:600 13px/1.2 Arial,sans-serif!important;color:#59433a!important;overflow-wrap:anywhere}
+body[data-roman-screen] #foodModal .food-stock{display:inline;font:700 22px/1 Georgia,serif;color:#591823;font-variant-numeric:tabular-nums}
+body[data-roman-screen] #foodModal .food-item-text small{font:10px/1.2 Arial,sans-serif;color:#8b7a70;margin-left:4px}
+body[data-roman-screen] #foodModal .food-card[data-empty=true] .food-art{opacity:.45;filter:grayscale(.7)}
+body[data-roman-screen] #foodModal .food-card[data-empty=true] .food-stock{color:#8b7a70}
+body[data-roman-screen] #foodModal .food-shop{min-width:0;padding:0 0 0 23px;border-left:1px solid #e5ded1}
+body[data-roman-screen] #foodModal .food-wallet{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:6px;padding:15px 16px 13px;background:#591823;border:1px solid #b38b43;border-radius:6px;color:#f1dfab!important;margin:0 0 20px}
+body[data-roman-screen] #foodModal .food-wallet-label{width:100%;font:10px/1.2 Arial,sans-serif;letter-spacing:1.8px;color:#d5b76e;margin-bottom:5px}
+body[data-roman-screen] #foodModal .food-wallet strong{font:700 28px/1.2 Georgia,serif;overflow-wrap:anywhere}
+body[data-roman-screen] #foodModal .food-wallet small{font:11px Arial,sans-serif;color:#e4c77b}
+body[data-roman-screen] #foodModal .food-shop>h2{margin:0 0 12px;font:700 20px/1.2 Georgia,serif;color:#591823!important}
+body[data-roman-screen] #foodModal .food-buy{display:flex;flex-direction:column;gap:9px;margin:0}
+body[data-roman-screen] #foodModal .food-product-label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#74656c}
+body[data-roman-screen] #foodModal select{appearance:auto;width:100%;min-width:0;height:36px;border:1px solid #d3c5aa!important;border-radius:4px;background:#fff!important;color:#30232a!important;font:13px Arial,sans-serif;padding:5px 8px}
+body[data-roman-screen] #foodModal .food-product-preview{display:flex;align-items:center;gap:12px;min-width:0;padding:2px 0}
+body[data-roman-screen] #foodModal .food-product-preview img{width:66px;height:62px;object-fit:contain;mix-blend-mode:multiply}
+body[data-roman-screen] #foodModal .food-product-preview strong{display:block;font:600 13px/1.3 Arial,sans-serif;color:#59433a}
+body[data-roman-screen] #foodModal .food-product-preview small{display:block;font:11px/1.4 Arial,sans-serif;color:#8b7a70}
+body[data-roman-screen] #foodModal .food-quantity-label{font:11px Arial,sans-serif;color:#74656c;margin-bottom:-4px}
+body[data-roman-screen] #foodModal .food-stepper{display:grid;grid-template-columns:36px minmax(0,1fr) 36px;height:36px;border:1px solid #d3c5aa;border-radius:4px;overflow:hidden}
+body[data-roman-screen] #foodModal .food-stepper button{padding:0;background:#faf8f4!important;border:0!important;border-radius:0!important;color:#591823!important;font:20px Arial,sans-serif}
+body[data-roman-screen] #foodModal .food-stepper input{width:100%;min-width:0;text-align:center;padding:3px;border:0!important;border-right:1px solid #e5ded1!important;border-left:1px solid #e5ded1!important;border-radius:0!important;font:600 15px Arial,sans-serif;background:#fff!important;color:#30232a!important;-moz-appearance:textfield;appearance:textfield}
+body[data-roman-screen] #foodModal .food-stepper input::-webkit-inner-spin-button,body[data-roman-screen] #foodModal .food-stepper input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+body[data-roman-screen] #foodModal .food-total{display:flex;justify-content:space-between;align-items:center;gap:5px;margin-top:4px;font:11px/1.4 Arial,sans-serif;color:#74656c}
+body[data-roman-screen] #foodModal .food-total strong{font-size:13px;color:#591823}
+body[data-roman-screen] #foodModal [data-buy]{display:block;width:100%;height:38px;padding:6px;background:#591823!important;border:1px solid #b38b43!important;border-radius:4px!important;font:600 13px Arial,sans-serif;color:#f1dfab!important}
+body[data-roman-screen] #foodModal .food-buy-hint{margin:0;font:11px/1.3 Arial,sans-serif;color:#a23c37}
+body[data-roman-screen] #foodModal .food-buy-hint:empty{display:none}
+body[data-roman-screen] #foodModal .food-feedback{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none;padding:0 24px;background:#faf8f4}
+body[data-roman-screen] #foodModal .food-status{margin:0;font:12px/1.35 Arial,sans-serif;color:#526339}
+body[data-roman-screen] #foodModal .food-status:not(:empty){padding:8px 0}
+body[data-roman-screen] #foodModal .food-status[data-error=true]{color:#a23c37}
+body[data-roman-screen] #foodModal .food-retry{flex:none;margin:5px 0;padding:6px 10px;background:#591823!important;border:1px solid #b38b43!important;border-radius:4px!important;color:#f1dfab!important;font-size:12px}
+body[data-roman-screen] #foodModal .food-empty{color:#74656c;font-size:13px}
+body[data-roman-screen] #foodModal .food-help-layer{position:absolute;inset:0;z-index:2;display:grid;place-items:center;padding:18px;background:#30232a66}
+body[data-roman-screen] #foodModal .food-help{position:relative;display:flex;flex-direction:column;width:min(460px,100%);max-height:100%;overflow:hidden;border:1px solid #b38b43;border-radius:7px;background:#fff;padding:22px;box-shadow:0 12px 45px #24101940}
+body[data-roman-screen] #foodModal .food-help h2{margin:0 35px 15px 0;font:700 22px/1.2 Georgia,serif;color:#591823!important}
+body[data-roman-screen] #foodModal .food-help-close{position:absolute;right:10px;top:10px;color:#591823!important;border-color:#d3c5aa!important;width:30px;height:30px;font-size:23px!important}
+body[data-roman-screen] #foodModal .food-help-text{overflow:auto;min-height:0;overscroll-behavior:contain}
+body[data-roman-screen] #foodModal .food-help-text p{margin:0 0 12px;font:13px/1.6 Arial,sans-serif;color:#66565e}
+body[data-roman-screen] #foodModal .food-help-text p:last-child{margin-bottom:0}
+@media(max-width:950px){
+ body[data-roman-screen] #foodModal .food-body{grid-template-columns:minmax(0,1fr) 200px;gap:17px;padding:18px}
+ body[data-roman-screen] #foodModal .food-shop{padding-left:17px}
+ body[data-roman-screen] #foodModal .food-summary{gap:8px}
+ body[data-roman-screen] #foodModal .food-metric{padding:7px 9px 10px}
+ body[data-roman-screen] #foodModal .food-metric-head{font-size:11px}
+ body[data-roman-screen] #foodModal .food-metric-value strong{font-size:29px}
+ body[data-roman-screen] #foodModal .food-metric-detail{font-size:10px}
+ body[data-roman-screen] #foodModal .food-tile{height:149px}
+ body[data-roman-screen] #foodModal .food-item-text h3{font-size:12px!important}
+}
+@media(max-height:540px) and (min-width:540px){
+ body[data-roman-screen] #foodModal .food-top{padding:9px 18px}
+ body[data-roman-screen] #foodModal .food-top small{font-size:9px;letter-spacing:2px}
+ body[data-roman-screen] #foodModal .food-top h1{font-size:24px!important}
+ body[data-roman-screen] #foodModal .food-close{width:32px;height:32px;font-size:24px!important}
+ body[data-roman-screen] #foodModal .food-body{padding:12px 18px;gap:17px;grid-template-columns:minmax(0,1fr) 200px}
+ body[data-roman-screen] #foodModal .food-summary{margin-bottom:10px;gap:8px}
+ body[data-roman-screen] #foodModal .food-metric{padding:3px 9px 7px}
+ body[data-roman-screen] #foodModal .food-metric-head{font-size:11px}
+ body[data-roman-screen] #foodModal .food-metric-value{margin:0 0 3px}
+ body[data-roman-screen] #foodModal .food-metric-value strong{font-size:26px}
+ body[data-roman-screen] #foodModal .food-metric-value>span{font-size:12px}
+ body[data-roman-screen] #foodModal .food-metric-detail{font-size:10px}
+ body[data-roman-screen] #foodModal .food-quality-track{margin:8px 0 3px;height:4px}
+ body[data-roman-screen] #foodModal .food-inventory-head{margin-bottom:7px;gap:6px;height:25px}
+ body[data-roman-screen] #foodModal .food-inventory-head h2{font-size:17px}
+ body[data-roman-screen] #foodModal .food-inventory-head>span{font-size:10px}
+ body[data-roman-screen] #foodModal .food-grid{gap:7px}
+ body[data-roman-screen] #foodModal .food-tile{height:72px;display:grid;grid-template-columns:40% minmax(0,1fr);gap:4px;padding:6px;text-align:left}
+ body[data-roman-screen] #foodModal .food-art{height:60px}
+ body[data-roman-screen] #foodModal .food-art img{height:60px;width:65px}
+ body[data-roman-screen] #foodModal .food-item-text h3{font-size:11px!important;margin:0 0 5px}
+ body[data-roman-screen] #foodModal .food-stock{display:block;font-size:20px}
+ body[data-roman-screen] #foodModal .food-item-text small{display:block;font-size:9px;margin:3px 0 0}
+ body[data-roman-screen] #foodModal .food-wallet{padding:8px 11px;margin-bottom:10px}
+ body[data-roman-screen] #foodModal .food-wallet-label{font-size:9px;margin-bottom:2px}
+ body[data-roman-screen] #foodModal .food-wallet strong{font-size:23px}
+ body[data-roman-screen] #foodModal .food-wallet small{font-size:10px}
+ body[data-roman-screen] #foodModal .food-shop>h2{font-size:17px;margin-bottom:6px}
+ body[data-roman-screen] #foodModal .food-buy{gap:6px}
+ body[data-roman-screen] #foodModal .food-product-label{font-size:0;gap:0}
+ body[data-roman-screen] #foodModal select{height:31px;font-size:12px;padding:4px 6px}
+ body[data-roman-screen] #foodModal .food-product-preview{gap:8px;padding:0}
+ body[data-roman-screen] #foodModal .food-product-preview img{width:46px;height:38px}
+ body[data-roman-screen] #foodModal .food-product-preview strong{font-size:11px}
+ body[data-roman-screen] #foodModal .food-product-preview small{font-size:10px}
+ body[data-roman-screen] #foodModal .food-quantity-label{font-size:10px;margin-bottom:-3px}
+ body[data-roman-screen] #foodModal .food-stepper{height:31px;grid-template-columns:31px minmax(0,1fr) 31px}
+ body[data-roman-screen] #foodModal .food-total{margin-top:0;font-size:10px}
+ body[data-roman-screen] #foodModal .food-total strong{font-size:11px}
+ body[data-roman-screen] #foodModal [data-buy]{height:33px;font-size:12px}
+ body[data-roman-screen] #foodModal .food-feedback{padding:0 18px}
+ body[data-roman-screen] #foodModal .food-status{font-size:11px}
+ body[data-roman-screen] #foodModal .food-status:not(:empty){padding:5px 0}
+ body[data-roman-screen] #foodModal .food-help-layer{padding:12px}
+ body[data-roman-screen] #foodModal .food-help{padding:16px 20px}
+ body[data-roman-screen] #foodModal .food-help h2{font-size:19px}
+ body[data-roman-screen] #foodModal .food-help-text p{font-size:12px;line-height:1.5}
+}
+@media(max-width:780px) and (min-width:540px){
+ body[data-roman-screen] #foodModal{padding:6px 8px}
+ body[data-roman-screen] #foodModal .food-top{padding:7px 11px}
+ body[data-roman-screen] #foodModal .food-top h1{font-size:21px!important}
+ body[data-roman-screen] #foodModal .food-body{padding:10px;gap:10px;grid-template-columns:minmax(0,1fr) 158px}
+ body[data-roman-screen] #foodModal .food-shop{padding-left:10px}
+ body[data-roman-screen] #foodModal .food-summary{gap:5px}
+ body[data-roman-screen] #foodModal .food-metric{padding:2px 5px 6px}
+ body[data-roman-screen] #foodModal .food-metric-head{font-size:10px;gap:0}
+ body[data-roman-screen] #foodModal .food-info-button{width:24px;height:26px}
+ body[data-roman-screen] #foodModal .food-metric-value strong{font-size:23px}
+ body[data-roman-screen] #foodModal .food-metric-value>span{font-size:10px}
+ body[data-roman-screen] #foodModal .food-metric-detail{font-size:9px}
+ body[data-roman-screen] #foodModal .food-grid{gap:5px}
+ body[data-roman-screen] #foodModal .food-tile{height:73px;display:flex;flex-direction:column;gap:0;padding:4px 2px;text-align:center}
+ body[data-roman-screen] #foodModal .food-art{height:31px}
+ body[data-roman-screen] #foodModal .food-art img{height:31px;width:48px}
+ body[data-roman-screen] #foodModal .food-item-text h3{font-size:10px!important;margin:1px 0 1px}
+ body[data-roman-screen] #foodModal .food-stock{display:inline;font-size:17px}
+ body[data-roman-screen] #foodModal .food-item-text small{display:none}
+ body[data-roman-screen] #foodModal .food-wallet{padding:7px 9px}
+ body[data-roman-screen] #foodModal .food-wallet strong{font-size:22px}
+ body[data-roman-screen] #foodModal .food-wallet small{font-size:9px}
+ body[data-roman-screen] #foodModal .food-feedback{padding:0 10px}
+}
+@media(max-height:380px) and (min-width:540px){
+ body[data-roman-screen] #foodModal .food-top{padding:4px 11px}
+ body[data-roman-screen] #foodModal .food-body{padding-top:8px;padding-bottom:8px}
+ body[data-roman-screen] #foodModal .food-top small{display:none}
+ body[data-roman-screen] #foodModal .food-summary{margin-bottom:6px}
+ body[data-roman-screen] #foodModal .food-metric-detail{font-size:8px}
+ body[data-roman-screen] #foodModal .food-metric-value strong{font-size:21px}
+ body[data-roman-screen] #foodModal .food-inventory-head{height:20px;margin-bottom:6px}
+ body[data-roman-screen] #foodModal .food-tile{height:68px}
+ body[data-roman-screen] #foodModal .food-art{height:31px}
+ body[data-roman-screen] #foodModal .food-art img{height:31px}
+ body[data-roman-screen] #foodModal .food-wallet{margin-bottom:7px;padding:6px 9px}
+ body[data-roman-screen] #foodModal .food-product-preview img{height:29px}
+ body[data-roman-screen] #foodModal .food-buy{gap:5px}
+ body[data-roman-screen] #foodModal .food-quantity-label{display:none}
+}
+@media(max-width:539px){
+ body[data-roman-screen] #foodModal .food-frame{max-height:100%}
+ body[data-roman-screen] #foodModal .food-top{padding:12px 15px}
+ body[data-roman-screen] #foodModal .food-top h1{font-size:25px!important}
+ body[data-roman-screen] #foodModal .food-body{display:block;padding:14px}
+ body[data-roman-screen] #foodModal .food-summary{gap:6px;margin-bottom:14px}
+ body[data-roman-screen] #foodModal .food-metric{padding:3px 6px 8px}
+ body[data-roman-screen] #foodModal .food-metric-head{font-size:10px}
+ body[data-roman-screen] #foodModal .food-metric-value strong{font-size:25px}
+ body[data-roman-screen] #foodModal .food-metric-detail{font-size:9px}
+ body[data-roman-screen] #foodModal .food-info-button{width:24px;height:28px}
+ body[data-roman-screen] #foodModal .food-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ body[data-roman-screen] #foodModal .food-tile{height:137px}
+ body[data-roman-screen] #foodModal .food-art,body[data-roman-screen] #foodModal .food-art img{height:67px}
+ body[data-roman-screen] #foodModal .food-item-text h3{font-size:11px!important}
+ body[data-roman-screen] #foodModal .food-stock{font-size:20px}
+ body[data-roman-screen] #foodModal .food-item-text small{font-size:9px}
+ body[data-roman-screen] #foodModal .food-shop{border-left:0;border-top:1px solid #e5ded1;padding:16px 0 0;margin-top:18px}
+ body[data-roman-screen] #foodModal .food-wallet{padding:10px 14px;margin-bottom:14px}
+ body[data-roman-screen] #foodModal .food-buy{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ body[data-roman-screen] #foodModal .food-product-label{justify-content:center}
+ body[data-roman-screen] #foodModal .food-product-preview{grid-column:2;grid-row:1}
+ body[data-roman-screen] #foodModal .food-quantity-label{grid-column:1}
+ body[data-roman-screen] #foodModal .food-stepper{grid-column:1}
+ body[data-roman-screen] #foodModal .food-total{grid-column:2;grid-row:2/4;align-self:center}
+ body[data-roman-screen] #foodModal [data-buy],body[data-roman-screen] #foodModal .food-buy-hint{grid-column:1/-1}
+ body[data-roman-screen] #foodModal .food-feedback{padding:0 14px}
+}
+@media(prefers-reduced-motion:reduce){body[data-roman-screen] #foodModal .food-tile{transition:none}}
