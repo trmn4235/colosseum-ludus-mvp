@@ -66,6 +66,11 @@ async function main(){
  await page.screenshot({path:out+'/boat-five-crew.png'});
  await page.evaluate(()=>__arena.setPaused(false));await page.locator('#navalHelm').click();
  assert.equal(await page.evaluate(()=>__arena.naval.manual),true);await page.evaluate(()=>{const render=__arena.renderer.render;__arena.renderer.render=()=>{};try{for(let i=0;i<45;i++)__arena.step(1/60);}finally{__arena.renderer.render=render;}__arena.step(1/60);});
+ const heading=await page.evaluate(()=>__arena.naval.ships[0].angle);
+ await page.keyboard.down('KeyD');await page.evaluate(()=>{const render=__arena.renderer.render;__arena.renderer.render=()=>{};try{for(let i=0;i<12;i++)__arena.step(1/60);}finally{__arena.renderer.render=render;}});await page.keyboard.up('KeyD');
+ const rightHeading=await page.evaluate(()=>__arena.naval.ships[0].angle);assert.ok(rightHeading<heading,'D turns the bow to the right in the following camera');
+ await page.keyboard.down('KeyA');await page.evaluate(()=>{const render=__arena.renderer.render;__arena.renderer.render=()=>{};try{for(let i=0;i<12;i++)__arena.step(1/60);}finally{__arena.renderer.render=render;}__arena.step(1/60);});await page.keyboard.up('KeyA');
+ assert.ok(await page.evaluate(()=>__arena.naval.ships[0].angle)>rightHeading,'A turns left');
  await page.screenshot({path:out+'/helm.png'});
  assert.equal(await page.locator('#navalSailing').isVisible(),true);assert.equal(await page.locator('#attack').isVisible(),false);
  await page.evaluate(()=>__arena.setPaused(false));await page.locator('#navalHelm').click();assert.equal(await page.evaluate(()=>__arena.naval.manual),false);assert.ok(await page.evaluate(()=>__arena.naval.ships[0].helm>0));
@@ -86,14 +91,57 @@ async function main(){
  assert.equal(await page.evaluate(()=>__arena.naval.bridges[0].phase),'open');await page.screenshot({path:out+'/bridge-open.png'});
  const crossing=await page.evaluate(()=>{const n=__arena.naval,p=n.player();for(let x=2.1;x<6.6;x+=.08){p.x=x;n.bound(p);}return{ship:p.shipId,bridge:p.navBridge};});assert.equal(crossing.ship,1);assert.equal(crossing.bridge,null);
  await page.evaluate(()=>{const n=__arena.naval;n.bridges=[];n.player().shipId=0;n.player().x=2.1;n.player().z=0;n.ships[1].angle=.6;__arena.view.update(1);});assert.equal(await page.locator('#navalBridge').isVisible(),false);
+ // A closed-bridge jump uses the real controls, animation and deck model.
+ await page.evaluate(()=>{
+  const n=__arena.naval;n.bridges=[];n.time=0;n.goal=s=>({...s});n.botStep=()=>{};
+  for(const s of n.ships)Object.assign(s,{angle:0,speed:0,turn:0,vx:0,vz:0});
+  Object.assign(n.ships[0],{x:0,z:0});Object.assign(n.ships[1],{x:8,z:0});Object.assign(n.ships[2],{x:-20,z:0});Object.assign(n.ships[3],{x:20,z:18});
+  for(const f of __arena.combat.fighters){Object.assign(f,{shipId:f.team,navBridge:null,navJump:null,navHeight:0,navJumpReady:0,stunUntil:0,knockedUntil:0,action:'idle',timer:0,stamina:f.maxStamina,move:0});Object.assign(f,NavalSimulation.world(n.ships[f.shipId],f.id%2?1:-1,f.id%5-2));}
+  Object.assign(n.player(),{x:2.1,z:0});__arena.setPaused(false);__arena.view.update(__arena.combat.time);
+  for(let i=0;i<20;i++)ImportedGladiator.animate(__arena.combat.fighters[i],__arena.models[i],__arena.combat.time,1/60);
+  document.getElementById('toast').style.opacity='0';__arena.camera.position.set(13,8,-13);__arena.camera.lookAt(4,.6,0);__arena.renderer.render(__arena.scene,__arena.camera);
+  window.__jumpFrames=(frames,run=true)=>{const render=__arena.renderer.render;__arena.renderer.render=()=>{};try{for(let i=0;i<frames;i++)__arena.step(1/60,run);}finally{__arena.renderer.render=render;}__arena.renderer.render(__arena.scene,__arena.camera);};
+ });
+ assert.equal(await page.locator('#navalJump').isVisible(),true);
+ assert.equal(await page.evaluate(()=>__arena.view.landingMark.visible),true);
+ await page.screenshot({path:out+'/jump-ready.png'});
+ const jumpStamina=await page.evaluate(()=>__arena.naval.player().stamina);
+ await page.locator('#navalJump').click();assert.ok(await page.evaluate(()=>!!__arena.naval.player().navJump));
+ assert.equal(await page.evaluate(()=>__arena.naval.player().stamina),jumpStamina-20);
+ await page.evaluate(()=>__jumpFrames(27));
+ const jumpApex=await page.evaluate(()=>{const f=__arena.naval.player(),m=__arena.models[0];return{height:f.navHeight,renderHeight:m.root.position.y,shadow:m.shadow.visible,ship:f.shipId,footHeight:m.bones.LeftFoot.getWorldPosition(new THREE.Vector3()).y,elapsed:f.navJump.elapsed};});
+ assert.ok(jumpApex.height>1);assert.ok(Math.abs(jumpApex.renderHeight-jumpApex.height)<1e-8);assert.ok(jumpApex.footHeight>.8);assert.equal(jumpApex.shadow,false);assert.equal(jumpApex.ship,0);
+ await page.evaluate(()=>{__arena.camera.position.set(12,6,-11);__arena.camera.lookAt(4,.9,0);__arena.renderer.render(__arena.scene,__arena.camera);});await page.screenshot({path:out+'/jump-airborne.png'});
+ await page.evaluate(()=>{__arena.setPaused(true);__jumpFrames(10,false);});assert.equal(await page.evaluate(()=>__arena.naval.player().navJump.elapsed),jumpApex.elapsed,'pause freezes the airborne arc');
+ await page.evaluate(()=>{__arena.setPaused(false);__jumpFrames(38);});
+ assert.deepEqual(await page.evaluate(()=>({ship:__arena.naval.player().shipId,jump:__arena.naval.player().navJump,height:__arena.models[0].root.position.y})),{ship:1,jump:null,height:0});
+ await page.screenshot({path:out+'/jump-landed.png'});
+ await page.evaluate(()=>{__jumpFrames(30);__arena.setPaused(false);});await page.keyboard.press('Space');
+ assert.equal(await page.evaluate(()=>__arena.naval.player().navJump?.to),0,'Space jumps back without triggering an attack');
+ await page.evaluate(()=>__jumpFrames(65));assert.equal(await page.evaluate(()=>__arena.naval.player().shipId),0);
+ await page.evaluate(()=>{const n=__arena.naval;Object.assign(n.player(),{x:2.1,z:0,action:'idle',stamina:100,navJumpReady:0});n.ships[1].x=14;__arena.setPaused(false);__arena.view.update(__arena.combat.time);});
+ assert.equal(await page.locator('#navalJump').isVisible(),false,'the icon hides when the other deck is beyond reach');
+ await page.evaluate(()=>{__arena.naval.ships[1].x=8;});
  for(const [w,h] of [[667,375],[932,430],[1024,768]]){
-  await page.setViewportSize({width:w,height:h});await page.evaluate(()=>{__arena.step(1/60);});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/naval-'+w+'.png'});
+  await page.setViewportSize({width:w,height:h});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  await page.evaluate(()=>{__arena.step(1/60);__arena.renderer.render(__arena.scene,__arena.camera);});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/naval-'+w+'.png'});
+  assert.equal(await page.locator('#navalJump').isVisible(),true);
+  const overlaps=await page.evaluate(()=>{const a=document.getElementById('navalJump').getBoundingClientRect();return ['navalHelm','stick','attack','block','dodge','special','hand','target'].filter(id=>{const b=document.getElementById(id).getBoundingClientRect();return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;});});
+  assert.deepEqual(overlaps,[],'jump control must not cover existing controls at '+w+'px');
  }
+ await page.evaluate(()=>{
+  const n=__arena.naval;__arena.setPaused(false);Object.assign(n.player(),{x:2.1,z:0,stamina:100,navJumpReady:0});n.jump();__jumpFrames(20);
+  __arena.combat.damage(__arena.combat.fighters[5],n.player(),100000);__jumpFrames(8);
+ });
+ const airborneFall=await page.evaluate(()=>{const f=__arena.naval.player(),m=__arena.models[0];return{hp:f.hp,jumping:!!f.navJump,offset:Math.hypot(m.root.position.x-f.x,m.root.position.z-f.z)};});
+ assert.equal(airborneFall.hp,0);assert.equal(airborneFall.jumping,true);assert.ok(airborneFall.offset<1,'the cached death pose travels with the arc');
+ await page.evaluate(()=>__jumpFrames(40));
+ assert.equal(await page.evaluate(()=>{const f=__arena.naval.player(),m=__arena.models[0];return f.shipId===1&&!f.navJump&&NavalSimulation.onDeck(__arena.naval.ships[1],m.root.position,0);}),true,'the rendered corpse ends on the destination deck');
  await page.evaluate(()=>__arena.setPaused(true));assert.equal(await page.locator('#navalControls').isVisible(),false);
  assert.deepEqual(errors,[]);
  // The remembered scene survives a same-device resume URL without its arena parameter.
  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__arena?.started,null,{timeout:60000});assert.equal(await page.evaluate(()=>__arena.naval.ships.length),4);await page.evaluate(()=>__arena.freeze());
- fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,boatRequests:boatRequests.length,errors,viewports:4,controls:'menu selection, server ticket, take/release, AI takeover, valid and invalid bridge, boarding, pause, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
+ fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
  console.log(JSON.stringify({initial,boatAsset,errors,out}));await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exit(1);});

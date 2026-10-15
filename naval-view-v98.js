@@ -66,9 +66,18 @@
     const wakes=naval.ships.map(ship=>{const m=new T.Mesh(wakeGeo,wakeMat.clone());m.rotation.x=-Math.PI/2;m.scale.set(2.7,5,1);m.position.y=-.69;scene.add(m);return{ship,m};});
     const panel=document.createElement('div');panel.id='navalControls';panel.innerHTML=`<div id="navalStatus" role="status"></div><button id="navalHelm" title="Dümeni al / bırak · I" aria-label="Dümeni al"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="2"/><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6"/></svg><span>Dümeni al</span></button><button id="navalBridge" title="Geçiş köprüsü · E" hidden aria-label="Köprüyü aç"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m6 29 28-18M6 23l28-18M8 24l3 5M14 20l3 5M20 16l3 5M26 12l3 5M32 8l3 5"/></svg><span>Köprüyü aç</span></button><div id="navalSailing" hidden><span>Yön ve hız: sol kontrol / WASD</span><button id="navalBrake">Yavaşla</button></div>`;
     document.getElementById('app').append(panel);
+    const jumpButton=document.createElement('button');jumpButton.id='navalJump';jumpButton.hidden=true;jumpButton.title='Karşı gemiye atla · Boşluk';jumpButton.setAttribute('aria-label','Karşı gemiye atla');jumpButton.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="17" cy="5" r="2.6"/><path d="m10 10 7-1 4 6 6-3M17 9l-3 10-7 5M14 19l8 2-1 7M4 28h6M25 28h4"/></svg><span>ATLA</span>';panel.append(jumpButton);
+    const landingMark=new T.Mesh(new T.RingGeometry(.36,.45,28),new T.MeshBasicMaterial({color:0xffd963,transparent:true,opacity:.9,depthWrite:false,side:T.DoubleSide}));landingMark.rotation.x=-Math.PI/2;landingMark.visible=false;scene.add(landingMark);
     const helm=panel.querySelector('#navalHelm'),bridge=panel.querySelector('#navalBridge'),status=panel.querySelector('#navalStatus'),sailing=panel.querySelector('#navalSailing');let braking=false;
     helm.onclick=()=>{if(!options.active())return;const changed=naval.manual?naval.releaseHelm():naval.takeHelm();if(changed){options.clearInput();options.toast(naval.manual?'Dümen sende.':naval.ships[0].helm!==null?'Takım arkadaşın dümeni devraldı.':'Dümeni alabilecek takım arkadaşın kalmadı.');}};
     bridge.onclick=()=>{if(!options.active())return;const interaction=naval.interaction();if(interaction?.blocked){options.toast('Köprüde bir gladyatör var.');return;}if(naval.operate())options.toast(interaction.kind==='open'?'Geçiş köprüsü açılıyor.':'Geçiş köprüsü toplanıyor.');};
+    function jump(){
+      if(!options.active()||!options.jumpEnabled||naval.manual||!naval.jump)return false;
+      if(naval.jump()){options.clearInput();options.toast('Karşı güverteye atlıyorsun.');return true;}
+      if(!naval.player().navJump)options.toast(naval.player().stamina<C.jumpCost?'Atlamak için 20 kondisyon gerekiyor.':'Yakın bir gemiye bakan kenara yaklaş.');
+      return false;
+    }
+    jumpButton.onclick=jump;
     const brake=panel.querySelector('#navalBrake');brake.addEventListener('pointerdown',e=>{e.preventDefault();if(!options.active())return;braking=true;brake.setPointerCapture(e.pointerId);});for(const event of ['pointerup','pointercancel','lostpointercapture'])brake.addEventListener(event,()=>{braking=false;});
     const point=new T.Vector3(),ui=root.GamePerformance,helmLabel=helm.querySelector('span'),bridgeLabel=bridge.querySelector('span');
     function update(time){
@@ -77,6 +86,10 @@
       for(const v of bridgeViews){const b=naval.bridges.find(b=>b.from===v.ship.id&&b.side===v.side&&b.phase!=='closed');const open=b?.progress||0;v.pivot.rotation.y=-v.side*(1-open)*Math.PI/2;}
       for(const v of wakes){const p=NavalSimulation.world(v.ship,0,-5.7);v.m.position.x=p.x;v.m.position.z=p.z;v.m.rotation.z=-v.ship.angle;v.m.material.opacity=Math.min(.22,Math.abs(v.ship.speed)*.08);}
       const p=naval.player(),active=options.active();ui.hidden(panel,!active||p.hp<=0);
+      // A cached V98 page can finish with its old simulation and animation code.
+      const target=active&&options.jumpEnabled&&p.hp>0?naval.jumpCandidate?.():null;
+      ui.hidden(jumpButton,!target);landingMark.visible=!!target&&active;
+      if(target)landingMark.position.set(target.end.x,.075,target.end.z);
       ui.toggle(document.body,'naval-helm',naval.manual&&active);
       helm.disabled=!naval.manual&&!naval.canTakeHelm();ui.text(helmLabel,naval.manual?'Dümeni bırak':'Dümeni al');ui.attr(helm,'aria-label',naval.manual?'Dümeni bırak':'Dümeni al');
       ui.hidden(sailing,!naval.manual);
@@ -87,7 +100,7 @@
       if(action){const ship=naval.ships[p.shipId],q=NavalSimulation.world(ship,action.side*(C.halfWidth-.2),0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-102,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}
       if(!active)braking=false;
     }
-    return{update,views,water,panel,get braking(){return braking;}};
+    return{update,views,water,panel,jump,landingMark,get braking(){return braking;}};
   }
   root.NavalView={create,load,assetURL};
 })(window);
