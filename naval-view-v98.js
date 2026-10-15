@@ -69,41 +69,60 @@
           shader.fragmentShader=shader.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nfor(int i=0;i<8;i++){vec3 gate=navalGates[i];if(gate.z>.5&&vNavalHull.x*gate.x>2.35&&abs(vNavalHull.z-gate.y)<1.34&&vNavalHull.y>-.045)discard;}');
         };
         group.traverse(o=>{if(!o.isMesh||!(o.userData.navalRole==='hull'||['Curved hull strakes','Raised gunwales and ribs','Bronze rubbing strakes'].includes(o.name)))return;
-          o.material=o.material.clone();o.material.onBeforeCompile=clip;o.material.customProgramCacheKey=()=> 'naval-boarding-gates-v102';
+          const finish=o.material.onBeforeCompile,finishKey=o.material.customProgramCacheKey();o.material=o.material.clone();o.material.onBeforeCompile=shader=>{finish(shader);clip(shader);};o.material.customProgramCacheKey=()=> 'naval-boarding-gates-v105-'+finishKey;
           o.customDepthMaterial=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,side:T.DoubleSide});o.customDepthMaterial.onBeforeCompile=clip;o.customDepthMaterial.customProgramCacheKey=()=> 'naval-boarding-gates-v102';
         });
       }
       views.push({ship,group,sides,gates,rackShafts:group.getObjectByName('Rack shafts'),rackHeads:group.getObjectByName('Rack heads')});
     }
-    // Precomputed seamless multi-direction ripples: two filtered texture reads per pixel.
+    // Shared ripple field; moving foam is shaded into the existing water surface.
     const rippleSize=256,rippleData=new Uint8Array(rippleSize*rippleSize*4);
     const waves=[[1,2,.085,.3],[3,-2,.065,1.8],[2,5,.055,2.7],[7,3,.045,.6],[-5,9,.035,4.1],[11,-9,.03,1.2],[17,11,.02,3.5],[-13,19,.018,2.2],[27,-19,.012,.8],[31,23,.009,5.3],[7,-27,.013,4.7],[-21,-11,.018,3.9]];
     for(let y=0;y<rippleSize;y++)for(let x=0;x<rippleSize;x++){
-      let dx=0,dz=0;for(const [a,b,amp,phase] of waves){const c=Math.cos((a*x+b*y)*Math.PI*2/rippleSize+phase)*amp,d=Math.hypot(a,b);dx+=a/d*c;dz+=b/d*c;}
-      const i=(y*rippleSize+x)*4;rippleData[i]=Math.round((dx*.5+.5)*255);rippleData[i+1]=Math.round((dz*.5+.5)*255);rippleData[i+2]=255;rippleData[i+3]=255;
+      let dx=0,dz=0,h=0;for(const [a,b,amp,phase] of waves){const phaseAt=(a*x+b*y)*Math.PI*2/rippleSize+phase,c=Math.cos(phaseAt)*amp,d=Math.hypot(a,b);dx+=a/d*c;dz+=b/d*c;h+=Math.sin(phaseAt)*amp;}
+      const i=(y*rippleSize+x)*4;rippleData[i]=Math.round((dx*.5+.5)*255);rippleData[i+1]=Math.round((dz*.5+.5)*255);rippleData[i+2]=Math.round((h*.8+.5)*255);rippleData[i+3]=255;
     }
     const rippleMap=new T.DataTexture(rippleData,rippleSize,rippleSize);rippleMap.wrapS=rippleMap.wrapT=T.RepeatWrapping;rippleMap.magFilter=T.LinearFilter;rippleMap.minFilter=T.LinearMipmapLinearFilter;rippleMap.generateMipmaps=true;rippleMap.anisotropy=4;rippleMap.needsUpdate=true;
-    const waterTime={value:0},waterMaterial=new T.MeshStandardMaterial({color:0x264b46,roughness:.29,metalness:.24,envMapIntensity:1});
-    waterMaterial.uniforms={time:waterTime};
+    const waterTime={value:0},waterShips={value:naval.ships.map(s=>new T.Vector4(s.x,s.z,s.angle,s.speed))},waterMaterial=new T.MeshPhysicalMaterial({color:0x214e53,roughness:.19,metalness:0,ior:1.333,specularIntensity:1,envMapIntensity:1.15});
+    waterMaterial.uniforms={time:waterTime,ships:waterShips};
     waterMaterial.onBeforeCompile=shader=>{
-      shader.uniforms.waterTime=waterTime;shader.uniforms.waterRipple={value:rippleMap};
+      shader.uniforms.waterTime=waterTime;shader.uniforms.waterRipple={value:rippleMap};shader.uniforms.waterShips=waterShips;
       shader.vertexShader='varying vec3 navalWaterWorld;\n'+shader.vertexShader;
       shader.vertexShader=shader.vertexShader.replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nnavalWaterWorld=(modelMatrix*vec4(transformed,1.)).xyz;');
-      shader.fragmentShader='uniform float waterTime;uniform sampler2D waterRipple;varying vec3 navalWaterWorld;\n'+shader.fragmentShader;
+      shader.fragmentShader='uniform float waterTime;uniform sampler2D waterRipple;uniform vec4 waterShips[4];varying vec3 navalWaterWorld;\n'+shader.fragmentShader;
+      shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+        vec2 waterP=navalWaterWorld.xz;
+        float waterNoise=texture2D(waterRipple,waterP*.085+vec2(waterTime*.004,-waterTime*.002)).b;
+        float waterFoam=0.;
+        for(int i=0;i<4;i++){
+          vec4 ship=waterShips[i];vec2 v=waterP-ship.xy;float c=cos(ship.z),s=sin(ship.z);vec2 q=vec2(v.x*c-v.y*s,v.x*s+v.y*c);
+          if(dot(q,q)<520.){
+            float speed=clamp(abs(ship.w)/2.2,0.,1.);float tail=-q.y*(ship.w<0.?-1.:1.)-5.8;
+            float wake=(1.-smoothstep(.08,.7,abs(abs(q.x)-(.7+max(0.,tail)*.28))))*smoothstep(0.,1.,tail)*(1.-smoothstep(1.,13.,tail));
+            float broken=smoothstep(.35,.63,waterNoise+sin(tail*2.6-waterTime*2.)*.10);
+            float width=3.25*sqrt(max(.01,1.-pow(abs(q.y)/8.1,4.)));
+            float rim=(1.-smoothstep(.025,.20,abs(abs(q.x)-width)))*(1.-smoothstep(7.3,8.1,abs(q.y)));
+            waterFoam+=wake*broken*speed*.42+rim*(.025+.10*speed);
+          }
+        }
+        waterFoam=clamp(waterFoam,0.,.6);
+        diffuseColor.rgb*=.92+waterNoise*.16;
+        diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.40,.51,.48),waterFoam);
+      `);
+      shader.fragmentShader=shader.fragmentShader.replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(.17+waterNoise*.055,.48,waterFoam);');
       shader.fragmentShader=shader.fragmentShader.replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
         vec2 p=navalWaterWorld.xz;float t=waterTime;
         mat2 rotation=mat2(.8,.6,-.6,.8);
-        vec2 slope=texture2D(waterRipple,p*.023+vec2(t*.002,t*.001)).rg*2.-1.;
-        vec2 detail=texture2D(waterRipple,rotation*p*.047+vec2(-t*.0025,t*.0017)).rg*2.-1.;
-        slope+=vec2(.8*detail.x+.6*detail.y,-.6*detail.x+.8*detail.y)*.55;
+        vec2 slope=(texture2D(waterRipple,p*.034+vec2(t*.0018,t*.0008)).rg*2.-1.)*.48;
+        vec2 detail=texture2D(waterRipple,rotation*p*.13+vec2(-t*.003,t*.0013)).rg*2.-1.;
+        slope+=vec2(.8*detail.x+.6*detail.y,-.6*detail.x+.8*detail.y)*.17;
+        slope+=vec2(sin(p.x*.27+p.y*.18+t*.45),cos(p.y*.31-p.x*.14+t*.38))*.018;
         normal=normalize(mat3(viewMatrix)*normalize(vec3(-slope.x,1.,-slope.y)));
       `);
     };
-    waterMaterial.customProgramCacheKey=()=> 'naval-water-ripples-v102';
+    waterMaterial.customProgramCacheKey=()=> 'naval-water-surface-v105';
     const water=new T.Mesh(new T.CircleGeometry(naval.arenaRadius*1.5,96),waterMaterial);
     water.rotation.x=-Math.PI/2;water.position.y=-.72;water.renderOrder=-1;scene.add(water);
-    const wakeGeo=new T.RingGeometry(1,1.08,28,1,0,Math.PI),wakeMat=new T.MeshBasicMaterial({color:0xb6d6c9,transparent:true,opacity:.15,depthWrite:false,side:T.DoubleSide});
-    const wakes=naval.ships.map(ship=>{const m=new T.Mesh(wakeGeo,wakeMat.clone());m.rotation.x=-Math.PI/2;m.scale.set(2.7,5,1);m.position.y=-.69;scene.add(m);return{ship,m};});
     const panel=document.createElement('div');panel.id='navalControls';panel.innerHTML=`<div id="navalStatus" role="status"></div><button id="navalHelm" title="Dümeni al / bırak · I" aria-label="Dümeni al"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="2"/><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6"/></svg></button><button id="navalBridge" title="Geçiş köprüsü · E" hidden aria-label="Köprüyü aç"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m6 29 28-18M6 23l28-18M8 24l3 5M14 20l3 5M20 16l3 5M26 12l3 5M32 8l3 5"/></svg><span>Köprüyü aç</span></button><div id="navalSailing" hidden><span>Yön ve hız: sol kontrol / WASD</span><button id="navalBrake">Yavaşla</button></div>`;
     document.getElementById('app').append(panel);
     const jumpButton=document.createElement('button');jumpButton.id='navalJump';jumpButton.hidden=true;jumpButton.title='Karşı gemiye atla · Boşluk';jumpButton.setAttribute('aria-label','Karşı gemiye atla');jumpButton.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="17" cy="5" r="2.6"/><path d="m10 10 7-1 4 6 6-3M17 9l-3 10-7 5M14 19l8 2-1 7M4 28h6M25 28h4"/></svg><span>ATLA</span>';panel.append(jumpButton);
@@ -190,7 +209,7 @@
         for(const b of naval.bridges)if((b.to===v.ship.id||b.from===v.ship.id)&&b.phase!=='closed'&&gate<v.gates.value.length){const landing=NavalSimulation.local(v.ship,naval.bridgeEntry(b,v.ship.id));v.gates.value[gate++].set(Math.sign(landing.x),landing.z,1);}
         for(const s of v.sides)s.oars.rotation.z=naval.linked(v.ship)?s.side*.45:Math.sin(time*3.2)*Math.min(.07,Math.abs(v.ship.speed)*.035);}
       for(const v of bridgeViews){const b=naval.bridges.find(b=>b.from===v.ship.id&&b.side===v.side&&(b.station||0)===v.station&&b.phase!=='closed');const open=b?.progress||0;v.pivot.visible=!!b;v.pivot.scale.x=(b?.length||C.bridgeLength)/C.bridgeLength;v.pivot.rotation.y=-v.side*(1-open)*Math.PI/2;}
-      for(const v of wakes){const p=NavalSimulation.world(v.ship,0,-5.7);v.m.position.x=p.x;v.m.position.z=p.z;v.m.rotation.z=-v.ship.angle;v.m.material.opacity=Math.min(.22,Math.abs(v.ship.speed)*.08);}
+      for(let i=0;i<naval.ships.length;i++){const s=naval.ships[i];waterShips.value[i].set(s.x,s.z,s.angle,s.speed);}
       // At a distance the uniform's small fittings occupy less than a few pixels.
       for(const f of naval.combat.fighters){const m=options.models?.()[f.id];if(!m||!f.navalUniform)continue;const near=Math.hypot(f.x-camera.position.x,f.z-camera.position.z)<18;
         for(const key of ['shoulder','otherShoulder','collar','Leftgreave','Rightgreave']){const slot=m.gear[key];if(slot?.group.userData.navalUniform)slot.group.visible=near&&(key!=='collar'||m.shoulderModel==='armor_shoulder');}

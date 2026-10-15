@@ -1,0 +1,14 @@
+/* Combat messages occupy the upper HUD; the arena centre stays clear. */
+#combatFeedback{position:absolute;top:max(38px,calc(env(safe-area-inset-top) + 32px));left:50%;transform:translateX(-50%);width:clamp(180px,38vw,340px);max-height:82px;display:flex;flex-direction:column;align-items:center;gap:4px;overflow:hidden;pointer-events:none;z-index:16;text-align:center}
+#combatFeedback #toast,#combatFeedback #combo,#combatFeedback #regionHint{position:static;inset:auto;transform:none;margin:0;max-width:100%;white-space:normal;font:10px/1.3 Arial,sans-serif;text-shadow:0 1px 2px #000;letter-spacing:0}
+#combatFeedback #toast{display:none;padding:4px 8px;border:1px solid #c2a36570;border-radius:5px;background:#211b16b8;box-shadow:none}
+#combatFeedback #toast.visible{display:block}
+#combatFeedback #toast.energy-warning{font-size:9px;max-width:100%;padding:3px 7px}
+#combatFeedback #combo{font-weight:bold;color:#ffe0a0;background:#211b1680;border-radius:4px;padding:2px 6px}
+#combatFeedback #combo:empty{display:none}
+#combatFeedback #regionHint{padding:3px 7px;border-radius:4px}
+#combatFeedback #floaters{display:flex;justify-content:center;align-items:center;gap:8px;max-width:100%;min-height:0}
+#combatFeedback .float{position:static;transform:none;font:700 14px/1.2 Arial,sans-serif;background:#152019b3;padding:3px 7px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-shadow:0 1px 2px #000}
+.enemy .enemyname,.enemy .intent{display:none}
+#navalBridge span{display:none}
+@media(max-height:350px){#combatFeedback{top:max(31px,calc(env(safe-area-inset-top) + 27px));max-height:66px;gap:2px}#combatFeedback #toast,#combatFeedback #combo{font-size:9px}#combatFeedback .float{font-size:12px}}
