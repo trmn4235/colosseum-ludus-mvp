@@ -12,12 +12,15 @@
 #navalJump{position:absolute;left:calc(50% - 116px);bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:56px;height:61px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:2px solid #ffdf69;border-radius:12px;background:radial-gradient(#e4b940,#a06c13);color:#251a07;box-shadow:0 0 12px #efc64e55}
 #navalJump svg{width:33px;height:33px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #navalJump span{font:bold 10px Arial,sans-serif;letter-spacing:.5px}
+#navalJavelin{position:absolute;left:50%;bottom:max(68px,calc(env(safe-area-inset-bottom) + 68px));transform:translateX(-50%);width:58px;height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid #e0c17e;border-radius:12px;background:linear-gradient(#743347,#361824);color:#ffe4a4;box-shadow:0 3px 10px #0007}
+#navalJavelin svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#navalJavelin span{font:bold 9px Arial,sans-serif;white-space:nowrap}#navalJavelin small{font:9px Arial,sans-serif;color:#cfbd9d}#navalJavelin:disabled{opacity:.5}
 #navalSailing{position:absolute;right:24px;bottom:32px;display:flex;flex-direction:column;align-items:center;gap:8px}
 #navalSailing span{font:11px Arial,sans-serif;text-shadow:0 1px 3px #000}#navalBrake{width:76px;height:60px;border:1px solid #c8ac6d;border-radius:10px;background:#1c3438e8;color:#f6e3ae;font:14px Georgia,serif}
 .naval-helm #attack,.naval-helm #block,.naval-helm #dodge,.naval-helm #special,.naval-helm #hand,.naval-helm #target,.naval-helm #pickup,.naval-helm #regionHint{visibility:hidden!important;pointer-events:none!important}
 .naval-helm .actions{visibility:hidden!important;pointer-events:none!important}
 body.naval-active #pickup{bottom:74px}
-body.naval-active #toast{bottom:76px;max-width:min(360px,50vw)}
+body.naval-active #toast{bottom:142px;max-width:min(360px,50vw)}
 body[data-roman-screen="savas"] #modePage .arena-card-grid[data-arena-panel="single"]{grid-template-columns:repeat(4,minmax(0,1fr))!important;width:min(96%,1126px,calc((var(--game-height,100dvh) - 126px)*3 + 3*var(--card-gap)))!important}
 .arena-choice-art.art-naval{background-image:url('assets/clan-water-20x2-v81.webp');background-size:contain;background-position:center;background-color:#351823}
 @media(max-height:390px){#navalStatus{top:58px;font-size:10px}#navalHelm{padding:6px 10px;min-height:40px;font-size:12px}#navalBridge{width:50px;height:50px}#navalBridge span{top:52px}#navalSailing{right:18px;bottom:20px}}

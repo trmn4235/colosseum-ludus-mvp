@@ -1,5 +1,9 @@
 # Colosseum&Magnus
 
+## Açık yelkenler ve cirit V100
+
+Deniz Savaşı gemilerinde kıvrımlı yükseltilmiş bordalar, bordo/beyaz/siyah/yeşil açık yelkenler ve uyumlu amblemler. Yakın kamera, farklı açılardan başlayan ve boyuna kaydırılmış yaklaşmalar. Her gemide sekiz ciritli silahlık; dokunmatik CİRİT AL / AT veya F / Q ile kullanılır. [Oyun görüntüleri, kontroller ve doğrulama](docs/naval-v100/README.md).
+
 ## Gemiden gemiye atlayış V99
 
 Deniz Savaşı'nda yakın gemiye bakan kenara gelince **ATLA** ikonu ve iniş halkası belirir. Dokunmatik ikona veya bilgisayarda **Boşluk** tuşuna basarak karşı güverteye geçilir. Atlayış 20 kondisyon kullanır, hareketli güverteyi izler ve kısa iniş toparlanmasıyla biter. Dümenin sağ-sol yönü düzeltildi. [Kontroller, oyun içi görseller ve doğrulama](docs/naval-v99/README.md).

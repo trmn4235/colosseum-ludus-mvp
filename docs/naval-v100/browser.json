@@ -1,0 +1,77 @@
+{
+  "initial": {
+    "ships": 4,
+    "fighters": 20,
+    "counts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "calls": 341,
+    "triangles": 1439512
+  },
+  "boatAsset": {
+    "meshes": 36,
+    "geometries": 9,
+    "textures": 6,
+    "skinned": 0,
+    "triangles": 24328,
+    "misses": []
+  },
+  "outfit": {
+    "triangles": 40104,
+    "textures": 8,
+    "sails": [
+      {
+        "height": 3.7799999713897705,
+        "map": "1789028b-fdea-483f-80a4-7cf4ee0b713c",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.7799999713897705,
+        "map": "7c25648b-254f-4a67-abf8-c0995759bd52",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.7799999713897705,
+        "map": "8f6fbd84-f69f-4330-b749-11685b63c9f6",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.7799999713897705,
+        "map": "0794fc47-29ce-4625-b3fc-5f3bc479fbfc",
+        "flag": false,
+        "rack": 8
+      }
+    ],
+    "cameraDistance": 5.193494877434576
+  },
+  "boatRequests": 1,
+  "errors": [],
+  "viewports": 4,
+  "jumpApex": {
+    "height": 1.1104182447386677,
+    "renderHeight": 1.1104182447386677,
+    "shadow": false,
+    "ship": 0,
+    "footHeight": 1.340937802015176,
+    "elapsed": 0.44999999999999996
+  },
+  "controls": "menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume",
+  "note": "Chromium with software GPU. Not a physical phone FPS measurement.",
+  "finalPlacement": {
+    "rackZ": -4.3,
+    "inventory": true,
+    "pickup": true,
+    "hit": true,
+    "keyboard": true,
+    "pause": true,
+    "staggeredGate": true,
+    "errors": [],
+    "triangles": 40104
+  }
+}
