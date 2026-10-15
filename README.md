@@ -1,5 +1,9 @@
 # Colosseum&Magnus
 
+## Gemiden gemiye atlayış V99
+
+Deniz Savaşı'nda yakın gemiye bakan kenara gelince **ATLA** ikonu ve iniş halkası belirir. Dokunmatik ikona veya bilgisayarda **Boşluk** tuşuna basarak karşı güverteye geçilir. Atlayış 20 kondisyon kullanır, hareketli güverteyi izler ve kısa iniş toparlanmasıyla biter. Dümenin sağ-sol yönü düzeltildi. [Kontroller, oyun içi görseller ve doğrulama](docs/naval-v99/README.md).
+
 ## Herculaneum teknesi V98
 
 Deniz Savaşı'nda Opus Poly'nin gerçek Herculaneum modeli kullanılıyor. Yaklaşık 16,5 metrelik gövde, beş kişilik takım için geniş ahşap güverte, toplanmış yelken ve sadeleştirilmiş halatlar. Yüklenen kaynak modele göre 66.776 → 7.064 üçgen ve 22,62 → 1,46 MB; dört tekne aynı geometri ve dokuları paylaşır. [Görseller, kaynak lisansı ve doğrulama](docs/naval-v98/README.md).

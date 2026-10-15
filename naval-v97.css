@@ -9,6 +9,9 @@
 #navalBridge svg{width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round}
 #navalBridge span{position:absolute;left:50%;top:62px;transform:translateX(-50%);white-space:nowrap;padding:4px 7px;background:#172522e8;border:1px solid #b99b55;border-radius:3px;font:11px Arial,sans-serif;color:#ffe4a0}
 #navalBridge.occupied{filter:saturate(.25);box-shadow:none}
+#navalJump{position:absolute;left:calc(50% - 116px);bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:56px;height:61px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:2px solid #ffdf69;border-radius:12px;background:radial-gradient(#e4b940,#a06c13);color:#251a07;box-shadow:0 0 12px #efc64e55}
+#navalJump svg{width:33px;height:33px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#navalJump span{font:bold 10px Arial,sans-serif;letter-spacing:.5px}
 #navalSailing{position:absolute;right:24px;bottom:32px;display:flex;flex-direction:column;align-items:center;gap:8px}
 #navalSailing span{font:11px Arial,sans-serif;text-shadow:0 1px 3px #000}#navalBrake{width:76px;height:60px;border:1px solid #c8ac6d;border-radius:10px;background:#1c3438e8;color:#f6e3ae;font:14px Georgia,serif}
 .naval-helm #attack,.naval-helm #block,.naval-helm #dodge,.naval-helm #special,.naval-helm #hand,.naval-helm #target,.naval-helm #pickup,.naval-helm #regionHint{visibility:hidden!important;pointer-events:none!important}

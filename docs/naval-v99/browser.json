@@ -1,0 +1,35 @@
+{
+  "initial": {
+    "ships": 4,
+    "fighters": 20,
+    "counts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "calls": 165,
+    "triangles": 789878
+  },
+  "boatAsset": {
+    "meshes": 48,
+    "geometries": 12,
+    "textures": 8,
+    "skinned": 0,
+    "triangles": 28256,
+    "misses": []
+  },
+  "boatRequests": 1,
+  "errors": [],
+  "viewports": 4,
+  "jumpApex": {
+    "height": 1.1104182447386677,
+    "renderHeight": 1.1104182447386677,
+    "shadow": false,
+    "ship": 0,
+    "footHeight": 1.340937802015176,
+    "elapsed": 0.44999999999999996
+  },
+  "controls": "menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, resume",
+  "note": "Chromium with software GPU. Not a physical phone FPS measurement."
+}
