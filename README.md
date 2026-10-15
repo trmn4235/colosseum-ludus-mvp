@@ -1,5 +1,9 @@
 # Colosseum&Magnus
 
+## Deniz Savaşı V97
+
+Singleplayer menüsünde dört gemi, her gemide beş gladyatör ve dört kat büyüklüğünde su arenası. Dümeni istediğinde alıp takım arkadaşına bırak; karşı güverteye tam hizalanan tahta köprüyü sarı ikondan açarak savaş. [Kontroller, uygulama ve doğrulama](docs/naval-v97/README.md).
+
 ## Arena performans V96
 
 Arena hazırlık kutusu kaldırıldı; ortak gladyatör çizimleri ve gereksiz animasyon/ön yükleme işleri azaltıldı. Duraklatmada sahne çizimi durur; mobil otomatik görünüm ölçülen kare sürelerine göre çözünürlüğü ayarlar. Aynı 20 gladyatörlü Chromium sahnesinde 302 → 222 çizim çağrısı; model ayrıntıları ve karşılaştırılan hareket pozları aynı. 94 davranış kontrolü ve dört ekran boyutunda tarayıcı kontrolü geçti. Fiziksel iPhone FPS ölçümü yapılmadı. [Değişiklikler, sonuçlar ve test sınırları](docs/performance-v96/README.md).
