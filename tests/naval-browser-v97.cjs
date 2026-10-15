@@ -29,7 +29,8 @@ async function main(){
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/tmp/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader']});
  cleanup=async()=>{await browser.close();await new Promise(r=>server.close(r));};
  const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,deviceScaleFactor:1.5});await context.route('https://**',r=>r.abort());
- const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+ const page=await context.newPage(),errors=[],boatRequests=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+ page.on('request',r=>{if(r.url().includes('/assets/naval/')&&r.url().includes('.glb'))boatRequests.push(r.url());});
  await page.goto(base+'/savas.html?choose=1',{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>document.getElementById('fighterName').textContent==='Cassius');
  assert.equal(await page.locator('#panel-single [data-mode]').count(),4);
@@ -39,9 +40,30 @@ async function main(){
  const start=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('__fixtureStart')));assert.equal(start.p_mode,'4x5');assert.equal(start.p_gladiator,'g0');assert.ok(start.p_request);
 
  await page.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:60000});await page.evaluate(()=>__arena.freeze());
+ assert.equal(await page.locator('#fatal').isVisible(),false,'the initial naval render must finish without a fatal error');
+ assert.deepEqual(errors,[]);
  const initial=await page.evaluate(()=>({ships:__arena.naval.ships.length,fighters:__arena.combat.fighters.length,counts:__arena.naval.ships.map(s=>__arena.combat.fighters.filter(f=>f.team===s.team).length),calls:__arena.renderer.info.render.calls,triangles:__arena.renderer.info.render.triangles}));
  assert.equal(initial.ships,4);assert.deepEqual(initial.counts,[5,5,5,5]);assert.equal(initial.fighters,20);
+ const boatAsset=await page.evaluate(()=>{
+  const views=__arena.view.views,geometries=new Set(),textures=new Set();let skinned=0,triangles=0,meshes=0;
+  for(const v of views)v.group.traverse(o=>{if(!o.isMesh||!o.userData.navalRole)return;meshes++;if(o.isSkinnedMesh)skinned++;geometries.add(o.geometry.uuid);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;for(const key of ['map','normalMap','roughnessMap','metalnessMap','aoMap'])if(o.material[key])textures.add(o.material[key].uuid);});
+  // Sample the entire playable rectangle against the rendered deck triangles.
+  // This catches a hull resize whose corners leave fighters standing on water.
+  const boat=views[0].group;boat.updateMatrixWorld(true);const decks=[];boat.traverse(o=>{if(o.isMesh&&o.userData.navalRole==='deck')decks.push(o);});
+  const ray=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),misses=[];
+  const ship=views[0].ship,C=NavalSimulation.constants;
+  for(let x=-C.halfWidth+C.margin;x<=C.halfWidth-C.margin+.01;x+=.28)for(let z=-C.halfLength+C.margin;z<=C.halfLength-C.margin+.01;z+=.28){const q=NavalSimulation.world(ship,x,z);ray.set(new THREE.Vector3(q.x,2,q.z),down);const hit=ray.intersectObjects(decks,false)[0];if(!hit||Math.abs(hit.point.y)>.025)misses.push({x,z,y:hit?.point.y});}
+  return{meshes,geometries:geometries.size,textures:textures.size,skinned,triangles,misses};
+ });
+ assert.equal(boatRequests.length,1,'four boats load one shared GLB');
+ assert.equal(boatAsset.skinned,0,'the boat must not evaluate a skeleton');
+ assert.equal(boatAsset.geometries,boatAsset.meshes/4,'geometry is shared across all four clones');
+ assert.ok(boatAsset.textures<=8,'source textures are shared, not copied per ship');
+ assert.ok(boatAsset.triangles<40000,'all four boats stay below 40,000 triangles');
+ assert.deepEqual(boatAsset.misses,[],'every playable deck sample has a rendered surface');
  await page.screenshot({path:out+'/naval-844.png'});
+ await page.evaluate(()=>{const s=__arena.naval.ships[0];__arena.camera.position.set(s.x+14,9,s.z-16);__arena.camera.lookAt(s.x,.6,s.z);__arena.renderer.render(__arena.scene,__arena.camera);});
+ await page.screenshot({path:out+'/boat-five-crew.png'});
  await page.evaluate(()=>__arena.setPaused(false));await page.locator('#navalHelm').click();
  assert.equal(await page.evaluate(()=>__arena.naval.manual),true);await page.evaluate(()=>{const render=__arena.renderer.render;__arena.renderer.render=()=>{};try{for(let i=0;i<45;i++)__arena.step(1/60);}finally{__arena.renderer.render=render;}__arena.step(1/60);});
  await page.screenshot({path:out+'/helm.png'});
@@ -71,7 +93,7 @@ async function main(){
  assert.deepEqual(errors,[]);
  // The remembered scene survives a same-device resume URL without its arena parameter.
  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__arena?.started,null,{timeout:60000});assert.equal(await page.evaluate(()=>__arena.naval.ships.length),4);await page.evaluate(()=>__arena.freeze());
- fs.writeFileSync(out+'/report.json',JSON.stringify({initial,errors,viewports:4,controls:'menu selection, server ticket, take/release, AI takeover, valid and invalid bridge, boarding, pause, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
- console.log(JSON.stringify({initial,errors,out}));await cleanup();
+ fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,boatRequests:boatRequests.length,errors,viewports:4,controls:'menu selection, server ticket, take/release, AI takeover, valid and invalid bridge, boarding, pause, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
+ console.log(JSON.stringify({initial,boatAsset,errors,out}));await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exit(1);});

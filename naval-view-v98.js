@@ -1,50 +1,35 @@
-/* Original Roman-inspired open-deck galley. Shared geometry; existing project wood texture. */
+/* Herculaneum Boat by Opus Poly, CC BY 4.0. Enlarged and optimized V98; see asset credits. */
 (function(root){
   'use strict';
   const T=root.THREE,C=root.NavalSimulation.constants;
   const palette=[0x315d94,0x8a2635,0x416a4f,0x704d83];
+  const assetURL='assets/naval/herculaneum-v98.glb';
+  let source=null,pending=null;
+  function load(){
+    if(pending)return pending;
+    pending=(async()=>{
+      const bytes=await root.ArenaAssetLoad(assetURL);
+      const gltf=await new T.GLTFLoader().parseAsync(bytes,'');
+      const model=gltf.scene;model.name='Herculaneum battle boat';
+      model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;o.material.envMapIntensity=.65;}});
+      source=model;return model;
+    })().catch(error=>{pending=null;throw Error('Tekne modeli yüklenemedi. Sayfayı yeniden aç. '+error.message);});
+    return pending;
+  }
   function template(){
-    const woodMap=new T.TextureLoader().load('assets/textures/wooden_gate-diff-67741a5af1f9.webp');
-    woodMap.colorSpace=T.SRGBColorSpace;woodMap.wrapS=woodMap.wrapT=T.RepeatWrapping;woodMap.repeat.set(2,2);
-    const materials={wood:new T.MeshStandardMaterial({map:woodMap,color:0x9c7950,roughness:.9}),dark:new T.MeshStandardMaterial({map:woodMap,color:0x473326,roughness:.95}),bronze:new T.MeshStandardMaterial({color:0x9a773e,roughness:.55,metalness:.65}),paint:new T.MeshStandardMaterial({color:0xffffff,roughness:.8})};
-    const buckets={wood:[],dark:[],bronze:[],paint:[]};
-    function add(g,type,x=0,y=0,z=0,rx=0,ry=0,rz=0){const m=new T.Matrix4().compose(new T.Vector3(x,y,z),new T.Quaternion().setFromEuler(new T.Euler(rx,ry,rz)),new T.Vector3(1,1,1));g.applyMatrix4(m);if(g.index)g=g.toNonIndexed();buckets[type].push(g);}
-    function box(w,h,d,type,x,y,z,rx=0,ry=0,rz=0){add(new T.BoxGeometry(w,h,d),type,x,y,z,rx,ry,rz);}
-    function beam(a,b,r,type){const av=new T.Vector3(...a),bv=new T.Vector3(...b),m=new T.Matrix4().compose(av.clone().add(bv).multiplyScalar(.5),new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0),bv.clone().sub(av).normalize()),new T.Vector3(1,1,1));const g=new T.CylinderGeometry(r,r,av.distanceTo(bv),6).applyMatrix4(m);buckets[type].push(g.toNonIndexed());}
-    const stations=[[-7.2,.08],[-6.5,.95],[-5.5,2.35],[-4.5,2.6],[4.5,2.6],[5.5,2.25],[6.7,.9],[7.5,.05]],vertices=[],uvs=[];
-    function tri(a,b,c){vertices.push(...a,...b,...c);for(const p of [a,b,c])uvs.push(p[2]/6,p[1]+1.5);}
-    for(let i=0;i<stations.length-1;i++)for(const side of [-1,1]){
-      const [z0,w0]=stations[i],[z1,w1]=stations[i+1];
-      for(let j=0;j<3;j++){const layers=[[1,-.08],[.93,-.7],[.65,-1.25],[.18,-1.6]],a=layers[j],b=layers[j+1];
-        const p=[side*w0*a[0],a[1],z0],q=[side*w1*a[0],a[1],z1],r=[side*w1*b[0],b[1],z1],s=[side*w0*b[0],b[1],z0];
-        if(side>0){tri(p,r,q);tri(p,s,r);}else{tri(p,q,r);tri(p,r,s);}
-      }
-      const a=[-w0,-.08,z0],b=[w0,-.08,z0],c=[w1,-.08,z1],d=[-w1,-.08,z1];if(side===1){tri(a,c,b);tri(a,d,c);}
-      beam([side*w0,.18,z0],[side*w1,.18,z1],.075,'bronze');
-      beam([side*w0*.93,-.7,z0],[side*w1*.93,-.7,z1],.07,'dark');
-      beam([side*w0*.99,-.22,z0],[side*w1*.99,-.22,z1],.12,'paint');
-    }
-    const hull=new T.BufferGeometry();hull.setAttribute('position',new T.Float32BufferAttribute(vertices,3));hull.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));hull.computeVertexNormals();buckets.wood.push(hull);
-    // Deck planks, interrupted side rails at both boarding stations.
-    for(let x=-2.45;x<2.5;x+=.31)box(.018,.018,10.9,'dark',x,-.025,0);
-    for(const side of [-1,1])for(const z of [-4.7,-3.4,-2.1,2.1,3.4,4.7]){
-      box(.1,.65,.1,'dark',side*2.56,.28,z);
-      if(z!==-2.1&&z!==4.7)beam([side*2.56,.6,z],[side*2.56,.6,z+1.3],.06,'wood');
-      if(Math.abs(z)>3){add(new T.CylinderGeometry(.43,.43,.08,14),'paint',side*2.68,.34,z,0,0,Math.PI/2);add(new T.SphereGeometry(.14,8,6),'bronze',side*2.75,.34,z);}
-    }
-    box(5.15,.12,.18,'dark',0,.01,-5.2);box(5.15,.12,.18,'dark',0,.01,5.2);
-    beam([0,-.7,6.4],[0,-.65,8.6],.18,'bronze');
-    beam([0,.1,-6.7],[0,1.5,-7.6],.13,'dark');beam([0,1.5,-7.6],[0,1.9,-7.1],.11,'bronze');
-    // Steering tiller, with a clear standing area for the helmsman.
-    beam([.8,.12,-4.7],[.8,.85,-4.7],.09,'dark');beam([.8,.85,-4.7],[0,.85,-3.6],.09,'wood');
-    beam([1.75,.1,-4.8],[1.75,3.3,-4.8],.055,'dark');add(new T.SphereGeometry(.15,8,6),'bronze',1.75,3.35,-4.8);
-    box(.85,1.1,.045,'paint',1.3,2.48,-4.8);box(.82,.035,.065,'bronze',1.3,1.93,-4.8);
-    const group=new T.Group();group.name='Roman galley — original V97';
-    for(const [type,geometries] of Object.entries(buckets)){
-      if(!geometries.length)continue;
-      const geometry=root.ArenaGeometryUtils.mergeGeometries(geometries,false),m=new T.Mesh(geometry,materials[type]);
-      m.name=type;m.castShadow=type!=='bronze';m.receiveShadow=true;group.add(m);geometries.forEach(g=>g.dispose());
-    }
+    if(!source)throw Error('Herculaneum modeli henüz hazır değil.');
+    const group=source.clone(true);
+    let originalWood;
+    group.traverse(o=>{if(o.isMesh&&o.material.name==='Hull')originalWood=o.material;});
+    const wood=originalWood.clone();wood.vertexColors=false;wood.color.setHex(0xb7a38a);
+    const dark=wood.clone();dark.color.setHex(0x493728);
+    const materials={wood,dark,bronze:new T.MeshStandardMaterial({color:0x9a773e,roughness:.65,metalness:.5}),paint:new T.MeshStandardMaterial({color:0xffffff,roughness:.95,side:T.DoubleSide})};
+    // Small stern pennants identify the four teams without recolouring the
+    // original hull. Every clone shares geometry and all eight source textures.
+    const pole=new T.Mesh(new T.CylinderGeometry(.035,.045,2.8,6),dark);pole.position.set(1.7,1.35,-5.7);pole.castShadow=true;group.add(pole);
+    const flagGeo=new T.PlaneGeometry(.85,1.2,2,3),pos=flagGeo.attributes.position;
+    for(let i=0;i<pos.count;i++)pos.setZ(i,Math.sin(pos.getX(i)*4+pos.getY(i)*2)*.045);
+    flagGeo.computeVertexNormals();const flag=new T.Mesh(flagGeo,materials.paint);flag.name='paint';flag.position.set(1.27,1.94,-5.7);flag.castShadow=true;group.add(flag);
     return {group,materials};
   }
   function create(naval,scene,camera,options){
@@ -61,13 +46,8 @@
         const seams=new T.Mesh(seamGeometry,materials.dark);seams.position.x=side*C.bridgeLength/2;pivot.add(seams);
         const rail=new T.Mesh(new T.BoxGeometry(C.bridgeLength,.1,.07),materials.bronze);rail.position.set(side*C.bridgeLength/2,.1,C.bridgeWidth/2);pivot.add(rail);const second=rail.clone();second.position.z=-C.bridgeWidth/2;pivot.add(second);
         bridgeViews.push({ship,side,pivot});
-        const oars=new T.Group();group.add(oars);
-        for(const z of [-4.4,-3.1,-1.8,1.8,3.1,4.4]){
-          const oar=new T.Mesh(new T.BoxGeometry(2.2,.07,.09),materials.dark);oar.position.set(side*3.1,-.15,z);oar.rotation.z=-side*.3;oars.add(oar);
-          const blade=new T.Mesh(new T.BoxGeometry(.75,.07,.3),materials.wood);blade.position.set(side*4.1,-.45,z);blade.rotation.z=-side*.3;oars.add(blade);
-        }
-        // Batch each bank of oars into two meshes, keeping its rowing transform cheap.
-        for(const material of [materials.dark,materials.wood]){const parts=oars.children.filter(m=>m.material===material),gs=parts.map(m=>{m.updateMatrix();return m.geometry.clone().applyMatrix4(m.matrix).toNonIndexed();});const geometry=root.ArenaGeometryUtils.mergeGeometries(gs,false),mesh=new T.Mesh(geometry,material);parts.forEach(m=>{oars.remove(m);m.geometry.dispose();});gs.forEach(g=>g.dispose());oars.add(mesh);}
+        const role=side<0?'oars-port':'oars-starboard';
+        const oars=group.children.find(o=>o.userData.navalRole===role);
         sides.push({side,oars});
       }
       views.push({ship,group,sides});
@@ -109,5 +89,5 @@
     }
     return{update,views,water,panel,get braking(){return braking;}};
   }
-  root.NavalView={create};
+  root.NavalView={create,load,assetURL};
 })(window);

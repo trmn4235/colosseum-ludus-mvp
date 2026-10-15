@@ -13,3 +13,13 @@ Gladiator — huyunited
 CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
 https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c
 Textures resized; body parts batched; scale, equipment and animation adapted.
+
+Herculaneum Boat - Roman Boat — Opus Poly
+https://sketchfab.com/OpusPoly
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+https://sketchfab.com/3d-models/herculaneum-boat-roman-boat-fd84e8e9cf184426b1701e80c9018067
+Runtime asset: assets/naval/herculaneum-v98.glb
+Modified for the game: enlarged and widened hull; open wooden battle deck;
+furled sail and forward mast; reduced oars, rigging and hidden interior;
+baked static geometry without skeleton or animation; simplified meshes and
+resized/recompressed textures. Source authorship and license remain embedded.
