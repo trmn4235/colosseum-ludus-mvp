@@ -84,23 +84,25 @@
     }
     const rippleMap=new T.DataTexture(rippleData,rippleSize,rippleSize);rippleMap.wrapS=rippleMap.wrapT=T.RepeatWrapping;rippleMap.magFilter=T.LinearFilter;rippleMap.minFilter=T.LinearMipmapLinearFilter;rippleMap.generateMipmaps=true;rippleMap.anisotropy=4;rippleMap.needsUpdate=true;
     const waterTime={value:0},waterShips={value:naval.ships.map(s=>new T.Vector4(s.x,s.z,s.angle,s.speed))},waterMaterial=new T.MeshPhysicalMaterial({color:0x214e53,roughness:.19,metalness:0,ior:1.333,specularIntensity:1,envMapIntensity:1.15});
+    const waterHeadings={value:naval.ships.map(s=>new T.Vector2(Math.cos(s.angle),Math.sin(s.angle)))};
     waterMaterial.uniforms={time:waterTime,ships:waterShips};
     waterMaterial.onBeforeCompile=shader=>{
-      shader.uniforms.waterTime=waterTime;shader.uniforms.waterRipple={value:rippleMap};shader.uniforms.waterShips=waterShips;
+      shader.uniforms.waterTime=waterTime;shader.uniforms.waterRipple={value:rippleMap};shader.uniforms.waterShips=waterShips;shader.uniforms.waterHeadings=waterHeadings;
       shader.vertexShader='varying vec3 navalWaterWorld;\n'+shader.vertexShader;
       shader.vertexShader=shader.vertexShader.replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nnavalWaterWorld=(modelMatrix*vec4(transformed,1.)).xyz;');
-      shader.fragmentShader='uniform float waterTime;uniform sampler2D waterRipple;uniform vec4 waterShips[4];varying vec3 navalWaterWorld;\n'+shader.fragmentShader;
+      shader.fragmentShader='uniform float waterTime;uniform sampler2D waterRipple;uniform vec4 waterShips[4];uniform vec2 waterHeadings[4];varying vec3 navalWaterWorld;\n'+shader.fragmentShader;
       shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
         vec2 waterP=navalWaterWorld.xz;
         float waterNoise=texture2D(waterRipple,waterP*.085+vec2(waterTime*.004,-waterTime*.002)).b;
         float waterFoam=0.;
         for(int i=0;i<4;i++){
-          vec4 ship=waterShips[i];vec2 v=waterP-ship.xy;float c=cos(ship.z),s=sin(ship.z);vec2 q=vec2(v.x*c-v.y*s,v.x*s+v.y*c);
+          vec4 ship=waterShips[i];vec2 v=waterP-ship.xy;float c=waterHeadings[i].x,s=waterHeadings[i].y;vec2 q=vec2(v.x*c-v.y*s,v.x*s+v.y*c);
           if(dot(q,q)<520.){
             float speed=clamp(abs(ship.w)/2.2,0.,1.);float tail=-q.y*(ship.w<0.?-1.:1.)-5.8;
             float wake=(1.-smoothstep(.08,.7,abs(abs(q.x)-(.7+max(0.,tail)*.28))))*smoothstep(0.,1.,tail)*(1.-smoothstep(1.,13.,tail));
             float broken=smoothstep(.35,.63,waterNoise+sin(tail*2.6-waterTime*2.)*.10);
-            float width=3.25*sqrt(max(.01,1.-pow(abs(q.y)/8.1,4.)));
+            float hullY=q.y/8.1,hullY2=hullY*hullY;
+            float width=3.25*sqrt(max(.01,1.-hullY2*hullY2));
             float rim=(1.-smoothstep(.025,.20,abs(abs(q.x)-width)))*(1.-smoothstep(7.3,8.1,abs(q.y)));
             waterFoam+=wake*broken*speed*.42+rim*(.025+.10*speed);
           }
@@ -120,7 +122,7 @@
         normal=normalize(mat3(viewMatrix)*normalize(vec3(-slope.x,1.,-slope.y)));
       `);
     };
-    waterMaterial.customProgramCacheKey=()=> 'naval-water-surface-v105';
+    waterMaterial.customProgramCacheKey=()=> 'naval-water-surface-v106';
     const water=new T.Mesh(new T.CircleGeometry(naval.arenaRadius*1.5,96),waterMaterial);
     water.rotation.x=-Math.PI/2;water.position.y=-.72;water.renderOrder=-1;scene.add(water);
     const panel=document.createElement('div');panel.id='navalControls';panel.innerHTML=`<div id="navalStatus" role="status"></div><button id="navalHelm" title="Dümeni al / bırak · I" aria-label="Dümeni al"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="2"/><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6"/></svg></button><button id="navalBridge" title="Geçiş köprüsü · E" hidden aria-label="Köprüyü aç"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m6 29 28-18M6 23l28-18M8 24l3 5M14 20l3 5M20 16l3 5M26 12l3 5M32 8l3 5"/></svg><span>Köprüyü aç</span></button><div id="navalSailing" hidden><span>Yön ve hız: sol kontrol / WASD</span><button id="navalBrake">Yavaşla</button></div>`;
@@ -209,7 +211,7 @@
         for(const b of naval.bridges)if((b.to===v.ship.id||b.from===v.ship.id)&&b.phase!=='closed'&&gate<v.gates.value.length){const landing=NavalSimulation.local(v.ship,naval.bridgeEntry(b,v.ship.id));v.gates.value[gate++].set(Math.sign(landing.x),landing.z,1);}
         for(const s of v.sides)s.oars.rotation.z=naval.linked(v.ship)?s.side*.45:Math.sin(time*3.2)*Math.min(.07,Math.abs(v.ship.speed)*.035);}
       for(const v of bridgeViews){const b=naval.bridges.find(b=>b.from===v.ship.id&&b.side===v.side&&(b.station||0)===v.station&&b.phase!=='closed');const open=b?.progress||0;v.pivot.visible=!!b;v.pivot.scale.x=(b?.length||C.bridgeLength)/C.bridgeLength;v.pivot.rotation.y=-v.side*(1-open)*Math.PI/2;}
-      for(let i=0;i<naval.ships.length;i++){const s=naval.ships[i];waterShips.value[i].set(s.x,s.z,s.angle,s.speed);}
+      for(let i=0;i<naval.ships.length;i++){const s=naval.ships[i];waterShips.value[i].set(s.x,s.z,s.angle,s.speed);waterHeadings.value[i].set(Math.cos(s.angle),Math.sin(s.angle));}
       // At a distance the uniform's small fittings occupy less than a few pixels.
       for(const f of naval.combat.fighters){const m=options.models?.()[f.id];if(!m||!f.navalUniform)continue;const near=Math.hypot(f.x-camera.position.x,f.z-camera.position.z)<18;
         for(const key of ['shoulder','otherShoulder','collar','Leftgreave','Rightgreave']){const slot=m.gear[key];if(slot?.group.userData.navalUniform)slot.group.visible=near&&(key!=='collar'||m.shoulderModel==='armor_shoulder');}
@@ -230,7 +232,8 @@
       updateJavelins();updateRopes(time);
       if(!active)braking=false;
     }
-    return{update,views,water,panel,jump,rally,swing,javelin,javelinViews,heldJavelin,aimLine,bridgeViews,landingMark,ropeMesh,ropeLandingMark,ropeLaunchMark,get braking(){return braking;}};
+    const uniformBatch=root.NavalPerformance?.uniforms(scene,options.models);
+    return{update,views,water,panel,jump,rally,swing,javelin,javelinViews,heldJavelin,aimLine,bridgeViews,landingMark,ropeMesh,ropeLandingMark,ropeLaunchMark,uniformBatch,get braking(){return braking;}};
   }
   root.NavalView={create,load,assetURL};
 })(window);

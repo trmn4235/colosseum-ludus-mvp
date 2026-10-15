@@ -13,6 +13,9 @@ Gladiator — huyunited
 CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
 https://sketchfab.com/3d-models/gladiator-204ffa14fd70440e803708154b5f083c
 Textures resized; body parts batched; scale, equipment and animation adapted.
+V106 naval body detail levels use simplified triangle indices from the same
+model; original vertex positions, normals, UVs and bone weights are retained.
+Runtime detail data: assets/naval/gladiator-lod-v106.bin
 
 Herculaneum Boat - Roman Boat — Opus Poly
 https://sketchfab.com/OpusPoly

@@ -1,0 +1,144 @@
+{
+  "initial": {
+    "ships": 4,
+    "fighters": 20,
+    "counts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "calls": 316,
+    "triangles": 862421
+  },
+  "boatAsset": {
+    "meshes": 36,
+    "geometries": 9,
+    "textures": 9,
+    "skinned": 0,
+    "triangles": 24328,
+    "misses": []
+  },
+  "outfit": {
+    "triangles": 48488,
+    "textures": 9,
+    "sails": [
+      {
+        "height": 3.8600001335144043,
+        "map": "b6415af0-4ec4-46b3-b825-13dff2894995",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.8600001335144043,
+        "map": "85160a0e-08ba-463f-8da4-7b77fed28837",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.8600001335144043,
+        "map": "892fbe56-b632-4998-8fbe-81a914aecb3b",
+        "flag": false,
+        "rack": 8
+      },
+      {
+        "height": 3.8600001335144043,
+        "map": "cf446713-f3f3-49b8-a1e7-7e1be1caaad2",
+        "flag": false,
+        "rack": 8
+      }
+    ],
+    "cameraDistance": 4.322440094621881
+  },
+  "hudLayout": {
+    "helm": 42,
+    "head": 42,
+    "text": "",
+    "teamY": 364.65625,
+    "height": 390,
+    "energyFont": 9,
+    "areaRatio": 2.0000000000000004
+  },
+  "eyeView": {
+    "mode": "first",
+    "saved": "first",
+    "height": 1.9169226181796142,
+    "eyeHeight": 1.9169226181796142,
+    "mask": 1,
+    "helmetVisible": false,
+    "fov": 68,
+    "armMeshes": 1,
+    "otherActorMask": false
+  },
+  "wall": {
+    "measured": true,
+    "min": 49.91329231331884,
+    "max": 91.97761350531516,
+    "samples": [
+      60.78981011263014,
+      61.22806911990937,
+      49.91329231331884,
+      69.60922013212591,
+      72.93298646027104,
+      61.31759485931416,
+      81.3515407254595,
+      73.76881053025495,
+      85.60176458252516,
+      90.55698035814248,
+      85.60176458252515,
+      73.76881028230093,
+      84.16760167725104,
+      61.31759761372907,
+      74.27590560122027,
+      71.67929860998062,
+      69.33489906172096,
+      62.95103308697558,
+      62.172109780406714,
+      62.72434045417733,
+      69.41522676294181,
+      71.73105525985902,
+      74.04688602927993,
+      61.317681036839254,
+      84.06001095658699,
+      73.76880701872614,
+      90.82056229751548,
+      91.69712009061611,
+      90.43209933058375,
+      73.76881028230093,
+      81.04773486153113,
+      61.31759485931417,
+      72.98161296258802,
+      69.54237237571334,
+      49.913292313318856,
+      61.02159520076097
+    ],
+    "ports": 24,
+    "uniforms": true
+  },
+  "aim": {
+    "visible": true,
+    "count": 25,
+    "opacity": 0.48
+  },
+  "uniformBudget": {
+    "triangles": 309991,
+    "geometries": 10
+  },
+  "multiPort": {
+    "open": 3,
+    "visible": 3
+  },
+  "boatRequests": 1,
+  "errors": [],
+  "viewports": 4,
+  "jumpApex": {
+    "height": 1.1181051372638204,
+    "renderHeight": 1.1181051372638204,
+    "shadow": false,
+    "ship": 0,
+    "footHeight": 1.3534141529673251,
+    "elapsed": 0.4666666666666666
+  },
+  "controls": "menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume",
+  "note": "Chromium with software GPU. Not a physical phone FPS measurement."
+}

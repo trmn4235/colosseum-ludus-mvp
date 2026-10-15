@@ -1,0 +1,237 @@
+{
+  "initial": {
+    "ships": 4,
+    "fighters": 20,
+    "counts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "calls": 366,
+    "triangles": 1620198
+  },
+  "performance": {
+    "groups": {
+      "scene": {
+        "meshes": 611,
+        "triangles": 1857005,
+        "casters": 153,
+        "bones": 680
+      },
+      "player": {
+        "meshes": 18,
+        "triangles": 126413,
+        "casters": 15,
+        "bones": 34
+      },
+      "npc": {
+        "meshes": 17,
+        "triangles": 78315,
+        "casters": 14,
+        "bones": 34
+      },
+      "ship0": {
+        "meshes": 42,
+        "triangles": 12122,
+        "casters": 21,
+        "bones": 0
+      },
+      "ship1": {
+        "meshes": 42,
+        "triangles": 12122,
+        "casters": 21,
+        "bones": 0
+      },
+      "ship2": {
+        "meshes": 42,
+        "triangles": 12122,
+        "casters": 21,
+        "bones": 0
+      },
+      "ship3": {
+        "meshes": 42,
+        "triangles": 12122,
+        "casters": 21,
+        "bones": 0
+      }
+    },
+    "largest": [
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": true,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": true,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": true,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": true,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": true,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": false,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": false,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": false,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": false,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": false,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": false,
+        "visible": true,
+        "skinned": true
+      },
+      {
+        "name": "Object_8",
+        "triangles": 55228,
+        "cast": false,
+        "visible": true,
+        "skinned": true
+      }
+    ],
+    "cpu": {
+      "frame": {
+        "mean": 2.0754166667039198,
+        "p50": 2,
+        "p95": 3.8000000044703484
+      },
+      "simulation": {
+        "mean": 0.19999999993791182,
+        "p50": 0.19999999552965164,
+        "p95": 0.5999999940395355
+      },
+      "animation": {
+        "mean": 1.4979166666356225,
+        "p50": 1.5,
+        "p95": 3.0999999940395355
+      },
+      "view": {
+        "mean": 0.10208333324020108,
+        "p50": 0.10000000149011612,
+        "p95": 0.20000000298023224
+      }
+    },
+    "render": {
+      "full": {
+        "mean": 26.940000000596047,
+        "p50": 24.100000001490116,
+        "p95": 40,
+        "calls": 480,
+        "triangles": 1719687
+      },
+      "noWater": {
+        "mean": 14.06000000089407,
+        "p50": 12.800000004470348,
+        "p95": 17.399999998509884,
+        "calls": 479,
+        "triangles": 1719591
+      },
+      "noShadows": {
+        "mean": 23.659999999403954,
+        "p50": 25.69999999552965,
+        "p95": 32.70000000298023,
+        "calls": 480,
+        "triangles": 1719687
+      },
+      "noCharacters": {
+        "mean": 8,
+        "p50": 6,
+        "p95": 17,
+        "calls": 176,
+        "triangles": 242541
+      },
+      "crowdedDeck": {
+        "mean": 21.779999999701978,
+        "p50": 21.5,
+        "p95": 23.69999999552965,
+        "calls": 470,
+        "triangles": 1719016
+      }
+    },
+    "detail": {
+      "bodies": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "visible": 20
+    },
+    "dpr": 1.25,
+    "memory": {
+      "geometries": 181,
+      "textures": 156
+    },
+    "note": "Headless Chromium, software WebGL; no device FPS claim."
+  },
+  "errors": []
+}
