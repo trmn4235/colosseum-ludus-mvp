@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '22'
       - name: Simulation and combat regressions
-        run: node --test tests/naval-v97.test.cjs tests/naval-boat-v98.test.cjs tests/naval-jump-v99.test.cjs tests/naval-javelin-v100.test.cjs tests/combat-feel-v23.test.cjs
+        run: node --test tests/naval-v97.test.cjs tests/naval-v102.test.cjs tests/naval-boat-v98.test.cjs tests/naval-jump-v99.test.cjs tests/naval-javelin-v100.test.cjs tests/combat-feel-v23.test.cjs
       - name: Install isolated browser tooling
         run: |
           npm install --no-save --no-package-lock playwright@1.64.1
