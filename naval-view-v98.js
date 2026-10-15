@@ -118,6 +118,39 @@
       return false;
     }
     jumpButton.onclick=jump;
+    const rallyButton=document.createElement('button');rallyButton.id='navalRally';rallyButton.title='Takımını yanına çağır / serbest bırak · T';rallyButton.setAttribute('aria-label','Takımını yanına çağır');rallyButton.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="8" r="3"/><circle cx="6" cy="11" r="2.5"/><circle cx="26" cy="11" r="2.5"/><path d="M11 21v-4a5 5 0 0 1 10 0v4M2 22v-5a4 4 0 0 1 6-3m22 8v-5a4 4 0 0 0-6-3M6 27h7l-3-3m3 3-3 3m16-3h-7l3-3m-3 3 3 3"/></svg><small></small>';panel.append(rallyButton);
+    function rally(){if(!options.active())return false;const changed=naval.toggleRally();if(changed)options.toast(naval.rally?'Takımın yanına geliyor. Tekrar bas: serbest bırak.':'Takımın serbest savaş düzenine döndü.');return changed;}
+    rallyButton.onclick=rally;
+    const ropeButton=document.createElement('button');ropeButton.id='navalRope';ropeButton.hidden=true;ropeButton.title='Halatla karşı gemiye geç · G';ropeButton.setAttribute('aria-label','Halatla karşı gemiye geç');ropeButton.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 3h22M17 3v8m-3 1 3 3 4-3M17 15l-2 8-6 4m6-4 7 5"/><circle cx="22" cy="17" r="2.5"/><path d="m15 20 5-1 3 3"/></svg>';panel.append(ropeButton);
+    function swing(){
+      if(!options.active()||naval.manual)return false;
+      if(naval.swing()){options.clearInput();options.toast('Halatla karşı güverteye geçiyorsun.');return true;}
+      options.toast(naval.player().stamina<C.ropeCost?'Halat için 25 kondisyon gerekiyor.':naval.nearRope()?'Halatın ulaşacağı boş bir güverte bekle.':'Direğin yanındaki halata yaklaş.');return false;
+    }
+    ropeButton.onclick=swing;
+    // Eight shared ropes: one draw call, no physics chain or per-frame geometry.
+    const ropeViews=naval.ships.flatMap(ship=>[-1,1].map(side=>({ship,side}))),ropeMesh=new T.InstancedMesh(new T.CylinderGeometry(.025,.025,1,6),new T.MeshStandardMaterial({color:0xbfa173,roughness:1}),ropeViews.length);
+    ropeMesh.name='Boarding ropes';ropeMesh.frustumCulled=false;ropeMesh.instanceMatrix.setUsage(T.DynamicDrawUsage);scene.add(ropeMesh);
+    const ropeStart=new T.Vector3(),ropeEnd=new T.Vector3(),ropeOtherHand=new T.Vector3(),ropeDirection=new T.Vector3(),ropeDummy=new T.Object3D(),ropeUp=new T.Vector3(0,1,0);
+    const ropeLandingMark=new T.Mesh(new T.RingGeometry(.46,.55,24),landingMark.material),ropeLaunchMark=new T.Mesh(new T.RingGeometry(.25,.31,20),landingMark.material);for(const mark of [ropeLandingMark,ropeLaunchMark]){mark.rotation.x=-Math.PI/2;mark.visible=false;scene.add(mark);}
+    let ropeTarget=null,ropeCheckAt=-Infinity,ropeNearKey='';
+    function updateRopes(time){
+      const f=naval.player(),near=naval.nearRope(),active=options.active(),crew=naval.rallyStatus();
+      rallyButton.disabled=!crew.total;ui.attr(rallyButton,'aria-pressed',String(crew.active));ui.attr(rallyButton,'aria-label',crew.active?'Takım çağrısını bitir':'Takımını yanına çağır');ui.text(rallyButton.querySelector('small'),crew.active?crew.near+'/'+crew.total:'');
+      const nearKey=near?near.ship.id+':'+near.side:'';if(nearKey!==ropeNearKey||time<ropeCheckAt||time>=ropeCheckAt+.1){ropeTarget=active?naval.ropeCandidate():null;ropeCheckAt=time;ropeNearKey=nearKey;}
+      const ready=!!near&&!!ropeTarget&&f.action==='idle'&&f.stamina>=C.ropeCost;
+      ui.hidden(ropeButton,!active||!near);ui.toggle(ropeButton,'ready',ready);ui.attr(ropeButton,'aria-disabled',String(!ready));
+      ropeLandingMark.visible=active&&ready;ropeLaunchMark.visible=active&&!!near;
+      if(ready){const end=NavalSimulation.world(naval.ships[ropeTarget.to],ropeTarget.landing.x,ropeTarget.landing.z);ropeLandingMark.position.set(end.x,.085,end.z);}
+      if(near)ropeLaunchMark.position.set(near.point.x,.08,near.point.z);
+      for(let i=0;i<ropeViews.length;i++){
+        const v=ropeViews[i],anchor=naval.ropeAnchor(v.ship,v.side),rest=naval.ropePoint(v.ship,v.side);ropeStart.set(anchor.x,anchor.y,anchor.z);ropeEnd.set(rest.x,2.24,rest.z);
+        const actor=naval.combat.fighters.find(o=>o.navJump?.kind==='rope'&&o.navJump.from===v.ship.id&&o.navJump.side===v.side&&!o.navJump.released),m=actor&&options.models?.()[actor.id];
+        if(actor){if(m?.bones?.LeftHand&&m?.bones?.RightHand){m.bones.LeftHand.getWorldPosition(ropeEnd);m.bones.RightHand.getWorldPosition(ropeOtherHand);ropeEnd.add(ropeOtherHand).multiplyScalar(.5);}else ropeEnd.set(actor.x,(actor.navHeight||0)+2.24,actor.z);}
+        ropeDirection.subVectors(ropeEnd,ropeStart);const length=ropeDirection.length();ropeDummy.position.copy(ropeStart).add(ropeEnd).multiplyScalar(.5);ropeDummy.quaternion.setFromUnitVectors(ropeUp,ropeDirection.normalize());ropeDummy.scale.set(1,length,1);ropeDummy.updateMatrix();ropeMesh.setMatrixAt(i,ropeDummy.matrix);
+      }
+      ropeMesh.instanceMatrix.needsUpdate=true;
+    }
     const javelinButton=document.createElement('button');javelinButton.id='navalJavelin';javelinButton.hidden=true;javelinButton.title='Cirit al · F / Cirit at · Q';javelinButton.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 28 24 7M22 9l2-6 5-1-1 5-6 2M7 21l4 4"/></svg><span>CİRİT AL</span><small></small>';panel.append(javelinButton);
     function javelin(){
       if(!outfitted||!options.active()||naval.manual)return false;
@@ -175,10 +208,10 @@
       ui.text(status,message);
       const action=naval.interaction();ui.hidden(bridge,!action||!active);
       if(action){const ship=naval.ships[p.shipId],q=action.point||NavalSimulation.world(ship,action.side*(C.halfWidth-.2),action.station||0);point.set(q.x,1.25,q.z).project(camera);bridge.hidden=point.z<0||point.z>1;const w=innerWidth,h=innerHeight;bridge.style.left=Math.max(45,Math.min(w-45,(point.x*.5+.5)*w))+'px';bridge.style.top=Math.max(90,Math.min(h-215,(-point.y*.5+.5)*h))+'px';const label=action.kind==='open'?'Köprüyü aç':'Köprüyü topla';ui.text(bridgeLabel,label);ui.attr(bridge,'aria-label',label);ui.toggle(bridge,'occupied',!!action.blocked);ui.attr(bridge,'aria-disabled',String(!!action.blocked));}
-      updateJavelins();
+      updateJavelins();updateRopes(time);
       if(!active)braking=false;
     }
-    return{update,views,water,panel,jump,javelin,javelinViews,heldJavelin,aimLine,bridgeViews,landingMark,get braking(){return braking;}};
+    return{update,views,water,panel,jump,rally,swing,javelin,javelinViews,heldJavelin,aimLine,bridgeViews,landingMark,ropeMesh,ropeLandingMark,ropeLaunchMark,get braking(){return braking;}};
   }
   root.NavalView={create,load,assetURL};
 })(window);

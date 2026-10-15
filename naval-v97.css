@@ -40,3 +40,12 @@ body.naval-active #toast.energy-warning{font:9px/1.3 Arial,sans-serif;padding:4p
 
 /* Keep the projected boarding caption above the icon and clear of bottom controls. */
 #navalBridge span{top:auto;bottom:calc(100% + 5px)}
+/* V104: compact crew call and contextual rope action beside the helm. */
+#navalRally,#navalRope{position:absolute;left:calc(50% - var(--naval-unit) - 12px);bottom:var(--naval-bottom);transform:translateX(-50%);width:var(--naval-unit);height:var(--naval-unit);padding:0;display:grid;place-items:center;border:1px solid #d0ad61;border-radius:50%;background:linear-gradient(#70283a,#38101d);color:#f4dc9b;box-shadow:0 3px 10px #0005}
+#navalRally svg,#navalRope svg{width:63%;height:63%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#navalRally small{position:absolute;bottom:-3px;right:-3px;padding:1px 3px;border-radius:4px;background:#33251a;color:#ffe4a4;font:bold 8px/1.2 Arial,sans-serif}
+#navalRally small:empty{display:none}#navalRally:disabled{opacity:.4}
+#navalRally[aria-pressed=true],#navalRope.ready{border-color:#ffdf69;background:radial-gradient(#e4b940,#a06c13);color:#251a07;box-shadow:0 0 9px #efc64e55}
+#navalRope{bottom:calc(var(--naval-bottom) + var(--naval-unit) + 12px)}
+#navalRope[aria-disabled=true]{opacity:.5}
+#navalJump{left:calc(50% - (var(--naval-unit) + 12px)*2)}
