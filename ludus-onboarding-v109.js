@@ -59,7 +59,7 @@ function create(ctx){
  }
  function resume(source){if(returnFrom!==source)return;returnFrom=null;setTimeout(()=>{if(ctx.canOpen()&&owner===ctx.getUser())open();},0);}
  function training(){const free=roster().find(g=>ctx.phase(g)==='available'&&!g.record.trained_today&&!g.record.exercise_completed);navigate('training',free||selected());}
- function stepAction(key){if(key==='mission')navigate('mission');else if(key==='training')training();else chooseTab(key);}
+ function stepAction(key){if(key==='mission')navigate('mission');else if(key==='training')training();else navigate(key);}
  function heading(title,eyebrow){const h=el('div','bg-panel-head');h.append(el('span','bg-eyebrow',eyebrow),el('h2','',title));return h;}
  function pagination(current,pages,onChange,label){const n=el('div','bg-pagination'),a=button('‹',()=>onChange(current-1)),b=button('›',()=>onChange(current+1));a.disabled=current===0;b.disabled=current>=pages-1;a.setAttribute('aria-label','Önceki '+label);b.setAttribute('aria-label','Sonraki '+label);n.append(a,el('span','',(current+1)+' / '+pages),b);return n;}
  function gladiators(){
@@ -133,7 +133,7 @@ function create(ctx){
  });
  let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{gearPage=0;if(!modal.hidden)render();},70);});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!modal.hidden)refresh();});
- return{start,open,close,resume,refresh,reset,inspected:g=>{if(owner&&g?.record?.id)call('inspect',g.record.id).catch(()=>{});},get state(){return state;}};
+ return{start,open,close,resume,refresh,reset,inspected:g=>{if(owner&&g?.record?.id)call('inspect',g.record.id).catch(()=>{});},get visible(){return !modal.hidden;},get state(){return state;}};
 }
 root.LudusOnboarding={create};
 })(typeof window!=='undefined'?window:globalThis);

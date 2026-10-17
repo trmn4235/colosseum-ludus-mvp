@@ -30,8 +30,8 @@ begin
  if not denied then raise exception 'Direct private table exposed';end if;
  reset role;
  insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot)values(a,'weapon','gladius',g,'main_hand');
- insert into public.ludus_training_sessions(owner_id,gladiator_id,training_day,started_at,train_until,rest_until,exercise_stat)
- values(a,g,current_date,now(),now()+interval '1 hour',now()+interval '2 hours','strength');
+ insert into public.ludus_training_sessions(id,owner_id,gladiator_id,training_day,started_at,train_until,rest_until,exercise_stat)
+ values(gen_random_uuid(),a,g,current_date,now(),now()+interval '1 hour',now()+interval '2 hours','strength');
  insert into public.ludus_imperial_assignments(owner_id,mission_id,mission,gladiators,started_at,ends_at)
  select a,id,'{"title":"QA first mission","difficulty":1}','[]',now(),now()+interval '12 hours'
  from public.ludus_imperial_catalog limit 1;

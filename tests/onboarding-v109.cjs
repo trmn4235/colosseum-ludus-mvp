@@ -69,6 +69,8 @@ async function layout(page,label){
   await page.getByRole('button',{name:'Aulus Varro · İncele',exact:true}).click();await page.waitForSelector('#orders:not([hidden])');
   assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
   await page.evaluate(()=>LudusPreview.exercisePanel.close());await page.waitForSelector('#beginnerGuide:not([hidden])');await page.waitForFunction(()=>LudusPreview.beginnerGuide.state.steps.inspect);
+  await page.getByRole('button',{name:'Ekipmanını hazırla · Tamamlandı',exact:true}).click();await page.waitForSelector('#orders:not([hidden])');
+  await page.evaluate(()=>LudusPreview.exercisePanel.close());await page.waitForSelector('#beginnerGuide:not([hidden])');
   await page.getByRole('button',{name:'Görevi seç  ›',exact:true}).click();await page.waitForSelector('#imperialJoin');
   assert.equal(await page.evaluate(()=>LudusPreview.beginnerGuide.state.steps.mission),false,'Opening mission must not complete it');
   await page.locator('.imperial-roster button').filter({hasText:'Aulus Varro'}).click();await page.click('#imperialJoin');await page.waitForFunction(()=>__guideState.steps.mission);
@@ -92,6 +94,6 @@ async function layout(page,label){
   assert.equal(await page.locator('#beginnerGuide').isVisible(),false);assert.equal(await page.locator('#beginnerOpen').isVisible(),false);
   assert.deepEqual(errors,[]);
   console.log('PASS: real courtyard; auto-open, navigation, mission/training, resume/pause, persistence, manual reopen, retry, account reset, text safety.');
- }catch(e){console.error({errors});console.log('FAIL_SCREENSHOT_BASE64:'+(await page.screenshot({type:'jpeg',quality:60})).toString('base64')+':END_FAIL_SCREENSHOT');throw e;}
+ }catch(e){console.error(e,{errors});try{console.log('FAIL_SCREENSHOT_BASE64:'+(await page.screenshot({type:'jpeg',quality:60,timeout:5000})).toString('base64')+':END_FAIL_SCREENSHOT');}catch{}throw e;}
  finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
