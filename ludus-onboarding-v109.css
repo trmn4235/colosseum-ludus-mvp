@@ -1,0 +1,158 @@
+/* Fixed-height marble panels; portrait navigation never needs vertical scrolling. */
+#beginnerGuide{--bg-gold:#b69352;--bg-red:#691826;--bg-ink:#302820;position:fixed;inset:0;z-index:900;box-sizing:border-box;padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:linear-gradient(#2d152838,#28131655),url('messages-courtyard.png') center/cover;color:var(--bg-ink);font-family:Georgia,'Times New Roman',serif;overflow:hidden;touch-action:manipulation}
+#beginnerGuide[hidden]{display:none!important}
+#beginnerGuide *{box-sizing:border-box;min-width:0}
+#beginnerGuide button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+#beginnerGuide button:disabled{cursor:default;opacity:.55}
+#beginnerGuide button:focus-visible{outline:3px solid #d1a74e;outline-offset:-3px}
+#beginnerGuide h1,#beginnerGuide h2,#beginnerGuide h3,#beginnerGuide p{margin:0}
+#beginnerGuide .bg-shell{height:100%;max-width:1420px;margin:0 auto;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:10px;overflow:hidden}
+#beginnerGuide .bg-top{display:flex;align-items:center;justify-content:center;position:relative;min-height:64px;background:linear-gradient(100deg,#480e19,#7b2230 50%,#480e19);border:double 4px var(--bg-gold);box-shadow:0 3px 16px #16081255,inset 0 0 14px #1a0508;color:#f3dfab;text-align:center}
+#beginnerGuide .bg-title{padding:6px 48px}
+#beginnerGuide .bg-brand{font-size:9px;letter-spacing:3px;color:#cfaf71;display:block;margin-bottom:3px}
+#beginnerGuide h1{font-size:clamp(22px,3.3vw,38px);line-height:1.05;font-weight:normal;letter-spacing:1px}
+#beginnerGuide .bg-close{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:1px solid #d2b57788;background:#4d0c1755;color:#f3dfab;font-size:26px;border-radius:3px}
+#beginnerGuide .bg-intro{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 14px;background:#fffaf1f2;border:1px solid var(--bg-gold);font-size:clamp(12px,1.3vw,16px)}
+#beginnerGuide .bg-count{flex-shrink:0;color:var(--bg-red);font-size:13px;font-weight:bold}
+#beginnerGuide .bg-tabs{display:none}
+#beginnerGuide .bg-panels{display:grid;grid-template-columns:1.28fr .9fr 1fr;gap:12px;min-height:0}
+#beginnerGuide .bg-panel{display:flex;flex-direction:column;gap:10px;min-height:0;padding:10px;border:double 4px var(--bg-gold);border-radius:5px;background:linear-gradient(120deg,#fffdf8,#f6f4ef 55%,#fffdf9);box-shadow:0 4px 14px #321a0f55,inset 0 0 0 1px #fff;overflow:hidden}
+#beginnerGuide .bg-panel-head{flex-shrink:0;background:linear-gradient(100deg,#54101c,#7d2532);color:#f3dfab;padding:8px 10px;margin:-8px -8px 0;border-bottom:2px solid var(--bg-gold)}
+#beginnerGuide .bg-eyebrow{font-size:9px;letter-spacing:1.6px;color:#cda867;display:block;margin-bottom:3px}
+#beginnerGuide h2{font-size:clamp(18px,2vw,25px);font-weight:normal;line-height:1.1}
+#beginnerGuide .bg-fighters{display:grid;grid-template-columns:1fr 1fr;gap:9px;min-height:0;flex:1}
+#beginnerGuide .bg-fighter{min-height:0;display:flex;flex-direction:column;background:#fffdf7;border:1px solid #c5ad80;overflow:hidden}
+#beginnerGuide .bg-select-fighter{border:0;padding:0;display:block;min-height:0;flex:1;background:radial-gradient(ellipse,#e1cfac,#f9f7ef 75%);overflow:hidden}
+#beginnerGuide .bg-select-fighter[aria-pressed=true]{box-shadow:inset 0 0 0 2px #b69352}
+#beginnerGuide .bg-portrait{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+#beginnerGuide .bg-fighter-copy{padding:8px 7px;text-align:center}
+#beginnerGuide h3{font-size:clamp(14px,1.7vw,21px);line-height:1.15;overflow-wrap:anywhere}
+#beginnerGuide .bg-class{font-size:13px;color:#756754;margin-top:3px}
+#beginnerGuide .bg-overall{font-size:14px;margin:7px 0 4px;color:var(--bg-red)}
+#beginnerGuide .bg-ready{font-size:12px;color:#766745}
+#beginnerGuide .bg-ready:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#ab8245;margin-right:5px}
+#beginnerGuide .bg-ready[data-ready=true]{color:#365d42}
+#beginnerGuide .bg-ready[data-ready=true]:before{background:#477c54}
+#beginnerGuide .bg-action{flex-shrink:0;min-height:38px;padding:7px 9px;border:double 3px #b99755;border-radius:3px;background:linear-gradient(#7e2632,#55101b);color:#f9e9bd;font-size:15px;text-align:center}
+#beginnerGuide .bg-fighter>.bg-action{margin:0 6px 6px}
+#beginnerGuide .bg-panel-note{font-size:12px;color:#6f6251;line-height:1.25}
+#beginnerGuide .bg-equipment-owner{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#beginnerGuide .bg-items{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;min-height:0}
+#beginnerGuide .bg-item{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0;padding:6px;border:1px solid #c7ae7b;border-radius:3px;background:#fff;overflow:hidden}
+#beginnerGuide .bg-item-name{font-size:12px;line-height:1.15;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#422f21}
+#beginnerGuide .bg-item-art{display:block;flex:1;min-height:0;width:100%;padding:3px 7px}
+#beginnerGuide .bg-plus{position:absolute;right:5px;bottom:19px;background:#fff9;color:var(--bg-red);font-size:13px;font-weight:bold}
+#beginnerGuide .bg-equipped{font-size:10px;color:#626650;line-height:1}
+#beginnerGuide .bg-pagination{display:flex;justify-content:center;align-items:center;gap:12px;height:25px;flex-shrink:0;font-size:12px;color:#6b5b43}
+#beginnerGuide .bg-pagination button{width:32px;height:25px;border:1px solid #bea36e;border-radius:3px;background:#fff9ef;color:#661c28;font-size:18px;line-height:1;padding:0}
+#beginnerGuide .bg-mission-art{width:100%;flex:1;min-height:25px;max-height:54%;object-fit:cover;border:1px solid #bda775}
+#beginnerGuide .bg-mission-copy{flex-shrink:0;display:flex;flex-direction:column;gap:8px}
+#beginnerGuide .bg-facts{font-size:14px;color:#641927}
+#beginnerGuide .bg-rewards{font-size:13px;line-height:1.3;padding:7px 0;border-block:1px solid #c8b68e88}
+#beginnerGuide .bg-mission-hint{font-size:12px;line-height:1.3;color:#72654f}
+#beginnerGuide .bg-empty{grid-column:1/-1;grid-row:1/-1;flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px;font-size:14px;line-height:1.5;text-align:center;padding:8px}
+#beginnerGuide .bg-goals{background:#fffaf2;border:double 4px var(--bg-gold);border-radius:4px;overflow:hidden}
+#beginnerGuide .bg-goals-heading{display:flex;justify-content:space-between;gap:10px;background:var(--bg-red);color:#f3dfab;padding:6px 12px;font-size:12px;letter-spacing:.7px}
+#beginnerGuide .bg-goals-heading span{font-size:10px;letter-spacing:0;font-weight:normal}
+#beginnerGuide .bg-goal-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+#beginnerGuide .bg-goal{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 10px;border:0;border-right:1px solid #c9b78e;background:linear-gradient(#fffdfa,#f3eee3);color:#3f3425;min-height:63px}
+#beginnerGuide .bg-goal:last-child{border-right:0}
+#beginnerGuide .bg-step-number{width:29px;height:29px;border-radius:50%;background:#6d5b3d;color:#fff8e4;display:grid;place-items:center;font-size:17px;flex-shrink:0}
+#beginnerGuide .bg-goal[data-complete=true]{background:linear-gradient(#fdf7e7,#f5e5bc)}
+#beginnerGuide .bg-goal[data-complete=true] .bg-step-number{background:#567146}
+#beginnerGuide .bg-step-copy strong{display:block;font-size:13px;font-weight:normal}
+#beginnerGuide .bg-step-copy small{display:block;font-size:10px;color:#7a6c52;margin-top:4px;line-height:1.2}
+#beginnerGuide .bg-bottom{display:flex;align-items:center;gap:10px;background:#fffaf0ed;padding:5px 10px;border:1px solid #bfa475;border-radius:3px}
+#beginnerGuide .bg-status{font-size:11px;line-height:1.25;flex:1;color:#614f3b}
+#beginnerGuide .bg-later,#beginnerGuide .bg-retry{flex-shrink:0;font-size:12px;padding:6px 12px;background:#fffdf7;color:#691826;border:1px solid #b69352;border-radius:3px;min-height:30px}
+#beginnerOpen[data-complete=false]:after{content:'';width:5px;height:5px;position:absolute;right:3px;top:3px;background:#e5c772;border-radius:50%}
+@media(max-height:600px) and (min-width:701px){
+ #beginnerGuide{padding:7px max(9px,env(safe-area-inset-right)) 7px max(9px,env(safe-area-inset-left))}
+ #beginnerGuide .bg-shell{gap:5px}
+ #beginnerGuide .bg-top{min-height:40px;border-width:3px}
+ #beginnerGuide .bg-title{padding:3px 42px}
+ #beginnerGuide .bg-brand{display:none}
+ #beginnerGuide h1{font-size:25px}
+ #beginnerGuide .bg-close{height:29px;width:31px;font-size:22px}
+ #beginnerGuide .bg-intro{padding:4px 9px;font-size:11px}
+ #beginnerGuide .bg-count{font-size:11px}
+ #beginnerGuide .bg-panels{gap:6px;grid-template-columns:1.25fr .9fr 1fr}
+ #beginnerGuide .bg-panel{gap:5px;padding:6px;border-width:3px}
+ #beginnerGuide .bg-panel-head{margin:-4px -4px 0;padding:5px 7px}
+ #beginnerGuide .bg-eyebrow{display:none}
+ #beginnerGuide h2{font-size:18px}
+ #beginnerGuide .bg-fighter-copy{padding:3px}
+ #beginnerGuide h3{font-size:14px}
+ #beginnerGuide .bg-class,#beginnerGuide .bg-equipment-owner{font-size:10px}
+ #beginnerGuide .bg-overall{margin:3px 0 1px;font-size:12px}
+ #beginnerGuide .bg-ready{font-size:10px}
+ #beginnerGuide .bg-action{min-height:28px;font-size:12px;padding:4px}
+ #beginnerGuide .bg-panel-note{display:none}
+ #beginnerGuide .bg-items{gap:4px}
+ #beginnerGuide .bg-item{padding:3px}
+ #beginnerGuide .bg-item-name{font-size:10px}
+ #beginnerGuide .bg-equipped{font-size:9px}
+ #beginnerGuide .bg-plus{bottom:13px;font-size:11px}
+ #beginnerGuide .bg-item-art{padding:1px 5px}
+ #beginnerGuide .bg-pagination{height:21px}
+ #beginnerGuide .bg-pagination button{height:21px}
+ #beginnerGuide .bg-mission-copy{gap:4px}
+ #beginnerGuide .bg-facts,#beginnerGuide .bg-rewards{font-size:11px}
+ #beginnerGuide .bg-rewards{padding:4px 0}
+ #beginnerGuide .bg-mission-hint{font-size:10px}
+ #beginnerGuide .bg-goals-heading{padding:3px 8px;font-size:10px}
+ #beginnerGuide .bg-goal{padding:5px 7px;gap:6px;min-height:39px}
+ #beginnerGuide .bg-step-number{width:23px;height:23px;font-size:13px}
+ #beginnerGuide .bg-step-copy strong{font-size:11px}
+ #beginnerGuide .bg-step-copy small{display:none}
+ #beginnerGuide .bg-bottom{padding:3px 7px}
+ #beginnerGuide .bg-status{font-size:10px}
+ #beginnerGuide .bg-later,#beginnerGuide .bg-retry{font-size:11px;min-height:25px;padding:4px 8px}
+}
+@media(max-width:700px){
+ #beginnerGuide{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+ #beginnerGuide .bg-shell{grid-template-rows:auto auto auto minmax(0,1fr) auto auto;gap:7px}
+ #beginnerGuide .bg-top{min-height:64px}
+ #beginnerGuide h1{font-size:20px}
+ #beginnerGuide .bg-brand{font-size:8px;letter-spacing:1.5px}
+ #beginnerGuide .bg-title{padding:6px 35px}
+ #beginnerGuide .bg-close{width:28px;right:3px;height:32px}
+ #beginnerGuide .bg-intro{display:block;padding:7px 10px;font-size:12px;line-height:1.3}
+ #beginnerGuide .bg-count{display:block;margin-top:4px;font-size:11px}
+ #beginnerGuide .bg-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+ #beginnerGuide .bg-tabs button{border:1px solid #ba9c63;background:#fffaf0;color:#6a1b28;border-radius:3px;font-size:13px;min-height:34px}
+ #beginnerGuide .bg-tabs button[aria-pressed=true]{background:#6b1926;color:#f1dca6}
+ #beginnerGuide .bg-panels{display:block}
+ #beginnerGuide .bg-panel{display:none;height:100%;gap:8px}
+ #beginnerGuide .bg-panels[data-tab=inspect] [data-panel=inspect],#beginnerGuide .bg-panels[data-tab=equipment] [data-panel=equipment],#beginnerGuide .bg-panels[data-tab=mission] [data-panel=mission]{display:flex}
+ #beginnerGuide .bg-eyebrow{display:none}
+ #beginnerGuide h2{font-size:21px}
+ #beginnerGuide .bg-fighter-copy{padding:6px 4px}
+ #beginnerGuide h3{font-size:17px}
+ #beginnerGuide .bg-goal-list{grid-template-columns:1fr 1fr}
+ #beginnerGuide .bg-goal{padding:8px;gap:7px;min-height:45px;border-bottom:1px solid #c9b78e}
+ #beginnerGuide .bg-goal:nth-child(even){border-right:0}
+ #beginnerGuide .bg-goal:nth-child(n+3){border-bottom:0}
+ #beginnerGuide .bg-step-number{width:24px;height:24px;font-size:13px}
+ #beginnerGuide .bg-step-copy strong{font-size:12px}
+ #beginnerGuide .bg-step-copy small{display:none}
+ #beginnerGuide .bg-goals-heading{padding:5px 8px;font-size:11px}
+ #beginnerGuide .bg-goals-heading span{display:none}
+ #beginnerGuide .bg-bottom{gap:5px;padding:5px 6px}
+ #beginnerGuide .bg-status{font-size:10px}
+ #beginnerGuide .bg-later,#beginnerGuide .bg-retry{font-size:11px;padding:5px 7px}
+ #beginnerGuide .bg-mission-art{max-height:60%}
+}
+@media(max-height:700px) and (max-width:700px){
+ #beginnerGuide .bg-shell{gap:4px}
+ #beginnerGuide .bg-top{min-height:48px}
+ #beginnerGuide .bg-brand{display:none}
+ #beginnerGuide .bg-intro{padding:5px 8px;font-size:11px}
+ #beginnerGuide .bg-panel-note{display:none}
+ #beginnerGuide .bg-goal{min-height:38px;padding:5px}
+ #beginnerGuide .bg-action{min-height:30px;font-size:13px;padding:5px}
+ #beginnerGuide .bg-fighter-copy{padding:3px}
+ #beginnerGuide .bg-overall{margin:3px 0}
+ #beginnerGuide .bg-mission-copy{gap:5px}
+ #beginnerGuide .bg-facts,#beginnerGuide .bg-rewards{font-size:12px}
+}

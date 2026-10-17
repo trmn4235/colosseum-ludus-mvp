@@ -73,7 +73,7 @@
    finally{busy=false;render();}
   }
   async function equip(item){if(busy||!selected||!gearSlot)return;const fighter=selected,slot=gearSlot;busy=true;gearMessage='';render();try{await options.equip(fighter,slot,item);if(selected===fighter){previewCleanup?.();previewCleanup=null;previewFighter=null;previewCanvas=null;previewReady=false;gearSlot=null;message='';}}catch(error){gearMessage=error.message||'Eşya takılamadı.';}finally{busy=false;render();}}
-  function open(g){if(panel.hidden){previousFocus=document.activeElement;options.onOpen?.();}selected=g;gearSlot=null;gearMessage='';rosterPage=Math.floor(Math.max(0,roster().indexOf(g))/pageSize());bulk=false;message='';panel.hidden=false;render();if(!options.loaded())options.refresh().then(render);}
+  function open(g,view={}){if(panel.hidden){previousFocus=document.activeElement;options.onOpen?.();}selected=g;gearSlot=canDress(g)&&['main_hand','off_hand','helmet','chest','gloves','legs'].includes(view.slot)?view.slot:null;gearMessage='';rosterPage=Math.floor(Math.max(0,roster().indexOf(g))/pageSize());bulk=false;message='';panel.hidden=false;render();if(!options.loaded())options.refresh().then(render);}
   function close(){gearSlot=null;gearMessage='';previewCleanup?.();previewCleanup=null;previewFighter=null;previewCanvas=null;previewReady=false;panel.hidden=true;selected=null;options.onClose?.();previousFocus?.focus?.();}
   function tick(){
    if(!selected||panel.hidden||busy)return;
