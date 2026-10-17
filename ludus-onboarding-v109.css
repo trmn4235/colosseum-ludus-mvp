@@ -171,3 +171,56 @@
 }
 @media(max-height:420px) and (min-width:701px){#beginnerGuide .bg-mission-hint{display:none}}
 @media(max-height:375px) and (min-width:701px){#beginnerGuide .bg-mission-art{display:none}#beginnerGuide .bg-mission{gap:4px}#beginnerGuide .bg-mission-copy{flex:1;justify-content:center}}
+
+@media(max-width:700px) and (max-height:450px){
+ #beginnerGuide{line-height:1.15}
+ #beginnerGuide button{line-height:1.15}
+ #beginnerGuide .bg-shell{grid-template-rows:30px 27px minmax(0,1fr) 36px 26px;gap:4px}
+ #beginnerGuide .bg-top{min-height:30px;border-width:2px}
+ #beginnerGuide .bg-title{padding:1px 34px}
+ #beginnerGuide h1{font-size:19px}
+ #beginnerGuide .bg-close{height:24px}
+ #beginnerGuide .bg-intro,#beginnerGuide .bg-goals-heading{display:none}
+ #beginnerGuide .bg-tabs button{min-height:27px;font-size:12px}
+ #beginnerGuide .bg-panel{gap:5px;padding:6px}
+ #beginnerGuide .bg-panel-head{padding:4px 6px;margin:-4px -4px 0}
+ #beginnerGuide h2{font-size:18px}
+ #beginnerGuide .bg-fighter{display:grid;grid-template-columns:35% minmax(0,1fr);grid-template-rows:1fr auto}
+ #beginnerGuide .bg-select-fighter{grid-column:1;grid-row:1/3;height:100%}
+ #beginnerGuide .bg-fighter-copy{grid-column:2}
+ #beginnerGuide .bg-fighter>.bg-action{grid-column:2;margin:0 4px 4px}
+ #beginnerGuide .bg-equipment-owner{display:none}
+ #beginnerGuide .bg-items{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr)}
+ #beginnerGuide .bg-item-art{padding:1px}
+ #beginnerGuide .bg-pagination,#beginnerGuide .bg-pagination button{height:21px}
+ #beginnerGuide .bg-panels[data-tab=mission] .bg-mission{display:grid;grid-template-columns:34% minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 30px}
+ #beginnerGuide .bg-mission .bg-panel-head{grid-column:1/-1}
+ #beginnerGuide .bg-mission-art{grid-column:1;grid-row:2/4;height:100%;max-height:none}
+ #beginnerGuide .bg-mission-copy{grid-column:2;grid-row:2;gap:4px;justify-content:center}
+ #beginnerGuide .bg-mission-copy h3{font-size:16px}
+ #beginnerGuide .bg-mission-hint{font-size:10px}
+ #beginnerGuide .bg-mission>.bg-action{grid-column:2;grid-row:3}
+ #beginnerGuide .bg-goal-list{grid-template-columns:repeat(4,minmax(0,1fr));height:100%}
+ #beginnerGuide .bg-goal{padding:2px 4px;min-height:0;border-bottom:0;border-right:1px solid #c9b78e}
+ #beginnerGuide .bg-step-copy strong{font-size:10px}
+ #beginnerGuide .bg-step-number{width:20px;height:20px;font-size:12px}
+ #beginnerGuide .bg-bottom{padding:2px 5px}
+ #beginnerGuide .bg-status{font-size:9px}
+ #beginnerGuide .bg-later,#beginnerGuide .bg-retry{min-height:21px;padding:2px 6px;font-size:10px}
+}
+
+@media(max-height:600px) and (min-width:701px){
+ #beginnerGuide .bg-fighter-copy{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;align-items:center}
+ #beginnerGuide .bg-fighter-copy h3,#beginnerGuide .bg-fighter-copy .bg-class{grid-column:1/-1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #beginnerGuide .bg-fighter-copy .bg-class{font-size:9px;margin:0}
+ #beginnerGuide .bg-fighter-copy .bg-overall{font-size:10px;margin:0;white-space:nowrap}
+ #beginnerGuide .bg-fighter-copy .bg-ready{font-size:9px;white-space:nowrap}
+ #beginnerGuide .bg-ready:before{width:4px;height:4px;margin-right:2px}
+ #beginnerGuide .bg-equipment{display:grid;grid-template-columns:38% minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) 28px}
+ #beginnerGuide .bg-equipment .bg-panel-head,#beginnerGuide .bg-equipment-owner,#beginnerGuide .bg-items{grid-column:1/-1}
+ #beginnerGuide .bg-equipment .bg-pagination{grid-column:1;grid-row:4;gap:3px;height:28px;font-size:10px}
+ #beginnerGuide .bg-equipment .bg-pagination button{width:22px;height:25px}
+ #beginnerGuide .bg-equipment>.bg-action{grid-column:2;grid-row:4;font-size:11px}
+ #beginnerGuide .bg-equipped{position:absolute;left:3px;bottom:3px;background:#fffe;font-size:8px}
+ #beginnerGuide .bg-plus{bottom:3px;background:#fffe}
+}

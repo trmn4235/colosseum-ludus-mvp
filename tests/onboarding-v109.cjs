@@ -59,7 +59,7 @@ async function layout(page,label){
   await page.waitForSelector('#beginnerGuide:not([hidden])',{timeout:60000});
   await page.waitForFunction(()=>LudusPreview.beginnerGuide.state?.steps.equipment);
   assert.equal(await page.locator('.bg-fighter').count(),2);assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
-  for(const [width,height]of [[1440,900],[852,393],[874,402],[740,360],[393,852],[320,568]]){
+  for(const [width,height]of [[1440,900],[852,393],[874,402],[740,360],[667,375],[393,852],[320,568]]){
    await page.setViewportSize({width,height});await page.waitForTimeout(150);
    for(const tab of width<=700?['Gladyatörler','Ekipman','İlk görev']:[null]){if(tab)await page.locator('.bg-tabs').getByRole('button',{name:tab,exact:true}).click();await layout(page,width+'x'+height+' '+tab);}
    console.log('PASS layout '+width+'x'+height);
