@@ -1,0 +1,37 @@
+name: Combat and upgrades layout
+on:
+  push:
+    branches: [codex/combat-upgrades-layout-v112]
+  pull_request:
+    branches: [main]
+    paths: ['ludus-combat-values-*', 'upgrades-layout-*', 'gelistirmeler.html', 'tests/combat-values-*', 'tests/upgrades-layout-*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  layout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      LUDUS_TEST_OUTPUT: /tmp/combat-values-v110
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install isolated test tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
+          npx playwright install --with-deps chromium
+      - name: Live combat formula and source parity
+        run: node tests/combat-values-v110.cjs
+      - name: Combat dossier, source totals and phone layouts
+        run: node tests/combat-values-ui-v110.cjs
+      - name: Full workshop, safe areas and preserved navigation
+        run: node tests/upgrades-layout-v112.cjs
+      - name: Courtyard integration and beginner quest tracking
+        env:
+          LUDUS_COMBAT_VALUES_TEST: '1'
+        run: node tests/first-quests-ui-v111.cjs

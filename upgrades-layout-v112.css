@@ -1,0 +1,11 @@
+/* Edge-to-edge workshop. Safe areas belong inside the panels, not outside the page. */
+body[data-roman-screen="gelistirmeler"] .game-shell{width:100%;max-width:none;height:100%;margin:0;padding:0;grid-template-rows:calc(clamp(32px,7dvh,54px) + env(safe-area-inset-top)) minmax(0,1fr) calc(clamp(24px,5dvh,36px) + env(safe-area-inset-bottom))}
+body[data-roman-screen="gelistirmeler"] .top{padding:env(safe-area-inset-top) max(10px,env(safe-area-inset-right)) 0 max(10px,env(safe-area-inset-left))}
+body[data-roman-screen="gelistirmeler"] .workspace{grid-template-columns:minmax(0,1fr);width:100%;min-width:0}
+body[data-roman-screen="gelistirmeler"] .layout{width:100%;max-width:none;margin:0;padding:clamp(4px,1dvh,8px);gap:clamp(4px,1dvh,8px);grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr) minmax(0,1.2fr)}
+body[data-roman-screen="gelistirmeler"] .item-panel{padding-left:max(6px,env(safe-area-inset-left))}
+body[data-roman-screen="gelistirmeler"] :is(.inventory-panel,.combined-stones){padding-right:max(6px,env(safe-area-inset-right))}
+body[data-roman-screen="gelistirmeler"] .statusbar{padding:0 max(10px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(10px,env(safe-area-inset-left))}
+body[data-roman-screen="gelistirmeler"] .statusbar button{min-height:20px;white-space:nowrap}
+body[data-roman-screen="gelistirmeler"] .top strong{white-space:nowrap}
+@media(max-width:760px){body[data-roman-screen="gelistirmeler"] .materials-head{gap:4px}body[data-roman-screen="gelistirmeler"] .materials-head h3{font-size:10px}body[data-roman-screen="gelistirmeler"] .material-tabs button{padding:2px 5px;min-width:36px}body[data-roman-screen="gelistirmeler"] .top{gap:6px}body[data-roman-screen="gelistirmeler"] .top strong{font-size:13px}}
