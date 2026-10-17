@@ -1,0 +1,33 @@
+name: First quests regression
+on:
+  push:
+    branches: [codex/first-quests-v111]
+  pull_request:
+    branches: [main]
+    paths: ['ludus-first-quests-*', 'ludus-quest-events-*', 'tests/first-quests-*', 'supabase/migrations/*first_quests*', 'ludus.html', 'ludus-settings-v29.js']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  first-quests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install isolated test tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
+          npx playwright install --with-deps chromium
+      - name: Server milestones and account isolation
+        run: node tests/first-quests-v111.cjs
+      - name: Combat contribution regression
+        run: node tests/combat-values-v110.cjs
+      - name: Full courtyard, mobile guide and Settings Help
+        env:
+          LUDUS_COMBAT_VALUES_TEST: '1'
+        run: node tests/first-quests-ui-v111.cjs

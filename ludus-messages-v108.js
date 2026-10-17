@@ -143,7 +143,7 @@ var LudusMessages=(function(){
    catch(e){if(seq===sequence)error(e,null);}finally{sending=false;compose();if(!opened)refresh();}
   };
   function resize(){clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(!opened)return;const next={left:leftList.clientHeight?Math.max(1,Math.floor(leftList.clientHeight/(window.innerHeight<=500?50:64))):sizes.left,messages:history.clientHeight?Math.max(1,Math.min(8,Math.floor(history.clientHeight/(window.innerHeight<=500?84:110)))):sizes.messages,notes:noteList.clientHeight?Math.max(1,Math.floor(noteList.clientHeight/(window.innerHeight<=500?58:66))):sizes.notes};if(window.innerWidth<620&&leftList.clientHeight)next.notes=Math.max(1,Math.floor(leftList.clientHeight/70));for(const k of Object.keys(next))next[k]=Math.min(20,next[k]);if(JSON.stringify(sizes)!==JSON.stringify(next)&&!sending&&!mutating){sizes=next;leftPage=messagePage=notePage=0;refresh();}else if(selectedNote||fullMessage)renderDetail();},120);}
-  async function open(){if(opened||!getUser())return;if(owner!==getUser())resetOwner(getUser());opened=true;dialog.dataset.mobile='list';onOpen();dialog.showModal();closeButton.focus({preventScroll:true});render();status.textContent='Mesajlar yükleniyor…';resize();await refresh();}
+  async function open(initialChannel){if(opened||!getUser())return;if(owner!==getUser())resetOwner(getUser());if(initialChannel==='system'){channel='system';peer=null;selectedNote=null;fullMessage=null;}opened=true;dialog.dataset.mobile='list';onOpen();dialog.showModal();closeButton.focus({preventScroll:true});render();status.textContent='Mesajlar yükleniyor…';resize();await refresh();}
   dialog.addEventListener('close',()=>{if(!opened)return;opened=false;++sequence;confirmation.hidden=true;saveDraft();onClose();const target=pendingNavigation;pendingNavigation=null;if(target)onNavigate(target);else trigger.focus({preventScroll:true});});
   dialog.addEventListener('cancel',e=>{if(!confirmation.hidden){e.preventDefault();confirmation.hidden=true;clearButton.focus();}});
   dialog.addEventListener('keydown',e=>{if(!confirmation.hidden&&e.key==='Tab'){const buttons=[...confirmation.querySelectorAll('button')];e.preventDefault();buttons[document.activeElement===buttons[0]?1:0].focus();}});
@@ -152,3 +152,4 @@ var LudusMessages=(function(){
  }
  return{create};
 })();
+

@@ -1,0 +1,68 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const {database,core}=require('./combat-stats-v73.cjs');
+const root=path.resolve(__dirname,'..'),A='00000000-0000-4000-8000-000000000001',B='00000000-0000-4000-8000-000000000002';
+const G1='00000000-0000-4000-8000-000000000011',G2='00000000-0000-4000-8000-000000000012',G3='00000000-0000-4000-8000-000000000013',I='00000000-0000-4000-8000-000000000021';
+async function setup(){const db=await database();await db.exec(`
+ alter table ludus_imperial_assignments add claimed_at timestamptz;
+ create table ludus_shop_orders(id uuid default gen_random_uuid(),owner_id uuid,sku text,item_id uuid);
+ create table ludus_upgrade_receipts(owner_id uuid,request_id uuid default gen_random_uuid(),item_id uuid,action text,result jsonb);
+ create table ludus_daily_events(battle_id uuid,owner_id uuid,mode text,won boolean);
+ create table ludus_daily_claims(owner_id uuid,quest_key text);
+ create table ludus_private.survival_records_v83(owner_id uuid primary key,stage integer,completed integer);
+ create table ludus_private.market_listings_v66(seller_id uuid,asset_type text);
+ create table ludus_private.level_rewards(owner_id uuid,level integer,claimed_at timestamptz);
+ create table ludus_progression(owner_id uuid primary key,experience bigint);
+ create schema ludus_message_private;
+ create table ludus_message_private.notifications_v108(owner_id uuid,event_key text,read_at timestamptz);
+ create schema ludus_supply_private;
+ create table ludus_supply_private.receipts(owner_id uuid,payload jsonb,result jsonb);
+ create table ludus_supply_private.jobs(owner_id uuid,claimed_at timestamptz);
+ create function ludus_private.level_from_exp(x bigint)returns integer language sql immutable as $$select case when x>=12910 then 5 when x>=3000 then 2 else 1 end$$;
+ `);
+ for(const suffix of ['beginner_guide_v109','first_quests_v111'])await db.exec(fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_'+suffix+'.sql')),'utf8'));
+ return db;}
+(async()=>{const db=await setup();const sql=q=>db.exec(q),rpc=async(action='state',subject=null,detail=null)=>(await db.query('select public.ludus_first_quests($1,$2,$3) data',[action,subject,detail])).rows[0].data;
+ try{
+ await sql(`insert into ludus_accounts(user_id,gold)values('${A}',100000),('${B}',100000);insert into ludus_gladiators(id,owner_id,class,name,stat_version,base_stats)values('${G1}','${A}','murmillo','Aulus',46,'${JSON.stringify(core)}'),('${G2}','${A}','retiarius','Cassius',46,'${JSON.stringify(core)}'),('${G3}','${B}','secutor','Other',46,'${JSON.stringify(core)}');select set_config('request.jwt.claim.sub','${A}',false);select set_config('request.jwt.claims','{"is_anonymous":false}',false);`);
+ let s=await rpc();assert.equal(s.total,22);assert.equal(s.count,0);assert.equal(s.should_open,true);assert.equal(s.quests.supply.unlocked,false);
+ assert.equal((await rpc('present')).should_open,false);
+ await assert.rejects(rpc('enhance'),/Geçersiz/);await assert.rejects(rpc('inspect',G3),/sana ait/);await assert.rejects(rpc('stones','fake'),/geçersiz/);
+ s=await rpc('inspect',G1);assert.equal(s.quests.inspect.progress,1);s=await rpc('inspect',G1);assert.equal(s.quests.inspect.progress,1);s=await rpc('inspect',G2);assert.equal(s.quests.inspect.complete,true);
+ await rpc('combat',G1);await rpc('controls','regions');for(const family of ['diamond','sapphire','emerald','ruby'])await rpc('stones',family);
+ await sql(`insert into ludus_items(id,owner_id,kind,model,enhancement,equipped_by)values('${I}','${A}','weapon','gladius',2,'${G1}');`);
+ s=await rpc();assert.equal(s.quests.equip.complete,false);assert.equal(s.quests.enhance.complete,false,'Purchased +2 does not credit an enhancement');
+ await sql(`insert into ludus_shop_orders(owner_id,sku,item_id)values('${A}','gladius','${I}');update ludus_items set equipped_by=null where id='${I}';update ludus_items set equipped_by='${G1}' where id='${I}';update ludus_items set equipped_by=null where id='${I}';`);
+ s=await rpc();assert.equal(s.quests.buy_equipment.complete,true);assert.equal(s.quests.equip.complete,true,'Equipment completion survives unequipping');
+ // Real exercise API, including settling the trained attribute.
+ await db.query('select public.ludus_train_exercise($1::uuid[],$2,$3)',[[G1,G2],'muscle','00000000-0000-4000-8000-000000000031']);
+ s=await rpc();assert.equal(s.quests.training.progress,2);assert.equal((await rpc('training_review',G1,'muscle')).quests.training_review.complete,false);
+ await sql(`update ludus_training_sessions set started_at=clock_timestamp()-interval '2 hours',train_until=clock_timestamp()-interval '1 hour',rest_until=clock_timestamp() where owner_id='${A}';`);
+ await sql('select public.ludus_training_state()');
+ assert.equal((await rpc('training_review',G1,'tactics')).quests.training_review.complete,false,'Wrong attribute is not credited');
+ assert.equal((await rpc('training_review',G1,'muscle')).quests.training_review.complete,true);
+ await db.query('select public.ludus_food_buy($1,$2,$3)',['meal',2,'00000000-0000-4000-8000-000000000041']);
+ s=await rpc();assert.equal(s.quests.buy_food.complete,true);assert.equal(s.quests.food_day.complete,true);await sql(`update ludus_food_stock set quantity=0 where owner_id='${A}';`);assert.equal((await rpc()).quests.food_day.complete,true,'Food goal remains after consumption');
+ await sql(`insert into ludus_upgrade_receipts(owner_id,action,result)values('${A}','enhance','{"success":false,"plus":2}');`);assert.equal((await rpc()).quests.enhance.complete,false);
+ await sql(`insert into ludus_upgrade_receipts(owner_id,action,result)values('${A}','enhance','{"success":true,"plus":2}'),('${A}','sapphire','{"success":true}'),('${A}','emerald','{"success":true}');`);
+ await sql(`insert into ludus_battles(owner_id,gladiator_id,mode,won,finished_at)values('${A}','${G1}','4x5',false,now()),('${A}','${G2}','ranked5v5',true,now());`);s=await rpc();assert.equal(s.quests['4x5'].complete,false);assert.equal(s.quests.solo20.complete,false);
+ await sql(`insert into ludus_daily_events(owner_id,mode,won)values('${A}','4x5',true),('${A}','solo20',true);insert into ludus_battles(owner_id,gladiator_id,mode,won,finished_at)values('${A}','${G1}','naval4x5',true,now());delete from ludus_battles where owner_id='${A}';`);
+ await sql(`insert into ludus_private.survival_records_v83 values('${A}',10,9);`);assert.equal((await rpc()).quests.survival.complete,false,'Reaching wave 10 is insufficient');await sql(`update ludus_private.survival_records_v83 set stage=11,completed=10 where owner_id='${A}';`);
+ await sql(`insert into ludus_imperial_assignments(owner_id,mission,completed_at)values('${A}','{"difficulty":1}',now());`);assert.equal((await rpc()).quests.imperial.complete,false,'Completed but unclaimed mission is insufficient');await sql(`update ludus_imperial_assignments set claimed_at=now() where owner_id='${A}';`);
+ await sql(`insert into ludus_daily_claims values('${A}','quest');insert into ludus_private.market_listings_v66 values('${A}','item');insert into ludus_private.level_rewards values('${A}',2,now());insert into ludus_message_private.notifications_v108 values('${A}','first',null);`);
+ s=await rpc();assert.equal(s.count,21);assert.equal(s.completed_at,null);assert.equal(s.quests.notification.complete,false,'Opening Messages is insufficient');
+ await sql(`update ludus_message_private.notifications_v108 set read_at=now() where owner_id='${A}';`);
+ s=await rpc();assert.equal(s.count,22);assert.ok(s.completed_at);assert.equal(s.quests.supply.complete,false);assert.equal(s.quests.craft.complete,false);
+ const completed=s.completed_at;assert.equal((await rpc()).completed_at,completed,'Completion is idempotent');
+ await sql(`insert into ludus_progression values('${A}',12910);insert into ludus_supply_private.jobs values('${A}',now());insert into ludus_supply_private.receipts values('${A}','{"action":"craft"}','{"item_id":"${I}"}');`);
+ s=await rpc('supply_review');assert.equal(s.quests.supply.unlocked,true);assert.equal(s.quests.supply.complete,true);assert.equal(s.quests.craft.complete,true);assert.equal(s.count,22);
+ // Late initialization must recover historical receipts, independently of triggers.
+ await sql(`delete from ludus_private.first_quest_marks_v111 where owner_id='${A}' and quest in ('enhance','sapphire','emerald','4x5','solo20');`);
+ s=await rpc();assert.equal(s.count,22);
+ await sql(`select set_config('request.jwt.claim.sub','${B}',false);set role authenticated;`);s=await rpc();assert.equal(s.count,0);
+ await assert.rejects(db.query(`select * from ludus_private.first_quest_marks_v111`),/permission denied/);
+ await assert.rejects(db.query(`select ludus_private.first_quest_add_v111('${B}','enhance','')`),/permission denied/);
+ await sql(`reset role;select set_config('request.jwt.claims','{"is_anonymous":true}',false);`);await assert.rejects(rpc(),/Giriş/);
+ await sql(`select set_config('request.jwt.claim.sub','',false);`);await assert.rejects(rpc(),/Giriş/);
+ console.log('PASS: 22 server milestones, real training and food APIs, historical receipts, distinct starters, wrong-owner/anonymous/direct-write guards, failed enhancement, four modes, wave 10, claim/read requirements, permanent completion and advanced unlock.');
+ }finally{await db.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
