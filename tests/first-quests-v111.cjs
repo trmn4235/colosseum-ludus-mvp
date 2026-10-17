@@ -20,7 +20,7 @@ async function setup(){const db=await database();await db.exec(`
  create table ludus_supply_private.jobs(owner_id uuid,claimed_at timestamptz);
  create function ludus_private.level_from_exp(x bigint)returns integer language sql immutable as $$select case when x>=12910 then 5 when x>=3000 then 2 else 1 end$$;
  `);
- for(const suffix of ['beginner_guide_v109','first_quests_v111'])await db.exec(fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_'+suffix+'.sql')),'utf8'));
+ for(const suffix of ['beginner_guide_v109','first_quests_v111','first_quests_policy_guard_v111'])await db.exec(fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_'+suffix+'.sql')),'utf8'));
  return db;}
 (async()=>{const db=await setup();const sql=q=>db.exec(q),rpc=async(action='state',subject=null,detail=null)=>(await db.query('select public.ludus_first_quests($1,$2,$3) data',[action,subject,detail])).rows[0].data;
  try{

@@ -11,7 +11,7 @@ const fixture=`
 window.__fixtureUser={id:${JSON.stringify(owner)},is_anonymous:false,user_metadata:{}};
 window.__fighters=${JSON.stringify(fighters)};window.__items=${JSON.stringify(items)};window.__mission=${JSON.stringify(mission)};
 window.__guideState=JSON.parse(localStorage.getItem('test-guide-state')||'null')||{should_open:true,quests:Object.fromEntries(${JSON.stringify(questCatalog.map(q=>q[0]))}.map((key,i)=>[key,{progress:0,target:['inspect','training'].includes(key)?2:key==='stones'?4:1,complete:false,unlocked:i<22}])),count:0,total:22,starters:__fighters.map(g=>g.id),inspected:[],trained:[],completed_at:null};
-function __calc(){for(const q of Object.values(__guideState.quests))q.complete=q.progress===q.target;__guideState.count=Object.entries(__guideState.quests).filter(([k,q])=>!['supply','craft'].includes(k)&&q.complete).length;if(__guideState.count===22)__guideState.completed_at=__guideState.completed_at||new Date().toISOString();localStorage.setItem('test-guide-state',JSON.stringify(__guideState));}
+window.__calc=function(){for(const q of Object.values(__guideState.quests))q.complete=q.progress===q.target;__guideState.count=Object.entries(__guideState.quests).filter(([k,q])=>!['supply','craft'].includes(k)&&q.complete).length;if(__guideState.count===22)__guideState.completed_at=__guideState.completed_at||new Date().toISOString();localStorage.setItem('test-guide-state',JSON.stringify(__guideState));};
 window.__assignments=[];window.__rpcCalls=[];window.__authListeners=[];window.__failGuide=false;
 window.__combatReport=${JSON.stringify(combatReport)};
 window.__fixtureClient={
