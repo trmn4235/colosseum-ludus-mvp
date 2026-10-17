@@ -156,3 +156,18 @@
  #beginnerGuide .bg-mission-copy{gap:5px}
  #beginnerGuide .bg-facts,#beginnerGuide .bg-rewards{font-size:12px}
 }
+
+/* Short landscape screens keep portraits readable and paginate equipment. */
+@media(max-height:600px) and (min-width:701px){
+ #beginnerGuide{line-height:1.15}
+ #beginnerGuide button{line-height:1.15}
+ #beginnerGuide .bg-fighters{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:5px}
+ #beginnerGuide .bg-fighter{display:grid;grid-template-columns:29% minmax(0,1fr) 25%;align-items:center}
+ #beginnerGuide .bg-select-fighter{height:100%;width:100%;align-self:stretch}
+ #beginnerGuide .bg-fighter-copy{padding:3px 2px}
+ #beginnerGuide .bg-fighter-copy h3{font-size:12px}
+ #beginnerGuide .bg-fighter>.bg-action{margin:0 4px 0 0;font-size:11px;padding:4px 1px}
+ #beginnerGuide .bg-items{grid-template-rows:minmax(0,1fr)}
+}
+@media(max-height:420px) and (min-width:701px){#beginnerGuide .bg-mission-hint{display:none}}
+@media(max-height:375px) and (min-width:701px){#beginnerGuide .bg-mission-art{display:none}#beginnerGuide .bg-mission{gap:4px}#beginnerGuide .bg-mission-copy{flex:1;justify-content:center}}

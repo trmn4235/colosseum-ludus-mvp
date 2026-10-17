@@ -1349,7 +1349,7 @@ beginnerGuide=LudusOnboarding.create({client:accountClient,getUser:()=>playerAcc
   const slot=item&&!item.equipped_by?(item.kind==='weapon'?'main_hand':item.kind==='shield'?'off_hand':item.kind):null;
   exercisePanel.open(g,{slot});beginnerGuide.inspected(g);
  }});
-Promise.all([...ready,accountReady]).then(()=>beginnerGuide.start()).catch(()=>{});
+accountReady.then(()=>beginnerGuide.start()).catch(()=>{});
 window.LudusPreview={beginnerGuide,exercisePanel,refreshTraining,showGladiator,imperial,levelProgress,clanVault,city,viewSettings,get paused(){return paused;},get inputKeys(){return [...keys];},get cameraDistance(){return cameraDistance;},get ownerVelocity(){return ownerVelocity;},get ownerAvatar(){return ownerAvatar;},followOwner,setOwnerAppearance,toggleExplore,get exploring(){return exploring;},cameraObstacles,accountReady,residentsReady,gateAction,market,cart,scene,camera,player,move,floorAt,renderer,rooms,roster,stations,colliders,roomColliders,diningRoom,foodSystem,supplySystem,tradeRoom,roomDesign,roomProps,roomScene,galleryPosts,allowed,assign,enterRoom,leaveRoom,updateActivities,updateResidents,courtyardTraining,roomActions,restRoom,roomBounds};
 })();
 </script>

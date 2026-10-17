@@ -82,8 +82,8 @@ function create(ctx){
   const g=selected(),items=ctx.items().filter(i=>!i.clan_vault_id&&!i.market_listing_id&&(!i.equipped_by||i.equipped_by===g?.record.id));
   items.sort((a,b)=>Number(!!b.equipped_by)-Number(!!a.equipped_by)||Object.keys(slots).indexOf(a.equipped_slot)-Object.keys(slots).indexOf(b.equipped_slot));
   panel.append(el('p','bg-equipment-owner',g?g.name+' · '+(items.some(i=>i.equipped_by)?'Donanımın takılı':'Eşyalarını kuşan'):'Envanterin'));
-  const grid=el('div','bg-items'),pages=Math.max(1,Math.ceil(items.length/4));gearPage=Math.min(gearPage,pages-1);
-  for(const item of items.slice(gearPage*4,gearPage*4+4)){
+  const perPage=innerHeight<=600&&innerWidth>700?2:4,grid=el('div','bg-items'),pages=Math.max(1,Math.ceil(items.length/perPage));gearPage=Math.min(gearPage,pages-1);
+  for(const item of items.slice(gearPage*perPage,gearPage*perPage+perPage)){
    const name=item.name||names[item.model]||slots[item.equipped_slot]||({helmet:'Miğfer',chest:'Zırh',gloves:'Kolluk',legs:'Bacaklık'})[item.kind]||'Ekipman';
    const tile=button('',()=>navigate('equipment',g,item),'bg-item'),art=el('span','bg-item-art');art.innerHTML=root.LudusIcons?.svg(item)||'';
    tile.setAttribute('aria-label',name+' +'+Number(item.enhancement||0)+' · '+(item.equipped_by?'Takılı':'Envanterde'));
@@ -131,6 +131,7 @@ function create(ctx){
   if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();}
   if(event.key==='Tab'){const items=[...modal.querySelectorAll('button:not(:disabled)')].filter(n=>n.getClientRects().length),first=items[0],last=items.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}
  });
+ let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{gearPage=0;if(!modal.hidden)render();},70);});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!modal.hidden)refresh();});
  return{start,open,close,resume,refresh,reset,inspected:g=>{if(owner&&g?.record?.id)call('inspect',g.record.id).catch(()=>{});},get state(){return state;}};
 }
