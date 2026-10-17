@@ -24,7 +24,7 @@ window.__fixtureClient={
    localStorage.setItem('test-guide-state',JSON.stringify(__guideState));return{data:JSON.parse(JSON.stringify(__guideState))};
   }
   if(name==='ludus_train_exercise'){
-   for(const id of args.p_gladiators){const g=__fighters.find(g=>g.id===id);g.session={train_until:new Date(Date.now()+3600000).toISOString(),rest_until:new Date(Date.now()+7200000).toISOString()};g.trained_today=true;}
+   for(const id of args.p_gladiators){const g=__fighters.find(g=>g.id===id);g.session={id:'training-'+id,exercise_stat:args.p_stat,started_at:new Date().toISOString(),train_until:new Date(Date.now()+3600000).toISOString(),rest_until:new Date(Date.now()+7200000).toISOString()};g.trained_today=true;}
    __guideState.steps.training=true;return{data:training()};
   }
   if(name==='ludus_imperial'){
@@ -53,7 +53,7 @@ async function layout(page,label){
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH}:{}),args:['--no-sandbox','--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const context=await browser.newContext({viewport:{width:852,height:393}});await context.route(/^https:/,r=>r.abort());
- const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.stack||e.message));
  try{
   await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html',{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#beginnerGuide:not([hidden])',{timeout:60000});
