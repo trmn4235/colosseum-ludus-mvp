@@ -6,7 +6,7 @@ const html=fs.readFileSync(path.join(root,'ludus.html'),'utf8');
 const styles=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>|<link rel="stylesheet" href="([^"?]+)[^"]*">/g)].map(m=>m[1]!==undefined?m[1]:fs.existsSync(path.join(root,m[2]))?fs.readFileSync(path.join(root,m[2]),'utf8'):'').join('\n');
 async function layout(page,label){
  const bad=await page.evaluate(()=>{
-  const selectors=['.combat-values','.combat-values-shell','.combat-values-content','.combat-values-detail','.combat-values-list','.combat-values-stats','.combat-values-sources','.combat-values-context','.combat-values-cap','.combat-values-foot','.combat-values-source'];
+  const selectors=['.exercise-attribute-heading','.exercise-attribute-heading h3','.combat-values','.combat-values-shell','.combat-values-content','.combat-values-detail','.combat-values-list','.combat-values-stats','.combat-values-sources','.combat-values-context','.combat-values-cap','.combat-values-foot','.combat-values-source'];
   const elements=[...document.querySelectorAll(selectors.join(','))];
   return elements.filter(e=>e.getClientRects().length).flatMap(e=>{const r=e.getBoundingClientRect();return e.scrollHeight>e.clientHeight+2||e.scrollWidth>e.clientWidth+2||r.top<-.5||r.bottom>innerHeight+.5||r.left<-.5||r.right>innerWidth+.5?[{class:e.className,client:[e.clientWidth,e.clientHeight],scroll:[e.scrollWidth,e.scrollHeight],rect:[r.left,r.top,r.right,r.bottom]}]:[];});
  });
