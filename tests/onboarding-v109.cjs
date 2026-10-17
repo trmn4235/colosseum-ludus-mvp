@@ -61,6 +61,8 @@ async function layout(page,label){
   assert.equal(await page.locator('.bg-fighter').count(),2);assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
   for(const [width,height]of [[1440,900],[852,393],[874,402],[740,360],[667,375],[393,852],[320,568]]){
    await page.setViewportSize({width,height});await page.waitForTimeout(150);
+   if(height>width){assert.equal(await page.locator('#landscapeGate').isVisible(),true);assert.equal(await page.locator('#beginnerGuide').isVisible(),false);assert.equal(await page.locator('#beginnerGuide').evaluate(e=>e.inert),true);console.log('PASS rotation gate '+width+'x'+height);continue;}
+   assert.equal(await page.locator('#landscapeGate').isVisible(),false);
    for(const tab of width<=700?['Gladyatörler','Ekipman','İlk görev']:[null]){if(tab)await page.locator('.bg-tabs').getByRole('button',{name:tab,exact:true}).click();await layout(page,width+'x'+height+' '+tab);}
    console.log('PASS layout '+width+'x'+height);
   }
@@ -86,8 +88,9 @@ async function layout(page,label){
   await page.click('#beginnerOpen');await page.waitForSelector('#beginnerGuide:not([hidden])');
   await page.evaluate(()=>{__failGuide=true;return LudusPreview.beginnerGuide.refresh();});
   await page.waitForFunction(()=>document.querySelector('.bg-status').textContent.includes('kaydedilemedi'));
-  await page.setViewportSize({width:320,height:568});await layout(page,'offline message');
+  await page.setViewportSize({width:667,height:375});await page.waitForTimeout(150);await layout(page,'offline message');
   await page.evaluate(()=>__failGuide=false);await page.getByRole('button',{name:'Tekrar dene',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.bg-status').textContent.includes('kaydedilemedi'));
+  await page.locator('.bg-tabs').getByRole('button',{name:'Gladyatörler',exact:true}).click();
   await page.evaluate(()=>{LudusPreview.roster[0].name='<img src=x onerror=alert(1)>';return LudusPreview.beginnerGuide.refresh();});
   assert.equal(await page.locator('.bg-fighter-copy h3 img').count(),0,'Names must be plain text');await layout(page,'long name');
   await page.evaluate(()=>__authListeners.forEach(fn=>fn('SIGNED_OUT',null)));
