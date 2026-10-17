@@ -100,10 +100,10 @@ body[data-roman-screen="clan"] .progress{background:var(--ui-canvas)!important}b
 body[data-roman-screen="clan"] :is(.emblemButton svg,.rosterSlot svg,.gladiatorChoice svg){color:var(--ui-burgundy)!important}
 
 /* Ludus HUD and its actual room dialogs, without touching the 3D view. */
-body[data-roman-screen="ludus"] .ludus-menu{background:var(--ui-burgundy)!important;border:1px solid var(--ui-gold)!important;border-radius:5px!important;box-shadow:0 3px 14px #59182320!important}
-body[data-roman-screen="ludus"] .ludus-menu #accountSummary{background:transparent!important;color:var(--ui-gold-light)!important;text-shadow:none!important;box-shadow:none!important}
+body[data-roman-screen="ludus"] .ludus-menu{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body[data-roman-screen="ludus"] .ludus-menu #accountSummary{background:transparent!important;color:var(--ui-gold-light)!important;text-shadow:0 1px 3px #20130eee,0 0 6px #20130ecc!important;box-shadow:none!important}
 body[data-roman-screen="ludus"] .ludus-menu .tools{background:transparent!important}
-body[data-roman-screen="ludus"] .tools button{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="ludus"] .ludus-menu .tools button,body[data-roman-screen="ludus"] .ludus-menu .tools button:hover{background:transparent!important;color:var(--ui-gold-light)!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 body[data-roman-screen="ludus"] :is(#friendCount,#messageUnread,#explore.active){background:var(--ui-white)!important;color:var(--ui-burgundy)!important}
 body[data-roman-screen="ludus"] :is(.worldLabel,.room-world-action,.clan-vault-marker,#interact,#roomExit,#loading,#pendingBattleNotice){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important;text-shadow:none!important}
 body[data-roman-screen="ludus"] .room-world-action[data-state=ready]{outline:2px solid var(--ui-gold-light);outline-offset:2px}
