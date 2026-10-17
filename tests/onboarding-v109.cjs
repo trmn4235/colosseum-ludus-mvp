@@ -2,6 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),exercise=require('../gladiator-exercise-v46.js');
 const root=path.resolve(__dirname,'..'),owner='00000000-0000-4000-8000-000000000109';
+const combatReport=process.env.LUDUS_COMBAT_VALUES_TEST?JSON.parse(fs.readFileSync(path.join(process.env.LUDUS_TEST_OUTPUT||'/tmp/combat-values-v110','combat-values-fixture.json'),'utf8')):null;
 const fighters=['murmillo','retiarius'].map((type,i)=>({id:'00000000-0000-4000-8000-00000000011'+i,name:['Aulus Varro','Cassius Nero'][i],class:type,owner_id:owner,overall:50,level:1,status:'available',session:null,stat_version:46,base_stats:exercise.profile(type),fatigue_value:0,exercise_units:0}));
 const items=fighters.flatMap(g=>[['weapon','gladius','main_hand'],['shield','large','off_hand'],['helmet','gold','helmet'],['chest','murmillo','chest'],['gloves','starter','gloves'],['legs','starter','legs']].map(([kind,model,slot],i)=>({id:g.id+'-'+i,owner_id:owner,kind,model,equipped_by:g.id,equipped_slot:slot,enhancement:0})));
 const mission={id:'00000000-0000-4000-8000-000000000119',title:'Aventinus Tepesi’nde Hırsız Avı',description:'Mahalledeki hırsızların izini sür.',difficulty:1,slot:1,day:'2026-10-17',image:'imperial-missions/gun01-kolay-aventinus-kart.webp'};
@@ -10,11 +11,13 @@ window.__fixtureUser={id:${JSON.stringify(owner)},is_anonymous:false,user_metada
 window.__fighters=${JSON.stringify(fighters)};window.__items=${JSON.stringify(items)};window.__mission=${JSON.stringify(mission)};
 window.__guideState=JSON.parse(localStorage.getItem('test-guide-state')||'null')||{should_open:true,steps:{inspect:false,equipment:true,mission:false,training:false},completed_at:null};
 window.__assignments=[];window.__rpcCalls=[];window.__authListeners=[];window.__failGuide=false;
+window.__combatReport=${JSON.stringify(combatReport)};
 window.__fixtureClient={
  auth:{getUser:async()=>({data:{user:__fixtureUser}}),getSession:async()=>({data:{session:null}}),onAuthStateChange:fn=>{__authListeners.push(fn);return{};}},
  from:name=>{const value=name==='ludus_accounts'?{user_id:__fixtureUser.id,ludus_name:'Test Ludus',gold:1000,diamonds:3}:name==='ludus_gladiators'?__fighters:name==='ludus_items'?__items:[];const b={select:()=>b,eq:()=>b,order:()=>b,single:async()=>({data:value}),then:(r,j)=>Promise.resolve({data:value}).then(r,j)};return b;},
  rpc:async(name,args={})=>{
   __rpcCalls.push({name,args});
+  if(name==='ludus_combat_values')return{data:{...__combatReport,owner_id:__fixtureUser.id,gladiator:__fighters.find(g=>g.id===args.p_gladiator)}};
   const training=()=>({server_now:new Date().toISOString(),gladiators:__fighters});
   if(name==='ludus_onboarding'){
    if(__failGuide)return{error:{message:'Offline fixture'}};
@@ -70,6 +73,20 @@ async function layout(page,label){
   console.log('GUIDE_SCREENSHOT_BASE64:'+(await page.screenshot({type:'jpeg',quality:65})).toString('base64')+':END_GUIDE_SCREENSHOT');
   await page.getByRole('button',{name:'Aulus Varro · İncele',exact:true}).click();await page.waitForSelector('#orders:not([hidden])');
   assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
+  if(combatReport){
+   await page.getByRole('button',{name:'Savaş Değerleri',exact:true}).click();await page.waitForSelector('.combat-values-stat');
+   assert.equal(await page.locator('#orders').evaluate(e=>e.inert),true);assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
+   await page.getByRole('tab',{name:'Dayanıklılık',exact:true}).click();
+   assert.equal(await page.locator('[data-stat=max_hp] strong').textContent(),String(combatReport.totals.max_hp));
+   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(150);
+   assert.equal(await page.locator('#landscapeGate').isVisible(),true);assert.equal(await page.locator('#combat-values').isVisible(),false);assert.equal(await page.locator('#combat-values').evaluate(e=>e.inert),true);
+   await page.setViewportSize({width:852,height:393});await page.waitForTimeout(150);
+   assert.equal(await page.locator('#combat-values').isVisible(),true);assert.equal(await page.locator('#combat-values').evaluate(e=>e.inert),false);assert.equal(await page.locator('#orders').evaluate(e=>e.inert),true);
+   console.log('COMBAT_SCREENSHOT_BASE64:'+(await page.screenshot({type:'jpeg',quality:70})).toString('base64')+':END_COMBAT_SCREENSHOT');
+   await page.keyboard.press('Escape');assert.equal(await page.locator('#combat-values').count(),0);assert.equal(await page.locator('#orders').isVisible(),true);assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
+   console.log('DETAIL_SCREENSHOT_BASE64:'+(await page.screenshot({type:'jpeg',quality:70})).toString('base64')+':END_DETAIL_SCREENSHOT');
+   console.log('PASS combat values: real courtyard icon, server totals, pause, rotation, Escape and parent restoration.');
+  }
   await page.evaluate(()=>LudusPreview.exercisePanel.close());await page.waitForSelector('#beginnerGuide:not([hidden])');await page.waitForFunction(()=>LudusPreview.beginnerGuide.state.steps.inspect);
   await page.getByRole('button',{name:'Ekipmanını hazırla · Tamamlandı',exact:true}).click();await page.waitForSelector('#orders:not([hidden])');
   await page.evaluate(()=>LudusPreview.exercisePanel.close());await page.waitForSelector('#beginnerGuide:not([hidden])');
@@ -100,3 +117,4 @@ async function layout(page,label){
  }catch(e){console.error(e,{errors});try{console.log('FAIL_SCREENSHOT_BASE64:'+(await page.screenshot({type:'jpeg',quality:60,timeout:5000})).toString('base64')+':END_FAIL_SCREENSHOT');}catch{}throw e;}
  finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
+

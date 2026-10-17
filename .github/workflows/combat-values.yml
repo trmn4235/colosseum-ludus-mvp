@@ -1,0 +1,39 @@
+name: Combat values regression
+on:
+  push:
+    branches: [codex/combat-values-v110]
+  pull_request:
+    branches: [main]
+    paths: ['ludus-combat-values-*', 'tests/combat-values-*', 'supabase/migrations/*combat_values*', 'ludus.html', 'gladiator-exercise-v46.js']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  combat-values:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      LUDUS_TEST_OUTPUT: /tmp/combat-values-v110
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          node --check ludus-combat-values-v110.js
+          node --check gladiator-exercise-v46.js
+      - name: Install isolated test tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
+          npx playwright install --with-deps chromium
+      - name: Live combat parity, contributions and owner isolation
+        run: node tests/combat-values-v110.cjs
+      - name: Mobile layout, refresh and account lifecycle
+        run: node tests/combat-values-ui-v110.cjs
+      - name: Real courtyard and beginner guide regression
+        env:
+          LUDUS_COMBAT_VALUES_TEST: '1'
+        run: node tests/onboarding-v109.cjs
