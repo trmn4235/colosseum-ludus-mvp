@@ -35,6 +35,27 @@ begin
 end $$;
 revoke all on function ludus_private.first_quest_food_v111(uuid) from public,anon,authenticated;
 
+-- Naval battles share the 4x5 combat engine. Preserve the result's actual arena
+-- separately from daily-task/reward rules, including after old battles are pruned.
+alter table public.ludus_daily_events add column game_mode text;
+create function ludus_private.first_quest_battle_mode_v111(p_mode text,p_stats jsonb) returns text
+language sql immutable set search_path='' as $$
+ select case when p_mode='4x5' and p_stats->>'game_mode'='naval4x5' then 'naval4x5' else p_mode end;
+$$;
+revoke all on function ludus_private.first_quest_battle_mode_v111(text,jsonb) from public,anon,authenticated;
+create function ludus_private.first_quest_daily_mode_v111() returns trigger
+language plpgsql security definer set search_path='' as $$
+begin
+ select ludus_private.first_quest_battle_mode_v111(b.mode,b.stats) into new.game_mode
+ from public.ludus_battles b where b.id=new.battle_id and b.owner_id=new.owner_id;
+ new.game_mode:=coalesce(new.game_mode,new.mode);
+ return new;
+end $$;
+revoke all on function ludus_private.first_quest_daily_mode_v111() from public,anon,authenticated;
+create trigger first_quest_daily_mode_v111 before insert on public.ludus_daily_events for each row execute function ludus_private.first_quest_daily_mode_v111();
+update public.ludus_daily_events e set game_mode=ludus_private.first_quest_battle_mode_v111(b.mode,b.stats)
+ from public.ludus_battles b where b.id=e.battle_id and b.owner_id=e.owner_id;
+
 -- Preserve evidence even if a battle, an item or a listing is later removed.
 create function ludus_private.first_quest_event_v111() returns trigger
 language plpgsql security definer set search_path='' as $$
@@ -62,11 +83,11 @@ begin
   end if;
  when 'ludus_daily_events' then
   if d->>'won'='true' and d->>'mode' in ('4x5','solo20','naval4x5') then
-   perform ludus_private.first_quest_add_v111(u,d->>'mode');
+   perform ludus_private.first_quest_add_v111(u,coalesce(d->>'game_mode',d->>'mode'));
   end if;
  when 'ludus_battles' then
   if new.finished_at is not null and new.won and new.mode in ('4x5','solo20','naval4x5') then
-   perform ludus_private.first_quest_add_v111(u,new.mode);
+   perform ludus_private.first_quest_add_v111(u,ludus_private.first_quest_battle_mode_v111(new.mode,new.stats));
   end if;
  when 'survival_records_v83' then
   if (d->>'completed')::integer>=10 then perform ludus_private.first_quest_add_v111(u,'survival');end if;
@@ -161,8 +182,8 @@ begin
  union select 'food_day','' from public.ludus_food_history where owner_id=u and crew_count>0 and (menu->>'missing_units')::integer=0
  union select 'enhance','' from public.ludus_upgrade_receipts where owner_id=u and action='enhance' and result->>'success'='true' and (result->>'plus')::integer>=2
  union select action,'' from public.ludus_upgrade_receipts where owner_id=u and action in ('sapphire','emerald') and result->>'success'='true'
- union select mode,'' from public.ludus_battles where owner_id=u and finished_at is not null and won and mode in ('4x5','solo20','naval4x5')
- union select mode,'' from public.ludus_daily_events where owner_id=u and won and mode in ('4x5','solo20','naval4x5')
+ union select ludus_private.first_quest_battle_mode_v111(mode,stats),'' from public.ludus_battles where owner_id=u and finished_at is not null and won and mode in ('4x5','solo20','naval4x5')
+ union select coalesce(game_mode,mode),'' from public.ludus_daily_events where owner_id=u and won and mode in ('4x5','solo20','naval4x5')
  union select 'survival','' from ludus_private.survival_records_v83 where owner_id=u and completed>=10
  union select 'imperial','' from public.ludus_imperial_assignments where owner_id=u and claimed_at is not null and coalesce(mission->>'difficulty',mission->>'slot')='1'
  union select 'daily','' from public.ludus_daily_claims where owner_id=u

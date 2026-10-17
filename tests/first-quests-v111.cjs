@@ -1,4 +1,5 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const vm=require('node:vm');
 const {database,core}=require('./combat-stats-v73.cjs');
 const root=path.resolve(__dirname,'..'),A='00000000-0000-4000-8000-000000000001',B='00000000-0000-4000-8000-000000000002';
 const G1='00000000-0000-4000-8000-000000000011',G2='00000000-0000-4000-8000-000000000012',G3='00000000-0000-4000-8000-000000000013',I='00000000-0000-4000-8000-000000000021';
@@ -45,7 +46,12 @@ async function setup(){const db=await database();await db.exec(`
  await sql(`insert into ludus_upgrade_receipts(owner_id,action,result)values('${A}','enhance','{"success":false,"plus":2}');`);assert.equal((await rpc()).quests.enhance.complete,false);
  await sql(`insert into ludus_upgrade_receipts(owner_id,action,result)values('${A}','enhance','{"success":true,"plus":2}'),('${A}','sapphire','{"success":true}'),('${A}','emerald','{"success":true}');`);
  await sql(`insert into ludus_battles(owner_id,gladiator_id,mode,won,finished_at)values('${A}','${G1}','4x5',false,now()),('${A}','${G2}','ranked5v5',true,now());`);s=await rpc();assert.equal(s.quests['4x5'].complete,false);assert.equal(s.quests.solo20.complete,false);
- await sql(`insert into ludus_daily_events(owner_id,mode,won)values('${A}','4x5',true),('${A}','solo20',true);insert into ludus_battles(owner_id,gladiator_id,mode,won,finished_at)values('${A}','${G1}','naval4x5',true,now());delete from ludus_battles where owner_id='${A}';`);
+ const navalBattle='00000000-0000-4000-8000-000000000051';
+ await sql(`insert into ludus_battles(id,owner_id,gladiator_id,mode,won,finished_at,stats)values('${navalBattle}','${A}','${G1}','4x5',true,now(),'{"game_mode":"naval4x5"}');insert into ludus_daily_events(battle_id,owner_id,mode,won)values('${navalBattle}','${A}','4x5',true);`);
+ s=await rpc();assert.equal(s.quests.naval4x5.complete,true);assert.equal(s.quests['4x5'].complete,false,'Naval victory must not also complete land arena');
+ await sql(`delete from ludus_battles where owner_id='${A}';delete from ludus_private.first_quest_marks_v111 where owner_id='${A}' and quest='naval4x5';`);
+ s=await rpc();assert.equal(s.quests.naval4x5.complete,true,'Daily receipt keeps the actual mode after battle pruning');assert.equal(s.quests['4x5'].complete,false);
+ await sql(`insert into ludus_daily_events(owner_id,mode,won)values('${A}','4x5',true),('${A}','solo20',true);`);
  await sql(`insert into ludus_private.survival_records_v83 values('${A}',10,9);`);assert.equal((await rpc()).quests.survival.complete,false,'Reaching wave 10 is insufficient');await sql(`update ludus_private.survival_records_v83 set stage=11,completed=10 where owner_id='${A}';`);
  await sql(`insert into ludus_imperial_assignments(owner_id,mission,completed_at)values('${A}','{"difficulty":1}',now());`);assert.equal((await rpc()).quests.imperial.complete,false,'Completed but unclaimed mission is insufficient');await sql(`update ludus_imperial_assignments set claimed_at=now() where owner_id='${A}';`);
  await sql(`insert into ludus_daily_claims values('${A}','quest');insert into ludus_private.market_listings_v66 values('${A}','item');insert into ludus_private.level_rewards values('${A}',2,now());insert into ludus_message_private.notifications_v108 values('${A}','first',null);`);
@@ -63,6 +69,9 @@ async function setup(){const db=await database();await db.exec(`
  await assert.rejects(db.query(`select ludus_private.first_quest_add_v111('${B}','enhance','')`),/permission denied/);
  await sql(`reset role;select set_config('request.jwt.claims','{"is_anonymous":true}',false);`);await assert.rejects(rpc(),/Giriş/);
  await sql(`select set_config('request.jwt.claim.sub','',false);`);await assert.rejects(rpc(),/Giriş/);
+ const statsFn=fs.readFileSync(root+'/arena.html','utf8').split('\n').find(l=>l.startsWith('function battleResultStats()'));
+ const sandbox={combat:{stats:{kills:3},mode:'4x5',time:20,fighters:[{hp:100}]},naval:{},LudusLoadout:{exitSlots:()=>({})}};
+ vm.createContext(sandbox);vm.runInContext(statsFn,sandbox);assert.equal(sandbox.battleResultStats().game_mode,'naval4x5');sandbox.naval=null;assert.equal(sandbox.battleResultStats().game_mode,'4x5');sandbox.combat.survival={stage:11,completed:10};assert.equal(sandbox.battleResultStats().survival_completed,10);assert.equal(sandbox.battleResultStats().game_mode,'survival');
  console.log('PASS: 22 server milestones, real training and food APIs, historical receipts, distinct starters, wrong-owner/anonymous/direct-write guards, failed enhancement, four modes, wave 10, claim/read requirements, permanent completion and advanced unlock.');
  }finally{await db.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

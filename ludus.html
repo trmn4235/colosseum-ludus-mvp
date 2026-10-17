@@ -1348,7 +1348,7 @@ beginnerGuide=LudusOnboarding.create({client:accountClient,getUser:()=>playerAcc
   if(target==='settings'){viewSettings.open();return;}
   if(target==='messages'){messageInbox.open('system');return;}
   const pages={market:'pazar.html',stones:'gelistirmeler.html?pouch=1',upgrades:'gelistirmeler.html',arena:'savas.html',daily:'gorevler.html',levels:'ludus-seviye.html'};
-  if(pages[target]){const url=new URL(pages[target],location.href);url.searchParams.set('v','revision111');openLudusPage(url.href);return;}
+  if(pages[target]){const url=new URL(pages[target],location.href);url.searchParams.set('v','revision111');if(quest==='listing')url.searchParams.set('market','forum');if(target==='arena')url.searchParams.set('choose','1');openLudusPage(url.href);return;}
   if(['food','supply','forge'].includes(target)){
    const kind=target==='food'?'dining':target==='forge'?'upgrades':'store';
    if(activeRoom?.kind!==kind){if(activeRoom)leaveRoom();if(!exploring)toggleExplore();enterRoom(rooms.find(r=>r.kind===kind));}

@@ -12,6 +12,8 @@ jobs:
   first-quests:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    env:
+      LUDUS_TEST_OUTPUT: /tmp/combat-values-v110
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
