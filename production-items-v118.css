@@ -1,0 +1,44 @@
+/* V118: each item gets its own image, label and count area. No overlap. */
+.supply-stock-toolbar{display:flex;align-items:center;gap:12px;min-height:32px;flex:none}
+.supply-stock-toolbar .supply-stock-tabs{padding:0;margin:0}.supply-stock-filter{max-width:190px;min-width:0;border:1px solid #c8b58a;border-radius:4px;background:#fff;color:#591823;padding:5px 8px;font:12px Arial}
+.supply-stock-total{margin-left:auto;font:12px Arial;color:#7b6e64;white-space:nowrap}
+.supply-modal .supply-vault{display:block;flex:1;min-width:0;min-height:0;width:100%}
+.supply-modal .supply-stock,.supply-modal[data-mode=forge] .supply-stock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px;width:100%;height:100%;min-width:0;min-height:0}
+.supply-modal .supply-stock-card{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:minmax(0,1fr) 38px;align-content:stretch;justify-content:stretch;column-gap:8px;row-gap:5px;padding:10px 12px;overflow:hidden;min-width:0;min-height:0;border:1px solid #cbb991;border-radius:7px;background:#fffdf8;box-shadow:none}
+.supply-stock-picture{grid-column:1/-1;grid-row:1;display:flex;justify-content:center;align-items:center;min-height:0;min-width:0;width:100%;height:100%;overflow:hidden}
+.supply-modal .supply-vault .supply-stock-icon{position:static;display:block;flex:none;max-width:min(78%,150px);max-height:100%;width:100%;height:100%;object-fit:contain;object-position:center;filter:none;padding:3px;box-sizing:border-box}
+.supply-modal .supply-stock-label{grid-column:1;grid-row:2;align-self:center;min-width:0;min-height:0}
+.supply-modal .supply-stock-card h2{margin:0;font:clamp(12px,1.4vw,19px)/1.15 Georgia,serif;overflow-wrap:anywhere;color:#591823}
+.supply-modal .supply-stock-card>.supply-stock-quantity{position:static;grid-column:2;grid-row:2;align-self:center;justify-self:end;margin:0;font:600 clamp(15px,1.9vw,24px)/1 Arial,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;color:#591823}
+.supply-modal .supply-stock-card[data-empty=true]>.supply-stock-quantity{color:#9b938a}
+.supply-stock-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:28px;flex:none}
+.supply-stock-bottom>small{font:10px Arial;color:#877b6c}.supply-stock-bottom .supply-pagination{margin-left:auto}.supply-modal .supply-stock-bottom>.supply-secondary{min-height:28px;padding:4px 10px;font-size:11px}
+.supply-modal .supply-pagination{display:flex;align-items:center;justify-content:center;gap:10px;flex:none;font:12px Arial;min-height:28px}.supply-modal .supply-pagination button{min-width:30px;min-height:28px;padding:2px 8px}
+.supply-modal .supply-recipes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));flex:1;min-height:0;gap:7px}
+.supply-modal .supply-recipe{min-height:0;min-width:0;display:grid;grid-template-rows:minmax(0,1fr) 30px;gap:4px;padding:7px;background:#fffdf8}
+.supply-modal .supply-equipment-art{display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;width:100%;height:100%;max-width:100%;max-height:100%;margin:0;overflow:hidden}
+.supply-equipment-art>img,.supply-detail-art>img{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain;object-position:center}
+.supply-modal .supply-equipment-art>img{max-width:105px;padding:2px;box-sizing:border-box}
+.supply-modal .supply-recipe-name{align-self:center;font:clamp(10px,1.15vw,14px)/1.15 Georgia;text-align:center;white-space:normal;overflow-wrap:anywhere}
+.supply-modal .supply-craft-detail{min-height:0;justify-content:flex-start;gap:5px;padding:10px;overflow:hidden}
+.supply-modal .supply-craft-heading{min-height:0;flex:none;gap:10px}.supply-modal .supply-detail-art{width:64px;height:64px;flex:none}.supply-modal .supply-craft-heading h2{font-size:19px;line-height:1.15}
+.supply-output{font:12px/1.2 Arial;color:#591823;margin:0;padding:5px 0;border-bottom:1px solid #c8b58a66;flex:none}
+.supply-modal .supply-ingredients-title{margin:2px 0 0;flex:none}
+.supply-modal .supply-ingredients{gap:4px;min-height:0;flex:1;align-content:start;overflow:hidden}.supply-modal .supply-ingredients li{display:grid;grid-template-columns:28px minmax(0,1fr) auto;min-height:25px;gap:6px;padding-bottom:3px;line-height:1.1;font-size:12px}.supply-ingredient-name{overflow-wrap:anywhere}.supply-modal .supply-ingredients img{width:25px;height:25px}.supply-ingredient-count{font-variant-numeric:tabular-nums}
+.supply-modal .supply-craft-hint{font:10px/1.2 Arial;margin:0;flex:none}.supply-modal .supply-craft-detail>.supply-primary{margin:0;min-height:30px;padding:6px;flex:none;font-size:12px}
+.caravan-goods-box{display:flex;flex-direction:column;gap:3px;min-height:0}.caravan-goods-box .caravan-goods{flex:1;min-height:0;overflow:hidden}
+.caravan-goods-pages{display:flex;align-items:center;justify-content:center;gap:14px;font:10px Arial;flex:none;height:24px}.supply-modal .caravan-goods-pages button{padding:0 8px;min-height:22px;height:22px;min-width:28px;font-size:15px}
+@media(max-height:540px){
+ .supply-stock-toolbar{min-height:28px;gap:8px}.supply-stock-total{font-size:10px}.supply-stock-filter{padding:3px 6px;font-size:11px;max-width:150px}
+ .supply-modal .supply-stock{gap:7px}.supply-modal .supply-stock-card{padding:6px 9px;grid-template-rows:minmax(0,1fr) 30px;row-gap:3px;column-gap:5px}.supply-modal .supply-stock-card h2{font-size:13px}.supply-modal .supply-stock-card>.supply-stock-quantity{font-size:18px}.supply-modal .supply-vault .supply-stock-icon{max-width:min(75%,100px);max-height:100%}
+ .supply-stock-bottom{min-height:25px}.supply-stock-bottom>small{font-size:9px}.supply-modal .supply-stock-bottom>.supply-secondary,.supply-modal .supply-pagination button{min-height:25px}
+ .supply-modal .supply-workshop{grid-template-columns:minmax(0,1fr) minmax(260px,.66fr)}.supply-modal .supply-recipe{padding:5px;grid-template-rows:minmax(0,1fr) 26px}.supply-modal .supply-craft-detail{padding:8px;gap:4px}.supply-modal .supply-detail-art{width:47px;height:47px}.supply-modal .supply-craft-heading h2{font-size:16px}.supply-output{font-size:11px;padding:3px 0}.supply-modal .supply-ingredients li{min-height:21px;font-size:11px;grid-template-columns:23px minmax(0,1fr) auto;gap:4px;padding-bottom:2px}.supply-modal .supply-ingredients img{width:21px;height:21px}.supply-modal .supply-ingredients{gap:3px}.supply-modal .supply-craft-hint{font-size:9px}
+ .caravan-goods-box .caravan-goods{grid-template-rows:repeat(5,minmax(24px,1fr))}
+ .supply-modal .caravan-good{padding:2px 5px}.caravan-good b{font-size:11px;line-height:1}.caravan-good small{font-size:9px;line-height:1.1;margin-top:0}
+}
+@media(max-width:720px){.supply-modal .supply-stock-card h2{font-size:12px}.supply-modal .supply-stock-card>.supply-stock-quantity{font-size:16px}.supply-modal .supply-workshop{grid-template-columns:minmax(0,1fr) 255px}.supply-modal .supply-recipes{gap:5px}.supply-modal .supply-recipe-name{font-size:10px}}
+@media(max-height:400px){.supply-modal .supply-content{gap:5px}.supply-modal .supply-stock-card{padding:5px 8px;grid-template-rows:minmax(0,1fr) 28px}.supply-modal .supply-vault .supply-stock-icon{max-width:min(73%,80px)}.supply-modal .supply-detail-art{height:36px;width:36px}.supply-modal .supply-craft-heading h2{font-size:15px}.supply-modal .supply-craft-heading .supply-kicker{font-size:8px}.supply-modal .supply-ingredients li{min-height:19px;font-size:10px;grid-template-columns:20px minmax(0,1fr) auto}.supply-modal .supply-ingredients img{height:19px;width:19px}.supply-modal .supply-craft-hint{font-size:8px}.supply-modal .supply-craft-detail>.supply-primary{min-height:27px;font-size:11px}.supply-output{font-size:10px}}
+@media(max-height:400px){.caravan-good>div{display:block}.supply-modal .caravan-good{padding:1px 4px}.caravan-good b{font-size:10px;line-height:1}.caravan-good small{font-size:8.5px;line-height:1.05;margin-top:0}}
+@media(max-width:840px){.supply-modal .supply-stock-card{grid-template-rows:minmax(0,1fr) 44px}.supply-modal .supply-stock-card h2{font-size:12px}.supply-modal .supply-stock-card>.supply-stock-quantity{font-size:16px}}
+
+.caravan-goods-box .caravan-goods{grid-template-rows:repeat(var(--market-rows,5),minmax(24px,1fr))}

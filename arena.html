@@ -332,7 +332,7 @@ var ArenaClasses={
  provocator:{name:'Provocator',weapon:'gladius',shield:'large',color:0x8b3029,crest:true},
  scissor:{name:'Scissor',weapon:'gladius',shield:null,color:0x594534,armor:true,scissor:true}
 };
-var ArenaWeapons={gladius:{name:'Kısa kılıç',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident:{name:'Üç dişli mızrak',range:2.75},mace:{name:'Zincirli gürz',range:2.25},whip:{name:'Kırbaç',range:2}};
+var ArenaWeapons={gladius:{name:'Gladius',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident:{name:'Üç dişli mızrak',range:2.75},mace:{name:'Zincirli gürz',range:2.25},whip:{name:'Kırbaç',range:2}};
 // Master v7: six stats total 300; Overall is their mean, not character level.
 var ArenaBasicStats={murmillo:[60,55,50,60,35,40],thraex:[45,50,60,35,60,50],hoplomachus:[50,55,50,45,45,55],secutor:[55,55,50,55,40,45],retiarius:[40,55,45,30,65,65],provocator:[65,60,45,65,30,35],scissor:[50,50,60,40,55,45]};
 for(const [key,values] of Object.entries(ArenaBasicStats))ArenaClasses[key].stats=Object.fromEntries(['health','stamina','strength','defense','agility','speed'].map((s,i)=>[s,values[i]]));
