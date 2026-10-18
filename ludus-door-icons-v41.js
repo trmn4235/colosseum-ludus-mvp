@@ -11,7 +11,7 @@ var LudusDoorIcons=(function(){
   armory:['M3 9h18l-5 5h-2v5h4v2H6v-2h4v-5H7Z','M7 3l4 3-2 3-5-3Z'],
   infirmary:['M9 3h6v6h6v6h-6v6H9v-6H3V9h6z'],
   dining:['M3 3v6M6 3v6M9 3v6M3 8q3 5 6 0M6 12v9','M19 3q-4 3-4 10h4M19 3v18','M12 8a4 4 0 0 1 0 8'],
-  store:['m3 5 6-2 6 3 6-2v15l-6 2-6-3-6 2Z','M9 3v15M15 6v15'],
+  store:['M3 9h10v8H3zM4 9V7a4 4 0 0 1 8 0v2','M5 17a2 2 0 1 0 .01 0M11 17a2 2 0 1 0 .01 0','M13 14h4l2-5 3 1-1-4-2 1-2 7v6m4-9v9'],
   arena:['M5 4l6 5-3 3zM8 12l9 9M14 18l4-4','M19 4l-6 5 3 3zM16 12l-9 9M6 14l4 4','M3 5Q0 14 5 20M21 5q3 9-2 15'],
   market:['M12 3v18M7 21h10M4 7h16','M6 7l-4 8h8zM18 7l-4 8h8z']
  };

@@ -64,7 +64,7 @@ async function layout(page,label,selector='#beginnerGuide'){
   for(const [width,height]of [[1440,900],[874,402],[852,393],[740,360],[667,375],[568,320]]){
    await page.setViewportSize({width,height});await page.waitForTimeout(150);await page.getByRole('button',{name:'İlk görevler',exact:true}).click();
    const seen=new Set();do{const rows=await page.locator('.fq-row').getAttribute('data-quest').catch(()=>null);for(const key of await page.locator('.fq-row').evaluateAll(rows=>rows.map(r=>r.dataset.quest))){seen.add(key);await page.locator('.fq-row[data-quest="'+key+'"]').click();await layout(page,width+'x'+height+' '+key);}const next=page.getByRole('button',{name:'Sonraki görev sayfası',exact:true});if(await next.isDisabled())break;await next.click();}while(true);
-   assert.equal(seen.size,22);await page.getByRole('button',{name:'5. seviye görevleri',exact:true}).click();assert.equal(await page.locator('.fq-row').count(),2);await layout(page,'advanced '+width+'x'+height);console.log('PASS all 22 quest pages '+width+'x'+height);
+   assert.equal(seen.size,22);await page.getByRole('button',{name:'Toplama ve üretim',exact:true}).click();assert.equal(await page.locator('.fq-row').count(),2);await layout(page,'advanced '+width+'x'+height);console.log('PASS all 22 quest pages '+width+'x'+height);
   }
   await page.setViewportSize({width:852,height:393});await page.waitForTimeout(100);await clickQuest('inspect');
   fs.mkdirSync('/tmp/first-quests-v111',{recursive:true});await page.screenshot({path:'/tmp/first-quests-v111/guide.png'});

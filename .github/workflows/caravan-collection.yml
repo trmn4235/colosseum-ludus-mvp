@@ -1,0 +1,30 @@
+name: Caravan collection regression
+on:
+  push:
+    branches: [main, codex/caravan-collection-v116]
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'tests/caravan-*', 'supabase/migrations/*caravan_collection*', '.github/workflows/caravan-collection.yml']
+  pull_request:
+    branches: [main]
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'tests/caravan-*', 'supabase/migrations/*caravan_collection*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  caravans:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install isolated test tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
+          npx playwright install --with-deps chromium
+      - name: Capacity, currency, shared stock and retries
+        run: node tests/caravan-collection-v116.cjs
+      - name: Room geometry, maps, mobile layout and rewards
+        run: node tests/caravan-browser-v116.cjs

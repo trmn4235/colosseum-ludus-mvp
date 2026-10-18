@@ -3,9 +3,9 @@ var LudusTradeRoom=(()=>{
  'use strict';
  function create({T,wood,stone}){
   let root=null,chest=null,lid=null;
-  const bounds=[{kind:'trade-map-table',minX:-1.4,maxX:1.4,minZ:-1.4,maxZ:.45},{kind:'trade-left-shelves',minX:-4.65,maxX:-2.15,minZ:-4.12,maxZ:-2.75},{kind:'trade-right-shelves',minX:2.15,maxX:4.65,minZ:-4.12,maxZ:-2.75},{kind:'trade-ledger',minX:3.3,maxX:4.65,minZ:-.95,maxZ:1.4},{kind:'trade-chest',minX:-4.48,maxX:-2.72,minZ:.55,maxZ:1.55},...[-1,1].map(side=>({kind:'trade-entry-jamb',minX:side*1.15-.125,maxX:side*1.15+.125,minZ:4.09,maxZ:4.33}))];
+  const bounds=[{kind:'trade-left-shelves',minX:-4.65,maxX:-2.15,minZ:-4.12,maxZ:-2.75},{kind:'trade-right-shelves',minX:2.15,maxX:4.65,minZ:-4.12,maxZ:-2.75},{kind:'trade-chest',minX:-.93,maxX:.93,minZ:-4.02,maxZ:-2.88},...[-1,1].map(side=>({kind:'trade-entry-jamb',minX:side*1.15-.125,maxX:side*1.15+.125,minZ:4.09,maxZ:4.33}))];
   function build(){
-   root=new T.Group();root.name='Roman trade hall V86';
+   root=new T.Group();root.name='Toplama odası V116';
    const box=new T.BoxGeometry(1,1,1),cylinder=new T.CylinderGeometry(1,1,1,16),sphere=new T.SphereGeometry(1,12,8),plane=new T.PlaneGeometry(1,1),ring=new T.TorusGeometry(1,.14,6,16);
    const mat=(color,more={})=>new T.MeshStandardMaterial({color,roughness:.86,...more});
    const m={wood,stone,marble:mat(0xe8ddc8),red:mat(0x632837),gold:mat(0xb9914b,{metalness:.6,roughness:.45}),clay:mat(0xb77048),darkClay:mat(0x824b38),linen:mat(0xc1ab7b),green:mat(0x616b42),iron:mat(0x595550,{metalness:.45}),copper:mat(0xb16c45,{metalness:.45}),dark:mat(0x2e2923),paper:mat(0xf0dfb6),flame:mat(0xffc16c,{emissive:0xffa448,emissiveIntensity:1.3})};
@@ -32,27 +32,30 @@ var LudusTradeRoom=(()=>{
    for(const x of [-.78,-.52,-.26,0,.26,.52,.78])block(m.dark,x,1.43,4.315,.009,2.82,.012);
    for(const side of [-1,1]){for(const y of [.55,2.25])block(m.iron,side*.54,y,4.29,.81,.075,.03);put(ring,m.gold,side*.66,1.37,4.25,.07,.10,.07);}
    block(m.marble,0,3.05,4.21,2.65,.22,.30);block(m.gold,0,3.19,4.16,2.67,.035,.30);block(m.marble,0,3.40,4.26,2.88,.14,.22);block(m.marble,0,4.67,4.28,9.67,.24,.22);
-   const map=new T.TextureLoader().load('assets/supply-v86/rome-map.webp');map.colorSpace=T.SRGBColorSpace;map.anisotropy=4;
-   const mapMat=new T.MeshStandardMaterial({map,roughness:.95});
-   block(m.wood,0,2.81,-4.14,3.24,2.18,.13);put(plane,mapMat,0,2.81,-4.06,3.08,2.05);
-   for(const x of [-1.61,1.61])block(m.gold,x,2.81,-4.02,.04,2.20,.06);for(const y of [1.73,3.89])block(m.gold,0,y,-4.02,3.25,.035,.06);
-   // The same Rome artwork lives on a broad, detailed planning table.
-   block(m.wood,0,1.05,-.46,2.8,.15,1.85);block(m.gold,0,1.08,.485,2.78,.055,.035);block(m.red,0,1.133,-.46,2.63,.008,1.70);
-   put(plane,mapMat,0,1.142,-.48,2.23,1.49,1,-Math.PI/2);
-   for(const x of [-1.1,1.1])for(const z of [-1.16,.24]){block(m.wood,x,.53,z,.17,.96,.17);block(m.gold,x,.15,z,.19,.07,.19);}
-   block(m.wood,0,.32,-.46,2.25,.11,.12);for(const x of [-1.12,1.12])block(m.wood,x,.32,-.46,.12,.11,1.45);
-   for(const [x,z]of [[-.45,-.60],[.56,-.13],[.86,-.75]]){put(cylinder,m.gold,x,1.18,z,.045,.06,.045);put(sphere,m.red,x,1.23,z,.047,.047,.047);}
-   for(let i=0;i<2;i++){put(cylinder,m.paper,1.21,1.19,-.78+i*.44,.055,.44,.055,Math.PI/2);put(cylinder,m.gold,1.21,1.19,-.78+i*.44,.062,.06,.062,Math.PI/2);}
+   // Two wall stations; no central furniture or additional lights.
+   function wallMap(side,url,label){
+    const texture=new T.TextureLoader().load(url);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=4;
+    const face=new T.MeshStandardMaterial({map:texture,roughness:.95});
+    const group=new T.Group();group.name=label;group.position.set(side*4.66,2.65,-.15);group.rotation.y=-side*Math.PI/2;
+    function part(material,x,y,z,w,h,d){const mesh=new T.Mesh(box,material);mesh.position.set(x,y,z);mesh.scale.set(w,h,d);group.add(mesh);}
+    part(m.wood,0,0,0,4.4,2.85,.13);
+    const artwork=new T.Mesh(plane,face);artwork.position.z=.08;artwork.scale.set(4.22,2.64,1);group.add(artwork);
+    for(const x of [-2.18,2.18])part(m.gold,x,0,.10,.04,2.85,.04);
+    for(const y of [-1.40,1.40])part(m.gold,0,y,.10,4.4,.04,.04);
+    root.add(group);
+   }
+   wallMap(-1,'assets/supply-v86/rome-map.webp','Gıda haritası');
+   wallMap(1,'assets/caravan-v116/roman-world.svg','Roma MS 80 şehir haritası');
    const jarGeo=new T.LatheGeometry([[.06,0],[.11,.06],[.20,.25],[.24,.48],[.20,.65],[.10,.78],[.08,.96],[.12,1.01],[.12,1.06],[.07,1.06]].map(([r,y])=>new T.Vector2(r,y)),16);
    function jar(x,y,z,scale=1,dark=false){put(jarGeo,dark?m.darkClay:m.clay,x,y,z,scale,scale,scale);for(const side of [-1,1])put(ring,dark?m.darkClay:m.clay,x+side*.15*scale,y+.82*scale,z,.10*scale,.17*scale,.10*scale);put(cylinder,m.dark,x,y+1.045*scale,z,.075*scale,.02*scale,.075*scale);put(cylinder,m.gold,x,y+.54*scale,z,.226*scale,.025*scale,.226*scale);}
    function crate(x,y,z,w=.75,h=.65,d=.65){block(m.wood,x,y+h/2,z,w,h,d);for(const a of [-1,1]){block(m.iron,x+a*w*.34,y+h/2,z+d*.51,.045,h,.03);block(m.iron,x+a*w*.34,y+h+.02,z,.045,.03,d);}for(let n=1;n<4;n++)block(m.dark,x,y+h*n/4,z+d*.51,w,.012,.015);}
    function sack(x,y,z,s=1){put(sphere,m.linen,x,y+.3*s,z,.28*s,.38*s,.25*s);put(cylinder,m.linen,x,y+.63*s,z,.11*s,.12*s,.1*s);put(cylinder,m.wood,x,y+.61*s,z,.115*s,.04*s,.105*s);}
    function shelf(x){for(const dx of [-1.02,1.02]){block(m.wood,x+dx,1.53,-3.55,.13,3.06,.17);block(m.gold,x+dx,.16,-3.55,.17,.06,.21);}for(const y of [.2,1.31,2.40]){block(m.wood,x,y,-3.53,2.18,.12,.92);block(m.gold,x,y+.035,-3.05,2.18,.025,.02);}block(m.wood,x,3.08,-3.57,2.30,.11,1.04);}
    shelf(-3.18);shelf(3.18);
-   for(const [x,y,z,s,dark]of [[2.48,.27,-3.52,.84,false],[3.18,.27,-3.52,.9,true],[3.85,.27,-3.52,.76,false],[2.54,1.38,-3.52,.83,true],[3.34,1.38,-3.52,.86,false],[3.90,1.38,-3.52,.70,true]])jar(x,y,z,s,dark);
-   for(let i=0;i<4;i++){sack(-3.94+i*.51,.27,-3.52,.8);put(cylinder,m.linen,-3.88+i*.5,1.57,-3.55,.20,.54,.20,Math.PI/2);put(cylinder,m.red,-3.88+i*.5,1.57,-3.55,.21,.06,.21,Math.PI/2);}
-   for(let i=0;i<4;i++){block(i<2?m.iron:m.copper,-3.91+i*.5,2.54,-3.55,.4,.14,.37);block(i<2?m.iron:m.copper,-3.91+i*.5,2.69,-3.55,.32,.12,.31);jar(2.45+i*.48,2.47,-3.55,.43,i%2===0);}
-   chest=new T.Group();chest.name='Tedarik kasası';chest.position.set(-3.6,.045,1.02);root.add(chest);
+   for(const [x,y,z,s,dark]of [[2.48,.27,-3.52,.84,false],[3.18,.27,-3.52,.9,true],[3.85,.27,-3.52,.76,false],[2.54,1.38,-3.52,.83,true],[3.34,1.38,-3.52,.86,false],[3.90,1.38,-3.52,.70,true]])jar(-x,y,z,s,dark);
+   for(let i=0;i<4;i++){sack(-3.94+i*.51,2.47,-3.52,.8);put(cylinder,m.linen,3.88-i*.5,1.57,-3.55,.20,.54,.20,Math.PI/2);put(cylinder,m.red,3.88-i*.5,1.57,-3.55,.21,.06,.21,Math.PI/2);}
+   for(let i=0;i<4;i++){block(i<2?m.iron:m.copper,3.91-i*.5,2.54,-3.55,.4,.14,.37);block(i<2?m.iron:m.copper,3.91-i*.5,2.69,-3.55,.32,.12,.31);}
+   chest=new T.Group();chest.name='Toplama kasası';chest.position.set(0,.045,-3.45);root.add(chest);
    function chestPart(parent,material,x,y,z,w,h,d){const o=new T.Mesh(box,material);o.position.set(x,y,z);o.scale.set(w,h,d);o.receiveShadow=true;parent.add(o);return o;}
    chestPart(chest,m.wood,0,.32,0,1.7,.60,.88);chestPart(chest,m.dark,0,.635,0,1.54,.018,.72);
    for(const x of [-.65,.65]){chestPart(chest,m.gold,x,.33,.456,.085,.63,.035);chestPart(chest,m.gold,x,.33,-.456,.085,.63,.035);}
@@ -65,11 +68,6 @@ var LudusTradeRoom=(()=>{
    // Each chest part is cached; the hinged lid remains an independent transform.
    for(const node of [chest,lid]){const grouped=new Map();for(const o of [...node.children]){if(!o.isMesh)continue;o.updateMatrix();const k=o.material.uuid;if(!grouped.has(k))grouped.set(k,[]);grouped.get(k).push(o);}for(const list of grouped.values()){const inst=new T.InstancedMesh(box,list[0].material,list.length);for(let i=0;i<list.length;i++){inst.setMatrixAt(i,list[i].matrix);node.remove(list[i]);}inst.receiveShadow=true;inst.computeBoundingSphere();node.add(inst);}}
 
-   // Ledger counter, wax tablets and a bronze merchant's balance.
-   block(m.wood,4.04,.92,.2,1.22,.16,2.10);for(const x of [3.57,4.51])for(const z of [-.65,1.02])block(m.wood,x,.45,z,.13,.85,.13);
-   block(m.red,3.85,1.02,.64,.65,.09,.48);block(m.paper,3.85,1.075,.63,.59,.012,.42);block(m.dark,4.34,1.05,.82,.10,.08,.12);
-   put(cylinder,m.gold,4.04,1.13,-.36,.18,.08,.18);put(cylinder,m.gold,4.04,1.49,-.36,.035,.65,.035);block(m.gold,4.04,1.8,-.36,.78,.035,.03);
-   for(const side of [-1,1]){put(cylinder,m.gold,4.04+side*.33,1.65,-.36,.012,.30,.012);put(cylinder,m.gold,4.04+side*.33,1.47,-.36,.15,.025,.15);}
    for(const x of [-2.1,2.1]){block(m.gold,x,2.54,-3.98,.10,.43,.09);put(cylinder,m.gold,x,2.69,-3.83,.16,.07,.16);put(sphere,m.flame,x,2.80,-3.83,.045,.12,.045);}
    // Batch identical static geometry/material pairs; no frame-time animation or extra lights.
    root.updateMatrixWorld(true);const batches=new Map();for(const o of root.children){if(!o.isMesh)continue;const key=o.geometry.uuid+':'+o.material.uuid;if(!batches.has(key))batches.set(key,[]);batches.get(key).push(o);}

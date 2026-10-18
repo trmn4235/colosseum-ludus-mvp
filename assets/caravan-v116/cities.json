@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "name": "Roma",
+    "region": "Italia",
+    "lon": 12.485,
+    "lat": 41.891,
+    "x": 45.343,
+    "y": 47.216,
+    "orbis_id": "50327"
+  },
+  {
+    "id": 2,
+    "name": "Ostia / Portus",
+    "region": "Italia",
+    "lon": 12.287,
+    "lat": 41.754,
+    "x": 44.976,
+    "y": 47.644,
+    "orbis_id": "50286"
+  },
+  {
+    "id": 3,
+    "name": "Capua",
+    "region": "Italia",
+    "lon": 14.242,
+    "lat": 41.085,
+    "x": 48.596,
+    "y": 49.734,
+    "orbis_id": "50104"
+  },
+  {
+    "id": 4,
+    "name": "Neapolis",
+    "region": "Italia",
+    "lon": 14.233,
+    "lat": 40.84,
+    "x": 48.58,
+    "y": 50.5,
+    "orbis_id": "50268"
+  },
+  {
+    "id": 5,
+    "name": "Puteoli",
+    "region": "Italia",
+    "lon": 14.106,
+    "lat": 40.83,
+    "x": 48.344,
+    "y": 50.531,
+    "orbis_id": "50322"
+  },
+  {
+    "id": 6,
+    "name": "Ravenna",
+    "region": "Italia",
+    "lon": 12.212,
+    "lat": 44.423,
+    "x": 44.837,
+    "y": 39.303,
+    "orbis_id": "50323"
+  },
+  {
+    "id": 7,
+    "name": "Aquileia",
+    "region": "Italia",
+    "lon": 13.364,
+    "lat": 45.767,
+    "x": 46.97,
+    "y": 35.103,
+    "orbis_id": "50034"
+  },
+  {
+    "id": 8,
+    "name": "Mediolanum",
+    "region": "Italia",
+    "lon": 9.187,
+    "lat": 45.463,
+    "x": 39.235,
+    "y": 36.053,
+    "orbis_id": "50251"
+  },
+  {
+    "id": 9,
+    "name": "Verona",
+    "region": "Italia",
+    "lon": 10.994,
+    "lat": 45.439,
+    "x": 42.581,
+    "y": 36.128,
+    "orbis_id": "50414"
+  },
+  {
+    "id": 10,
+    "name": "Brundisium",
+    "region": "Italia",
+    "lon": 17.938,
+    "lat": 40.635,
+    "x": 55.441,
+    "y": 51.141,
+    "orbis_id": "50086"
+  },
+  {
+    "id": 11,
+    "name": "Tarentum",
+    "region": "Italia",
+    "lon": 17.239,
+    "lat": 40.468,
+    "x": 54.146,
+    "y": 51.662,
+    "orbis_id": "50377"
+  },
+  {
+    "id": 12,
+    "name": "Syracusae",
+    "region": "Italia",
+    "lon": 15.295,
+    "lat": 37.072,
+    "x": 50.546,
+    "y": 62.275,
+    "orbis_id": "50455"
+  },
+  {
+    "id": 13,
+    "name": "Tarraco",
+    "region": "Hispania",
+    "lon": 1.23,
+    "lat": 41.115,
+    "x": 24.5,
+    "y": 49.641,
+    "orbis_id": "50379"
+  },
+  {
+    "id": 14,
+    "name": "Carthago Nova",
+    "region": "Hispania",
+    "lon": -0.992,
+    "lat": 37.605,
+    "x": 20.385,
+    "y": 60.609,
+    "orbis_id": "50108"
+  },
+  {
+    "id": 15,
+    "name": "Corduba",
+    "region": "Hispania",
+    "lon": -4.78,
+    "lat": 37.884,
+    "x": 13.37,
+    "y": 59.737,
+    "orbis_id": "50131"
+  },
+  {
+    "id": 16,
+    "name": "Hispalis",
+    "region": "Hispania",
+    "lon": -5.997,
+    "lat": 37.382,
+    "x": 11.117,
+    "y": 61.306,
+    "orbis_id": "50199"
+  },
+  {
+    "id": 17,
+    "name": "Gades",
+    "region": "Hispania",
+    "lon": -6.293,
+    "lat": 36.529,
+    "x": 10.569,
+    "y": 63.972,
+    "orbis_id": "50179"
+  },
+  {
+    "id": 18,
+    "name": "Emerita Augusta",
+    "region": "Hispania",
+    "lon": -6.347,
+    "lat": 38.915,
+    "x": 10.469,
+    "y": 56.516,
+    "orbis_id": "50163"
+  },
+  {
+    "id": 19,
+    "name": "Caesaraugusta",
+    "region": "Hispania",
+    "lon": -0.872,
+    "lat": 41.646,
+    "x": 20.607,
+    "y": 47.981,
+    "orbis_id": "50093"
+  },
+  {
+    "id": 20,
+    "name": "Barcino",
+    "region": "Hispania",
+    "lon": 2.159,
+    "lat": 41.361,
+    "x": 26.22,
+    "y": 48.872,
+    "orbis_id": "50065"
+  },
+  {
+    "id": 21,
+    "name": "Bracara Augusta",
+    "region": "Hispania",
+    "lon": -8.424,
+    "lat": 41.551,
+    "x": 6.622,
+    "y": 48.278,
+    "orbis_id": "50082"
+  },
+  {
+    "id": 22,
+    "name": "Lugdunum",
+    "region": "Gallia ve Ren",
+    "lon": 4.818,
+    "lat": 45.758,
+    "x": 31.144,
+    "y": 35.131,
+    "orbis_id": "50429"
+  },
+  {
+    "id": 23,
+    "name": "Massilia",
+    "region": "Gallia ve Ren",
+    "lon": 5.363,
+    "lat": 43.305,
+    "x": 32.154,
+    "y": 42.797,
+    "orbis_id": "50250"
+  },
+  {
+    "id": 24,
+    "name": "Narbo",
+    "region": "Gallia ve Ren",
+    "lon": 3.0,
+    "lat": 43.197,
+    "x": 27.778,
+    "y": 43.134,
+    "orbis_id": "50264"
+  },
+  {
+    "id": 25,
+    "name": "Arelate",
+    "region": "Gallia ve Ren",
+    "lon": 4.627,
+    "lat": 43.687,
+    "x": 30.791,
+    "y": 41.603,
+    "orbis_id": "50040"
+  },
+  {
+    "id": 26,
+    "name": "Burdigala",
+    "region": "Gallia ve Ren",
+    "lon": -0.586,
+    "lat": 44.856,
+    "x": 21.137,
+    "y": 37.95,
+    "orbis_id": "50088"
+  },
+  {
+    "id": 27,
+    "name": "Augusta Treverorum",
+    "region": "Gallia ve Ren",
+    "lon": 6.681,
+    "lat": 49.761,
+    "x": 34.594,
+    "y": 22.622,
+    "orbis_id": "50124"
+  },
+  {
+    "id": 28,
+    "name": "Colonia Agrippinensis",
+    "region": "Gallia ve Ren",
+    "lon": 6.943,
+    "lat": 50.944,
+    "x": 35.08,
+    "y": 18.925,
+    "orbis_id": "50012"
+  },
+  {
+    "id": 29,
+    "name": "Mogontiacum",
+    "region": "Gallia ve Ren",
+    "lon": 8.256,
+    "lat": 50.007,
+    "x": 37.511,
+    "y": 21.853,
+    "orbis_id": "50257"
+  },
+  {
+    "id": 30,
+    "name": "Londinium",
+    "region": "Britannia",
+    "lon": -0.083,
+    "lat": 51.52,
+    "x": 22.069,
+    "y": 17.125,
+    "orbis_id": "50235"
+  },
+  {
+    "id": 31,
+    "name": "Camulodunum",
+    "region": "Britannia",
+    "lon": 0.897,
+    "lat": 51.891,
+    "x": 23.883,
+    "y": 15.966,
+    "orbis_id": "50101"
+  },
+  {
+    "id": 32,
+    "name": "Eburacum",
+    "region": "Britannia",
+    "lon": -1.113,
+    "lat": 53.954,
+    "x": 20.161,
+    "y": 9.519,
+    "orbis_id": "50160"
+  },
+  {
+    "id": 33,
+    "name": "Athenae",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 23.721,
+    "lat": 37.974,
+    "x": 66.15,
+    "y": 59.456,
+    "orbis_id": "50050"
+  },
+  {
+    "id": 34,
+    "name": "Corinthus",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 22.886,
+    "lat": 37.912,
+    "x": 64.604,
+    "y": 59.65,
+    "orbis_id": "50549"
+  },
+  {
+    "id": 35,
+    "name": "Thessalonica",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 22.966,
+    "lat": 40.635,
+    "x": 64.752,
+    "y": 51.141,
+    "orbis_id": "50389"
+  },
+  {
+    "id": 36,
+    "name": "Dyrrhachium",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 19.454,
+    "lat": 41.324,
+    "x": 58.248,
+    "y": 48.988,
+    "orbis_id": "50159"
+  },
+  {
+    "id": 37,
+    "name": "Salona",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 16.5,
+    "lat": 43.531,
+    "x": 52.778,
+    "y": 42.091,
+    "orbis_id": "50336"
+  },
+  {
+    "id": 38,
+    "name": "Sirmium",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 19.609,
+    "lat": 44.965,
+    "x": 58.535,
+    "y": 37.609,
+    "orbis_id": "50359"
+  },
+  {
+    "id": 39,
+    "name": "Philippopolis",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 24.735,
+    "lat": 42.146,
+    "x": 68.028,
+    "y": 46.419,
+    "orbis_id": "50306"
+  },
+  {
+    "id": 40,
+    "name": "Byzantion",
+    "region": "Balkanlar ve Yunanistan",
+    "lon": 28.985,
+    "lat": 41.018,
+    "x": 75.898,
+    "y": 49.944,
+    "orbis_id": "50129"
+  },
+  {
+    "id": 41,
+    "name": "Ephesus",
+    "region": "Anadolu",
+    "lon": 27.348,
+    "lat": 37.939,
+    "x": 72.867,
+    "y": 59.566,
+    "orbis_id": "50169"
+  },
+  {
+    "id": 42,
+    "name": "Smyrna",
+    "region": "Anadolu",
+    "lon": 27.141,
+    "lat": 38.427,
+    "x": 72.483,
+    "y": 58.041,
+    "orbis_id": "50363"
+  },
+  {
+    "id": 43,
+    "name": "Pergamum",
+    "region": "Anadolu",
+    "lon": 27.181,
+    "lat": 39.14,
+    "x": 72.557,
+    "y": 55.812,
+    "orbis_id": "50300"
+  },
+  {
+    "id": 44,
+    "name": "Nicaea",
+    "region": "Anadolu",
+    "lon": 29.723,
+    "lat": 40.436,
+    "x": 77.265,
+    "y": 51.763,
+    "orbis_id": "50271"
+  },
+  {
+    "id": 45,
+    "name": "Nicomedia",
+    "region": "Anadolu",
+    "lon": 29.924,
+    "lat": 40.77,
+    "x": 77.637,
+    "y": 50.719,
+    "orbis_id": "50272"
+  },
+  {
+    "id": 46,
+    "name": "Ancyra",
+    "region": "Anadolu",
+    "lon": 32.873,
+    "lat": 39.947,
+    "x": 83.098,
+    "y": 53.291,
+    "orbis_id": "50023"
+  },
+  {
+    "id": 47,
+    "name": "Tarsus",
+    "region": "Anadolu",
+    "lon": 34.901,
+    "lat": 36.915,
+    "x": 86.854,
+    "y": 62.766,
+    "orbis_id": "50380"
+  },
+  {
+    "id": 48,
+    "name": "Caesarea (Cappadocia)",
+    "region": "Anadolu",
+    "lon": 35.502,
+    "lat": 38.721,
+    "x": 87.967,
+    "y": 57.122,
+    "orbis_id": "50095"
+  },
+  {
+    "id": 49,
+    "name": "Antiochia",
+    "region": "Doğu Akdeniz",
+    "lon": 36.169,
+    "lat": 36.208,
+    "x": 89.202,
+    "y": 64.975,
+    "orbis_id": "50024"
+  },
+  {
+    "id": 50,
+    "name": "Berytus",
+    "region": "Doğu Akdeniz",
+    "lon": 35.521,
+    "lat": 33.898,
+    "x": 88.002,
+    "y": 72.194,
+    "orbis_id": "50073"
+  },
+  {
+    "id": 51,
+    "name": "Tyrus",
+    "region": "Doğu Akdeniz",
+    "lon": 35.198,
+    "lat": 33.277,
+    "x": 87.404,
+    "y": 74.134,
+    "orbis_id": "50405"
+  },
+  {
+    "id": 52,
+    "name": "Caesarea Maritima",
+    "region": "Doğu Akdeniz",
+    "lon": 34.898,
+    "lat": 32.508,
+    "x": 86.848,
+    "y": 76.537,
+    "orbis_id": "50094"
+  },
+  {
+    "id": 53,
+    "name": "Damascus",
+    "region": "Doğu Akdeniz",
+    "lon": 36.309,
+    "lat": 33.511,
+    "x": 89.461,
+    "y": 73.403,
+    "orbis_id": "50140"
+  },
+  {
+    "id": 54,
+    "name": "Alexandria",
+    "region": "Africa ve Aegyptus",
+    "lon": 29.91,
+    "lat": 31.2,
+    "x": 77.611,
+    "y": 80.625,
+    "orbis_id": "50017"
+  },
+  {
+    "id": 55,
+    "name": "Carthago",
+    "region": "Africa ve Aegyptus",
+    "lon": 10.312,
+    "lat": 36.846,
+    "x": 41.319,
+    "y": 62.981,
+    "orbis_id": "50107"
+  },
+  {
+    "id": 56,
+    "name": "Lepcis Magna",
+    "region": "Africa ve Aegyptus",
+    "lon": 14.292,
+    "lat": 32.637,
+    "x": 48.689,
+    "y": 76.134,
+    "orbis_id": "50230"
+  },
+  {
+    "id": 57,
+    "name": "Cyrene",
+    "region": "Africa ve Aegyptus",
+    "lon": 21.867,
+    "lat": 32.824,
+    "x": 62.717,
+    "y": 75.55,
+    "orbis_id": "50138"
+  },
+  {
+    "id": 58,
+    "name": "Hippo Regius",
+    "region": "Africa ve Aegyptus",
+    "lon": 7.754,
+    "lat": 36.888,
+    "x": 36.581,
+    "y": 62.85,
+    "orbis_id": "50198"
+  },
+  {
+    "id": 59,
+    "name": "Hadrumetum",
+    "region": "Africa ve Aegyptus",
+    "lon": 10.644,
+    "lat": 35.837,
+    "x": 41.933,
+    "y": 66.134,
+    "orbis_id": "50188"
+  },
+  {
+    "id": 60,
+    "name": "Memphis",
+    "region": "Africa ve Aegyptus",
+    "lon": 31.276,
+    "lat": 30.003,
+    "x": 80.141,
+    "y": 84.366,
+    "orbis_id": "50254"
+  }
+]
