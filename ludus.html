@@ -648,7 +648,6 @@ var ClassEquipment=(function(){
   m.gear.otherShoulder=attach(m,'LeftArm',LudusArmour.get('gloves',null,'left'),[.045,.025,.085]);
   m.gear.collar=attach(m,'Spine2',LudusArmour.get('gloves',null,'collar'),[-.025,.13,.105]);
   for(const side of ['Left','Right'])m.gear[side+'greave']=fitLimb(m,side+'Leg',side+'Foot',p.greave,.46);
-  for(const side of ['Left','Right'])m.gear[side+'manica']=fitLimb(m,side+'ForeArm',side+'Hand',LudusManica.get(T).single,.25);
   m.weaponAnchor=attach(m,'RightHand',new T.Group()).anchor;m.offhandAnchor=attach(m,'LeftHand',new T.Group()).anchor;
   for(const a of [m.weaponAnchor,m.offhandAnchor])a.userData.restQuaternion=a.quaternion.clone();
   setWeapon(m,ArenaClasses[m.type].weapon);
@@ -678,7 +677,8 @@ var ClassEquipment=(function(){
   const chestModel=LudusArmour.model('chest',f.chestModel);if(m.chestModel!==chestModel){m.chestModel=chestModel;replacePart(m.gear.chest,LudusArmour.get('chest',chestModel));m.gear.chest.group.position.set(-.025,-.09,chestModel==='chest_plate'?.17:.04);}
   const shoulderModel=LudusArmour.model('gloves',f.shoulderModel);if(m.shoulderModel!==shoulderModel){m.shoulderModel=shoulderModel;for(const [slot,side]of [['shoulder','right'],['otherShoulder','left'],['collar','collar']])replacePart(m.gear[slot],LudusArmour.get('gloves',shoulderModel,side));m.gear.shoulder.group.scale.x=shoulderModel==='shoulder_armor'?-1:1;m.gear.otherShoulder.group.scale.x=1;}
   m.gear.shield.group.visible=!!f.shield;m.gear.helmet.group.visible=f.helmet!==false;m.gear.chest.group.visible=!!f.chest;
-  for(const side of ['Left','Right'])m.gear[side+'manica'].group.visible=f.shoulders!==false&&shoulderModel==='manica';
+  if(shoulderModel==='manica'&&!m.gear.Leftmanica)for(const side of ['Left','Right'])m.gear[side+'manica']=fitLimb(m,side+'ForeArm',side+'Hand',LudusManica.get(T).single,.25);
+  for(const side of ['Left','Right'])if(m.gear[side+'manica'])m.gear[side+'manica'].group.visible=f.shoulders!==false&&shoulderModel==='manica';
   for(const side of ['Left','Right'])m.gear[side+'greave'].group.visible=f.greaves!==false;for(const key of ['shoulder','otherShoulder','collar'])m.gear[key].group.visible=f.shoulders!==false&&(key!=='collar'||shoulderModel==='armor_shoulder');
   if(m.team!==f.team){m.team=f.team;const team=f.team||0;m.teamBand.group.clear();const band=new T.Mesh(bandGeo,dark);band.scale.z=.68;m.teamBand.group.add(band);m.teamMark.clear();const ring=new T.Mesh(teamRings[team],ringMaterials[team]);ring.rotation.x=-Math.PI/2;ring.position.y=.035;m.teamMark.add(ring);}
   m.teamMark.visible=f.hp>0;
