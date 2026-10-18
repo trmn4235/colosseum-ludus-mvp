@@ -12,7 +12,7 @@ var GroundFall=(function(){
   if(!kind){m.fallTransition=null;return;}const elapsed=Math.max(0,kind==='dead'?f.deadTime||0:f.timer||0),old=m.fallTransition;
   if(old&&old.kind===kind&&elapsed>=old.lastElapsed){old.lastElapsed=elapsed;return;}
   const previous=m.lastFall,continuing=kind==='dead'&&previous&&previous.recovery<.15;
-  m.fallTransition={kind,started:elapsed,lastElapsed:elapsed,x:m.root.position.x,z:m.root.position.z,heading:m.root.rotation.y,
+  m.fallTransition={kind,started:kind==='dead'?Math.min(elapsed,.1):elapsed,lastElapsed:elapsed,x:m.root.position.x,z:m.root.position.z,heading:m.root.rotation.y,
    body:m.body.position.clone(),rotation:m.body.quaternion.clone(),bones:Object.fromEntries(Object.entries(m.bones).map(([key,bone])=>[key,bone.quaternion.clone()])),
    anchors:[m.weaponAnchor,m.offhandAnchor].map(a=>a?{position:a.position.clone(),quaternion:a.quaternion.clone()}:null),
    phase:continuing?(previous.down.a+previous.down.t)/(previous.down.c.frames-1)*previous.down.c.duration:0,captured:!!m.hasRendered};

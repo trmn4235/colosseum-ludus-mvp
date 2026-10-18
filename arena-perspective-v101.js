@@ -1,7 +1,7 @@
 /* Camera preference and the player's eye view. Combat and other actors are unchanged. */
 var ArenaPerspective=(()=>{
- const key='ludus-camera-perspective',modes={third:'3. şahıs · Yakın takip',first:'1. şahıs · Gladyatörün gözünden'};
- function load(){try{return localStorage.getItem(key)==='first'?'first':'third';}catch{return'third';}}
+ const key='ludus-camera-perspective',modes={third:'3. şahıs · Yakın takip',first:'1. şahıs · Gladyatörün gözünden',right:'Sağ omuz · Silah tarafından'};
+ function load(){try{return Object.hasOwn(modes,localStorage.getItem(key))?localStorage.getItem(key):'third';}catch{return'third';}}
  function bind(select,change){select.replaceChildren();for(const [value,label] of Object.entries(modes)){const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o);}select.value=load();select.addEventListener('change',()=>{try{localStorage.setItem(key,select.value);}catch{}change(select.value);});}
  function eye(T,model,fighter,yaw,out){
   model.root.updateMatrixWorld(true);model.bones.Head.getWorldPosition(out);
@@ -11,6 +11,11 @@ var ArenaPerspective=(()=>{
   out.x+=Math.sin(yaw)*.04;out.z+=Math.cos(yaw)*.04;return out;
  }
  function desired(eye,yaw,pitch){const elevation=.57-pitch,c=Math.cos(elevation);return{pos:{x:eye.x,y:eye.y,z:eye.z},focus:{x:eye.x+Math.sin(yaw)*c*5,y:eye.y+Math.sin(elevation)*5,z:eye.z+Math.cos(yaw)*c*5}};}
+ function shoulder(f,yaw,pitch){
+  const sx=Math.sin(yaw),cz=Math.cos(yaw),height=(f.navHeight||0)+1.6,elevation=.57-pitch;
+  return {pos:{x:f.x-sx*2.15+cz*.72,y:height-Math.sin(elevation)*2.15,z:f.z-cz*2.15-sx*.72},
+   focus:{x:f.x+sx*4+cz*.40,y:height+Math.sin(elevation)*4,z:f.z+cz*4-sx*.40}};
+ }
  function prepare(T,model){
   if(model.eyeView)return model.eyeView;
   const enabled={value:0},geometries=[],materials=new Set();
@@ -42,5 +47,5 @@ var ArenaPerspective=(()=>{
   const fov=first?68:53,near=first?.055:.1;if(camera.fov!==fov){camera.fov=fov;camera.near=near;camera.updateProjectionMatrix();}
  }
  function dispose(model){for(const item of model.eyeView?.geometries||[]){item.mesh.geometry=item.source;item.geometry.dispose();}model.eyeView=null;}
- return{load,bind,eye,desired,apply,dispose};
+ return{load,bind,eye,desired,shoulder,apply,dispose};
 })();

@@ -44,6 +44,50 @@ var ArenaRuntime = (() => {
     return { removedMeshes: removed.length + meshes.length - kept.size, skeletons: kept.size };
   }
 
+  // A settled corpse keeps its final world pose. Its bones and matrices no longer
+  // change, so neither world transforms nor bone texture data need rebuilding.
+  function settleCorpse(model) {
+    if (model.corpseSettled) return;
+    model.root.updateMatrixWorld(true);
+    const skeletons = new Set();
+    model.root.traverse(o => {
+      o.matrixAutoUpdate = false; o.matrixWorldAutoUpdate = false;
+      if (o.isSkinnedMesh) skeletons.add(o.skeleton);
+    });
+    for (const skeleton of skeletons) { skeleton.update(); skeleton.update = () => {}; }
+    model.corpseSettled = true;
+  }
+
+  // Share the original geometry/material; one GPU draw per compatible mesh,
+  // even when many identical pieces of loot accumulate. IDs still belong to combat.
+  class DropBatch {
+    constructor(T, scene) { this.T=T; this.scene=scene; this.ids=''; this.meshes=[]; }
+    clear() { for(const mesh of this.meshes){this.scene.remove(mesh);mesh.dispose();} this.meshes=[];this.ids=''; }
+    update(drops, template, visible) {
+      const ids=drops.map(d=>d.id).join(',');
+      if(ids!==this.ids){
+        this.clear();this.ids=ids;const T=this.T,buckets=new Map();
+        for(const d of drops){
+          const item=template(d).clone(true);item.rotation.set(Math.PI/2,d.id*.71,0);item.position.set(d.x,.16,d.z);item.updateMatrixWorld(true);
+          item.traverseVisible(o=>{
+            if(!o.isMesh)return;
+            const materials=Array.isArray(o.material)?o.material.map(m=>m.uuid).join(','):o.material.uuid;
+            const key=o.geometry.uuid+':'+materials;
+            if(!buckets.has(key))buckets.set(key,{geometry:o.geometry,material:o.material,matrices:[]});
+            buckets.get(key).matrices.push(o.matrixWorld.clone());
+          });
+        }
+        for(const b of buckets.values()){
+          const mesh=new T.InstancedMesh(b.geometry,b.material,b.matrices.length);
+          b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.instanceMatrix.needsUpdate=true;
+          mesh.castShadow=false;mesh.receiveShadow=true;mesh.computeBoundingSphere();mesh.matrixAutoUpdate=false;
+          this.scene.add(mesh);this.meshes.push(mesh);
+        }
+      }
+      for(const mesh of this.meshes)mesh.visible=visible;
+    }
+  }
+
   class AdaptiveQuality {
     constructor(maximum = 1.25, minimum = .875) {
       this.maximum = maximum; this.minimum = Math.min(maximum, minimum); this.reset();
@@ -76,6 +120,6 @@ var ArenaRuntime = (() => {
       return null;
     }
   }
-  return { optimizeRig, AdaptiveQuality };
+  return { optimizeRig, settleCorpse, DropBatch, AdaptiveQuality };
 })();
 if (typeof module !== 'undefined') module.exports = ArenaRuntime;

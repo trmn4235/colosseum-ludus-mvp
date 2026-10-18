@@ -17,7 +17,7 @@ async function main(){
   if(filename.endsWith('/arena.html'))body=Buffer.from(body.toString()
    .replace('function frame(now){const cpuStart','function frame(now){if(window.__stopLoop)return;const cpuStart')
    .replace('var LudusBattle=(function(){',fixture+'\nLudusClient.create=()=>window.__fixtureClient;var LudusBattle=(function(){')
-   .replace('mainMenu();Promise.all([LudusBattle.load()',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,saveReward,begin,setPaused,
+   .replace('mainMenu();Promise.all([LudusBattle.load()',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,saveReward,begin,setPaused,dropBatch,animateCharacter,renderWeapons,
     freeze:()=>{paused=true;window.__stopLoop=true;},
     step:(dt,run=true)=>{paused=!run;window.__stopLoop=false;frame(last+dt*1000);paused=true;window.__stopLoop=true;},
     get started(){return started;}};let drawCount=0;const originalRender=renderer.render;renderer.render=function(...args){drawCount++;return originalRender.apply(this,args)};window.__drawCount=()=>drawCount;
@@ -54,6 +54,7 @@ async function main(){
  for(const [w,h]of [[667,375],[932,430],[1024,768]]){await page.setViewportSize({width:w,height:h});await page.evaluate(()=>__arena.step(1/60));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/arena-'+w+'.png'});}
  await page.setViewportSize({width:844,height:390});
  if(process.env.LUDUS_REALISM_TEST==='1')await require('./arena-realism-visual-v114.cjs')(page,out);
+ if(process.env.LUDUS_STABILITY_TEST==='1')await require('./arena-stability-browser-v115.cjs')(page,out);
  if(current){
   const stopped=await page.evaluate(()=>{__arena.step(1/60,false);const before=__drawCount(),time=__arena.combat.time;for(let i=0;i<60;i++)__arena.step(1/60,false);return {draws:__drawCount()-before,seconds:__arena.combat.time-time};});
   assert.equal(stopped.draws,0);assert.equal(stopped.seconds,0);
