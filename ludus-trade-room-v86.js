@@ -45,7 +45,7 @@ var LudusTradeRoom=(()=>{
     root.add(group);
    }
    wallMap(-1,'assets/supply-v86/rome-map.webp','Gıda haritası');
-   wallMap(1,'assets/caravan-v116/roman-world.svg','Roma MS 80 şehir haritası');
+   wallMap(1,'assets/caravan-v117/roman-atlas.svg','Roma MS 80 şehir haritası');
    const jarGeo=new T.LatheGeometry([[.06,0],[.11,.06],[.20,.25],[.24,.48],[.20,.65],[.10,.78],[.08,.96],[.12,1.01],[.12,1.06],[.07,1.06]].map(([r,y])=>new T.Vector2(r,y)),16);
    function jar(x,y,z,scale=1,dark=false){put(jarGeo,dark?m.darkClay:m.clay,x,y,z,scale,scale,scale);for(const side of [-1,1])put(ring,dark?m.darkClay:m.clay,x+side*.15*scale,y+.82*scale,z,.10*scale,.17*scale,.10*scale);put(cylinder,m.dark,x,y+1.045*scale,z,.075*scale,.02*scale,.075*scale);put(cylinder,m.gold,x,y+.54*scale,z,.226*scale,.025*scale,.226*scale);}
    function crate(x,y,z,w=.75,h=.65,d=.65){block(m.wood,x,y+h/2,z,w,h,d);for(const a of [-1,1]){block(m.iron,x+a*w*.34,y+h/2,z+d*.51,.045,h,.03);block(m.iron,x+a*w*.34,y+h+.02,z,.045,.03,d);}for(let n=1;n<4;n++)block(m.dark,x,y+h*n/4,z+d*.51,w,.012,.015);}

@@ -1,0 +1,15 @@
+{
+  "version": 117,
+  "mode": "OpenAI built-in image_gen",
+  "assets": [
+    {
+      "file": "assets/caravan-v117/covered-wagon.webp",
+      "prompt": "Use case: product-mockup. Asset type: photorealistic transparent game inventory icon, reused at 36px in HUD and at 80px on a room door. Reference image: the supplied wagon photo is a subject and material reference only. Create a NEW original studio photograph of one small ancient-style covered wooden caravan wagon, three-quarter side view facing right, cream linen rounded canopy, weathered brown timber body and four wooden spoked wheels, a short wooden drawbar. No horse or person. Entire wagon fully visible, generously fills a square composition, strong clean silhouette, realistic canvas weave and wood grain, soft upper-left lighting. Isolated on genuinely transparent background, minimal contact shadow. No scenery, grass, words, logo or watermark. Match the reference wagon type without copying the photograph or its lettering."
+    },
+    {
+      "file": "assets/caravan-v117/atlas-terrain.webp",
+      "prompt": "Use case: historical-scene. Asset type: full-bleed illustrated Mediterranean game atlas background. Input 1 is geographic composition reference, input 2 is visual style reference of the game's beautiful Rome food map. Create a premium, richly detailed painterly realistic birds-eye relief map of the Roman Mediterranean world around AD80, wide 8:5 aspect. STRICT geography: preserve the first reference's framing, north-up orientation, relative land and sea positions, scale and projection, covering longitude -12 to 42 and latitude 57 to 25. Refine the angular coarse coastline into natural detailed coasts without moving major shore positions. Britain upper left, Iberia lower left, Italy central, Greece right of Italy, Anatolia and Black Sea right, North Africa across bottom, Nile at lower right. Mediterranean sea rich turquoise and deep blue, subtle coastal shallows. Land has lush olive green lowlands, finely modelled sunlit mountain relief (Alps, Pyrenees, Apennines, Taurus), tiny cypress forests, ochre desert and green Nile valley. Match the Rome reference's warm sunlight, verdant terrain, realistic textures and handcrafted historical game quality at continental scale. Pure overhead atlas view, no horizon or clouds obscuring geography. No buildings, labels, city dots, numbers, compass, cartouche, frame, border, UI, grid or writing. Geography and texture fill ALL edges, no parchment margins or side strips. We will place accurate interactive city markers and names in code."
+    }
+  ],
+  "notes": "Atlas artwork is an illustrated game background. City identities and source longitude/latitude stay in cities.json; visual anchor positions align with the illustrated coastline. Existing twelve resource photo icons are reused in food map, city purchasing and separated chest views."
+}

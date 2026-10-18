@@ -1,6 +1,8 @@
 /* Muted gray pictograms. Only a door with pending work turns gold. */
 var LudusDoorIcons=(function(){
- const textures=new Map();
+ const textures=new Map(),caravanAsset='assets/caravan-v117/covered-wagon.webp';
+ let caravanImage=null,caravanLoaded=false;const caravanCanvases=[];
+ function paintCaravan(canvas,map){const c=canvas.getContext('2d');c.drawImage(caravanImage,8,8,112,112);map.needsUpdate=true;}
  const paths={
   exit:['M15 8V3H3v18h12v-5','M10 12h12m-5-5 5 5-5 5'],
   office:['M6 4h11v16H6z','M6 4H4v4h2M17 16h3v4h-3','M9 8h5M9 11h5M9 14h3'],
@@ -21,9 +23,14 @@ var LudusDoorIcons=(function(){
   c.shadowColor='#0009';c.shadowBlur=5;c.shadowOffsetY=3;
   c.fillStyle='#282929c4';c.beginPath();c.arc(64,64,55,0,Math.PI*2);c.fill();c.shadowBlur=0;c.shadowOffsetY=0;
   c.strokeStyle=attention?'#d8af5c99':'#98988d66';c.lineWidth=2;c.stroke();
-  c.translate(24,24);c.scale(80/24,80/24);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
-  for(const d of paths[kind]||paths.store)c.stroke(new Path2D(d));
-  const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;textures.set(key,map);return map;
+  if(kind!=='store'){c.translate(24,24);c.scale(80/24,80/24);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
+   for(const d of paths[kind]||paths.store)c.stroke(new Path2D(d));}
+  const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;textures.set(key,map);
+  if(kind==='store'){
+   if(caravanLoaded)paintCaravan(canvas,map);
+   else{caravanCanvases.push([canvas,map]);if(!caravanImage){caravanImage=new Image();caravanImage.onload=()=>{caravanLoaded=true;for(const [surface,texture]of caravanCanvases)paintCaravan(surface,texture);caravanCanvases.length=0;};caravanImage.src=caravanAsset;}}
+  }
+  return map;
  }
  function create(T,kind,name,x,y,z,size=.36,angle=Math.PI){
   const map=texture(T,kind);
@@ -31,6 +38,6 @@ var LudusDoorIcons=(function(){
   icon.position.set(x,y,z);icon.rotation.y=angle;icon.userData={kind,name,doorIcon:true};return icon;
  }
  function setAttention(T,icon,value){value=!!value;if(icon.userData.attention===value)return;icon.userData.attention=value;icon.material.map=texture(T,icon.userData.kind,value);}
- function svg(kind){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
- return{create,setAttention,svg};
+ function svg(kind){if(kind==='store')return '<img class="caravan-door-photo" src="'+caravanAsset+'" alt="" width="80" height="80">';return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
+ return{create,setAttention,svg,caravanAsset};
 })();

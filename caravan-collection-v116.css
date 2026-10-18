@@ -1,15 +1,58 @@
-/* Keep both map stations usable on a landscape phone without page scrolling. */
-.caravan-market{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:16px;height:100%;min-height:0}
-.caravan-atlas{display:flex;flex-direction:column;min-height:0;min-width:0;gap:10px}
-.caravan-world{position:relative;margin:auto;width:100%;aspect-ratio:8/5;max-height:calc(100% - 50px);overflow:hidden;border:1px solid #b58a4e;border-radius:7px;background:#244650}
+/* V117: keep the purchase action outside the product list's shrinking area. */
+.supply-modal[data-view=cities] .supply-frame>.supply-summary{display:none}
+.caravan-market{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(275px,1fr);gap:12px;flex:1;min-height:0;min-width:0}
+.caravan-atlas{display:flex;flex-direction:column;min-height:0;min-width:0;gap:8px}
+.caravan-world{position:relative;flex:1;min-height:0;min-width:0;width:100%;overflow:hidden;border:1px solid #b58a4e;border-radius:6px;background:#176574}
 .caravan-world>img{display:block;width:100%;height:100%;object-fit:fill}
-.caravan-city{position:absolute;width:20px;height:20px;min-width:0!important;padding:0!important;transform:translate(-50%,-50%);border:0!important;background:transparent!important;border-radius:50%;cursor:pointer}
-.caravan-city:after{content:'';display:block;margin:auto;width:5px;height:5px;border:1px solid #f3d891;background:#742631;border-radius:50%}
-.caravan-city[aria-pressed=true]:after,.caravan-city:hover:after{width:10px;height:10px;box-shadow:0 0 0 4px #f4cf7355;background:#e8ba62}
+.supply-modal .caravan-city{position:absolute;width:22px;height:22px;min-width:0;min-height:0;padding:0;transform:translate(-50%,-50%);border:0;background:transparent;border-radius:50%;cursor:pointer}
+.caravan-city:after{content:'';display:block;margin:auto;width:5px;height:5px;border:1px solid #fce7ac;background:#742631;border-radius:50%;box-shadow:0 1px 3px #14252b}
+.caravan-city[aria-pressed=true]{z-index:3}.caravan-city[aria-pressed=true]:after,.caravan-city:hover:after{width:10px;height:10px;box-shadow:0 0 0 4px #f4cf7355;background:#f6d58e}
+.caravan-city-label{position:absolute;bottom:23px;left:50%;transform:translateX(-50%);padding:4px 7px;border:1px solid #d9b36b;border-radius:3px;background:#4e1824ed;color:#fff0c5;white-space:nowrap;font:12px Georgia;pointer-events:none}
 .caravan-city:focus-visible{outline:2px solid #f9d473;outline-offset:1px}
-.caravan-atlas-controls{display:flex;justify-content:space-between;gap:8px;align-items:end}.caravan-atlas-controls label{display:flex;flex:1;flex-direction:column;gap:3px;font-size:11px;min-width:0}
-.caravan-atlas-controls select,.caravan-counts input{color:inherit;background:#fffaf0;border:1px solid #b58a4e70;border-radius:5px;padding:7px;min-width:0}
-.caravan-city-detail{min-height:0;display:flex;flex-direction:column;justify-content:center;gap:9px;background:linear-gradient(150deg,#fffefa,#f0e9db);border:1px solid #aa875344;padding:14px;border-radius:8px}.caravan-city-detail h2,.caravan-city-detail p{margin:0}.caravan-city-detail h2{font-size:22px}.caravan-city-detail>p{font-size:13px;line-height:1.5}.caravan-city-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}.caravan-clock{white-space:nowrap;color:#855c2c;font-size:16px}
-.caravan-goods{display:grid;gap:4px}.caravan-good{display:grid;grid-template-columns:1fr 95px;align-items:center;gap:8px;text-align:left;padding:6px 8px;color:inherit;background:#fff9ed;border:1px solid #bd905533;border-radius:4px;cursor:pointer}.caravan-good[aria-pressed=true]{border-color:#c9a263;background:#86653b25}.caravan-good b,.caravan-good small{display:block}.caravan-good b{font-size:13px}.caravan-good small{font-size:11px;opacity:.8;margin-top:2px}.caravan-bars{display:flex;gap:2px;align-items:center}.caravan-bars i{display:block;width:8px;height:17px;border-radius:2px}.caravan-purchase{display:grid;gap:8px}.caravan-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.caravan-counts label{display:grid;gap:4px;font-size:11px}.caravan-counts input{width:100%;box-sizing:border-box}.caravan-cost{font-size:12px;color:#855c2c}.caravan-rule{color:#855c2c}
-@media(max-height:540px){.supply-modal[data-view=cities] .supply-summary{display:none}.caravan-market{gap:9px;grid-template-columns:minmax(0,1.45fr) minmax(250px,1fr)}.caravan-city-detail{padding:9px;gap:5px}.caravan-city-detail h2{font-size:18px}.caravan-good{padding:3px 6px}.caravan-good b{font-size:12px}.caravan-good small{font-size:10px;margin-top:0}.caravan-goods{gap:3px}.caravan-purchase{gap:4px}.caravan-counts input{padding:4px}.caravan-atlas-controls select{padding:5px}.caravan-purchase .supply-primary{padding:7px;min-height:30px}}
-@media(max-height:400px){.caravan-market{grid-template-columns:minmax(0,1fr) 270px}.caravan-city-detail{padding:6px}.caravan-good{grid-template-columns:1fr 90px;padding:2px 5px}.caravan-good>div{display:flex;gap:6px;align-items:center}.caravan-good small{white-space:nowrap}.caravan-good b{font-size:11px}.caravan-bars i{height:12px}.caravan-counts{gap:6px}.caravan-counts label{display:flex;align-items:center}.caravan-counts input{width:58px}.caravan-city-heading h2{font-size:16px}.caravan-atlas-controls .supply-secondary{font-size:11px}}
+.caravan-atlas-controls{display:flex;flex:none;gap:8px;align-items:end}.caravan-atlas-controls label{display:flex;flex:1;flex-direction:column;gap:3px;font-size:11px;min-width:0}
+.caravan-atlas-controls select,.caravan-counts input{color:inherit;background:#fffaf0;border:1px solid #b58a4e70;border-radius:5px;padding:6px;min-width:0}
+.caravan-city-detail{min-height:0;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:9px;padding:12px;border:1px solid #aa875344;border-radius:6px;background:linear-gradient(150deg,#fffefa,#f0e9db)}
+.caravan-city-detail[data-quoted=true]{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch;justify-content:stretch}
+.caravan-city-detail h2,.caravan-city-detail p{margin:0}.caravan-city-detail h2{font-size:22px;line-height:1.1}.caravan-city-detail>p{font-size:13px;line-height:1.5}
+.caravan-city-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0}.caravan-city-heading .supply-kicker{display:block;font-size:9px;line-height:1.2;margin-bottom:3px}.caravan-clock{white-space:nowrap;color:#855c2c;font:600 14px Arial;font-variant-numeric:tabular-nums}
+.caravan-goods{display:grid;grid-template-rows:repeat(5,minmax(38px,1fr));gap:4px;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.supply-modal .caravan-good{display:grid;grid-template-columns:40px minmax(0,1fr) 88px;align-items:center;gap:7px;min-width:0;min-height:0;text-align:left;padding:4px 7px;color:inherit;background:#fffaf0;border:1px solid #bd90554d;border-radius:4px;cursor:pointer}
+.supply-modal .caravan-good[aria-pressed=true]{border-color:#a77836;background:#eee0c7;box-shadow:inset 3px 0 #8d602e}
+.caravan-good-photo{width:100%;height:100%;max-height:46px;min-height:0;object-fit:contain;filter:drop-shadow(0 2px 2px #5033141a)}
+.caravan-good b,.caravan-good small{display:block}.caravan-good b{font-size:13px;line-height:1.1}.caravan-good small{font-size:10px;line-height:1.2;opacity:.8;margin-top:3px;white-space:nowrap}
+.caravan-bars{display:flex;gap:2px;align-items:center}.caravan-bars i{display:block;width:7px;height:17px;border-radius:2px;flex:none}
+.caravan-purchase{display:grid;gap:6px;min-width:0;padding-top:7px;border-top:1px solid #baa07355;background:#f7f1e6}
+.caravan-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.caravan-counts label{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;min-width:0}.caravan-counts input{width:58px;max-width:50%;height:29px;box-sizing:border-box;font-size:12px}
+.caravan-cost{font-size:11px!important;line-height:1.3;color:#855c2c;min-height:15px}.caravan-rule{color:#855c2c}
+.supply-modal .caravan-purchase .supply-primary{width:100%;min-height:36px;height:auto;margin:0;padding:8px;font-size:12px;line-height:1.1;flex:none}
+.supply-modal .caravan-purchase .supply-primary:disabled{opacity:1;background:#e3d7c5;color:#796a58;border-color:#c8b79a}
+.supply-node-icon .supply-node-photo{width:100%;height:100%;object-fit:contain;padding:2px}.supply-modal .supply-node-icon:has(.supply-node-photo){background:#fff3dd}
+/* A single chest with two mutually exclusive contents views. */
+.supply-stock-tabs{display:flex;gap:8px;flex:none;padding-bottom:2px}
+.supply-modal .supply-stock-tabs button{min-height:34px;padding:7px 15px;background:#fffaf0;color:#633039;border:1px solid #c4a16a;border-radius:4px;font-size:12px}
+.supply-modal .supply-stock-tabs button[aria-pressed=true]{background:#591823;color:#efd59b;border-color:#591823}
+.supply-stock[data-category=food]{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+.supply-stock[data-category=materials]{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+.supply-vault .supply-stock-card{min-height:0;min-width:0}.supply-vault .supply-stock-icon{max-height:145px;max-width:145px}
+/* All HUD entries share a baseline and one spacing scale, including the book. */
+body[data-roman-screen=ludus] .ludus-menu{--hud-icon:clamp(19px,5.3dvh,28px);--hud-gap:clamp(8px,1.35vw,19px);display:flex!important;align-items:center!important;justify-content:center!important;gap:var(--hud-gap)!important;padding:0 4px!important;min-height:36px!important;left:max(12px,env(safe-area-inset-left))!important;right:max(12px,env(safe-area-inset-right))!important;font:clamp(11px,2.9dvh,17px)/1 Georgia!important}
+body[data-roman-screen=ludus] .ludus-menu #accountSummary,body[data-roman-screen=ludus] .ludus-menu .tools{display:contents!important;font:inherit!important}
+body[data-roman-screen=ludus] .ludus-menu #accountSummary>span{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:36px;flex:none;max-width:none!important;margin:0!important;padding:0!important;line-height:1!important;font-weight:normal;overflow:visible;font-variant-numeric:tabular-nums}
+body[data-roman-screen=ludus] .ludus-menu #accountSummary svg,body[data-roman-screen=ludus] .ludus-menu .tools svg{width:var(--hud-icon)!important;height:var(--hud-icon)!important;display:block;flex:none}
+body[data-roman-screen=ludus] .ludus-menu .tools button{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;width:var(--hud-icon)!important;height:36px!important;min-height:36px!important;min-width:0!important;margin:0!important;padding:0!important;flex:none}
+body[data-roman-screen=ludus] .ludus-menu .tools #beginnerOpen{width:auto!important;gap:5px!important}.ludus-menu .fq-book-count{font:inherit;line-height:1;font-variant-numeric:tabular-nums}
+body[data-roman-screen=ludus] .ludus-menu #ludusLevelBadge{font:inherit;opacity:1}
+body[data-roman-screen=ludus] .ludus-menu #caravanHud img{width:calc(var(--hud-icon) * 1.45);height:32px;object-fit:contain;filter:drop-shadow(0 1px 2px #251911bb)}
+body[data-roman-screen=ludus] .ludus-menu .tools button[hidden],body[data-roman-screen=ludus] .ludus-menu .tools #explore{display:none!important}
+.room-world-action .caravan-door-photo{display:block;width:100%;height:100%;object-fit:contain}
+@media(max-height:540px){
+ .caravan-market{gap:8px;grid-template-columns:minmax(0,1.35fr) minmax(268px,1fr)}.caravan-city-detail{padding:8px;gap:6px}.caravan-city-detail h2{font-size:19px}.caravan-goods{gap:3px;grid-template-rows:repeat(5,minmax(32px,1fr))}.supply-modal .caravan-good{grid-template-columns:32px minmax(0,1fr) 78px;gap:5px;padding:3px 5px}.caravan-good b{font-size:12px}.caravan-good small{font-size:10px;margin-top:1px}.caravan-bars i{width:6px;height:15px}.caravan-purchase{gap:4px;padding-top:5px}.caravan-counts input{height:27px;padding:3px 5px}.supply-modal .caravan-purchase .supply-primary{min-height:32px;padding:6px}.caravan-atlas-controls select{padding:4px}.caravan-atlas-controls .supply-secondary{font-size:11px}.supply-modal .supply-stock-tabs button{min-height:30px;padding:5px 12px;font-size:11px}.supply-vault .supply-stock-icon{max-height:88px}.supply-vault-emblem{height:70px}
+}
+@media(max-height:400px){
+ .caravan-market{grid-template-columns:minmax(0,1fr) 280px}.caravan-city-detail{padding:6px;gap:4px}.caravan-city-heading h2{font-size:17px}.caravan-city-heading .supply-kicker{font-size:8px;margin-bottom:1px}.caravan-goods{grid-template-rows:repeat(5,minmax(28px,1fr));gap:2px}.supply-modal .caravan-good{grid-template-columns:27px minmax(0,1fr) 68px;padding:2px 4px;gap:4px}.caravan-good b{font-size:11px}.caravan-good small{font-size:9px;margin-top:0}.caravan-bars{gap:1px}.caravan-bars i{height:12px}.caravan-counts input{height:24px}.caravan-cost{font-size:10px!important;min-height:13px}.supply-modal .caravan-purchase .supply-primary{min-height:29px;font-size:11px}.caravan-atlas-controls{gap:5px}.caravan-atlas-controls label{font-size:10px}.caravan-atlas-controls .supply-secondary{font-size:10px;padding:6px}.supply-vault .supply-stock-icon{max-height:65px}
+}
+@media(max-width:720px){.caravan-market{grid-template-columns:minmax(0,1fr) 265px}.caravan-atlas-controls .supply-secondary{max-width:95px}.supply-stock-tabs{gap:5px}.supply-modal .supply-stock-tabs button{font-size:10px;padding:5px 9px}}
+@media(max-height:400px){
+ .caravan-goods{grid-template-rows:repeat(5,minmax(24px,1fr))}
+ .caravan-good>div{display:flex;align-items:center;gap:5px;min-width:0}.caravan-good b{font-size:10px;line-height:1;flex:none}.caravan-good small{font-size:9px;line-height:1}.caravan-good-photo{max-height:24px}
+}

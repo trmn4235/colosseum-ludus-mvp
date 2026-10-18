@@ -2,10 +2,10 @@ name: Caravan collection regression
 on:
   push:
     branches: [main, codex/caravan-collection-v116]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'tests/caravan-*', 'supabase/migrations/*caravan_collection*', '.github/workflows/caravan-collection.yml']
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'supabase/migrations/*caravan_collection*', '.github/workflows/caravan-collection.yml']
   pull_request:
     branches: [main]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'tests/caravan-*', 'supabase/migrations/*caravan_collection*']
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'supabase/migrations/*caravan_collection*']
   workflow_dispatch:
 permissions:
   contents: read
