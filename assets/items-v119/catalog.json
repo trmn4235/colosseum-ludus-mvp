@@ -1,0 +1,299 @@
+{
+  "version": 119,
+  "products": [
+    {
+      "sku": "iron_ore",
+      "name": "Demir cevheri",
+      "stage": "raw",
+      "file": "assets/items-v118/iron_ore.webp"
+    },
+    {
+      "sku": "copper_ore",
+      "name": "Bakır cevheri",
+      "stage": "raw",
+      "file": "assets/items-v118/copper_ore.webp"
+    },
+    {
+      "sku": "tin_ore",
+      "name": "Kalay cevheri",
+      "stage": "raw",
+      "file": "assets/items-v118/tin_ore.webp"
+    },
+    {
+      "sku": "lead_ore",
+      "name": "Kurşun cevheri",
+      "stage": "raw",
+      "file": "assets/items-v118/lead_ore.webp"
+    },
+    {
+      "sku": "wood",
+      "name": "Odun",
+      "stage": "raw",
+      "file": "assets/resource-icons-v95/wood.webp"
+    },
+    {
+      "sku": "flax",
+      "name": "Ham keten",
+      "stage": "raw",
+      "file": "assets/items-v118/flax.webp"
+    },
+    {
+      "sku": "hide",
+      "name": "Ham deri",
+      "stage": "raw",
+      "file": "assets/items-v118/hide.webp"
+    },
+    {
+      "sku": "wool",
+      "name": "Yün",
+      "stage": "raw",
+      "file": "assets/items-v118/wool.webp"
+    },
+    {
+      "sku": "resin",
+      "name": "Reçine",
+      "stage": "raw",
+      "file": "assets/items-v118/resin.webp"
+    },
+    {
+      "sku": "charcoal",
+      "name": "Odun kömürü",
+      "stage": "equipment",
+      "file": "assets/items-v118/charcoal.webp"
+    },
+    {
+      "sku": "iron",
+      "name": "Demir külçe",
+      "stage": "equipment",
+      "file": "assets/resource-icons-v95/iron.webp"
+    },
+    {
+      "sku": "copper",
+      "name": "Bakır külçe",
+      "stage": "equipment",
+      "file": "assets/resource-icons-v95/copper.webp"
+    },
+    {
+      "sku": "tin",
+      "name": "Kalay külçe",
+      "stage": "equipment",
+      "file": "assets/items-v119/tin.webp"
+    },
+    {
+      "sku": "lead",
+      "name": "Kurşun külçe",
+      "stage": "equipment",
+      "file": "assets/items-v119/lead.webp"
+    },
+    {
+      "sku": "bronze",
+      "name": "Bronz külçe",
+      "stage": "equipment",
+      "file": "assets/items-v118/bronze.webp"
+    },
+    {
+      "sku": "steel",
+      "name": "Çelik külçe",
+      "stage": "equipment",
+      "file": "assets/items-v118/steel.webp"
+    },
+    {
+      "sku": "leather",
+      "name": "İşlenmiş deri",
+      "stage": "equipment",
+      "file": "assets/resource-icons-v95/leather.webp"
+    },
+    {
+      "sku": "rope",
+      "name": "İp",
+      "stage": "equipment",
+      "file": "assets/items-v118/rope.webp"
+    },
+    {
+      "sku": "linen",
+      "name": "Keten kumaş",
+      "stage": "equipment",
+      "file": "assets/resource-icons-v95/linen.webp"
+    },
+    {
+      "sku": "wool_cloth",
+      "name": "Yünlü kumaş",
+      "stage": "equipment",
+      "file": "assets/items-v118/wool_cloth.webp"
+    },
+    {
+      "sku": "bow",
+      "name": "Yay",
+      "stage": "equipment",
+      "file": "assets/items-v118/bow.webp"
+    },
+    {
+      "sku": "arrow",
+      "name": "Ok",
+      "stage": "equipment",
+      "file": "assets/items-v118/arrow.webp"
+    },
+    {
+      "sku": "gladius",
+      "name": "Gladius",
+      "stage": "equipment",
+      "file": "assets/items-v118/gladius.webp"
+    },
+    {
+      "sku": "sica",
+      "name": "Sica",
+      "stage": "equipment",
+      "file": "assets/items-v118/sica.webp"
+    },
+    {
+      "sku": "spear",
+      "name": "Mızrak",
+      "stage": "equipment",
+      "file": "assets/items-v118/spear.webp"
+    },
+    {
+      "sku": "trident",
+      "name": "Üç dişli mızrak",
+      "stage": "equipment",
+      "file": "assets/items-v118/trident.webp"
+    },
+    {
+      "sku": "mace",
+      "name": "Zincirli gürz",
+      "stage": "equipment",
+      "file": "assets/items-v118/mace.webp"
+    },
+    {
+      "sku": "whip",
+      "name": "Kırbaç",
+      "stage": "equipment",
+      "file": "assets/items-v118/whip.webp"
+    },
+    {
+      "sku": "scissor",
+      "name": "Kol bıçağı",
+      "stage": "equipment",
+      "file": "assets/items-v118/scissor.webp"
+    },
+    {
+      "sku": "net",
+      "name": "Savaş ağı",
+      "stage": "equipment",
+      "file": "assets/items-v118/net.webp"
+    },
+    {
+      "sku": "shield-medium",
+      "name": "Küçük kalkan",
+      "stage": "equipment",
+      "file": "assets/items-v118/shield-medium.webp"
+    },
+    {
+      "sku": "shield-large",
+      "name": "Büyük kalkan",
+      "stage": "equipment",
+      "file": "assets/items-v118/shield-large.webp"
+    },
+    {
+      "sku": "helmet-gold",
+      "name": "Gladyatör miğferi",
+      "stage": "equipment",
+      "file": "assets/items-v118/helmet-gold.webp"
+    },
+    {
+      "sku": "helmet-roman",
+      "name": "Roma miğferi",
+      "stage": "equipment",
+      "file": "assets/items-v118/helmet-roman.webp"
+    },
+    {
+      "sku": "helmet-silver",
+      "name": "Şövalye miğferi",
+      "stage": "equipment",
+      "file": "assets/items-v118/helmet-silver.webp"
+    },
+    {
+      "sku": "helmet-winged",
+      "name": "Kanatlı miğfer",
+      "stage": "equipment",
+      "file": "assets/items-v118/helmet-winged.webp"
+    },
+    {
+      "sku": "chest",
+      "name": "Gladyatör göğüs zırhı",
+      "stage": "equipment",
+      "file": "assets/items-v118/chest.webp"
+    },
+    {
+      "sku": "chest-plate",
+      "name": "İşlemeli göğüs zırhı",
+      "stage": "equipment",
+      "file": "assets/items-v118/chest-plate.webp"
+    },
+    {
+      "sku": "bracers",
+      "name": "Kolluk",
+      "stage": "equipment",
+      "file": "assets/items-v119/bracers.webp"
+    },
+    {
+      "sku": "gloves",
+      "name": "İşlemeli çift omuzluk",
+      "stage": "equipment",
+      "file": "assets/items-v118/gloves.webp"
+    },
+    {
+      "sku": "shoulder-armor",
+      "name": "Çift omuz koruma",
+      "stage": "equipment",
+      "file": "assets/items-v118/shoulder-armor.webp"
+    },
+    {
+      "sku": "legs",
+      "name": "Bacaklık",
+      "stage": "equipment",
+      "file": "assets/items-v118/legs.webp"
+    },
+    {
+      "sku": "grain",
+      "name": "Tahıl",
+      "stage": "food",
+      "file": "assets/resource-icons-v95/grain.webp"
+    },
+    {
+      "sku": "apple",
+      "name": "Elma",
+      "stage": "food",
+      "file": "assets/resource-icons-v95/apple.webp"
+    },
+    {
+      "sku": "meat",
+      "name": "Et",
+      "stage": "food",
+      "file": "assets/resource-icons-v95/meat.webp"
+    },
+    {
+      "sku": "fish",
+      "name": "Balık",
+      "stage": "food",
+      "file": "assets/resource-icons-v95/fish.webp"
+    },
+    {
+      "sku": "egg",
+      "name": "Yumurta",
+      "stage": "food",
+      "file": "assets/resource-icons-v95/egg.webp"
+    },
+    {
+      "sku": "beer",
+      "name": "Şarap",
+      "stage": "food",
+      "file": "assets/resource-icons-v95/beer.webp"
+    },
+    {
+      "sku": "olive_oil",
+      "name": "Zeytinyağı",
+      "stage": "food",
+      "file": "assets/resource-icons-v95/olive_oil.webp"
+    }
+  ]
+}

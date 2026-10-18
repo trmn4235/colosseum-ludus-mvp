@@ -1,0 +1,21 @@
+{
+  "version": 119,
+  "mode": "OpenAI built-in imagegen",
+  "items": [
+    {
+      "sku": "tin",
+      "file": "assets/items-v119/tin.webp",
+      "prompt": "Use case: product-mockup. Asset type: one photorealistic inventory item icon for Colosseum & Magnus, matching an existing premium realistic Roman crafting-game icon set. Subject: three compact cast tin ingots stacked in a small triangular pile, silver-white metal with a soft satin sheen, pale slightly warm highlights and subtle casting imperfections; unmistakably refined solid metal, not rocks. Style: realistic studio product photography, tactile authentic materials, crisp silhouette and fine surface detail, natural restrained colors. Composition: compact centered complete object group in a square canvas, three-quarter view, about 70 to 75 percent of the canvas, generous transparent padding on all four sides, soft lighting from upper left and a very subtle contact shadow. Background must be truly transparent alpha. No floor or scenery. No text, letters, numerals, labels, borders, UI, watermark, coins, hands or decorative props. Not cartoon, not illustration, not painted concept art. Keep the entire object visible, no cropping."
+    },
+    {
+      "sku": "lead",
+      "file": "assets/items-v119/lead.webp",
+      "prompt": "Use case: product-mockup. Asset type: one photorealistic inventory item icon for Colosseum & Magnus, matching an existing premium realistic Roman crafting-game icon set. Subject: three compact cast lead ingots stacked in a small triangular pile, dull dark bluish-grey metal with subdued highlights, soft rounded cast edges and a light natural oxide patina; unmistakably refined solid metal, not rocks. Style: realistic studio product photography, tactile authentic materials, crisp silhouette and fine surface detail, natural restrained colors. Composition: compact centered complete object group in a square canvas, three-quarter view, about 70 to 75 percent of the canvas, generous transparent padding on all four sides, soft lighting from upper left and a very subtle contact shadow. Background must be truly transparent alpha. No floor or scenery. No text, letters, numerals, labels, borders, UI, watermark, coins, hands or decorative props. Not cartoon, not illustration, not painted concept art. Keep the entire object visible, no cropping."
+    },
+    {
+      "sku": "bracers",
+      "file": "assets/items-v119/bracers.webp",
+      "prompt": "Use case: product-mockup. Asset type: one photorealistic inventory item icon for Colosseum & Magnus, matching an existing premium realistic Roman crafting-game icon set. Subject: one matched pair of Roman gladiator forearm bracers as one equipment set, two cylindrical bronze forearm guards side by side at a slight angle, articulated horizontal bronze bands, dark leather lining and functional brown leather fastening straps; the guards cover wrists and forearms only, no shoulder plates, no hands and no human. Style: realistic studio product photography, tactile authentic materials, crisp silhouette and fine surface detail, natural restrained colors. Composition: compact centered complete object group in a square canvas, three-quarter view, about 70 to 75 percent of the canvas, generous transparent padding on all four sides, soft lighting from upper left and a very subtle contact shadow. Background must be truly transparent alpha. No floor or scenery. No text, letters, numerals, labels, borders, UI, watermark, coins, hands or decorative props. Not cartoon, not illustration, not painted concept art. Keep the entire object visible, no cropping."
+    }
+  ]
+}

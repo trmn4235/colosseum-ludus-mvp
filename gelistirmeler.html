@@ -141,7 +141,7 @@ body[data-roman-screen="ludus"] #accountLink:after{content:none!important}
 body[data-roman-screen="ludus"] #accountLink[hidden]{display:none!important}
 body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#ebce89}
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
-</style><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><link rel="stylesheet" href="combat-inspector-v74.css?v=revision77"><script src="combat-inspector-v74.js?v=revision114"></script><script src="ludus-client-v84.js?v=revision84"></script><script src="ludus-quest-events-v111.js?v=revision111"></script><link rel="stylesheet" href="upgrades-layout-v112.css?v=revision112"><script src="ludus-production-v118.js?v=revision118"></script>
+</style><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><link rel="stylesheet" href="combat-inspector-v74.css?v=revision77"><script src="combat-inspector-v74.js?v=revision114"></script><script src="ludus-client-v84.js?v=revision84"></script><script src="ludus-quest-events-v111.js?v=revision111"></script><link rel="stylesheet" href="upgrades-layout-v112.css?v=revision112"><script src="ludus-production-v119.js?v=revision119"></script>
 </head>
 <body data-roman-screen="gelistirmeler"><div class="game-shell"><header class="top"><a data-game-back href="ludus.html?v=revision96">‹ Geri dön</a><strong>Colosseum&amp;Magnus</strong><span id="wallet">Hesap yükleniyor…</span></header>
 <div class="workspace">
@@ -280,7 +280,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
 
 // Original small SVG equipment illustrations; no external images or additional requests.
 var LUDUS_ARMOUR_NAMES={gladiator_chest:'Gladyatör göğüs zırhı',chest_plate:'İşlemeli göğüs zırhı',armor_shoulder:'İşlemeli çift omuzluk',shoulder_armor:'Çift omuz koruma'};
-function LudusArmourName(i){return i?.kind==='chest'?LUDUS_ARMOUR_NAMES[i.model==='chest_plate'?'chest_plate':'gladiator_chest']:i?.kind==='gloves'?LUDUS_ARMOUR_NAMES[i.model==='shoulder_armor'?'shoulder_armor':'armor_shoulder']:null;}
+function LudusArmourName(i){const canonical=globalThis.LudusProduction?.nameForItem(i);if(canonical)return canonical;return i?.kind==='chest'?LUDUS_ARMOUR_NAMES[i.model==='chest_plate'?'chest_plate':'gladiator_chest']:i?.kind==='gloves'?LUDUS_ARMOUR_NAMES[i.model==='shoulder_armor'?'shoulder_armor':'armor_shoulder']:null;}
 var LUDUS_HELMET_NAMES={gold:'Gladyatör miğferi',gladiator:'Gladyatör miğferi',silver:'Şövalye miğferi',knights:'Şövalye miğferi',winged:'Kanatlı miğfer',roman:'Roma miğferi'};
 var LUDUS_EQUIPMENT_ATLAS="assets/textures/shared-ui-91a94259c0b5.webp";
 /* V16 original atlas. One embedded sheet serves every equipment tile. */
@@ -448,4 +448,5 @@ const LUDUS_STONE_IMAGES={};
  client.auth.getUser().then(r=>{if(r.data.user&&!r.data.user.is_anonymous){owner=r.data.user.id;heartbeat();}}).catch(()=>{});setInterval(heartbeat,20000);document.addEventListener('visibilitychange',heartbeat);window.addEventListener('resize',()=>{if(open)render();});render();
 })();
 </script></body></html>
+
 
