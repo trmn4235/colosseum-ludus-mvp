@@ -1,0 +1,11 @@
+{
+  "forest-road.webp": {
+    "use": "historical-scene",
+    "description": "Roman caravan approaching on a dirt road at the right centre, dense trees on both sides. Natural afternoon light, complete horse and covered wagon visible.",
+    "generator": "built-in image generation",
+    "prompt": "Use case: historical-scene. Asset type: landscape hero artwork for caravan preparation in a polished Roman historical game, 3:2 landscape. Primary request: a Roman merchant caravan approaching the viewer along a natural dirt forest road; dense mature trees fill both the left and right sides of the entire image. Composition: the earth road bends gently from the background into the right-middle foreground. Place the main horse-drawn Roman covered wooden wagon and its tunic-clad driver in the right middle of the frame, coming toward the viewer; show the entire horse and wagon clearly with natural proportions, realistic wooden wheels and an off-white linen canopy. The left side is a rich dense woodland of tall Mediterranean pines, oaks, trunks and leafy undergrowth, with soft depth and no buildings or fields. The right side is equally full of trees; the only opening is the winding dirt road. Style: cinematic photorealistic historical game environment, realistic detailed foliage, natural filtered afternoon light through the canopy, subtle forest haze, green leaves, muted natural earth, high quality materials. Ancient Roman Italy around AD 80. Keep the entire wagon and horse inside the composition with generous safe margins for responsive display. No wheat farm, villa, aqueduct, modern road, modern gear, magical effects, borders, interface, lettering, or logos."
+  },
+  "hunt-art.webp": {
+    "source": "User-selected second attachment; full composition retained."
+  }
+}

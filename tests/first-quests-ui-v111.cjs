@@ -40,7 +40,7 @@ window.__fixtureClient={
  }
 };
 const accountClient=window.__fixtureClient;`;
-const standalone=`<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;overflow:hidden;background:#32251d}.tools{display:flex}button{font:14px Georgia}</style><link rel="stylesheet" href="/ludus-first-quests-v111.css"></head><body><div class="tools"><button id="accountLink">Ayarlar</button></div><script>${fixture}</script><script src="/combat-control-settings-v44.js"></script><script src="/ludus-settings-v29.js"></script><script src="/ludus-first-quests-v111.js"></script><script>
+const standalone=`<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;overflow:hidden;background:#32251d}.tools{display:flex}button{font:14px Georgia}</style><link rel="stylesheet" href="/ludus-first-quests-v111.css"><link rel="stylesheet" href="/game-panels-v123.css"></head><body><div class="tools"><button id="accountLink">Ayarlar</button></div><script>${fixture}</script><script src="/combat-control-settings-v44.js"></script><script src="/ludus-settings-v29.js"></script><script src="/ludus-first-quests-v111.js"></script><script>
 let paused=false;const roster=__fighters.map(record=>({record,name:record.name,type:record.class}));let guide;
 const settings=LudusViewSettings.create({onHelp:()=>guide.open(),onControlsSave:value=>guide.record('controls',value),onChange:()=>{},onOpen:()=>{paused=true;},onClose:()=>{paused=false;}});
 guide=LudusOnboarding.create({client:__fixtureClient,getUser:()=>__fixtureUser?.id,menu:document.querySelector('.tools'),roster:()=>roster,canOpen:()=>!paused,refresh:async()=>{},onOpen:()=>{paused=true;},onClose:()=>{paused=false;},navigate:target=>{if(target==='settings')settings.open();}});

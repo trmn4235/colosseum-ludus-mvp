@@ -21,7 +21,7 @@ var LudusCaravanOutfit=(()=>{
   const pole=new T.Mesh(new T.CylinderGeometry(.025,.032,3.5,10),wood);pole.position.y=1.75;group.add(pole);
   const tip=new T.Mesh(new T.ConeGeometry(.10,.42,4),metal);tip.position.y=3.66;tip.scale.z=.24;group.add(tip);
   const support=new T.Mesh(new T.CylinderGeometry(.022,.022,.5,8),wood);support.rotation.z=Math.PI/2;support.position.set(0,1.82,.03);group.add(support);
-  const hood=get(T).clone(true);hood.position.set(0,1.97,.06);hood.scale.setScalar(2);hood.rotation.y=-Math.PI/2;group.add(hood);return group;
+  const hood=get(T).clone(true);hood.position.set(0,1.97,.06);hood.scale.setScalar(1);hood.rotation.y=-Math.PI/2;group.add(hood);return group;
  }
  function portrait({T,renderer,make,animate,states},ids){
   const width=1000,height=850,scene=new T.Scene();scene.background=new T.Color(0xeee9df);const camera=new T.PerspectiveCamera(31,width/height,.05,30);camera.position.set(0,1.35,4.7);camera.lookAt(0,1.12,0);

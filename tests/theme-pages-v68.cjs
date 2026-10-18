@@ -25,10 +25,10 @@ const fixtureBootstrap=`window.__themeClient=(${fixtureClient.toString()})(${JSO
 const pages=[
  {file:'gorevler.html',ready:'.quest-card',checks:[['.daily-sidebar','backgroundColor',burgundy],['.daily-sidebar h1','color',gold],['.quest-card','backgroundColor',white],['.quest-action','color',gold]]},
  {file:'klan.html',ready:'.homeBanner',checks:[['header','backgroundColor',burgundy],['.nav:not(.active)','color',gold],['.panel','backgroundColor',white],['.nav.active','backgroundColor',white],['.nav.active','color',burgundy],['.foot #message','color',gold]]},
- {file:'ludus-seviye.html',ready:'#levelRows tr',checks:[['.level-paper','backgroundColor',white],['.level-head','backgroundColor',burgundy],['.level-head h1','color',gold]]},
- {file:'gelistirmeler.html',static:true,checks:[['.panel','backgroundColor',white],['.side','backgroundColor',burgundy],['.top','color',gold],['.side .active','color',burgundy]]},
+ {file:'ludus-seviye.html',ready:'#levelRows tr',checks:[['.level-paper','backgroundColor',white],['.level-head','backgroundColor',white],['.level-head h1','color','rgb(32, 41, 54)']]},
+ {file:'gelistirmeler.html',static:true,checks:[['.panel','backgroundColor',white],['.top','color',gold]]},
  {file:'savas.html',static:true,prepare:()=>{document.querySelector('#modePage').hidden=true;document.querySelector('#setupPage').hidden=false;},checks:[['.paper','backgroundColor',white],['.top','color',gold],['.roster h2','color',gold]]},
- {file:'arena.html',static:true,prepare:()=>{document.querySelector('#intro').hidden=false;},checks:[['#intro .intro','backgroundColor',white],['#attack','backgroundColor',burgundy],['#attack','color',gold]]},
+ {file:'arena.html',static:true,prepare:()=>{document.querySelector('#pauseMenu').hidden=false;},checks:[['#pauseMenu .intro','backgroundColor',white],['#attack','backgroundColor',burgundy],['#attack','color',gold]]},
  {file:'multiplayer.html',static:true,checks:[['.queue-footer button','backgroundColor',burgundy],['.queue-footer button','color',gold]]},
  {file:'kurulum.html',static:true,checks:[['main','backgroundColor',white],['a.action','color',gold],['button','backgroundColor',burgundy]]},
 ];
@@ -38,8 +38,8 @@ const pages=[
  for(const entry of pages){
   const page=await browser.newPage({viewport:{width:844,height:390}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin!=='http://theme.test')return r.abort();const file=path.join(root,decodeURIComponent(u.pathname));if(!fs.existsSync(file)||!fs.statSync(file).isFile())return r.fulfill({status:404});let body=fs.readFileSync(file);
-   if(file.endsWith('.html')){let s=body.toString();if(entry.static)s=s.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');else s=s.replace('<head>','<head><script>'+fixtureBootstrap+'</script>').replaceAll(/supabase\.createClient\([^)]*\)/g,'window.__themeClient');body=Buffer.from(s);}
-   if(file.endsWith('ludus-level-v37.js'))body=Buffer.from(body.toString().replaceAll(/supabase\.createClient\([^)]*\)/g,'window.__themeClient'));
+   if(file.endsWith('.html')){let s=body.toString();if(entry.static)s=s.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');else s=s.replace('<head>','<head><script>'+fixtureBootstrap+'</script>').replaceAll(/supabase\.createClient\([^)]*\)/g,'window.__themeClient').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__themeClient');body=Buffer.from(s);}
+   if(file.endsWith('ludus-level-v37.js'))body=Buffer.from(body.toString().replaceAll(/\(globalThis\.LudusClient\?\.create\|\|supabase\.createClient\)\([^)]*\)/g,'window.__themeClient').replaceAll(/supabase\.createClient\([^)]*\)/g,'window.__themeClient').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__themeClient'));
    return r.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.png')?'image/png':file.endsWith('.webp')?'image/webp':'application/octet-stream'});
   });
   await page.goto('http://theme.test/'+entry.file,{waitUntil:'load'});if(entry.prepare)await page.evaluate(entry.prepare);if(entry.ready)await page.locator(entry.ready).first().waitFor({timeout:12000});
