@@ -90,7 +90,7 @@ var LudusSupply=(()=>{
    if(tab==='cities')renderCities();else if(tab==='map')selected?renderDestination():renderMap();else if(tab==='jobs')renderJobs();else if(tab==='craft')renderCraft();else renderStock();
    if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
   }
-  function reward(){return el('small','supply-reward-note',state.next_caravan_level?'Seviye '+state.next_caravan_level+' · +1 kervan otomatik':'6 kervanın tamamı açıldı');}
+  function reward(){const note=el('small','supply-reward-note'),img=el('img');img.src=globalThis.LudusProduction?.caravanPhoto||'assets/items-v119/caravan.webp';img.alt='Atı ve sürücüsüyle kervan';img.width=56;img.height=42;note.append(img,document.createTextNode(state.next_caravan_level?'Seviye '+state.next_caravan_level+' · +1 kervan otomatik':'6 kervanın tamamı açıldı'));return note;}
   const foodRoutes=()=>state.destinations.filter(d=>['grain','apple','hunt','fish','egg','wine','olive_oil'].includes(d.id));
   function choose(id){selected=id;render();content.querySelector('.supply-back')?.focus({preventScroll:true});}
   function backToMap(){const old=selected;selected=null;render();content.querySelector('[data-destination="'+old+'"]')?.focus({preventScroll:true});}

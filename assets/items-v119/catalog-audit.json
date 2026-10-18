@@ -1,0 +1,271 @@
+{
+  "version": 119,
+  "products": [
+    {
+      "sku": "iron_ore",
+      "name": "Demir cevheri",
+      "photo": "assets/items-v118/iron_ore.webp"
+    },
+    {
+      "sku": "copper_ore",
+      "name": "Bakır cevheri",
+      "photo": "assets/items-v118/copper_ore.webp"
+    },
+    {
+      "sku": "tin_ore",
+      "name": "Kalay cevheri",
+      "photo": "assets/items-v118/tin_ore.webp"
+    },
+    {
+      "sku": "lead_ore",
+      "name": "Kurşun cevheri",
+      "photo": "assets/items-v118/lead_ore.webp"
+    },
+    {
+      "sku": "wood",
+      "name": "Odun",
+      "photo": "assets/resource-icons-v95/wood.webp"
+    },
+    {
+      "sku": "flax",
+      "name": "Ham keten",
+      "photo": "assets/items-v118/flax.webp"
+    },
+    {
+      "sku": "hide",
+      "name": "Ham deri",
+      "photo": "assets/items-v118/hide.webp"
+    },
+    {
+      "sku": "wool",
+      "name": "Yün",
+      "photo": "assets/items-v118/wool.webp"
+    },
+    {
+      "sku": "resin",
+      "name": "Reçine",
+      "photo": "assets/items-v118/resin.webp"
+    },
+    {
+      "sku": "charcoal",
+      "name": "Odun kömürü",
+      "photo": "assets/items-v118/charcoal.webp"
+    },
+    {
+      "sku": "iron",
+      "name": "Demir külçe",
+      "photo": "assets/resource-icons-v95/iron.webp"
+    },
+    {
+      "sku": "copper",
+      "name": "Bakır külçe",
+      "photo": "assets/resource-icons-v95/copper.webp"
+    },
+    {
+      "sku": "tin",
+      "name": "Kalay külçe",
+      "photo": "assets/items-v119/tin.webp"
+    },
+    {
+      "sku": "lead",
+      "name": "Kurşun külçe",
+      "photo": "assets/items-v119/lead.webp"
+    },
+    {
+      "sku": "bronze",
+      "name": "Bronz külçe",
+      "photo": "assets/items-v118/bronze.webp"
+    },
+    {
+      "sku": "steel",
+      "name": "Çelik külçe",
+      "photo": "assets/items-v118/steel.webp"
+    },
+    {
+      "sku": "leather",
+      "name": "İşlenmiş deri",
+      "photo": "assets/resource-icons-v95/leather.webp"
+    },
+    {
+      "sku": "rope",
+      "name": "İp",
+      "photo": "assets/items-v118/rope.webp"
+    },
+    {
+      "sku": "linen",
+      "name": "Keten kumaş",
+      "photo": "assets/resource-icons-v95/linen.webp"
+    },
+    {
+      "sku": "wool_cloth",
+      "name": "Yünlü kumaş",
+      "photo": "assets/items-v118/wool_cloth.webp"
+    },
+    {
+      "sku": "bow",
+      "name": "Yay",
+      "photo": "assets/items-v119/bow.webp"
+    },
+    {
+      "sku": "arrow",
+      "name": "Ok",
+      "photo": "assets/items-v118/arrow.webp"
+    },
+    {
+      "sku": "gladius",
+      "name": "Gladius",
+      "photo": "assets/items-v118/gladius.webp"
+    },
+    {
+      "sku": "sica",
+      "name": "Sica",
+      "photo": "assets/items-v118/sica.webp"
+    },
+    {
+      "sku": "spear",
+      "name": "Mızrak",
+      "photo": "assets/items-v119/spear.webp"
+    },
+    {
+      "sku": "trident",
+      "name": "Trident",
+      "photo": "assets/items-v119/trident.webp"
+    },
+    {
+      "sku": "mace",
+      "name": "Zincirli gürz",
+      "photo": "assets/items-v118/mace.webp"
+    },
+    {
+      "sku": "whip",
+      "name": "Kırbaç",
+      "photo": "assets/items-v118/whip.webp"
+    },
+    {
+      "sku": "scissor",
+      "name": "Kol bıçağı",
+      "photo": "assets/items-v118/scissor.webp"
+    },
+    {
+      "sku": "net",
+      "name": "Savaş ağı",
+      "photo": "assets/items-v118/net.webp"
+    },
+    {
+      "sku": "shield-medium",
+      "name": "Küçük kalkan",
+      "photo": "assets/items-v118/shield-medium.webp"
+    },
+    {
+      "sku": "shield-large",
+      "name": "Büyük kalkan",
+      "photo": "assets/items-v118/shield-large.webp"
+    },
+    {
+      "sku": "helmet-gold",
+      "name": "Gladyatör miğferi",
+      "photo": "assets/items-v118/helmet-gold.webp"
+    },
+    {
+      "sku": "helmet-roman",
+      "name": "Roma miğferi",
+      "photo": "assets/items-v118/helmet-roman.webp"
+    },
+    {
+      "sku": "helmet-silver",
+      "name": "Secutor miğferi",
+      "photo": "assets/items-v119/helmet-silver.webp"
+    },
+    {
+      "sku": "helmet-winged",
+      "name": "Thraex miğferi",
+      "photo": "assets/items-v119/helmet-winged.webp"
+    },
+    {
+      "sku": "chest",
+      "name": "Gladyatör göğüs zırhı",
+      "photo": "assets/items-v118/chest.webp"
+    },
+    {
+      "sku": "chest-plate",
+      "name": "İşlemeli göğüs zırhı",
+      "photo": "assets/items-v118/chest-plate.webp"
+    },
+    {
+      "sku": "gloves",
+      "name": "İşlemeli çift omuzluk",
+      "photo": "assets/items-v118/gloves.webp"
+    },
+    {
+      "sku": "shoulder-armor",
+      "name": "Çift omuz koruma",
+      "photo": "assets/items-v118/shoulder-armor.webp"
+    },
+    {
+      "sku": "manica",
+      "name": "Kolluk",
+      "photo": "assets/items-v119/manica.webp"
+    },
+    {
+      "sku": "legs",
+      "name": "Bacaklık",
+      "photo": "assets/items-v118/legs.webp"
+    },
+    {
+      "sku": "grain",
+      "name": "Tahıl",
+      "photo": "assets/resource-icons-v95/grain.webp"
+    },
+    {
+      "sku": "apple",
+      "name": "Elma",
+      "photo": "assets/resource-icons-v95/apple.webp"
+    },
+    {
+      "sku": "meat",
+      "name": "Et",
+      "photo": "assets/resource-icons-v95/meat.webp"
+    },
+    {
+      "sku": "fish",
+      "name": "Balık",
+      "photo": "assets/resource-icons-v95/fish.webp"
+    },
+    {
+      "sku": "egg",
+      "name": "Yumurta",
+      "photo": "assets/resource-icons-v95/egg.webp"
+    },
+    {
+      "sku": "beer",
+      "name": "Şarap",
+      "photo": "assets/resource-icons-v95/beer.webp"
+    },
+    {
+      "sku": "olive_oil",
+      "name": "Zeytinyağı",
+      "photo": "assets/resource-icons-v95/olive_oil.webp"
+    }
+  ],
+  "caravan": {
+    "name": "Sürücülü kervan",
+    "photo": "assets/items-v119/caravan.webp",
+    "craftable": false
+  },
+  "retired": [
+    "wooden_handle",
+    "shield_frame_small",
+    "shield_frame_large",
+    "lead_weight",
+    "net_mesh"
+  ],
+  "counts": {
+    "raw": 9,
+    "processed": 11,
+    "equipment": 20,
+    "supplies": 2,
+    "food": 7,
+    "recipes": 33,
+    "products": 49
+  }
+}

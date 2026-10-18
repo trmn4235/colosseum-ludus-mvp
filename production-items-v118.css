@@ -42,3 +42,7 @@
 @media(max-width:840px){.supply-modal .supply-stock-card{grid-template-rows:minmax(0,1fr) 44px}.supply-modal .supply-stock-card h2{font-size:12px}.supply-modal .supply-stock-card>.supply-stock-quantity{font-size:16px}}
 
 .caravan-goods-box .caravan-goods{grid-template-rows:repeat(var(--market-rows,5),minmax(24px,1fr))}
+
+/* V119: complete caravan unit. */
+.supply-reward-note{display:flex;align-items:center;gap:7px;min-width:0}.supply-reward-note>img{width:56px;height:42px;object-fit:contain;flex:none}
+@media(max-height:400px){.supply-reward-note>img{width:40px;height:30px}.supply-reward-note{gap:4px}}

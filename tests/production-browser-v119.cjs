@@ -1,0 +1,84 @@
+// Browser regression against the real courtyard; account APIs are mocked.
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
+const {chromium}=require('playwright'),exercise=require('../gladiator-exercise-v46.js');
+const root=path.resolve(__dirname,'..'),owner='00000000-0000-4000-8000-000000000109';
+require('../ludus-first-quests-v111.js');const questCatalog=globalThis.LudusOnboarding.quests;
+const combatReport=process.env.LUDUS_COMBAT_VALUES_TEST?JSON.parse(fs.readFileSync(path.join(process.env.LUDUS_TEST_OUTPUT||'/tmp/combat-values-v110','combat-values-fixture.json'),'utf8')):null;
+const fighters=['murmillo','retiarius'].map((type,i)=>({id:'00000000-0000-4000-8000-00000000011'+i,name:['Aulus Varro','Cassius Nero'][i],class:type,owner_id:owner,overall:50,level:1,status:'available',session:null,stat_version:46,base_stats:exercise.profile(type),fatigue_value:0,exercise_units:0}));
+const items=fighters.flatMap(g=>[['weapon','gladius','main_hand'],['shield','large','off_hand'],['helmet','gold','helmet'],['chest','murmillo','chest'],['gloves','starter','gloves'],['legs','starter','legs']].map(([kind,model,slot],i)=>({id:g.id+'-'+i,owner_id:owner,kind,model,equipped_by:g.id,equipped_slot:slot,enhancement:0})));
+const mission={id:'00000000-0000-4000-8000-000000000119',title:'Aventinus Tepesi’nde Hırsız Avı',description:'Mahalledeki hırsızların izini sür.',difficulty:1,slot:1,day:'2026-10-17',image:'imperial-missions/gun01-kolay-aventinus-kart.webp'};
+const supply=JSON.parse(fs.readFileSync('/tmp/production-state-v119.json'));supply.user_id=owner;supply.caravans=supply.workers=1;supply.free_caravans=supply.free_workers=0;supply.busy_caravans=supply.busy_workers=1;supply.jobs=[{id:'wood-trip',destination:'city-6',workers:1,cargo:{wood:15},ends_at:new Date(Date.now()+3600000).toISOString()}];const progress=JSON.parse(fs.readFileSync('/tmp/caravan-progress-v116.json'));progress.current_exp=0;progress.next_exp=3000;progress.granted_gladiators=2;progress.owned_gladiators=2;progress.level=1;progress.caravans=1;progress.next_caravan_level=10;progress.claimable_count=0;progress.rewards=progress.rewards.map(r=>({...r,unlocked:false,claimed:false,claimable:false}));
+for(const r of supply.resources)r.quantity=({grain:25,apple:25,meat:19,fish:18,egg:25,beer:25,olive_oil:56,wood:15})[r.sku]??(r.food?0:50000);
+const fixture=`
+window.__freeze=true;window.__fixtureUser={id:${JSON.stringify(owner)},is_anonymous:false,user_metadata:{}};
+window.__fighters=${JSON.stringify(fighters)};window.__items=${JSON.stringify(items)};window.__mission=${JSON.stringify(mission)};
+window.__guideState=JSON.parse(localStorage.getItem('test-guide-state')||'null')||{should_open:false,quests:Object.fromEntries(${JSON.stringify(questCatalog.map(q=>q[0]))}.map((key,i)=>[key,{progress:0,target:['inspect','training'].includes(key)?2:key==='stones'?4:1,complete:false,unlocked:i<22}])),count:0,total:22,starters:__fighters.map(g=>g.id),inspected:[],trained:[],completed_at:null};
+window.__calc=function(){for(const q of Object.values(__guideState.quests))q.complete=q.progress===q.target;__guideState.count=Object.entries(__guideState.quests).filter(([k,q])=>!['supply','craft'].includes(k)&&q.complete).length;if(__guideState.count===22)__guideState.completed_at=__guideState.completed_at||new Date().toISOString();localStorage.setItem('test-guide-state',JSON.stringify(__guideState));};
+window.__supply=${JSON.stringify({})};window.__supply=${JSON.stringify(supply)};window.__progress=${JSON.stringify(progress)};window.__assignments=[];window.__rpcCalls=[];window.__authListeners=[];window.__failGuide=false;
+window.__combatReport=${JSON.stringify(combatReport)};
+window.__fixtureClient={
+ auth:{getUser:async()=>({data:{user:__fixtureUser}}),getSession:async()=>({data:{session:null}}),onAuthStateChange:fn=>{__authListeners.push(fn);return{};}},
+ from:name=>{const value=name==='ludus_accounts'?{user_id:__fixtureUser.id,ludus_name:'Test Ludus',gold:1000,diamonds:3}:name==='ludus_gladiators'?__fighters:name==='ludus_items'?__items:[];const b={select:()=>b,eq:()=>b,order:()=>b,single:async()=>({data:value}),then:(r,j)=>Promise.resolve({data:value}).then(r,j)};return b;},
+ rpc:async(name,args={})=>{
+  __rpcCalls.push({name,args});
+  if(name==='ludus_supply'){if(args.p_action==='buy'){window.__lastBuy=args;__supply.free_caravans-=args.p_workers;__supply.busy_caravans+=args.p_workers;__supply.jobs.push({id:'bought',destination:'city-1',workers:args.p_workers,cargo:{iron:15},ends_at:new Date(Date.now()+3600000).toISOString()});}return{data:{...__supply,server_now:new Date().toISOString()}};}
+  if(name==='ludus_caravan_city'){const city=__supply.cities.find(c=>c.id===args.p_city);return{data:{city,server_now:new Date().toISOString(),epoch:Math.floor(Date.now()/60000),expires_at:new Date(Date.now()+60000).toISOString(),goods:__supply.resources.filter(r=>r.stage==='raw').map((r,i)=>({sku:r.sku,name:r.name,bar:10-i,stock:300-i*30,unit_price:1.25+i}))}};}
+  if(name==='ludus_progress')return{data:__progress};
+  if(name==='ludus_combat_values')return{data:{...__combatReport,owner_id:__fixtureUser.id,gladiator:__fighters.find(g=>g.id===args.p_gladiator)}};
+  const training=()=>({server_now:new Date().toISOString(),gladiators:__fighters});
+  if(name==='ludus_first_quests'){
+   if(__failGuide)return{error:{message:'Offline fixture'}};
+   if(args.p_action==='present'||args.p_action==='dismiss')__guideState.should_open=false;
+   if(args.p_action==='inspect'){if(!__guideState.inspected.includes(args.p_subject))__guideState.inspected.push(args.p_subject);__guideState.quests.inspect.progress=__guideState.inspected.length;}
+   if(['controls','combat'].includes(args.p_action))__guideState.quests[args.p_action].progress=1;
+   __calc();return{data:JSON.parse(JSON.stringify(__guideState))};
+  }
+  if(name==='ludus_train_exercise'){
+   for(const id of args.p_gladiators){const g=__fighters.find(g=>g.id===id);g.session={id:'training-'+id,exercise_stat:args.p_stat,started_at:new Date().toISOString(),train_until:new Date(Date.now()+3600000).toISOString(),rest_until:new Date(Date.now()+7200000).toISOString()};g.trained_today=true;}
+   __guideState.trained=[...new Set([...__guideState.trained,...args.p_gladiators])];__guideState.quests.training.progress=__guideState.trained.length;__calc();return{data:training()};
+  }
+  if(name==='ludus_imperial'){
+   if(args.p_action==='join'){for(const id of args.p_gladiators)__fighters.find(g=>g.id===id).status='locked';__assignments.push({id:'assignment',mission_id:__mission.id,mission:__mission,gladiators:__fighters.filter(g=>args.p_gladiators.includes(g.id)),ends_at:new Date(Date.now()+43200000).toISOString(),claimed_at:null});}
+   return{data:{...training(),missions:[__mission],assignments:__assignments,is_admin:false,today:'2026-10-17'}};
+  }
+  return{data:name==='ludus_message_center'?{friends:[],conversations:[],unread:0,can_send:false,messages:[],message_total:0,notifications:[],notification_total:0,notification_unread:0}:name==='ludus_clan'||name==='ludus_clan_vault'?{...training(),clan:null}:name==='ludus_progress'?{level:1,current_exp:0,next_exp:3000,claimable_count:0}:name==='ludus_daily_state'?{missions:[],claimed_count:0,bonus_claimed:false}:training()};
+ }
+};
+const accountClient=window.__fixtureClient;`;
+
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml','.glb':'model/gltf-binary'};
+const standalone='<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;height:100%;overflow:hidden}</style><link rel="stylesheet" href="/roman-ui-v56.css"><link rel="stylesheet" href="/ludus-supply-v85.css"><link rel="stylesheet" href="/ludus-supply-design-v89.css"><link rel="stylesheet" href="/caravan-collection-v116.css"><link rel="stylesheet" href="/production-items-v118.css"></head><body><script>'+fixture+'</script><script src="/ludus-production-v119.js"></script><script src="/ludus-supply-v85.js"></script><script>window.LudusPreview={supplySystem:LudusSupply.create({client:__fixtureClient,ready:Promise.resolve({user_id:__fixtureUser.id}),blocked:()=>false,inRoom:()=>true})};LudusPreview.supplySystem.enter();</script></body></html>';
+const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHeader('Content-Type','text/html');res.end(standalone);return;}const file=path.resolve(root,'.'+new URL(req.url,'http://local').pathname);if(!file.startsWith(root+'/')||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404).end();return;}let body=fs.readFileSync(file);if(file.endsWith('/ludus.html'))body=Buffer.from(body.toString().replace('function frame(now){requestAnimationFrame(frame);','function frame(now){requestAnimationFrame(frame);if(window.__freeze)return;').replace(/const accountClient=LudusClient.create\([^;]+;/,()=>fixture));if(file.endsWith('/ludus-seviye.html'))body=Buffer.from(body.toString().replace('<script src="ludus-level-v37.js', '<script>'+fixture+'\nLudusClient.create=()=>__fixtureClient;</script><script src="ludus-level-v37.js'));res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');res.end(body);});
+(async()=>{
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const context=await browser.newContext({viewport:{width:932,height:430},hasTouch:true});await context.route(/^https:/,r=>r.abort());
+ const page=await context.newPage(),errors=[],out='/tmp/production-v119';fs.mkdirSync(out,{recursive:true});page.on('pageerror',e=>errors.push(e.message));
+ async function images(){if(process.env.SKIP_ITEM_IMAGES)return;await page.locator('#supplyModal img').evaluateAll(imgs=>Promise.all(imgs.map(i=>i.decode())));}
+ async function fit(selector){for(const e of await page.locator(selector).all()){const r=await e.evaluate(e=>{const r=e.getBoundingClientRect();return{w:e.scrollWidth-e.clientWidth,h:e.scrollHeight-e.clientHeight,x:r.x,y:r.y,right:r.right,bottom:r.bottom}});assert.ok(r.w<3&&r.h<3&&r.x>=0&&r.y>=0&&r.right<=page.viewportSize().width+1&&r.bottom<=page.viewportSize().height+1,selector+' '+JSON.stringify(r));}}
+ async function stock(){await fit('.supply-frame');await fit('.supply-vault');await fit('.supply-stock-card');await images();const cards=await page.locator('.supply-stock-card').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect(),img=e.querySelector('img').getBoundingClientRect(),label=e.querySelector('h2').getBoundingClientRect(),count=e.querySelector('strong').getBoundingClientRect();return{sku:e.dataset.resource,w:r.width,h:r.height,safe:img.bottom<=label.top+1&&label.right<=count.left+1&&label.bottom<=r.bottom&&count.bottom<=r.bottom};}));assert.ok(cards.every(c=>c.safe),'No image/text/count overlap '+JSON.stringify(cards));assert.ok(Math.max(...cards.map(c=>c.w))-Math.min(...cards.map(c=>c.w))<1);assert.ok(Math.max(...cards.map(c=>c.h))-Math.min(...cards.map(c=>c.h))<1);assert.equal(await page.locator('.supply-stock-card small').count(),0);}
+ try{
+  await page.goto('http://127.0.0.1:'+server.address().port+'/caravan-ui');await page.waitForFunction(()=>LudusPreview.supplySystem.state?.recipes?.length===33);
+  for(const [width,height]of [[1366,768],[932,430],[844,390],[768,353],[667,375]]){
+   await page.setViewportSize({width,height});
+   await page.evaluate(()=>{const s=LudusPreview.supplySystem;s.close();s.enter();return s.open('stock');});await page.locator('[data-stock-category=food]').click();assert.equal(await page.locator('.supply-stock-card').count(),7);await stock();await page.screenshot({path:out+'/food-'+width+'.png'});
+   await page.locator('[data-stock-category=materials]').click();for(const group of ['raw','processed','supply']){await page.locator('.supply-stock-filter').selectOption(group);await stock();if(group==='processed'){await page.locator('.supply-pagination button').last().click();await stock();}await page.screenshot({path:out+'/'+group+'-'+width+'.png'});}
+   await page.evaluate(()=>{const s=LudusPreview.supplySystem;s.close();s.enter('forge');return s.open();});await page.locator('#supplyCraftFilter').selectOption('helmet');await page.locator('[data-recipe=helmet-winged]').click();await fit('.supply-workshop');await fit('.supply-craft-detail');await fit('.supply-ingredients');await fit('.supply-ingredients li');await fit('[data-craft]');await images();assert.equal(await page.locator('.supply-ingredients li').count(),5);assert.match(await page.locator('.supply-output').textContent(),/Çıktı: 1/);await page.screenshot({path:out+'/forge-'+width+'.png'});
+   await page.locator('#supplyCraftFilter').selectOption('gloves');await page.locator('[data-recipe=manica]').click();await images();await fit('.supply-craft-detail');assert.match(await page.locator('.supply-craft-heading h2').textContent(),/Kolluk/);
+   await page.locator('#supplyCraftFilter').selectOption('supply');await page.locator('[data-recipe=arrow]').click();assert.match(await page.locator('.supply-output').textContent(),/Çıktı: 50/);await page.locator('[data-recipe=bow]').click();assert.match(await page.locator('.supply-output').textContent(),/Çıktı: 1 Yay/);
+   await page.evaluate(()=>{const s=LudusPreview.supplySystem;s.close();s.enter();return s.open('cities');});await page.locator('#caravanCity').selectOption('1');await page.waitForSelector('[data-good]');await fit('.caravan-city-detail');await fit('.caravan-goods');await fit('.caravan-good');await fit('.caravan-purchase');assert.equal(await page.locator('[data-good]').count(),height<=400?4:5);await page.getByRole('button',{name:'Sonraki ürünler',exact:true}).click();assert.equal(await page.locator('[data-good]').count(),4);assert.equal(await page.locator('[data-good][aria-pressed=true]').count(),1);if(height<=400){await page.getByRole('button',{name:'Sonraki ürünler',exact:true}).click();assert.equal(await page.locator('[data-good]').count(),1);}await images();await page.screenshot({path:out+'/cities-'+width+'.png'});
+  }
+  if(!process.env.SKIP_ITEM_IMAGES){
+   await page.setViewportSize({width:1366,height:900});const catalog=require('../ludus-production-v119.js'),seen=new Map([...catalog.resources,...catalog.recipes].map(r=>[r.sku,r]));assert.equal(seen.size,42);
+   await page.setContent('<base href="http://127.0.0.1:'+server.address().port+'/"><style>body{margin:0;padding:20px;background:#f4eddf;font:15px Georgia;color:#591823}main{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}article{height:160px;background:#fffdf8;border:1px solid #c8b58a;border-radius:6px;text-align:center;padding:8px;box-sizing:border-box}img{width:100%;height:120px;object-fit:contain}p{margin:3px}</style><main>'+[...seen.values()].map(r=>'<article><img src="'+catalog.photo(r.sku)+'"><p>'+r.name+'</p></article>').join('')+'</main>');
+   await page.locator('img').evaluateAll(imgs=>Promise.all(imgs.map(i=>i.decode())));await page.screenshot({path:out+'/all-42-items.png',fullPage:true});
+  }
+  if(process.env.LUDUS_EQUIPMENT_VISUAL_TEST){
+   await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html');
+   await page.waitForFunction(()=>window.LudusPreview?.roster?.some(g=>g.model?.gear),{timeout:90000});
+   const gear=await page.evaluate(()=>{const g=LudusPreview.roster.find(g=>g.model?.gear);g.state.shoulders=true;g.state.shoulderModel='manica';ImportedGladiator.animate(g.state,g.model,0,0);const manica=g.model.gear.Leftmanica.group.visible&&g.model.gear.Rightmanica.group.visible;const shouldersEmpty=g.model.gear.shoulder.group.children.length===0;g.state.shoulderModel='armor_shoulder';ImportedGladiator.animate(g.state,g.model,0,0);return{manica,shouldersEmpty,switched:!g.model.gear.Leftmanica.group.visible,heights:[...['Left','Right'].map(s=>new THREE.Box3().setFromObject(g.model.gear[s+'manica'].group).getSize(new THREE.Vector3()).length())]};});
+   assert.ok(gear.manica&&gear.shouldersEmpty&&gear.switched,JSON.stringify(gear));assert.ok(gear.heights.every(h=>h>0));
+  }
+  assert.deepEqual(errors,[]);console.log('V119 browser PASS: symmetric photo cards, 7 food items, 22 production resources, 33 recipes, integer outputs, paginated city stock; 5 landscape viewports.');
+ }catch(e){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});console.error({errors});throw e;}finally{await browser.close();server.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

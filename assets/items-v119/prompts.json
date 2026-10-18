@@ -1,0 +1,54 @@
+{
+  "version": 119,
+  "generation": "built-in imagegen; existing approved images reused",
+  "assets": [
+    {
+      "sku": "caravan",
+      "prompt": "Use case: product-mockup. Asset type: one finished game inventory item icon. Style: photorealistic professional studio catalog photograph, believable tactile materials, crisp silhouette and realistic natural colors, soft studio lighting from upper left, match a premium Roman equipment inventory. Square canvas with complete subject centered and 8 percent clear padding, entire object visible, no clipping. Backdrop: true transparent alpha. No captions, text, labels, borders, UI, watermark, coins, fantasy glow, cartoon or painted look. Subject: One complete Roman covered merchant wagon unit: exactly one realistic brown horse harnessed to a small four-wheel wooden wagon with simple cream linen canopy, exactly one Roman civilian driver wearing an off-white tunic, sitting on the front driving bench and holding reins. Early Imperial Roman practical construction with spoked wooden wheels, leather harness and rope. One coherent miniature product scene, the horse, seated driver and entire wagon clearly visible in a compact three-quarter view, wheels on the same implied ground plane. No extra horse, no standing person, no scenery.",
+      "file": "assets/items-v119/caravan.webp"
+    },
+    {
+      "sku": "spear",
+      "prompt": "Use case: product-mockup. Asset type: one finished game inventory item icon. Style: photorealistic professional studio catalog photograph, believable tactile materials, crisp silhouette and realistic natural colors, soft studio lighting from upper left, match a premium Roman equipment inventory. Square canvas with complete subject centered and 8 percent clear padding, entire object visible, no clipping. Backdrop: true transparent alpha. No captions, text, labels, borders, UI, watermark, coins, fantasy glow, cartoon or painted look. Subject: One complete Roman combat spear, sturdy medium brown wooden shaft, clearly visible broad silver steel leaf-shaped spearhead and simple socket binding. The entire long spear fits diagonally from lower left to upper right and fills 85 percent of square frame, mild foreshortening makes the shaft and head legible in a 64 pixel icon. Shaft thickness visually clear, not a thin hairline. Exactly one intact spear, no extra parts.",
+      "file": "assets/items-v119/spear.webp"
+    },
+    {
+      "sku": "trident",
+      "prompt": "Use case: product-mockup. Asset type: one finished game inventory item icon. Style: photorealistic professional studio catalog photograph, believable tactile materials, crisp silhouette and realistic natural colors, soft studio lighting from upper left, match a premium Roman equipment inventory. Square canvas with complete subject centered and 8 percent clear padding, entire object visible, no clipping. Backdrop: true transparent alpha. No captions, text, labels, borders, UI, watermark, coins, fantasy glow, cartoon or painted look. Subject: One complete Roman retiarius trident, exactly three long pointed silver steel tines with strong crossbar and socket, dark brown sturdy wooden shaft and bound grip. Compact diagonal full-length product composition from lower left to upper right, mild perspective foreshortening preserves all three clearly separated tines, shaft appears substantial and readable in a 64 pixel icon. Object fills 85 percent of square frame. No net, no other weapon, no extra loose parts.",
+      "file": "assets/items-v119/trident.webp"
+    },
+    {
+      "sku": "bow",
+      "prompt": "Use case: product-mockup. Asset type: one finished game inventory item icon. Style: photorealistic professional studio catalog photograph, believable tactile materials, crisp silhouette and realistic natural colors, soft studio lighting from upper left, match a premium Roman equipment inventory. Square canvas with complete subject centered and 8 percent clear padding, entire object visible, no clipping. Backdrop: true transparent alpha. No captions, text, labels, borders, UI, watermark, coins, fantasy glow, cartoon or painted look. Subject: One complete Roman wooden archery bow, warm dark brown laminated wood limbs with gentle recurve ends, simple leather center grip, one clearly visible taut pale flax bowstring connecting its two ends. Bow tilted diagonally within square with moderate perspective so broad curved silhouette and string read at 64 pixels. Complete ends and grip fully visible, item occupies 85 percent of square. No arrow, no quiver, no extra loose parts.",
+      "file": "assets/items-v119/bow.webp"
+    },
+    {
+      "sku": "helmet-silver",
+      "prompt": "Use case: product-mockup. Asset type: one finished game inventory item icon. Style: photorealistic professional studio catalog photograph, believable tactile materials, crisp silhouette and realistic natural colors, soft studio lighting from upper left, match a premium Roman equipment inventory. Square canvas with complete subject centered and 8 percent clear padding, entire object visible, no clipping. Backdrop: true transparent alpha. No captions, text, labels, borders, UI, watermark, coins, fantasy glow, cartoon or painted look. Subject: One enclosed Roman Secutor gladiator helmet in silvery iron-grey metal: smooth rounded skull, plain low central fin crest, full face enclosure with exactly two small round eye holes, narrow functional ventilation holes low on face guard. Ancient Roman construction and rolled edges, not a medieval knight visor. Entire helmet visible in three-quarter front view, museum reconstruction quality, no head, body or mannequin. No horizontal medieval eye slit, no horns, no wings.",
+      "file": "assets/items-v119/helmet-silver.webp"
+    },
+    {
+      "sku": "helmet-winged",
+      "prompt": "Use case: product-mockup. Asset type: one finished game inventory item icon. Style: photorealistic professional studio catalog photograph, believable tactile materials, crisp silhouette and realistic natural colors, soft studio lighting from upper left, match a premium Roman equipment inventory. Square canvas with complete subject centered and 8 percent clear padding, entire object visible, no clipping. Backdrop: true transparent alpha. No captions, text, labels, borders, UI, watermark, coins, fantasy glow, cartoon or painted look. Subject: One bronze Thracian type Roman Thraex gladiator helmet with protective broad flared brim, enclosed perforated face guard, a tall central curved bronze crest ending in a small griffin-head ornament at its front. Restrained antique metalwork and tiny rivets, high-quality Roman museum reconstruction, complete helmet seen three-quarter front view. No side-mounted wings, no Viking horns, no medieval visor, no feathers, no head, body or mannequin.",
+      "file": "assets/items-v119/helmet-winged.webp"
+    },
+    {
+      "sku": "tin",
+      "file": "assets/items-v119/tin.webp",
+      "source_library_file_id": "libfile_83829d1bbae08191baf9b9c58e47fd8e",
+      "reused": true
+    },
+    {
+      "sku": "lead",
+      "file": "assets/items-v119/lead.webp",
+      "source_library_file_id": "libfile_8d4b5b8aeb288191a6dd549f2635970f",
+      "reused": true
+    },
+    {
+      "sku": "manica",
+      "file": "assets/items-v119/manica.webp",
+      "source_library_file_id": "libfile_1985ddba78588191b988dba03f36c5c6",
+      "reused": true
+    }
+  ]
+}

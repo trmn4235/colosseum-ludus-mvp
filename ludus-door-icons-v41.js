@@ -1,6 +1,6 @@
 /* Muted gray pictograms. Only a door with pending work turns gold. */
 var LudusDoorIcons=(function(){
- const textures=new Map(),caravanAsset='assets/caravan-v117/covered-wagon.webp';
+ const textures=new Map(),caravanAsset='assets/items-v119/caravan.webp';
  let caravanImage=null,caravanLoaded=false;const caravanCanvases=[];
  function paintCaravan(canvas,map){const c=canvas.getContext('2d');c.drawImage(caravanImage,8,8,112,112);map.needsUpdate=true;}
  const paths={

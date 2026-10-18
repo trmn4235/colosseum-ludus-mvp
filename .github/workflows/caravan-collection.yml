@@ -2,10 +2,10 @@ name: Caravan collection regression
 on:
   push:
     branches: [main, codex/caravan-collection-v116]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'assets/items-v118/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', '.github/workflows/caravan-collection.yml']
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', '.github/workflows/caravan-collection.yml']
   pull_request:
     branches: [main]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'assets/items-v118/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*']
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*']
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,3 +32,8 @@ jobs:
         run: node tests/production-v118.cjs
       - name: Photo cards and full production catalog on mobile
         run: node tests/production-browser-v118.cjs
+
+      - name: Complete ingots and direct final-item recipes
+        run: node tests/production-v119.cjs
+      - name: Complete catalog and mobile layouts
+        run: node tests/production-browser-v119.cjs
