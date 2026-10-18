@@ -48,6 +48,7 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  const update=migration('production_items_v119');await db.exec(update);await db.exec(update);
  assert.equal((await q("select quantity from ludus_supply_private.stock where owner_id=$1 and sku='wooden_handle'",[A]))[0].quantity,7,'retired stock retained');
  await q('update ludus_progression set experience=ludus_private.level_threshold(30)where owner_id=$1',[A]);
+ if(process.env.LUDUS_MARKET_HISTORY_TEST)await db.exec(migration('market_history_v121'));
  const initialItems=(await q('select count(*)::integer n from ludus_items where owner_id=$1',[A]))[0].n;
  const catalog=require('../ludus-production-v119.js');
  const call=async(action='state',key=null,id=randomUUID())=>(await q('select ludus_supply($1,$2,1,$3)as s',[action,key,id]))[0].s;
@@ -71,6 +72,17 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  assert.equal(s.recipes.find(r=>r.sku==='manica').model,'manica');
  assert.equal(catalog.skuForItem({kind:'gloves',model:'manica'}),'manica');
  const city=(await q('select ludus_caravan_city(1)as s'))[0].s;
+ if(process.env.LUDUS_MARKET_HISTORY_TEST){
+  assert.equal(city.interval_seconds,900);assert.equal(city.epoch,Math.floor(Date.parse(city.server_now)/900000));assert.equal(Date.parse(city.expires_at),(city.epoch+1)*900000);
+  for(const g of city.goods){assert.equal(g.history.points.length,1);assert.ok(Date.parse(g.history.points[0].at)>=Date.parse(g.history.started_at));assert.equal(g.history.points[0].price,g.unit_price);assert.equal(Date.parse(g.history.day_end)-Date.parse(g.history.day_start),86400000);}
+  await db.exec('reset role');await q("update ludus_supply_private.market_clock_v121 set started_at=clock_timestamp()-interval'48 hours'");await db.exec('set role authenticated');
+  const day=(await q('select ludus_caravan_city(1)as s'))[0].s;for(const g of day.goods){assert.equal(g.history.points.length,96);for(let i=1;i<96;i++)assert.equal(Date.parse(g.history.points[i].at)-Date.parse(g.history.points[i-1].at),900000);assert.equal(g.history.points.at(-1).price,g.unit_price);assert.ok(g.history.points.every(p=>Date.parse(p.at)<=Date.parse(day.server_now)));}
+  fs.writeFileSync('/tmp/market-history-v121.json',JSON.stringify(day));
+  await assert.rejects(()=>q('select * from ludus_supply_private.market_clock_v121'),/permission denied/);
+  const h=day.goods.find(g=>g.sku==='iron_ore');await assert.rejects(()=>call('buy',[1,h.sku,day.epoch-1,1].join(':')),/süresi doldu/);
+  await db.exec('reset role');const epoch=BigInt(day.epoch),def=(await q("select pg_get_functiondef('ludus_supply_private.api(text,text,integer,uuid)'::regprocedure) s"))[0].s;assert.ok(def.includes('/900'));assert.ok(!def.includes('/60)'));
+  const prices=await q('select ludus_supply_private.market_price_v121(1,1,1.5,$1::bigint) p,ludus_supply_private.market_price_v121(1,1,1.5,$1::bigint) p2',[String(epoch)]);assert.equal(prices[0].p,prices[0].p2);const boundaries=await q("select ludus_supply_private.market_price_v121(1,1,1.5,floor(extract(epoch from t)/900)::bigint) p from(values(timestamptz'2026-10-18 00:00:00Z'),(timestamptz'2026-10-18 00:14:59Z'),(timestamptz'2026-10-18 00:15:00Z')) v(t)");assert.equal(boundaries[0].p,boundaries[1].p);assert.notEqual(boundaries[1].p,boundaries[2].p);await db.exec('set role authenticated');
+ }
  assert.deepEqual(new Set(city.goods.map(g=>g.sku)),new Set(catalog.raw.map(r=>r[0])));
  await assert.rejects(()=>call('buy',[1,'iron',city.epoch,1].join(':')),/bulunamadı/);
  await assert.rejects(()=>q('select * from ludus_supply_private.production_recipes_v118'),/permission denied/);
