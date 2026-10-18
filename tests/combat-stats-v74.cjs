@@ -10,7 +10,7 @@ async function main(){
    const glad={...g,base_stats:{...core,reflex}},gear=[item(c,'legs',{emeralds:[{id:15,value:100}]})],{sim,a}=fixture(c);
    c.LudusLoadout.apply(a,glad,gear);assert.equal(sim.attack(0),true);assert.ok(a.duration<previous,'every reflex point must shorten attacks');previous=a.duration;
    const s=(await db.query('select private.ludus_combat_stats_v73($1::jsonb,$2::jsonb) s',[JSON.stringify(glad),JSON.stringify(gear)])).rows[0].s;
-   near(a.duration,.72/s.attack_speed);samples++;
+   near(a.duration,.75/s.attack_speed);samples++;
   }
  }
  const c=runtime(),rules=c.LudusItemSystem,gear=['weapon','shield','helmet','chest','gloves','legs'].map((kind,i)=>item(c,kind,{id:String(i),equipped_by:'gladiator',emeralds:[{id:2,value:100},{id:3,value:100},{id:4,value:100},{id:9,value:100}]}));

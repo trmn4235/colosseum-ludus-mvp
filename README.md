@@ -185,3 +185,14 @@ Kütük gövdelerinin kesiti %25 daraltıldı: 72 × 72 → 54 × 54 santimetre.
 Dinlenme odasında toplam gladyatör sayısı kadar kahverengi, yuvarlatılmış yer yatağı ve yastık bulunur. Sağ ve sol sıralar orta koridora bakar; yatak kenarları arasında 50 santimetre vardır. Tek sayılı kadrolarda her sıra kendi içinde oda merkezine göre dengelenir. Odanın derinliği, zemini, duvarları ve kamera/yürüme sınırı yatak sayısına göre uzar. Orta hatta simetrik üç sıcak ışıklı meşale bulunur; ilave gölge haritası açılmaz. Yatak geometrisi, kumaşı ve ışık kaynakları tekrar kullanılır. Dinlenen gladyatörler kadrodaki sabit yataklarında, kolları gövdelerinin yanında yatar; faaliyet değişiminde ve oda çıkışında normal donanım ve sahne konumu geri yüklenir.
 
 Gerçek sahne testi 0–30 kişilik yatak yerleşimlerini, 50 santimetre boşluğu, üç meşaleyi, açık giriş/koridoru, antrenmandan dinlenmeye geçişi, 30 dinlenen gladyatörün pozunu, tekrar girişte nesne çoğalmamasını, donanımın geri yüklenmesini ve avlu antrenman sınırlarını doğrular.
+
+
+### V114 — Arena vuruş temposu ve temas tepkileri
+
+Gladius için temel saldırı 0,25 sn hazırlık, 0,20 sn temas ve 0,45 sn gardına dönüşten oluşur. Refleks ve Celeritas tek kez uygulanır; ortak hız çarpanı en fazla ×1,18 olur. Diğer silahların ayrı süreleri korunur. Boşa giden hafif saldırıya 0,14 sn, ağır saldırıya 0,22 sn toparlanma eklenir. Erken tekrar basış animasyonu başlatmaz; son 0,28 sn içinde yalnızca bir sonraki saldırı sıraya alınabilir.
+
+Gladius'un üçüncü hafif saldırısı saplamadır. Kalkan ve beden darbenin geldiği yöne tepki verir; kalkanın görünen esnemesi ile yerel temas yüzeyi aynı dönüşümü kullanır. Ön ayak kısa bir adım atarken arka ayak sabit kalır. Mızrak ve trident çok yakın mesafede tam uç hasarı vermez; botlar etkili mesafeyi korur. Mevcut karakter, donanım ve animasyon varlıkları kullanılır.
+
+Multiplayer süreleri sunucudan okunmaya devam eder. `arena_combat_realism_v114` migration'ı ortak hız hesabını, silah sürelerini, menzili ve kaçırma sonrası toparlanmayı günceller. Savaş değerleri raporu aynı hız hesabını kullanır.
+
+Doğrulama: 95 savaş/davranış kontrolü, gerçek GLB üzerinde 15 hareket senaryosu, 18 sunucu süre eşleşmesi, istatistik/hasar raporu eşleşmeleri ve izole hesap verileriyle mobil tarayıcı testi. `tests/arena-realism-*` ve `.github/workflows/arena-realism.yml` tekrar çalıştırılabilir kontrolleri içerir. Tarayıcıdaki yazılımsal çizim testi iPhone FPS ölçümü değildir.

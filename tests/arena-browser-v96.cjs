@@ -1,6 +1,6 @@
 /* Real pages/assets with isolated account fixtures; never creates a production battle. */
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
-const {chromium,webkit}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright'),exercise=require('../gladiator-exercise-v46.js');
+const {chromium,webkit}=require(process.env.PLAYWRIGHT_MODULE||(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES?process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright':'playwright')),exercise=require('../gladiator-exercise-v46.js');
 const root=path.resolve(process.env.LUDUS_TEST_ROOT||path.join(__dirname,'..')),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/arena-v96',owner='00000000-0000-4000-8000-000000000001',battle='00000000-0000-4000-8000-000000000078';
 const fighters=Object.keys(exercise.profiles).map((type,i)=>({id:'g'+i,name:i?'Gladyatör '+i:'Cassius',class:type,owner_id:owner,overall:50,level:1,status:'available',session:null,stat_version:46,base_stats:exercise.profile(type),fatigue_value:0,exercise_units:0}));
 const receipt={gold:100,diamonds:1,stone:{name:'Safir II'},kind:'legs',ludus_exp:100,extracted:Array.from({length:6},()=>({}))};
@@ -25,7 +25,7 @@ async function main(){
   res.writeHead(200,{'content-type':mime[path.extname(filename)]||'application/octet-stream','cache-control':'no-store'}).end(body);
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
- const browser=process.env.LUDUS_TEST_ENGINE==='webkit'?await webkit.launch({headless:true}):await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/tmp/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader']});
+ const browser=process.env.LUDUS_TEST_ENGINE==='webkit'?await webkit.launch({headless:true}):await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH}:{}),args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--in-process-gpu','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
  cleanup=async()=>{await browser.close();await new Promise(r=>server.close(r));};
  const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,deviceScaleFactor:2});await context.route('https://**',r=>r.abort());
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -53,6 +53,7 @@ async function main(){
  await page.screenshot({path:out+'/arena-844.png'});
  for(const [w,h]of [[667,375],[932,430],[1024,768]]){await page.setViewportSize({width:w,height:h});await page.evaluate(()=>__arena.step(1/60));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/arena-'+w+'.png'});}
  await page.setViewportSize({width:844,height:390});
+ if(process.env.LUDUS_REALISM_TEST==='1')await require('./arena-realism-visual-v114.cjs')(page,out);
  if(current){
   const stopped=await page.evaluate(()=>{__arena.step(1/60,false);const before=__drawCount(),time=__arena.combat.time;for(let i=0;i<60;i++)__arena.step(1/60,false);return {draws:__drawCount()-before,seconds:__arena.combat.time-time};});
   assert.equal(stopped.draws,0);assert.equal(stopped.seconds,0);

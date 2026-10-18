@@ -66,7 +66,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum&amp;Magnus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision95"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision95"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum&amp;Magnus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision95"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision114"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -283,7 +283,21 @@ var ArenaMotion=(function(){
  const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
  const regions={head:{name:'BAŞ',y:1.9,r:.25},chest:{name:'GÖVDE',y:1.38,r:.36},leftArm:{name:'SOL KOL',y:1.35,r:.24},rightArm:{name:'SAĞ KOL',y:1.35,r:.24},rightLeg:{name:'SAĞ BACAK',y:.65,r:.23},leftLeg:{name:'SOL BACAK',y:.65,r:.23},legs:{name:'BACAK',y:.65,r:.33}};
  const smooth=t=>{t=clamp(t);return t*t*(3-2*t);},mix=(a,b,t)=>a+(b-a)*t;
- function profile(kind,heavy=false,bot=false){const pole=kind==='spear'||kind==='trident',timings={gladius:[.26,.22,.32],sica:[.22,.2,.28],spear:[.3,.22,.34],trident:[.34,.23,.37],mace:[.4,.26,.43],whip:[.32,.24,.36]},v=timings[kind]||[.24,.2,.28],wind=v[0]*(heavy?1.35:bot?1.15:1),active=v[1],recover=v[2]*(heavy?1.2:1);return {wind,active,recover,duration:wind+active+recover,pole,length:pole?1.7:kind==='mace'?1.02:kind==='whip'?1.65:kind?.78:.18};}
+ // V114: preserve a readable preparation and a deliberate return to guard.
+ function profile(kind,heavy=false,bot=false){const pole=kind==='spear'||kind==='trident',timings={gladius:[.25,.20,.45],sica:[.23,.19,.40],spear:[.32,.22,.48],trident:[.36,.24,.52],mace:[.40,.26,.56],whip:[.32,.24,.48]},v=timings[kind]||[.22,.18,.35],wind=v[0]*(heavy?1.35:bot?1.15:1),active=v[1],recover=v[2]*(heavy?1.2:1);return {wind,active,recover,duration:wind+active+recover,pole,length:pole?1.7:kind==='mace'?1.02:kind==='whip'?1.65:kind?.78:.18};}
+ function speedFactor(f){return Math.min(1.18,(.9+.002*clamp(Number(f.agility??50),0,100))*(1+clamp(Number(f.itemStats?.attack_speed||0)/100,0,.25)));}
+ function pace(f){const p={...f.attackProfile},factor=speedFactor(f);for(const key of ['wind','active','recover'])p[key]/=factor;p.duration=p.wind+p.active+p.recover;return p;}
+ function impactQuality(f,v){return ['spear','trident'].includes(f.attackWeapon??f.weapon)?clamp((Math.hypot(f.x-v.x,f.z-v.z)-.75)/1.05,.28,1):1;}
+ function shieldResponse(f){const w=Math.sin(Math.PI*clamp((f.guardFlash||0)/.20))*(f.guardImpact||.65),x=f.guardImpactX||0,y=f.guardImpactY||0;return {x:x*.025*w,y:y*.018*w,z:-.105*w,pitch:-y*.12*w,yaw:x*.17*w,roll:-x*.04*w};}
+ function reaction(f){
+  const poses={};if(!(f.reaction>0)||f.hp<=0||['knocked','stunned'].includes(f.action))return {poses,drop:0};
+  const u=clamp(1-f.reaction/.32),envelope=u<.16?smooth(u/.16):Math.pow(1-(u-.16)/.84,2),force=(f.impactStrength??.65)/.65,w=envelope*force,side=Math.sin(f.impactDirection||0),front=Math.cos(f.impactDirection||0);let drop=0;
+  if(f.lastRegion==='head'){poses.Head=[-.21*front*w,-.07*side*w,.13*side*w];poses.Spine2=[-.06*front*w,.04*side*w,.04*side*w];}
+  else if(f.lastRegion==='chest'){poses.Spine2=[-.22*front*w,.08*side*w,.14*side*w];poses.Spine=[-.035*front*w,0,.035*side*w];}
+  else if(['leftArm','rightArm'].includes(f.lastRegion)){const arm=f.lastRegion==='leftArm'?'Left':'Right',sign=arm==='Left'?-1:1;poses[arm+'Arm']=[.04*w,.04*side*w,sign*.12*w];poses.Spine2=[-.06*front*w,.06*side*w,.06*side*w];}
+  else{const leg=f.lastRegion==='rightLeg'?'Right':'Left';poses[leg+'Leg']=[.13*w,0,0];poses.Spine2=[.035*w,.035*side*w,.04*side*w];drop=-.018*w;}
+  return {poses,drop};
+ }
  // Local curves are shared by the visible chain/whip and swept collision tests.
  function flexible(kind,phase=.5,effort=0){const pts=[];
   if(kind==='mace'){const angle=.28+effort*Math.sin((phase-.55)*Math.PI)*1.05;for(let i=0;i<=7;i++){const u=i/7;pts.push({x:Math.sin(angle)*.55*u,y:.43+Math.cos(angle)*.55*u,z:0});}}
@@ -322,18 +336,23 @@ var ArenaMotion=(function(){
 
   // V24: the shoulder carries the hand through a broad cut; the wrist follows it.
   if(!p.pole&&['gladius','sica'].includes(kind)){
-    const reverse=f.chain===2,overhead=f.chain===3||f.attackKind==='heavy',hand=f.attackLeft?-1:1;
+    const thrust=kind==='gladius'&&f.chain===3&&f.attackKind!=='heavy',reverse=f.chain===2,overhead=!thrust&&(f.chain===3||f.attackKind==='heavy'),hand=f.attackLeft?-1:1;
     const resting={x:-.24,y:1.32,z:.29,yaw:-.25,pitch:.12};
     const chamber=overhead?{x:-.22,y:1.99,z:.02,yaw:-.10,pitch:1.35}:reverse?{x:.30,y:1.61,z:.07,yaw:.98,pitch:.32}:{x:-.57,y:1.68,z:-.09,yaw:-1.12,pitch:.55};
-    const contactPose={x:-.12,y:height+(overhead?.05:0),z:.51,yaw:0,pitch:Math.asin(clamp((region.y-height)/p.length,-.8,.8))};
+    const contactPose={x:-.12,y:height+(overhead?.05:0),z:.43,yaw:0,pitch:Math.asin(clamp((region.y-height)/p.length,-.8,.8))};
     const finish=overhead?{x:-.17,y:1.09,z:.47,yaw:.08,pitch:-.70}:reverse?{x:-.52,y:1.31,z:.09,yaw:-1.12,pitch:-.25}:{x:.30,y:1.22,z:.13,yaw:1.12,pitch:-.42};
     const lerpPose=(a,b,u)=>Object.fromEntries(Object.keys(a).map(k=>[k,mix(a[k],b[k],u)]));
     const cutEase=u=>u*u*(2-u);let pose;
     if(ready)pose=lerpPose(resting,chamber,smooth(wind));
     else if(returning)pose=lerpPose(finish,resting,smooth(recovery));
     else pose=phase<.48?lerpPose(chamber,contactPose,cutEase(phase/.48)):lerpPose(contactPose,finish,1-cutEase(1-(phase-.48)/.52));
+    if(thrust){
+     const chamber={x:-.30,y:height-.04,z:.035,yaw:0,pitch:.08},tip={x:-.15,y:height,z:.60,yaw:0,pitch:0};
+     pose=ready?lerpPose(resting,chamber,smooth(wind)):returning?lerpPose(tip,resting,smooth(recovery)):lerpPose(chamber,tip,smooth(phase/.85));
+    }
     grip={x:pose.x*hand,y:pose.y,z:pose.z};
     dir={x:Math.sin(pose.yaw)*Math.cos(pose.pitch)*hand,y:Math.sin(pose.pitch),z:Math.cos(pose.yaw)*Math.cos(pose.pitch)};
+    if(thrust){const aim=ready?smooth(wind):returning?1-smooth(recovery):1,dx=mix(dir.x,-grip.x/p.length,aim),dy=mix(dir.y,(region.y-grip.y)/p.length,aim);dir={x:dx,y:dy,z:Math.sqrt(Math.max(.01,1-dx*dx-dy*dy))};}
   }
    const local=flexible(kind,phase,weight),points=(local.length?local:[{x:0,y:0,z:0},{x:0,y:p.length,z:0}]).map(v=>{const r=orient(v,dir);return{x:grip.x+r.x,y:grip.y+r.y,z:grip.z+r.z};});
   return {grip,tip:points[points.length-1],points,local,dir,phase,wind,recovery,weight,pole:p.pole,left:!!f.attackLeft,cut:cut*swing,active:!ready&&!returning};
@@ -341,7 +360,7 @@ var ArenaMotion=(function(){
  function poleGuard(f,left=false){const kind=left?f.offhand:f.weapon;if(!['spear','trident'].includes(kind))return null;return sample({...f,action:'idle',attackWeapon:kind,attackProfile:profile(kind),attackRegion:'chest',attackLeft:left},0);}
  function body(f){const poses={},attack=f.action==='attack';let drop=0,lean=0,shift=0,step=null;
   if(attack){
-   const s=sample(f),p=f.attackProfile||profile(f.attackWeapon||f.weapon),side=f.attackLeft?-1:1,reverse=f.chain===2,overhead=f.chain===3||f.attackKind==='heavy';
+   const s=sample(f),p=f.attackProfile||profile(f.attackWeapon||f.weapon),side=f.attackLeft?-1:1,reverse=f.chain===2,overhead=(f.chain===3&&(f.attackWeapon||f.weapon)!=='gladius')||f.attackKind==='heavy';
    const returning=s.recovery>0,w=returning?1-smooth(s.recovery):smooth(s.wind),sweep=smooth(s.phase),direction=side*(reverse?-1:1);
    const turn=(p.pole?mix(-.24,.30,sweep):overhead?mix(-.18,.22,sweep):mix(-.64,.66,sweep))*direction*w;
    poses.Hips=[0,turn*.48,-direction*.025*w];poses.Spine=[.035*w,turn*.30,0];poses.Spine1=[.045*w,turn*.20,0];poses.Spine2=[(overhead?mix(-.13,.19,sweep):.075)*w,turn*.33,-direction*.07*w];poses.Head=[-.035*w,-turn*.50,0];
@@ -358,6 +377,7 @@ var ArenaMotion=(function(){
     const advance=clamp(s.wind/.72),withdraw=clamp((s.recovery-.38)/.62);
     step={side:front,forward:.23*smooth(advance)*(1-smooth(withdraw)),lift:s.wind<.72?Math.sin(Math.PI*advance)*.055:withdraw>0?Math.sin(Math.PI*withdraw)*.045:0};
    }
+   if(!p.pole){const advance=clamp(s.wind/.85),withdraw=clamp((s.recovery-.40)/.60);step={side:f.attackLeft?'Right':'Left',forward:(f.attackKind==='heavy'?.18:.14)*smooth(advance)*(1-smooth(withdraw)),lift:s.wind<.85?Math.sin(Math.PI*advance)*.04:withdraw>0?Math.sin(Math.PI*withdraw)*.035:0};}
    if(['legs','leftLeg','rightLeg'].includes(f.attackRegion)){drop-=.14*w;poses.LeftLeg[0]+=.25*w;poses.RightLeg[0]+=.25*w;}
   }else if(['recoil','stagger'].includes(f.action)){
    const u=clamp(f.timer/Math.max(.01,f.duration)),w=1-smooth(u),side=f.attackLeft?-1:1;
@@ -378,7 +398,7 @@ var ArenaMotion=(function(){
  }
  function world(f,v){const c=Math.cos(f.angle),s=Math.sin(f.angle);return{x:f.x+v.x*c+v.z*s,y:v.y+(f.navHeight||0),z:f.z-v.x*s+v.z*c};}
  function target(f,region){const r=regions[region]||regions.chest,side=region==='leftArm'?-.3:region==='rightArm'?.3:region==='leftLeg'?-.17:region==='rightLeg'?.17:0;return {...world(f,{x:side,y:r.y,z:0}),r:r.r};}
- function guardPoint(f){const region=f.guardRegion;return {x:region==='rightArm'?.3:region==='leftArm'?-.3:region==='rightLeg'?.17:region==='leftLeg'?-.17:.26,y:regions[region]?.y||1.42,z:.29};}
+ function guardPoint(f){const region=f.guardRegion,r=shieldResponse(f);return {x:(region==='rightArm'?.3:region==='leftArm'?-.3:region==='rightLeg'?.17:region==='leftLeg'?-.17:.26)+r.x,y:(regions[region]?.y||1.42)+r.y,z:.29+r.z};}
  function segmentDistance(a,b,p){const x=b.x-a.x,y=b.y-a.y,z=b.z-a.z,d=x*x+y*y+z*z,t=d?clamp(((p.x-a.x)*x+(p.y-a.y)*y+(p.z-a.z)*z)/d):0;return Math.hypot(p.x-a.x-x*t,p.y-a.y-y*t,p.z-a.z-z*t);}
  function contact(f,v,from,to){const p=target(v,f.attackRegion),a=sample(f,from),b=sample(f,to);if(f.attackWeapon==='mace')return segmentDistance(world(f,a.tip),world(f,b.tip),p)<p.r+.14;
   for(let i=1;i<b.points.length;i++){if(Math.min(segmentDistance(world(f,a.points[i-1]),world(f,a.points[i]),p),segmentDistance(world(f,b.points[i-1]),world(f,b.points[i]),p),segmentDistance(world(f,a.points[i]),world(f,b.points[i]),p))<p.r+.07)return true;}return false;}
@@ -388,14 +408,15 @@ var ArenaMotion=(function(){
    const c=Math.cos(v.angle),s=Math.sin(v.angle),halfWidth=['thraex','hoplomachus'].includes(v.shieldStyle)?.34:.40;
    const halfHeight=['thraex','hoplomachus'].includes(v.shieldStyle)?.39:.56;
    const guard=guardPoint(v);
-   const local=p=>({x:(p.x-v.x)*c-(p.z-v.z)*s-guard.x,y:p.y-guard.y,z:(p.x-v.x)*s+(p.z-v.z)*c-guard.z});
+   const rotation=shieldResponse(v),cp=Math.cos(rotation.pitch),sp=Math.sin(rotation.pitch),cy=Math.cos(rotation.yaw),sy=Math.sin(rotation.yaw),cr=Math.cos(rotation.roll),sr=Math.sin(rotation.roll);
+   const local=p=>{const x=(p.x-v.x)*c-(p.z-v.z)*s-guard.x,y=p.y-(v.navHeight||0)-guard.y,z=(p.x-v.x)*s+(p.z-v.z)*c-guard.z,yy=y*cp+z*sp,zz=-y*sp+z*cp,xx=x*cy-zz*sy;return{x:xx*cr+yy*sr,y:-xx*sr+yy*cr,z:x*sy+zz*cy};};
    function cross(a,b){const aa=local(a),bb=local(b),dz=bb.z-aa.z;if(Math.abs(dz)<1e-7)return null;const u=-aa.z/dz;if(u<0||u>1)return null;
     const x=mix(aa.x,bb.x,u),y=mix(aa.y,bb.y,u);return Math.abs(x)<=halfWidth+.08&&Math.abs(y)<=halfHeight+.08?{x:mix(a.x,b.x,u),y:mix(a.y,b.y,u),z:mix(a.z,b.z,u)}:null;}
    const a=sample(f,from),b=sample(f,to);
    for(let i=1;i<b.points.length;i++){const aa=world(f,a.points[i-1]),ab=world(f,a.points[i]),ba=world(f,b.points[i-1]),bb=world(f,b.points[i]);const p=cross(aa,ab)||cross(ba,bb)||cross(aa,ba)||cross(ab,bb);if(p)return p;}
    return null;
   }
-  return {regions,profile,sample,poleGuard,world,target,contact,shieldContact,guardPoint,segmentDistance,flexible,body,smooth};
+  return {version:114,regions,profile,speedFactor,pace,impactQuality,shieldResponse,reaction,sample,poleGuard,world,target,contact,shieldContact,guardPoint,segmentDistance,flexible,body,smooth};
 })();
 if(typeof module!=='undefined')module.exports=ArenaMotion;
 
@@ -477,7 +498,7 @@ class ArenaCombat {
   if(region==='leftArm'){for(const item of ['shield','offhand','leftGear'])this.wearEquipment(victim,item,base*(heavy?1.65:.5));}
   if(attacker.id===0){this.stats.hits++;this.stats.damage+=Math.min(victim.hp,damage);this.combo=this.time<this.comboUntil?this.combo+1:1;this.comboUntil=this.time+2.6;}
   if(victim.id===0)this.stats.damageTaken+=Math.min(victim.hp,damage);
-  victim.hp=Math.max(0,victim.hp-damage);victim.flash=.2;victim.regenDelay=.8;victim.blocking=false;
+  victim.impactDirection=delta(Math.atan2(attacker.x-victim.x,attacker.z-victim.z),victim.angle);victim.impactStrength=(heavy?1:.65)*(attacker._impactQuality??1);victim.hp=Math.max(0,victim.hp-damage);victim.flash=.2;victim.regenDelay=.8;victim.blocking=false;
   const aim=Math.atan2(victim.x-attacker.x,victim.z-attacker.z);victim.x+=Math.sin(aim)*(heavy?.22:.1);victim.z+=Math.cos(aim)*(heavy?.22:.1);this.bound(victim);
   if(victim.hp===0){
    if(attacker.id===0)this.stats.kills++;
@@ -506,7 +527,8 @@ class ArenaCombat {
   const perfect=attacker.action==='attack'&&!victim._automaticGuard&&victim.id===0&&this.time-victim.guardPressedAt<=.20&&victim.guardPressedAt>=0;
   const cost=perfect?6:heavy?34:20;if(victim.stamina<cost){victim.stamina=0;victim.blocking=false;victim.guardPressedAt=-99;this.wearEquipment(victim,'shield',25);this.emit('break',{id:victim.id,source:attacker.id});return false;}
   victim.stamina-=cost;victim.regenDelay=.9;victim.guardFlash=.20;victim.guardImpact=heavy?1:.65;if(victim.id===0)this.stats.blocks++;
-  this.deflectAttack(attacker,victim,perfect);
+  const gp=Motion.guardPoint(victim),c=Math.cos(victim.angle),s=Math.sin(victim.angle);victim.guardImpactX=point?clamp(((point.x-victim.x)*c-(point.z-victim.z)*s-gp.x)/.4,-1,1):0;victim.guardImpactY=point?clamp((point.y-(victim.navHeight||0)-gp.y)/.56,-1,1):0;
+  attacker.strikeConnected=true;this.deflectAttack(attacker,victim,perfect);
   if(perfect){victim.guardPressedAt=-99;this.stats.parries++;this.wearEquipment(attacker,attacker.attackLeft?'offhand':'weapon',heavy?26:15);this.emit('parry',{id:victim.id,source:attacker.id,point,perfect:true});}
   else{this.wearEquipment(victim,'shield',heavy?29:10);this.emit('block',{id:victim.id,source:attacker.id,point,heavy});}return true;
  }
@@ -521,7 +543,9 @@ class ArenaCombat {
   if(blocked)return true;
   const base=(attacker.id===0?20:this.difficulty==='easy'?11:15.5)*(attacker.attackKind==='heavy'?1.65:1)*(kind?1:.35)*(attacker.body[attacker.attackLeft?'leftArm':'rightArm']<30?.8:1);
   const counter=attacker.attackCounterTarget===victim.id,before=victim.hp;
-  const hit=this.damage(attacker,victim,base*(counter?1.20:1),attacker.attackRegion,attacker.attackKind==='heavy',point);
+  const quality=Motion.impactQuality(attacker,victim);let hit;
+  attacker._impactQuality=quality;try{hit=this.damage(attacker,victim,base*(counter?1.20:1)*quality,attacker.attackRegion,attacker.attackKind==='heavy',point);}finally{delete attacker._impactQuality;}
+  if(victim.hp<before)attacker.strikeConnected=true;
   if(counter&&victim.hp<before){if(attacker.id===0)this.stats.counters=(this.stats.counters||0)+1;this.emit('counter',{id:attacker.id,target:victim.id});}return hit;
  }
  attack(id,heavy=false,region='chest'){
@@ -533,7 +557,7 @@ class ArenaCombat {
   f.attackRegion=Motion.regions[region]?region:'chest';f.attackProfile=Motion.profile(f.attackWeapon,heavy,id!==0);
   f.attackCounterTarget=counter?counterTarget.id:null;f.recoilSample=null;
   if(counter){f.attackProfile.wind*=.55;f.attackProfile.recover*=.85;f.attackProfile.duration=f.attackProfile.wind+f.attackProfile.active+f.attackProfile.recover;f.counterUntil=0;f.counterTarget=null;}
-  f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;f.hitDone=false;f.hitVictims=new Set();f.lunging=false;
+  f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;f.hitDone=false;f.hitVictims=new Set();f.strikeConnected=false;f.attackSettled=false;f.lunging=false;
   f.stamina-=cost;f.regenDelay=.9;f.blocking=false;f.action='attack';f.attackKind=heavy?'heavy':'light';f.timer=0;
   const locked=id===0?this.fighters[this.lockedTarget]:null,target=counter?counterTarget:this.enemy(f,locked)&&distance(f,locked)<3.5?locked:this.nearest(f,3.5);if(target)f.angle=Math.atan2(target.x-f.x,target.z-f.z);
   this.emit('swing',{id,heavy,kind:f.attackWeapon});return true;
@@ -641,11 +665,15 @@ class ArenaCombat {
   const weapon=f.weapon||f.offhand,range=Weapons[weapon]?.range||1.2;
   // Collision ranges are broad-phase limits; close to the actual blade arc before striking.
   const spacing=['spear','trident'].includes(weapon)?1.9:weapon==='whip'?1.3:weapon==='mace'?1.15:weapon?1.1:.85;
-  if(f.stamina<20+16*this.botTactics(f)&&d<3.3){
+  if(['spear','trident'].includes(weapon)&&d<1.45&&f.stamina>=20){
+   f.x-=Math.sin(a)*1.2*dt;f.z-=Math.cos(a)*1.2*dt;f.move=.32;
+  }else if(f.stamina<20+16*this.botTactics(f)&&d<3.3){
    const side=f.id%2?1:-1;f.x+=(-Math.sin(a)*1.7+Math.cos(a)*side*.5)*dt;f.z+=(-Math.cos(a)*1.7-Math.sin(a)*side*.5)*dt;f.move=.5;
   }else if(d>spacing){
    const speed=(easy?1.9:2.45)*(f.body.legs<30?.75:1)*(f.speedBonus||1);
    f.x+=Math.sin(a)*speed*dt;f.z+=Math.cos(a)*speed*dt;f.move=.75;
+  }else if(f.cooldown>0&&d<spacing+.15){
+   const side=f.id%2?1:-1;f.x+=Math.cos(a)*side*.32*dt;f.z-=Math.sin(a)*side*.32*dt;f.move=.12;
   }else if(!f.blocking&&f.cooldown===0&&f.stamina>=19){
    const heavy=f.stamina>40+16*this.botTactics(f)&&target.action!=='attack'&&this.random()<(easy?.12:.20);
    this.attack(f.id,heavy,this.botAttackRegion(f,target));
@@ -665,7 +693,9 @@ class ArenaCombat {
    if(f.hp<=0){f.deadTime+=dt;continue;}if(f.stunUntil>this.time){f.action='stunned';f.blocking=false;continue;}if(f.action==='stunned'){f.action='idle';f.timer=0;}
    if(f.action!=='idle'){const before=f.timer;f.timer+=dt;
     if(f.action==='attack'){const p=f.attackProfile;if(f.lunging&&f.timer<p.wind){f.x+=Math.sin(f.angle)*dt*2;f.z+=Math.cos(f.angle)*dt*2;}
-     if(f.timer>=p.wind&&before<=p.wind+p.active){const from=Math.max(before,p.wind),to=Math.min(f.timer,p.wind+p.active);for(const v of this.fighters){if(f.action!=='attack')break;if(this.enemy(f,v)&&!f.hitVictims.has(v.id)){const shield=Motion.shieldContact(f,v,from,to);if(shield||Motion.contact(f,v,from,to)){if(this.hit(f,v,true,shield))f.hitVictims.add(v.id);if(p.pole)break;}}}}f.hitDone=f.timer>p.wind+p.active;
+     if(f.timer>=p.wind&&before<=p.wind+p.active){const from=Math.max(before,p.wind),to=Math.min(f.timer,p.wind+p.active);for(const v of this.fighters){if(f.action!=='attack')break;if(this.enemy(f,v)&&!f.hitVictims.has(v.id)){const shield=Motion.shieldContact(f,v,from,to);if(shield||Motion.contact(f,v,from,to)){if(this.hit(f,v,true,shield))f.hitVictims.add(v.id);if(p.pole)break;}}}}
+     if(f.action==='attack'&&!f.attackSettled&&f.timer>p.wind+p.active){f.attackSettled=true;if(!f.strikeConnected){const extra=f.attackKind==='heavy'?.22:.14;f.attackProfile={...p,recover:p.recover+extra,duration:p.duration+extra};f.duration=f.attackProfile.duration;}}
+     f.hitDone=f.timer>p.wind+p.active;
     }
     if(f.action==='bash'&&!f.specialDone&&f.timer>=.25){f.specialDone=true;const t=this.fighters[f.specialTarget];if(this.enemy(f,t)&&this.canBlock(f)&&distance(f,t)<=2.3&&t.action!=='dodge'){const a=Math.atan2(t.x-f.x,t.z-f.z),origin={x:t.x,z:t.z};t.x+=Math.sin(a)*.85;t.z+=Math.cos(a)*.85;this.bound(t);this.knock(t,1.5);t.knockOrigin=origin;t.knockAngle=a+Math.PI;t.reaction=.3;t.lastRegion='chest';this.emit('bashhit',{id:t.id,source:f.id,point:Motion.target(t,'chest')});}}
     if(f.action==='dodge'){const speed=f.body.legs<30?6:8;f.x+=f.dx*speed*dt;f.z+=f.dz*speed*dt;}
@@ -689,8 +719,9 @@ if(typeof module!=='undefined'){require('./equipment-skills.js')(ArenaCombat,Cla
 'use strict';
 const install=(Combat,Classes)=>{
  const p=Combat.prototype,reset=p.reset,tick=p.tick,attack=p.attack,net=p.throwNet;
+ const Motion=typeof module!=='undefined'?require('./combat-motion.js'):root.ArenaMotion;
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
- p.attack=function(...args){const ok=attack.apply(this,args);if(ok){const f=this.fighters[args[0]],factor=(.7+.006*Math.max(0,Math.min(100,f.agility??50)));f.attackProfile={...f.attackProfile};for(const k of ['duration','wind','active','recover'])f.attackProfile[k]/=factor;f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;}return ok;};
+ p.attack=function(...args){const ok=attack.apply(this,args);if(ok){const f=this.fighters[args[0]];f.attackProfile=Motion.pace(f);f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;}return ok;};
  p.reset=function(...args){const r=reset.apply(this,args);for(const f of this.fighters){const s=Classes[f.type].stats;f.skillReady=[0,0];f.overall=50;f.maxHp=f.hp=s.health*2;f.maxStamina=f.stamina=s.stamina*2;f.attackBonus=s.strength/50;f.defenseBonus=s.defense/50;f.speedBonus=s.speed/50;f.agility=s.agility;f.spareSword=false;}return r;};
  p.specialKind=function(f,index){const left=index===undefined?f.pickupHand==='offhand':index===1,w=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'disarm';if(f.shield)return 'bash';}if(['spear','trident','gladius','sica'].includes(w))return 'throw';if(w==='whip')return 'pull';return null;};
  p.skillNames=function(f){return [0,1].map(i=>({net:'AĞ AT',disarm:'SİLAH DÜŞÜR',bash:'KALKAN VUR',throw:'FIRLAT',pull:'ÇEK'}[this.specialKind(f,i)]||'ÖZEL YOK'));};
@@ -1186,6 +1217,7 @@ var ImportedGladiator=(function(){
     const shoulder=upper.getWorldPosition(v[0]),knee=lower.getWorldPosition(v[1]),ankle=foot.getWorldPosition(v[2]);
     const a=shoulder.distanceTo(knee),b=knee.distanceTo(ankle),local=v[3].copy(rest.position);
     const landing=ArenaMotion.smooth((m.plantElapsed||0)/.10);local.y=Math.max(m.footRest[side].position.y,local.y+(m.footRest[side].position.y-local.y)*landing);
+    if(m.poleStep?.side===side){local.z+=m.poleStep.forward;local.y+=m.poleStep.lift;}
     const target=m.root.localToWorld(local),dir=v[4].copy(target).sub(shoulder),distance=Math.max(.02,Math.min(a+b-.002,dir.length()));dir.normalize();
     const pole=v[5].set(0,0,1).applyQuaternion(rootQ),perp=pole.addScaledVector(dir,-pole.dot(dir)).normalize();
     const along=(a*a-b*b+distance*distance)/(2*distance),height=Math.sqrt(Math.max(0,a*a-along*along));
@@ -1200,7 +1232,7 @@ var ImportedGladiator=(function(){
   // Reuse the existing sword rig for three short swings without extra model assets.
   if(f.action==='triple')f={...f,action:'attack',timer:f.timer%.2,chain:1+Math.floor(f.timer/.2)};
   m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;ClassEquipment.sync(m,f);
-   const planting=['attack','recoil','stagger'].includes(f.action)&&f.hp>0;
+   const planting=(['attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0)&&f.hp>0;
    if(planting&&(!m.plantedFeet||f.action==='attack'&&f.timer<(m.plantTimer||0))){m.root.updateMatrixWorld(true);m.plantedFeet={};m.plantElapsed=0;for(const side of ['Left','Right']){const foot=m.bones[side+'Foot'];if(foot)m.plantedFeet[side]={position:m.root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:m.root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}}
    if(!planting)m.plantedFeet=null;else m.plantElapsed=(m.plantElapsed||0)+Math.max(0,dt);m.plantTimer=f.timer;
   for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children)g.rotation.set(g.userData.restRotation||0,0,0);}
@@ -1214,7 +1246,8 @@ var ImportedGladiator=(function(){
    if(!animation?.sword)poses.Spine2=[.1*power,Math.sin((strike.phase-.5)*Math.PI)*.16*power,0];poses.LeftArm=[-.3,0,0];
    if(f.attackRegion==='legs'){drop=-.26;poses.LeftUpLeg=[-.25,0,0];poses.RightLeg=[.3,0,0];}
   }
-  m.trail.material.opacity=strike?.active?.2:0;
+  if(!strike&&f.action==='idle'&&!f.blocking)strike=ArenaMotion.poleGuard(f)||ArenaMotion.poleGuard(f,true);
+  m.trail.material.opacity=strike?.active&&!strike.pole?.08:0;
   if(f.action==='netcast'){poses.LeftArm=[-1.3*Math.sin(Math.PI*Math.min(1,f.timer/.75)),0,-.2];}
   if(f.action==='spearcast')poses[f.attackLeft?'LeftArm':'RightArm']=[-1.8*Math.sin(Math.PI*Math.min(1,f.timer/.55)),0,0];
   if(f.action==='bash'||f.action==='hook'){const p=f.action==='hook'?1:Math.sin(Math.PI*Math.min(1,f.timer/.5)),side=f.action==='hook'&&!f.attackLeft?'Right':'Left';poses[side+'Arm']=[-1.2*p,0,-.2];poses[side+'ForeArm']=[-.2,0,0];poses.Spine2=[.18*p,0,0];}
@@ -1226,14 +1259,7 @@ var ImportedGladiator=(function(){
   if(fullBody){Object.assign(poses,fullBody.poses);drop+=fullBody.drop;lean+=fullBody.lean;}
   // One restrained local response, with feet planted. The simulation's hit stun
   // and actual knockdown remain unchanged; normal damage never plays a fall clip.
-  if(f.reaction>0&&f.hp>0&&!['knocked','stunned'].includes(f.action)){
-   const elapsed=Math.max(0,.32-f.reaction),phase=Math.min(1,elapsed/.18);
-   const envelope=phase<.24?Math.sin(phase/.24*Math.PI/2):Math.pow(1-(phase-.24)/.76,2);
-   if(f.lastRegion==='head'){poses.Head=[-.18*envelope,.025*envelope,.045*envelope];poses.Spine2=[-.035*envelope,0,0];}
-   else if(f.lastRegion==='chest')poses.Spine2=[-.19*envelope,0,.045*envelope];
-   else if(f.lastRegion==='leftArm'||f.lastRegion==='rightArm'){const side=f.lastRegion==='leftArm'?'Left':'Right',sign=side==='Left'?-1:1;poses[side+'Arm']=[.025*envelope,0,sign*.075*envelope];poses.Spine2=[0,sign*.03*envelope,0];}
-   else if(f.lastRegion==='legs'){poses.LeftLeg=[.045*envelope,0,0];poses.RightLeg=[.025*envelope,0,0];drop-=.01*envelope;}
-  }
+  const impact=ArenaMotion.reaction(f);Object.assign(poses,impact.poses);drop+=impact.drop;
   // Passive evasion is a short upper-body slip, without a new action or invulnerability window.
   if(f.passiveEvade>0&&f.hp>0&&f.action==='idle'&&!(f.reaction>0)){
    const slip=Math.sin(Math.PI*Math.max(0,Math.min(1,1-f.passiveEvade/.36)))*(f.id%2?1:-1);
@@ -1245,19 +1271,23 @@ var ImportedGladiator=(function(){
   m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?fallen.shift:fullBody?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;if(fallen){m.body.position.y=fallen.lift;m.body.position.z=fallen.shift;m.body.quaternion.identity();if(fallen.state?.captured&&fallen.entry<1)m.body.quaternion.copy(fallen.state.rotation).slerp(ik.identity,fallen.entry);m.root.position.set(fallen.x,0,fallen.z);m.root.rotation.y=fallen.heading;}m.root.updateMatrixWorld(true);GroundFall.apply(m,fallen);GroundFall.ground(m,fallen);
   if(typeof ArenaLocomotion!=='undefined')ArenaLocomotion.apply(f,m,dt,alignBone,time);
   if(typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
-   if(fullBody&&!fallen&&['attack','recoil','stagger'].includes(f.action))plantFeet(m);
-  if(strike&&f.hp>0&&!fallen){const anchor=f.attackLeft?m.offhandAnchor:m.weaponAnchor,hand=reach(m,f.attackLeft,strike.grip);
+   m.poleStep=fullBody?.step||null;if(planting&&!fallen)plantFeet(m);
+  if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=reach(m,left,strike.grip);
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
    anchor.position.copy(anchor.parent.worldToLocal(hand));
-   anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children)g.rotation.set(0,0,0);
+   const pole=strike.pole||['spear','trident'].includes(f.attackWeapon||f.weapon);
+   if(pole){
+    const palm=anchor.parent,rest=anchor.userData.restQuaternion,desired=m.root.getWorldQuaternion(ik.strikeQ[0]).multiply(ik.strikeQ[1].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z)));
+    palm.quaternion.copy(palm.parent.getWorldQuaternion(ik.strikeQ[2]).invert().multiply(desired).multiply(ik.strikeQ[1].copy(rest).invert()));palm.updateWorldMatrix(false,true);anchor.quaternion.copy(rest);anchor.position.set(0,0,0);
+   }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children)g.rotation.set(0,0,0);
    const previous=ArenaMotion.sample(f,Math.max(0,f.timer-.035)),attr=m.trail.geometry.attributes.position;[previous.grip,previous.tip,strike.grip,strike.tip].forEach((v,i)=>attr.setXYZ(i,v.x,v.y,v.z));attr.needsUpdate=true;
   }
   // Guard follows the hand but keeps the shield face between fighter and opponent.
   if(f.shield&&m.gear.shield){
    const guarding=f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time||f.action==='bash'||f.action==='attack'&&!f.attackLeft;
-   if(guarding){const push=f.action==='bash'?Math.sin(Math.PI*Math.min(1,f.timer/Math.max(.01,f.duration)))*.14:-.075*(f.guardImpact||.65)*Math.sin(Math.PI*Math.max(0,f.guardFlash||0)/.20);
-    const desired=m.root.localToWorld(new T.Vector3(.26,1.42,.29+push));reach(m,true,{x:.26,y:1.42,z:.29+push});
-    const anchor=m.gear.shield.anchor;anchor.quaternion.copy(anchor.parent.getWorldQuaternion(Q).invert().multiply(m.root.getWorldQuaternion(P)));anchor.position.copy(anchor.parent.worldToLocal(desired));
+   if(guarding){const push=f.action==='bash'?Math.sin(Math.PI*Math.min(1,f.timer/Math.max(.01,f.duration)))*.14:0;
+    const gp=ArenaMotion.guardPoint(f),response=ArenaMotion.shieldResponse(f),desired=m.root.localToWorld(ik.strikeV[0].set(gp.x,gp.y,gp.z+push));reach(m,true,{x:gp.x,y:gp.y,z:gp.z+push});
+    const anchor=m.gear.shield.anchor;anchor.quaternion.copy(anchor.parent.getWorldQuaternion(Q).invert().multiply(m.root.getWorldQuaternion(P))).multiply(ik.strikeQ[0].setFromEuler(E.set(response.pitch,response.yaw,response.roll)));anchor.position.copy(anchor.parent.worldToLocal(desired));
    }else{m.gear.shield.anchor.position.set(0,0,0);const rest=m.rest.get('LeftHand');m.gear.shield.anchor.quaternion.copy(rest.p).multiply(rest.q).invert();}
   }
   // This model has articulated index fingers only. Curl those around the handle.
@@ -1446,8 +1476,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
   }
   return shieldGuard();
  };
- const attack=P.attack;
- P.attack=function(id,...args){const ok=attack.call(this,id,...args),f=this.fighters[id];if(ok){const k=1+clamp((f.itemStats?.attack_speed||0)/100,0,.25);f.duration/=k;if(f.attackProfile){f.attackProfile={...f.attackProfile};for(const key of ['duration','wind','active','recover'])if(Number.isFinite(f.attackProfile[key]))f.attackProfile[key]/=k;}if(Number.isFinite(f.hitTime))f.hitTime/=k;}return ok;};
+ // V114: agility and Celeritas are combined once by ArenaMotion.pace.
  const tick=P.tick;
  P.tick=function(dt,input){
   const before=this.fighters.map(f=>({x:f.x,z:f.z,angle:f.angle,action:f.action,delay:f.regenDelay}));tick.call(this,dt,input);

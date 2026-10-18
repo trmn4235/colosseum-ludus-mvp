@@ -22,7 +22,7 @@
   recovery_speed:'Darbe sonrası toparlanmayı, normal/mükemmel blok geri tepmesini ve yere düşme sonrası kalkışı hızlandırır. Ağ ve devam eden kırbaç çekişini bozmaz. %30 bonus, toparlanma süresini 1,30’a böler.',
   dodge_rate:'Uygun bekleme durumunda pasif kaçınma ihtimali. Başarılı olunca kısa bir gövde sıyrılması görünür; fazladan dokunulmazlık veya yuvarlanma vermez.',
   parry_rate:'Uygun elde silah ve en az 6 dayanıklılık gerektirir.',
-  attack_speed:'Refleks çarpanından ayrı uygulanır. Refleks 0–100 boyunca 0,70–1,30 çarpanı verir.'
+  attack_speed:'Refleks 0–100 boyunca ×0,90–1,10 verir. Ekipmanla birleşen toplam saldırı hızı en fazla ×1,18 olur.'
  };
  function inspect(rules,selected,items=[]){
   const equipped=!!selected?.equipped_by;

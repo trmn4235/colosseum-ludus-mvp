@@ -16,7 +16,7 @@
    {id:'critical_rate',tab:0,label:'Kritik şansı',unit:'%',note:'Rakibin kritik direnci öncesi. Savaşta rakibin direnci bu şansı azaltır.'},
    {id:'critical_multiplier',tab:0,label:'Kritik hasar çarpanı',unit:'×',raw:['critical_damage'],note:'Kritik vuruşun hasar çarpanı. Rakibin kritik hasar azaltması sonucu değiştirir.'},
    {id:'armor_penetration',tab:0,label:'Zırh delme',unit:'%',note:'Rakibin ekipmandan gelen fiziksel savunmasının bu oranını yok sayar.'},
-   {id:'attack_speed',tab:0,label:'Saldırı hızı',unit:'×',note:'Refleks ve ekipman çarpanı. Değer arttıkça saldırı süresi kısalır.'},
+   {id:'attack_speed',tab:0,label:'Saldırı hızı',unit:'×',note:'Refleks ve ekipmanın ortak çarpanı; en fazla ×1,18. Hazırlık, vuruş ve gardına dönüş birlikte hızlanır.'},
    {id:'physical_defense',tab:1,label:'Fiziksel savunma',note:'Savunma tekniği × 0,75 + taktik × 0,25 + ekipman. Hasar hesabındaki savunma puanı.'},
    {id:'slash_resistance',tab:1,label:'Kesme hasarı azaltma',unit:'%',raw:['damage_reduction','slash_resistance'],note:'Genel hasar azaltma ve kesme direnci birlikte en fazla %55.'},
    {id:'pierce_resistance',tab:1,label:'Delme hasarı azaltma',unit:'%',raw:['damage_reduction','pierce_resistance'],note:'Genel hasar azaltma ve delme direnci birlikte en fazla %55.'},

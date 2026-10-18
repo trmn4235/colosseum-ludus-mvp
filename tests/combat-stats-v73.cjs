@@ -36,7 +36,7 @@ function pve(){
   }
   {const{sim,a,v}=fixture(c,0);Object.assign(v,{weapon:null,offhand:'gladius',shield:false,stamina:0,itemStats:{parry_rate:20}});sim.attack(0);assert.equal(sim.guard(a,v,false),false);}
   {const{sim,a,v}=fixture(c);c.LudusLoadout.apply(a,{...g,base_stats:{...core,muscle:0,attack_technique:0,tactics:0}},[]);v.hp=10000;sim.damage(a,v,200,'chest');assert.ok(10000-v.hp<=1,'zero strength must not become default attack');}
-  {const{sim,a}=fixture(c);c.LudusLoadout.apply(a,{...g,base_stats:{...core,reflex:0}},[]);sim.attack(0);near(a.duration,.72/.7);}
+  {const{sim,a}=fixture(c);c.LudusLoadout.apply(a,{...g,base_stats:{...core,reflex:0}},[]);sim.attack(0);near(a.duration,.75/.9);}
   for(const capacity of[10,20,50])for(const hand of['weapon','offhand']){
    const{sim,a}=fixture(c),glad={...g,base_stats:{...core,conditioning:capacity}};
    const w=item(c,'weapon',{equipped_slot:hand==='weapon'?'main_hand':'off_hand',emeralds:[{id:3,value:100}]});
@@ -60,7 +60,7 @@ async function database(){
  await db.exec("create function auth.jwt()returns jsonb language sql stable as $$select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;grant usage on schema auth to authenticated;grant execute on function auth.uid(),auth.jwt()to authenticated;alter table ludus_accounts add column username text,add column ludus_name text;");
  await db.exec(fs.readFileSync(root+'/ludus-multiplayer-v36.sql','utf8'));
  const migrate=async name=>db.exec(fs.readFileSync(root+'/supabase/migrations/'+fs.readdirSync(root+'/supabase/migrations').find(f=>f.endsWith('_'+name+'.sql')),'utf8'));
- for(const name of['gladiator_exercise_v46','targeted_training_v51','dining_food_v55','dining_meals_v56','dining_nutrition_v57','dining_recovery_v58','dining_recovery_balance_v59','combat_food_stamina_v60','combat_stats_v73','combat_stats_v73','combat_stats_v74','combat_stats_v74','combat_stats_v75','combat_stats_v75','online_projectiles_v76','online_projectiles_v76','arena_completion_v77','arena_completion_v77'])await migrate(name);
+ for(const name of['gladiator_exercise_v46','targeted_training_v51','dining_food_v55','dining_meals_v56','dining_nutrition_v57','dining_recovery_v58','dining_recovery_balance_v59','combat_food_stamina_v60','combat_stats_v73','combat_stats_v73','combat_stats_v74','combat_stats_v74','combat_stats_v75','combat_stats_v75','online_projectiles_v76','online_projectiles_v76','arena_completion_v77','arena_completion_v77','arena_combat_realism_v114','arena_combat_realism_v114'])await migrate(name);
  return db;
 }
 module.exports={runtime,item,fixture,database,g,core};
@@ -78,7 +78,7 @@ async function main(){
   const s=await snap(glad,items),f=fixture(c).a;c.LudusLoadout.apply(f,glad,items);
   for(const[server,client]of[['maxHp','maxHp'],['maxStamina','maxStamina'],['attack','attackBonus'],['defense','defenseBonus'],['speed','speedBonus'],['agility','agility'],['native_attack','nativeAttackBonus']])near(s[server],f[client]);
   for(const[k,v]of Object.entries(f.itemStats))near(s.items[k],v);
-  near(s.attack_speed,(.7+.006*Math.max(0,Math.min(100,f.agility)))*(1+Math.max(0,Math.min(.25,(f.itemStats.attack_speed||0)/100))));
+  near(s.attack_speed,c.ArenaMotion.speedFactor(f));
  }
  const time='2026-10-11T12:00:00Z',now='2026-10-11T12:00:01Z';
  const player=async(owner,items=[],glad=g)=>({owner,class:glad.class,gladiator:glad,items,stats_version:73,combat_stats:await snap(glad,items),hp:100,maxHp:100,stamina:100,maxStamina:100,stamina_at:time,seen:time,x:0,z:owner===A?0:1.25,angle:owner===A?0:Math.PI,block:false,serial:0});
@@ -128,10 +128,10 @@ async function main(){
  assert.ok(Math.abs(moved.x-expectedX)<.02,'server movement applies speed, acceleration and gear');
  const aim=Math.atan2(-moved.x,1.25),turn=Math.atan2(Math.sin(aim-Math.PI/2),Math.cos(aim-Math.PI/2));
  assert.ok(Math.abs(moved.angle-(Math.PI/2+turn*Math.min(1,(1-Math.exp(-18*dt))*1.3)))<.03,'server turn consumes turn speed');
- state=await step({attack:true,attack_id:'haste',target:B});near(state.players[0].wind,.24/(1.18*1.04));
- // Already-running V73 rooms keep their stored speed, even after V74 deployment.
+ state=await step({attack:true,attack_id:'haste',target:B});near(state.players[0].wind,.22/(1.06*1.04));
+ // An old cached speed must not bypass the combined V114 limit.
  mover.combat_stats.attack_speed=1.3*1.04;await q("update ludus_matches set players=$2::jsonb where id=$1",[joined.id,JSON.stringify([mover,liveB])]);
- state=await step({attack:true,attack_id:'cached-v73',target:B});near(state.players[0].wind,.24/(1.3*1.04));
+ state=await step({attack:true,attack_id:'cached-v73',target:B});near(state.players[0].wind,.22/(1.06*1.04));
  const recovered=await player(A,[item(c,'legs',{natural_stats:{recovery_speed:30}})]),perfect=await player(B,[item(c,'shield',{natural_stats:{block_power:40}})]);
  Object.assign(perfect,{block:true,guard_at:'2026-10-11T12:00:00.400Z'});
  resolved=await resolve([strike(recovered),perfect]);assert.equal(resolved[1].last_defense,'perfect');near(resolved[1].stamina,96.4);

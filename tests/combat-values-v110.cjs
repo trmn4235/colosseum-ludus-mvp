@@ -22,7 +22,7 @@ async function main(){
   for(const [glad,items]of cases){
    const r=await report(glad,items),f=fixture(c).a;c.LudusLoadout.apply(f,glad,items);
    for(const[k,v]of Object.entries(r.totals))near(r.sources.reduce((n,s)=>n+(s.delta[k]||0),0),v,'source sum '+k);
-   for(const [key,value]of Object.entries({max_hp:f.maxHp,max_stamina:f.maxStamina,physical_defense:f.defenseBonus*50,attack_speed:(.7+.006*Math.max(0,Math.min(100,f.agility)))*(1+Math.max(0,Math.min(.25,(f.itemStats.attack_speed||0)/100))),movement_speed:f.speedBonus,hp_regeneration:Math.min(2,f.itemStats.hp_regeneration||0),stamina_regeneration_pve:(15.75+Math.min(8,f.itemStats.stamina_regeneration||0))*.65*1.12*1.03,stamina_regeneration_pvp:(16+Math.min(8,f.itemStats.stamina_regeneration||0))*.65*1.12*1.03}))near(r.totals[key],value,key);
+   for(const [key,value]of Object.entries({max_hp:f.maxHp,max_stamina:f.maxStamina,physical_defense:f.defenseBonus*50,attack_speed:c.ArenaMotion.speedFactor(f),movement_speed:f.speedBonus,hp_regeneration:Math.min(2,f.itemStats.hp_regeneration||0),stamina_regeneration_pve:(15.75+Math.min(8,f.itemStats.stamina_regeneration||0))*.65*1.12*1.03,stamina_regeneration_pvp:(16+Math.min(8,f.itemStats.stamina_regeneration||0))*.65*1.12*1.03}))near(r.totals[key],value,key);
    const snap=(await q('select private.ludus_combat_stats_v73($1,$2) s',[JSON.stringify(glad),JSON.stringify(items)]))[0].s;
    for(const hand of['main','off'])for(const mode of['pve','pvp'])for(const end of['min','max']){
     const slot=hand==='main'?'main_hand':'off_hand',w=items.find(i=>i.kind==='weapon'&&i.equipped_slot===slot&&['gladius','sica','spear','trident','mace','whip'].includes(i.model));

@@ -1,0 +1,42 @@
+name: Arena combat realism
+on:
+  push:
+    branches: [main, codex/arena-combat-realism-v114]
+    paths: ['arena*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/combat-stats-*', 'supabase/migrations/*arena_combat_realism*']
+  pull_request:
+    branches: [main]
+    paths: ['arena*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'supabase/migrations/*arena_combat_realism*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  combat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install isolated test tools
+        run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1
+      - name: Combat behavior and motion
+        run: node --test tests/arena-realism-v114.test.cjs tests/combat-feel-v23.test.cjs tests/bot-defense-v72.test.cjs tests/polearm-v105.test.cjs tests/arena-timing-v94.test.cjs
+      - name: Real skeleton and contact geometry
+        run: node tests/arena-realism-rig-v114.cjs
+      - name: Server cadence and stat parity
+        run: |
+          node tests/arena-realism-sql-v114.cjs
+          node tests/combat-stats-v73.cjs
+          node tests/combat-stats-v74.cjs
+          node tests/combat-stats-v75.cjs
+          node tests/combat-values-v110.cjs
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Arena, mobile layouts and combat poses
+        env:
+          LUDUS_REALISM_TEST: '1'
+          LUDUS_TEST_OUTPUT: /tmp/arena-realism-v114
+        run: node tests/arena-browser-v96.cjs
