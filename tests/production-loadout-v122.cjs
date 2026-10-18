@@ -1,0 +1,30 @@
+// Runs inside the real supply PostgreSQL harness, with an isolated training-state fixture.
+const assert=require('node:assert/strict');
+module.exports=async({db,q,A,B,call,stock,migration,randomUUID})=>{
+ await db.exec(`reset role;alter table ludus_gladiators add column if not exists status text default 'available';
+ create or replace function public.ludus_training_state()returns jsonb language sql security definer set search_path='' as $$select jsonb_build_object('gladiators',coalesce(jsonb_agg(to_jsonb(g)),'[]'::jsonb))from public.ludus_gladiators g where owner_id=auth.uid()$$;`);
+ await db.exec(migration('caravan_loadout_v122'));await db.exec(migration('caravan_loadout_v122'));
+ await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval'2 hours',ends_at=clock_timestamp()-interval'1 minute'where owner_id=$1 and claimed_at is null",[A]);await call();
+ const [one]=await q('select id from ludus_gladiators where owner_id=$1 limit 1',[A]);const two=randomUUID(),foreign=randomUUID();await q("insert into ludus_gladiators(id,owner_id,name,class,status)values($1,$2,'Nero','murmillo','available'),($3,$4,'Other owner','thraex','available')",[two,A,foreign,B]);
+ const hunt=async(action='state',ids=null)=>(await q('select ludus_caravan_hunt($1,$2::uuid[])as s',[action,ids]))[0].s;
+ await db.exec('set role authenticated');assert.deepEqual((await hunt()).team,[]);
+ await assert.rejects(()=>hunt('save',[one.id,one.id]),/farklı/);await assert.rejects(()=>hunt('save',[one.id,foreign]),/sana ait/);
+ assert.deepEqual((await hunt('save',[one.id,two])).team,[one.id,two]);assert.equal((await hunt()).outfit,'black_veil');
+ await db.exec('reset role');await q("update ludus_gladiators set status='locked'where id=$1",[two]);await db.exec('set role authenticated');await assert.rejects(()=>hunt('save',[one.id,two]),/hazır/);await db.exec('reset role');await q("update ludus_gladiators set status='available'where id=$1",[two]);
+ await q("update ludus_supply_private.stock set quantity=case sku when 'bow'then 2 when 'arrow'then 60 else quantity end where owner_id=$1",[A]);await db.exec('set role authenticated');
+ const depart=async(action,key,id,bows,arrows,n=1)=>(await q('select ludus_caravan_depart($1,$2,$3,$4,$5,$6)as s',[action,key,n,id,bows,arrows]))[0].s;
+ const request=randomUUID();let s=await depart('send','grain',request,1,40);const job=s.jobs.find(j=>j.id===s.result.job_id);assert.deepEqual(job.loadout,{bow:1,arrow:40});assert.equal(await stock('bow'),1);assert.equal(await stock('arrow'),20);
+ assert.equal((await depart('send','grain',request,1,40)).result.replayed,true);assert.equal(await stock('bow'),1);assert.equal(await stock('arrow'),20);
+ await assert.rejects(()=>depart('send','grain',request,1,20),/kimliği/);await assert.rejects(()=>depart('send','grain',randomUUID(),1,50),/yeterli ok/);assert.equal(await stock('bow'),1,'arrow shortage rolls back bow debit');
+ await assert.rejects(()=>depart('send','grain',randomUUID(),2,0),/başına/);await assert.rejects(()=>depart('send','grain',randomUUID(),0,1),/başına/);await assert.rejects(()=>depart('craft','bow',randomUUID(),0,0),/Geçersiz/);
+ const old=randomUUID();await call('send','apple',old);await assert.rejects(()=>depart('send','apple',old,1,10),/kimliği/);assert.equal(await stock('bow'),1);
+ await db.exec('reset role');await q('update ludus_accounts set gold=0 where user_id=$1',[A]);await db.exec('set role authenticated');const quote=(await q('select ludus_caravan_city(1)as s'))[0].s;await assert.rejects(()=>depart('buy',[1,'iron_ore',quote.epoch,1].join(':'),randomUUID(),1,10),/Denarius/);assert.equal(await stock('bow'),1);assert.equal(await stock('arrow'),20);
+ await db.exec('reset role');await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval'2 hours',ends_at=clock_timestamp()-interval'1 minute'where id=$1",[job.id]);await q("update ludus_supply_private.stock set quantity=50000 where owner_id=$1 and sku='bow'",[A]);await db.exec('set role authenticated');s=await call();assert.ok(s.jobs.some(j=>j.id===job.id),'full equipment stock preserves cargo and equipment');
+ await assert.rejects(()=>call('claim',job.id),/deposu dolu/);assert.equal(await stock('arrow'),20,'blocked delivery cannot partially return arrows');
+ await db.exec('reset role');await q("update ludus_supply_private.stock set quantity=49999 where owner_id=$1 and sku='bow'",[A]);await db.exec('set role authenticated');s=await call();assert.ok(!s.jobs.some(j=>j.id===job.id));assert.equal(await stock('bow'),50000);assert.equal(await stock('arrow'),60);await call();assert.equal(await stock('arrow'),60,'equipment returns once');
+ await assert.rejects(()=>q('select * from ludus_supply_private.hunt_team_v122'),/permission denied/);await assert.rejects(()=>q('select * from ludus_supply_private.departure_receipts_v122'),/permission denied/);
+ await q("select set_config('request.jwt.claim.sub',$1,false)",[B]);assert.deepEqual((await hunt()).team,[]);await assert.rejects(()=>hunt('save',[one.id,two]),/sana ait/);
+ await q(`select set_config('request.jwt.claims','{"is_anonymous":true}',false)`);await assert.rejects(()=>hunt(),/giriş yap/);await assert.rejects(()=>depart('send','grain',randomUUID(),0,0),/giriş yap/);await q("select set_config('request.jwt.claims','{}',false)");await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
+ await db.exec('reset role;set role anon');await assert.rejects(()=>hunt(),/permission denied/);await db.exec('reset role;set role authenticated');
+ console.log('V122 PostgreSQL PASS: bow/arrow reservation and return, full-stock delivery, rollback, request replay, ownership, two distinct available gladiators and black-veil preparation.');
+};

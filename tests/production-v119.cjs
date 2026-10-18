@@ -48,7 +48,7 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  const update=migration('production_items_v119');await db.exec(update);await db.exec(update);
  assert.equal((await q("select quantity from ludus_supply_private.stock where owner_id=$1 and sku='wooden_handle'",[A]))[0].quantity,7,'retired stock retained');
  await q('update ludus_progression set experience=ludus_private.level_threshold(30)where owner_id=$1',[A]);
- if(process.env.LUDUS_MARKET_HISTORY_TEST)await db.exec(migration('market_history_v121'));
+ if(process.env.LUDUS_MARKET_HISTORY_TEST||process.env.LUDUS_CARAVAN_LOADOUT_TEST)await db.exec(migration('market_history_v121'));
  const initialItems=(await q('select count(*)::integer n from ludus_items where owner_id=$1',[A]))[0].n;
  const catalog=require('../ludus-production-v119.js');
  const call=async(action='state',key=null,id=randomUUID())=>(await q('select ludus_supply($1,$2,1,$3)as s',[action,key,id]))[0].s;
@@ -131,6 +131,7 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
   else{await db.exec('reset role');const [item]=await q('select kind,model from ludus_items where id=$1',[after.result.item_id]);assert.equal(item.kind,recipe.kind);assert.equal(item.model,recipe.model);await db.exec('set role authenticated');}
   assert.equal((await call('craft',recipe.sku,request)).result.replayed,true);
  }
+ if(process.env.LUDUS_CARAVAN_LOADOUT_TEST)await require('./production-loadout-v122.cjs')({db,q,A,B,call,stock,migration,randomUUID});
  fs.writeFileSync('/tmp/production-state-v119.json',JSON.stringify(await call()));
 
  await db.exec('reset role;set role anon');await assert.rejects(()=>call(),/permission denied/);

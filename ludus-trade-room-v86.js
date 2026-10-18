@@ -2,7 +2,7 @@
 var LudusTradeRoom=(()=>{
  'use strict';
  function create({T,wood,stone}){
-  let root=null,chest=null,lid=null,map=null;
+  let root=null,chest=null,lid=null,map=null,hunt=null;
   const bounds=[{kind:'trade-left-shelves',minX:-4.65,maxX:-3.15,minZ:-1.95,maxZ:.75},{kind:'trade-right-shelves',minX:3.15,maxX:4.65,minZ:-1.95,maxZ:.75},{kind:'trade-chest',minX:-.93,maxX:.93,minZ:-4.02,maxZ:-2.88},...[-1,1].map(side=>({kind:'trade-entry-jamb',minX:side*1.15-.125,maxX:side*1.15+.125,minZ:4.09,maxZ:4.33}))];
   function build(){
    root=new T.Group();root.name='Toplama odası V120';
@@ -75,10 +75,11 @@ var LudusTradeRoom=(()=>{
    // Batch identical static geometry/material pairs; no frame-time animation or extra lights.
    root.updateMatrixWorld(true);const batches=new Map();for(const o of root.children){if(!o.isMesh)continue;const key=o.geometry.uuid+':'+o.material.uuid;if(!batches.has(key))batches.set(key,[]);batches.get(key).push(o);}
    for(const list of batches.values()){if(list.length<2)continue;const mesh=new T.InstancedMesh(list[0].geometry,list[0].material,list.length);mesh.name='Trade hall static details';mesh.receiveShadow=true;for(let i=0;i<list.length;i++){mesh.setMatrixAt(i,list[i].matrixWorld);root.remove(list[i]);}mesh.instanceMatrix.needsUpdate=true;mesh.computeBoundingSphere();root.add(mesh);}
+   if(globalThis.LudusCaravanOutfit){hunt=LudusCaravanOutfit.prop(T);root.add(hunt);}
    root.userData.colliderCount=bounds.length;
   }
   function enter(props,colliders){if(!root)build();props.add(root);colliders.push(...bounds.map(b=>({...b})));}
-  return {enter,setChestOpen(open){if(lid)lid.rotation.x=open?-1.10:0;},get chest(){return chest;},get map(){return map;},get root(){return root;}};
+  return {enter,setChestOpen(open){if(lid)lid.rotation.x=open?-1.10:0;},get chest(){return chest;},get map(){return map;},get hunt(){return hunt;},get root(){return root;}};
  }
  return {create};
 })();

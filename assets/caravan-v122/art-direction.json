@@ -1,0 +1,16 @@
+{
+  "style": "Roman Italy around AD 80. Historical game artwork matching the existing warm Roman rooms; black wrapped headcloth and face veil leave only the eyes visible.",
+  "assets": [
+    {
+      "file": "hunt-scene.webp",
+      "purpose": "Caravan-hunt preparation scene",
+      "prompt": "Two Roman gladiators in bronze and dark leather equipment, each wearing a layered black wrapped hood and face veil that exposes only the eyes, overlooking a distant merchant caravan on a Roman countryside road at sunset. Ancient aqueduct, cypress trees, Roman villa, warm cinematic natural light and detailed historical game realism. No text, labels, logos, modern objects, battle or gore."
+    },
+    {
+      "file": "spear-hood.webp",
+      "purpose": "Room entrance icon",
+      "transparent_background": true,
+      "prompt": "A long ancient Roman wooden spear leaning against an unseen wall, full shaft and iron spearhead visible. An empty layered black headwrap and face veil is mounted around the middle of the shaft on a discreet support, with a narrow empty eye slit. Cloth hangs naturally with deep detailed folds. No human, face or body, no text, background, frame or logo. Isolated game prop on transparent background."
+    }
+  ]
+}

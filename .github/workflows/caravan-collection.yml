@@ -2,10 +2,10 @@ name: Caravan collection regression
 on:
   push:
     branches: [main, codex/caravan-collection-v116]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*', '.github/workflows/caravan-collection.yml']
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'assets/caravan-v122/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*', 'supabase/migrations/*caravan_loadout*', '.github/workflows/caravan-collection.yml']
   pull_request:
     branches: [main]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*']
+    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'assets/caravan-v122/**', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*', 'supabase/migrations/*caravan_loadout*']
   workflow_dispatch:
 permissions:
   contents: read
@@ -45,3 +45,8 @@ jobs:
         run: LUDUS_MARKET_HISTORY_TEST=1 node tests/production-v119.cjs
       - name: Full photograph frames and interactive price chart on mobile
         run: node tests/production-browser-v121.cjs
+
+      - name: Caravan equipment reservation, return and two-fighter preparation
+        run: LUDUS_CARAVAN_LOADOUT_TEST=1 node tests/production-v119.cjs
+      - name: Black-veil character previews, spear entrance and expedition screens
+        run: node tests/production-browser-v122.cjs
