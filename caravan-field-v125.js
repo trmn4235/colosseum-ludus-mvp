@@ -5,7 +5,7 @@
  const coarse=matchMedia('(pointer:coarse)').matches,reduceMotion=matchMedia('(prefers-reduced-motion:reduce)').matches;
  const params=new URLSearchParams(location.search);let mode=params.get('mode')==='defense'?'defense':'ambush',walking=false,ready=false,lost=false,failed=false;
  const keys=new Set(),stick={x:0,y:0},mixers=[],collisions=[],clock={value:0},pointer={id:null,x:0,y:0},joystick={id:null};
- let renderer,scene,camera,ground,caravans=[],last=0,yaw=0,pitch=0,raf=0,frame=0;
+ let renderer,scene,camera,ground,caravans=[],last=0,yaw=0,pitch=0,raf=0,frame=0,battle=null;
  let seed=125;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
  const roadX=z=>2.2*Math.sin(z*.055)+.5*Math.sin(z*.14);
  const height=(x,z)=>{const distance=Math.abs(x-roadX(z)),edge=T.MathUtils.smoothstep(distance,3.1,9);return edge*(.5+.32*Math.sin(x*.27+z*.17)+.15*Math.cos(z*.4))+.035*Math.sin(x*1.5+z*.5);};
@@ -141,7 +141,7 @@
   if(allowed(camera.position.x,camera.position.z+dz))camera.position.z+=dz;
   camera.position.y=height(camera.position.x,camera.position.z)+1.72;
  }
- function resize(){if(!renderer)return;renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?56:53;camera.updateProjectionMatrix();if(!walking)setMode(mode);}
+ function resize(){if(!renderer)return;renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?56:53;camera.updateProjectionMatrix();if(!walking&&!battle)setMode(mode);}
  function fail(message){failed=true;$('loading').hidden=false;$('loading').querySelector('strong').textContent='Alan açılamadı';$('loadDetail').textContent=message;$('loading').querySelector('.loader-ring').hidden=true;$('retry').hidden=false;$('loadBack').hidden=false;$('enter').disabled=true;}
  function bind(){
   $('enter').onclick=()=>explore(true);$('overview').onclick=()=>explore(false);$('retry').onclick=()=>location.reload();
@@ -149,8 +149,8 @@
   for(const [button,id] of [['help','helpDialog'],['creditsOpen','creditsDialog']]){
    const d=$(id);$(button).onclick=()=>{clearInput();d.showModal();document.body.classList.add('dialog-open');};d.querySelectorAll('button').forEach(b=>b.onclick=()=>d.close());d.addEventListener('close',()=>{clearInput();document.body.classList.remove('dialog-open');});
   }
-  addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;if(e.code==='Escape'){explore(false);return;}if(walking&&['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){keys.add(e.code);e.preventDefault();}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',clearInput);
-  const canvas=$('field');canvas.addEventListener('pointerdown',e=>{if(!ready||pointer.id!==null||document.querySelector('dialog[open]'))return;pointer.id=e.pointerId;pointer.x=e.clientX;pointer.y=e.clientY;canvas.setPointerCapture(e.pointerId);});
+  addEventListener('keydown',e=>{if(battle||document.querySelector('dialog[open]'))return;if(e.code==='Escape'){explore(false);return;}if(walking&&['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){keys.add(e.code);e.preventDefault();}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',clearInput);
+  const canvas=$('field');canvas.addEventListener('pointerdown',e=>{if(battle||!ready||pointer.id!==null||document.querySelector('dialog[open]'))return;pointer.id=e.pointerId;pointer.x=e.clientX;pointer.y=e.clientY;canvas.setPointerCapture(e.pointerId);});
   canvas.addEventListener('pointermove',e=>{if(pointer.id!==e.pointerId)return;const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer.x=e.clientX;pointer.y=e.clientY;yaw-=dx*.0035;pitch=T.MathUtils.clamp(pitch-dy*.003,-.85,.85);applyLook();});
   for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,e=>{if(pointer.id===e.pointerId)pointer.id=null;});
   const pad=$('joystick');function padMove(e){const b=pad.getBoundingClientRect(),r=b.width*.36,dx=e.clientX-b.left-b.width/2,dy=e.clientY-b.top-b.height/2,l=Math.max(r,Math.hypot(dx,dy));stick.x=dx/l;stick.y=-dy/l;pad.querySelector('span').style.transform='translate('+stick.x*r+'px,'+-stick.y*r+'px)';}
@@ -159,11 +159,11 @@
   document.addEventListener('visibilitychange',()=>{clearInput();last=0;if(!document.hidden&&!lost&&!raf)raf=requestAnimationFrame(tick);});
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;cancelAnimationFrame(raf);raf=0;fail('Görüntü bağlantısı kesildi. Alanı yeniden açabilirsin.');});
   addEventListener('resize',resize);addEventListener('pagehide',()=>{clearInput();cancelAnimationFrame(raf);raf=0;});addEventListener('pageshow',()=>{last=0;if(ready&&!lost&&!raf)raf=requestAnimationFrame(tick);});
-  $('back').onclick=e=>{if(document.referrer&&new URL(document.referrer).origin===location.origin&&/\/ludus\.html$/.test(new URL(document.referrer).pathname)){e.preventDefault();history.back();}};
+  $('back').onclick=e=>{if(battle){e.preventDefault();battle.pause();return;}if(document.referrer&&new URL(document.referrer).origin===location.origin&&/\/ludus\.html$/.test(new URL(document.referrer).pathname)){e.preventDefault();history.back();}};
  }
  let quality,particles;
  function tick(now){raf=0;if(document.hidden||lost)return;const dt=Math.min(last?(now-last)/1000:0,.05);last=now;
-  if(ready&&!document.querySelector('dialog[open]')){if(!reduceMotion){clock.value+=dt;for(const mixer of mixers)mixer.update(dt);if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(walking)move(dt);}
+  if(ready&&!document.querySelector('dialog[open]')){if(!reduceMotion){clock.value+=dt;for(const mixer of mixers)mixer.update(dt);if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(battle)battle.frame(dt);else if(walking)move(dt);}
   renderer.render(scene,camera);frame++;
   const ratio=quality.sample(now,renderer.getPixelRatio());if(ratio!==null){renderer.setPixelRatio(ratio);renderer.setSize(innerWidth,innerHeight);}
   raf=requestAnimationFrame(tick);
@@ -180,7 +180,7 @@
    makeGround(road,floor,normal);makeForest(models);makeUnderstory(models.fern,models.bush,road,floor);makeCaravan(models.wagon,models.horse,0);makeCaravan(models.wagon,models.horse,-14,.96);particles=dust();
    scene.updateMatrixWorld(true);renderer.shadowMap.needsUpdate=true;ready=true;setMode(mode);renderer.render(scene,camera);
    $('loading').hidden=true;$('enter').disabled=false;$('enter').innerHTML='Alanı keşfet <span aria-hidden="true">↗</span>';document.body.dataset.ready='true';
-   window.CaravanField={get ready(){return ready;},get mode(){return mode;},get walking(){return walking;},get stats(){return{drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,pixelRatio:renderer.getPixelRatio(),position:camera.position.toArray(),instances:scene.children.filter(o=>o.isInstancedMesh).reduce((n,o)=>n+o.count,0)};},scene,camera,renderer,caravans,setMode,explore};
+   window.CaravanField={get ready(){return ready;},get mode(){return mode;},get walking(){return walking;},get stats(){return{drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,pixelRatio:renderer.getPixelRatio(),position:camera.position.toArray(),instances:scene.children.filter(o=>o.isInstancedMesh).reduce((n,o)=>n+o.count,0)};},scene,camera,renderer,caravans,setMode,explore,height,attachBattle(controller){clearInput();walking=false;battle=controller;document.body.classList.add('caravan-battle');$('intro').hidden=true;$('joystick').hidden=true;$('overview').hidden=true;}};
    if(!raf)raf=requestAnimationFrame(tick);
   }catch(e){console.error('Caravan field:',e);fail(e.name==='TimeoutError'?'Modeller zamanında yüklenemedi. Bağlantını kontrol edip yeniden dene.':e.message||'3D görüntü bu cihazda başlatılamadı.');}
  }

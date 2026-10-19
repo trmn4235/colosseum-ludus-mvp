@@ -54,8 +54,8 @@ jobs:
       - name: Safari equipment and artwork bounds with the real game theme
         run: LUDUS_WEBKIT_TEST=1 LUDUS_SUPPLY_UI_ONLY=1 node tests/production-browser-v122.cjs
 
-      - name: Authoritative two-hour ambushes, equal cargoes and safe raid outcomes
-        run: LUDUS_CARAVAN_RAIDS_TEST=1 node tests/production-v119.cjs
+      - name: Immediate raids, escort reservations, equal cargo and cooldown
+        run: LUDUS_CARAVAN_COMBAT_TEST=1 node tests/production-v119.cjs
       - name: Raid flow, reconnect and report layouts in Chromium
         run: node tests/production-browser-v124.cjs
       - name: Raid flow and all six landscape sizes in Safari

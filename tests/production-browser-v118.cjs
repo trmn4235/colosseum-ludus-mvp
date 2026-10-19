@@ -21,7 +21,7 @@ window.__fixtureClient={
  from:name=>{const value=name==='ludus_accounts'?{user_id:__fixtureUser.id,ludus_name:'Test Ludus',gold:1000,diamonds:3}:name==='ludus_gladiators'?__fighters:name==='ludus_items'?__items:[];const b={select:()=>b,eq:()=>b,order:()=>b,single:async()=>({data:value}),then:(r,j)=>Promise.resolve({data:value}).then(r,j)};return b;},
  rpc:async(name,args={})=>{
   __rpcCalls.push({name,args});
-  if(name==='ludus_supply'){if(args.p_action==='buy'){window.__lastBuy=args;__supply.free_caravans-=args.p_workers;__supply.busy_caravans+=args.p_workers;__supply.jobs.push({id:'bought',destination:'city-1',workers:args.p_workers,cargo:{iron:15},ends_at:new Date(Date.now()+3600000).toISOString()});}return{data:{...__supply,server_now:new Date().toISOString()}};}
+  if(name==='ludus_supply'||name==='ludus_caravan_depart_v126'){if(args.p_action==='buy'){window.__lastBuy=args;__supply.free_caravans-=args.p_workers;__supply.busy_caravans+=args.p_workers;__supply.jobs.push({id:'bought',destination:'city-1',workers:args.p_workers,cargo:{iron:15},ends_at:new Date(Date.now()+3600000).toISOString()});}return{data:{...__supply,server_now:new Date().toISOString()}};}
   if(name==='ludus_caravan_city'){const city=__supply.cities.find(c=>c.id===args.p_city);return{data:{city,server_now:new Date().toISOString(),epoch:Math.floor(Date.now()/60000),expires_at:new Date(Date.now()+60000).toISOString(),goods:__supply.resources.filter(r=>r.stage==='raw').map((r,i)=>({sku:r.sku,name:r.name,bar:10-i,stock:300-i*30,unit_price:1.25+i}))}};}
   if(name==='ludus_progress')return{data:__progress};
   if(name==='ludus_combat_values')return{data:{...__combatReport,owner_id:__fixtureUser.id,gladiator:__fighters.find(g=>g.id===args.p_gladiator)}};

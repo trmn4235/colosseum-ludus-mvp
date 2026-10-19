@@ -1,0 +1,42 @@
+const assert=require('node:assert/strict'),fs=require('node:fs');
+module.exports=async({db,q,A,B,call,stock,migration,randomUUID})=>{
+ await db.exec('reset role;create role service_role;');
+ const before=(await q("select yields from ludus_supply_private.destinations where id='grain'"))[0].yields;
+ await db.exec(migration('caravan_combat_v126'));await db.exec(migration('caravan_combat_v126'));
+ const after=(await q("select yields from ludus_supply_private.destinations where id='grain'"))[0].yields;
+ for(const k of Object.keys(before))assert.equal(after[k],before[k]*4,'one-time fourfold yield');
+ await q("update ludus_gladiators set status='available',injured_until=null where owner_id=$1",[A]);
+ for(let i=0;i<4;i++)await q("insert into ludus_gladiators(owner_id,name,class,status,overall)values($1,$2,'secutor','available',50)",[A,'V126 '+i]);
+ const ids=(await q('select id from ludus_gladiators where owner_id=$1 order by name limit 6',[A])).map(g=>g.id);
+ const foreign=(await q('select id from ludus_gladiators where owner_id=$1 limit 1',[B]))[0].id;
+ const rpc=async(a='state',team=null,region=null,req=null,id=null)=>(await q('select ludus_caravan_raid($1,$2::uuid[],$3,$4,$5)s',[a,team,region,req,id]))[0].s;
+ const depart=async(crew,req=randomUUID())=>(await q("select ludus_caravan_depart_v126('send','grain',1,$1,0,0,$2::uuid[])s",[req,crew]))[0].s;
+ const auth=()=>db.exec('set role authenticated'),admin=()=>db.exec('reset role');
+ await auth();assert.equal((await call()).caravan_capacity,60);let s=await rpc();assert.equal(s.version,126);assert.equal(s.duration_seconds,0);
+ await assert.rejects(()=>rpc('start',[ids[0]],'wood',randomUUID()),/2–5/);await assert.rejects(()=>rpc('start',ids,'wood',randomUUID()),/2–5/);
+ await assert.rejects(()=>rpc('start',[ids[0],ids[0]],'wood',randomUUID()),/farklı/);await assert.rejects(()=>rpc('start',[ids[0],foreign],'wood',randomUUID()),/sana ait/);
+ await assert.rejects(()=>depart([ids[0]]),/2–5/);
+ const departure=randomUUID();s=await depart(ids.slice(0,5),departure);const job=s.result.job_id;assert.equal(s.jobs.find(j=>j.id===job).escort.length,5);assert.deepEqual(s.jobs.find(j=>j.id===job).cargo,after);
+ assert.equal((await depart(ids.slice(0,5),departure)).result.replayed,true);await assert.rejects(()=>depart(ids.slice(0,2),departure),/kimliği/);
+ assert.ok((await rpc()).gladiators.filter(g=>ids.slice(0,5).includes(g.id)).every(g=>!g.ready));
+ await assert.rejects(()=>rpc('start',ids.slice(0,2),'wood',randomUUID()),/hazır/);
+ await admin();await assert.rejects(()=>q("update ludus_gladiators set status='available'where id=$1",[ids[0]]),/kervan görevinde/);
+ await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval'2 hours',ends_at=clock_timestamp()-interval'1 minute'where id=$1",[job]);await auth();await call();
+ assert.ok((await rpc()).gladiators.filter(g=>ids.slice(0,5).includes(g.id)).every(g=>g.ready),'escort released after arrival');
+ for(let n=1;n<=4;n++){
+  const team=ids.slice(0,n===1?5:2),req=randomUUID();s=await rpc('start',team,'wood',req);const j=s.active;
+  assert.equal(j.status,'ready');assert.equal(j.encounter.guards,team.length+(n===4?1:0));assert.equal(j.encounter.archers,1);assert.equal(j.encounter.quantity,60);
+  assert.ok(s.regions.find(r=>r.id==='wood').choices.includes(j.encounter.cargo));assert.equal((await rpc('start',team,'wood',req)).active.encounter.attempt,n);
+  if(n===1)fs.writeFileSync('/tmp/raid-state-v126.json',JSON.stringify(s));
+  await assert.rejects(()=>rpc('resolve',null,null,null,j.id),/ormandaki savaş/);
+  await assert.rejects(()=>q('select ludus_caravan_verified_v126($1,$2,true,0)',[A,j.id]),/permission denied/);
+  s=await rpc('enter',null,null,null,j.id);assert.ok(s.result.battle_started_at);
+  await q("select set_config('request.jwt.claim.sub',$1,false)",[B]);await assert.rejects(()=>rpc('enter',null,null,null,j.id),/bulunamadı/);await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
+  await admin();await db.exec('set role service_role');const result=(await q('select ludus_caravan_verified_v126($1,$2,true,0)s',[A,j.id]))[0].s;assert.equal(Object.values(result.loot)[0],60);
+  const duplicate=(await q('select ludus_caravan_verified_v126($1,$2,false,0)s',[A,j.id]))[0].s;assert.deepEqual(result,duplicate);
+  await admin();await auth();assert.ok(Date.parse((await rpc()).cooldown_until)>Date.now());await assert.rejects(()=>rpc('start',team,'wood',randomUUID()),/bir saat/);
+  await admin();await q("update ludus_supply_private.raid_counter_v126 set cooldown_until=clock_timestamp()-interval'1 second'where owner_id=$1",[A]);await auth();
+ }
+ await assert.rejects(()=>q('select * from ludus_supply_private.escort_members_v126'),/permission denied/);await admin();
+ console.log('V126 PostgreSQL PASS: 2–5 owned fighters, escort reservation/release, 60 capacity, 4x food, direct encounters, every fourth reinforcement, independent 1/3 cargo, one-hour cooldown, service-only verified settlement, exact-once loot.');
+};

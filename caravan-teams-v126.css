@@ -1,0 +1,38 @@
+@layer game-windows {
+ #supplyModal .raid-team-strip{grid-template-columns:repeat(3,minmax(0,1fr));height:auto;min-height:82px;grid-auto-rows:minmax(40px,1fr)}
+ #supplyModal .raid-team-layout .raid-poster,#supplyModal .raid-mission-layout .raid-poster{--raid-caption:112px}
+ #supplyModal .raid-team-slot{padding:5px 7px;gap:3px;max-height:56px;border-bottom:1px solid var(--gp-line)}
+ #supplyModal .raid-team-slot>strong{font-size:11px}
+ #supplyModal .raid-weapon img{width:25px;max-height:26px}
+ #supplyModal .raid-weapon small{font-size:8px}
+ #supplyModal .raid-cooldown{margin:0;font-size:12px;color:#7d6537}
+ #supplyModal .escort-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;height:100%;min-height:0;width:100%}
+ #supplyModal .escort-figure{margin:0;display:flex;flex-direction:column;align-self:center;min-height:0;max-height:100%;border:1px solid var(--gp-line);border-radius:12px;overflow:hidden}
+ #supplyModal .escort-figure>img{display:block;object-fit:contain;aspect-ratio:3/2;width:100%;min-height:0;flex:1}
+ #supplyModal .escort-figure figcaption{padding:12px;background:#fff;flex-shrink:0;font-size:13px}
+ #supplyModal .escort-figure p{margin:5px 0 0;font-size:11px;color:var(--gp-muted)}
+ #supplyModal .escort-panel{display:flex;flex-direction:column;justify-content:center;gap:10px;min-height:0;min-width:0}
+ #supplyModal .escort-heading{display:flex;align-items:center;gap:12px;font-size:16px}
+ #supplyModal .escort-heading b{margin-left:auto;color:#927b4b;font-size:12px;white-space:nowrap}
+ #supplyModal .escort-roster{flex:1;max-height:220px}
+ #supplyModal .escort-roster .raid-fighter>img{object-fit:contain;width:24%;height:100%;min-height:0}
+ #supplyModal .escort-note{font-size:12px;color:var(--gp-muted);margin:0;line-height:1.45}
+ #supplyModal .supply-gear-top{flex-wrap:nowrap;gap:6px}
+ #supplyModal .supply-gear-top>.escort-open{min-height:30px!important;padding:5px 9px!important;font-size:12px!important;white-space:nowrap}
+ @media(max-height:500px){
+  #supplyModal .raid-team-layout .raid-poster,#supplyModal .raid-mission-layout .raid-poster{--raid-caption:92px}
+  #supplyModal .raid-team-strip{min-height:70px;grid-auto-rows:minmax(32px,1fr)}
+  #supplyModal .raid-team-slot{padding:3px 5px;max-height:44px}
+  #supplyModal .raid-team-slot>strong{font-size:9px}
+  #supplyModal .raid-weapon img{width:22px;max-height:22px}
+  #supplyModal .raid-weapon small{display:none}
+  #supplyModal .escort-layout{gap:14px}
+  #supplyModal .escort-panel{gap:6px}
+  #supplyModal .escort-note,#supplyModal .escort-heading{font-size:10px}
+  #supplyModal .escort-heading button{padding:4px 7px!important;min-height:26px!important;font-size:10px!important}
+  #supplyModal .escort-panel>.supply-primary,#supplyModal .escort-panel>.supply-secondary{min-height:30px!important;padding:5px 9px!important;font-size:11px!important}
+  #supplyModal .escort-figure figcaption{padding:8px;font-size:11px}
+  #supplyModal .escort-figure p{font-size:9px}
+  #supplyModal .supply-gear-top>.escort-open{min-height:26px!important;padding:4px 7px!important;font-size:10px!important}
+ }
+}
