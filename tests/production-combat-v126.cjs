@@ -27,10 +27,13 @@ module.exports=async({db,q,A,B,call,stock,migration,randomUUID})=>{
   const team=ids.slice(0,n===1?5:2),req=randomUUID();s=await rpc('start',team,'wood',req);const j=s.active;
   assert.equal(j.status,'ready');assert.equal(j.encounter.guards,team.length+(n===4?1:0));assert.equal(j.encounter.archers,1);assert.equal(j.encounter.quantity,60);
   assert.ok(s.regions.find(r=>r.id==='wood').choices.includes(j.encounter.cargo));assert.equal((await rpc('start',team,'wood',req)).active.encounter.attempt,n);
+  if(n===2){await admin();await q("update ludus_supply_private.raids_v124 set encounter=encounter-'rules' where id=$1",[j.id]);await db.exec(migration('caravan_arena_v127'));await auth();assert.equal((await rpc()).active.encounter.rules,127,'unstarted battles upgrade safely');}
   if(n===1)fs.writeFileSync('/tmp/raid-state-v126.json',JSON.stringify(s));
   await assert.rejects(()=>rpc('resolve',null,null,null,j.id),/ormandaki savaş/);
   await assert.rejects(()=>q('select ludus_caravan_verified_v126($1,$2,true,0)',[A,j.id]),/permission denied/);
   s=await rpc('enter',null,null,null,j.id);assert.ok(s.result.battle_started_at);
+  if(n===1){await admin();await db.exec(migration('caravan_arena_v127'));await db.exec(migration('caravan_arena_v127'));await auth();const kept=(await rpc()).active;assert.equal(kept.encounter.rules,undefined,'started V126 replay stays frozen');}
+  else assert.equal(j.encounter.rules,127,'new encounters use server-owned arena rules');
   await q("select set_config('request.jwt.claim.sub',$1,false)",[B]);await assert.rejects(()=>rpc('enter',null,null,null,j.id),/bulunamadı/);await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
   await admin();await db.exec('set role service_role');const result=(await q('select ludus_caravan_verified_v126($1,$2,true,0)s',[A,j.id]))[0].s;assert.equal(Object.values(result.loot)[0],60);
   const duplicate=(await q('select ludus_caravan_verified_v126($1,$2,false,0)s',[A,j.id]))[0].s;assert.deepEqual(result,duplicate);

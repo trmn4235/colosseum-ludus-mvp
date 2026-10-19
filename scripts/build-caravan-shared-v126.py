@@ -26,5 +26,5 @@ assets = next(s for s in scripts if s.strip().startswith('// A single validated 
 (root / 'caravan-assets-v126.js').write_text(assets)
 edge = root / 'supabase/functions/caravan-combat-v126'
 edge.mkdir(parents=True, exist_ok=True)
-for name in ['caravan-core-v126.js', 'caravan-simulation-v126.js']:
+for name in ['caravan-core-v126.js', 'caravan-simulation-v126.js', 'caravan-simulation-v127.js']:
     (edge / name).write_bytes((root / name).read_bytes())

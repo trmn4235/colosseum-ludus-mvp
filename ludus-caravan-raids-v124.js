@@ -37,7 +37,7 @@ var LudusCaravanRaids=(()=>{
     }else args.p_raid=active()?.id;
     const r=await ctx.client.rpc('ludus_caravan_raid',args);
     if(r.error){if(['P0001','22003','22P02','23514'].includes(r.error.code))clearPending();throw r.error;}
-    adopt(r.data);if(action==='start'){clearPending();view='mission';if(r.data.active)location.assign('caravan-field.html?raid='+encodeURIComponent(r.data.active.id));}else{report=r.data.result?.id;view='info';}
+    adopt(r.data);if(action==='start'){clearPending();view='mission';if(r.data.active)location.assign('caravan-field.html?raid='+encodeURIComponent(r.data.active.id)+'&v=revision127');}else{report=r.data.result?.id;view='info';}
     ctx.onChange?.();window.dispatchEvent(new CustomEvent('ludus-supply-change',{detail:{action:'raid'}}));
    }catch(e){error=e.message||'Yanıt alınamadı. Aynı işlemi güvenle yeniden deneyebilirsin.';}
    finally{busy=false;redraw();}
@@ -82,7 +82,7 @@ var LudusCaravanRaids=(()=>{
    const layout=el('div','raid-layout raid-mission-layout'),figure=poster(art+'ambush.webp','Orman yolundaki kervan ve av ekibi');figure.append(teamStrip(j.team));
    const panel=el('div','raid-panel');panel.append(el('span','raid-eyebrow','KERVAN GÖRÜNDÜ'),heading('Vakit geldi.',data.regions.find(r=>r.id===j.region)?.name+' · Roma ticaret yolu'),el('p','raid-mission-copy','Ekibin hazır. Orman yolundaki savaşa hemen katıl.'));
    panel.append(el('div','raid-rules',j.team.length+' gladyatör · '+(j.encounter?.guards||j.team.length)+' muhafız + 1 okçu'));
-   const attack=button('Kervanı Bas',()=>location.assign('caravan-field.html?raid='+encodeURIComponent(j.id)),'supply-primary raid-primary');attack.disabled=busy;panel.append(attack);layout.append(figure,panel);body.append(layout);
+   const attack=button('Kervanı Bas',()=>location.assign('caravan-field.html?raid='+encodeURIComponent(j.id)+'&v=revision127'),'supply-primary raid-primary');attack.disabled=busy;panel.append(attack);layout.append(figure,panel);body.append(layout);
   }
   function renderInfo(body){
    const layout=el('div','raid-report-layout'),reports=data.history||[],j=reports.find(j=>j.id===report)||reports[0];
@@ -99,7 +99,7 @@ var LudusCaravanRaids=(()=>{
   function render(target){
    mount=target;target.replaceChildren();const shell=el('div','raid-shell');shell.dataset.raidView=view;const toolbar=el('div','raid-toolbar');
    const back=view==='map'?button('‹ Av ekibi',()=>go('team')):view==='info'?button(active()?'‹ Pusuya dön':'‹ Av ekibi',()=>go(active()?'mission':'team')):el('span','raid-eyebrow','GÖLGELERİN İZİNDE');toolbar.append(back);
-   if(view!=='info'){const field=el('a','caravan-field-link','3D alan ↗');field.href='caravan-field.html?mode=ambush';field.setAttribute('aria-label','Baskın alanını 3D keşfet');toolbar.append(field,button('Baskın bilgileri',()=>go('info'),'raid-info-open'));}shell.append(toolbar);const body=el('div','raid-body');shell.append(body);target.append(shell);
+   if(view!=='info'){const field=el('a','caravan-field-link','3D alan ↗');field.href='caravan-field.html?mode=ambush&v=revision127';field.setAttribute('aria-label','Baskın alanını 3D keşfet');toolbar.append(field,button('Baskın bilgileri',()=>go('info'),'raid-info-open'));}shell.append(toolbar);const body=el('div','raid-body');shell.append(body);target.append(shell);
    if(!data){body.append(heading(error?'Baskın bilgileri alınamadı':'Av ekibi hazırlanıyor…'));if(error)body.append(button('Yeniden dene',refresh,'supply-primary'));}
    else if(view==='map')renderMap(body);else if(view==='mission')renderMission(body);else if(view==='info')renderInfo(body);else renderTeam(body);
    if(error){const note=el('div','raid-error',error);note.setAttribute('role','alert');shell.append(note);}

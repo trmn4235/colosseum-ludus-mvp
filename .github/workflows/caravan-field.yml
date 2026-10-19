@@ -2,9 +2,9 @@ name: Caravan forest field
 on:
   push:
     branches: [main]
-    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', '.github/workflows/caravan-field.yml']
+    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', '.github/workflows/caravan-field.yml']
   pull_request:
-    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', '.github/workflows/caravan-field.yml']
+    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', '.github/workflows/caravan-field.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,7 +24,9 @@ jobs:
       - run: node tests/caravan-field-v125.cjs
       - name: Battle and escort database fixtures
         run: LUDUS_CARAVAN_COMBAT_TEST=1 node tests/production-v119.cjs
+      - name: Arena pickup, regional controls and compatible replays
+        run: node tests/caravan-arena-v127.cjs
       - name: Shared verifier and authenticated result contract
         run: node tests/caravan-verifier-v126.cjs
       - name: Real forest battle, controls and verified replay
-        run: node tests/caravan-combat-v126.cjs
+        run: LUDUS_CARAVAN_ARENA_TEST=1 node tests/caravan-combat-v126.cjs

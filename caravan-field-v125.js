@@ -1,4 +1,4 @@
-/* The caravan environment is a read-only 3D location. Raid timers and rewards remain server-owned. */
+/* Forest environment and battle host; encounter rules and rewards remain server-owned. */
 (()=>{
  'use strict';
  const T=THREE,$=id=>document.getElementById(id),assets='assets/caravan-field-v125/';
@@ -17,7 +17,7 @@
   if(!response.ok)throw Error(label+' indirilemedi.');const buffer=await response.arrayBuffer();
   const gltf=await new T.GLTFLoader().parseAsync(buffer,'');progress(label);return gltf;
  }
- function texture(name,label){return new Promise((resolve,reject)=>{new T.TextureLoader().load(assets+name+'.webp',t=>{t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());if(name!=='road-normal')t.colorSpace=T.SRGBColorSpace;progress(label);resolve(t);},undefined,()=>reject(Error(label+' yüklenemedi.')));});}
+ function texture(name,label){return new Promise((resolve,reject)=>{new T.TextureLoader().load(assets+name+'.webp',t=>{t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());if(name!=='road-normal')t.colorSpace=T.SRGBColorSpace;progress(label);resolve(t);},undefined,()=>reject(Error(label+' yüklenemedi.')));});}
  function mesh(geo,mat,parent,x=0,y=0,z=0){const m=new T.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
  function segment(a,b,r,mat,parent){const av=new T.Vector3(...a),bv=new T.Vector3(...b),d=bv.clone().sub(av),m=mesh(new T.CylinderGeometry(r,r,d.length(),7),mat,parent);m.position.copy(av.add(bv).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),d.normalize());return m;}
  function cloneRig(source){const clone=source.clone(true),a=[],b=[];source.traverse(o=>a.push(o));clone.traverse(o=>b.push(o));const map=new Map(a.map((o,i)=>[o,b[i]]));source.traverse(o=>{if(o.isSkinnedMesh){const c=map.get(o);c.skeleton=o.skeleton.clone();c.skeleton.bones=o.skeleton.bones.map(bone=>map.get(bone));c.bindMatrix.copy(o.bindMatrix);c.bindMatrixInverse.copy(o.bindMatrixInverse);c.frustumCulled=false;}});return clone;}
@@ -36,14 +36,14 @@
   });
  }
  function makeGround(road,floor,normal){
-  floor.repeat.set(25,33);const mat=material(0xffffff,{map:floor,normalMap:normal,normalScale:new T.Vector2(.4,.4)});normal.repeat.set(25,33);
+  floor.repeat.set(25,33);const mat=material(0xffffff,{map:floor,normalMap:normal,normalScale:new T.Vector2(.62,.62)});normal.repeat.set(25,33);
   mat.onBeforeCompile=s=>{s.uniforms.roadMap={value:road};s.vertexShader='varying vec3 vForestPosition;\n'+s.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvForestPosition=position;');s.fragmentShader='uniform sampler2D roadMap;\nvarying vec3 vForestPosition;\n'+s.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
     float roadCenter=2.2*sin(vForestPosition.z*.055)+.5*sin(vForestPosition.z*.14);
     float noise=sin(vForestPosition.z*2.7+sin(vForestPosition.x*4.0))*.12+sin(vForestPosition.z*7.0)*.045;
     float roadWeight=1.0-smoothstep(2.45,3.5,abs(vForestPosition.x-roadCenter)+noise);
     vec4 roadColor=texture2D(roadMap,vec2((vForestPosition.x-roadCenter)*.24,vForestPosition.z*.24));
     float rut=1.0-.15*(1.0-smoothstep(.12,.28,abs(abs(vForestPosition.x-roadCenter)-.82)));
-    diffuseColor.rgb=mix(diffuseColor.rgb*.76,roadColor.rgb*vec3(1.02,.79,.54)*rut,roadWeight);
+    diffuseColor.rgb=mix(diffuseColor.rgb*.76,roadColor.rgb*vec3(.98,.88,.76)*rut,roadWeight);
    `);};
   const g=new T.PlaneGeometry(128,164,128,164);g.rotateX(-Math.PI/2);const pos=g.attributes.position;for(let i=0;i<pos.count;i++)pos.setY(i,height(pos.getX(i),pos.getZ(i)));g.computeVertexNormals();ground=mesh(g,mat,scene);ground.castShadow=false;
  }
@@ -59,9 +59,9 @@
   near.forEach(p=>collisions.push({x:p.x,z:p.z,r:.8}));
  }
  function makeUnderstory(fern,bush,road,floor){
-  const plants=[];for(let i=0;i<420;i++){const z=-45+random()*82,side=i%2?1:-1,x=roadX(z)+side*(3.4+random()*10);plants.push({x,z,angle:random()*6.28,scale:.65+random()*.8,tint:.8+random()*.3});}
+  const plants=[];for(let i=0;i<420;i++){const z=-45+random()*82,side=i%2?1:-1;let x=roadX(z)+side*(3.4+random()*10);if(z>3&&z<26&&Math.abs(x)<6.2)x=side*(7.7+random()*2);plants.push({x,z,angle:random()*6.28,scale:.65+random()*.8,tint:.8+random()*.3});}
   scatter(fern,plants,{normalizeHeight:.8,shadows:false});
-  const shrubs=[];for(let i=0;i<170;i++){const z=-48+random()*86,side=i%2?1:-1,x=roadX(z)+side*(3.8+random()*9);shrubs.push({x,z,angle:random()*6.28,scale:.7+random()*.8,tint:.77+random()*.25});}scatter(bush,shrubs,{normalizeHeight:1.15,shadows:true});
+  const shrubs=[];for(let i=0;i<170;i++){const z=-48+random()*86,side=i%2?1:-1;let x=roadX(z)+side*(3.8+random()*9);if(z>3&&z<26&&Math.abs(x)<7.5)x=side*(8.2+random()*3);shrubs.push({x,z,angle:random()*6.28,scale:.7+random()*.8,tint:.77+random()*.25});}scatter(bush,shrubs,{normalizeHeight:1.15,shadows:true});
   const geo=new T.IcosahedronGeometry(1,1),pos=geo.attributes.position;for(let i=0;i<pos.count;i++){const q=1+.13*Math.sin(pos.getX(i)*12+pos.getZ(i)*8);pos.setXYZ(i,pos.getX(i)*q,pos.getY(i)*q*.66,pos.getZ(i)*q);}geo.computeVertexNormals();
   const mat=material(0x858c74,{map:road}),rocks=new T.InstancedMesh(geo,mat,145),dummy=new T.Object3D();
   for(let i=0;i<145;i++){const z=-51+random()*94,side=i%2?1:-1,x=roadX(z)+side*(3.3+random()*9),scale=i<12?.55+random()*.75:.07+random()*.25;dummy.position.set(x,height(x,z)+scale*.24,z);dummy.rotation.set(random(),random()*6,random());dummy.scale.set(scale,scale*.65,scale*.9);dummy.updateMatrix();rocks.setMatrixAt(i,dummy.matrix);rocks.setColorAt(i,new T.Color().setRGB(.73+random()*.25,.78+random()*.2,.66+random()*.2));if(scale>.7)collisions.push({x,z,r:scale*.7});}
@@ -141,7 +141,7 @@
   if(allowed(camera.position.x,camera.position.z+dz))camera.position.z+=dz;
   camera.position.y=height(camera.position.x,camera.position.z)+1.72;
  }
- function resize(){if(!renderer)return;renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?56:53;camera.updateProjectionMatrix();if(!walking&&!battle)setMode(mode);}
+ function resize(){if(!renderer)return;renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?56:53;camera.updateProjectionMatrix();if(!walking&&!battle)setMode(mode);renderRequired=true;}
  function fail(message){failed=true;$('loading').hidden=false;$('loading').querySelector('strong').textContent='Alan açılamadı';$('loadDetail').textContent=message;$('loading').querySelector('.loader-ring').hidden=true;$('retry').hidden=false;$('loadBack').hidden=false;$('enter').disabled=true;}
  function bind(){
   $('enter').onclick=()=>explore(true);$('overview').onclick=()=>explore(false);$('retry').onclick=()=>location.reload();
@@ -161,26 +161,28 @@
   addEventListener('resize',resize);addEventListener('pagehide',()=>{clearInput();cancelAnimationFrame(raf);raf=0;});addEventListener('pageshow',()=>{last=0;if(ready&&!lost&&!raf)raf=requestAnimationFrame(tick);});
   $('back').onclick=e=>{if(battle){e.preventDefault();battle.pause();return;}if(document.referrer&&new URL(document.referrer).origin===location.origin&&/\/ludus\.html$/.test(new URL(document.referrer).pathname)){e.preventDefault();history.back();}};
  }
- let quality,particles;
+ let quality,particles,detail,renderRequired=true;
  function tick(now){raf=0;if(document.hidden||lost)return;const dt=Math.min(last?(now-last)/1000:0,.05);last=now;
+  const covered=document.querySelector('dialog[open],.cb-overlay:not([hidden])');
+  if(covered&&!renderRequired){quality.reset(now);raf=requestAnimationFrame(tick);return;}
   if(ready&&!document.querySelector('dialog[open]')){if(!reduceMotion){clock.value+=dt;for(const mixer of mixers)mixer.update(dt);if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(battle)battle.frame(dt);else if(walking)move(dt);}
-  renderer.render(scene,camera);frame++;
+  detail?.update(dt);renderer.render(scene,camera);renderRequired=false;frame++;
   const ratio=quality.sample(now,renderer.getPixelRatio());if(ratio!==null){renderer.setPixelRatio(ratio);renderer.setSize(innerWidth,innerHeight);}
   raf=requestAnimationFrame(tick);
  }
  async function start(){
   bind();setMode(mode);
   try{
-   renderer=new T.WebGLRenderer({canvas:$('field'),antialias:!coarse,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,coarse?1.25:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
-   quality=new ArenaRuntime.AdaptiveQuality(coarse?1.25:1.5,.875);scene=new T.Scene();scene.background=new T.Color(0xa2b3a0);scene.fog=new T.Fog(0x9ba991,30,94);camera=new T.PerspectiveCamera(53,innerWidth/innerHeight,.09,155);resize();
-   scene.add(new T.HemisphereLight(0xc7deeb,0x766d48,1.8));const sun=new T.DirectionalLight(0xffe3b1,3.25);sun.position.set(-18,29,13);sun.target.position.set(0,0,-4);scene.add(sun,sun.target);sun.castShadow=true;sun.shadow.mapSize.set(coarse?1024:2048,coarse?1024:2048);Object.assign(sun.shadow.camera,{left:-22,right:22,top:28,bottom:-25,near:1,far:80});sun.shadow.bias=-.00018;sun.shadow.normalBias=.035;
+   renderer=new T.WebGLRenderer({canvas:$('field'),antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,coarse?1.75:2));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;
+   quality=new ArenaRuntime.AdaptiveQuality(Math.min(devicePixelRatio,coarse?1.75:2),1);scene=new T.Scene();scene.background=new T.Color(0xa2b3a0);scene.fog=new T.Fog(0xa4b3a8,35,104);camera=new T.PerspectiveCamera(53,innerWidth/innerHeight,.09,155);resize();
+   scene.add(new T.HemisphereLight(0xc9dcec,0x67654b,1.6));const sun=new T.DirectionalLight(0xffe7c6,3.1);sun.position.set(-18,29,13);sun.target.position.set(0,0,-4);scene.add(sun,sun.target);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.autoUpdate=false;sun.shadow.needsUpdate=true;Object.assign(sun.shadow.camera,{left:-22,right:22,top:28,bottom:-25,near:1,far:80});sun.shadow.bias=-.00018;sun.shadow.normalBias=.035;
    const names=['horse','wagon','oak-a','oak-c','pine','fern','oak-near','oak-umbrella','bush'];total=names.length+3;
    let deadline;const loaded=await Promise.race([Promise.all([...names.map((name,i)=>loadModel(name,['At','Ahşap araba','Meşe ağaçları','Orman ağaçları','Çam ağaçları','Orman bitkileri','Yakın meşe','Geniş taçlı ağaç','Çalılıklar'][i])),texture('road','Toprak yol'),texture('forest-floor','Orman zemini'),texture('road-normal','Zemin ayrıntıları')]),new Promise((_,reject)=>{deadline=setTimeout(()=>reject(Error('Yükleme zaman aşımına uğradı. Bağlantını kontrol edip yeniden dene.')),45000);})]).finally(()=>clearTimeout(deadline));
    const models=Object.fromEntries(names.map((name,i)=>[name,loaded[i]])),[road,floor,normal]=loaded.slice(names.length);
-   makeGround(road,floor,normal);makeForest(models);makeUnderstory(models.fern,models.bush,road,floor);makeCaravan(models.wagon,models.horse,0);makeCaravan(models.wagon,models.horse,-14,.96);particles=dust();
+   makeGround(road,floor,normal);makeForest(models);makeUnderstory(models.fern,models.bush,road,floor);makeCaravan(models.wagon,models.horse,0);makeCaravan(models.wagon,models.horse,-14,.96);particles=dust();detail=CaravanDetail.create(T,scene,renderer,models.wagon,{height,mesh,segment,material,mergeStatic,collisions,coarse,reduceMotion});
    scene.updateMatrixWorld(true);renderer.shadowMap.needsUpdate=true;ready=true;setMode(mode);renderer.render(scene,camera);
    $('loading').hidden=true;$('enter').disabled=false;$('enter').innerHTML='Alanı keşfet <span aria-hidden="true">↗</span>';document.body.dataset.ready='true';
-   window.CaravanField={get ready(){return ready;},get mode(){return mode;},get walking(){return walking;},get stats(){return{drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,pixelRatio:renderer.getPixelRatio(),position:camera.position.toArray(),instances:scene.children.filter(o=>o.isInstancedMesh).reduce((n,o)=>n+o.count,0)};},scene,camera,renderer,caravans,setMode,explore,height,attachBattle(controller){clearInput();walking=false;battle=controller;document.body.classList.add('caravan-battle');$('intro').hidden=true;$('joystick').hidden=true;$('overview').hidden=true;}};
+   window.CaravanField={get ready(){return ready;},get mode(){return mode;},get walking(){return walking;},get stats(){return{drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,pixelRatio:renderer.getPixelRatio(),position:camera.position.toArray(),instances:scene.children.filter(o=>o.isInstancedMesh).reduce((n,o)=>n+o.count,0)};},scene,camera,renderer,caravans,setMode,explore,height,footDust:detail.footDust,get detail(){return detail;},attachBattle(controller){scene.traverse(o=>{if(o.isMesh)o.castShadow=false;});detail.battleShadow();sun.intensity=2.65;clearInput();walking=false;battle=controller;document.body.classList.add('caravan-battle');$('intro').hidden=true;$('joystick').hidden=true;$('overview').hidden=true;}};
    if(!raf)raf=requestAnimationFrame(tick);
   }catch(e){console.error('Caravan field:',e);fail(e.name==='TimeoutError'?'Modeller zamanında yüklenemedi. Bağlantını kontrol edip yeniden dene.':e.message||'3D görüntü bu cihazda başlatılamadı.');}
  }
