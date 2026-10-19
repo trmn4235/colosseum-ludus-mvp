@@ -1,0 +1,128 @@
+/* The raid flow stays inside its own window. Full images keep their original aspect ratio. */
+@layer game-windows {
+ #supplyModal[data-view=hunt] .supply-tabs,#supplyModal[data-view=hunt] .supply-summary,#supplyModal[data-view=hunt] .supply-footer{display:none!important}
+ #supplyModal[data-view=hunt] .supply-head{grid-template-columns:1fr auto!important;display:grid!important}
+ #supplyModal[data-view=hunt] .supply-content{display:flex!important;min-height:0!important;overflow:hidden!important}
+ #supplyModal .raid-shell{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;width:100%;height:100%;min-height:0;color:var(--gp-ink);font:14px/1.35 var(--gp-font)}
+ #supplyModal .raid-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px}
+ #supplyModal .raid-toolbar button{padding:7px 11px!important;font-size:12px!important;min-height:32px!important}
+ #supplyModal .raid-eyebrow{color:#9e8149;font-size:10px;font-weight:650;letter-spacing:1.5px!important}
+ #supplyModal .raid-body{min-width:0;min-height:0;container-type:size}
+ #supplyModal :is(.raid-layout,.raid-report-layout){display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;width:100%;height:100%;min-width:0;min-height:0;container-type:size;align-items:stretch}
+ #supplyModal .raid-poster{--raid-caption:82px;display:flex;flex-direction:column;align-self:center;justify-self:center;width:min(100%,calc((100cqh - var(--raid-caption) - 2px)*1.5));max-width:100%;max-height:100%;margin:0;border:1px solid var(--gp-line);border-radius:12px;overflow:hidden;background:#fff}
+ #supplyModal .raid-media{aspect-ratio:3/2;position:relative;flex:none;width:100%;min-height:0;overflow:hidden}
+ #supplyModal .raid-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+ #supplyModal .raid-team-strip{display:grid;grid-template-columns:1fr 1fr;flex:none;height:var(--raid-caption);min-height:0;border-top:1px solid var(--gp-line)}
+ #supplyModal .raid-team-slot{display:flex;flex-direction:column;gap:5px;padding:9px 10px;min-width:0}
+ #supplyModal .raid-team-slot+div{border-left:1px solid var(--gp-line)}
+ #supplyModal .raid-team-slot>strong{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #supplyModal .raid-weapons{display:flex;gap:6px;min-height:0;flex:1;min-width:0;align-items:center}
+ #supplyModal .raid-weapons>small{font-size:10px;color:var(--gp-muted)}
+ #supplyModal .raid-weapon{display:flex;align-items:center;gap:4px;min-width:0;flex:1;max-width:100%;height:100%}
+ #supplyModal .raid-weapon img{width:34px;height:100%;max-height:36px;object-fit:contain;flex-shrink:0}
+ #supplyModal .raid-weapon small{font-size:9px;color:var(--gp-muted);overflow:hidden;max-height:2.7em}
+ #supplyModal .raid-panel{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;justify-content:center;padding:4px 0}
+ #supplyModal .raid-heading h2{font-size:25px!important;line-height:1.14!important;margin:0 0 6px!important;letter-spacing:-.6px!important}
+ #supplyModal .raid-heading p{font-size:12px;margin:0;color:var(--gp-muted)}
+ #supplyModal .raid-team-layout .raid-heading{padding-right:50px}
+ #supplyModal .raid-count{position:absolute;right:0;top:3px;border:1px solid #eaddbe;background:#f6efe2;color:#977a41;border-radius:7px;padding:5px 9px;font-size:12px}
+ #supplyModal .raid-roster{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;flex:1;min-height:0;max-height:210px}
+ #supplyModal .raid-fighter{display:flex!important;position:relative!important;padding:0!important;min-height:0!important;min-width:0!important;text-align:left!important;overflow:hidden!important}
+ #supplyModal .raid-face{width:32%;position:relative;flex-shrink:0;min-height:0;background:#f1f3f6}
+ #supplyModal .raid-face img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top}
+ #supplyModal .raid-fighter-info{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:9px 18px 9px 9px;min-width:0}
+ #supplyModal .raid-fighter-info strong{font-size:13px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+ #supplyModal .raid-fighter-info small{font-size:10px;color:var(--gp-muted)}
+ #supplyModal .raid-fighter i{position:absolute;right:6px;top:6px;font-style:normal;font-size:13px;color:#9b7d43}
+ #supplyModal .raid-fighter[aria-pressed=true],#supplyModal .raid-history-entry[aria-pressed=true]{border-color:#b59658!important;box-shadow:0 0 0 2px #b5965817!important}
+ #supplyModal .raid-pagination{display:flex;justify-content:center;gap:15px;align-items:center}
+ #supplyModal .raid-pagination button{min-height:28px!important;height:28px!important;padding:2px 12px!important}
+ #supplyModal .raid-pagination small{font-size:11px;color:var(--gp-muted)}
+ #supplyModal .raid-note{font-size:11px!important;color:var(--gp-muted)!important;margin:0!important;line-height:1.4!important}
+ #supplyModal .raid-primary{width:100%!important;flex-shrink:0!important;font-size:14px!important;min-height:42px!important;padding:9px 12px!important}
+ #supplyModal .raid-map-layout{grid-template-columns:minmax(0,1.6fr) minmax(240px,1fr)}
+ #supplyModal .raid-map-box{display:grid;place-items:center;min-height:0;min-width:0;container-type:size}
+ #supplyModal .raid-map{position:relative;width:min(100%,200cqh);aspect-ratio:2/1;border-radius:12px;overflow:hidden;border:1px solid #cabb9b}
+ #supplyModal .raid-map-art,#supplyModal .raid-map-lines{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+ #supplyModal .raid-map-lines{pointer-events:none;filter:drop-shadow(0 1px 2px #0009)}
+ #supplyModal .raid-map-lines line{stroke:#ffe5a3;stroke-width:.6;stroke-dasharray:2 1}
+ #supplyModal .raid-map-node{position:absolute!important;transform:translate(-50%,-50%)!important;width:32px!important;height:32px!important;min-height:0!important;padding:3px!important;background:#fffffff0!important;border:2px solid #baa26e!important;border-radius:50%!important;box-shadow:0 2px 8px #0007!important}
+ #supplyModal .raid-map-node img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
+ #supplyModal .raid-map-node[data-near=true]{border-color:#ead486!important;box-shadow:0 0 0 4px #ffe49b99,0 2px 8px #0007!important}
+ #supplyModal .raid-map-node[aria-pressed=true]{border-color:#743147!important;box-shadow:0 0 0 5px #fff9,0 0 0 8px #743147bb!important}
+ #supplyModal .raid-map-hint{font-size:16px;color:var(--gp-muted);line-height:1.6;margin:8px 0}
+ #supplyModal .raid-cargo-list{display:grid;gap:6px;min-height:0}
+ #supplyModal .raid-cargo{display:flex;align-items:center;gap:10px;min-height:0;padding:6px 10px;border:1px solid var(--gp-line);border-radius:8px;background:#f8f9fb}
+ #supplyModal .raid-cargo img{width:32px;height:32px;object-fit:contain}
+ #supplyModal .raid-cargo strong{flex:1;font-size:12px}
+ #supplyModal .raid-cargo>span{font-size:12px;color:#997a3d;font-variant-numeric:tabular-nums}
+ #supplyModal .raid-rules{font-size:12px;color:#846d3d;border-top:1px solid #e7decc;padding-top:10px}
+ #supplyModal .raid-clock{font-size:44px;letter-spacing:2px!important;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2}
+ #supplyModal .raid-mission-copy{font-size:17px;line-height:1.6;color:var(--gp-muted);margin:8px 0}
+ #supplyModal .raid-report-layout{grid-template-columns:minmax(0,1fr) 240px}
+ #supplyModal .raid-report-main{display:grid;place-items:center;min-height:0;min-width:0;container-type:size}
+ #supplyModal .raid-report-main .raid-poster{--raid-caption:126px}
+ #supplyModal .raid-result-copy{flex:none;height:var(--raid-caption);padding:13px 16px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;justify-content:center}
+ #supplyModal .raid-result-copy h2{margin:0!important;font-size:20px!important;line-height:1.2!important}
+ #supplyModal .raid-result-copy p{font-size:12px;margin:0;color:var(--gp-muted)}
+ #supplyModal .raid-result-copy>small{font-size:10px;color:var(--gp-muted)}
+ #supplyModal .raid-loot{display:flex;gap:12px}
+ #supplyModal .raid-loot>div{display:flex;align-items:center;gap:9px}
+ #supplyModal .raid-loot img{width:32px;height:32px;object-fit:contain}
+ #supplyModal .raid-loot strong{font-size:14px}
+ #supplyModal .raid-history{display:flex;flex-direction:column;gap:12px;min-height:0;min-width:0;padding:4px 0}
+ #supplyModal .raid-history .raid-heading h2{font-size:19px!important}
+ #supplyModal .raid-history-list{display:grid;grid-auto-rows:minmax(0,1fr);gap:7px;min-height:0;flex:1}
+ #supplyModal .raid-history-entry{display:flex!important;gap:8px!important;padding:0!important;align-items:center!important;text-align:left!important;overflow:hidden!important;min-height:0!important}
+ #supplyModal .raid-history-entry img{height:100%;width:37%;object-fit:contain}
+ #supplyModal .raid-history-entry>span{display:flex;flex-direction:column;gap:3px}
+ #supplyModal .raid-history-entry strong{font-size:12px}
+ #supplyModal .raid-history-entry small{font-size:10px;color:var(--gp-muted)}
+ #supplyModal .raid-history-entry i{margin-left:auto;padding-right:8px;font-style:normal;color:#947a45}
+ #supplyModal .raid-error{color:#743147;background:#fbf2f5;border-radius:6px;padding:6px 10px;font-size:12px;grid-row:3}
+ @media(max-height:500px){
+  #supplyModal .raid-shell{gap:6px;font-size:12px}
+  #supplyModal .raid-toolbar{min-height:26px}
+  #supplyModal .raid-toolbar button{min-height:26px!important;padding:4px 8px!important;font-size:10px!important}
+  #supplyModal :is(.raid-layout,.raid-report-layout){gap:16px}
+  #supplyModal .raid-poster{--raid-caption:65px;border-radius:9px}
+  #supplyModal .raid-team-slot{padding:6px 7px;gap:3px}
+  #supplyModal .raid-team-slot>strong{font-size:11px}
+  #supplyModal .raid-weapon img{width:25px;max-height:27px}
+  #supplyModal .raid-weapon small{font-size:8px}
+  #supplyModal .raid-panel{gap:7px;padding:0}
+  #supplyModal .raid-heading h2{font-size:18px!important;margin-bottom:4px!important}
+  #supplyModal .raid-heading p{font-size:10px}
+  #supplyModal .raid-roster{gap:6px;max-height:150px}
+  #supplyModal .raid-fighter-info{padding:5px 16px 5px 6px;gap:2px}
+  #supplyModal .raid-fighter-info strong{font-size:11px}
+  #supplyModal .raid-fighter-info small{font-size:9px}
+  #supplyModal .raid-count{font-size:10px;padding:3px 7px;top:0}
+  #supplyModal .raid-primary{min-height:33px!important;padding:6px 8px!important;font-size:12px!important}
+  #supplyModal .raid-note{font-size:9px!important}
+  #supplyModal .raid-map-layout{grid-template-columns:minmax(0,1.5fr) minmax(230px,1fr)}
+  #supplyModal .raid-map-node{width:25px!important;height:25px!important;padding:2px!important}
+  #supplyModal .raid-cargo-list{gap:4px}
+  #supplyModal .raid-cargo{gap:7px;padding:3px 7px}
+  #supplyModal .raid-cargo img{width:24px;height:24px}
+  #supplyModal .raid-cargo strong,#supplyModal .raid-cargo>span{font-size:10px}
+  #supplyModal .raid-rules{padding-top:6px;font-size:10px}
+  #supplyModal .raid-clock{font-size:34px}
+  #supplyModal .raid-mission-copy{font-size:14px;margin:4px 0}
+  #supplyModal .raid-report-layout{grid-template-columns:minmax(0,1fr) 205px}
+  #supplyModal .raid-report-main .raid-poster{--raid-caption:96px}
+  #supplyModal .raid-result-copy{padding:7px 10px;gap:3px}
+  #supplyModal .raid-result-copy h2{font-size:15px!important}
+  #supplyModal .raid-result-copy p{font-size:10px}
+  #supplyModal .raid-result-copy>small{font-size:8px}
+  #supplyModal .raid-loot img{width:24px;height:24px}
+  #supplyModal .raid-loot strong{font-size:12px}
+  #supplyModal .raid-history{gap:7px;padding:0}
+  #supplyModal .raid-history .raid-heading h2{font-size:15px!important}
+  #supplyModal .raid-history-list{gap:4px}
+  #supplyModal .raid-history-entry strong{font-size:10px}
+  #supplyModal .raid-history-entry small{font-size:9px}
+ }
+ @media(max-height:380px){#supplyModal .raid-panel{gap:5px}#supplyModal .raid-heading h2{font-size:16px!important}#supplyModal .raid-note{font-size:8px!important}#supplyModal .raid-pagination button{min-height:23px!important;height:23px!important}#supplyModal .raid-primary{min-height:30px!important}#supplyModal .raid-result-copy h2{font-size:13px!important}}
+ @media(max-width:720px){#supplyModal :is(.raid-layout,.raid-report-layout){gap:10px}#supplyModal .raid-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}#supplyModal .raid-map-layout{grid-template-columns:minmax(0,1fr) 228px}#supplyModal .raid-report-layout{grid-template-columns:minmax(0,1fr) 170px}#supplyModal .raid-weapon small{display:none}#supplyModal .raid-fighter-info small{font-size:8px}#supplyModal .raid-fighter-info strong{font-size:10px}}
+}

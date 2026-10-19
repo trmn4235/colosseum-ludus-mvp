@@ -60,7 +60,7 @@
  ];
  const existing=new Set(['iron','copper','wood','leather','linen','grain','apple','meat','fish','egg','beer','olive_oil']);
  const known=new Set([...resources,...recipes].map(x=>x.sku));
- function photo(sku){return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
+ function photo(sku){if(sku==='mace')return 'assets/caravan-v124/mace.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
  function skuForItem(item){
   if(known.has(item?.sku))return item.sku;
   const k=item?.kind,m=item?.model;

@@ -65,6 +65,7 @@ var LudusSupply=(()=>{
   const priceHistory=new Map();
   let departureLoadout={bow:0,arrow:0},gearView=false,huntState=null,huntLoading=false,huntSaving=false,huntSelection=[],huntPage=0;
   const view={zoom:1,x:0,y:0},pointers=new Map();let gesture=null,lastTap=null,lastTouchAt=0,artRequest=0;
+  const raids=globalThis.LudusCaravanRaids?.create({client:ctx.client,ready:ctx.ready,isVisible:()=>opened&&tab==='hunt',onChange:()=>{ctx.onRaidChange?.();refresh();},canPrompt:()=>!opened&&!ctx.blocked?.()&&(ctx.canRaidPrompt?.()??!!ctx.inRoom?.()),prompt:()=>{open('hunt',true);return true;}});
   function stageSize(){const r=galleryStage.getBoundingClientRect();return {r,w:r.width||galleryStage.clientWidth,h:r.height||galleryStage.clientHeight};}
   function paintArt(){
    const {w,h}=stageSize(),ratio=(galleryImage.naturalWidth||1200)/(galleryImage.naturalHeight||800),fitW=Math.min(w,h*ratio),fitH=Math.min(h,w/ratio);
@@ -114,6 +115,7 @@ var LudusSupply=(()=>{
    const active=document.activeElement,focusId=content.contains(active)?active.id:null;
    title.textContent=gearView?'Kervancıyı hazırla':tab==='hunt'?'Kervan avı':mode==='forge'?'Demirci':tab==='stock'?'Toplama kasası':tab==='cities'?'Roma · MS 80':'Roma ve çevresi';ctx.onChestOpen?.(opened&&mode==='trade'&&tab==='stock');modal.setAttribute('aria-busy',String(busy||!!loading));modal.dataset.view=gearView?'loadout':tab==='map'&&selected?'destination':tab;modal.dataset.mode=mode;modal.dataset.source=String(tab==='map'&&atlas.some(d=>d.id===selected&&!d.food));summary.replaceChildren();tabs.replaceChildren();content.replaceChildren();frame.insertBefore(summary,content);footer.hidden=!status.textContent&&retry.hidden;
    if(opened&&mode==='trade'&&tab==='stock')acknowledge();
+   if(tab==='hunt'&&raids){raids.render(content);return;}
    if(!state){content.append(el('p','supply-empty',loading?'Toplama defteri açılıyor…':'Toplama bilgileri henüz yüklenmedi.'));return;}
    for(const [label,value]of [['Boş kervan',state.free_workers+' / '+state.workers],['Seferde',state.busy_workers],['Ludus seviyesi',state.level]]){const box=el('div');box.append(el('small','',label),el('strong','',value));summary.append(box);}
    const refreshButton=button('Yenile',refresh,'supply-secondary');refreshButton.disabled=disabled();summary.append(refreshButton);
@@ -273,11 +275,12 @@ var LudusSupply=(()=>{
    }else detail.append(el('p','supply-note','Bu türde üretim seçeneği bulunmuyor.'));
    layout.append(catalog,detail);content.append(layout);
   }
-  async function open(view){if(opened||ctx.blocked?.()||!ctx.inRoom?.())return;gearView=false;if(['stock','cities','map','needs','hunt'].includes(view)){tab=view;selected=null;page=0;}opened=true;lastFocus=document.activeElement;modal.hidden=false;ctx.onOpen?.();closeButton.focus();render();await refresh();if(tab==='hunt')await loadHunt();}
+  async function open(view,automatic=false){if(opened||ctx.blocked?.()||(!ctx.inRoom?.()&&!(automatic&&view==='hunt'&&raids?.ready&&ctx.canRaidPrompt?.())))return;gearView=false;if(['stock','cities','map','needs','hunt'].includes(view)){tab=view;selected=null;page=0;}opened=true;lastFocus=document.activeElement;modal.hidden=false;ctx.onOpen?.();closeButton.focus();render();if(tab==='hunt'&&raids){await raids.open();return;}await refresh();if(tab==='hunt')await loadHunt();}
   function close(){if(!opened)return;closeArt();opened=false;ctx.onChestOpen?.(false);modal.hidden=true;ctx.onClose?.();if(lastFocus?.isConnected&&!lastFocus.hidden)lastFocus.focus();}
   function enter(next='trade'){mode=next;point?.set(mode==='forge'?-2.8:0,mode==='forge'?1.65:2.8,mode==='forge'?-.65:-3.85);chestOpener.hidden=mode!=='trade';cityOpener.hidden=true;huntOpener.hidden=mode!=='trade';gearView=false;selected=null;page=0;tab=mode==='forge'?'craft':'map';opener.innerHTML=icon(mode==='forge'?'forge':'map');opener.title=mode==='forge'?'Demircide üretim':'Roma ve çevresi kaynak haritası';opener.setAttribute('aria-label',opener.title);opener.hidden=false;}
   function leave(){opener.hidden=chestOpener.hidden=cityOpener.hidden=huntOpener.hidden=true;close();}
   function tick(){
+   raids?.tick();
    if(point&&globalThis.LudusRoomActions){globalThis.LudusRoomActions.place(opener,point,ctx,!!ctx.inRoom?.(),mode==='forge'?3.5:8);globalThis.LudusRoomActions.place(chestOpener,chestPoint,ctx,mode==='trade'&&!!ctx.inRoom?.(),5);globalThis.LudusRoomActions.place(huntOpener,huntPoint,ctx,mode==='trade'&&!!ctx.inRoom?.(),5);}
    if(!state||Date.now()-lastTick<1000||document.hidden)return;lastTick=Date.now();
    if(opened&&(tab==='cities'||tab==='map'&&selected)&&quote){const seconds=Math.max(0,Math.ceil((Date.parse(quote.expires_at)-Date.now()-offset)/1000));const clock=content.querySelector('[data-city-clock]');if(clock)clock.textContent=Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');if(!seconds){const automatic=quote.interval_seconds===900;quote=null;render();if(automatic&&tab==='map'&&selected&&!disabled()&&!cityLoading)inspectCity(1);else message('Fiyatlar değişti. Güncel fiyatı yeniden al.');}}
@@ -293,7 +296,7 @@ var LudusSupply=(()=>{
   window.addEventListener('ludus-level-state',e=>{if(state&&Number(e.detail?.level)!==Number(state.level))refresh();});
   window.addEventListener('resize',()=>{if(opened)render();if(artOpen){paintArt();beginGesture();}});
   window.addEventListener('storage',e=>{if(e.key!=='ludus-supply-seen-v88:'+owner)return;try{const ids=JSON.parse(e.newValue||'[]');if(Array.isArray(ids)){for(const id of ids)if(typeof id==='string')seenDeliveries.add(id);updateChest();}}catch{}});
-  return {enter,leave,tick,open,close,refresh,get state(){return state;},get pending(){return pending;},get attention(){return unseen().length>0;}};
+  return {enter,leave,tick,open,close,refresh,raids,get state(){return state;},get pending(){return pending;},get attention(){return unseen().length>0;}};
  }
  return {create,atlas,paintMap};
 })();

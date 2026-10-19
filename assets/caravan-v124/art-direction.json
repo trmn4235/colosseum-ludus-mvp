@@ -1,0 +1,37 @@
+{
+  "generator": "built-in image generation",
+  "assets": [
+    {
+      "file": "mace.webp",
+      "prompt": "Use case: product-mockup. Asset: square transparent inventory icon for Roman game. First input is the precise correct weapon shape in-game; second input is the incorrect shop icon to replace. Create ONE isolated full weapon accurately matching FIRST reference: long straight plain nearly black handle, a vertical loose chain of about six large open oval gray steel links hanging from its end, a large smooth gray iron spherical head with five or six widely spaced long pronounced conical spikes projecting in different directions. The head is substantially larger than the handle thickness. Arrange handle upper left slanting gently down right into chain, chain hanging down to spiked ball lower right. Carefully preserve the FIRST reference proportions, black handle, gray ball, obvious large cone spikes. Photoreal studio rendering, subtle metal highlights. Entire weapon fits with 12% clear transparent margins, no cropping. Transparent background. No hand, no person, no text, no border, no floor, no leather-wrapped brown grip, no smooth unspiked ball. Improve material realism without changing shape.",
+      "references": [
+        "/workspace/scratch/21c5ab881ba0/upload/889EF1DC-A7CB-471E-9D58-D725392F388D.png",
+        "/workspace/scratch/21c5ab881ba0/upload/01D68AA0-D9C6-4DF3-AF0B-869F0100DB75.png"
+      ],
+      "transparent": true
+    },
+    {
+      "file": "ambush.webp",
+      "prompt": "Use case: historical-scene. Asset: cinematic photorealistic Roman caravan ambush ready screen, landscape 3:2. Reference first image for black hooded veiled gladiators and realism, second for dense forest road and Roman cart. New composition: two Roman gladiators in black wrapped hoods and face veils with only eyes visible wait discreetly among tree trunks on left foreground, one holding a spear, other a short Roman sword. On right-middle winding dirt road a horse-drawn covered wooden merchant wagon approaches, fully visible with horse, wheels, linen canopy and tunic-clad driver. Dense trees fill both sides. Dramatic late afternoon shafts through leaves, natural textures, polished historical game key art. Whole scene uncropped generous safe margin, full bodies and complete wagon, no interface, lettering, borders, logos, blood or violence. Clearly a moment before ambush.",
+      "references": [
+        "/workspace/scratch/21c5ab881ba0/colosseum-ludus-mvp/assets/caravan-v123/hunt-art.webp",
+        "/workspace/scratch/21c5ab881ba0/colosseum-ludus-mvp/assets/caravan-v123/forest-road.webp"
+      ],
+      "transparent": false
+    },
+    {
+      "file": "success.webp",
+      "prompt": "Use case: historical-scene. Asset: cinematic photorealistic SUCCESSFUL Roman caravan raid report artwork, landscape 3:2. Reference image for the two black veiled Roman gladiators, realistic bronze armor, only eyes visible. New scene after successful raid on forest dirt road: the two black-veiled gladiators stand safely beside a stationary horse-drawn Roman covered wooden merchant wagon, inspecting secured wooden crates and tied cloth cargo sacks in foreground. Calm triumphant posture, Roman short sword sheathed and spear resting upright. Horse healthy and standing. Warm golden light through dense green forest, extremely realistic materials, authentic ancient Roman equipment, balanced full-scene framing with all figures inside generous safe margins. No casualties, no fighting, no blood, no text, no interface, no logos, no trophy money spilling, no modern props.",
+      "references": [
+        "/workspace/scratch/21c5ab881ba0/colosseum-ludus-mvp/assets/caravan-v123/hunt-art.webp"
+      ],
+      "transparent": false
+    },
+    {
+      "file": "failure.webp",
+      "prompt": "Use case: historical-scene. Asset: cinematic photorealistic unsuccessful Roman caravan raid / infirmary recovery report artwork, landscape 3:2. Two adult Roman gladiators safely resting after a failed expedition in a beautiful ancient Roman ludus infirmary: on two separate low wooden beds with clean pale linen, one seated receiving a clean forearm bandage from a Roman medic, another reclining with neatly bandaged shoulder. Both conscious, calm and recovering. Their black wrapped hoods and face veils lie folded at bedside with bronze equipment. Soft daylight from an arched window, pale limestone walls, terracotta medicine bowls, peaceful compassionate atmosphere, refined natural colors and detailed materials. Clearly recovery not dying, no visible wounds, no blood, no gore, no combat. Landscape composition with both complete beds and people fitting generous margins. No text, no logo, no interface, no border.",
+      "references": [],
+      "transparent": false
+    }
+  ]
+}
