@@ -28,5 +28,5 @@ jobs:
         run: node tests/caravan-arena-v127.cjs
       - name: Shared verifier and authenticated result contract
         run: node tests/caravan-verifier-v126.cjs
-      - name: Real forest battle, controls and verified replay
-        run: LUDUS_CARAVAN_ARENA_TEST=1 node tests/caravan-combat-v126.cjs
+      - name: Battle controls, shared rigs and verified replay
+        run: LUDUS_CARAVAN_ARENA_TEST=1 LUDUS_FAST_BATTLE_TEST=1 node tests/caravan-combat-v126.cjs
