@@ -102,7 +102,7 @@ var LudusCaravanRaids=(()=>{
   function render(target){
    mount=target;target.replaceChildren();const shell=el('div','raid-shell');shell.dataset.raidView=view;const toolbar=el('div','raid-toolbar');
    const back=view==='map'?button('‹ Av ekibi',()=>go('team')):view==='info'?button(active()?'‹ Pusuya dön':'‹ Av ekibi',()=>go(active()?'mission':'team')):el('span','raid-eyebrow','GÖLGELERİN İZİNDE');toolbar.append(back);
-   if(view!=='info')toolbar.append(button('Baskın bilgileri',()=>go('info'),'raid-info-open'));shell.append(toolbar);const body=el('div','raid-body');shell.append(body);target.append(shell);
+   if(view!=='info'){const field=el('a','caravan-field-link','3D alan ↗');field.href='caravan-field.html?mode=ambush';field.setAttribute('aria-label','Baskın alanını 3D keşfet');toolbar.append(field,button('Baskın bilgileri',()=>go('info'),'raid-info-open'));}shell.append(toolbar);const body=el('div','raid-body');shell.append(body);target.append(shell);
    if(!data){body.append(heading(error?'Baskın bilgileri alınamadı':'Av ekibi hazırlanıyor…'));if(error)body.append(button('Yeniden dene',refresh,'supply-primary'));}
    else if(view==='map')renderMap(body);else if(view==='mission')renderMission(body);else if(view==='info')renderInfo(body);else renderTeam(body);
    if(error){const note=el('div','raid-error',error);note.setAttribute('role','alert');shell.append(note);}

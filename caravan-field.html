@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#18241e">
+  <title>Orman Geçidi · Colosseum & Magnus</title>
+  <link rel="stylesheet" href="caravan-field-v125.css?v=revision125">
+</head>
+<body>
+  <canvas id="field" aria-label="Ağaçlarla çevrili toprak yolda atlı kervan; sürükleyerek etrafa bak"></canvas>
+  <div class="shade" aria-hidden="true"></div>
+  <header class="field-top">
+    <a class="back" href="ludus.html" id="back" aria-label="Ludus'a dön"><svg viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></a>
+    <div class="identity"><small>COLOSSEUM <span>&</span> MAGNUS</small><h1>Orman Geçidi</h1></div>
+    <nav class="modes" aria-label="Başlangıç konumu">
+      <button type="button" data-mode="ambush" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="m5 19 14-14M14 4l6-1-1 6M4 14l6 6"/></svg>Baskın</button>
+      <button type="button" data-mode="defense" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/></svg>Savunma</button>
+    </nav>
+    <button class="icon-button" id="help" aria-label="Kontrolleri göster" title="Kontroller">?</button>
+  </header>
+  <section class="intro" id="intro">
+    <div class="eyebrow"><span></span> ROMA TİCARET YOLU</div>
+    <h2 id="roleTitle">Gölgelerin<br>arasından.</h2>
+    <p id="roleCopy">Yolun kıyısında yerini al.<br>Kervanın geçeceği alanı keşfet.</p>
+    <button class="enter" id="enter" disabled>Alan hazırlanıyor… <span aria-hidden="true">↗</span></button>
+    <small class="preview-label">Baskın ve savunma alanı · 3D önizleme</small>
+  </section>
+  <div class="field-bottom">
+    <div class="location"><span class="location-mark" aria-hidden="true">◇</span><div><strong id="locationName">Batı patikası</strong><small id="locationDetail">Pusu başlangıç noktası</small></div></div>
+    <button id="overview" hidden>Genel görünüm <span aria-hidden="true">↗</span></button>
+    <span class="look-hint" id="lookHint">Etrafa bakmak için sürükle</span>
+    <button class="credits-button" id="creditsOpen">Model kaynakları</button>
+  </div>
+  <div id="joystick" hidden aria-label="Hareket kolu"><span></span></div>
+  <div id="loading" role="status" aria-live="polite"><div class="loader-ring"></div><strong>Orman yolu hazırlanıyor</strong><span id="loadDetail">3D modeller yükleniyor…</span><button id="retry" hidden>Yeniden dene</button><a id="loadBack" href="ludus.html" hidden>Ludus'a dön</a></div>
+  <dialog id="helpDialog"><button class="dialog-close" aria-label="Kapat">×</button><small>ALANI KEŞFET</small><h2>Yol senin.</h2><p>Telefonda sol alttaki hareket kolunu kullan. Etrafa bakmak için ekranın sağını sürükle.</p><p>Bilgisayarda <b>W A S D</b> veya yön tuşlarıyla yürü; fareyle sürükleyerek bak. <b>Esc</b> genel görünüme döner.</p><p>Baskın ve Savunma düğmeleri seni iki ayrı başlangıç noktasına götürür. Bu alan önizlemesinde savaş ve ödül işlemi yapılmaz.</p><button class="dialog-action">Anladım</button></dialog>
+  <dialog id="creditsDialog"><button class="dialog-close" aria-label="Kapat">×</button><small>3D MODEL KAYNAKLARI</small><h2>Ormanın parçaları.</h2><p><b>At:</b> <a href="https://literock-studios.itch.io/warhorse-lite" target="_blank" rel="noopener">Warhorse Lite · Literock Studios</a>. Oyun içinde kullanım lisansı. Yürüme ve bekleme animasyonları korunmuştur.</p><p><b>Yakın ağaçlar:</b> <a href="https://polyyai.itch.io/3d-deciduous-trees-pack" target="_blank" rel="noopener">Polyy.AI · Deciduous Trees</a>, CC0. Mobil kullanım için sadeleştirildi.</p><p><b>Ahşap araba, orman ağaçları, bitkiler ve zemin:</b> <a href="https://www.wildfiregames.com/" target="_blank" rel="noopener">Wildfire Games · 0 A.D.</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. GLB dönüşümü, ölçek ve doku optimizasyonu; araba üzerine bez tente eklendi. Uyarlanan bu varlıklar aynı lisansla sunulur.</p><a href="assets/caravan-field-v125/CREDITS.txt" target="_blank" rel="noopener">Ayrıntılı kaynak ve lisans kaydı ↗</a></dialog>
+  <script src="owner-three-r160.js?v=revision26"></script>
+  <script src="arena-runtime-v96.js?v=revision115"></script>
+  <script src="caravan-field-v125.js?v=revision125"></script>
+</body>
+</html>

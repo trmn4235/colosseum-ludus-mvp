@@ -1,0 +1,46 @@
+COLOSSEUM & MAGNUS — ORMAN GEÇİDİ / CARAVAN FIELD V125
+
+Horse: Warhorse Lite, Copyright 2026 Literock Ventures / Literock Studios.
+Source: https://literock-studios.itch.io/warhorse-lite
+License: LICENSE-Warhorse.txt. Included only as a packaged component of this game.
+Changes: embedded textures resized to 1024px and WebP. Original rig and all four clips retained.
+The horse is not offered as a separate asset download or asset pack.
+
+Near trees: 3D Deciduous Trees Pack, Polyy.AI, CC0 1.0 Universal.
+Source: https://polyyai.itch.io/3d-deciduous-trees-pack
+Originals: tree_12_oak_green.glb; tree_01_umbrella_canopy.glb.
+Changes: mesh simplification, deduplication, 1024px WebP textures; scene scaling.
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Wagon, distant trees, fern, bush and ground textures: Wildfire Games / 0 A.D.
+https://www.wildfiregames.com/
+Source snapshot: https://github.com/0ad/0ad (archived official repository)
+https://creativecommons.org/licenses/by-sa/3.0/
+Copyright (C) 2009 Wildfire Games, Creative Commons Attribution-ShareAlike 3.0.
+Changes: Collada to GLB, Z-up to Y-up, scale conversion, static wagon bind pose,
+UV-preserving conversion, WebP textures. Wagon canopy and cargo are added in the
+scene code. These adapted art assets and added canopy/cargo art remain CC BY-SA 3.0.
+No Wildfire Games code is included. Full original art license: LICENSE-0AD.txt.
+
+0 A.D. source paths are relative to binaries/data/mods/public/art/:
+meshes/props/special/wagon_four_wheel_empty.dae
+textures/skins/props/wooden_wagon.png
+meshes/gaia/tree_oak_new_a.dae
+meshes/gaia/tree_oak_new_top_a.dae
+meshes/gaia/tree_oak_new_c.dae
+meshes/gaia/tree_oak_new_top_c.dae
+textures/skins/gaia/tree_dead.dds
+textures/skins/gaia/tree_oak_c.dds
+meshes/gaia/pine_maritime_1.dae
+meshes/gaia/pine_maritime_1_needles.dae
+textures/skins/gaia/tree_pine_maritime.png
+textures/skins/gaia/tree_pine_maritime_trunk.png
+meshes/gaia/ferns_sm_a.dae
+textures/skins/gaia/ferns_a.png
+meshes/gaia/bush_la_1.dae
+textures/skins/gaia/bush_medit_a.dds
+textures/terrain/types/medit_dirt_e.png
+textures/terrain/types/medit_dirt_c_norm.png
+textures/terrain/types/temp_forestfloor_a.dds
+
+All assets are served locally with the game; no runtime third-party model requests.

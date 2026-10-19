@@ -1,0 +1,116 @@
+{
+  "version": 125,
+  "assets": [
+    {
+      "file": "bush.glb",
+      "bytes": 6060,
+      "sha256": "75d2ce6a945b556868c9eb61d22338546ded65d91a200a32eccbebd07c065e65",
+      "triangles": 20,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "fern.glb",
+      "bytes": 27804,
+      "sha256": "1c601d28c6f09d3901997a2a69206efa4adaf4d62370d2f6fc473d1e2021c1b6",
+      "triangles": 16,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "forest-floor.webp",
+      "bytes": 154236,
+      "sha256": "dd98de53c0dfc52df5e8a18eac81fd5166aed0f8812a94e4bb43381e0a373f68"
+    },
+    {
+      "file": "horse.glb",
+      "bytes": 1175236,
+      "sha256": "e2f53f720e88e2f29bb855f3b256363c127255155e18ff0815f78ee3e463175b",
+      "triangles": 9916,
+      "animations": [
+        "canter_loop",
+        "idle_loop",
+        "rear",
+        "walk_loop"
+      ],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "oak-a.glb",
+      "bytes": 141328,
+      "sha256": "584d3e07d430ba0385d8c0532eabf07d55e7afe56d12c27cdf284eced3062108",
+      "triangles": 1012,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "oak-c.glb",
+      "bytes": 115092,
+      "sha256": "b79aba277bb75bdbcee3e30ab7ad37012ab36cbdd768dcd6133a5eefdbeb99ef",
+      "triangles": 769,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "oak-near.glb",
+      "bytes": 1605684,
+      "sha256": "0e88932f35ee6944faa031eaf64ee797fb9b1d8fa61a19c376602a90eed380e9",
+      "triangles": 7776,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "oak-umbrella.glb",
+      "bytes": 789732,
+      "sha256": "ace468759d6a6f3f2df8d243139adb43fbe73fef9ae781b26bffe133ca51f231",
+      "triangles": 8108,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "pine.glb",
+      "bytes": 192256,
+      "sha256": "21e44869f4ea4754d9002c7026d9d1b41bc4ee683785a8aab0329cba306ba59c",
+      "triangles": 251,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    },
+    {
+      "file": "road-normal.webp",
+      "bytes": 181492,
+      "sha256": "0866892faf58864816955075cb96a4a0df86619ffa20ceb76b358f19748cc8e3"
+    },
+    {
+      "file": "road.webp",
+      "bytes": 121374,
+      "sha256": "1d35b668f2e12ac5dc44baf2b40b75a4a979549280ae1d1d495a7c52efdb2f75"
+    },
+    {
+      "file": "wagon.glb",
+      "bytes": 288584,
+      "sha256": "bd69d767255a23180978af0773f8f9b5360bc689d1140f2eef3cef40ff623ef6",
+      "triangles": 2442,
+      "animations": [],
+      "requiredExtensions": [
+        "EXT_texture_webp"
+      ]
+    }
+  ],
+  "assetBytes": 4798878
+}
