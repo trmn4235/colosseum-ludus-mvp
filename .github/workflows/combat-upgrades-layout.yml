@@ -31,8 +31,8 @@ jobs:
         run: node tests/combat-values-ui-v110.cjs
       - name: Full workshop, safe areas and preserved navigation
         run: node tests/upgrades-layout-v112.cjs
-      - name: Four-card workshop, current level and upgrade request lifecycle
-        run: node tests/upgrades-layout-v134.cjs
+      - name: Bottom stone dock, split title and full-height inventory
+        run: node tests/upgrades-layout-v135.cjs
       - name: Courtyard integration and beginner quest tracking
         env:
           LUDUS_COMBAT_VALUES_TEST: '1'
