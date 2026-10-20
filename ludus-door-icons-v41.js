@@ -23,13 +23,14 @@ var LudusDoorIcons=(function(){
   c.shadowColor='#0009';c.shadowBlur=5;c.shadowOffsetY=3;
   c.fillStyle='#282929c4';c.beginPath();c.arc(64,64,55,0,Math.PI*2);c.fill();c.shadowBlur=0;c.shadowOffsetY=0;
   c.strokeStyle=attention?'#d8af5c99':'#98988d66';c.lineWidth=2;c.stroke();
-  if(kind!=='store'){c.translate(24,24);c.scale(80/24,80/24);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
+  if(kind!=='store'&&kind!=='stable'){c.translate(24,24);c.scale(80/24,80/24);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
    for(const d of paths[kind]||paths.store)c.stroke(new Path2D(d));}
   const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;textures.set(key,map);
   if(kind==='store'){
    if(caravanLoaded)paintCaravan(canvas,map);
    else{caravanCanvases.push([canvas,map]);if(!caravanImage){caravanImage=new Image();caravanImage.onload=()=>{caravanLoaded=true;for(const [surface,texture]of caravanCanvases)paintCaravan(surface,texture);caravanCanvases.length=0;};caravanImage.src=caravanAsset;}}
   }
+  if(kind==='stable'){const photo=new Image();photo.onload=()=>{c.save();c.beginPath();c.arc(64,64,52,0,Math.PI*2);c.clip();c.drawImage(photo,0,0,photo.width,photo.height,5,5,118,118);c.restore();map.needsUpdate=true;};photo.src='assets/stable-v129/horse.webp';}
   return map;
  }
  function create(T,kind,name,x,y,z,size=.36,angle=Math.PI){
@@ -38,6 +39,6 @@ var LudusDoorIcons=(function(){
   icon.position.set(x,y,z);icon.rotation.y=angle;icon.userData={kind,name,doorIcon:true};return icon;
  }
  function setAttention(T,icon,value){value=!!value;if(icon.userData.attention===value)return;icon.userData.attention=value;icon.material.map=texture(T,icon.userData.kind,value);}
- function svg(kind){if(kind==='store')return '<img class="caravan-door-photo" src="'+caravanAsset+'" alt="" width="80" height="80">';return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
+ function svg(kind){if(kind==='stable')return '<img class="caravan-door-photo" src="assets/stable-v129/horse.webp" alt="" width="80" height="80">';if(kind==='store')return '<img class="caravan-door-photo" src="'+caravanAsset+'" alt="" width="80" height="80">';return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
  return{create,setAttention,svg,caravanAsset};
 })();
