@@ -42,7 +42,7 @@ async function layout(page,label){
   for(const[width,height]of[[1536,706],[1440,900],[874,402],[852,393],[667,375],[568,320]]){
    await page.setViewportSize({width,height});await page.waitForTimeout(80);
    for(const category of['Silah','Kalkan','Miğfer','Zırh','Omuzluk','Bacaklık']){await page.locator('#itemTabs').getByRole('button',{name:category,exact:true}).click();await page.locator('.item').first().click();await layout(page,width+'x'+height+' '+category);}
-   assert.equal(await page.locator('#inventory .item').count(),height<=540?3:6);await page.locator('#nextItems').click();assert.equal(await page.locator('#inventory .item').count(),3);await page.locator('#previousItems').click();
+   assert.equal(await page.locator('#inventory .item').count(),4);await page.locator('#nextItems').click();assert.equal(await page.locator('#inventory .item').count(),4);await page.locator('#nextItems').click();assert.equal(await page.locator('#inventory .item').count(),1);await page.locator('#previousItems').click();await page.locator('#previousItems').click();
    if(width===874)await page.screenshot({path:out+'/upgrades-phone-v112.png'});
    await page.locator('#openPouch').click();await page.waitForSelector('#pouchOverlay:not([hidden])');await layout(page,width+'x'+height+' pouch');
    for(const category of['Elmas','Safir','Zümrüt','Yakut']){await page.locator('#gemTabs').getByRole('button',{name:category,exact:true}).click();await page.locator('.gem-slot:not(.empty-slot)').first().click();await layout(page,width+'x'+height+' '+category);}
