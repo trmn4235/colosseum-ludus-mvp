@@ -1,17 +1,18 @@
-/* Ahır V129. The server owns money, births, history, capacity and match results. */
+/* Ahır V130. The server owns money, births, history, capacity and match results. */
 var LudusStable=(()=>{
  'use strict';
  const traits=[['power','Güç'],['speed','Hız'],['acceleration','Hızlanma'],['agility','Çeviklik'],['stamina','Dayanıklılık'],['balance','Denge'],['courage','Cesaret'],['recovery','Toparlanma'],['burst','Patlama gücü']];
  const tabs=[['stats','Özellikler'],['history','Geçmiş'],['pedigree','Şecere'],['breeding','Çiftleştirme'],['groom','Seyis'],['market','Pazar'],['duel','Düello']];
- const photo='assets/stable-v129/horse.webp',sex=h=>h?.sex==='female'?'Dişi':'Erkek',stage=h=>({foal:'Tay',young:'Genç',adult:'Yetişkin'}[h?.stage]||''),clamp=n=>Math.max(0,Math.min(100,Number(n)||0));
+ const appearance=typeof LudusHorseAppearance!=='undefined'?LudusHorseAppearance:require('./ludus-stable-appearance-v130.js');
+ const photo=appearance.photo('dark_brown'),sex=h=>h?.sex==='female'?'Dişi':'Erkek',stage=h=>({foal:'Tay',young:'Genç',adult:'Yetişkin'}[h?.stage]||''),clamp=n=>Math.max(0,Math.min(100,Number(n)||0));
  function canCompete(h,now=Date.now()){return !!h&&h.stage==='adult'&&!h.pregnant_until&&!h.training_until&&!h.sale_price&&h.energy>=35&&Date.parse(h.fed_until)>now&&!(Date.parse(h.duel_ready)>now);}
  function time(iso,now=Date.now()){const secs=Math.max(0,Math.ceil((Date.parse(iso)-now)/1000));if(!Number.isFinite(secs)||secs===0)return 'Hazır';if(secs>=3600)return Math.floor(secs/3600)+' sa '+Math.ceil(secs%3600/60)+' dk';return secs>=60?Math.ceil(secs/60)+' dk':secs+' sn';}
  function deadline(promise){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Yanıt gecikti. İşlem kimliğin korundu; yeniden deneyebilirsin.')),15000);})]).finally(()=>clearTimeout(timer));}
  function create(ctx){
   const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;};
   const btn=(text,fn,cls='')=>{const n=el('button',cls,text);n.type='button';n.onclick=fn;return n;};
-  const img=(label='At')=>{const n=el('img');n.src=photo;n.alt=label;n.width=504;n.height=336;return n;};
-  let state=null,owner=null,chosen=null,view='stats',page=0,mode='buy',breedMode='own',busy=false,loading=false,opened=false,active=false,offset=0,pending=null,previousFocus=null,lastRefresh=0,ancestor=null,notice='',isError=false,confirmFn=null,duelRaf=0;
+  const img=(label='At',h=null)=>{const n=el('img');n.src=appearance.photo(h);n.alt=label;n.width=504;n.height=336;return n;};
+  let state=null,owner=null,chosen=null,view='stats',page=0,mode='buy',breedMode='own',founderCoat='dark_brown',founderSex='female',busy=false,loading=false,opened=false,active=false,offset=0,pending=null,previousFocus=null,lastRefresh=0,ancestor=null,notice='',isError=false,confirmFn=null,duelRaf=0;
   const hud=el('section','stable-hud');hud.hidden=true;hud.setAttribute('aria-label','Ahır');
   const hudTitle=el('div','stable-hud-title'),hudName=el('strong'),hudCapacity=el('span');hudTitle.append(hudName,hudCapacity);
   const portraits=el('div','stable-portraits'),commands=el('div','stable-commands');
@@ -32,7 +33,7 @@ var LudusStable=(()=>{
   function adopt(data){
    if(!data||data.user_id!==owner)throw Error('Ahır hesabı doğrulanamadı.');state=data;offset=Date.parse(data.server_now)-Date.now();lastRefresh=Date.now();
    if(!state.horses.some(h=>h.id===chosen))chosen=state.horses.some(h=>h.id===data.house.selected)?data.house.selected:state.horses[0]?.id;
-   ctx.onWallet?.(Number(data.gold));ctx.onHorse?.(horse()||null);render();
+   ctx.onWallet?.(Number(data.gold));ctx.onHerd?.(state.horses);ctx.onHorse?.(horse()||null);render();
   }
   async function refresh(){if(loading||busy)return;loading=true;try{await identify();const {data,error}=await deadline(ctx.client.rpc('ludus_stable'));if(error)throw error;adopt(data);message(pending?'Önceki işlemin sonucu bekleniyor. Yeniden dene ile kontrol et.':isError?'':notice,false);}catch(e){message(e.message||'Ahır yüklenemedi.',true);}finally{loading=false;render();}}
   async function act(action,args={}){if(busy||loading)return;if(pending){message('Önceki işlemi Yeniden dene ile tamamla.',true);return;}
@@ -43,14 +44,14 @@ var LudusStable=(()=>{
    if(error){if(['P0001','22003','22P02','23514','23505'].includes(error.code)){pending=null;try{localStorage.removeItem(keyed());}catch{}}throw error;}
    pending=null;try{localStorage.removeItem(keyed());}catch{}adopt(data);message(data.result?.message||'Kaydedildi.');
   }catch(e){message(e.message||'İşlem tamamlanamadı. Yeniden dene.',true);}finally{busy=false;render();}}
-  function choose(h){chosen=h.id;ancestor=null;ctx.onHorse?.(h);render();if(!pending&&!busy&&!loading)act('select',{horse:h.id});}
+  function choose(h){chosen=h.id;ancestor=null;ctx.onHorse?.(h,true);render();if(!pending&&!busy&&!loading)act('select',{horse:h.id});}
   function meter(label,value,detail){const wrap=el('div','stable-meter'),line=el('div','stable-meter-label');line.append(el('span','',label),el('strong','',detail??Math.round(clamp(value))+'/100'));const track=el('div','stable-meter-track'),fill=el('i');fill.style.width=clamp(value)+'%';track.append(fill);wrap.append(line,track);return wrap;}
   function row(...nodes){const n=el('div','stable-row');n.append(...nodes);return n;}
   function input(label,type='text',value=''){const wrap=el('label','stable-field'),n=el('input');n.type=type;n.value=value;wrap.append(el('span','',label),n);return {wrap,n};}
   function select(label,choices,value){const wrap=el('label','stable-field'),n=el('select');for(const [key,text]of choices){const o=el('option','',text);o.value=key;n.append(o);}if(value!==undefined)n.value=String(value);wrap.append(el('span','',label),n);return {wrap,n};}
   function subnav(options,value,onSelect){const n=el('div','stable-subtabs');for(const [id,label]of options){const b=btn(label,()=>{page=0;onSelect(id);render();});b.setAttribute('aria-pressed',String(id===value));n.append(b);}return n;}
   function paged(items,make,size=2){const pages=Math.max(1,Math.ceil(items.length/size));page=Math.min(page,pages-1);const wrap=el('div','stable-paged'),list=el('div','stable-list');for(const h of items.slice(page*size,(page+1)*size))list.append(make(h));if(!items.length)list.append(el('p','stable-empty','Henüz kayıt yok.'));wrap.append(list);if(pages>1){const prev=btn('‹',()=>{page--;render();}),next=btn('›',()=>{page++;render();});prev.disabled=page===0;next.disabled=page===pages-1;prev.setAttribute('aria-label','Önceki sayfa');next.setAttribute('aria-label','Sonraki sayfa');wrap.append(row(prev,el('span','',`${page+1} / ${pages}`),next));}return wrap;}
-  function identity(h,compact=false){const n=el('div','stable-identity'+(compact?' compact':'')),text=el('div');text.append(el('h3','',h.name),el('p','',`${sex(h)} · ${stage(h)} · Kalite ${h.quality}`));if(h.pregnant_until)text.append(el('small','','Gebelik · '+time(h.pregnant_until,now())));else if(h.training_until)text.append(el('small','','Antrenman · '+time(h.training_until,now())));else if(h.sale_price)text.append(el('small','','Satışta · '+h.sale_price+' denarius'));n.append(img(h.name),text);return n;}
+  function identity(h,compact=false){const n=el('div','stable-identity'+(compact?' compact':'')),text=el('div');text.append(el('h3','',h.name),el('p','',`${sex(h)} · ${stage(h)} · ${appearance.coat(h).name} · Kalite ${h.quality}`));if(h.pregnant_until)text.append(el('small','','Gebelik · '+time(h.pregnant_until,now())));else if(h.training_until)text.append(el('small','','Antrenman · '+time(h.training_until,now())));else if(h.sale_price)text.append(el('small','','Satışta · '+h.sale_price+' denarius'));n.append(img(h.name,h),text);return n;}
   function noHorse(){const box=el('div','stable-welcome');box.append(img('Roma ahırında bir at'),el('h3','','İlk atını ahıra getir'),el('p','','Dişi ve erkek atlar aynı üst performansa ulaşabilir. Yetiştir, soyunu sürdür ve satışa çıkar.'),btn('At pazarını aç',()=>{view='market';mode='buy';render();},'primary'));return box;}
   function statsView(h){
    const layout=el('div','stable-details'),hero=el('div','stable-hero');hero.append(identity(h),meter('Beslenme',h.feed_bar),meter('Enerji',h.energy));
@@ -82,7 +83,15 @@ var LudusStable=(()=>{
    const stock=el('article','stable-care-box');stock.append(el('h3','','Yem deposu'));for(const [g,name]of grades)stock.append(el('p','',`${name} · ${state.house.feed_stock[g]||0} öğün`));const qty=input('Öğün miktarı','number',10);qty.n.min=1;qty.n.max=100;const buy=btn('Yem al',()=>{const g=Number(feed.n.value),q=Number(qty.n.value),cost=q*({50:2,75:4,100:7}[g]||0);confirm(q+' öğün yem · '+cost+' denarius. Satın al?',()=>act('buy_feed',{grade:g,quantity:q}));},'primary');stock.append(row(qty.wrap,buy),el('small','','Öğün fiyatları: 2 / 4 / 7 denarius. Bir öğün 6 saat besler; stok bitince yemlik durur.'));grid.append(care,stock);body.append(grid);
   }
   function marketView(h){body.append(subnav([['buy','Yetiştirici'],['players','Oyuncu pazarı'],['sell','Atımı sat']],mode,x=>mode=x));
-   if(mode==='buy'){const grid=el('div','stable-list');for(const sx of ['female','male']){const box=el('article','stable-offer');box.append(img(),el('h3','',sx==='female'?'Yetişkin dişi at':'Yetişkin erkek at'),el('p','','350 denarius · Genler 60–80'),btn('Satın al',()=>confirm('350 denarius karşılığında yetişkin at satın al?',()=>act('buy_founder',{sex:sx})),'primary'));grid.append(box);}body.append(grid,el('p','stable-note','Her atın özellik dağılımı farklıdır. İki cinsiyetin de üst sınırı aynıdır. İlk 6 saatlik yem ve günlük bakım dahildir.'));return;}
+   if(mode==='buy'){
+    const spec=appearance.coat(founderCoat),layout=el('div','stable-founder'),figure=el('figure','stable-founder-figure'),form=el('div','stable-founder-form');
+    figure.append(img(spec.name+' at',{coat:spec.id}));
+    const coatPick=select('Görünüm',appearance.coats.map(c=>[c.id,c.name]),founderCoat),sexPick=select('Cinsiyet',[['female','Dişi'],['male','Erkek']],founderSex);
+    coatPick.n.setAttribute('aria-label','At görünümü');sexPick.n.setAttribute('aria-label','At cinsiyeti');
+    coatPick.n.onchange=()=>{founderCoat=coatPick.n.value;render();};sexPick.n.onchange=()=>{founderSex=sexPick.n.value;};
+    form.append(el('h3','',spec.name),row(coatPick.wrap,sexPick.wrap),el('strong','stable-founder-price','350 denarius'),el('p','stable-note','Yetişkin · Genler 60–80 · İlk yem ve bakım dahil'),btn('Satın al',()=>confirm(spec.name+' '+(founderSex==='female'?'dişi':'erkek')+' at · 350 denarius. Satın al?',()=>act('buy_founder',{sex:founderSex,coat:founderCoat})),'primary'));
+    layout.append(figure,form);body.append(layout,el('p','stable-note','Yedi görünümün güce etkisi yoktur. Dişi ve erkek atlar aynı üst performansa ulaşabilir.'));return;
+   }
    if(mode==='players'){body.append(paged(state.market,x=>{const box=el('article','stable-offer');box.append(identity(x,true),el('p','',x.seller+' · '+x.sale_price+' denarius'),row(btn('İncele',()=>{showMarketHorse(x);}),btn('Satın al',()=>confirm(x.name+' · '+x.sale_price+' denarius. Satın al?',()=>act('buy',{horse:x.id,price:x.sale_price})),'primary')));return box;}));return;}
    if(!h){body.append(noHorse());return;}body.append(identity(h,true));const price=input('Satış fiyatı · denarius','number',h.sale_price||1000);price.n.min=1;price.n.max=1000000;const listing=btn('Satışa çıkar',()=>confirm(h.name+' için satış ilanı oluştur?',()=>act('list',{horse:h.id,price:Number(price.n.value)})),'primary');listing.disabled=!!h.pregnant_until||!!h.training_until;body.append(row(price.wrap,listing));if(h.sale_price)body.append(btn('İlanı kaldır',()=>act('unlist',{horse:h.id})));const instant=btn('Yetiştiriciye sat · '+h.npc_price+' denarius',()=>confirm(h.name+' adlı atı '+h.npc_price+' denarius karşılığında sat? At ahırından ayrılacak.',()=>act('sell_npc',{horse:h.id})));instant.disabled=!!h.pregnant_until||!!h.training_until;body.append(instant,el('p','stable-note','Satışta isim, şecere, gıda ve antrenman geçmişi aynen devredilir. Gebelikte veya antrenmanda satış kapalıdır.'));
   }
@@ -90,7 +99,7 @@ var LudusStable=(()=>{
   function duelView(h){
    const d=state.duel,ongoing=d&&!d.finished_at;
    if(ongoing){body.append(el('h3','','Atlı düello · Üç karşılaşma'),el('p','stable-note','İbre altın alana geldiğinde hamle yap. İlk karşılaşma patlama, ikincisi denge, sonuncusu son atak.'),el('div','stable-duel-track'));
-    const track=body.querySelector('.stable-duel-track'),lane=el('div','stable-duel-lane');lane.append(img('Senin atın'),img('Rakip at'));track.append(lane);
+    const track=body.querySelector('.stable-duel-track'),lane=el('div','stable-duel-lane');lane.append(img('Senin atın',state.horses.find(x=>x.id===d.horse_id)||h),img('Rakip at'));track.append(lane);
     const timing=el('div','stable-timing'),target=el('span','stable-target'),cursor=el('i','stable-cursor');timing.append(target,cursor);body.append(timing,row(el('strong','stable-round'),btn('Hamle yap',()=>{const round=Math.floor((now()-Date.parse(d.started_at))/6000);act('duel_hit',{id:d.id,round});},'primary stable-hit')),btn('Sonucu göster',()=>act('duel_finish',{id:d.id}),'stable-finish'));updateDuel();return;
    }
    body.append(identity(h,true),el('h3','','Atlı düello'),el('p','stable-note','Atın özellikleri %75, üç hamledeki zamanlaman %25 etki eder. Her düello enerji tüketir; yeniden katılım için 1 saat dinlenirsin.'));
@@ -104,7 +113,7 @@ var LudusStable=(()=>{
    if(hit)hit.disabled=busy||!!pending||elapsed<round*6000+1500||elapsed>(round+1)*6000||d.controls.some(c=>c.round===round)||elapsed>=18000;if(finish)finish.disabled=busy||elapsed<19000;
    const lane=body.querySelector('.stable-duel-lane');if(lane)lane.style.setProperty('--run',String(Math.min(1,position/100)));
   }
-  function renderHUD(){hud.hidden=!active||opened||ctx.blocked?.();if(!active)return;hudName.textContent=horse()?.name||'Ahır';hudCapacity.textContent=state?`${state.horses.length}+${state.reserved} / ${state.capacity} · Ludus ${state.level}`:'Yükleniyor…';portraits.replaceChildren();if(state){const index=Math.max(0,state.horses.findIndex(h=>h.id===chosen)),start=Math.floor(index/4)*4;if(state.horses.length>4)portraits.append(btn('‹',()=>choose(state.horses[(index-1+state.horses.length)%state.horses.length])));for(const h of state.horses.slice(start,start+4)){const b=btn('',()=>choose(h),'stable-portrait');b.setAttribute('aria-pressed',String(h.id===horse()?.id));b.append(img(h.name),el('span','',h.name));portraits.append(b);}if(state.horses.length>4)portraits.append(btn('›',()=>choose(state.horses[(index+1)%state.horses.length])));}}
+  function renderHUD(){hud.hidden=!active||opened||ctx.blocked?.();if(!active)return;hudName.textContent=horse()?.name||'Ahır';hudCapacity.textContent=state?`${state.horses.length}+${state.reserved} / ${state.capacity} · Ludus ${state.level}`:'Yükleniyor…';portraits.replaceChildren();if(state){const index=Math.max(0,state.horses.findIndex(h=>h.id===chosen)),start=Math.floor(index/4)*4;if(state.horses.length>4)portraits.append(btn('‹',()=>choose(state.horses[(index-1+state.horses.length)%state.horses.length])));for(const h of state.horses.slice(start,start+4)){const b=btn('',()=>choose(h),'stable-portrait');b.setAttribute('aria-pressed',String(h.id===horse()?.id));b.append(img(h.name,h),el('span','',h.name));portraits.append(b);}if(state.horses.length>4)portraits.append(btn('›',()=>choose(state.horses[(index+1)%state.horses.length])));}}
   function render(){renderHUD();if(!opened)return;const h=horse();title.textContent='Ahır'+(h?' · '+h.name:'');summary.textContent=state?`${state.gold} denarius · ${state.horses.length} at + ${state.reserved} tay yeri / ${state.capacity}`:'Ahır kayıtları yükleniyor…';nav.replaceChildren();for(const [key,label]of tabs){const b=btn(label,()=>{view=key;page=0;ancestor=null;render();});b.setAttribute('aria-pressed',String(view===key));nav.append(b);}body.replaceChildren();
    if(!state){body.append(el('p','stable-empty',isError?'Ahır bilgisi alınamadı. Yeniden deneyebilirsin.':'At kayıtları hazırlanıyor…'));}
    else {if(state.horses.length>1){const selector=select('At seç',state.horses.map(h=>[h.id,h.name+' · '+sex(h)+' · '+stage(h)]),h?.id);selector.wrap.classList.add('stable-horse-select');selector.n.onchange=()=>choose(state.horses.find(h=>h.id===selector.n.value));body.append(selector.wrap);}

@@ -24,6 +24,7 @@ const {PGlite}=require(process.env.LUDUS_PGLITE_MODULE||'@electric-sql/pglite');
  await assert.rejects(()=>call('buy_founder',{sex:'invalid'}),/cinsiyet/);
  const request=randomUUID();s=await call('buy_founder',{sex:'female'},request);const mare=s.horses[0].id;const genes=s.horses[0].genes;
  assert.equal(Object.keys(genes).length,9);assert.ok(genes.burst);assert.equal(s.gold,9650);
+ await db.exec('reset role');await db.exec(fs.readFileSync(path.join(p,fs.readdirSync(p).find(f=>f.endsWith('_stable_coats_v130.sql'))),'utf8'));await owner(A);s=await call();assert.equal(s.horses[0].coat,'dark_brown','existing horse retains its original coat after upgrade');
  s=await call('buy_founder',{sex:'female'},request);assert.equal(s.horses.length,1);assert.equal(s.gold,9650);
  await assert.rejects(()=>call('buy_founder',{sex:'male'},request),/başka/);
  s=await call('buy_founder',{sex:'male'});const stallion=s.horses.find(h=>h.sex==='male').id;
@@ -89,5 +90,10 @@ const {PGlite}=require(process.env.LUDUS_PGLITE_MODULE||'@electric-sql/pglite');
  s=await call();assert.equal(s.house.feed_stock['100'],0);assert.equal(s.horses.length,3);assert.ok(s.horses.every(h=>h.nutrition>49&&h.nutrition<51),'one ration per horse when stock is limited');
  if(process.env.STABLE_FIXTURE_PATH)fs.writeFileSync(process.env.STABLE_FIXTURE_PATH,JSON.stringify(await call()));
  await db.exec('reset role;set role anon');await assert.rejects(()=>q('select ludus_stable()'),/permission denied/);
+ const C=randomUUID();await admin('insert into ludus_accounts(user_id)values($1)',[C]);await admin('insert into ludus_progression(owner_id,experience)values($1,ludus_private.level_threshold(50))',[C]);await owner(C);
+ const coats=['white','grey','light_brown','dark_brown','black','pinto','caramel'];
+ for(const coat of coats){const r=await call('buy_founder',{sex:'female',coat});assert.equal(r.horses.find(h=>h.id===r.result.horse).coat,coat);}
+ const beforeInvalid=(await call()).gold;await assert.rejects(()=>call('buy_founder',{sex:'male',coat:'purple'}),/görünüm/);assert.equal((await call()).gold,beforeInvalid);
+ await owner(A);
  console.log('PASS stable V129: capacity, nutrition history, training, births, trade, pedigree, paid mating, equal sexes, timed duels and access control');await db.close();
 })().catch(e=>{console.error(e);process.exit(1)});

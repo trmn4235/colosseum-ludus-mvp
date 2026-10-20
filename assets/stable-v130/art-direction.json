@@ -1,0 +1,43 @@
+{
+  "mode": "built-in image_gen",
+  "use_case": "photorealistic-natural",
+  "prompt_template": "One photorealistic adult horse, full body with all four hooves and both ears in frame, standing in three-quarter profile facing left, pale Roman plaster and wooden stable background, grey stone floor, neutral daylight; no tack, rider, text, logo or watermark. 3:2 landscape.",
+  "variants": {
+    "white": {
+      "promptVariant": "a pure white coat with an ivory-white mane and tail, dark eyes and a pale grey muzzle"
+    },
+    "grey": {
+      "promptVariant": "a cool medium-grey coat with subtle dapples, a darker charcoal mane and tail, dark eyes"
+    },
+    "light_brown": {
+      "promptVariant": "a light warm chestnut-brown coat, rich chestnut mane and tail, dark eyes, NOT blond or beige"
+    },
+    "dark_brown": {
+      "promptVariant": "a dark chocolate bay-brown coat, black mane and tail, dark eyes"
+    },
+    "black": {
+      "promptVariant": "a deep natural jet-black coat with soft readable highlights, black mane and tail, dark eyes"
+    },
+    "pinto": {
+      "promptVariant": "a light chestnut-brown coat with large clearly visible irregular white patches on the body, a broad white blaze on the face and white socks, brown and ivory mane"
+    },
+    "caramel": {
+      "promptVariant": "a medium caramel-brown coat in between light chestnut and dark brown, warm golden-brown body with a dark brown mane and tail, dark eyes"
+    }
+  },
+  "optimized": {
+    "width": 768,
+    "height": 512,
+    "format": "webp",
+    "quality": 85
+  },
+  "paths": [
+    "assets/stable-v130/white.webp",
+    "assets/stable-v130/grey.webp",
+    "assets/stable-v130/light_brown.webp",
+    "assets/stable-v130/dark_brown.webp",
+    "assets/stable-v130/black.webp",
+    "assets/stable-v130/pinto.webp",
+    "assets/stable-v130/caramel.webp"
+  ]
+}

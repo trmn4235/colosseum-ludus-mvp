@@ -65,8 +65,8 @@ const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHe
   assert.equal(await page.locator('#accountSummary .money').count(),5);
   assert.equal(await page.locator('#caravanHud').evaluate(e=>e.nextElementSibling.id),'ludusLevelBadge');
   assert.equal(await page.locator('#accountSummary').evaluate(e=>e.textContent.includes('Test Ludus')),false);
-  assert.equal(await page.locator('#caravanHud img').getAttribute('src'),await page.evaluate(()=>LudusDoorIcons.caravanAsset));
-  assert.ok(await page.evaluate(()=>LudusDoorIcons.svg('store').includes(LudusDoorIcons.caravanAsset)));
+  assert.equal(await page.locator('#caravanHud img').count(),0);assert.equal(await page.locator('#caravanHud svg').getAttribute('stroke'),'currentColor');
+  assert.ok(await page.evaluate(()=>['store','stable','dining'].every(k=>LudusDoorIcons.svg(k).includes('stroke="currentColor"')&&!LudusDoorIcons.svg(k).includes('<img'))));
   await page.screenshot({path:out+'/hud-busy-932.png'});
   for(const [width,height]of [[1366,768],[932,430],[844,390],[768,353],[667,375]]){
    await page.setViewportSize({width,height});

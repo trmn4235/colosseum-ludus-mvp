@@ -1,8 +1,6 @@
 /* Muted gray pictograms. Only a door with pending work turns gold. */
 var LudusDoorIcons=(function(){
- const textures=new Map(),caravanAsset='assets/items-v119/caravan.webp';
- let caravanImage=null,caravanLoaded=false;const caravanCanvases=[];
- function paintCaravan(canvas,map){const c=canvas.getContext('2d');c.drawImage(caravanImage,8,8,112,112);map.needsUpdate=true;}
+ const textures=new Map();
  const paths={
   exit:['M15 8V3H3v18h12v-5','M10 12h12m-5-5 5 5-5 5'],
   office:['M6 4h11v16H6z','M6 4H4v4h2M17 16h3v4h-3','M9 8h5M9 11h5M9 14h3'],
@@ -13,6 +11,7 @@ var LudusDoorIcons=(function(){
   armory:['M3 9h18l-5 5h-2v5h4v2H6v-2h4v-5H7Z','M7 3l4 3-2 3-5-3Z'],
   infirmary:['M9 3h6v6h6v6h-6v6H9v-6H3V9h6z'],
   dining:['M3 3v6M6 3v6M9 3v6M3 8q3 5 6 0M6 12v9','M19 3q-4 3-4 10h4M19 3v18','M12 8a4 4 0 0 1 0 8'],
+  stable:['M5 21v-5l4-5-3-1 4-7 2 3 4-3 1 6 4 5-1 3-6-1-2 5z','M14 9h.01M9 12l4 2'],
   store:['M3 9h10v8H3zM4 9V7a4 4 0 0 1 8 0v2','M5 17a2 2 0 1 0 .01 0M11 17a2 2 0 1 0 .01 0','M13 14h4l2-5 3 1-1-4-2 1-2 7v6m4-9v9'],
   arena:['M5 4l6 5-3 3zM8 12l9 9M14 18l4-4','M19 4l-6 5 3 3zM16 12l-9 9M6 14l4 4','M3 5Q0 14 5 20M21 5q3 9-2 15'],
   market:['M12 3v18M7 21h10M4 7h16','M6 7l-4 8h8zM18 7l-4 8h8z']
@@ -23,14 +22,9 @@ var LudusDoorIcons=(function(){
   c.shadowColor='#0009';c.shadowBlur=5;c.shadowOffsetY=3;
   c.fillStyle='#282929c4';c.beginPath();c.arc(64,64,55,0,Math.PI*2);c.fill();c.shadowBlur=0;c.shadowOffsetY=0;
   c.strokeStyle=attention?'#d8af5c99':'#98988d66';c.lineWidth=2;c.stroke();
-  if(kind!=='store'&&kind!=='stable'){c.translate(24,24);c.scale(80/24,80/24);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
-   for(const d of paths[kind]||paths.store)c.stroke(new Path2D(d));}
+  c.translate(24,24);c.scale(80/24,80/24);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
+  for(const d of paths[kind]||paths.store)c.stroke(new Path2D(d));
   const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;textures.set(key,map);
-  if(kind==='store'){
-   if(caravanLoaded)paintCaravan(canvas,map);
-   else{caravanCanvases.push([canvas,map]);if(!caravanImage){caravanImage=new Image();caravanImage.onload=()=>{caravanLoaded=true;for(const [surface,texture]of caravanCanvases)paintCaravan(surface,texture);caravanCanvases.length=0;};caravanImage.src=caravanAsset;}}
-  }
-  if(kind==='stable'){const photo=new Image();photo.onload=()=>{c.save();c.beginPath();c.arc(64,64,52,0,Math.PI*2);c.clip();c.drawImage(photo,0,0,photo.width,photo.height,5,5,118,118);c.restore();map.needsUpdate=true;};photo.src='assets/stable-v129/horse.webp';}
   return map;
  }
  function create(T,kind,name,x,y,z,size=.36,angle=Math.PI){
@@ -39,6 +33,6 @@ var LudusDoorIcons=(function(){
   icon.position.set(x,y,z);icon.rotation.y=angle;icon.userData={kind,name,doorIcon:true};return icon;
  }
  function setAttention(T,icon,value){value=!!value;if(icon.userData.attention===value)return;icon.userData.attention=value;icon.material.map=texture(T,icon.userData.kind,value);}
- function svg(kind){if(kind==='stable')return '<img class="caravan-door-photo" src="assets/stable-v129/horse.webp" alt="" width="80" height="80">';if(kind==='store')return '<img class="caravan-door-photo" src="'+caravanAsset+'" alt="" width="80" height="80">';return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
- return{create,setAttention,svg,caravanAsset};
+ function svg(kind){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
+ return{create,setAttention,svg};
 })();
