@@ -11,7 +11,7 @@
  const height=(x,z)=>{const distance=Math.abs(x-roadX(z)),edge=T.MathUtils.smoothstep(distance,3.1,9);return edge*(.5+.32*Math.sin(x*.27+z*.17)+.15*Math.cos(z*.4))+.035*Math.sin(x*1.5+z*.5);};
  const material=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.9,...extra});
  let count=0,total=10;
- function progress(label){if(failed)return;count++;$('loadDetail').textContent=label+' · '+count+' / '+total;}
+ function progress(label){if(failed)return;count++;CaravanLoading.set('forest',count/total,label+' · '+count+' / '+total);}
  async function loadModel(name,label){
   const response=await fetch(assets+name+'.glb',{signal:AbortSignal.timeout(35000)});
   if(!response.ok)throw Error(label+' indirilemedi.');const buffer=await response.arrayBuffer();
@@ -103,13 +103,17 @@
   const root=new T.Group();root.position.set(roadX(z),height(roadX(z),z),z);root.scale.setScalar(scale);root.rotation.y=-.12;scene.add(root);
   const cart=wagon.scene.clone(true);cart.rotation.y=Math.PI;cart.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});root.add(cart);makeCanopy(root);makeCargo(root,wagon);
   const animal=cloneRig(horse.scene);animal.position.set(0,0,5.35);animal.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;o.material=o.material.clone();o.material.emissiveMap=o.material.map;o.material.emissive.setHex(0xffffff);o.material.emissiveIntensity=.16;}});root.add(animal);
-  const mixer=new T.AnimationMixer(animal),idle=horse.animations.find(c=>c.name==='idle_loop');if(idle){mixer.clipAction(idle).play();mixer.setTime(random()*3);}mixers.push(mixer);
+  const mixer=new T.AnimationMixer(animal),idleClip=horse.animations.find(c=>c.name==='idle_loop'),rearClip=horse.animations.find(c=>c.name==='rear'),idle=idleClip?mixer.clipAction(idleClip):null,rear=rearClip?mixer.clipAction(rearClip):null;
+  if(idle){idle.play();mixer.setTime(random()*3);idle.timeScale=1.12;}if(rear){rear.setLoop(T.LoopOnce,1);rear.clampWhenFinished=true;}mixers.push(mixer);
+  let startled=false,rearUntil=-1;
+  function startle(){if(startled||!rear)return false;startled=true;rear.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(.18).play();idle?.fadeOut(.18);rearUntil=mixer.time+rearClip.duration-.28;return true;}
+  function settle(){if(rearUntil>=0&&mixer.time>=rearUntil){rear.fadeOut(.28);idle?.reset().fadeIn(.28).play();rearUntil=-1;}}
   const leather=material(0x342b20),wood=material(0x665037);
   for(const side of [-1,1]){
    segment([side*.6,.88,2.2],[side*.56,.84,5.55],.033,wood,root);
    const curve=new T.CatmullRomCurve3([new T.Vector3(side*.3,1.45,2.2),new T.Vector3(side*.42,1.28,4),new T.Vector3(side*.25,1.62,6.3)]);mesh(new T.TubeGeometry(curve,20,.009,5,false),leather,root);
   }
-  mergeStatic(root,animal);caravans.push({root,animal});return root;
+  mergeStatic(root,animal);caravans.push({root,animal,mixer,idle,rear,startle,settle,get startled(){return startled;}});return root;
  }
  function dust(){
   const pos=[];for(let i=0;i<90;i++)pos.push((random()-.5)*28,.5+random()*9,-25+random()*45);const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));
@@ -142,7 +146,7 @@
   camera.position.y=height(camera.position.x,camera.position.z)+1.72;
  }
  function resize(){if(!renderer)return;renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?56:53;camera.updateProjectionMatrix();if(!walking&&!battle)setMode(mode);renderRequired=true;}
- function fail(message){failed=true;$('loading').hidden=false;$('loading').querySelector('strong').textContent='Alan açılamadı';$('loadDetail').textContent=message;$('loading').querySelector('.loader-ring').hidden=true;$('retry').hidden=false;$('loadBack').hidden=false;$('enter').disabled=true;}
+ function fail(message){failed=true;CaravanLoading.fail(message);$('enter').disabled=true;}
  function bind(){
   $('enter').onclick=()=>explore(true);$('overview').onclick=()=>explore(false);$('retry').onclick=()=>location.reload();
   document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
@@ -163,9 +167,9 @@
  }
  let quality,particles,detail,renderRequired=true;
  function tick(now){raf=0;if(document.hidden||lost)return;const dt=Math.min(last?(now-last)/1000:0,.05);last=now;
-  const covered=document.querySelector('dialog[open],.cb-overlay:not([hidden])');
+  const covered=document.querySelector('dialog[open],#loading:not([hidden]),.cb-overlay:not([hidden])');
   if(covered&&!renderRequired){quality.reset(now);raf=requestAnimationFrame(tick);return;}
-  if(ready&&!document.querySelector('dialog[open]')){if(!reduceMotion){clock.value+=dt;for(const mixer of mixers)mixer.update(dt);if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(battle)battle.frame(dt);else if(walking)move(dt);}
+  if(ready&&!document.querySelector('dialog[open]')){for(const mixer of mixers)mixer.update(dt);for(const c of caravans)c.settle();if(!reduceMotion){clock.value+=dt;if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(battle)battle.frame(dt);else if(walking)move(dt);}
   detail?.update(dt);renderer.render(scene,camera);renderRequired=false;frame++;
   const ratio=quality.sample(now,renderer.getPixelRatio());if(ratio!==null){renderer.setPixelRatio(ratio);renderer.setSize(innerWidth,innerHeight);}
   raf=requestAnimationFrame(tick);
@@ -173,7 +177,7 @@
  async function start(){
   bind();setMode(mode);
   try{
-   renderer=new T.WebGLRenderer({canvas:$('field'),antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,coarse?1.75:2));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;
+   renderer=new T.WebGLRenderer({canvas:$('field'),antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,coarse?1.75:2));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;
    quality=new ArenaRuntime.AdaptiveQuality(Math.min(devicePixelRatio,coarse?1.75:2),1);scene=new T.Scene();scene.background=new T.Color(0xa2b3a0);scene.fog=new T.Fog(0xa4b3a8,35,104);camera=new T.PerspectiveCamera(53,innerWidth/innerHeight,.09,155);resize();
    scene.add(new T.HemisphereLight(0xc9dcec,0x67654b,1.6));const sun=new T.DirectionalLight(0xffe7c6,3.1);sun.position.set(-18,29,13);sun.target.position.set(0,0,-4);scene.add(sun,sun.target);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.autoUpdate=false;sun.shadow.needsUpdate=true;Object.assign(sun.shadow.camera,{left:-22,right:22,top:28,bottom:-25,near:1,far:80});sun.shadow.bias=-.00018;sun.shadow.normalBias=.035;
    const names=['horse','wagon','oak-a','oak-c','pine','fern','oak-near','oak-umbrella','bush'];total=names.length+3;
@@ -181,8 +185,8 @@
    const models=Object.fromEntries(names.map((name,i)=>[name,loaded[i]])),[road,floor,normal]=loaded.slice(names.length);
    makeGround(road,floor,normal);makeForest(models);makeUnderstory(models.fern,models.bush,road,floor);makeCaravan(models.wagon,models.horse,0);makeCaravan(models.wagon,models.horse,-14,.96);particles=dust();detail=CaravanDetail.create(T,scene,renderer,models.wagon,{height,mesh,segment,material,mergeStatic,collisions,coarse,reduceMotion});
    scene.updateMatrixWorld(true);renderer.shadowMap.needsUpdate=true;ready=true;setMode(mode);renderer.render(scene,camera);
-   $('loading').hidden=true;$('enter').disabled=false;$('enter').innerHTML='Alanı keşfet <span aria-hidden="true">↗</span>';document.body.dataset.ready='true';
-   window.CaravanField={get ready(){return ready;},get mode(){return mode;},get walking(){return walking;},get stats(){return{drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,pixelRatio:renderer.getPixelRatio(),position:camera.position.toArray(),instances:scene.children.filter(o=>o.isInstancedMesh).reduce((n,o)=>n+o.count,0)};},scene,camera,renderer,caravans,setMode,explore,height,footDust:detail.footDust,get detail(){return detail;},attachBattle(controller){scene.traverse(o=>{if(o.isMesh)o.castShadow=false;});detail.battleShadow();sun.intensity=2.65;clearInput();walking=false;battle=controller;document.body.classList.add('caravan-battle');$('intro').hidden=true;$('joystick').hidden=true;$('overview').hidden=true;}};
+   if(!params.has('raid'))CaravanLoading.finish();$('enter').disabled=false;$('enter').innerHTML='Alanı keşfet <span aria-hidden="true">↗</span>';document.body.dataset.ready='true';
+   window.CaravanField={get ready(){return ready;},get mode(){return mode;},get walking(){return walking;},get stats(){return{drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,pixelRatio:renderer.getPixelRatio(),position:camera.position.toArray(),instances:scene.children.filter(o=>o.isInstancedMesh).reduce((n,o)=>n+o.count,0)};},scene,camera,renderer,caravans,startleHorses(){return caravans.map(c=>c.startle());},setMode,explore,height,footDust:detail.footDust,get detail(){return detail;},attachBattle(controller){scene.traverse(o=>{if(o.isMesh)o.castShadow=false;});detail.battleShadow();for(const c of caravans)c.animal.traverse(o=>{if(o.isMesh)o.castShadow=true;});sun.intensity=2.65;clearInput();walking=false;battle=controller;document.body.classList.add('caravan-battle');$('intro').hidden=true;$('joystick').hidden=true;$('overview').hidden=true;}};
    if(!raf)raf=requestAnimationFrame(tick);
   }catch(e){console.error('Caravan field:',e);fail(e.name==='TimeoutError'?'Modeller zamanında yüklenemedi. Bağlantını kontrol edip yeniden dene.':e.message||'3D görüntü bu cihazda başlatılamadı.');}
  }

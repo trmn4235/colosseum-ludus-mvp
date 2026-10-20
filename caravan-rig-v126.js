@@ -505,9 +505,9 @@ var ImportedGladiator=(function(){
   const copy=source.clone(true),a=[],b=[];source.traverse(o=>a.push(o));copy.traverse(o=>b.push(o));const map=new Map(a.map((o,i)=>[o,b[i]]));
   source.traverse(o=>{if(o.isSkinnedMesh){const c=map.get(o);c.skeleton=o.skeleton.clone();c.skeleton.bones=o.skeleton.bones.map(x=>map.get(x));c.bindMatrix.copy(o.bindMatrix);c.bindMatrixInverse.copy(o.bindMatrixInverse);c.frustumCulled=false;}});return copy;
  }
- function create(id,type='secutor'){
+ function create(id,type='secutor',source=template){
   if(!template)throw new Error('Gladyatör modeli henüz hazır değil.');
-  const root=new T.Group(),body=new T.Group(),facing=new T.Group(),visual=cloneRig(template);root.add(body);body.add(facing);facing.add(visual);
+  const root=new T.Group(),body=new T.Group(),facing=new T.Group(),visual=cloneRig(source);root.add(body);body.add(facing);facing.add(visual);
   const bones={},materials=new Map(),rest=new Map();
   visual.traverse(o=>{if(o.isBone)bones[o.name.replace(/^mixamorig:?/,'').replace(/_\d+$/,'')]=o;
    if(o.isMesh){if(!materials.has(o.material)){const m=o.material.clone();m.envMapIntensity=.45;materials.set(o.material,m);}o.material=materials.get(o.material);o.castShadow=true;o.receiveShadow=true;}});

@@ -1,0 +1,15 @@
+{
+  "version": 128,
+  "assets": [
+    {
+      "file": "driver.glb",
+      "bytes": 1117660,
+      "sha256": "55578396a15d0c98d586bf70ffdb4d0745ff3c258c088d430d33d9cf2c137be3"
+    },
+    {
+      "file": "loading.webp",
+      "bytes": 352044,
+      "sha256": "2b50c74640c136e6a49c0be012867c9daf1413062d0548038fd26bec136d5e62"
+    }
+  ]
+}

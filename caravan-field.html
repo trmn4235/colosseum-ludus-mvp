@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#18241e">
   <title>Orman Geçidi · Colosseum & Magnus</title>
+  <link rel="preload" as="image" href="assets/caravan-v128/loading.webp">
   <link rel="stylesheet" href="caravan-field-v125.css?v=revision125">
+  <link rel="stylesheet" href="caravan-loading-v128.css?v=revision128">
 </head>
 <body>
   <canvas id="field" aria-label="Ağaçlarla çevrili toprak yolda atlı kervan; sürükleyerek etrafa bak"></canvas>
@@ -33,13 +35,15 @@
     <button class="credits-button" id="creditsOpen">Model kaynakları</button>
   </div>
   <div id="joystick" hidden aria-label="Hareket kolu"><span></span></div>
-  <div id="loading" role="status" aria-live="polite"><div class="loader-ring"></div><strong>Orman yolu hazırlanıyor</strong><span id="loadDetail">3D modeller yükleniyor…</span><button id="retry" hidden>Yeniden dene</button><a id="loadBack" href="ludus.html" hidden>Ludus'a dön</a></div>
+  <div id="loading" role="status" aria-live="polite"><small class="load-brand">COLOSSEUM &amp; MAGNUS</small><strong>Kervan Baskını</strong><div class="load-track"><progress id="loadProgress" value="0" max="100" aria-label="Kervan yükleme ilerlemesi"></progress><span id="loadPercent">0%</span></div><span id="loadDetail">Orman yolu hazırlanıyor…</span><button id="retry" hidden>Yeniden dene</button><a id="loadBack" href="ludus.html" hidden>Ludus'a dön</a></div>
   <dialog id="helpDialog"><button class="dialog-close" aria-label="Kapat">×</button><small>ALANI KEŞFET</small><h2>Yol senin.</h2><p>Telefonda sol alttaki hareket kolunu kullan. Etrafa bakmak için ekranın sağını sürükle.</p><p>Bilgisayarda <b>W A S D</b> veya yön tuşlarıyla yürü; fareyle sürükleyerek bak. <b>Esc</b> genel görünüme döner.</p><p>Baskın ve Savunma düğmeleri seni iki ayrı başlangıç noktasına götürür. Bu alan önizlemesinde savaş ve ödül işlemi yapılmaz.</p><button class="dialog-action">Anladım</button></dialog>
-  <dialog id="creditsDialog"><button class="dialog-close" aria-label="Kapat">×</button><small>3D MODEL KAYNAKLARI</small><h2>Ormanın parçaları.</h2><p><b>At:</b> <a href="https://literock-studios.itch.io/warhorse-lite" target="_blank" rel="noopener">Warhorse Lite · Literock Studios</a>. Oyun içinde kullanım lisansı. Yürüme ve bekleme animasyonları korunmuştur.</p><p><b>Yakın ağaçlar:</b> <a href="https://polyyai.itch.io/3d-deciduous-trees-pack" target="_blank" rel="noopener">Polyy.AI · Deciduous Trees</a>, CC0. Mobil kullanım için sadeleştirildi.</p><p><b>Ahşap araba, orman ağaçları, bitkiler ve zemin:</b> <a href="https://www.wildfiregames.com/" target="_blank" rel="noopener">Wildfire Games · 0 A.D.</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. GLB dönüşümü, ölçek ve doku optimizasyonu; araba üzerine bez tente eklendi. Uyarlanan bu varlıklar aynı lisansla sunulur.</p><a href="assets/caravan-field-v125/CREDITS.txt" target="_blank" rel="noopener">Ayrıntılı kaynak ve lisans kaydı ↗</a></dialog>
+  <dialog id="creditsDialog"><button class="dialog-close" aria-label="Kapat">×</button><small>3D MODEL KAYNAKLARI</small><h2>Ormanın parçaları.</h2><p><b>At:</b> <a href="https://literock-studios.itch.io/warhorse-lite" target="_blank" rel="noopener">Warhorse Lite · Literock Studios</a>. Oyun içinde kullanım lisansı. Bekleme ve hazır şaha kalkma animasyonu kullanılır.</p><p><b>Kervancı kıyafeti:</b> Donitz · MakeHuman Community, <a href="https://static.makehumancommunity.org/assets/assetpacks/suits02.html" target="_blank" rel="noopener">hazır tunik (CC0)</a>; sandalet ve sakal: Elvaerwyn (CC BY). Mevcut karaktere uyarlanıp sadeleştirildi.</p><p><b>Yakın ağaçlar:</b> <a href="https://polyyai.itch.io/3d-deciduous-trees-pack" target="_blank" rel="noopener">Polyy.AI · Deciduous Trees</a>, CC0. Mobil kullanım için sadeleştirildi.</p><p><b>Ahşap araba, orman ağaçları, bitkiler ve zemin:</b> <a href="https://www.wildfiregames.com/" target="_blank" rel="noopener">Wildfire Games · 0 A.D.</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. GLB dönüşümü, ölçek ve doku optimizasyonu; araba üzerine bez tente eklendi. Uyarlanan bu varlıklar aynı lisansla sunulur.</p><a href="assets/caravan-field-v125/CREDITS.txt" target="_blank" rel="noopener">Ayrıntılı kaynak ve lisans kaydı ↗</a></dialog>
+  <script src="caravan-loading-v128.js?v=revision128"></script>
   <script src="owner-three-r160.js?v=revision26"></script>
   <script src="arena-runtime-v96.js?v=revision115"></script>
-  <script src="caravan-detail-v127.js?v=revision127"></script>
-  <script src="caravan-field-v125.js?v=revision127"></script>
-  <script src="caravan-battle-v126.js?v=revision127"></script>
+  <script src="caravan-detail-v127.js?v=revision128"></script>
+  <script src="caravan-field-v125.js?v=revision128"></script>
+  <script src="caravan-presentation-v128.js?v=revision128"></script>
+  <script src="caravan-battle-v126.js?v=revision128"></script>
 </body>
 </html>

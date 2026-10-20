@@ -1,0 +1,24 @@
+COLOSSEUM & MAGNUS — CARAVAN V128
+
+loading.webp: generated for this game using the built-in OpenAI image generator,
+20 October 2026. Prompt recorded in docs/caravan-presentation-v128.md.
+
+The clothed driver is extracted and adapted from this repository's previously
+licensed owner-makehuman-v27.glb; see OWNER_ASSETS.md for retained source records.
+Base human, natural skin, eyes, hair, brows: MakeHuman Community, CC0.
+Tunic: Donitz, donitz_monk_robe, CC0.
+https://static.makehumancommunity.org/assets/assetpacks/suits02.html
+Sandals: Elvaerwyn, elvs_caesar_sandals1, CC BY.
+https://static.makehumancommunity.org/assets/assetpacks/shoes02.html
+Scruffy beard: Elvaerwyn, elvs_scruffy_beard1, CC BY.
+https://static.makehumancommunity.org/assets/assetpacks/bodyparts06.html
+Adaptation: selected meshes only; original body skin; muted linen and leather
+colors; dark hair; removed unused clips and morph targets; simplified to 14,924
+triangles; texture resolution capped at 512px. Skinning and the rope belt remain.
+Prepared asset is part of this game. Original attribution remains in the model
+sources dialog. Preparation script: scripts/prepare-caravan-driver-v128.mjs.
+
+Horse rear: the existing Warhorse Lite ready-made 'rear' clip by Literock Studios.
+https://literock-studios.itch.io/warhorse-lite
+The rig and animation were NOT replaced by procedural rearing. Commercial
+end-product use is allowed. See ../caravan-field-v125/LICENSE-Warhorse.txt.

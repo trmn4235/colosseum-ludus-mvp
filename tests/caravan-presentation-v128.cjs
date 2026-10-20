@@ -1,0 +1,33 @@
+const fs=require('node:fs'),http=require('node:http'),path=require('node:path'),assert=require('node:assert/strict');
+const {chromium,webkit}=require('playwright'),root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/caravan-v128';fs.mkdirSync(out,{recursive:true});
+const fixture=JSON.parse(fs.readFileSync('/tmp/raid-state-v126.json')),ticket=fixture.active;ticket.encounter.rules=127;ticket.team[0].class='retiarius';ticket.team[0].items=[{kind:'weapon',model:'trident',equipped_slot:'main_hand'},{kind:'weapon',model:'net',equipped_slot:'off_hand'}];
+const stub=`window.LudusClient={create:()=>({
+ auth:{getUser:async()=>({data:{user:{id:${JSON.stringify(fixture.user_id)}}}})},
+ rpc:async()=>({data:{...${JSON.stringify(fixture)},result:${JSON.stringify(ticket)}}}),
+ functions:{invoke:async()=>({error:{message:'Fixture: no live settlement'}})}
+})};`;
+new(require('node:vm').Script)(stub);
+
+const server=http.createServer((req,res)=>{const uri=new URL(req.url,'http://local').pathname;if(uri==='/ludus-client-v84.js'){res.setHeader('Content-Type','text/javascript');return res.end(stub);}const file=path.resolve(root,'.'+uri);if(!file.startsWith(root+'/')||!fs.existsSync(file)||!fs.statSync(file).isFile())return res.writeHead(404).end();res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.glb':'model/gltf-binary','.webp':'image/webp'})[path.extname(file)]||'application/octet-stream');let bytes=fs.readFileSync(file);if(file.endsWith('/caravan-field-v125.js'))bytes=bytes.toString().replaceAll('renderer.render(scene,camera);','');res.end(bytes);});
+(async()=>{
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=process.env.LUDUS_WEBKIT_TEST?await webkit.launch({headless:true,...(process.env.LUDUS_WEBKIT_EXECUTABLE_PATH?{executablePath:process.env.LUDUS_WEBKIT_EXECUTABLE_PATH}:{})}):await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader']});
+ const ctx=await browser.newContext({viewport:{width:932,height:430},hasTouch:true,deviceScaleFactor:1}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')console.log(m.text().slice(0,250));});await ctx.route(/^https:/,r=>r.abort());
+ // Hold a real model request so loading can be inspected without a fake timer.
+ let release;const gate=new Promise(r=>release=r);await page.route('**/horse.glb',async route=>{await gate;await route.continue();});
+ try{
+  await page.goto('http://127.0.0.1:'+server.address().port+'/caravan-field.html?raid='+ticket.id,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.getElementById('loadProgress').value>0);const progress=await page.locator('#loadProgress').evaluate(e=>e.value);assert.ok(progress<100);assert.equal(await page.locator('#loading').isVisible(),true);assert.equal(await page.locator('.cb-overlay').isVisible(),false);await page.screenshot({path:out+'/loading-932.png'});
+  for(const [width,height]of [[667,375],[393,852]]){await page.setViewportSize({width,height});const b=await page.locator('#loadProgress').boundingBox();assert.ok(b.x>=0&&b.y>=0&&b.x+b.width<=width&&b.y+b.height<=height);assert.equal(await page.locator('#loadProgress').evaluate(e=>e.value)<100,true);}
+  await page.setViewportSize({width:932,height:430});release();await page.waitForFunction(()=>window.CaravanBattle?.state,{},{timeout:120000});assert.equal(await page.locator('#loading').isVisible(),false);assert.equal(await page.locator('#loadProgress').evaluate(e=>e.value),100);
+  await page.evaluate(()=>{const c=CaravanBattle.state.combat,p=c.fighters[0],t=c.fighters.find(f=>f.team===1&&!f.archer);c.botStep=()=>{};c.arrows=[];for(const f of c.fighters){f.action='idle';f.timer=0;f.stunUntil=0;if(f!==p){f.x=6;f.z=7;}}p.x=0;p.z=17;p.pickupHand='offhand';p.angle=Math.PI;t.x=0;t.z=13.4;});
+  await page.locator('#target').click();await page.waitForFunction(()=>CaravanBattle.state.combat.lockedTarget!==null);assert.equal(await page.locator('#target').getAttribute('aria-pressed'),'true');assert.equal(await page.evaluate(()=>CaravanBattle.presentation.ring.visible),true);
+  await page.locator('#special').dispatchEvent('pointerdown',{pointerId:1,button:0});await page.waitForFunction(()=>CaravanBattle.state.combat.nets.length>0);await page.waitForFunction(()=>CaravanBattle.state.combat.nets.some(n=>n.victim!==null),{},{timeout:12000});
+  const caught=await page.evaluate(()=>{const c=CaravanBattle.state.combat,n=c.nets[0];return{victim:n.victim,hold:n.holdUntil-c.time,action:c.fighters[n.victim].action,views:CaravanBattle.presentation.netCount};});assert.ok(caught.victim>=ticket.team.length);assert.ok(caught.hold>2&&caught.hold<=3);assert.equal(caught.action,'stunned');assert.equal(caught.views,1);
+  await page.evaluate(()=>{CaravanField.renderer.render(CaravanField.scene,CaravanField.camera);});await page.screenshot({path:out+'/net-capture-932.png'});
+  await page.evaluate(()=>{const c=CaravanBattle.state.combat;c.fighters.find(f=>f.id>0&&f.team===0).hp=0;});await page.waitForFunction(()=>CaravanField.caravans.every(c=>c.startled));assert.deepEqual(await page.evaluate(()=>CaravanField.startleHorses()),[false,false]);await page.waitForFunction(()=>CaravanField.caravans[0].rear.time>.65);await page.evaluate(()=>{const f=CaravanField;f.camera.position.set(5,3,11);f.camera.lookAt(0,1.8,5);f.renderer.render(f.scene,f.camera);});await page.screenshot({path:out+'/horse-rear-932.png'});
+  await page.waitForFunction(()=>CaravanField.caravans.every(c=>c.idle.getEffectiveWeight()>.95),{},{timeout:12000});
+  const driver=await page.evaluate(()=>{const found=[];CaravanField.scene.traverse(o=>{if(o.isMesh&&o.name==='OwnerWhiteTunic')found.push({visible:o.visible,skin:o.isSkinnedMesh});});return found;});assert.equal(driver.length,1);assert.ok(driver[0].visible&&driver[0].skin);
+  // Inspect the ready clothed rig in the actual scene at closer camera distance.
+  await page.evaluate(()=>{const f=CaravanField,c=CaravanBattle.state.combat,a=c.fighters.find(f=>f.archer);f.camera.position.set(a.x+2.7,2.2,a.z+3.7);f.camera.lookAt(a.x,1.1,a.z);f.renderer.render(f.scene,f.camera);});await page.screenshot({path:out+'/driver-932.png'});
+  assert.deepEqual(errors,[]);console.log('V128 PASS: real-stage loading, phone layouts, target lock, net flight/capture/3s stun, one-time authored horse rear and clothed skinned driver.');
+ }finally{release();await browser.close();server.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;server.close();});
