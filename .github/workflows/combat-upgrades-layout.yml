@@ -31,6 +31,8 @@ jobs:
         run: node tests/combat-values-ui-v110.cjs
       - name: Full workshop, safe areas and preserved navigation
         run: node tests/upgrades-layout-v112.cjs
+      - name: Workshop readability, touch targets and upgrade request lifecycle
+        run: node tests/upgrades-layout-v133.cjs
       - name: Courtyard integration and beginner quest tracking
         env:
           LUDUS_COMBAT_VALUES_TEST: '1'
