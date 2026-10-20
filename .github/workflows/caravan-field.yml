@@ -2,9 +2,9 @@ name: Caravan forest field
 on:
   push:
     branches: [main]
-    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', '.github/workflows/caravan-field.yml']
+    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'assets/caravan-v128/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', 'supabase/migrations/*caravan_messages*', '.github/workflows/caravan-field.yml']
   pull_request:
-    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', '.github/workflows/caravan-field.yml']
+    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'assets/caravan-v128/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', 'supabase/migrations/*caravan_messages*', '.github/workflows/caravan-field.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -30,3 +30,7 @@ jobs:
         run: node tests/caravan-verifier-v126.cjs
       - name: Battle controls, shared rigs and verified replay
         run: LUDUS_CARAVAN_ARENA_TEST=1 LUDUS_FAST_BATTLE_TEST=1 node tests/caravan-combat-v126.cjs
+      - name: Cargo notifications and delivered amounts
+        run: node tests/caravan-messages-v128.cjs
+      - name: Loading, net capture, horse reaction and clothed driver
+        run: node tests/caravan-presentation-v128.cjs

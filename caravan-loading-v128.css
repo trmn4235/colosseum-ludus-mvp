@@ -1,0 +1,16 @@
+#loading{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;padding:clamp(24px,6vh,70px) max(7vw,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(7vw,env(safe-area-inset-left));gap:0;background:#132019 url('assets/caravan-v128/loading.webp') center 42%/cover no-repeat;color:#fff9e9;text-align:left;isolation:isolate;box-sizing:border-box}
+#loading::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#09100c10 25%,#09100c30 48%,#09100cd9 83%,#09100cf5)}
+#loading[hidden]{display:none!important}
+#loading .load-brand{font:600 11px/1.5 Arial,sans-serif;letter-spacing:3px;color:#e1cca0;margin-bottom:8px}
+#loading strong{font:600 clamp(27px,5vw,54px)/1.1 Georgia,serif;text-shadow:0 2px 18px #0008;letter-spacing:.3px;margin-bottom:12px}
+.load-track{display:flex;align-items:center;gap:18px;width:100%;margin:14px 0 10px}
+#loadProgress{display:block;appearance:none;-webkit-appearance:none;border:1px solid #e9cb8a80;border-radius:3px;background:#0b150cb0;overflow:hidden;height:12px;flex:1;min-width:0;box-shadow:0 2px 20px #0004}
+#loadProgress::-webkit-progress-bar{background:#0b150cb0}
+#loadProgress::-webkit-progress-value{background:linear-gradient(90deg,#9d793f,#e5c580,#fff0bc);transition:none}
+#loadProgress::-moz-progress-bar{background:linear-gradient(90deg,#9d793f,#e5c580,#fff0bc)}
+#loadPercent{font:600 12px/1 Arial,sans-serif;width:36px;text-align:right;font-variant-numeric:tabular-nums}
+#loadDetail{font:12px/1.5 Arial,sans-serif;color:#d5d8cb;min-height:18px}
+#loading #retry,#loading #loadBack{align-self:flex-start;margin-top:12px;padding:10px 18px;background:#f2e9d4;border:1px solid #dfc58e;color:#243028;border-radius:5px;text-decoration:none;font:13px Arial,sans-serif}
+@media(max-height:390px){#loading{padding-top:20px;padding-bottom:18px}#loading strong{font-size:28px;margin-bottom:3px}.load-track{margin:10px 0 7px}#loading .load-brand{font-size:9px;margin-bottom:5px}}
+@media(orientation:portrait){#loading{background-position:48% center;padding-bottom:48px}#loading strong{font-size:32px}#loading .load-brand{font-size:10px;letter-spacing:2px}}
+@media(prefers-reduced-motion:reduce){#loadProgress::-webkit-progress-value{transition:none}}

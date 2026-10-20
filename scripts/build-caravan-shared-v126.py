@@ -21,6 +21,8 @@ core += '\nObject.assign(root,{LudusLoadout,LudusItemSystem,LudusExercise});\n'
 core = '/* Arena V115 simulation, frozen for deterministic caravan replay. */\n(function(root){\n' + core + '\n})(globalThis);\n'
 (root / 'caravan-core-v126.js').write_text(core)
 rig = next(s for s in scripts if s.strip().startswith('/* Human graphical assets:'))
+# Optional clothed source is a rendering-only adaptation; replay core stays frozen.
+rig = rig.replace("function create(id,type='secutor'){", "function create(id,type='secutor',source=template){").replace("visual=cloneRig(template);root.add(body)", "visual=cloneRig(source);root.add(body)")
 (root / 'caravan-rig-v126.js').write_text('\n'.join(line.rstrip() for line in rig.strip().splitlines()) + '\n')
 assets = next(s for s in scripts if s.strip().startswith('// A single validated download'))
 (root / 'caravan-assets-v126.js').write_text(assets)
