@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "stats": {
+    "frame": 3,
+    "calls": 19,
+    "triangles": 418974,
+    "points": 0,
+    "lines": 0,
+    "geometries": 19,
+    "textures": 5,
+    "spectators": 12240
+  },
+  "errors": [],
+  "viewportTests": [
+    "932x430",
+    "390x844",
+    "667x375",
+    "1440x900"
+  ]
+}
