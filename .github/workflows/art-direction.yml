@@ -1,0 +1,40 @@
+name: Roman art direction
+on:
+  pull_request:
+    branches: [main]
+    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'tests/art-*', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-layouts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install isolated browser and database tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
+          npx playwright install --with-deps chromium
+      - name: Check shipped art, font and every active entry page
+        run: node tests/art-assets-v136.cjs
+      - name: Generate isolated room fixtures
+        run: |
+          LUDUS_MARKET_HISTORY_TEST=1 node tests/production-v119.cjs
+          node tests/caravan-collection-v116.cjs
+          STABLE_FIXTURE_PATH=/tmp/stable-fixture-v136.json node tests/stable-v129.cjs
+      - name: Six page sizes, level summary, clan views and expanded pause guide
+        run: node tests/art-pages-v136.cjs
+      - name: Courtyard and all room tabs including active horse duel
+        run: node tests/art-rooms-v136.cjs
+      - name: Login, registration and cinematic recovery
+        run: node tests/login-intro-v40.cjs
+      - name: Arena cards and marketplace selection
+        run: |
+          node tests/arena-tabs-v81.cjs
+          node tests/forum-market-layout-v67.cjs

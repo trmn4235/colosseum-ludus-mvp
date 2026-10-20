@@ -1,0 +1,70 @@
+{
+  "version": 136,
+  "tool": "imagegen",
+  "assets": [
+    {
+      "key": "imperial-orders",
+      "prompt": "Asset type: historical-scene for a premium Roman gladiator game UI, NOT a screenshot or a complete interface. Create a wide landscape 3:2 cinematic photoreal still life inside a Roman imperial chancery. Foreground on the RIGHT: a beautifully detailed bronze eagle seal stamp, a thick folded blank ivory scroll tied with deep oxblood silk and a red wax seal, a small laurel branch, warm polished white marble. Behind on the RIGHT a tall folded burgundy standard, beyond it sunlit white marble columns of ancient Rome. LEFT HALF is atmospheric dark burgundy fabric and shadow with subtle texture, quiet uncluttered negative space suitable for later HTML text. Ivory, oxblood burgundy, antique brushed gold; restrained, tactile, magnificent AAA historical strategy art. Natural late-afternoon raking light, fine material detail, strong depth, physically believable patina. Shot on 50mm cinema lens. No letters, no numbers, no pseudo-writing, no title, no UI, no watermark, no modern objects, no sepia wash, no fantasy magic.",
+      "mode": "generate",
+      "path": "assets/art-v136/imperial-orders.webp",
+      "source_file": "exec-611032cc-7cff-4d75-a247-7a675a9d2aec.png",
+      "bytes": 104398,
+      "sha256": "0182fa2d0b8dabf384a502cd991f55048c36ca174fcb33cacd4f7dcd1bb0d0c3",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "key": "legion-hall",
+      "prompt": "Asset type: historical-scene, a reusable background illustration for a premium ancient Roman gladiator clan screen, not a complete UI. Wide cinematic 3:2 composition. A breathtaking Roman legion oath hall, solemn polished pale limestone, fluted white columns, carved travertine archways. On the RIGHT CENTER a single authentic bronze Roman eagle standard atop a vertical pole and a heavy deep oxblood burgundy cloth banner, finely woven, bordered with narrow antique gold braid; laurel ornament only, absolutely no text. Two distant matching standards establish depth. Low white marble dais. Light falls from high opening at right, illuminating eagle metal and fabric, soft dust motes, deep rich burgundy shadows. LEFT HALF and lower edge have quieter shadowed stone with room for later text overlays. Photoreal AAA historical game art direction, real metallic patina, no cartoon, no painterly strokes, no flat vector. Majestic but restrained, no oversaturation. No people, no letters, no numbers, no logo, no interface or watermark.",
+      "mode": "generate",
+      "path": "assets/art-v136/legion-hall.webp",
+      "source_file": "exec-62bf462f-8c46-4ae4-8bd6-0def7e3b5ea1.png",
+      "bytes": 136178,
+      "sha256": "931f8509ac7ea71c48b57c3bd168889024e54dd1c3975c1edc80092d44f50989",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "key": "prestige-medallion",
+      "prompt": "Asset type: product-mockup / isolated game prop. One premium Roman prestige medal centered and front-facing, isolated with transparent background. Round raised bronze and antique gold medallion rim with intricately forged and engraved laurel leaves, a small sculpted eagle crest at twelve o'clock and tiny rivets. Wide recessed circular central field is dark oxblood burgundy enamel with subtle handmade wear, COMPLETELY EMPTY to receive a dynamic game level number in HTML. The outer medal silhouette is clean, nearly round; all components contained with 10 percent transparent padding. Refined museum-quality Roman imperial craftsmanship, realistic oxidized brass, warm rim light, ultra-sharp tactile material; expensive historical video game reward asset, not vector, not icon, not fantasy jewelry. Straight orthographic front view, no perspective tilt, no dangling ribbon, no ground or cast shadow beyond the object. No number, no text, no letters, no logo, no watermark.",
+      "mode": "generate",
+      "path": "assets/art-v136/prestige-medallion.webp",
+      "source_file": "exec-f7c41a96-ae27-433c-baeb-59de90e28bd0.png",
+      "bytes": 133114,
+      "sha256": "07701ad8ea64a76cbfc97babeeca083332b3909c3d4b768083055652f7046da3",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "key": "ludus-training",
+      "prompt": "Asset type: historical-scene. Wide landscape 3:2 photoreal cinematic illustration of a Roman gladiator training school, for a high quality game UI background, not an interface. White marble and pale stone colonnade looking into a sunlit ludus courtyard. Foreground RIGHT: a worn bronze gladiator helmet with a red crest, a polished round shield leaning against a stone block, an upright wooden training sword and linen wraps, tactile authentic materials, elegant coherent arrangement. Far background right: one or two small silhouettes training at wooden posts, no injuries. Deep burgundy drapery across LEFT THIRD creates quiet shaded negative space for HTML heading overlay. Rich warm daylight from the courtyard, fine dust in rays, white stone, burgundy and antique gold palette, realistic worn surfaces. High-end historical RPG art, dramatic photographic depth, detailed but composition legible at small size. No text, no UI, no letters, no numbers, no banners with writing, no watermark.",
+      "mode": "generate",
+      "path": "assets/art-v136/ludus-training.webp",
+      "source_file": "exec-400d1fa8-1109-45c6-bb4a-865439667ba5.png",
+      "bytes": 174324,
+      "sha256": "295b013c26dcd98e365612f542934eaf859c08e12e5eb2b4e9b9f414eeedccee",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "key": "roman-provisions",
+      "prompt": "Asset type: historical-scene. A cinematic photoreal Roman ludus dining hall still life for a premium historical game. Wide landscape 3:2. RIGHT SIDE: carefully arranged ripe figs and red apples, rustic round bread with Roman scoring, black olives, olive leaves, a small bronze olive oil pitcher, a clay amphora and a carved white marble bowl on a pale stone table. Burgundy linen cloth, antique gold serving dish, abundant but natural elegant composition, no modern cutlery. White marble column and a softly sunlit Roman garden behind. LEFT HALF deliberately quiet shadowed burgundy fabric and pale stone to hold text later. Luxurious tactile food photography, exquisite realistic light, natural colors, no cartoon or illustration strokes. Historical game art palette white, deep oxblood, restrained bronze gold. No text, no letters, no numbers, no UI, no watermarks.",
+      "mode": "generate",
+      "path": "assets/art-v136/roman-provisions.webp",
+      "source_file": "exec-c7448eda-11d4-4310-a144-9c91baa10f47.png",
+      "bytes": 146478,
+      "sha256": "4302dac045fc2c1cbf31d352c079a63ce740c49687b8a50678bf67d1e551ea14",
+      "width": 1200,
+      "height": 800
+    }
+  ],
+  "font": {
+    "family": "Cinzel",
+    "path": "assets/art-v136/Cinzel.woff",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/cinzel/Cinzel%5Bwght%5D.ttf",
+    "license": "assets/art-v136/FONT-LICENSE.txt",
+    "subset": "Latin and Turkish U+0020–024F, U+2000–206F",
+    "bytes": 34860,
+    "sha256": "39649166bf6686c32ac86897d762b5c20d650bcd1e75414f14d75c53374bc38f"
+  }
+}
