@@ -2,9 +2,9 @@ name: Caravan forest field
 on:
   push:
     branches: [main]
-    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'assets/caravan-v128/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', 'supabase/migrations/*caravan_messages*', '.github/workflows/caravan-field.yml']
+    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'assets/caravan-v128/**', 'assets/caravan-v138/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', 'supabase/migrations/*caravan_messages*', '.github/workflows/caravan-field.yml']
   pull_request:
-    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'assets/caravan-v128/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', 'supabase/migrations/*caravan_messages*', '.github/workflows/caravan-field.yml']
+    paths: ['caravan-*', 'assets/caravan-field-v125/**', 'assets/caravan-v128/**', 'assets/caravan-v138/**', 'tests/caravan-*.cjs', 'supabase/functions/caravan-combat-v126/**', 'supabase/migrations/*caravan_combat*', 'supabase/migrations/*caravan_arena*', 'supabase/migrations/*caravan_messages*', '.github/workflows/caravan-field.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,6 +21,8 @@ jobs:
           node-version: '24'
       - run: npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
       - run: npx playwright install --with-deps chromium
+      - name: Photographic victory, live loot and accessible return
+        run: node tests/caravan-victory-v138.cjs
       - run: node tests/caravan-field-v125.cjs
       - name: Battle and escort database fixtures
         run: LUDUS_CARAVAN_COMBAT_TEST=1 node tests/production-v119.cjs

@@ -91,9 +91,11 @@
    if(response.error){let detail;try{detail=await response.error.context?.json();}catch{}throw Error(detail?.error||response.error.message);}
    if(response.data?.error)throw Error(response.data.error);const result=response.data?.result;if(result?.id!==raid||result.status!=='resolved')throw Error('Sonuç doğrulanamadı.');
    saved=true;localStorage.removeItem(storeKey);
-   const names={wood:'odun',flax:'ham keten',hide:'ham deri',wool:'yün',resin:'reçine',iron_ore:'demir cevheri',tin_ore:'kalay cevheri',copper_ore:'bakır cevheri',lead_ore:'kurşun cevheri',apple:'elma',grain:'tahıl',meat:'et',fish:'balık',egg:'yumurta',beer:'şarap',olive_oil:'zeytinyağı'};
-   const loot=Object.entries(result.loot||{}).map(([sku,n])=>n+' '+(names[sku]||sku)).join(', ');
-   show(result.success?'Kervan baskını başarılı':'Kervan baskını başarısız',result.success?'Kervan baskınından elde edilen '+loot+(result.delivered_at?' depomuza taşındı.':' güvende; depoda yer açılınca taşınacak.')+' Yeni baskın 1 saat sonra.':'Gladyatörlerin 12 saat revirde dinlenecek. Yeni baskın 1 saat sonra.',[returnLink()],art);
+   if(result.success===true){
+    if(window.CaravanVictory?.show(result))overlay.hidden=true;
+    else show('Kervan baskını başarılı','Ganimetin '+(result.delivered_at?'depomuza taşındı.':'güvende; depoda yer açılınca taşınacak.')+' Yeni baskın 1 saat sonra.',[returnLink()],'assets/caravan-v124/success.webp');
+   }
+   else show('Kervan baskını başarısız','Gladyatörlerin 12 saat revirde dinlenecek. Yeni baskın 1 saat sonra.',[returnLink()],'assets/caravan-v124/failure.webp');
   }catch(e){show('Sonuç kaydedilemedi','Savaş kaydı cihazında saklandı. '+(e.message||'Bağlantını kontrol et.'),[action('Sonucu yeniden kaydet',finish,'primary'),returnLink()],art);}finally{saving=false;}
  }
  async function init(){
