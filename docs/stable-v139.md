@@ -1,0 +1,9 @@
+# Open-air stable · V139
+
+The stable's permanent bottom menu has been removed. A nearby “Seyis” action is attached to the groom in the world; tapping the groom or pressing E also opens the existing horse-care panel. All seven horse tabs remain available there, including the market when the player has no horses. The interaction disappears outside the room, beyond speaking distance and while another panel is open. Camera drags do not trigger conversation.
+
+The imported groom GLB has no animation clips and previously retained its spread-arm bind pose. Both upper arms and forearms are now aligned into a relaxed standing pose before the existing skin-aware height normalization. This keeps the weighted clothing attached and preserves the owner's height relationship without changing the source model.
+
+The stable is now an open-air yard. Roof slabs, overhead trusses, high cage bars, torch fixtures, flame meshes, embers and six torch point lights have been removed. Low timber paddock dividers retain all twelve stalls, troughs, bedding and the clear central aisle. The yard shares the courtyard's actual sky texture, environment and hemisphere light, with a reusable directional sun following the courtyard's light settings. The indoor lamp stays off. Leaving restores the interior scene's prior lighting and background.
+
+Validation covers the real GLB arm positions and size, twelve horses and seven coats, unobstructed upward rays along the aisle, matching outdoor illumination, no torches, collision clearance, repeated entry and original scene restoration. Browser checks use isolated accounts and the full game scene: touch on the groom, world action, E shortcut, camera dragging, distance gating, no-horse market entry and four landscape phone/desktop sizes. Existing husbandry, request-retry and panel tests remain in place. No live purchases or horse-care operations are used for verification.

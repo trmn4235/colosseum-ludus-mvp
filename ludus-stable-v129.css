@@ -87,3 +87,5 @@ body[data-roman-screen=ludus] .ludus-menu #caravanHud>svg{display:block;width:va
 }
 
 .stable-ancestor>span:empty{display:none}
+/* V139: one interaction attached to the groom replaces the bottom menu. */
+.stable-groom-action.room-world-action{width:auto!important;min-width:86px!important;height:44px!important;padding:10px 15px!important;color:#f5e5bc!important;border-color:#c1a06399!important;background:#392d22dc!important;font:600 13px Arial,sans-serif!important;white-space:nowrap}

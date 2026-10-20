@@ -1,4 +1,4 @@
-/* Roman stable V131 lighting and environment; V130 husbandry models. Repeated architecture is instanced; owned horses share one asset. */
+/* V139 open-air stable and relaxed groom; V130 husbandry models. Repeated architecture is instanced; owned horses share one asset. */
 var LudusStableRoom=(()=>{
  'use strict';
  const WIDTH=30,DEPTH=54,ROWS=6;
@@ -17,14 +17,31 @@ var LudusStableRoom=(()=>{
   const normalized=new T.Group(),offset=new T.Group();offset.add(model);offset.position.set(-c.x,-b.min.y,-c.z);normalized.add(offset);normalized.scale.setScalar(height/size.y);normalized.userData.nativeHeight=size.y;normalized.userData.height=height;
   model.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true;}});return normalized;
  }
- function create({T,props,colliders,wood,stone,shell,ambient,light,getOwnerHeight=()=>1.78,player,onError}){
+ function relaxGroom(T,model){
+  const bones={};model.traverse(o=>{if(o.isBone)bones[o.name.replace(/^mixamorig:?/,'')]=o;});
+  function align(name,end,direction){
+   const bone=bones[name],child=bones[end];if(!bone||!child)return;
+   model.updateMatrixWorld(true);
+   const current=child.getWorldPosition(new T.Vector3()).sub(bone.getWorldPosition(new T.Vector3())).normalize();
+   const target=new T.Vector3(...direction).normalize();
+   const rotation=new T.Quaternion().setFromUnitVectors(current,target).multiply(bone.getWorldQuaternion(new T.Quaternion()));
+   bone.quaternion.copy(bone.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(rotation));
+  }
+  for(const side of ['Left','Right']){const sign=side==='Left'?1:-1;align(side+'Arm',side+'ForeArm',[sign*.12,-1,.02]);align(side+'ForeArm',side+'Hand',[sign*.02,-1,.16]);}
+  model.updateMatrixWorld(true);model.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update();});
+  return bones;
+ }
+ function create({T,props,colliders,wood,stone,shell,ambient,light,scene,outdoor,outdoorSun,getOwnerHeight=()=>1.78,player,onError}){
   let environment=null,root=null,template=null,horsePromise=null,groomPromise=null,groom=null,active=false,selected=null,herd=[],savedLighting=null;
-  const slots=[],animals=new Map(),pool=[],bounds=[],coatMaterials=new Map();let selection=null;
+  const slots=[],animals=new Map(),pool=[],bounds=[],coatMaterials=new Map();let selection=null,daylight=null,savedScene=null;
   const ownerHeight=()=>Math.max(1.6,Math.min(2,Number(getOwnerHeight())||1.78));
   function build(){
    environment=LudusStableEnvironment.create(T);root=environment.root;slots.push(...environment.slots);bounds.push(...environment.bounds);
    const ring=new T.Mesh(new T.RingGeometry(.8,.85,40),new T.MeshBasicMaterial({color:0xe7ddbd,transparent:true,opacity:.65,side:T.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.visible=false;selection=ring;root.add(ring);
    bounds.push({kind:'stable-groom',minX:-2.9,maxX:-2.15,minZ:.4,maxZ:1.2});
+   daylight=new T.DirectionalLight(0xfff0d7,2.1);daylight.name='Ahır · gün ışığı';daylight.castShadow=true;
+   daylight.shadow.mapSize.set(1024,1024);Object.assign(daylight.shadow.camera,{left:-34,right:34,top:34,bottom:-34,near:1,far:100});daylight.shadow.normalBias=.035;daylight.shadow.bias=-.00015;
+   daylight.target.position.set(0,0,-22.5);root.add(daylight,daylight.target);
   }
   function loadHorse(){
    if(template)return Promise.resolve(template);
@@ -49,30 +66,42 @@ var LudusStableRoom=(()=>{
    const e=animals.get(selected?.id);selection.visible=!!e;if(e)selection.position.set(e.group.position.x,.10,e.group.position.z);
   }
   function loadGroom(){return groomPromise||(groomPromise=new Promise((resolve,reject)=>new T.GLTFLoader().load('assets/caravan-v128/driver.glb',g=>{
-   groom=normalizeModel(T,g.scene,ownerHeight());groom.position.set(-2.5,.035,.8);groom.rotation.y=.5;groom.name='Seyis';root.add(groom);resolve(groom);
+   relaxGroom(T,g.scene);groom=normalizeModel(T,g.scene,ownerHeight());groom.position.set(-2.5,.035,.8);groom.rotation.y=.5;groom.name='Seyis';groom.userData.pose='relaxed-standing';root.add(groom);
+   const shadow=environment.contactShadow(.8,.8);shadow.position.set(-2.5,.01,.8);root.add(shadow);resolve(groom);
   },undefined,reject)).catch(e=>{groomPromise=null;onError?.('Seyis modeli yüklenemedi. Ahıra yeniden girdiğinde tekrar denenecek.');throw e;}));}
   function enter(){
    active=true;if(!root)build();props.add(root);colliders.push(...bounds.map(b=>({...b})));
    if(shell)for(const mesh of [shell.floor,shell.back,shell.front,shell.ceiling,...shell.sides])mesh.visible=false;
-   if(ambient&&light){savedLighting={color:ambient.color.clone(),ground:ambient.groundColor.clone(),intensity:ambient.intensity,pointIntensity:light.intensity};ambient.color.setHex(0xb4a18a);ambient.groundColor.setHex(0x5c442b);ambient.intensity=.38;light.intensity=0;}
+   if(ambient&&light)savedLighting={color:ambient.color.clone(),ground:ambient.groundColor.clone(),intensity:ambient.intensity,pointIntensity:light.intensity};
+   if(scene)savedScene={background:scene.background,environment:scene.environment,fog:scene.fog,backgroundIntensity:scene.backgroundIntensity};
+   syncDaylight();
    environment.tick(0,player);loadHorse().then(sync).catch(()=>{});loadGroom().catch(()=>{});sync();
   }
   function leave(){
    active=false;root?.removeFromParent();
    if(shell)for(const mesh of [shell.floor,shell.back,shell.front,shell.ceiling,...shell.sides])mesh.visible=true;
    if(savedLighting){ambient.color.copy(savedLighting.color);ambient.groundColor.copy(savedLighting.ground);ambient.intensity=savedLighting.intensity;light.intensity=savedLighting.pointIntensity;savedLighting=null;}
+   if(savedScene){Object.assign(scene,savedScene);savedScene=null;}
    for(let i=colliders.length-1;i>=0;i--)if(colliders[i].kind?.startsWith('stable-'))colliders.splice(i,1);
+  }
+  function syncDaylight(){
+   if(ambient){const sky=outdoor?.children.find(o=>o.isHemisphereLight);ambient.color.copy(sky?.color||new T.Color(0xe4efff));ambient.groundColor.copy(sky?.groundColor||new T.Color(0x897654));ambient.intensity=sky?.intensity??1.35;}
+   if(light)light.intensity=0;
+   if(scene){scene.background=outdoor?.background||new T.Color(0xa6bdc8);scene.environment=outdoor?.environment||null;scene.fog=outdoor?.fog||null;scene.backgroundIntensity=outdoor?.backgroundIntensity??1;}
+   daylight.color.copy(outdoorSun?.color||new T.Color(0xfff0d7));daylight.intensity=outdoorSun?.intensity??2.1;
+   if(outdoorSun)daylight.position.copy(outdoorSun.position).sub(outdoorSun.target.position);else daylight.position.set(-13,24,-16);
+   daylight.position.add(daylight.target.position);
   }
   return {
    enter,leave,setHerd(horses){herd=(horses||[]).slice(0,12);sync();},
    select(h){selected=h;if(h&&!herd.some(x=>x.id===h.id))herd=[h];sync();},
    viewFor(id){const i=herd.findIndex(h=>h.id===id),s=slots[i];return s?{x:0,z:s.z+.9,yaw:s.side<0?Math.PI/2:-Math.PI/2,pitch:.08}:null;},
-   tick(dt){if(!active||dt<=0)return;environment.tick(dt,player);if(groom){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
+   tick(dt){if(!active||dt<=0)return;syncDaylight();if(groom){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
     for(const [id,e]of animals){e.elapsed+=dt;const near=!player||Math.hypot(player.x-e.group.position.x,player.z-e.group.position.z)<15;if(id===selected?.id||near){if(e.elapsed>=1/30){e.mixer.update(Math.min(e.elapsed,.15));e.elapsed=0;}}else if(e.elapsed>=.25){e.mixer.update(e.elapsed);e.elapsed=0;}}
    },
    get root(){return root;},get horse(){return animals.get(selected?.id)?.group||null;},get horses(){return [...animals.values()].map(e=>e.group);},get groom(){return groom;},get slots(){return slots;}
   };
  }
- return {create,normalizeModel,cloneRig,width:WIDTH,depth:DEPTH};
+ return {create,normalizeModel,cloneRig,relaxGroom,width:WIDTH,depth:DEPTH};
 })();
 if(typeof module!=='undefined')module.exports=LudusStableRoom;
