@@ -1,0 +1,64 @@
+/* Full-bleed photographic victory. Live rewards and navigation remain HTML. */
+dialog.caravan-victory{
+ position:fixed;inset:0;margin:0;width:100%;height:100%;height:100dvh;
+ max-width:none;max-height:none;padding:0;border:0;border-radius:0;
+ overflow:auto;overscroll-behavior:contain;isolation:isolate;
+ background:#111a13;color:#fff2d5;box-shadow:none;
+}
+dialog.caravan-victory[open]{display:flex;align-items:flex-end;align-items:safe flex-end}
+dialog.caravan-victory::backdrop{background:#111a13;backdrop-filter:none}
+.caravan-victory-art{
+ position:fixed;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% center;
+ z-index:-2;pointer-events:none;
+}
+.caravan-victory::after{
+ content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:linear-gradient(90deg,#081009b8 0%,#08100955 35%,transparent 68%),linear-gradient(0deg,#080d0bf2 0%,#080d0b90 22%,transparent 65%);
+}
+.caravan-victory-content{
+ width:min(780px,60%);margin:auto 0 0;display:grid;gap:18px;
+ padding:36px max(5vw,env(safe-area-inset-right)) max(6dvh,env(safe-area-inset-bottom)) max(5vw,env(safe-area-inset-left));
+ text-shadow:0 2px 12px #0009;
+}
+.caravan-victory-kicker{display:flex;align-items:center;gap:13px;color:#e5c582;font:600 12px/1.4 Arial,sans-serif;letter-spacing:.3em}
+.caravan-victory-kicker::before{content:'';width:36px;height:1px;background:#d4b274}
+.caravan-victory h2{margin:0;max-width:11.5em;font:500 clamp(30px,3.65vw,58px)/1.13 var(--art-heading,Georgia,serif);color:#fff1d2;letter-spacing:.005em;text-wrap:balance}
+.caravan-victory #caravanVictoryLoot{margin:0;max-width:40em;font:400 clamp(13px,1.2vw,18px)/1.55 Arial,sans-serif;color:#eee8d9;overflow-wrap:anywhere}
+.caravan-victory-footer{display:flex;align-items:center;gap:28px;margin-top:8px;flex-wrap:wrap}
+.caravan-victory .caravan-victory-return{
+ display:flex;align-items:center;justify-content:space-between;gap:36px;min-height:52px;
+ min-width:205px;padding:12px 22px;border:1px solid #f5d99b;border-radius:3px;
+ background:linear-gradient(180deg,#f0d59d,#ceaa65);box-shadow:inset 0 0 0 3px #5d432523,0 5px 22px #0006;
+ color:#3d271d;text-decoration:none;text-shadow:none;font:700 15px/1.3 Arial,sans-serif;touch-action:manipulation;
+}
+.caravan-victory-return span{font:400 27px/.8 Georgia,serif}
+.caravan-victory .caravan-victory-return:hover{background:linear-gradient(#ffe7b5,#e2bd78)}
+.caravan-victory .caravan-victory-return:active{background:#c6a15d;box-shadow:inset 0 2px 5px #38251055}
+.caravan-victory #caravanVictoryNext{display:grid;gap:3px;margin:0;font:400 12px/1.4 Arial,sans-serif;color:#d7d0be}
+.caravan-victory #caravanVictoryNext strong{font-weight:500;color:#f0d7a4}
+@layer game-art-v136{
+ body[data-art-direction] .caravan-victory .caravan-victory-return:focus-visible{outline:2px solid #fff1d1!important;outline-offset:5px!important}
+}
+@media(max-height:520px) and (orientation:landscape){
+ .caravan-victory-content{width:64%;gap:10px;padding-top:24px;padding-bottom:max(6dvh,env(safe-area-inset-bottom))}
+ .caravan-victory h2{font-size:clamp(25px,3.8vw,38px)}
+ .caravan-victory-kicker{font-size:10px;gap:9px}
+ .caravan-victory-kicker::before{width:25px}
+ .caravan-victory #caravanVictoryLoot{font-size:13px;line-height:1.45}
+ .caravan-victory-footer{gap:18px;margin-top:4px}
+ .caravan-victory .caravan-victory-return{min-width:165px;min-height:46px;padding:10px 16px;font-size:13px;gap:24px}
+ .caravan-victory #caravanVictoryNext{font-size:11px}
+}
+@media(max-height:350px) and (orientation:landscape){
+ .caravan-victory-content{width:70%;gap:8px;padding-bottom:max(18px,env(safe-area-inset-bottom))}
+ .caravan-victory h2{font-size:25px}
+ .caravan-victory-footer{gap:14px}
+}
+@media(orientation:portrait){
+ .caravan-victory-art{object-position:67% center}
+ .caravan-victory::after{background:linear-gradient(0deg,#080d0bf5 0%,#080d0bda 28%,#080d0b30 65%,transparent)}
+ .caravan-victory-content{width:100%;gap:16px;padding:32px max(24px,env(safe-area-inset-right)) max(32px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left))}
+ .caravan-victory h2{font-size:clamp(30px,8.5vw,46px)}
+ .caravan-victory-footer{gap:20px}
+ .caravan-victory .caravan-victory-return{min-width:180px}
+}
