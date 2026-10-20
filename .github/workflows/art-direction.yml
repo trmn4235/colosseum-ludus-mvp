@@ -2,7 +2,7 @@ name: Roman art direction
 on:
   pull_request:
     branches: [main]
-    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'tests/art-*', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
+    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'imperial-missions-v31.js', 'tests/art-*', 'tests/messages-v108.cjs', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,6 +32,10 @@ jobs:
         run: node tests/art-pages-v136.cjs
       - name: Courtyard and all room tabs including active horse duel
         run: node tests/art-rooms-v136.cjs
+      - name: Character tabs, mission details, empty states and friend requests
+        run: node tests/art-details-v137.cjs
+      - name: Message contents, long-text paging and safe retry
+        run: node tests/messages-v108.cjs
       - name: Login, registration and cinematic recovery
         run: node tests/login-intro-v40.cjs
       - name: Arena cards and marketplace selection

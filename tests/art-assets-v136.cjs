@@ -5,7 +5,7 @@ const pages=['index','ludus','savas','arena','multiplayer','gelistirmeler','paza
 for(const page of pages){
  const html=read(page+'.html').toString();
  assert.match(html,/<body[^>]*data-art-direction="136"/);
- assert.match(html,/<head>\s*<link rel="stylesheet" href="game-art-v136.css\?v=revision136">/,'art layer registered before legacy styles: '+page);
+ assert.match(html,/<head>\s*<link rel="stylesheet" href="game-art-v136.css\?v=revision137">/,'art layer registered before legacy styles: '+page);
 }
 const css=read('game-art-v136.css').toString();
 assert.match(css,/@layer game-art-v136;/);
