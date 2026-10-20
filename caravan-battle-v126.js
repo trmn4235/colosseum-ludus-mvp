@@ -17,7 +17,7 @@
   try{localStorage.setItem(storeKey,JSON.stringify({owner,raid,seed:ticket.encounter.seed,commands:state.commands,steps:state.steps,abandon}));return true;}
   catch{paused=true;clear();show('Kayıt alanı dolu','Savaş ilerlemesi saklanamadı. Bu sayfayı kapatmadan tarayıcıda yer açıp yeniden dene.',[action('Yeniden dene',()=>{if(checkpoint())resume();},'primary')]);return false;}
  }
- function show(heading,description,actions,art){CaravanLoading.hide();card.replaceChildren();title.textContent=heading;copy.textContent=description;if(art){const img=make('img');img.src=art;img.alt='';card.append(img);}card.append(title,copy,...actions);overlay.hidden=false;}
+ function show(heading,description,actions,art){window.CaravanVictory?.close();CaravanLoading.hide();card.replaceChildren();title.textContent=heading;copy.textContent=description;if(art){const img=make('img');img.src=art;img.alt='';card.append(img);}card.append(title,copy,...actions);overlay.hidden=false;}
  function pause(){if(!state||state.combat.finished||abandon)return;paused=true;clear();if(!checkpoint())return;show('Savaş duraklatıldı','İlerlemen bu cihazda saklandı. Dilersen daha sonra bu baskına devam edebilirsin.',[controlSettings,action('Savaşa dön',resume,'primary'),action('Geri çekil',()=>show('Geri çekilsinler mi?','Bu baskın yenilgi olarak kaydedilir. Ekip revirde dinlenir; yeni baskın için 1 saat beklersin.',[action('Savaşa dön',resume,'primary'),action('Geri çekilmeyi onayla',()=>{abandon=true;checkpoint();finish();})])),returnLink()]);}
  function resume(){if(!state||saved||saving||abandon||state.combat.finished||!checkpoint())return;clear();paused=false;accumulator=0;overlay.hidden=true;}
  async function script(src){await new Promise((resolve,reject)=>{const n=make('script');n.src=src;const timeout=setTimeout(()=>reject(Error('Savaş dosyaları zamanında yüklenemedi.')),60000);n.onload=()=>{clearTimeout(timeout);resolve();};n.onerror=()=>{clearTimeout(timeout);reject(Error('Savaş dosyası yüklenemedi.'));};document.head.append(n);});}
@@ -85,7 +85,8 @@
  async function finish(){
   if(saving||saved)return;settlementStarted=true;paused=true;clear();checkpoint();saving=true;
   const won=!abandon&&state.combat.result==='win',art='assets/caravan-v124/'+(won?'success':'failure')+'.webp';
-  show(won?'Kervan ele geçirildi':'Baskın sona erdi','Savaş kaydı doğrulanıyor…',[],art);
+  if(won&&window.CaravanVictory?.pending()){CaravanLoading.hide();overlay.hidden=true;}
+  else show('Baskın sona erdi','Savaş kaydı doğrulanıyor…',[],art);
   try{
    const response=await client.functions.invoke('caravan-combat-v126',{body:{raid,commands:state.commands,steps:state.steps,abandon}});
    if(response.error){let detail;try{detail=await response.error.context?.json();}catch{}throw Error(detail?.error||response.error.message);}
