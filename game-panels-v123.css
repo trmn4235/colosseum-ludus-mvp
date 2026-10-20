@@ -1,5 +1,6 @@
 /* Shared game windows. Scoped to dialogs: rooms, HUD, combat and item art retain their colours.
    Layered important rules intentionally replace the older per-screen important themes. */
+@layer game-art-v136, game-windows;
 @layer game-windows {
  :root{--gp-font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--gp-ink:#202936;--gp-muted:#657286;--gp-line:#dfe4eb;--gp-wine:#743147;--gp-gold:#b59658;--gp-canvas:#f3f5f8;--gp-white:#fff}
  :where(#supplyModal,#orders,#foodModal,.imperial-modal,.clan-vault-modal,.owner-editor,#friendsOverlay,#beginnerGuide,#combat-values,#pouchOverlay,#inspectOverlay,#equipmentInspect,#notice,#appInstallHelp){background:rgb(16 25 39 / 61%)!important;backdrop-filter:blur(8px)!important}

@@ -18,10 +18,10 @@ module.exports=async({page,fit,out})=>{
    await fit(panel.frame);
    const wineArea=await page.locator(panel.frame).evaluate(root=>{const r=root.getBoundingClientRect();return Math.max(0,...[root,...root.querySelectorAll('*')].filter(e=>e.getClientRects().length).map(e=>{const c=getComputedStyle(e).backgroundColor.match(/[\d.]+/g)?.map(Number)||[0,0,0,0],b=e.getBoundingClientRect();return(c[3]??1)>.5&&c[0]>c[1]*1.5&&c[0]>c[2]*1.2?b.width*b.height/(r.width*r.height):0}));});assert.ok(wineArea<.15,panel.name+' uses burgundy as an accent, not a large surface');
    assert.equal(await page.locator(panel.heading).first().evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(255, 255, 255)',panel.name+' light heading');
-   assert.match(await page.locator(panel.root+' h1,'+panel.root+' h2').first().evaluate(e=>getComputedStyle(e).fontFamily),/Inter/,panel.name+' common digital typography');
+   assert.match(await page.locator(panel.root+' h1,'+panel.root+' h2').first().evaluate(e=>getComputedStyle(e).fontFamily),/Cinzel/,panel.name+' shared Roman title face');
    if(width===1536||width===844)await page.screenshot({path:out+'/modern-'+panel.name+'-'+width+'.png'});
    await panel.close();await page.waitForSelector(panel.root+':visible',{state:'hidden'});await page.waitForFunction(()=>!LudusPreview.paused);
   }
  }
- console.log('V123 shared panels PASS: settings, guide, training, missions, pantry, clan vault and messages use common light headers and digital typography at 5 screen sizes.');
+ console.log('V123 shared panels PASS: settings, guide, training, missions, pantry, clan vault and messages use common light headers and Roman titles at 5 screen sizes.');
 };

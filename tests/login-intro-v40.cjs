@@ -32,10 +32,10 @@ async function bounds(page){return page.evaluate(()=>{
 (async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const url='http://127.0.0.1:'+server.address().port+'/index.html';
- const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||'/tmp/chromium',args:['--no-sandbox']});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']});
  const results=[];
  try{
-  for(const [i,[width,height]]of [[844,390],[667,375],[740,360],[932,430],[1366,768]].entries()){
+  for(const [i,[width,height]]of [[844,390],[667,375],[740,360],[932,430],[1366,768],[568,320]].entries()){
    const{context,page,errors}=await setup(browser,{width,height});
    await page.goto(url,{waitUntil:'domcontentloaded'});
    assert.equal(await page.locator('#entryPanel').evaluate(p=>p.inert),true,'controls are inert during the artwork');
@@ -71,6 +71,8 @@ async function bounds(page){return page.evaluate(()=>{
    const registration=await page.evaluate(()=>({panel:document.getElementById('entryPanel').getBoundingClientRect().bottom,top:document.getElementById('entryPanel').getBoundingClientRect().top,back:document.getElementById('back').getBoundingClientRect().bottom}));
    assert.equal(registration.top,b.panel.y,'registration grows downward from the same top anchor');
    await page.locator('#back').scrollIntoViewIfNeeded();assert.ok(await page.locator('#back').evaluate(n=>{const b=n.getBoundingClientRect(),p=document.getElementById('entryPanel').getBoundingClientRect();return b.top>=p.top&&b.bottom<=p.bottom;}),'registration back button is reachable in the compact panel');
+   const formBounds=await page.locator('#entryPanel').evaluate(panel=>{const p=panel.getBoundingClientRect();return [...panel.querySelectorAll('#modalTitle,#registerForm input,#registerForm button,#back')].filter(e=>e.getClientRects().length).map(e=>({id:e.id,top:e.getBoundingClientRect().top,bottom:e.getBoundingClientRect().bottom,panelTop:p.top,panelBottom:p.bottom}));});
+   for(const e of formBounds)assert.ok(e.top>=e.panelTop&&e.bottom<=e.panelBottom+1,'registration control fully visible '+width+' '+e.id);
    await shot(page,`register-${width}x${height}`);
    assert.deepEqual(errors,[]);results.push({viewport:[width,height],holdMs:Math.round(reveal.time-art.time),revealMs:Math.round(done.time-reveal.time),panel:b.panel});await context.close();
   }
