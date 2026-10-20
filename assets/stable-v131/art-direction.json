@@ -1,0 +1,31 @@
+{
+  "mode": "built-in image_gen",
+  "intent": "generate",
+  "purpose": "Repeatable stable material textures; neutral albedo lighting so runtime torches supply illumination.",
+  "assets": [
+    {
+      "path": "assets/stable-v131/earth.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset type: seamless repeating albedo texture for the ground of a realistic Roman horse stable in a 3D game. Orthographic straight-down view of a 2 by 2 metre patch of compacted brown earth, dry trampled clay and fine dusty soil, subtle irregular wear, tiny embedded pebbles, occasional short pieces of straw less than 2% coverage. Warm medium umber and muted taupe, natural fine granular detail. Flat neutral diffuse lighting only, no directional light or cast shadows, no ambient vignette, no objects, no perspective, no grass, no plants, no large rocks, no writing. Entire square filled edge to edge by soil. Tileable seamless on all four sides, balanced detail and brightness from edge to edge. 1024x1024 square."
+    },
+    {
+      "path": "assets/stable-v131/timber.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset type: seamless repeating albedo texture for individual wooden boards and beams in a realistic Roman horse stable 3D game. Orthographic extreme close-up of an uninterrupted broad surface of weathered warm brown oak timber. The natural long grain runs vertically top to bottom, visible fine fibres, subtle pores, a few restrained small knots, modest worn variations in mid brown colour. Natural rough unfinished wood, no polished sheen, not burnt, not orange. Flat neutral diffuse lighting only, no baked shadows or directional lighting. Seamless tileable square edge to edge. No board seams, no board boundaries, no frames, nails, hinges, iron fittings, text, logos, perspective, ground or surroundings. This is the material grain itself, to be applied to separately modelled planks. 1024x1024 square."
+    },
+    {
+      "path": "assets/stable-v131/straw.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset type: seamless albedo texture for straw bedding and rectangular hay bales in a realistic ancient horse stable 3D game. Orthographic straight-on macro photograph of densely packed dry golden wheat straw fibres, most fibres running horizontally with natural small irregular crossings, short stems and broken ends. Muted natural straw ochre and tan, fine fibrous detail, no saturated yellow. Flat diffuse neutral lighting, no directional light or cast shadows, no vignette, no bale boundaries, no twine, no objects, no ground, no grass, no writing or logos. Square 1024x1024, the entire image filled edge to edge by tightly packed straw and seamless tileable on every edge."
+    }
+  ]
+}

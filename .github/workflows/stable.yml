@@ -2,9 +2,9 @@ name: Stable husbandry and trade
 on:
   push:
     branches: [main]
-    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
+    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
   pull_request:
-    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
+    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
 permissions:
   contents: read
 jobs:
@@ -28,6 +28,7 @@ jobs:
       - name: JavaScript syntax
         run: |
           node --check ludus-stable-v129.js
+          node --check ludus-stable-environment-v131.js
           node --check ludus-stable-room-v130.js
           node --check ludus-stable-appearance-v130.js
           node --check ludus-door-icons-v41.js

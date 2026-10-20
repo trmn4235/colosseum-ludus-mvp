@@ -24,7 +24,7 @@ const next=()=>new Promise(r=>setTimeout(r,0));
  // Safely render user-chosen horse names as text.
  state.horses[0].name='<img src=x onerror=alert(1)>';ui.enter();await next();await ui.open('stats');assert.equal(w.document.querySelectorAll('img[onerror]').length,0);
  ui.leave();dom.window.close();
- const T=require('three'),context={console,LudusHorseAppearance:require('../ludus-stable-appearance-v130.js')};context.globalThis=context;vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(root,'ludus-stable-room-v130.js'),'utf8'),context);
+ const T=require('three'),context={console,LudusStableEnvironment:require('../ludus-stable-environment-v131.js'),LudusHorseAppearance:require('../ludus-stable-appearance-v130.js')};context.globalThis=context;vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(root,'ludus-stable-room-v130.js'),'utf8'),context);
  T.GLTFLoader=class{load(url,onLoad){const scene=new T.Group();scene.add(new T.Mesh(new T.BoxGeometry(1,2,3),new T.MeshStandardMaterial()));onLoad({scene,animations:[]});}};
  const props=new T.Group(),colliders=[],room=context.LudusStableRoom.create({T,props,colliders,wood:new T.MeshStandardMaterial(),stone:new T.MeshStandardMaterial()});
  room.enter();await next();room.select({id:'foal',stage:'foal'});assert.equal(room.root.userData.width,30);assert.equal(room.horse.scale.x,.55);const original=room.horse;room.leave();props.clear();colliders.length=0;room.enter();await next();room.select({id:'adult',stage:'adult'});assert.equal(room.horse,original,'model reused across entry');assert.equal(room.horse.scale.x,1);assert.ok(room.groom);room.leave();

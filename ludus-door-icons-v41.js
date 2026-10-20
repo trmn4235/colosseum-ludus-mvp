@@ -12,7 +12,7 @@ var LudusDoorIcons=(function(){
   infirmary:['M9 3h6v6h6v6h-6v6H9v-6H3V9h6z'],
   dining:['M3 3v6M6 3v6M9 3v6M3 8q3 5 6 0M6 12v9','M19 3q-4 3-4 10h4M19 3v18','M12 8a4 4 0 0 1 0 8'],
   stable:['M5 21v-5l4-5-3-1 4-7 2 3 4-3 1 6 4 5-1 3-6-1-2 5z','M14 9h.01M9 12l4 2'],
-  store:['M3 9h10v8H3zM4 9V7a4 4 0 0 1 8 0v2','M5 17a2 2 0 1 0 .01 0M11 17a2 2 0 1 0 .01 0','M13 14h4l2-5 3 1-1-4-2 1-2 7v6m4-9v9'],
+  store:['M2 10h11l-1 6H3zM2.7 13h9.7M12.3 14l7-.5','M6.6 19a2.1 2.1 0 1 1-4.2 0 2.1 2.1 0 1 1 4.2 0M12.6 19a2.1 2.1 0 1 1-4.2 0 2.1 2.1 0 1 1 4.2 0','M18.2 11.7c1.8-1.3 5-.8 7.4-.5l1.3-3.6 1-1.5.3-1.4 1.1 1.9 2.2 1.4-.6 1.6-2.1-.5-1.3 4.8-2 1.1h-5.4z','M26.6 14.1l.1 4.9h1.5M24.8 15l-.8 2.5 1 1.5M20.8 15l-1 4h-1.6M18.2 11.7c-1.6-.2-2.1 1.2-2.4 2.7'],
   arena:['M5 4l6 5-3 3zM8 12l9 9M14 18l4-4','M19 4l-6 5 3 3zM16 12l-9 9M6 14l4 4','M3 5Q0 14 5 20M21 5q3 9-2 15'],
   market:['M12 3v18M7 21h10M4 7h16','M6 7l-4 8h8zM18 7l-4 8h8z']
  };
@@ -22,7 +22,7 @@ var LudusDoorIcons=(function(){
   c.shadowColor='#0009';c.shadowBlur=5;c.shadowOffsetY=3;
   c.fillStyle='#282929c4';c.beginPath();c.arc(64,64,55,0,Math.PI*2);c.fill();c.shadowBlur=0;c.shadowOffsetY=0;
   c.strokeStyle=attention?'#d8af5c99':'#98988d66';c.lineWidth=2;c.stroke();
-  c.translate(24,24);c.scale(80/24,80/24);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
+  const width=kind==='store'?32:24;c.translate(24,24+(80-80*24/width)/2);c.scale(80/width,80/width);c.strokeStyle=attention?'#e5bd62':'#aaa9a4';c.lineWidth=1.65;c.lineJoin=c.lineCap='round';
   for(const d of paths[kind]||paths.store)c.stroke(new Path2D(d));
   const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;textures.set(key,map);
   return map;
@@ -33,6 +33,6 @@ var LudusDoorIcons=(function(){
   icon.position.set(x,y,z);icon.rotation.y=angle;icon.userData={kind,name,doorIcon:true};return icon;
  }
  function setAttention(T,icon,value){value=!!value;if(icon.userData.attention===value)return;icon.userData.attention=value;icon.material.map=texture(T,icon.userData.kind,value);}
- function svg(kind){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
+ function svg(kind){return '<svg viewBox="0 0 '+(kind==='store'?32:24)+' 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[kind]||paths.store).map(d=>'<path d="'+d+'"/>').join('')+'</svg>';}
  return{create,setAttention,svg};
 })();
