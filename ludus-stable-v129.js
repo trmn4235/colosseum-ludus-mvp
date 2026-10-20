@@ -13,11 +13,9 @@ var LudusStable=(()=>{
   const btn=(text,fn,cls='')=>{const n=el('button',cls,text);n.type='button';n.onclick=fn;return n;};
   const img=(label='At',h=null)=>{const n=el('img');n.src=appearance.photo(h);n.alt=label;n.width=504;n.height=336;return n;};
   let state=null,owner=null,chosen=null,view='stats',page=0,mode='buy',breedMode='own',founderCoat='dark_brown',founderSex='female',busy=false,loading=false,opened=false,active=false,offset=0,pending=null,previousFocus=null,lastRefresh=0,ancestor=null,notice='',isError=false,confirmFn=null,duelRaf=0;
-  const hud=el('section','stable-hud');hud.hidden=true;hud.setAttribute('aria-label','Ahır');
-  const hudTitle=el('div','stable-hud-title'),hudName=el('strong'),hudCapacity=el('span');hudTitle.append(hudName,hudCapacity);
-  const portraits=el('div','stable-portraits'),commands=el('div','stable-commands');
-  for(const [key,label]of [['stats','At detayları'],['groom','Seyis'],['breeding','Çiftleştirme'],['market','At pazarı'],['duel','Düello']])commands.append(btn(label,()=>open(key)));
-  hud.append(hudTitle,portraits,commands);document.body.append(hud);
+  const groomAction=btn('Seyis',()=>open('groom'),'room-world-action stable-groom-action');
+  groomAction.id='stableGroomAction';groomAction.hidden=true;groomAction.title='Seyisle konuş';groomAction.setAttribute('aria-label','Seyisle konuş');document.body.append(groomAction);
+  const groomPoint=ctx.T?new ctx.T.Vector3():null;
   const modal=el('section','stable-modal');modal.id='stableModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','stableTitle');
   const frame=el('div','stable-frame'),head=el('div','stable-head'),heading=el('div'),title=el('h2','','Ahır'),summary=el('p'),close=btn('×',()=>hide(),'stable-close');title.id='stableTitle';close.setAttribute('aria-label','Ahır panelini kapat');heading.append(title,summary);head.append(heading,close);
   const nav=el('nav','stable-tabs');nav.setAttribute('aria-label','Ahır bölümleri');
@@ -113,8 +111,27 @@ var LudusStable=(()=>{
    if(hit)hit.disabled=busy||!!pending||elapsed<round*6000+1500||elapsed>(round+1)*6000||d.controls.some(c=>c.round===round)||elapsed>=18000;if(finish)finish.disabled=busy||elapsed<19000;
    const lane=body.querySelector('.stable-duel-lane');if(lane)lane.style.setProperty('--run',String(Math.min(1,position/100)));
   }
-  function renderHUD(){hud.hidden=!active||opened||ctx.blocked?.();if(!active)return;hudName.textContent=horse()?.name||'Ahır';hudCapacity.textContent=state?`${state.horses.length}+${state.reserved} / ${state.capacity} · Ludus ${state.level}`:'Yükleniyor…';portraits.replaceChildren();if(state){const index=Math.max(0,state.horses.findIndex(h=>h.id===chosen)),start=Math.floor(index/4)*4;if(state.horses.length>4)portraits.append(btn('‹',()=>choose(state.horses[(index-1+state.horses.length)%state.horses.length])));for(const h of state.horses.slice(start,start+4)){const b=btn('',()=>choose(h),'stable-portrait');b.setAttribute('aria-pressed',String(h.id===horse()?.id));b.append(img(h.name,h),el('span','',h.name));portraits.append(b);}if(state.horses.length>4)portraits.append(btn('›',()=>choose(state.horses[(index+1)%state.horses.length])));}}
-  function render(){renderHUD();if(!opened)return;body.dataset.view=view;body.dataset.duelActive=String(view==='duel'&&!!state?.duel&&!state.duel.finished_at);const h=horse();title.textContent='Ahır'+(h?' · '+h.name:'');summary.textContent=state?`${state.gold} denarius · ${state.horses.length} at + ${state.reserved} tay yeri / ${state.capacity}`:'Ahır kayıtları yükleniyor…';nav.replaceChildren();for(const [key,label]of tabs){const b=btn(label,()=>{view=key;page=0;ancestor=null;render();});b.setAttribute('aria-pressed',String(view===key));nav.append(b);}body.replaceChildren();
+  function updateGroomAction(){
+   if(!groomPoint||!ctx.camera||!ctx.canvas){groomAction.hidden=true;return;}
+   const groom=ctx.groomRoot?.();groomPoint.set(-2.5,2.02,.8);
+   if(groom){groomPoint.copy(groom.position);groomPoint.y+=(groom.userData.height||1.78)+.2;}
+   LudusRoomActions.place(groomAction,groomPoint,ctx,active&&!opened&&ctx.inRoom?.()!==false,3.5);
+  }
+  if(ctx.T&&ctx.canvas&&ctx.camera){
+   const ray=new ctx.T.Raycaster(),pointer=new ctx.T.Vector2();let tap=null;
+   ctx.canvas.addEventListener('pointerdown',event=>{if(active&&!opened&&!ctx.blocked?.()&&event.button===0&&!tap)tap={id:event.pointerId,x:event.clientX,y:event.clientY};});
+   ctx.canvas.addEventListener('pointermove',event=>{if(tap&&tap.id===event.pointerId&&Math.hypot(event.clientX-tap.x,event.clientY-tap.y)>8)tap=null;});
+   ctx.canvas.addEventListener('pointerup',event=>{
+    const start=tap;tap=null;const groom=ctx.groomRoot?.();
+    if(!start||start.id!==event.pointerId||!active||opened||ctx.blocked?.()||!groom||Math.hypot(event.clientX-start.x,event.clientY-start.y)>8||Math.hypot(ctx.player.x-groom.position.x,ctx.player.z-groom.position.z)>3.5)return;
+    const rect=ctx.canvas.getBoundingClientRect();pointer.set((event.clientX-rect.left)/rect.width*2-1,1-(event.clientY-rect.top)/rect.height*2);ray.setFromCamera(pointer,ctx.camera);groom.updateMatrixWorld(true);
+    if(ray.intersectObject(groom,true).length)open('groom');
+   });
+   for(const event of ['pointercancel','lostpointercapture'])ctx.canvas.addEventListener(event,()=>{tap=null;});
+  }
+  document.addEventListener('keydown',event=>{if(event.code==='KeyE'&&!event.repeat&&!groomAction.hidden&&!ctx.blocked?.()&&!event.target.closest?.('input,textarea,select,[contenteditable="true"]')){event.preventDefault();open('groom');}});
+
+  function render(){updateGroomAction();if(!opened)return;body.dataset.view=view;body.dataset.duelActive=String(view==='duel'&&!!state?.duel&&!state.duel.finished_at);const h=horse();title.textContent='Ahır'+(h?' · '+h.name:'');summary.textContent=state?`${state.gold} denarius · ${state.horses.length} at + ${state.reserved} tay yeri / ${state.capacity}`:'Ahır kayıtları yükleniyor…';nav.replaceChildren();for(const [key,label]of tabs){const b=btn(label,()=>{view=key;page=0;ancestor=null;render();});b.setAttribute('aria-pressed',String(view===key));nav.append(b);}body.replaceChildren();
    if(!state){body.append(el('p','stable-empty',isError?'Ahır bilgisi alınamadı. Yeniden deneyebilirsin.':'At kayıtları hazırlanıyor…'));}
    else {if(state.horses.length>1){const selector=select('At seç',state.horses.map(h=>[h.id,h.name+' · '+sex(h)+' · '+stage(h)]),h?.id);selector.wrap.classList.add('stable-horse-select');selector.n.onchange=()=>choose(state.horses.find(h=>h.id===selector.n.value));body.append(selector.wrap);}
     if(!h&&!['market','groom'].includes(view))body.append(noHorse());else({stats:statsView,history:historyView,pedigree:pedigreeView,breeding:breedingView,groom:groomView,market:marketView,duel:duelView}[view])(h);
@@ -123,10 +140,10 @@ var LudusStable=(()=>{
    modal.setAttribute('aria-busy',String(busy||loading));message(notice,isError);if(busy||loading)body.querySelectorAll('button,input,select').forEach(b=>b.disabled=true);retry.disabled=busy||loading;
   }
   async function open(tab='stats'){if(opened){view=tab;render();return;}if(ctx.blocked?.())return;opened=true;view=tab;page=0;previousFocus=document.activeElement;ctx.onOpen?.();modal.hidden=false;render();close.focus();await refresh();}
-  function hide(){if(!opened)return;opened=false;cancelAnimationFrame(duelRaf);duelRaf=0;modal.hidden=true;confirmLayer.hidden=true;ctx.onClose?.();renderHUD();previousFocus?.focus?.();}
+  function hide(){if(!opened)return;opened=false;cancelAnimationFrame(duelRaf);duelRaf=0;modal.hidden=true;confirmLayer.hidden=true;ctx.onClose?.();updateGroomAction();previousFocus?.focus?.();}
   modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();if(confirmLayer.hidden)hide();else{confirmLayer.hidden=true;confirmFn=null;}}if(e.key==='Tab'){const nodes=[...modal.querySelectorAll('button,input,select,[tabindex="0"]')].filter(n=>!n.disabled&&n.getClientRects().length);if(!nodes.length)return;const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
-  let nextTick=0;function tick(){hud.hidden=!active||opened||!!ctx.blocked?.();if(opened){updateDuel();if(view==='duel'&&state?.duel&&!state.duel.finished_at&&!duelRaf&&!document.hidden)duelRaf=requestAnimationFrame(animateDuel);}if(!active||document.hidden||Date.now()<nextTick)return;nextTick=Date.now()+1000;if(state&&Date.now()-lastRefresh>15000&&!busy&&!loading&&!confirmFn&&!modal.querySelector('input:focus,select:focus')&&!(opened&&view==='duel'&&state.duel&&!state.duel.finished_at))refresh();}
-  return {open,close:hide,refresh,tick,enter(){active=true;renderHUD();refresh();},leave(){active=false;hide();hud.hidden=true;},get state(){return state;},get selected(){return horse();},get visible(){return opened;}};
+  let nextTick=0;function tick(){updateGroomAction();if(opened){updateDuel();if(view==='duel'&&state?.duel&&!state.duel.finished_at&&!duelRaf&&!document.hidden)duelRaf=requestAnimationFrame(animateDuel);}if(!active||document.hidden||Date.now()<nextTick)return;nextTick=Date.now()+1000;if(state&&Date.now()-lastRefresh>15000&&!busy&&!loading&&!confirmFn&&!modal.querySelector('input:focus,select:focus')&&!(opened&&view==='duel'&&state.duel&&!state.duel.finished_at))refresh();}
+  return {open,close:hide,refresh,tick,enter(){active=true;updateGroomAction();refresh();},leave(){active=false;hide();groomAction.hidden=true;},get state(){return state;},get selected(){return horse();},get visible(){return opened;}};
  }
  return {create,traits,tabs,photo,canCompete,time};
 })();

@@ -2,7 +2,7 @@ name: Roman art direction
 on:
   pull_request:
     branches: [main]
-    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'imperial-missions-v31.js', 'tests/art-*', 'tests/messages-v108.cjs', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
+    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'imperial-missions-v31.js', 'tests/art-*', 'tests/stable-yard-*.cjs', 'tests/messages-v108.cjs', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -30,6 +30,8 @@ jobs:
           STABLE_FIXTURE_PATH=/tmp/stable-fixture-v136.json node tests/stable-v129.cjs
       - name: Six page sizes, level summary, clan views and expanded pause guide
         run: node tests/art-pages-v136.cjs
+      - name: Open-air stable, groom interaction and room restoration
+        run: node tests/stable-yard-v139.cjs
       - name: Courtyard and all room tabs including active horse duel
         run: node tests/art-rooms-v136.cjs
       - name: Character tabs, mission details, empty states and friend requests
