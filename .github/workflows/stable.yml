@@ -2,9 +2,9 @@ name: Stable husbandry and trade
 on:
   push:
     branches: [main]
-    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
+    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
   pull_request:
-    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
+    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
 permissions:
   contents: read
 jobs:
@@ -23,8 +23,11 @@ jobs:
         run: STABLE_FIXTURE_PATH=/tmp/stable-v129.json node tests/stable-v129.cjs
       - name: UI interactions and cached room models
         run: STABLE_FIXTURE_PATH=/tmp/stable-v129.json node tests/stable-ui-v129.cjs
+      - name: Actual GLB scale, herd and aisle geometry
+        run: node tests/stable-models-v130.cjs
       - name: JavaScript syntax
         run: |
           node --check ludus-stable-v129.js
-          node --check ludus-stable-room-v129.js
+          node --check ludus-stable-room-v130.js
+          node --check ludus-stable-appearance-v130.js
           node --check ludus-door-icons-v41.js
