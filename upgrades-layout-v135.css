@@ -1,0 +1,65 @@
+/* Full-width material dock, full-height equipment inventory, separate item level. */
+#workshopRoot.workshop-v135 .game-shell{grid-template-rows:calc(clamp(32px,6.5dvh,48px) + env(safe-area-inset-top)) minmax(0,1fr) calc(clamp(74px,13.5dvh,106px) + env(safe-area-inset-bottom))}
+#workshopRoot.workshop-v135 .layout{grid-template-rows:minmax(0,1fr)}
+#workshopRoot.workshop-v135 .item-panel,#workshopRoot.workshop-v135 .operation,#workshopRoot.workshop-v135 .inventory-panel{grid-row:1}
+#workshopRoot.workshop-v135 .inventory{grid-template-rows:repeat(2,minmax(0,1fr))}
+#workshopRoot.workshop-v135 #itemName{display:flex;justify-content:space-between;align-items:baseline;gap:12px;width:100%}
+#workshopRoot.workshop-v135 #itemLabel{min-width:0;overflow:hidden;text-overflow:ellipsis}
+#workshopRoot.workshop-v135 #itemLevel{flex:none;font-variant-numeric:tabular-nums}
+#workshopRoot.workshop-v135 #levelBadge{width:auto;height:min(31.4cqw,31.4cqh);max-width:68%;transform:none;display:flex;align-items:center;justify-content:center}
+#workshopRoot.workshop-v135 .level-numerals{width:auto;height:100%;max-width:100%}
+
+#workshopRoot.workshop-v135 .combined-stones{grid-column:1;grid-row:3;display:grid;grid-template-columns:clamp(108px,15vw,190px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:clamp(6px,1vw,14px);padding:6px 8px calc(6px + env(safe-area-inset-bottom));border-top:1px solid #b39560!important;background:#35121f!important}
+#workshopRoot.workshop-v135 .materials-head{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:8px;min-height:0;min-width:0}
+#workshopRoot.workshop-v135 .material-tabs{width:100%;flex:none;gap:2px}
+#workshopRoot.workshop-v135 .material-tabs button{min-width:0;padding:4px 2px;font-size:clamp(9px,1.6dvh,12px);background:#583440!important;color:#ead9b4!important}
+#workshopRoot.workshop-v135 .material-tabs button.active{background:#e8d3a1!important;color:#421b2c!important}
+#workshopRoot.workshop-v135 .material-paging{justify-content:center;color:#ead9b4;gap:8px}
+#workshopRoot.workshop-v135 .material-paging button{background:#583440;color:#ead9b4;border-color:#9e7d58}
+#workshopRoot.workshop-v135 .combined-stones .stone-list{gap:clamp(4px,.7vw,10px)}
+#workshopRoot.workshop-v135 .combined-stones .material-stone{padding:3px 6px;gap:2px;grid-template-rows:auto minmax(16px,1fr) auto}
+#workshopRoot.workshop-v135 .combined-stones .material-stone small{font-size:clamp(9px,1.55dvh,12px);line-height:1.08;font-weight:600;letter-spacing:0}
+#workshopRoot.workshop-v135 .combined-stones .material-stone img{max-width:clamp(24px,5.7dvh,44px)}
+#workshopRoot.workshop-v135 .combined-stones .material-stone .quantity{font-size:clamp(8px,1.35dvh,10px);line-height:1}
+
+/* Feedback and auxiliary actions stay with the inventory, above the material dock. */
+#workshopRoot.workshop-v135 .statusbar{display:grid;grid-template-columns:auto minmax(0,1fr);flex:none;min-height:24px;gap:4px;padding:0;border:0;background:transparent!important;color:#78666e;font-size:9px}
+#workshopRoot.workshop-v135 .statusbar button{min-height:22px;margin:0;padding:2px 5px;font-size:9px;color:#6f4d32!important;background:#f8f4ec!important;border-color:#cabda7}
+#workshopRoot.workshop-v135 .statusbar #openPouch{background:#e8d3a1!important;color:#421b2c!important}
+#workshopRoot.workshop-v135 .statusbar .pager{height:24px;gap:4px}
+#workshopRoot.workshop-v135 .statusbar .pager button{width:24px;min-width:24px;padding:0;font-size:17px}
+#workshopRoot.workshop-v135 .statusbar .pager span{color:#78666e!important}
+#workshopRoot.workshop-v135 .inventory-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:4px}
+#workshopRoot.workshop-v135 #status{grid-column:1/-1;white-space:normal;overflow:visible;font-size:clamp(8px,1.35dvh,10px);line-height:1.15;color:#78666e!important}
+
+@media(max-height:540px){
+ #workshopRoot.workshop-v135 .item-panel{gap:2px;padding-top:6px;padding-bottom:6px}
+ #workshopRoot.workshop-v135 .art{min-height:24px}
+ #workshopRoot.workshop-v135 .stats li{min-height:15px;padding:1px 3px;font-size:9.5px}
+ #workshopRoot.workshop-v135 .socket{height:23px}
+ #workshopRoot.workshop-v135 .stat-title,#workshopRoot.workshop-v135 .emerald-heading{margin-top:2px}
+ #workshopRoot.workshop-v135 .inventory-panel{gap:4px}
+ #workshopRoot.workshop-v135 .statusbar{min-height:22px}
+ #workshopRoot.workshop-v135 .combined-stones{padding-top:4px;padding-bottom:calc(4px + env(safe-area-inset-bottom))}
+}
+@media(max-width:740px){
+ #workshopRoot.workshop-v135 .combined-stones{grid-template-columns:104px minmax(0,1fr);gap:5px;padding-left:6px;padding-right:6px}
+ #workshopRoot.workshop-v135 .material-tabs button{font-size:8.5px;padding:3px 1px;min-height:24px}
+ #workshopRoot.workshop-v135 .combined-stones .material-stone{padding:2px 3px;gap:1px}
+ #workshopRoot.workshop-v135 .combined-stones .material-stone small{font-size:8px;line-height:1.08;font-weight:500;letter-spacing:-.1px}
+ #workshopRoot.workshop-v135 .combined-stones .material-stone .quantity{font-size:8px}
+ #workshopRoot.workshop-v135 .statusbar{gap:3px}
+ #workshopRoot.workshop-v135 .statusbar button{padding:2px 3px;font-size:8px}
+ #workshopRoot.workshop-v135 .statusbar .pager{gap:3px}
+ #workshopRoot.workshop-v135 .statusbar .pager button{width:22px;min-width:22px}
+ #workshopRoot.workshop-v135 .statusbar .pager span{font-size:8px}
+}
+@media(max-height:350px){
+ #workshopRoot.workshop-v135 .item-panel{gap:2px;padding-top:4px;padding-bottom:4px}
+ #workshopRoot.workshop-v135 .stats li{min-height:13px;padding:1px 3px;font-size:8.5px}
+ #workshopRoot.workshop-v135 .sockets{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:3px}
+ #workshopRoot.workshop-v135 .socket{height:25px;padding:2px;font-size:7px;gap:1px}
+ #workshopRoot.workshop-v135 .stat-title h3,#workshopRoot.workshop-v135 .emerald-heading{font-size:9px}
+ #workshopRoot.workshop-v135 .stat-title small{font-size:7px}
+ #workshopRoot.workshop-v135 .inventory-panel{gap:3px}
+}

@@ -1,7 +1,7 @@
 // Real workshop DOM and assets; all account data and transactions are local fixtures.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
-const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/workshop-v134';
+const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/workshop-v135';
 const raw=fs.readFileSync(path.join(root,'gelistirmeler.html'),'utf8'),context=vm.createContext({});
 vm.runInContext(raw.slice(raw.indexOf('var LudusItemSystem ='),raw.indexOf("if(typeof module!==")),context);
 const rules=context.LudusItemSystem;
@@ -27,6 +27,11 @@ async function checkLayout(page,label){
  assert.equal(await page.locator('.operation h2,#successRate,#targetLevel,#levelTransition,.forge-chance').count(),0,label+' only current level');
  const edges=await page.evaluate(()=>[document.querySelector('.item-panel').getBoundingClientRect().left,document.querySelector('.inventory-panel').getBoundingClientRect().right,innerWidth]);
  assert.equal(edges[0],0,label+' left edge');assert.equal(edges[1],edges[2],label+' right edge');
+ const placement=await page.evaluate(()=>{
+  const r=selector=>document.querySelector(selector).getBoundingClientRect(),dock=r('#materialsPanel'),layout=r('.layout'),inventory=r('.inventory-panel'),title=r('#itemName'),name=r('#itemLabel'),level=r('#itemLevel'),sign=r('#levelBadge svg>g:last-child .level-sign'),digit=r('#levelBadge svg>g:last-child .level-digit');
+  return {dockBelow:dock.top>=layout.bottom-.5,dockFullWidth:Math.abs(dock.left)<.5&&Math.abs(dock.right-innerWidth)<.5,inventoryFullHeight:Math.abs(inventory.bottom-layout.bottom)<.5,titleLeft:Math.abs(name.left-title.left)<.5,titleRight:Math.abs(level.right-title.right)<.5,titleNoOverlap:name.right+3<level.left,signSmaller:sign.height<digit.height*.6,signToLeft:sign.right<digit.left,signCentred:Math.abs((sign.top+sign.bottom-digit.top-digit.bottom)/2)<2};
+ });
+ assert.deepEqual(Object.values(placement),Object.values(placement).map(()=>true),label+' dock, title and level geometry '+JSON.stringify(placement));
 }
 (async()=>{
  fs.mkdirSync(out,{recursive:true});const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH}:{}),args:['--no-sandbox','--disable-dev-shm-usage']});
@@ -65,7 +70,7 @@ async function checkLayout(page,label){
   assert.equal(await page.locator('#levelBadge svg').count(),1,'drawn level glyphs');
   for(const[width,height]of[[1536,706],[1440,900],[874,402],[852,393],[667,375],[568,320]]){
    await page.setViewportSize({width,height});await page.waitForTimeout(60);
-   for(const category of['Silah','Kalkan','Miğfer','Zırh','Omuzluk','Bacaklık']){await page.locator('#itemTabs').getByRole('button',{name:category,exact:true}).click();await page.locator('.item').first().click();await page.locator('#openSafir').click();await checkLayout(page,width+' '+category);assert.equal(await page.locator('#inventory .item').count(),4,'four equipment cards');if(['Silah','Miğfer','Bacaklık'].includes(category))await materials(width+' '+category);}
+   for(const category of['Silah','Kalkan','Miğfer','Zırh','Omuzluk','Bacaklık']){await page.locator('#itemTabs').getByRole('button',{name:category,exact:true}).click();await page.locator('.item').first().click();await page.locator('#openSafir').click();await checkLayout(page,width+' '+category);assert.equal(await page.locator('#inventory .item').count(),8,'two rows of four equipment cards');if(['Silah','Miğfer','Bacaklık'].includes(category))await materials(width+' '+category);}
    await page.locator('#openSafir').click();await page.screenshot({path:path.join(out,'workshop-'+width+'.png')});
    await page.locator('#openEmeraldStrip').click();for(let i=0;i<2;i++)await page.locator('#nextMaterials').click();
    const longStone=page.locator('.material-stone').filter({hasText:'Minimum Hasarı Maksimuma Yaklaştırma'});await longStone.click();
@@ -90,6 +95,6 @@ async function checkLayout(page,label){
   await page.evaluate(()=>{upgradeMode='success';releaseUpgrade=null});await page.locator('#enhance').click();await page.waitForFunction(()=>typeof releaseUpgrade==='function');await page.evaluate(()=>releaseUpgrade());await page.waitForFunction(()=>!document.getElementById('enhance').disabled);
   const requests=await page.evaluate(()=>calls.filter(c=>c.name==='ludus_upgrade_item_v10').map(c=>c.args.p_request));assert.equal(requests.length,3);assert.equal(requests[1],requests[2]);assert.equal(await page.locator('#enhancement').textContent(),'+3');
   await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('#levelBadge').evaluate(e=>getComputedStyle(e).animationName),'none');
-  assert.deepEqual(errors,[]);console.log(JSON.stringify({viewports:6,currentLevelOnly:true,fourEquipmentPerPage:true,fourGemsPerPage:true,namesAboveImages:true,edgeToEdgePanels:true,allGemNames:true,largeQuantities:true,stonePaging:true,selectedStonePreserved:true,safeAreas:true,minimumCTA:44,doubleTapGuard:true,retryRequestPreserved:true,reducedMotion:true,pageErrors:0}));
+  assert.deepEqual(errors,[]);console.log(JSON.stringify({viewports:6,currentLevelOnly:true,eightEquipmentPerPage:true,bottomStoneDock:true,splitItemTitle:true,smallerCentredPlus:true,fourGemsPerPage:true,namesAboveImages:true,edgeToEdgePanels:true,allGemNames:true,largeQuantities:true,stonePaging:true,selectedStonePreserved:true,safeAreas:true,minimumCTA:44,doubleTapGuard:true,retryRequestPreserved:true,reducedMotion:true,pageErrors:0}));
  }catch(e){await page.screenshot({path:path.join(out,'workshop-failure.png')});throw e;}finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});
