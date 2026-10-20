@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "stats": {
+    "frame": 30,
+    "calls": 24,
+    "triangles": 492548,
+    "points": 0,
+    "lines": 0,
+    "geometries": 24,
+    "textures": 23,
+    "spectators": 12310
+  },
+  "errors": [],
+  "viewportTests": [
+    "932x430",
+    "390x844",
+    "667x375",
+    "1440x900"
+  ],
+  "contextRestoration": true,
+  "textureFailureFallback": true,
+  "physicalIOSDeviceTested": false,
+  "newTextureBytes": 2809576
+}

@@ -1,0 +1,74 @@
+{
+  "version": 142,
+  "assets": [
+    {
+      "file": "sand-diff.webp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/sand_01/sand_01_diff_4k.jpg",
+      "assetPage": "https://polyhaven.com/a/sand_01",
+      "creator": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "bytes": 1134782,
+      "sha256": "4e7f10dc399b9b5d70dd0ec41765b3416d7330783aece736ae77a352c5e943f1",
+      "colorSpace": "sRGB"
+    },
+    {
+      "file": "sand-nor_gl.webp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/sand_01/sand_01_nor_gl_4k.jpg",
+      "assetPage": "https://polyhaven.com/a/sand_01",
+      "creator": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "bytes": 438922,
+      "sha256": "488830ab05622cd90c2375cb7ea2138450f8a0cd820124aa553a649700d54fb0",
+      "colorSpace": "linear"
+    },
+    {
+      "file": "sand-rough.webp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/sand_01/sand_01_rough_4k.jpg",
+      "assetPage": "https://polyhaven.com/a/sand_01",
+      "creator": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "bytes": 13048,
+      "sha256": "82bcc324fa3d2a6de1d18e975318f9573f67a0182dcbacc3a254865d4353b6c1",
+      "colorSpace": "linear"
+    },
+    {
+      "file": "roof-diff.webp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/roof_09/roof_09_diff_4k.jpg",
+      "assetPage": "https://polyhaven.com/a/roof_09",
+      "creator": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "bytes": 309080,
+      "sha256": "6f9a518dd217107f17dd96482558cdbe8082c3defc287fd6cfb19eee6ac99b99",
+      "colorSpace": "sRGB"
+    },
+    {
+      "file": "roof-nor_gl.webp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/roof_09/roof_09_nor_gl_4k.jpg",
+      "assetPage": "https://polyhaven.com/a/roof_09",
+      "creator": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "bytes": 129676,
+      "sha256": "b87482909b60a3da8e10c712bf24f7e64ee74da4a563703e8ac4d5670c167c5a",
+      "colorSpace": "linear"
+    },
+    {
+      "file": "roof-rough.webp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/roof_09/roof_09_rough_4k.jpg",
+      "assetPage": "https://polyhaven.com/a/roof_09",
+      "creator": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "bytes": 316652,
+      "sha256": "eccce6609d18bc945936d76dd66f873856c292cdc2ba1b90a7e4513e415c4063",
+      "colorSpace": "linear"
+    },
+    {
+      "file": "spectators.webp",
+      "source": "Imagegen; generated specifically for this project",
+      "prompt": "../../docs/circus-maximus-v142.md#generated-spectator-atlas",
+      "layout": "4 columns × 2 rows; 1280 × 1280; RGBA",
+      "bytes": 467416,
+      "sha256": "b5db7b2a94336a1ea145e09c3640c1dfab48ac33cc410db25f87831a6ed57f8a",
+      "colorSpace": "sRGB"
+    }
+  ]
+}
