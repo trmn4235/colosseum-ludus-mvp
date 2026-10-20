@@ -63,7 +63,7 @@ var LudusGems=(function(){
  function image(stone){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(stone.family,stone.id));}
  return {svg,image};
 })();
-</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum&amp;Magnus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision95"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision95"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
+</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Colosseum&amp;Magnus"><meta name="theme-color" content="#eee2cb"><link rel="manifest" href="manifest.webmanifest?v=revision95"><link rel="apple-touch-icon" href="app-icon.png"><meta name="game-version" content="revision133"><script>/* Browser bars belong to Safari. Home-screen mode fills the available display. */
 var LudusApp=(function(){
  const standalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  let prompt;
@@ -142,14 +142,14 @@ body[data-roman-screen="ludus"] #accountLink[hidden]{display:none!important}
 body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#ebce89}
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
 </style><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><link rel="stylesheet" href="combat-inspector-v74.css?v=revision77"><script src="combat-inspector-v74.js?v=revision114"></script><script src="ludus-client-v84.js?v=revision84"></script><script src="ludus-quest-events-v111.js?v=revision111"></script><link rel="stylesheet" href="upgrades-layout-v112.css?v=revision112"><script src="ludus-production-v118.js?v=revision124"></script>
-<link rel="stylesheet" href="game-panels-v123.css?v=revision123"></head>
-<body data-roman-screen="gelistirmeler"><div class="game-shell"><header class="top"><a data-game-back href="ludus.html?v=revision96">‹ Geri dön</a><strong>Colosseum&amp;Magnus</strong><span id="wallet">Hesap yükleniyor…</span></header>
+<link rel="stylesheet" href="game-panels-v123.css?v=revision123"><link rel="stylesheet" href="upgrades-layout-v133.css?v=revision133"></head>
+<body data-roman-screen="gelistirmeler" class="workshop-v133" id="workshopRoot"><div class="game-shell"><header class="top"><a data-game-back href="ludus.html?v=revision132">‹ Geri dön</a><strong>Colosseum<span class="brand-amp">&amp;</span>Magnus</strong><span id="wallet">Hesap yükleniyor…</span></header>
 <div class="workspace">
 <main class="layout">
-<section class="panel item-panel"><h2 id="itemName">Ekipmanını seç</h2><div id="itemArt" class="art"></div><div id="itemMeta"></div><div class="stat-title"><h3>EKİPMAN İSTATİSTİKLERİ</h3><small>Safir</small></div><ul id="naturalStats" class="stats"></ul><h3 class="emerald-heading">BASILI ZÜMRÜT ETKİLERİ <button id="openEmerald">0/4 ＋</button></h3><div id="sockets" class="sockets"></div></section>
-<section class="panel operation"><div class="banner"><h2>Geliştirmeler</h2><p id="operationTitle" hidden></p></div><div class="medallion"><span id="enhancement">+0</span></div><div class="material-cost"><span id="successRate" hidden></span><p id="materialInfo">1 Elmas / deneme</p></div><button id="enhance" class="primary" disabled>GELİŞTİR</button><button id="resetMaterial">Yakutsuz Elmas işlemi</button><p id="operationNote">+6 ve üzerindeki başarısız denemelerde %13 patlama riski. Safir %100: başlangıç statı ×2.</p></section>
-<section class="panel inventory-panel"><h2>Ekipman Envanteri</h2><nav id="itemTabs" class="tabs" aria-label="Ekipman kategorileri"></nav><div id="inventory" class="inventory"></div><nav class="pager" aria-label="Envanter sayfaları"><button id="previousItems" aria-label="Önceki eşyalar">‹</button><span id="inventoryPage">1 / 1</span><button id="nextItems" aria-label="Sonraki eşyalar">›</button></nav></section>
-<section id="materialsPanel" class="panel combined-stones" data-family="sapphire"><div class="materials-head"><h3>Kullanılabilecek Taşlar</h3><nav class="material-tabs" aria-label="Basılacak taş türü"><button id="openSafir" data-family="sapphire">Safir</button><button id="openEmeraldStrip" data-family="emerald">Zümrüt</button><button id="openRuby" data-family="ruby">Yakut</button></nav><nav class="material-paging" aria-label="Taş sayfaları"><button id="previousMaterials" aria-label="Önceki taşlar">‹</button><span id="materialPage">1/1</span><button id="nextMaterials" aria-label="Sonraki taşlar">›</button></nav></div><div id="usableMaterials" class="stone-list"></div></section>
+<section class="panel item-panel" aria-labelledby="itemName"><div class="item-heading"><p class="workshop-eyebrow">SEÇİLİ EKİPMAN</p><h2 id="itemName">Ekipmanını seç</h2></div><div id="itemArt" class="art"></div><div id="itemMeta"></div><div class="stat-title"><h3>Ekipman özellikleri</h3><small>Safir bonusu</small></div><ul id="naturalStats" class="stats"></ul><h3 class="emerald-heading">Zümrüt yuvaları <button id="openEmerald" aria-label="Zümrüt taşlarını göster">0/4 ＋</button></h3><div id="sockets" class="sockets"></div></section>
+<section class="panel operation" aria-labelledby="workshopTitle" data-action="enhance"><div class="banner"><p class="workshop-eyebrow">LUDUS ATÖLYESİ</p><h2 id="workshopTitle">Geliştirmeler</h2><p id="operationTitle" hidden></p></div><div class="forge-stage"><svg class="forge-ring" viewBox="0 0 240 240" fill="none" aria-hidden="true"><circle cx="120" cy="120" r="111"/><circle cx="120" cy="120" r="103" stroke-dasharray="1 11"/><circle cx="120" cy="120" r="90"/><path d="M120 2l5 7-5 7-5-7zM238 120l-7 5-7-5 7-5zM120 238l-5-7 5-7 5 7zM2 120l7-5 7 5-7 5z"/></svg><div class="forge-center"><small id="forgeCaption">HEDEF SEVİYE</small><strong id="targetLevel">—</strong><div id="forgeGem" hidden></div><p id="levelTransition">Mevcut <span id="enhancement">+0</span></p></div></div><div class="forge-chance"><span id="chanceLabel">Başarı ihtimali</span><strong id="successRate">—</strong><div class="chance-track" aria-hidden="true"><i id="chanceFill"></i></div></div><div class="material-cost"><p id="materialInfo">1 Elmas / deneme</p></div><button id="enhance" class="primary" disabled>GELİŞTİR</button><button id="resetMaterial" hidden>Elmas geliştirmesine dön</button><p id="operationNote"></p></section>
+<section class="panel inventory-panel" aria-labelledby="inventoryTitle"><div class="inventory-heading"><h2 id="inventoryTitle">Ekipman Envanteri</h2><span id="equipmentCount"></span></div><nav id="itemTabs" class="tabs" aria-label="Ekipman kategorileri"></nav><div id="inventory" class="inventory"></div><nav class="pager" aria-label="Envanter sayfaları"><button id="previousItems" aria-label="Önceki eşyalar">‹</button><span id="inventoryPage">1 / 1</span><button id="nextItems" aria-label="Sonraki eşyalar">›</button></nav></section>
+<section id="materialsPanel" class="panel combined-stones" data-family="sapphire"><div class="materials-head"><h3>Taşlar</h3><nav class="material-tabs" aria-label="Basılacak taş türü"><button id="openSafir" data-family="sapphire">Safir</button><button id="openEmeraldStrip" data-family="emerald">Zümrüt</button><button id="openRuby" data-family="ruby">Yakut</button></nav><nav class="material-paging" aria-label="Taş sayfaları"><button id="previousMaterials" aria-label="Önceki taşlar">‹</button><span id="materialPage">1/1</span><button id="nextMaterials" aria-label="Sonraki taşlar">›</button></nav></div><div id="usableMaterials" class="stone-list"></div></section>
 </main></div><footer class="statusbar"><p id="status" role="status" aria-live="polite">Envanter yükleniyor…</p><button id="retry" hidden>Tekrar dene</button><button id="openCombatInfo">İhtimaller ve bonuslar</button><button id="openPouch">◆ Taş Kesesi</button></footer></div>
 <div id="pouchOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pouchTitle" hidden><section class="pouch"><div class="pouch-head"><h2 id="pouchTitle">Taş Kesesi</h2><button id="closePouch" aria-label="Taş kesesini kapat">✕</button></div><nav id="gemTabs" class="gem-tabs" aria-label="Taş kategorileri"></nav><div id="gemGrid" class="gem-grid"></div><aside class="pouch-aside"><div id="gemDetail" class="gem-detail" aria-live="polite">Bir taşa dokunarak görevini incele.</div><p id="gemNote" class="gem-note"></p><button id="useGem" disabled>Seçili işlemi hazırla</button></aside></section></div>
 <style id="gameViewportStyle">
@@ -317,32 +317,50 @@ const LUDUS_STONE_IMAGES={};
  const categories=[['weapon','Silah'],['shield','Kalkan'],['helmet','Miğfer'],['chest','Göğüs Zırhı'],['gloves','Omuzluk'],['legs','Bacaklık']];
  const families=[['diamond','Elmas'],['sapphire','Safir'],['emerald','Zümrüt'],['ruby','Yakut']];
  const names={gladius:'Gladius',sica:'Eğri kılıç',spear:'Mızrak',trident:'Trident',net:'Ağ',scissor:'Kol bıçağı',mace:'Zincirli gürz',whip:'Kırbaç',large:'Büyük kalkan',round:'Orta kalkan',small:'Küçük kalkan',gold:'Bronz miğfer',silver:'Demir miğfer'};
+ const compactMaterials=matchMedia('(max-width:1100px)'),materialPageSize=()=>compactMaterials.matches?2:3,compactInventory=matchMedia('(max-height:540px)'),inventoryPageSize=()=>compactInventory.matches?3:6;
  let items=[],account=null,category='weapon',selected=null,family='diamond',stoneCounts=null,loadSequence=0,returnFocus=null,owner=null,action='enhance',material=null,pouchStone=null,busy=false,pending=null,inventoryPage=0,restored=false,materialFamily='sapphire',materialPage=0;
  globalThis.LudusNavigation?.register(()=>({category,selected:selected?.id,inventoryPage}));
   LudusCombatInspector.mount(()=>({rules,selected,items,action,material}));
  function renderOperation(){
   $('operationTitle').textContent='';
   let chance=null,error='';try{if(selected)chance=rules.enhancementChance(selected,action==='enhance'?material:null);}catch(e){error=e.message;}
-  const name=material?rules.stone(action==='enhance'?'ruby':action,material)?.name:null;
-  $('materialInfo').textContent=action==='enhance'?'1 Elmas / deneme'+(name?([2,3].includes(material)?' · '+name+' yalnızca patlamada tüketilir':' + 1 '+name):''):name+' · 1 taş / deneme';
-  $('successRate').textContent='';
-  $('operationNote').textContent=action==='enhance'?(error||'Başarı '+(chance==null?'—':'%'+Math.round(chance*100))+' · Ayrıntılar: İhtimaller ve bonuslar'):'Yeni yüzde eskisinin yerine geçer; daha düşük çıkabilir.';
-  $('enhance').textContent=pending?'BEKLEYEN İŞLEMİ TAMAMLA':action==='enhance'?'GELİŞTİR':action==='emerald'&&!selected?.emeralds?.some(e=>Number(e.id)===material)?'ZÜMRÜT BAS':'YÜZDEYİ YENİLE';
+  const stone=material?rules.stone(action==='enhance'?'ruby':action,material):null,name=stone?.name;
+  const enhancing=action==='enhance',operation=document.querySelector('.operation');
+  operation.dataset.action=action;operation.setAttribute('aria-busy',String(busy));
+  $('forgeCaption').textContent=enhancing?'HEDEF SEVİYE':(action==='sapphire'?'SAFİR ':'ZÜMRÜT ')+(stone?.roman||'');
+  $('targetLevel').textContent=selected?'+'+(selected.enhancement+1):'—';$('targetLevel').hidden=!enhancing;
+  $('forgeGem').hidden=enhancing;$('forgeGem').replaceChildren(...(!enhancing&&stone?[icon(stone)]:[]));
+  $('levelTransition').hidden=!enhancing;$('enhancement').textContent=selected?'+'+selected.enhancement:'—';
+  $('chanceLabel').textContent=enhancing?'Başarı ihtimali':'Olası yeni yüzde';
+  $('successRate').textContent=enhancing?(chance==null?'—':'%'+Math.round(chance*100)):'%10–100';
+  $('chanceFill').style.width=enhancing?(chance==null?0:Math.round(chance*100))+'%':'100%';
+  $('materialInfo').textContent=enhancing?'1 Elmas / deneme'+(name?([2,3].includes(material)?' · '+stone.title+' yalnızca patlamada tüketilir':' + 1 '+stone.title):''):stone?.label+' · 1 taş / deneme';
+  $('operationNote').textContent=enhancing?(error||(!selected?'Envanterden bir ekipman seç.':selected.enhancement>=6?'Başarısız denemede %13 patlama riski.':'Başarısız denemede mevcut seviye korunur.')):'Yeni yüzde eskisinin yerine geçer; daha düşük çıkabilir.';
+  $('enhance').textContent=busy?'İŞLENİYOR…':pending?'İŞLEMİ TAMAMLA':enhancing?'GELİŞTİR':action==='emerald'&&!selected?.emeralds?.some(e=>Number(e.id)===material)?'ZÜMRÜT BAS':'YÜZDEYİ YENİLE';
   const count=action==='enhance'?account?.diamonds:stoneCounts?.[action]?.[material];
   const rubyOk=action!=='enhance'||!material||(stoneCounts?.ruby?.[material]||0)>0;
   const invalidSapphire=action==='sapphire'&&!rules.statsFor(selected?.kind).some(s=>s.key===rules.stone('sapphire',material)?.stat);
   const fullEmerald=action==='emerald'&&selected?.emeralds?.length>=4&&!selected.emeralds.some(s=>Number(s.id)===material);
   $('enhance').disabled=busy||!owner||(!pending&&(!selected||selected.stat_version!==10||selected.locked_battle_id||!stoneCounts||error||!count||!rubyOk||invalidSapphire||fullEmerald));
-  $('resetMaterial').disabled=busy||!!pending;
+  $('resetMaterial').disabled=busy||!!pending;$('resetMaterial').hidden=enhancing&&!material;
   renderMaterials();
  }
  function itemName(i){if(LudusArmourName(i))return LudusArmourName(i);if(i?.kind==='helmet'&&LUDUS_HELMET_NAMES[i.model])return LUDUS_HELMET_NAMES[i.model];return names[i.model]||categories.find(c=>c[0]===i.kind)?.[1]||'Ekipman';}
  function icon(stone){const src=LudusGems.image(stone);const img=document.createElement('img');img.src=src;img.alt=stone.name;img.loading='eager';return img;}
+ function renderWallet(){
+  const name=document.createElement('span');name.className='wallet-name';name.textContent=account.ludus_name;
+  const gold=document.createElement('span'),diamonds=document.createElement('span');gold.className=diamonds.className='wallet-money';
+  gold.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor"/><path d="M10 8v8h5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+  diamonds.innerHTML=LudusGems.svg('diamond');diamonds.querySelector('svg').setAttribute('aria-hidden','true');
+  gold.append(document.createTextNode((account.gold||0).toLocaleString('tr-TR')));diamonds.append(document.createTextNode(account.diamonds.toLocaleString('tr-TR')));
+  gold.setAttribute('aria-label','Altın: '+account.gold);diamonds.setAttribute('aria-label','Elmas: '+account.diamonds);$('wallet').replaceChildren(name,gold,diamonds);
+ }
  function renderInventory(){
   $('itemTabs').replaceChildren();for(const [kind,label] of categories){const b=document.createElement('button');b.textContent=label==='Göğüs Zırhı'?'Zırh':label;b.className=category===kind?'active':'';b.setAttribute('aria-pressed',String(category===kind));b.onclick=()=>{category=kind;inventoryPage=0;renderInventory();};$('itemTabs').append(b);}
-  const visible=items.filter(i=>i.kind===category),pages=Math.max(1,Math.ceil(visible.length/6));inventoryPage=Math.min(inventoryPage,pages-1);
+  const visible=items.filter(i=>i.kind===category),size=inventoryPageSize(),pages=Math.max(1,Math.ceil(visible.length/size));inventoryPage=Math.min(inventoryPage,pages-1);$('inventory').style.setProperty('--inventory-rows',compactInventory.matches?1:2);
+  $('equipmentCount').textContent=visible.length+' eşya';
   $('previousItems').disabled=inventoryPage===0;$('nextItems').disabled=inventoryPage===pages-1;$('inventoryPage').textContent=(inventoryPage+1)+' / '+pages;
-  $('inventory').replaceChildren();for(const i of visible.slice(inventoryPage*6,inventoryPage*6+6)){const b=document.createElement('button');b.className='item'+(selected?.id===i.id?' selected':'');b.innerHTML=LudusIcons.svg(i);const label=document.createElement('span');label.textContent=itemName(i)+' +'+i.enhancement;b.append(label);b.setAttribute('aria-pressed',String(selected?.id===i.id));b.onclick=()=>{selected=i;renderInventory();renderItem();};$('inventory').append(b);}
+  $('inventory').replaceChildren();for(const i of visible.slice(inventoryPage*size,inventoryPage*size+size)){const b=document.createElement('button');b.className='item'+(selected?.id===i.id?' selected':'');b.innerHTML=LudusIcons.svg(i);const label=document.createElement('span');label.textContent=itemName(i)+' +'+i.enhancement;b.title=label.textContent;b.append(label);b.setAttribute('aria-pressed',String(selected?.id===i.id));b.onclick=()=>{selected=i;renderInventory();renderItem();};$('inventory').append(b);}
   if(!$('inventory').childElementCount){const p=document.createElement('p');p.className='empty';p.textContent='Bu kategoride ekipman yok.';$('inventory').append(p);}
  }
  function renderItem(){
@@ -350,29 +368,32 @@ const LUDUS_STONE_IMAGES={};
   $('itemMeta').textContent=i?(i.locked_battle_id?'Savaşta kilitli':i.equipped_by?'Gladyatöre takılı':'Envanterde'):'Sağdaki envanterden ekipmanını seç.';
   $('naturalStats').replaceChildren();for(const stat of rules.statsFor(i?.kind||category)){const li=document.createElement('li'),label=document.createElement('span'),value=document.createElement('strong'),detail=document.createElement('strong');label.textContent=stat.label;
    const values=i?.stat_version===10?rules.naturalValues(i)[stat.key]:null,written=values?.written,percent=values?.percent;
-   value.textContent=written==null?'—':Number(values.effective.toFixed(2));detail.className='sapphire-rate';detail.textContent=percent==null?'—':'%'+percent;li.title=written==null?stat.label:stat.label+' · başlangıç '+values.base+' · + seviyesiyle '+Number(written.toFixed(2))+' · Safir ilavesi %'+percent;li.append(label,value,detail);$('naturalStats').append(li);
+   value.textContent=written==null?'—':Number(values.effective.toFixed(2));detail.className='sapphire-rate';detail.textContent=percent==null?'—':'%'+percent;li.style.setProperty('--sapphire-bonus',((percent||0)*.36)+'px');li.title=written==null?stat.label:stat.label+' · başlangıç '+values.base+' · + seviyesiyle '+Number(written.toFixed(2))+' · Safir ilavesi %'+percent;li.append(label,value,detail);$('naturalStats').append(li);
   }
-  $('openEmerald').textContent=(i?.emeralds?.length||0)+'/4 ＋';
-  $('sockets').replaceChildren();for(let n=0;n<4;n++){const cell=document.createElement('button');cell.className='socket';const entry=i?.stat_version===10?i.emeralds?.[n]:null,stone=entry&&rules.stone('emerald',entry.id),label=document.createElement('span'),value=document.createElement('strong');label.textContent=stone?stone.label:'Boş yuva';value.textContent=stone?'%'+entry.value:'＋';if(!stone)cell.classList.add('empty-socket');cell.append(label,value);cell.onclick=()=>showMaterials('emerald');$('sockets').append(cell);}
+  $('openEmerald').textContent=(i?.emeralds?.length||0)+'/4 +';
+  $('sockets').replaceChildren();for(let n=0;n<4;n++){const cell=document.createElement('button');cell.className='socket';const entry=i?.stat_version===10?i.emeralds?.[n]:null,stone=entry&&rules.stone('emerald',entry.id),label=document.createElement('span'),value=document.createElement('strong');label.textContent=stone?stone.label:'Boş yuva';value.textContent=stone?'%'+entry.value:'+';if(!stone)cell.classList.add('empty-socket');cell.title=stone?stone.label+' · %'+entry.value:'Boş zümrüt yuvası';cell.setAttribute('aria-label',cell.title);cell.append(label,value);cell.onclick=()=>stone?chooseMaterial(stone):showMaterials('emerald');$('sockets').append(cell);}
   $('enhancement').textContent='+'+(i?.enhancement||0);renderOperation();
  }
  function chooseMaterial(stone){
-  if(busy||pending)return;action=['ruby','diamond'].includes(stone.family)?'enhance':stone.family;material=stone.family==='diamond'?null:stone.id;if(stone.family!=='diamond'){materialFamily=stone.family;materialPage=0;}renderOperation();
+  if(busy||pending)return;action=['ruby','diamond'].includes(stone.family)?'enhance':stone.family;material=stone.family==='diamond'?null:stone.id;if(stone.family!=='diamond'){materialFamily=stone.family;const stones=stone.family==='sapphire'?rules.statsFor(selected?.kind||category).map(s=>rules.stone('sapphire',s.id)):stone.family==='emerald'?rules.emeralds:rules.rubies;materialPage=Math.floor(Math.max(0,stones.findIndex(s=>s.id===stone.id))/materialPageSize());}renderOperation();
  }
  function showMaterials(f){materialFamily=f;materialPage=0;renderMaterials();}
  function renderMaterials(){
   const f=materialFamily,stones=f==='sapphire'?rules.statsFor(selected?.kind||category).map(s=>rules.stone('sapphire',s.id)):f==='emerald'?rules.emeralds:rules.rubies;
-  const pages=Math.max(1,Math.ceil(stones.length/6));materialPage=Math.min(materialPage,pages-1);
+  const size=materialPageSize(),pages=Math.max(1,Math.ceil(stones.length/size));materialPage=Math.min(materialPage,pages-1);
+  $('usableMaterials').style.setProperty('--material-columns',Math.min(size,stones.length));
   $('materialsPanel').dataset.family=f;$('materialPage').textContent=(materialPage+1)+'/'+pages;$('previousMaterials').disabled=materialPage===0;$('nextMaterials').disabled=materialPage===pages-1;
   for(const b of document.querySelectorAll('.material-tabs button')){b.classList.toggle('active',b.dataset.family===f);b.setAttribute('aria-pressed',String(b.dataset.family===f));}
-  $('usableMaterials').replaceChildren();for(const stone of stones.slice(materialPage*6,materialPage*6+6)){
+  $('usableMaterials').replaceChildren();for(const stone of stones.slice(materialPage*size,materialPage*size+size)){
    const b=document.createElement('button');b.className='material-stone'+(material===stone.id&&((action==='enhance'&&f==='ruby')||action===f)?' chosen':'');b.append(icon(stone));
-   const title=document.createElement('small'),qty=document.createElement('span');title.textContent=f==='ruby'?stone.title:stone.label;qty.className='quantity';qty.textContent=stoneCounts?'×'+(stoneCounts[f]?.[stone.id]||0):'—';b.append(title,qty);b.title=stone.name+' — '+stone.description;b.setAttribute('aria-label',stone.name+' · '+(stoneCounts?.[f]?.[stone.id]||0)+' adet');
+   const title=document.createElement('small'),qty=document.createElement('span');title.textContent=f==='ruby'?stone.title+' · '+stone.label:stone.label;qty.className='quantity';qty.textContent=stoneCounts?'×'+(stoneCounts[f]?.[stone.id]||0).toLocaleString('tr-TR'):'—';b.append(title,qty);b.title=stone.name+' — '+stone.description;b.setAttribute('aria-label',stone.name+' · '+(stoneCounts?.[f]?.[stone.id]||0)+' adet');b.setAttribute('aria-pressed',String(b.classList.contains('chosen')));
    let invalid=false;try{if(f==='ruby'&&selected)rules.enhancementChance(selected,stone.id);}catch{invalid=true;}
    const full=f==='emerald'&&selected?.emeralds?.length>=4&&!selected.emeralds.some(e=>Number(e.id)===stone.id);
    b.disabled=busy||!!pending||!selected||!(stoneCounts?.[f]?.[stone.id]>0)||invalid||full;b.onclick=()=>chooseMaterial(stone);$('usableMaterials').append(b);
   }
  }
+ compactMaterials.addEventListener('change',()=>{materialPage=0;renderMaterials();});
+ compactInventory.addEventListener('change',()=>{inventoryPage=0;renderInventory();});
  function renderPouch(){
   $('gemTabs').replaceChildren();for(const [key,label] of families){const b=document.createElement('button');b.textContent=label;b.className=key===family?'active':'';b.setAttribute('aria-pressed',String(key===family));b.onclick=()=>{family=key;renderPouch();};$('gemTabs').append(b);}
   const counts=stoneCounts?.[family]||{};if(family==='diamond'&&account)counts[1]=account.diamonds;
@@ -396,7 +417,7 @@ const LUDUS_STONE_IMAGES={};
    globalThis.LudusNavigation?.setOwner(owner);
    const [a,i]=await Promise.all([client.from('ludus_accounts').select('ludus_name,gold,diamonds,sapphires,rubies').eq('user_id',owner).single(),client.from('ludus_items').select('*').eq('owner_id',owner).order('created_at')]);
    if(n!==loadSequence)return;if(a.error||i.error)throw a.error||i.error;account=a.data;items=i.data;if(!restored){const saved=globalThis.LudusNavigation?.restore();restored=true;if(saved){selected=items.find(i=>i.id===saved.selected)||null;if(Number.isInteger(saved.inventoryPage)&&saved.inventoryPage>=0)inventoryPage=saved.inventoryPage;}}
-   selected=items.find(i=>i.id===(pending?.p_item||selected?.id))||items[0]||null;if(selected)category=selected.kind;$('wallet').textContent=account.ludus_name+' · ◉ '+(account.gold||0)+' · 💎 '+account.diamonds;renderInventory();renderItem();$('status').textContent=pending?'Bekleyen işlemini tamamla. Aynı işlem ikinci kez taş harcamaz.':'Ekipmanı ve taşı seç. Safir yüzdesi başlangıç statına eklenir.';
+   selected=items.find(i=>i.id===(pending?.p_item||selected?.id))||items[0]||null;if(selected)category=selected.kind;renderWallet();renderInventory();renderItem();$('status').textContent=pending?'Bekleyen işlemini tamamla. Aynı işlem ikinci kez taş harcamaz.':'Ekipmanı ve taşı seç. Safir yüzdesi başlangıç statına eklenir.';
    const stones=await client.from('ludus_stones').select('family,stone_id,quantity').eq('owner_id',owner);
    if(n!==loadSequence)return;if(stones.error){stoneCounts=null;$('status').textContent+=' Taş türü kayıtlarını açmak için taş kurulumu SQL’ini çalıştır.';}else{
     stoneCounts={sapphire:{},emerald:{},ruby:{}};
@@ -407,11 +428,12 @@ const LUDUS_STONE_IMAGES={};
  }
  $('resetMaterial').onclick=()=>{action='enhance';material=null;renderOperation();};
  $('useGem').onclick=()=>{if(!pouchStone||busy||pending)return;chooseMaterial(pouchStone);closePouch();};
- $('enhance').onclick=async()=>{if(busy||$('enhance').disabled)return;busy=true;renderOperation();
+ $('enhance').onclick=async()=>{if(busy||$('enhance').disabled)return;busy=true;delete document.querySelector('.operation').dataset.result;renderOperation();
   try{if(!pending){pending={p_item:selected.id,p_action:action,p_stone:material,p_request:crypto.randomUUID()};try{localStorage.setItem('ludus-upgrade-v10:'+owner,JSON.stringify(pending));}catch{pending=null;throw Error('Tarayıcı işlem kaydı oluşturamadı; taş harcanmadı.');}}
    const response=await client.rpc('ludus_upgrade_item_v10',pending);if(response.error){if(response.error.code&&!['08000','08006','57014'].includes(response.error.code)){localStorage.removeItem('ludus-upgrade-v10:'+owner);pending=null;}throw response.error;}
    const result=response.data;localStorage.removeItem('ludus-upgrade-v10:'+owner);pending=null;await load();
    $('status').textContent=result.action==='enhance'?(result.destroyed?'Eşya patladı ve yok oldu. 1 Elmas tüketildi.':result.success?'Başarılı: +'+result.plus:result.protection==='VESPER'?'VESPER eşyayı korudu; +4’e döndü. 1 Elmas ve 1 VESPER tüketildi.':result.protection==='TENAX'?'TENAX eşyayı korudu; + seviyesi değişmedi. 1 Elmas ve 1 TENAX tüketildi.':'Deneme başarısız. + seviyesi korundu; 1 Elmas tüketildi.'):'Yeni '+(result.action==='sapphire'?'Safir':'Zümrüt')+' yüzdesi: %'+result.percentage+' · 1 taş tüketildi.';
+   document.querySelector('.operation').dataset.result=result.destroyed?'destroyed':result.action!=='enhance'||result.success?'success':'failed';
   }catch(e){$('status').textContent=(pending?'İşlem cevabı alınamadı; aynı işlemi tekrar gönder. ':'')+(e.message||'Bağlantı hatası');}finally{busy=false;renderOperation();}
  };
  $('retry').onclick=load;renderInventory();renderItem();if(new URL(location.href).searchParams.get('pouch')==='1')openPouch();load();
