@@ -1,0 +1,35 @@
+{
+  "version": 143,
+  "assets": [
+    {
+      "file": "stone-reliefs.webp",
+      "source": "Imagegen; generated specifically for this project",
+      "mode": "generation",
+      "references": [],
+      "prompt": "../../docs/circus-maximus-v143.md#yeni-taş-kabartma-atlası",
+      "layout": "2 columns × 2 rows; 1280 × 1280; opaque RGB",
+      "motifs": [
+        "laurel wreath",
+        "eagle",
+        "horse",
+        "acanthus garland"
+      ],
+      "bytes": 635566,
+      "sha256": "a2e8281b5f3f641fd045222cae43721cac9b43c2e8ac95076cf142ec4c7351ed",
+      "colorSpace": "sRGB",
+      "encoding": "WebP quality 90"
+    },
+    {
+      "file": "honed-marble.webp",
+      "source": "Imagegen; generated specifically for this project",
+      "mode": "generation",
+      "references": [],
+      "prompt": "../../docs/circus-maximus-v143.md#yeni-mermer-dokusu",
+      "layout": "1024 × 1024; opaque RGB",
+      "bytes": 121796,
+      "sha256": "b26308ac1829297a8ae40017a93e41190da3d3693edb7ab5c60b5aae96f2f922",
+      "colorSpace": "sRGB",
+      "encoding": "WebP quality 90"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "stats": {
+    "frame": 30,
+    "calls": 29,
+    "triangles": 497459,
+    "points": 0,
+    "lines": 0,
+    "geometries": 28,
+    "textures": 25,
+    "spectators": 12096
+  },
+  "enclosure": {
+    "misses": [],
+    "joins": [
+      true,
+      true
+    ],
+    "heights": [
+      28.39915438361704,
+      28.579999923706055
+    ]
+  },
+  "reliefAtlas": true,
+  "cinemaControls": true,
+  "gateCameraClear": true,
+  "errors": [],
+  "viewportTests": [
+    "932x430",
+    "390x844",
+    "667x375",
+    "1440x900"
+  ]
+}
