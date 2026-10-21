@@ -19,3 +19,7 @@ Görevli: “Bahis mi yapacaksın, yoksa yarışmaya katılmak için mi geldin?�
 - “Bahis yapmaya geldim.” → “Hangi takıma güveniyorsun? Takımları incele, ne kadar yatıracağını söyle.” Bahis formu açılır.
 - “Yarışmaya katılacağım.” → “Öyleyse iki atını seç. Takımını kaydedelim.” At seçimi açılır.
 - “Şimdilik sadece bakıyorum.” → “Kararını verirsen beni nerede bulacağını biliyorsun.” Son cevap 2,8 saniye gösterilir, konuşma kapanır.
+
+## Kadraj ve boyut düzeltmesi
+
+Kullanıcı düzeltmesi: fotoğrafın özgün uzak kadrajı korunur; cover/zoom ile kırpılmaz. Yatayda panel fotoğrafın 16:9 oranına uyar. Soru-cevap alanı altta yaklaşık 68–78 CSS piksel, metin 11–12 piksel; karakter fotoğrafı baskın kalır. Referansa göre konuşma alanını veya yazıları büyütme.

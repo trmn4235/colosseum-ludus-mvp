@@ -1,27 +1,19 @@
-/* Face-to-face office conversation; the service forms retain their compact layout. */
+/* Preserve the photograph's original wide framing. Never zoom/crop the clerk. */
 #visitResult{display:none!important}
-#circusDialog[data-service=office]{background:#211d19 url('assets/circus-v152/clerk.webp') center 32%/cover no-repeat;border-color:#b69b68;padding:clamp(12px,2vw,24px);isolation:isolate}
-#circusDialog[data-service=office]:before{content:'';position:absolute;inset:0;background:linear-gradient(#100e0b70,transparent 28%,transparent 42%,#100d0be8 75%);z-index:-1;pointer-events:none}
-#circusDialog[data-service=office]>header{color:#fff5df;align-items:start}
-#circusDialog[data-service=office] h2{color:#fff5df;font-size:clamp(20px,3vw,30px);text-shadow:0 2px 5px #000}
-#circusDialog[data-service=office] .circus-layout{align-items:end}
-#circusDialog[data-service=office] .circus-main{width:100%;gap:12px}
-#circusDialog[data-service=office] #circusDialogue{color:#fff5df;font:500 clamp(16px,2.5vw,25px)/1.3 Georgia;text-shadow:0 2px 4px #000;max-width:760px}
-#circusDialog[data-service=office] #circusContent{flex:0 0 auto}
-#circusDialog[data-service=office] .office-choices{max-width:none;gap:10px;grid-template-columns:1fr 1fr}
-#circusDialog[data-service=office] .office-choices button{min-height:66px!important;text-align:left;font:600 clamp(14px,2vw,20px)/1.2 Georgia!important;padding:12px 16px;background:#faf5e9ef!important;color:#742c3f!important;box-shadow:none}
-#circusDialog[data-service=office] .office-choices button small{margin-top:5px;font:12px Arial!important;color:#665744}
-#circusDialog[data-service=office] #circusMessage{color:#ffe5b5}
-@media(max-height:480px){#circusDialog[data-service=office]{background-position:center 30%;gap:4px}#circusDialog[data-service=office] .circus-main{gap:7px}#circusDialog[data-service=office] .office-choices button{min-height:56px!important;padding:9px 12px}#circusDialog[data-service=office] #circusDialogue{font-size:18px}}
-@media(orientation:portrait){#circusDialog[data-service=office]{background-position:58% 28%;background-size:auto 100%}#circusDialog[data-service=office] .office-choices{grid-template-columns:1fr}#circusDialog[data-service=office] .office-choices button{min-height:68px!important}#circusDialog[data-service=office] #circusDialogue{font-size:21px}}
-/* Bannerlord-inspired shared dialogue layout: speaker left, responses right. */
+#circusDialog[data-service=office]{width:min(1080px,calc(100vw - 24px),calc((100dvh - 24px)*16/9));height:auto;aspect-ratio:16/9;max-height:calc(100dvh - 24px);padding:12px;background:#171512 url('assets/circus-v152/clerk.webp') center/contain no-repeat;border-color:#b69b68;isolation:isolate;gap:0}
+#circusDialog[data-service=office]:before{content:'';position:absolute;inset:0;background:linear-gradient(#100e0b30,transparent 22%,transparent 72%,#100d0b55);z-index:-1;pointer-events:none}
+#circusDialog[data-service=office]>header{color:#fff5df;align-items:start;flex:0 0 28px;height:28px}
 #circusDialog[data-service=office]>header>div{visibility:hidden}
-#circusDialog[data-service=office] .circus-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:16px;align-items:stretch}
-#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font:400 clamp(14px,1.7vw,18px)/1.45 var(--npc-font);color:var(--npc-ink);margin:0;max-width:none;text-shadow:none}
-#circusDialog[data-service=office] #circusContent{justify-content:center}
-#circusDialog[data-service=office] .office-choices.npc-choices{display:flex;gap:5px}
-#circusDialog[data-service=office] .npc-choices button{min-height:36px!important;font:400 clamp(14px,1.5vw,17px)/1.3 var(--npc-font)!important;background:var(--npc-panel)!important;color:var(--npc-ink)!important;border:1px solid transparent!important;border-radius:3px 22px 22px 3px;padding:8px 18px}
+#circusDialog[data-service=office] #circusDialogBalance{font-size:11px}
+#circusDialog[data-service=office] #circusClose{min-height:28px;min-width:28px;font-size:20px!important;line-height:26px;padding:0!important}
+#circusDialog[data-service=office] .circus-layout{align-items:end}
+#circusDialog[data-service=office] .circus-main{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:10px;align-items:stretch}
+#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font:400 12px/1.35 var(--npc-font);color:var(--npc-ink);margin:0;max-width:none;text-shadow:none;min-height:76px;padding:17px 16px 12px 20px;border-radius:38px 7px 7px 38px}
+#circusDialog[data-service=office] .npc-dialogue:before{font-size:13px;top:-9px;left:22px;padding:0 6px}
+#circusDialog[data-service=office] #circusContent{flex:0 0 auto;justify-content:center}
+#circusDialog[data-service=office] .office-choices.npc-choices{display:flex;gap:3px;max-width:none}
+#circusDialog[data-service=office] .npc-choices button{min-height:24px!important;font:400 12px/1.25 var(--npc-font)!important;background:var(--npc-panel)!important;color:var(--npc-ink)!important;border:1px solid transparent!important;border-radius:2px 15px 15px 2px;padding:4px 12px;box-shadow:none;text-align:left}
 #circusDialog[data-service=office] .npc-choices button:hover,#circusDialog[data-service=office] .npc-choices button:focus-visible{background:var(--npc-selected)!important;border-color:#b18a43!important}
-#circusDialog[data-service=office] #circusMessage{grid-column:1/-1}
-@media(max-height:480px){#circusDialog[data-service=office] .circus-main{gap:12px}#circusDialog[data-service=office] .npc-choices button{min-height:30px!important;padding:6px 14px}}
-@media(orientation:portrait){#circusDialog[data-service=office] .circus-main{grid-template-columns:1fr;gap:17px}#circusDialog[data-service=office] .npc-choices button{min-height:42px!important}#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font-size:16px}}
+#circusDialog[data-service=office] #circusMessage{grid-column:1/-1;color:#ffe5b5;font-size:11px}
+@media(max-height:390px) and (orientation:landscape){#circusDialog[data-service=office]{padding:10px}#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font-size:11px;min-height:68px;padding:14px 12px 10px 17px}#circusDialog[data-service=office] .npc-dialogue:before{font-size:12px}#circusDialog[data-service=office] .npc-choices button{font-size:11px!important;min-height:22px!important;padding:3px 10px}}
+@media(orientation:portrait){#circusDialog[data-service=office]{width:calc(100vw - 24px);height:auto;aspect-ratio:auto;min-height:360px;background-position:center top;background-size:100% auto}#circusDialog[data-service=office] .circus-main{grid-template-columns:1fr;gap:13px}#circusDialog[data-service=office] .npc-choices button{min-height:28px!important}#circusDialog[data-service=office] .circus-layout{padding-top:180px}}
