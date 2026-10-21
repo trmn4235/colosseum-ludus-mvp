@@ -8,6 +8,7 @@
   <title>Circus Maximus · Colosseum & Magnus</title>
   <style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#eee9df}#stadium{position:fixed;inset:0;width:100%;height:100%;display:block}#loading{position:fixed;inset:0;z-index:20;display:grid;place-content:center;background:#eee9df;text-align:center}#loading[hidden]{display:none}</style>
   <link rel="stylesheet" href="circus-maximus-v144.css?v=revision144">
+  <link rel="stylesheet" href="circus-race-v146.css?v=revision146">
 </head>
 <body>
   <canvas id="stadium" tabindex="0" aria-label="Circus Maximus üç boyutlu hipodrom. Sürükleyerek etrafa bak, iki parmakla veya fare tekerleğiyle yakınlaş."></canvas>
@@ -29,9 +30,14 @@
       <button data-view="loge" aria-pressed="false" disabled><svg viewBox="0 0 24 24"><path d="M3 8h18M4 8l8-5 8 5M5 9v9M10 9v9M14 9v9M19 9v9M3 21h18M4 18h16"/></svg>İmparator locası</button>
       <button data-view="track" aria-pressed="false" disabled><svg viewBox="0 0 24 24"><path d="M8 3 3 21M16 3l5 18M12 4v3M12 11v3M12 18v3"/></svg>Pist</button>
       <button data-view="gates" aria-pressed="false" disabled><svg viewBox="0 0 24 24"><path d="M4 21V10a8 8 0 0 1 16 0v11M8 21V10a4 4 0 0 1 8 0v11M12 7v14M8 14h8"/></svg>Kapılar</button>
+    <button id="raceOpen" data-view="race" aria-pressed="false" disabled>Yarış</button>
     </nav>
     <p class="hint" id="hint">Bakmak için sürükle <b>·</b> Yakınlaşmak için iki parmağını kullan</p>
   </footer>
+  <section id="racePanel" hidden aria-label="Biga yarışı">
+    <div class="race-top"><button id="raceExit">‹ Hipodrom</button><div><strong id="raceState" aria-live="polite">Biga yarışı</strong><small id="racePositions"></small></div><span class="race-tag">2 TUR · GÖSTERİ</span></div>
+    <div class="race-bottom"><div class="race-coats"><label><i class="burgundy"></i>Bordo takım<select id="raceCoat0" aria-label="Bordo takım at rengi"></select></label><label><i class="blue"></i>Mavi takım<select id="raceCoat1" aria-label="Mavi takım at rengi"></select></label></div><div class="race-actions"><button id="racePause">Duraklat</button><button id="raceCamera">Kamera</button><button id="raceReset">Yeniden yarış</button></div></div>
+  </section>
   <div id="loading" role="status" aria-live="polite">
     <small>COLOSSEUM &amp; MAGNUS</small><h2>Circus Maximus</h2><div class="load-line" aria-hidden="true"></div><p id="loadText">Hipodrom hazırlanıyor…</p>
     <button id="retry" hidden>Yeniden dene</button><a href="ludus.html?v=revision140" id="loadBack" hidden>Ludus'a dön</a>
@@ -41,12 +47,14 @@
     <p>Uzun kum pistini, on iki başlangıç kapısını, anıtlı orta hattı ve imparator locasını dört farklı noktadan incele.</p>
     <p><strong>Telefonda:</strong> Tek parmakla bak, iki parmakla yakınlaş.<br><strong>Bilgisayarda:</strong> Sürükle ve fare tekerleğini kullan. Yön tuşlarıyla bak; 1–4 tuşlarıyla konum değiştir.</p>
     <p>Kapıların arkasındaki sütunlu yarım daireyi, taş kabartmaları ve tribün geçitlerini keşfet. Sağ üstteki çerçeve simgesiyle arayüzü gizleyebilirsin; bilgisayarda H tuşu da kullanılabilir.</p>
-    <p>Yarış oynanışı henüz eklenmedi. Bu sahne, farklı dönemlere ait ayrıntıları bir araya getiren yorumlu bir yeniden canlandırmadır.</p>
-    <details><summary>Sahne ve kaynaklar</summary><p>Mimari bu proje için özgün olarak oluşturuldu. Yüzeyler: <a href="https://polyhaven.com/a/sand_01" target="_blank" rel="noopener">Poly Haven</a>, CC0. Ağaçlar: Polyy.AI, CC0. Heykel: <a href="https://open.smk.dk/artwork/image/KAS644" target="_blank" rel="noopener">SMK Open · KAS644</a>. Büst ve at heykeli: Rico Cilliers / Poly Haven, CC0; bu sahne için sadeleştirildi ve malzemeleri değiştirildi. Kum, seyirci, taş kabartma ve mermer görselleri bu sahne için yapay zekâyla üretildi. <a href="docs/circus-maximus-v145.md" target="_blank" rel="noopener">20 ayrı alanın yenilenmesi</a>.</p></details>
+    <p>Yarış düğmesi iki arabalı, iki turluk otomatik gösteri yarışını açar. At renklerini değiştirebilir, yarışı duraklatabilir ve üç kameradan izleyebilirsin. Bu gösteri hesabındaki atları veya kaynaklarını değiştirmez. Bu sahne, farklı dönemlere ait ayrıntıları bir araya getiren yorumlu bir yeniden canlandırmadır.</p>
+    <details><summary>Sahne ve kaynaklar</summary><p>Yarış arabası: <a href="https://blendswap.com/blend/26530">panko10 — Roman chariot</a>, CC-BY; renklendirildi ve sadeleştirildi. Atlar: Warhorse / Literock Studios. <a href="assets/circus-v146/SOURCES.md">V146 kaynaklar ve değişiklikler</a>.</p><p>Mimari bu proje için özgün olarak oluşturuldu. Yüzeyler: <a href="https://polyhaven.com/a/sand_01" target="_blank" rel="noopener">Poly Haven</a>, CC0. Ağaçlar: Polyy.AI, CC0. Heykel: <a href="https://open.smk.dk/artwork/image/KAS644" target="_blank" rel="noopener">SMK Open · KAS644</a>. Büst ve at heykeli: Rico Cilliers / Poly Haven, CC0; bu sahne için sadeleştirildi ve malzemeleri değiştirildi. Kum, seyirci, taş kabartma ve mermer görselleri bu sahne için yapay zekâyla üretildi. <a href="docs/circus-maximus-v145.md" target="_blank" rel="noopener">20 ayrı alanın yenilenmesi</a>.</p></details>
     <button class="continue">Hipodroma dön</button>
   </dialog>
   <script src="owner-three-r160.js?v=revision26"></script>
   <script src="circus-maximus-model-v145.js?v=revision145"></script>
-  <script src="circus-maximus-v145.js?v=revision145"></script>
+  <script src="ludus-stable-appearance-v130.js?v=revision130"></script>
+  <script src="circus-race-v146.js?v=revision146"></script>
+  <script src="circus-maximus-v146.js?v=revision146"></script>
 </body>
 </html>
