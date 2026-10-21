@@ -1,19 +1,18 @@
-/* Preserve the photograph's original wide framing. Never zoom/crop the clerk. */
+/* Approved full-screen, wider clerk framing with live HTML dialogue. */
 #visitResult{display:none!important}
-#circusDialog[data-service=office]{width:min(1080px,calc(100vw - 24px),calc((100dvh - 24px)*16/9));height:auto;aspect-ratio:16/9;max-height:calc(100dvh - 24px);padding:12px;background:#171512 url('assets/circus-v152/clerk.webp') center/contain no-repeat;border-color:#b69b68;isolation:isolate;gap:0}
-#circusDialog[data-service=office]:before{content:'';position:absolute;inset:0;background:linear-gradient(#100e0b30,transparent 22%,transparent 72%,#100d0b55);z-index:-1;pointer-events:none}
-#circusDialog[data-service=office]>header{color:#fff5df;align-items:start;flex:0 0 28px;height:28px}
-#circusDialog[data-service=office]>header>div{visibility:hidden}
-#circusDialog[data-service=office] #circusDialogBalance{font-size:11px}
-#circusDialog[data-service=office] #circusClose{min-height:28px;min-width:28px;font-size:20px!important;line-height:26px;padding:0!important}
-#circusDialog[data-service=office] .circus-layout{align-items:end}
-#circusDialog[data-service=office] .circus-main{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:10px;align-items:stretch}
-#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font:400 12px/1.35 var(--npc-font);color:var(--npc-ink);margin:0;max-width:none;text-shadow:none;min-height:76px;padding:17px 16px 12px 20px;border-radius:38px 7px 7px 38px}
-#circusDialog[data-service=office] .npc-dialogue:before{font-size:13px;top:-9px;left:22px;padding:0 6px}
-#circusDialog[data-service=office] #circusContent{flex:0 0 auto;justify-content:center}
+#circusDialog[data-service=office]{position:fixed;inset:0;margin:0;width:100vw;max-width:none;height:100dvh;max-height:none;min-height:0;aspect-ratio:auto;padding:0;border:0;border-radius:0;background:#171512 url('assets/circus-v157/clerk-approved.webp') center/cover no-repeat;isolation:isolate;gap:0;box-shadow:none}
+#circusDialog[data-service=office]>header{position:absolute;top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));height:28px;z-index:2}
+#circusDialog[data-service=office]>header>div,#circusDialog[data-service=office] #circusDialogBalance{display:none}
+#circusDialog[data-service=office] #circusClose{min-height:28px;min-width:28px;font-size:20px!important;line-height:26px;padding:0!important;background:#15131099;color:#e9e0cb;border-color:#9a7d3f66}
+#circusDialog[data-service=office] .circus-layout{position:absolute;left:16.7%;right:17.1%;bottom:6%;display:block;flex:none;min-height:0}
+#circusDialog[data-service=office] .circus-main{width:100%;display:grid;grid-template-columns:minmax(0,1.46fr) minmax(0,1fr);gap:6px;align-items:stretch}
+#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font:400 clamp(11px,1.74vw,19px)/1.2 var(--npc-font);color:#eee8da;margin:0;max-width:none;text-shadow:none;min-height:0;padding:clamp(27px,3.6vw,40px) clamp(14px,2.5vw,28px) 10px;border-radius:clamp(18px,3vw,32px);border-color:#aa8a4f;background:#0e0d0bd9;box-shadow:inset 0 0 0 2px #0e0d0b,inset 0 0 0 3px #9a7d3f4d}
+#circusDialog[data-service=office] .npc-dialogue:before{font-size:clamp(12px,1.85vw,20px);top:9px;left:clamp(14px,2.5vw,28px);padding:0;background:none;color:#dbb773;line-height:1.2}
+#circusDialog[data-service=office] #circusContent{flex:0 0 auto;justify-content:center;gap:0}
 #circusDialog[data-service=office] .office-choices.npc-choices{display:flex;gap:3px;max-width:none}
-#circusDialog[data-service=office] .npc-choices button{min-height:24px!important;font:400 12px/1.25 var(--npc-font)!important;background:var(--npc-panel)!important;color:var(--npc-ink)!important;border:1px solid transparent!important;border-radius:2px 15px 15px 2px;padding:4px 12px;box-shadow:none;text-align:left}
+#circusDialog[data-service=office] .npc-choices button{min-height:0!important;font:400 clamp(11px,1.74vw,19px)/1.2 var(--npc-font)!important;background:#0e0d0bdb!important;color:#eee8da!important;border:1px solid #99866c80!important;border-radius:clamp(12px,2vw,20px);padding:clamp(2px,.25vw,4px) clamp(5px,.65vw,9px);box-shadow:none;text-align:left}
 #circusDialog[data-service=office] .npc-choices button:hover,#circusDialog[data-service=office] .npc-choices button:focus-visible{background:var(--npc-selected)!important;border-color:#b18a43!important}
 #circusDialog[data-service=office] #circusMessage{grid-column:1/-1;color:#ffe5b5;font-size:11px}
-@media(max-height:390px) and (orientation:landscape){#circusDialog[data-service=office]{padding:10px}#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font-size:11px;min-height:68px;padding:14px 12px 10px 17px}#circusDialog[data-service=office] .npc-dialogue:before{font-size:12px}#circusDialog[data-service=office] .npc-choices button{font-size:11px!important;min-height:22px!important;padding:3px 10px}}
-@media(orientation:portrait){#circusDialog[data-service=office]{width:calc(100vw - 24px);height:auto;aspect-ratio:auto;min-height:360px;background-position:center top;background-size:100% auto}#circusDialog[data-service=office] .circus-main{grid-template-columns:1fr;gap:13px}#circusDialog[data-service=office] .npc-choices button{min-height:28px!important}#circusDialog[data-service=office] .circus-layout{padding-top:180px}}
+@media(orientation:portrait){#circusDialog[data-service=office]{background-position:center top}#circusDialog[data-service=office] .circus-layout{left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom))}#circusDialog[data-service=office] .circus-main{grid-template-columns:1fr;gap:8px}#circusDialog[data-service=office] #circusDialogue.npc-dialogue{font-size:15px;padding:32px 18px 14px}#circusDialog[data-service=office] .npc-dialogue:before{font-size:16px;left:18px}#circusDialog[data-service=office] .npc-choices button{font-size:15px!important;padding:8px 16px;min-height:36px!important}}
+
+@media(orientation:landscape){#circusDialog[data-service=office] .npc-choices button{white-space:nowrap}}
