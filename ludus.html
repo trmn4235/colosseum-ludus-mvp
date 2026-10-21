@@ -1193,6 +1193,8 @@ const ludusPose=p=>p&&Object.fromEntries(['x','z','y','yaw','pitch'].map(k=>[k,p
 globalThis.LudusNavigation?.register(()=>({room:activeRoom?.kind||null,player:ludusPose(player),returnPose:activeRoom?ludusPose(returnPose):null,exploring}));
 function restoreLudusPlace(){
  globalThis.LudusNavigation?.setOwner(playerAccount?.user_id);
+ const requestedRoom=new URL(location.href).searchParams.get('room');
+ if(requestedRoom==='stable'&&playerAccount?.user_id){const r=rooms.find(r=>r.kind==='stable');if(r){if(!exploring)toggleExplore();enterRoom(r);const clean=new URL(location.href);clean.searchParams.delete('room');history.replaceState(null,'',clean);return;}}
  let saved=globalThis.LudusNavigation?.restore();
  if(!saved&&new URL(window.location.href).searchParams.get('returnRoom')==='upgrades'){
   try{const old=JSON.parse(sessionStorage.getItem('ludus-upgrade-return')||'null');if(old?.owner===playerAccount?.user_id)saved={...old,exploring:true};}catch(e){}

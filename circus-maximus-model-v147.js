@@ -420,8 +420,9 @@
       for (let section = 0; section < 20; section++) {
         const z = START + (section + .5) * 23.8;
         // A real opening for the imperial box, instead of intersecting its seats.
-        if(z+11.1>-93.5&&z-11.1<-50.5){
-          for(const [a,b]of [[z-11.1,Math.min(z+11.1,-93.5)],[Math.max(z-11.1,-50.5),z+11.1]])if(b>a)box(M.stone,r+STEP/2,y-.42,(a+b)/2,STEP,.84,b-a,0,.92);
+        const gapMin=side===-1?-78.3:-93.5,gapMax=side===-1?-65.7:-50.5;
+        if(z+11.1>gapMin&&z-11.1<gapMax){
+          for(const [a,b]of [[z-11.1,Math.min(z+11.1,gapMin)],[Math.max(z-11.1,gapMax),z+11.1]])if(b>a)box(M.stone,side*(r+STEP/2),y-.42,(a+b)/2,STEP,.84,b-a,0,.92);
           continue;
         }
         if(section%4===1&&row>=9&&row<=15){
@@ -432,17 +433,17 @@
     ringStrip(r,r+STEP,y-.82,.82,M.stone,72);
     if(row===0||row===8||row===18){
       for(const side of [-1,1])for(let k=0;k<20;k++){
-        const z=START+(k+.5)*23.8;if(z+11.1>-93.5&&z-11.1<-50.5)continue;
+        const z=START+(k+.5)*23.8;if(z+11.1>(side===-1?-78.3:-93.5)&&z-11.1<(side===-1?-65.7:-50.5))continue;
         box(M.marble,side*(r+.77),y+.32,z,.13,.64,21.7,0,.9);
       }
     }
     if(row<8)for(const side of [-1,1])for(let k=0;k<20;k++){
-      const z=START+(k+.5)*23.8;if(z+11.1>-93.5&&z-11.1<-50.5)continue;
+      const z=START+(k+.5)*23.8;if(z+11.1>(side===-1?-78.3:-93.5)&&z-11.1<(side===-1?-65.7:-50.5))continue;
       box(M.marble,side*(r+.08),y+.025,z,.10,.055,22.2,0,1.02);
     }
   }
   for(const side of [-1,1])for(const z of passageCenters){
-    if(z+11.1>-93.5&&z-11.1<-50.5)continue;
+    if(z+11.1>(side===-1?-78.3:-93.5)&&z-11.1<(side===-1?-65.7:-50.5))continue;
     const ry=-side*Math.PI/2,x=side*57.5;
     add(tunnelArch,M.marble,x,8.7,z,1,1,1,ry);
     add(tunnelMouth,M.shade,side*66.2,8.7,z,1,1,1,ry,.38);
@@ -458,7 +459,7 @@
   // Stair aisles read as pale stripes between seating blocks.
   for (const side of [-1, 1]) for (let section = 1; section < 20; section++) {
     const z = START + section * 23.8;
-    if(z>-94.5&&z<-49.5)continue;
+    if(z>(side===-1?-78.8:-94.5)&&z<(side===-1?-65.2:-49.5))continue;
     for (let row = 0; row < ROWS * 2; row++) box(M.marble, side*(50+(row+.5)*STEP/2),3.1+row*RISE/2,z,STEP/2,.34,1.6);
   }
   for (let k = 1; k < 15; k++) {
@@ -898,7 +899,7 @@
   for(let row=1;row<ROWS-1;row++){
     const r=50+(row+.5)*STEP,y=3.7+row*RISE;
     for(const side of [-1,1])for(let z=START+1.6;z<TURN-1;z+=1.65){
-      if((z-START)%23.8<1.7 || (z>-94.5&&z<-49.5))continue;
+      if((z-START)%23.8<1.7 || (z>(side===-1?-78.8:-94.5)&&z<(side===-1?-65.2:-49.5)))continue;
       if(row>=9&&row<=16&&passageCenters.some(center=>Math.abs(z-center)<2.4))continue;
       person(side*r,y,z+random()*.4,side*Math.PI/2);
     }
