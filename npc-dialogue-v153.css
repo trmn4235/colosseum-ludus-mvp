@@ -1,0 +1,9 @@
+/* Shared character conversation theme. Use these classes for future NPCs. */
+:root{--npc-font:Georgia,'Times New Roman',serif;--npc-ink:#e9e0cb;--npc-gold:#9a7d3f;--npc-selected:#96631d;--npc-panel:rgba(12,11,10,.87)}
+.npc-dialogue{position:relative;box-sizing:border-box;border:1px solid var(--npc-gold);border-radius:55px 10px 10px 55px;padding:32px 24px 25px 32px;background:var(--npc-panel);color:var(--npc-ink);font:400 16px/1.5 var(--npc-font);box-shadow:inset 0 0 0 4px #0e0d0b99,inset 0 0 0 5px #9a7d3f35;display:flex;align-items:center;min-height:135px}
+.npc-dialogue:before{content:attr(data-speaker);position:absolute;top:-12px;left:32px;padding:0 9px;background:#211c15;color:#d5b96e;font:400 17px/1.3 var(--npc-font)}
+.npc-choices{display:flex;flex-direction:column;gap:5px;min-width:0}
+.npc-choices button{box-sizing:border-box;width:100%;min-height:36px;text-align:left;border:1px solid transparent;border-radius:3px 22px 22px 3px;background:var(--npc-panel);color:var(--npc-ink);padding:7px 18px;font:400 15px/1.3 var(--npc-font);box-shadow:none;cursor:pointer;white-space:normal}
+.npc-choices button:hover,.npc-choices button:focus-visible{background:var(--npc-selected);border-color:#b18a43;outline:none;color:#fff0d0}
+.npc-choices button:active{background:#af7b2c}
+@media(max-height:480px){.npc-dialogue{min-height:110px;padding:23px 20px 20px 26px}.npc-choices button{min-height:30px;padding:5px 14px;font-size:14px}}
