@@ -1,4 +1,4 @@
-const assert=require('node:assert/strict'),D=require('../circus-driving-v150');
+const assert=require('node:assert/strict'),D=require('../circus-driving-v151');
 assert.ok(D.SWEEP<1,'Faster than the stable duel six-second sweep');assert.equal(D.needle(0),0);assert.equal(D.needle(.85),1);assert.equal(D.needle(1.7),0);assert.ok(D.needle(10.8715)>=D.TARGET[0]&&D.needle(10.8715)<=D.TARGET[1]);
 const d={initial:100,boosts:[{at:10}]};assert.equal(D.metrics(d,11,120).stamina,75);assert.equal(D.metrics(d,11,120).multiplier,1.5);assert.equal(D.metrics(d,11,120).canBoost,false);assert.equal(D.metrics(d,15,120).stamina,77.5);assert.equal(D.metrics(d,15,120).canBoost,true);assert.equal(D.metrics(d,15,120).finish,118);
 const before=D.metrics(d,10.2,120).progress,after=D.metrics(d,10.7,120).progress;assert.ok(Math.abs((after-before)/(.5/120)-1.5)<1e-9);
