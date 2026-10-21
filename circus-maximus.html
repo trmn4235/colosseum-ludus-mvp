@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="circus-maximus-v144.css?v=revision144">
   <link rel="stylesheet" href="circus-race-v146.css?v=revision146">
   <link rel="stylesheet" href="circus-visit-v147.css?v=revision147"><link rel="stylesheet" href="circus-office-v149.css?v=revision149">
+<link rel="stylesheet" href="circus-driving-v150.css?v=revision150">
+  <link rel="preload" as="image" href="assets/circus-v150/victory.webp"><link rel="preload" as="image" href="assets/circus-v150/defeat.webp">
 </head>
 <body>
   <canvas id="stadium" tabindex="0" aria-label="Circus Maximus üç boyutlu hipodrom. Sürükleyerek etrafa bak, iki parmakla veya fare tekerleğiyle yakınlaş."></canvas>
@@ -45,6 +47,16 @@
     <div id="visitStick" role="group" aria-label="Yürüyüş analoğu"><i id="visitKnob"></i></div>
     <div class="visit-actions"><button id="visitAction" hidden>Konuş</button><button id="visitStand" hidden>Kalk ve yürü</button><button id="visitStart" hidden>Yarışı başlat</button><button id="visitZoom" hidden>Yakın izle</button><button id="visitCamera" hidden>Kamera</button><button id="visitNext" hidden>Sonraki yarış</button></div>
   </section>
+  <section id="driveHUD" hidden aria-label="Yarış kontrolleri">
+    <div class="drive-condition"><span>Kondisyon <b id="driveStaminaValue">100</b></span><div id="driveStamina" role="progressbar" aria-label="Atların kondisyonu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="driveStaminaFill"></i></div></div>
+    <output id="driveRank" aria-label="Yarıştaki sıralaman">4 / 4</output>
+    <div class="drive-steer"><button id="driveLeft" aria-label="Sola git">‹</button><button id="driveRight" aria-label="Sağa git">›</button></div>
+    <div class="drive-timing"><div id="driveTiming" aria-label="Hızlanma hedef barı"><span></span><i id="driveNeedle"></i></div><p id="driveFeedback">Altın bölgeyi yakala</p><button id="driveRetry" hidden>Hamleyi yeniden dene</button></div>
+    <button id="driveBoost">Hamle yap</button>
+  </section>
+  <section id="driveResult" hidden role="dialog" aria-modal="true" aria-labelledby="driveResultTitle">
+    <img id="driveResultImage" alt=""><div class="drive-result-copy"><small>CIRCUS MAXIMUS</small><h2 id="driveResultTitle"></h2><p id="driveResultDetail"></p><div><button id="driveResultBack">Gişeye dön</button><button id="driveResultNext">Yeni yarış</button></div></div>
+  </section>
   <dialog id="circusDialog" aria-labelledby="circusDialogTitle">
     <header><div><small>COLOSSEUM &amp; MAGNUS</small><h2 id="circusDialogTitle">Gişe</h2></div><span id="circusDialogBalance"></span><button id="circusClose" aria-label="Gişeyi kapat">×</button></header>
     <div class="circus-layout"><main class="circus-main"><button id="circusServiceBack" type="button">‹ Gişeye dön</button><p id="circusDialogue"></p><nav id="circusTeams" aria-label="Dört yarış takımı"></nav><div id="circusContent"></div><footer id="circusActions"></footer><p id="circusMessage" role="status"></p></main><aside id="circusHistory" aria-label="Bahis geçmişi" hidden></aside></div>
@@ -58,20 +70,21 @@
     <p>Uzun kum pistini, on iki başlangıç kapısını, anıtlı orta hattı ve imparator locasını dört farklı noktadan incele.</p>
     <p><strong>Telefonda:</strong> Tek parmakla bak, iki parmakla yakınlaş.<br><strong>Bilgisayarda:</strong> Sürükle ve fare tekerleğini kullan. Yön tuşlarıyla bak; 1–4 tuşlarıyla konum değiştir.</p>
     <p>Kapıların arkasındaki sütunlu yarım daireyi, taş kabartmaları ve tribün geçitlerini keşfet. Sağ üstteki çerçeve simgesiyle arayüzü gizleyebilirsin; bilgisayarda H tuşu da kullanılabilir.</p>
-    <p>Hipodroma gir: ludus sahibinle analog veya WASD/yön tuşlarıyla yürü. Gişe memuruna yaklaşınca konuş, sekiz atı incele ve denarius kuponunu onayla. Tribüne yürüyüp oturarak yarışı izle. Aynı gişede Yarışmaya katıl seçeneğinden iki uygun atını seç ve takımınla piste çık. Katılım yarışında sürüş otomatik; araba kamerası kullanılabilir. Kupon kazancı toplam ödemedir ve yatırılan bedeli içerir.</p>
-    <details><summary>Sahne ve kaynaklar</summary><p><a href="docs/circus-office-v149.md">V149: tek gişe, bahis geçmişi ve kendi takımınla yarış</a></p><p><a href="docs/circus-maximus-v147.md">V147: gişe, kupon, tribün ve katılım</a></p><p>Yarış arabası: <a href="https://blendswap.com/blend/26530">panko10 — Roman chariot</a>, CC-BY; renklendirildi ve sadeleştirildi. Atlar: Warhorse / Literock Studios. <a href="assets/circus-v146/SOURCES.md">V146 kaynaklar ve değişiklikler</a>.</p><p>Mimari bu proje için özgün olarak oluşturuldu. Yüzeyler: <a href="https://polyhaven.com/a/sand_01" target="_blank" rel="noopener">Poly Haven</a>, CC0. Ağaçlar: Polyy.AI, CC0. Heykel: <a href="https://open.smk.dk/artwork/image/KAS644" target="_blank" rel="noopener">SMK Open · KAS644</a>. Büst ve at heykeli: Rico Cilliers / Poly Haven, CC0; bu sahne için sadeleştirildi ve malzemeleri değiştirildi. Kum, seyirci, taş kabartma ve mermer görselleri bu sahne için yapay zekâyla üretildi. <a href="docs/circus-maximus-v145.md" target="_blank" rel="noopener">20 ayrı alanın yenilenmesi</a>.</p></details>
+    <p>Hipodroma gir: ludus sahibinle analog veya WASD/yön tuşlarıyla yürü. Gişe memuruna yaklaşınca konuş, sekiz atı incele ve denarius kuponunu onayla. Tribüne yürüyüp oturarak yarışı izle. Aynı gişede Yarışmaya katıl seçeneğinden iki uygun atını seç ve takımınla piste çık. Katılım yarışında sol alttan sağa-sola yönel; alttaki hızlı okun altın bölgeye geldiği anda sağ alttaki Hamle yap tuşuna bas. Başarılı hamle 25 kondisyon tüketir ve 4 saniye %50 hızlandırır. Kupon kazancı toplam ödemedir ve yatırılan bedeli içerir.</p>
+    <details><summary>Sahne ve kaynaklar</summary><p><a href="docs/circus-driving-v150.md">V150: sağ-sol kontrolü, hızlanma ve kondisyon</a> · <a href="assets/circus-v150/SOURCES.md">Sonuç görselleri ve üretim istemleri</a></p><p><a href="docs/circus-office-v149.md">V149: tek gişe, bahis geçmişi ve kendi takımınla yarış</a></p><p><a href="docs/circus-maximus-v147.md">V147: gişe, kupon, tribün ve katılım</a></p><p>Yarış arabası: <a href="https://blendswap.com/blend/26530">panko10 — Roman chariot</a>, CC-BY; renklendirildi ve sadeleştirildi. Atlar: Warhorse / Literock Studios. <a href="assets/circus-v146/SOURCES.md">V146 kaynaklar ve değişiklikler</a>.</p><p>Mimari bu proje için özgün olarak oluşturuldu. Yüzeyler: <a href="https://polyhaven.com/a/sand_01" target="_blank" rel="noopener">Poly Haven</a>, CC0. Ağaçlar: Polyy.AI, CC0. Heykel: <a href="https://open.smk.dk/artwork/image/KAS644" target="_blank" rel="noopener">SMK Open · KAS644</a>. Büst ve at heykeli: Rico Cilliers / Poly Haven, CC0; bu sahne için sadeleştirildi ve malzemeleri değiştirildi. Kum, seyirci, taş kabartma ve mermer görselleri bu sahne için yapay zekâyla üretildi. <a href="docs/circus-maximus-v145.md" target="_blank" rel="noopener">20 ayrı alanın yenilenmesi</a>.</p></details>
     <button class="continue">Hipodroma dön</button>
   </dialog>
   <script src="owner-three-r160.js?v=revision26"></script>
   <script src="circus-maximus-model-v147.js?v=revision149"></script>
   <script src="ludus-stable-appearance-v130.js?v=revision130"></script>
   <script src="circus-roster-v147.js?v=revision147"></script>
-  <script src="circus-race-v147.js?v=revision147"></script>
+  <script src="circus-driving-v150.js?v=revision150"></script>
+  <script src="circus-race-v150.js?v=revision150"></script>
   <script src="assets/runtime/supabase-59d39487c358.js"></script>
   <script src="ludus-client-v84.js?v=revision84"></script>
   <script src="owner-avatar.js?v=revision28"></script>
   <script src="circus-gallery-v149.js?v=revision149"></script>
-  <script src="circus-visit-v149.js?v=revision149"></script>
+  <script src="circus-visit-v150.js?v=revision150"></script>
   <script src="circus-maximus-v147.js?v=revision147"></script>
 </body>
 </html>
