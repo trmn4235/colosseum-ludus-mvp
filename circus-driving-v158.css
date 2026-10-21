@@ -1,0 +1,10 @@
+/* User-marked HUD: upper-right rank, raised side controls, centered low timing bar. */
+.drive-position{position:absolute;right:max(22px,env(safe-area-inset-right));top:max(18px,env(safe-area-inset-top));text-align:right;text-shadow:0 2px 5px #000b}
+#driveRank{position:static;display:block;transform:none;font:500 26px Georgia;letter-spacing:1px}
+#driveLap{display:block;font:12px Arial;margin-top:3px;color:#fff1cd}
+.drive-steer{left:max(24px,env(safe-area-inset-left));bottom:max(100px,calc(env(safe-area-inset-bottom) + 77px))}
+#driveBoost{right:max(24px,env(safe-area-inset-right));bottom:max(100px,calc(env(safe-area-inset-bottom) + 77px))}
+.drive-timing{left:50%;right:auto;transform:translateX(-50%);width:58%;bottom:max(24px,env(safe-area-inset-bottom))}
+#driveFeedback{white-space:normal;line-height:1.25;height:27px;font-size:10px}
+@media(max-height:400px) and (orientation:landscape){.drive-steer,#driveBoost{bottom:max(82px,calc(env(safe-area-inset-bottom) + 65px))}.drive-steer{left:max(18px,env(safe-area-inset-left))}#driveBoost{right:max(18px,env(safe-area-inset-right))}.drive-steer button{width:52px;height:48px}#driveBoost{height:48px;width:100px}.drive-timing{width:58%;bottom:max(13px,env(safe-area-inset-bottom))}#driveRank{font-size:24px}.drive-position{top:15px;right:max(18px,env(safe-area-inset-right))}}
+@media(orientation:portrait){.drive-timing{width:84%;bottom:max(24px,env(safe-area-inset-bottom))}.drive-steer,#driveBoost{bottom:max(120px,calc(env(safe-area-inset-bottom) + 95px))}.drive-position{right:18px;top:max(22px,env(safe-area-inset-top))}#driveRank{font-size:28px}}
