@@ -8,7 +8,7 @@ header,#hint,#look{display:none!important}#accountSummary{left:auto!important;ri
 #hint.restCountdown{display:block!important;background:#302b23cc;padding:8px;border-radius:4px}
 </style><script id="gameNavigation">// Tab-local return frames. State is restored only for its authenticated owner.
 var LudusNavigation=(function(){
- const prefix='ludus-return-v12:',pages=new Set(['ludus.html','gelistirmeler.html','savas.html','pazar.html','arena.html','gorevler.html','ludus-seviye.html','klan.html','multiplayer.html']);
+ const prefix='ludus-return-v12:',pages=new Set(['ludus.html','gelistirmeler.html','savas.html','pazar.html','arena.html','gorevler.html','ludus-seviye.html','klan.html','multiplayer.html','roma.html','circus-maximus.html']);
  let owner=null,readState=()=>null;
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
@@ -1091,12 +1091,12 @@ function roomAttention(kind){
  if(kind==='arena')return !$('pendingBattleNotice')?.hidden&&!!$('pendingBattleNotice');
  return false;
 }
-const market={x:-10.7,z:-8.7,y:0,name:'Pazarı incele',kind:'market'},gateAction={x:-6,z:-10.7,y:0,name:'Arenaya git',kind:'arena'};
+const market={x:-10.7,z:-8.7,y:0,name:'Pazarı incele',kind:'market'},gateAction={x:-6,z:-10.7,y:0,name:'Roma haritasını aç',kind:'arena'};
 [-8,0,8].forEach((x,i)=>rooms.push({x,z:11.1,y:3.47,name:['Ludus Yönetim Odası','Klan Odası','Dinlenme Odası'][i],kind:['office','clan','rest'][i]}));
 [-9,-4.5,0,4.5,9].forEach((x,i)=>rooms.push({x,z:11.1,y:0,name:['Geliştirmeler','Toplama','Revir','Yemekhane','Ahır'][i],kind:['upgrades','store','infirmary','dining','stable'][i]}));
 // Centre each half-size badge on the door leaf, slightly above its vertical midpoint.
 for(const room of rooms){const upper=room.y>0;room.icon=LudusDoorIcons.create(T,room.kind==='armory'?'empty':room.kind,room.name,room.x,(upper?5:1.1)+.2,upper?11.45:11.40);scene.add(room.icon);}
-gateAction.icon=LudusDoorIcons.create(T,'arena','Arena',-6,2.47,-11.24,.45,0);scene.add(gateAction.icon);
+gateAction.icon=LudusDoorIcons.create(T,'arena','Roma',-6,2.47,-11.24,.45,0);scene.add(gateAction.icon);
 // The market uses a wagon: its badge sits on the front wooden panel.
 market.icon=LudusDoorIcons.create(T,'market','Pazar',-11.4,1.2,-9.53,.36,0);scene.add(market.icon);
 
@@ -1172,7 +1172,7 @@ function showGladiator(g){clear();paused=true;$('orders').hidden=false;$('orders
 function closeOrders(){paused=false;$('orders').hidden=true;}
 $('ordersClose').onclick=closeOrders;
 for(const g of [])if(Number.isInteger(saved[g.name])&&stations[saved[g.name]]){const s=stations[saved[g.name]];g.order=s.i;const i=roster.indexOf(g);g.body.position.set(s.x+(i%2?.52:-.52),0,s.z+1.4+Math.floor(i/2)*.46);g.body.rotation.y=Math.PI;}
-$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){openLudusPage(new URL('savas.html?v=revision97',window.location.href).href);}else if(nearest.kind==='market')openLudusPage(new URL('pazar.html?v=revision96',window.location.href).href);else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
+$('interact').onclick=()=>{if(!nearest)return;if(nearest.kind==='arena'){openLudusPage(new URL('roma.html?v=revision148',window.location.href).href);}else if(nearest.kind==='market')openLudusPage(new URL('pazar.html?v=revision96',window.location.href).href);else if(['upgrade-table','stone-pouch'].includes(nearest.kind)){
  openUpgrades(nearest.kind==='stone-pouch');
  }else enterRoom(nearest);};
 const labelPointV84=new T.Vector3(),labelOffsetV84=new T.Vector3(0,2.12,0),labelProjectedV84=new T.Vector3();

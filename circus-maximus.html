@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="tr">
 <head>
+<link rel="stylesheet" href="rome-travel-v148.css?v=revision148"><script src="rome-destinations-v148.js?v=revision148"></script><script src="rome-travel-v148.js?v=revision148"></script>
+<script src="rome-navigation-v148.js?v=revision148"></script>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#eee9df">
@@ -15,7 +18,7 @@
   <canvas id="stadium" tabindex="0" aria-label="Circus Maximus üç boyutlu hipodrom. Sürükleyerek etrafa bak, iki parmakla veya fare tekerleğiyle yakınlaş."></canvas>
   <div class="vignette" aria-hidden="true"></div>
   <header class="identity">
-    <a class="back" href="ludus.html?v=revision140" aria-label="Ludus'a dön"><svg viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></a>
+    <a class="back" href="roma.html?v=revision148" data-game-back aria-label="Roma haritasına dön"><svg viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></a>
     <div><small>COLOSSEUM <span>&</span> MAGNUS</small><h1>Circus Maximus</h1><p>Roma’nın büyük hipodromu <span>· Gişe ve tribün</span></p></div>
   </header>
   <div class="tools">
@@ -36,7 +39,7 @@
     <p class="hint" id="hint">Bakmak için sürükle <b>·</b> Yakınlaşmak için iki parmağını kullan</p>
   </footer>
   <section id="visitHUD" hidden aria-label="Hipodrom ziyareti">
-    <header class="visit-top"><button id="visitExit">‹ Genel görünüm</button><div><small>BATI TRİBÜNÜ</small><strong id="visitRaceState">4 araba · 8 at · 2 tur</strong></div><span id="visitWallet">Misafir</span></header>
+    <header class="visit-top"><button id="visitExit">‹ Roma haritası</button><div><small>BATI TRİBÜNÜ</small><strong id="visitRaceState">4 araba · 8 at · 2 tur</strong></div><span id="visitWallet">Misafir</span></header>
     <div class="visit-guide"><span>GIŞE · kuzey</span><span>KATILIM · güney</span><span>TRİBÜN · pist tarafı</span></div>
     <p id="visitNotice" role="status"></p><p id="visitResult" role="status"></p>
     <div id="visitStick" role="group" aria-label="Yürüyüş analoğu"><i id="visitKnob"></i></div>
@@ -48,7 +51,7 @@
   </dialog>
   <div id="loading" role="status" aria-live="polite">
     <small>COLOSSEUM &amp; MAGNUS</small><h2>Circus Maximus</h2><div class="load-line" aria-hidden="true"></div><p id="loadText">Hipodrom hazırlanıyor…</p>
-    <button id="retry" hidden>Yeniden dene</button><a href="ludus.html?v=revision140" id="loadBack" hidden>Ludus'a dön</a>
+    <button id="retry" hidden>Yeniden dene</button><a href="roma.html?v=revision148" id="loadBack" hidden>Ludus'a dön</a>
   </div>
   <dialog id="info">
     <button class="close" aria-label="Kapat">×</button><small>ROMA · HİPODROM</small><h2>Tribünlerden piste.</h2>
@@ -68,7 +71,7 @@
   <script src="ludus-client-v84.js?v=revision84"></script>
   <script src="owner-avatar.js?v=revision28"></script>
   <script src="circus-gallery-v147.js?v=revision147"></script>
-  <script src="circus-visit-v147.js?v=revision147"></script>
+  <script src="circus-visit-v147.js?v=revision148"></script>
   <script src="circus-maximus-v147.js?v=revision147"></script>
 </body>
 </html>
