@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "stats": {
+    "frame": 30,
+    "calls": 29,
+    "triangles": 482509,
+    "points": 0,
+    "lines": 0,
+    "geometries": 28,
+    "textures": 24,
+    "spectators": 12086
+  },
+  "enclosure": {
+    "misses": [],
+    "joins": [
+      true,
+      true
+    ],
+    "heights": [
+      28.39915438361704,
+      28.579999923706055
+    ]
+  },
+  "sandSurface": {
+    "heights": [
+      0.05732501111924648,
+      0.02467627450823784,
+      0.0746084451675415,
+      0.053308092057704926
+    ],
+    "join": [
+      0.07216394748538724,
+      0.07218884894392863
+    ]
+  },
+  "sandTexture": true,
+  "reliefAtlas": true,
+  "cinemaControls": true,
+  "gateCameraClear": true,
+  "errors": [],
+  "viewportTests": [
+    "932x430",
+    "390x844",
+    "667x375",
+    "1440x900"
+  ]
+}

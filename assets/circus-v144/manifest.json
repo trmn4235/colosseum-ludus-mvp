@@ -1,0 +1,17 @@
+{
+  "version": 144,
+  "assets": [
+    {
+      "file": "arena-sand.webp",
+      "source": "Imagegen built-in generation",
+      "references": [],
+      "prompt": "../../docs/circus-maximus-v144.md",
+      "width": 1280,
+      "height": 1280,
+      "colorSpace": "sRGB",
+      "encoding": "WebP quality 92",
+      "bytes": 867154,
+      "sha256": "b4a87a969b5740f4db8a7fb290165d56dbab6a86a3906bb5ff729993c31951b5"
+    }
+  ]
+}
