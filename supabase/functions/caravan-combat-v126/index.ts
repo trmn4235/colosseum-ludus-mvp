@@ -1,4 +1,5 @@
 import './caravan-core-v126.js';
+import './career-combat-v162.js';
 import './caravan-simulation-v126.js';
 import './caravan-simulation-v127.js';
 
@@ -30,8 +31,9 @@ Deno.serve(async req=>{
   const engine=ticket.encounter?.rules===127?(globalThis as any).CaravanSimulationV127:(globalThis as any).CaravanSimulation;
   const sim=engine.replay(ticket,body.commands,body.steps);
   if(!sim.combat.finished&&body.abandon!==true)throw Error('Savaş henüz bitmedi.');
-  const result=await request('/rest/v1/rpc/ludus_caravan_verified_v126','Bearer '+service,service,{
-   p_owner:user.id,p_raid:ticket.id,p_won:body.abandon!==true&&sim.combat.result==='win',p_seconds:sim.steps/30
+  const result=await request('/rest/v1/rpc/ludus_caravan_verified_v162','Bearer '+service,service,{
+   p_owner:user.id,p_raid:ticket.id,p_won:body.abandon!==true&&sim.combat.result==='win',p_seconds:sim.steps/30,
+   p_stats:(globalThis as any).CaravanCareer.participants(sim)
   });
   return reply({result});
  }catch(e){return reply({error:e instanceof Error?e.message:'Savaş doğrulanamadı.'},400);}

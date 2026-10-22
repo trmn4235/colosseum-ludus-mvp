@@ -8,6 +8,7 @@ var CircusVisit=(()=>{
  const deadline=p=>{let timer;return Promise.race([p,new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('Bağlantı gecikti. Yeniden dene; kupon iki kez kesilmez.')),18000))]).finally(()=>clearTimeout(timer));};
  async function create(T,ctx){
   const gallery=ctx.gallery,client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
+  const career=globalThis.LudusCareer?.create(client);
   let user=null,state=null,pending=null,busy=false,offset=0,active=false,mode='walk',selected=0,dialogType='office',farewell=false,farewellTimer=null,message='',lastPoll=0,polling=false;
   let heat={id:'guest',teams:structuredClone(CircusRoster).map(t=>({...t,name:teamName(t)})),status:'open',entered:false,selected:null,stake:0,payout:0,started_at:null,durations:null,winner:null};
   const race=await ctx.getRace();const player={...gallery.spawn,y:gallery.floor},keys=new Set(),stick={x:0,y:0,id:null},look={yaw:Math.PI/2,pitch:.36};let driveSending=false,lastDriveSend=0,driveReceipt=null;let near=null,drag=null,avatar,settleFrames=0,historyPage=0,entryIds=[],betStake='100',steering=0,driveFlash='',flashUntil=0,resultDismissed=null,resultShown=null,lastNeedleTime=0;
@@ -31,7 +32,7 @@ var CircusVisit=(()=>{
   function elapsed(){return heat.started_at?Math.max(0,(Date.now()+offset-Date.parse(heat.started_at))/1000):0;}
   function open(type='office'){clearTimeout(farewellTimer);farewell=false;if(!pending)notice('');dialogType=type;keys.clear();stick.x=stick.y=0;renderDialog();$('circusDialog').showModal();if(user&&!busy)refresh();ctx.invalidate();}
   function close(){clearTimeout(farewellTimer);farewell=false;$('circusDialog').close();ctx.canvas.focus({preventScroll:true});ctx.invalidate();}
-  function horseCard(h){const card=el('article','circus-horse'),head=el('div','horse-heading'),img=el('img');img.src=LudusHorseAppearance.photo(h);img.alt=h.name;const text=el('div');text.append(el('strong','',h.name),el('small','',LudusHorseAppearance.coat(h).name+' · Genel '+num(h.quality)));head.append(img,text);card.append(head);const grid=el('dl','horse-stats');for(const [key,label]of traits){const cell=el('div');cell.append(el('dt','',label),el('dd','',num(h.stats[key])));grid.append(cell);}card.append(grid);return card;}
+  function horseCard(h){const card=el('article','circus-horse'),head=el('div','horse-heading'),img=el('img');img.src=LudusHorseAppearance.photo(h);img.alt=h.name;const text=el('div');text.append(el('strong','',h.name),el('small','',LudusHorseAppearance.coat(h).name+' · Genel '+num(h.quality)));head.append(img,text);card.append(head);const grid=el('dl','horse-stats');for(const [key,label]of traits){const cell=el('div');cell.append(el('dt','',label),el('dd','',num(h.stats[key])));grid.append(cell);}card.append(grid);if(career&&state?.horses?.some(own=>own.id===h.id))card.append(career.mount('horse',h));return card;}
   function historyPanel(){
    const panel=$('circusHistory');panel.hidden=dialogType!=='ticket';panel.replaceChildren();if(panel.hidden)return;
    panel.append(el('h3','','Bahis geçmişi'));

@@ -9,6 +9,7 @@ var LudusStable=(()=>{
  function time(iso,now=Date.now()){const secs=Math.max(0,Math.ceil((Date.parse(iso)-now)/1000));if(!Number.isFinite(secs)||secs===0)return 'Hazır';if(secs>=3600)return Math.floor(secs/3600)+' sa '+Math.ceil(secs%3600/60)+' dk';return secs>=60?Math.ceil(secs/60)+' dk':secs+' sn';}
  function deadline(promise){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Yanıt gecikti. İşlem kimliğin korundu; yeniden deneyebilirsin.')),15000);})]).finally(()=>clearTimeout(timer));}
  function create(ctx){
+  const career=globalThis.LudusCareer?.create(ctx.client);
   const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;};
   const btn=(text,fn,cls='')=>{const n=el('button',cls,text);n.type='button';n.onclick=fn;return n;};
   const img=(label='At',h=null)=>{const n=el('img');n.src=appearance.photo(h);n.alt=label;n.width=504;n.height=336;return n;};
@@ -52,7 +53,7 @@ var LudusStable=(()=>{
   function identity(h,compact=false){const n=el('div','stable-identity'+(compact?' compact':'')),text=el('div');text.append(el('h3','',h.name),el('p','',`${sex(h)} · ${stage(h)} · ${appearance.coat(h).name} · Kalite ${h.quality}`));if(h.pregnant_until)text.append(el('small','','Gebelik · '+time(h.pregnant_until,now())));else if(h.training_until)text.append(el('small','','Antrenman · '+time(h.training_until,now())));else if(h.sale_price)text.append(el('small','','Satışta · '+h.sale_price+' denarius'));n.append(img(h.name,h),text);return n;}
   function noHorse(){const box=el('div','stable-welcome');box.append(img('Roma ahırında bir at'),el('h3','','İlk atını ahıra getir'),el('p','','Dişi ve erkek atlar aynı üst performansa ulaşabilir. Yetiştir, soyunu sürdür ve satışa çıkar.'),btn('At pazarını aç',()=>{view='market';mode='buy';render();},'primary'));return box;}
   function statsView(h){
-   const layout=el('div','stable-details'),hero=el('div','stable-hero');hero.append(identity(h),meter('Beslenme',h.feed_bar),meter('Enerji',h.energy));
+   const layout=el('div','stable-details'),hero=el('div','stable-hero');hero.append(identity(h),meter('Beslenme',h.feed_bar),meter('Enerji',h.energy));if(career)hero.append(career.mount('horse',h));
    const side=el('div','stable-stat-side'),grid=el('div','stable-stats');for(const [k,label]of traits)grid.append(meter(label,h.stats[k]));side.append(grid);
    const pick=select('Antrenman',traits),train=btn('Başlat',()=>act('train',{horse:h.id,stat:pick.n.value}),'primary');train.disabled=h.stage==='foal'||!!h.training_until||!!h.pregnant_until||!!h.sale_price||Date.parse(h.training_ready)>now()||h.energy<25||h.feed_bar<=0;
    const progress=h.training_until?clamp((now()-Date.parse(h.training_started))/(Date.parse(h.training_until)-Date.parse(h.training_started))*100):Date.parse(h.training_ready)>now()?100:0;

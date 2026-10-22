@@ -7,6 +7,7 @@ var LudusCaravanRaids=(()=>{
  const photo=(src,alt,cls='')=>{const i=el('img',cls);i.src=src;i.alt=alt;i.draggable=false;i.decoding='async';return i;};
  const date=t=>new Date(t).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
  function create(ctx){
+  const career=globalThis.LudusCareer?.create(ctx.client);
   let data=null,owner=null,busy=false,inflight=null,error='',view='team',selection=[],page=0,region=null,report=null,pending=null,offset=0,last=0,notified=new Set(),mount=null;
   const key=()=> 'ludus-raid-request-v124:'+owner;
   const now=()=>Date.now()+offset;
@@ -56,10 +57,10 @@ var LudusCaravanRaids=(()=>{
   function renderTeam(body){
    const layout=el('div','raid-layout raid-team-layout'),figure=poster('assets/caravan-v123/hunt-art.webp','Siyah peçeli av ekibi');figure.append(teamStrip(selectedTeam()));
    const panel=el('div','raid-panel');panel.append(heading('Av ekibini seç','2–5 gladyatör · Siyah peçe'),el('span','raid-count',selection.length+' / 5'));
-   const fighters=data.gladiators,pages=Math.max(1,Math.ceil(fighters.length/4));page=Math.min(page,pages-1);const list=el('div','raid-roster');
-   for(const g of fighters.slice(page*4,page*4+4)){
+   const fighters=data.gladiators,pages=Math.max(1,Math.ceil(fighters.length/2));page=Math.min(page,pages-1);const list=el('div','raid-roster');
+   for(const g of fighters.slice(page*2,page*2+2)){
     const picked=selection.includes(g.id),b=button('',()=>{selection=picked?selection.filter(id=>id!==g.id):[...selection,g.id];redraw();},'raid-fighter');b.dataset.huntGladiator=g.id;b.setAttribute('aria-pressed',String(picked));b.disabled=busy||!!pending||!g.ready&&!picked||selection.length>=5&&!picked;
-    const face=el('span','raid-face');face.append(photo('imperial-portrait-'+g.class+'-v31.webp',''));const info=el('span','raid-fighter-info');info.append(el('strong','',g.name),el('small','',g.class),el('small','',g.ready?'Hazır':'Meşgul / Revirde'));b.append(face,info,el('i','',picked?'✓':'+'));list.append(b);
+    const face=el('span','raid-face');face.append(photo('imperial-portrait-'+g.class+'-v31.webp',''));const info=el('span','raid-fighter-info');info.append(el('strong','',g.name),el('small','',g.class),el('small','',g.ready?'Hazır':'Meşgul / Revirde'));if(career)info.append(career.mount('gladiator',g,'caravan_raid','text'));b.append(face,info,el('i','',picked?'✓':'+'));if(career){const row=el('div','raid-career-row');row.append(b,career.mount('gladiator',g,'caravan_raid',true));list.append(row);}else list.append(b);
    }
    panel.append(list);
    if(pages>1){const nav=el('div','raid-pagination'),prev=button('‹',()=>{page--;redraw();}),next=button('›',()=>{page++;redraw();});prev.disabled=page===0;next.disabled=page===pages-1;prev.setAttribute('aria-label','Önceki gladyatörler');next.setAttribute('aria-label','Sonraki gladyatörler');nav.append(prev,el('small','',(page+1)+' / '+pages),next);panel.append(nav);}
