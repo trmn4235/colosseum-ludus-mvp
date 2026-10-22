@@ -104,16 +104,8 @@
         "sha256": "99cad757afd470a9ec119512650f902da9e0a014d3f5d144f2e7360df6e513ee"
       },
       {
-        "path": "meshes/props/wrld_hay_sm.dae",
-        "sha256": "b3e2c15f0f32ee9cdb54904e51ad4fabcba251469baed99e1ee84f514978e62c"
-      },
-      {
         "path": "textures/skins/props/wrld_hay_a.dds",
         "sha256": "55fbd96c316f31d465723df79fd12b1abee7cd86ce42fe7cb1dc4ae16553693d"
-      },
-      {
-        "path": "actors/props/special/eyecandy/hay_small.xml",
-        "sha256": "eb0d74b06445edac65cb8ceded659e0b8b67f112d8afe4b6be4b22fd60be3aa7"
       },
       {
         "path": "meshes/props/rome_blacksmith_bucket.dae",
@@ -122,6 +114,18 @@
       {
         "path": "textures/skins/structural/rome_struct_2.png",
         "sha256": "7ebc61edaa4e4febb00c769f825e8cb833cce2c6f83eef0528f64982b9dd8825"
+      },
+      {
+        "path": "actors/props/structures/gauls/stable_hay_stack.xml",
+        "sha256": "d28c7ab7316e45a0339347998f38bc1d170a55b74599694ff6da8941b46977c7"
+      },
+      {
+        "path": "meshes/props/gaul_stable_hay_stack.dae",
+        "sha256": "d53a5fd0ae4aaabdaf8ed846a92a987492d7476a08d599d54f6a37b0867917d4"
+      },
+      {
+        "path": "textures/skins/structural/celt_struct.dds",
+        "sha256": "22b7f008856b980ab7b7cd6bb5b97a2b237db58f94452b4f2b61fe594b8f554a"
       }
     ],
     "outputs": [
@@ -142,8 +146,8 @@
       },
       {
         "path": "assets/stable-v161/fodder.glb",
-        "sha256": "e874fd20f60ee701d2b1e20ef9450e5ee1d49f32d1975719dd1b7d4f2b2380a3",
-        "bytes": 13664
+        "sha256": "6e9aa2eccfa9829b8dfc9026bac3305eb06436f5d404f23e0d032547247b4e75",
+        "bytes": 649692
       }
     ]
   }

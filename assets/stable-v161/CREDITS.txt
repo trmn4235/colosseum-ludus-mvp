@@ -20,7 +20,8 @@ Source paths relative to binaries/data/mods/public/art/:
   textures/skins/props/hele_props_a.dds
   meshes/props/wrld_basket_a.dae
   textures/skins/props/basket_rome_1.dds
-  meshes/props/wrld_hay_sm.dae
+  meshes/props/gaul_stable_hay_stack.dae
+  textures/skins/structural/celt_struct.dds
   textures/skins/props/wrld_hay_a.dds
   meshes/props/rome_blacksmith_bucket.dae
   textures/skins/structural/rome_struct_2.png

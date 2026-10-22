@@ -51,7 +51,7 @@
 | 45 | Temizlik aracı tek bir çubuk ve kutu şeklindeydi. | Süpürge sapı ve ayrılan ince lif demeti oluşturuldu; hizmet köşesine alındı. |
 | 46 | Bütün atlar aynı anda aynı hareketi yapıyordu. | Mevcut hazır animasyonun başlangıç evresi her atta farklılaştırıldı. |
 | 47 | Bütün atların bakış açısı birebir aynıydı. | Kendi bölmelerinde kalacak küçük yön farkları verildi. |
-| 48 | Atların ışıkla ilişkisi yalnızca oval yer gölgesine dayanıyordu. | Yumuşak temas gölgesine ek olarak gerçek güneş gölgesi açıldı. |
+| 48 | Atların ışıkla ilişkisi yalnızca oval yer gölgesine dayanıyordu. | Yumuşak temas gölgesine ek olarak gerçek güneş gölgesi açıldı. Oyuncunun ayağına da hareketini izleyen yumuşak temas gölgesi eklendi. |
 
 ## Tarihsel dayanak ve sınırlar
 

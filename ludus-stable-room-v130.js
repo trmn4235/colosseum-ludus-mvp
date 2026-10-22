@@ -31,12 +31,13 @@ var LudusStableRoom=(()=>{
   model.updateMatrixWorld(true);model.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update();});
   return bones;
  }
- function create({T,props,colliders,wood,stone,ludusWall,shell,ambient,light,scene,outdoor,outdoorSun,getOwnerHeight=()=>1.78,player,onError}){
+ function create({T,props,colliders,wood,stone,ludusWall,shell,ambient,light,scene,outdoor,outdoorSun,getOwnerHeight=()=>1.78,player,onError,invalidateShadows=()=>{}}){
   let environment=null,root=null,template=null,horsePromise=null,groomPromise=null,groom=null,active=false,selected=null,herd=[],savedLighting=null;
-  const slots=[],animals=new Map(),pool=[],bounds=[],coatMaterials=new Map();let selection=null,daylight=null,savedScene=null;
+  const slots=[],animals=new Map(),pool=[],bounds=[],coatMaterials=new Map();let selection=null,daylight=null,savedScene=null,shadowElapsed=0;
   const ownerHeight=()=>Math.max(1.6,Math.min(2,Number(getOwnerHeight())||1.78));
   function build(){
    environment=LudusStableEnvironment.create(T,{ludusWall,onError});root=environment.root;slots.push(...environment.slots);bounds.push(...environment.bounds);
+   environment.ready.then(()=>{if(active)invalidateShadows();});
    const ring=new T.Mesh(new T.RingGeometry(.8,.85,40),new T.MeshBasicMaterial({color:0xe7ddbd,transparent:true,opacity:.65,side:T.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.visible=false;selection=ring;root.add(ring);
    const g=environment.groomPosition;bounds.push({kind:'stable-groom',minX:g.x-.4,maxX:g.x+.4,minZ:g.z-.35,maxZ:g.z+.35});
    daylight=new T.DirectionalLight(0xfff0d7,2.1);daylight.name='Ahır · gün ışığı';daylight.castShadow=true;
@@ -65,6 +66,7 @@ var LudusStableRoom=(()=>{
     const s=slots[i];e.group.name=h.name||'At';e.group.userData.horseId=h.id;e.group.userData.coat=LudusHorseAppearance.coat(h).id;e.group.position.set(s.x,.02,s.z);e.group.rotation.y=s.yaw??(s.side<0?Math.PI/2:-Math.PI/2);e.group.scale.setScalar(h.stage==='foal'?.55:h.stage==='young'?.8:1);e.group.visible=true;applyCoat(e,h.coat);
    });
    const e=animals.get(selected?.id);selection.visible=!!e;if(e)selection.position.set(e.group.position.x,.10,e.group.position.z);
+   if(active)invalidateShadows();
   }
   function loadGroom(){return groomPromise||(groomPromise=new Promise((resolve,reject)=>new T.GLTFLoader().load('assets/caravan-v128/driver.glb',g=>{
    relaxGroom(T,g.scene);groom=normalizeModel(T,g.scene,ownerHeight());groom.position.set(environment.groomPosition.x,environment.groomPosition.y,environment.groomPosition.z);groom.rotation.y=.5;groom.name='Seyis';groom.userData.pose='relaxed-standing';root.add(groom);
@@ -97,7 +99,7 @@ var LudusStableRoom=(()=>{
    enter,leave,setHerd(horses){herd=(horses||[]).slice(0,12);sync();},
    select(h){selected=h;if(h&&!herd.some(x=>x.id===h.id))herd=[h];sync();},
    viewFor(id){const i=herd.findIndex(h=>h.id===id),s=slots[i];return s?{...s.view}:null;},
-   tick(dt){if(!active||dt<=0)return;syncDaylight();if(groom){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
+   tick(dt){if(!active||dt<=0)return;syncDaylight();environment.tick(dt,player);shadowElapsed+=dt;if(shadowElapsed>=.25){invalidateShadows();shadowElapsed=0;}if(groom){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
     for(const [id,e]of animals){e.elapsed+=dt;const near=!player||Math.hypot(player.x-e.group.position.x,player.z-e.group.position.z)<15;if(id===selected?.id||near){if(e.elapsed>=1/30){e.mixer.update(Math.min(e.elapsed,.15));e.elapsed=0;}}else if(e.elapsed>=.25){e.mixer.update(e.elapsed);e.elapsed=0;}}
    },
    get root(){return root;},get ready(){return environment?.ready||Promise.resolve();},get horse(){return animals.get(selected?.id)?.group||null;},get horses(){return [...animals.values()].map(e=>e.group);},get groom(){return groom;},get slots(){return slots;}

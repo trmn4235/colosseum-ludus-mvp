@@ -46,7 +46,7 @@ const loadedMaterials=await page.evaluate(()=>{
  return [...materials].map(m=>({source:m.userData.source,colorSpace:m.map.colorSpace,heightColorSpace:m.bumpMap.colorSpace,roughnessColorSpace:m.roughnessMap.colorSpace,files:['map','bumpMap','roughnessMap'].map(key=>m[key].image.currentSrc)}));
 });
 assert.ok(loadedMaterials.every(m=>m.colorSpace==='srgb'&&m.heightColorSpace===''&&m.roughnessColorSpace===''),'PBR data maps must not undergo color correction');
-async function render(){await page.evaluate(()=>{const p=LudusPreview;p.followOwner(.05,false);p.camera.updateMatrixWorld(true);p.stableRoom.tick(.04);p.stableSystem.tick();p.roomActions.tick();p.roomScene.updateMatrixWorld(true);p.renderer.shadowMap.needsUpdate=true;p.renderer.render(p.roomScene,p.camera);});}
+async function render(){await page.evaluate(()=>{const p=LudusPreview;p.followOwner(.05,false);p.camera.updateMatrixWorld(true);p.stableRoom.tick(.04);p.stableSystem.tick();p.roomActions.tick();p.roomScene.updateMatrixWorld(true);p.renderer.render(p.roomScene,p.camera);});}
 async function capture(name){
  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  const bytes=await page.screenshot({path:out+'/'+name,timeout:90000}),img=PNG.sync.read(bytes),colors=new Set();
@@ -76,8 +76,8 @@ assert.equal(await page.evaluate(()=>LudusPreview.roomProps.children.filter(o=>o
 assert.equal(await page.evaluate(()=>__rpcCalls.filter(r=>r.name==='ludus_stable'&&r.args.p_action).length),0,'verification never buys or changes a horse');
 // Return navigation uses the real saved frame; old floor-plan positions must not override the new entry.
 await page.route('**/pazar.html*',route=>route.fulfill({contentType:'text/html',body:'<p>Navigation fixture</p>'}));
-await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:7,z:-18.2});LudusNavigation.go('pazar.html');});
-await page.waitForURL('**/pazar.html*');const frameId=new URL(page.url()).searchParams.get('nav');assert.ok(frameId);
+await Promise.all([page.waitForURL('**/pazar.html*',{waitUntil:'domcontentloaded',timeout:90000}),page.evaluate(()=>{Object.assign(LudusPreview.player,{x:7,z:-18.2});LudusNavigation.go('pazar.html');})]);
+const frameId=new URL(page.url()).searchParams.get('nav');assert.ok(frameId);
 await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html?restore='+frameId);
 await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
 assert.equal(await page.evaluate(()=>LudusPreview.player.z),-18.2,'current floor-plan position survives a return');

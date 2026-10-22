@@ -50,7 +50,7 @@ vec4 stableSample(sampler2D tex,vec2 uv){vec2 skew=mat2(1.,0.,-.57735027,1.15470
   const timber=surface(0xffefd9,materialPath+'wood_plank_wall_diff_1k.webp',.55,.018,woodDetail);
   const earth=surface(0xfff6e8,newPath+'dense_sand_diff_1k.webp',.56,.018,pbr('dense_sand',{organic:true,sand:true}));
   const stone=surface(0x9da4aa,materialPath+'castle_wall_slates_diff_1k.webp',.46,.045,stoneDetail);
-  const paving=surface(0xeee8df,newPath+'cobblestone_floor_08_diff_1k.webp',.5,.035,pbr('cobblestone_floor_08'));
+  const paving=surface(0xd0cdc4,newPath+'cobblestone_floor_08_diff_1k.webp',.5,.04,pbr('cobblestone_floor_08'));
   const plaster=surface(0xcac0a8,'assets/textures/white_plaster_02-diff-6aa57de97b10.webp',.65,.012,{organic:true,weather:true});
   const hay=surface(0xd6c59d,newPath+'wrld_hay_a.webp',1.7,.018,{organic:true});
   const leather=surface(0xc2a186,newPath+'brown_leather_diff_1k.webp',2.5,.006,pbr('brown_leather'));
@@ -182,9 +182,10 @@ vec4 stableSample(sampler2D tex,vec2 uv){vec2 skew=mat2(1.,0.,-.57735027,1.15470
   put(timber,0,3.66,-20.55,41.4,.18,.22);
   const slope=Math.atan(.89/8.7);put(timber,0,4.05,-24.75,41.7,.09,8.9,box,slope);
   for(let z=-21;z>-29;z-=1.15)put(timber,0,3.62+(-20.35-z)*Math.tan(slope),z,41.7,.11,.12);
-  const tile=new T.CylinderGeometry(.16,.16,.82,6,1,true,0,Math.PI);
+  const tile=new T.CylinderGeometry(.16,.16,.82,8,1,true,-Math.PI/2,Math.PI).rotateX(-Math.PI/2),tileAcross=tile.clone().rotateY(Math.PI/2);
+  put(roof,0,4.11,-24.75,41.7,.035,8.9,box,slope);
   for(let col=0;col<130;col++)for(let row=0;row<12;row++){
-   const z=-20.35-row*.76,y=3.72+(-20.35-z)*Math.tan(slope);put(roof,-20.64+col*.32,y,z,1,1,1,tile,Math.PI/2+slope,0,Math.PI/2,.83+rand()*.17);
+   const z=-20.35-row*.76,y=3.67+(-20.35-z)*Math.tan(slope);put(roof,-20.64+col*.32,y,z,1,1,1,tile,slope,0,0,.83+rand()*.17);
   }
   // A sheltered service strip on the east. The full 36m-wide riding area stays unobstructed.
   for(const x of [18.7,21.5])for(const z of [-14.5,-4.8]){
@@ -193,7 +194,8 @@ vec4 stableSample(sampler2D tex,vec2 uv){vec2 skew=mat2(1.,0.,-.57735027,1.15470
   }
   for(const x of [18.7,21.5])put(timber,x,2.94,-9.65,.18,.2,10.2);
   put(timber,20.1,3.03,-9.65,3.25,.09,10.2,box,0,0,.09);
-  for(let c=0;c<11;c++)for(let r=0;r<14;r++)put(roof,18.52+c*.32,2.91+(c*.32)*.09,-4.55-r*.76,1,1,1,tile,Math.PI/2,0,Math.PI/2,.83+rand()*.17);
+  put(roof,20.1,3.09,-9.65,3.25,.035,10.2,box,0,0,.09);
+  for(let c=0;c<32;c++)for(let r=0;r<5;r++){const x=18.58+r*.76;put(roof,x,3.10+(x-20.1)*Math.tan(.09),-14.61+c*.32,1,1,1,tileAcross,0,0,.09,.83+rand()*.17);}
   put(paving,20.1,.007,-9.65,3.0,.05,10.1);
   // Two real tack stands, correctly shaped saddles, hanging bridles and folded cloths.
   for(const z of [-7.2,-9.0]){
@@ -212,14 +214,14 @@ vec4 stableSample(sampler2D tex,vec2 uv){vec2 skew=mat2(1.,0.,-.57735027,1.15470
   put(water,20.25,.72,-2.65,2.31,.015,.75);
   put(mud,21.38,.012,-3.65,.9,.02,.65,sphere);
   beam([21.7,1.01,-2.65],[21.35,.92,-2.65],.12,roof);
-  put(iron,19.25,1.65,-2.7,.10,.10,.10,hoop,0,Math.PI/2);
   bounds.push({kind:'stable-service-shelter',minX:18.45,maxX:21.8,minZ:-14.9,maxZ:-4.45});
-  bounds.push({kind:'stable-water-point',minX:18.8,maxX:21.7,minZ:-3.5,maxZ:-1.9});
+  bounds.push({kind:'stable-water-point',minX:18.1,maxX:21.7,minZ:-3.5,maxZ:-1.9});
   // West side: a dry raised fodder bay, storage baskets and a separate tethering rail.
   put(paving,-20,.015,-12.1,3.2,.07,4.3);
   for(const x of [-21.35,-18.65])for(const z of [-14.2,-10.0])put(timber,x,1.4,z,.14,2.8,.14);
   put(timber,-20,2.85,-12.1,3.2,.1,4.6,box,0,0,-.10);
-  for(let c=0;c<11;c++)for(let r=0;r<7;r++)put(roof,-21.6+c*.32,3.04-c*.028,-9.85-r*.76,1,1,1,tile,Math.PI/2,0,Math.PI/2,.86+rand()*.14);
+  put(roof,-20,2.91,-12.1,3.2,.035,4.6,box,0,0,-.10);
+  for(let c=0;c<15;c++)for(let r=0;r<5;r++){const x=-21.52+r*.76;put(roof,x,2.92-(x+20)*Math.tan(.10),-14.34+c*.32,1,1,1,tileAcross,0,0,-.10,.86+rand()*.14);}
   for(let z=-13.6;z<-10.6;z+=.28)put(timber,-20.1,.15,z,2.5,.09,.23);
   for(const z of [-7.8,-4.0]){put(timber,-20.3,.75,z,.18,1.5,.18);put(coping,-20.3,.14,z,.34,.28,.34,block);}
   put(timber,-20.3,1.25,-5.9,.15,.15,4.1);
@@ -237,6 +239,7 @@ vec4 stableSample(sampler2D tex,vec2 uv){vec2 skew=mat2(1.,0.,-.57735027,1.15470
   const shadowSize=64,shadowPixels=new Uint8Array(shadowSize*shadowSize*4);for(let y=0;y<shadowSize;y++)for(let x=0;x<shadowSize;x++){const r=Math.hypot((x+0.5)/shadowSize*2-1,(y+0.5)/shadowSize*2-1),i=(y*shadowSize+x)*4;shadowPixels[i+3]=Math.round(Math.max(0,1-r)**2*100);}const shadowMap=new T.DataTexture(shadowPixels,shadowSize,shadowSize);shadowMap.needsUpdate=true;
   const contactMaterial=new T.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});
   function contactShadow(w,d){const m=new T.Mesh(new T.PlaneGeometry(w,d),contactMaterial);m.rotation.x=-Math.PI/2;m.position.y=.008;m.name='Yumuşak temas gölgesi';return m;}
+  const ownerContact=contactShadow(.95,.75);ownerContact.name='Sahip · ayak temas gölgesi';root.add(ownerContact);
   const sourcedProps=[
    ['fodder',[[-20.1,.21,-12.5,.72,.23],[-20.65,.21,-13.4,.43,-.5]]],
    ['basket',[[19.35,.05,-13.35,.53,.3],[19.5,.76,-12.5,.37,-.4],[-19.6,.05,-10.65,.59,.7]]],
@@ -245,13 +248,14 @@ vec4 stableSample(sampler2D tex,vec2 uv){vec2 skew=mat2(1.,0.,-.57735027,1.15470
   ];
   const ready=typeof T.GLTFLoader==='function'?Promise.all(sourcedProps.map(([name,placements])=>new Promise(resolve=>{
    new T.GLTFLoader().load(newPath+name+'.glb',g=>{
+    g.scene.traverse(o=>{if(o.isMesh){o.material=o.material.clone();if(name==='fodder')o.material.color.setHex(0xa48c59);if(name==='amphorae')o.material.color.setHex(0xb39b77);}});
     for(const [x,y,z,h,angle]of placements){const prop=g.scene.clone(true);prop.name='0 A.D. · '+name;prop.userData.source='0 A.D. / Wildfire Games';prop.userData.license='CC-BY-SA-3.0';prop.position.set(x,y,z);prop.scale.setScalar(h);prop.rotation.y=angle;prop.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});root.add(prop);
      const shadow=contactShadow(h*(name==='fodder'||name==='amphorae'?2.7:1.45),h*(name==='fodder'||name==='amphorae'?2.7:1.45));shadow.position.set(x,y+.008,z);root.add(shadow);
     }resolve();
    },undefined,()=>{root.userData.propErrors.push(name);onError?.('Ahırdaki '+name+' modeli yüklenemedi.');resolve();});
   }))).then(()=>{root.userData.propsReady=root.userData.propErrors.length===0;}):Promise.resolve();
   root.userData.torchCount=0;root.userData.localLightLimit=0;root.userData.openAir=true;
-  return {root,slots,bounds,spawn,groomPosition,ready,tick(){},contactShadow};
+  return {root,slots,bounds,spawn,groomPosition,ready,tick(dt,player){if(player)ownerContact.position.set(player.x,player.z<-17.7?.045:.009,player.z);},contactShadow};
  }
  return {create,width:WIDTH,depth:DEPTH,wallHeight:WALL_HEIGHT,spawn,groomPosition,version:161};
 })();

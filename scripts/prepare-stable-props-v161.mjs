@@ -7,7 +7,7 @@ import * as T from 'three';
 import {ColladaLoader} from 'three/examples/jsm/loaders/ColladaLoader.js';
 const src=process.argv[2],out='assets/stable-v161';
 const dom=new JSDOM();globalThis.DOMParser=dom.window.DOMParser;globalThis.document=dom.window.document;
-const specs=[['amphorae','amphorae_treasure','hele_props_a'],['basket','wrld_basket_a','basket_rome_1'],['fodder','wrld_hay_sm','wrld_hay_a'],['bucket','rome_blacksmith_bucket','rome_struct_2']];
+const specs=[['amphorae','amphorae_treasure','hele_props_a'],['basket','wrld_basket_a','basket_rome_1'],['fodder','gaul_stable_hay_stack','celt_struct'],['bucket','rome_blacksmith_bucket','rome_struct_2']];
 for(const [name,mesh,tex] of specs){
  const xml=fs.readFileSync(path.join(src,mesh+'.dae'),'utf8').replace(/<library_images>[\s\S]*?<\/library_images>/g,'');
  const doc=new dom.window.DOMParser().parseFromString(xml,'application/xml');
