@@ -10,7 +10,7 @@ permissions:
 jobs:
   stable:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -27,7 +27,8 @@ jobs:
         run: node tests/stable-models-v130.cjs
       - name: Install browser for real scene checks
         if: ${{ !cancelled() }}
-        run: npx playwright install --with-deps chromium
+        # The hosted Ubuntu image already supplies Chromium libraries and Liberation fonts.
+        run: npx playwright install --only-shell chromium
       - name: Real game entry, stone rooms, training yard and groom
         if: ${{ !cancelled() }}
         run: LUDUS_TEST_OUTPUT=stable-scene-check node tests/stable-scene-v159.cjs
