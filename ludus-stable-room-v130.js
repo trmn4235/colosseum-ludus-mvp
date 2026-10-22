@@ -102,6 +102,6 @@ var LudusStableRoom=(()=>{
    get root(){return root;},get horse(){return animals.get(selected?.id)?.group||null;},get horses(){return [...animals.values()].map(e=>e.group);},get groom(){return groom;},get slots(){return slots;}
   };
  }
- return {create,normalizeModel,cloneRig,relaxGroom,width:WIDTH,depth:DEPTH,spawn:LudusStableEnvironment.spawn,version:159};
+ return {create,normalizeModel,cloneRig,relaxGroom,width:WIDTH,depth:DEPTH,spawn:LudusStableEnvironment.spawn,version:160};
 })();
 if(typeof module!=='undefined')module.exports=LudusStableRoom;

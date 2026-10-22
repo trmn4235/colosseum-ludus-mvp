@@ -1,0 +1,18 @@
+Stable V160 — sourced surface textures
+
+Wood Plank Wall — Dimitrios Savva / Poly Haven
+https://polyhaven.com/a/wood_plank_wall
+CC0-1.0 — https://polyhaven.com/license
+Used on the half doors, timber posts, lintels, rafters and wooden stable fittings.
+
+Castle Wall Slates — Rob Tuytel / Poly Haven
+https://polyhaven.com/a/castle_wall_slates
+CC0-1.0 — https://polyhaven.com/license
+Used on the stone horse rooms, yard enclosure, stone plinths and cobbled apron.
+
+All six diffuse, displacement and roughness images are the ready-made 1K
+source maps, recompressed to WebP without painting or generated replacement
+pixels. The Three.js materials set the requested dark grey stone palette,
+natural warm brown timber palette and metre-based texture scale. Wood grain
+follows each post or beam. Height/roughness maps stay in linear data space.
+Original download URLs and source/output hashes are recorded in sources.json.

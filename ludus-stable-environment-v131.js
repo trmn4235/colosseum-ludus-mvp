@@ -1,35 +1,45 @@
-/* V159: one row of twelve stone horse rooms overlooking an open sand training courtyard. */
+/* V160: photographed Poly Haven brown timber and dark grey stone on the V159 stable courtyard. */
 var LudusStableEnvironment=(()=>{
  'use strict';
  const WIDTH=44,DEPTH=34,WALL_HEIGHT=5.6,STALL_FRONT=-21,STALL_BACK=-28.8;
  const spawn={x:0,y:0,z:-10,yaw:0,pitch:.20},groomPosition={x:-2.8,y:.035,z:-10.6};
  function create(T){
   const root=new T.Group(),slots=[],bounds=[],textures=new Map(),batches=new Map(),dummy=new T.Object3D();
-  root.name='Taş ahır ve kum antrenman avlusu';root.userData={version:159,width:WIDTH,depth:DEPTH,stalls:12,trainingYard:true,wallHeight:WALL_HEIGHT,features:['stone-horse-rooms','timber-half-doors','cobblestone-apron','sand-training-yard','open-sky','straw-bedding','mangers','water-troughs','bridles','hoofprints','courtyard-daylight','one-groom']};
+  root.name='Taş ahır ve kum antrenman avlusu';root.userData={version:160,width:WIDTH,depth:DEPTH,stalls:12,trainingYard:true,wallHeight:WALL_HEIGHT,features:['stone-horse-rooms','timber-half-doors','cobblestone-apron','sand-training-yard','open-sky','straw-bedding','mangers','water-troughs','bridles','hoofprints','courtyard-daylight','one-groom']};
   let seed=131;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
-  function texture(path){if(typeof Image==='undefined')return null;if(textures.has(path))return textures.get(path);const t=new T.TextureLoader().load(path);t.wrapS=t.wrapT=T.RepeatWrapping;t.colorSpace=T.SRGBColorSpace;t.anisotropy=4;textures.set(path,t);return t;}
-  function surface(color,file,scale=1,bump=.025){
-   const map=file?texture(file):null,m=new T.MeshStandardMaterial({color,roughness:.94,map,bumpMap:map,bumpScale:bump});
+  function texture(path,colorMap=true){if(typeof Image==='undefined')return null;const key=path+':'+colorMap;if(textures.has(key))return textures.get(key);const t=new T.TextureLoader().load(path);t.wrapS=t.wrapT=T.RepeatWrapping;t.colorSpace=colorMap?T.SRGBColorSpace:T.NoColorSpace;t.anisotropy=4;textures.set(key,t);return t;}
+  function surface(color,file,scale=1,bump=.025,detail={}){
+   const map=file?texture(file):null,m=new T.MeshStandardMaterial({color,roughness:detail.roughness?1:.94,map,bumpMap:detail.height?texture(detail.height,false):map,bumpScale:bump,roughnessMap:detail.roughness?texture(detail.roughness,false):null});
+   if(detail.source){m.name=detail.source;m.userData.source='https://polyhaven.com/a/'+detail.source;m.userData.license='CC0-1.0';}
    m.onBeforeCompile=s=>{
-    s.uniforms.stableUvScale={value:scale};s.vertexShader='varying vec3 stableWorld; varying vec3 stableAxis;\n'+s.vertexShader;
+    s.uniforms.stableUvScale={value:scale};s.vertexShader='varying vec3 stableWorld; varying vec3 stableAxis; varying vec2 stableTimberUv;\n'+s.vertexShader;
     s.vertexShader=s.vertexShader.replace('#include <project_vertex>',`vec4 stablePoint=vec4(transformed,1.);vec3 stableNormal=objectNormal;
+vec3 stableSize=vec3(1.);float stableBoardOffset=0.;
 #ifdef USE_INSTANCING
+stableSize=vec3(length(instanceMatrix[0].xyz),length(instanceMatrix[1].xyz),length(instanceMatrix[2].xyz));
+stableBoardOffset=dot(instanceMatrix[3].xyz,vec3(.17,.07,.13));
 stablePoint=instanceMatrix*stablePoint;stableNormal=mat3(instanceMatrix)*stableNormal;
 #endif
+vec3 stableLocal=transformed*stableSize;vec3 stableFace=abs(objectNormal);
+if(stableSize.y>=stableSize.x&&stableSize.y>=stableSize.z)stableTimberUv=vec2(stableLocal.y,stableFace.x>stableFace.z?stableLocal.z:stableLocal.x);
+else if(stableSize.x>=stableSize.z)stableTimberUv=vec2(stableLocal.x,stableFace.y>stableFace.z?stableLocal.z:stableLocal.y);
+else stableTimberUv=vec2(stableLocal.z,stableFace.x>stableFace.y?stableLocal.y:stableLocal.x);
+stableTimberUv.x+=stableBoardOffset;
 stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)*stableNormal);
 #include <project_vertex>`);
-    s.fragmentShader='varying vec3 stableWorld;varying vec3 stableAxis;uniform float stableUvScale;vec2 stableSurfaceUv(){vec3 a=abs(stableAxis);return (a.y>a.x&&a.y>a.z?stableWorld.xz:a.x>a.z?stableWorld.zy:stableWorld.xy)*stableUvScale;}\n'+s.fragmentShader;
-    for(const chunk of ['map_fragment','bumpmap_pars_fragment'])s.fragmentShader=s.fragmentShader.replace('#include <'+chunk+'>',T.ShaderChunk[chunk].replaceAll('vMapUv','stableSurfaceUv()').replaceAll('vBumpMapUv','stableSurfaceUv()'));
+    const projection=detail.timber?'return stableTimberUv*stableUvScale;':'vec3 a=abs(stableAxis);return (a.y>a.x&&a.y>a.z?stableWorld.xz:a.x>a.z?stableWorld.zy:stableWorld.xy)*stableUvScale;';
+    s.fragmentShader='varying vec3 stableWorld;varying vec3 stableAxis;varying vec2 stableTimberUv;uniform float stableUvScale;vec2 stableSurfaceUv(){'+projection+'}\n'+s.fragmentShader;
+    for(const chunk of ['map_fragment','bumpmap_pars_fragment','roughnessmap_fragment'])s.fragmentShader=s.fragmentShader.replace('#include <'+chunk+'>',T.ShaderChunk[chunk].replaceAll('vMapUv','stableSurfaceUv()').replaceAll('vBumpMapUv','stableSurfaceUv()').replaceAll('vRoughnessMapUv','stableSurfaceUv()'));
    };
-   m.customProgramCacheKey=()=> 'stable-surface-v131-'+scale;return m;
+   m.customProgramCacheKey=()=> 'stable-surface-v160-'+scale+'-'+!!detail.timber;return m;
   }
-  const timber=surface(0xc4a37d,'assets/stable-v131/timber.webp',.65,.028),earth=surface(0xf5e5c5,'assets/textures/sand_01-diff-05b825608ef2.webp',.32,.035),hay=surface(0xc2ac76,'assets/stable-v131/straw.webp',1.4,.055);
-  const plaster=surface(0xeee6d5,'assets/textures/white_plaster_02-diff-6aa57de97b10.webp',.6,.025),stone=surface(0xe0d1b7,'assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp',.6,.06);
-  function weather(m,code,key){const apply=m.onBeforeCompile;m.onBeforeCompile=s=>{apply(s);s.fragmentShader=s.fragmentShader.replace('#include <color_fragment>',code+'\n#include <color_fragment>');};m.customProgramCacheKey=()=> 'stable-weather-v131-'+key;}
-  weather(plaster,'float stableDamp=(1.-smoothstep(.25,1.7,stableWorld.y))*(.8+.2*sin(stableWorld.z*2.3+sin(stableWorld.z*5.)));diffuseColor.rgb*=1.-stableDamp*.26;','plaster');
-
+  const materialPath='assets/stable-v160/';
+  const woodDetail={source:'wood_plank_wall',height:materialPath+'wood_plank_wall_disp_1k.webp',roughness:materialPath+'wood_plank_wall_rough_1k.webp',timber:true};
+  const stoneDetail={source:'castle_wall_slates',height:materialPath+'castle_wall_slates_disp_1k.webp',roughness:materialPath+'castle_wall_slates_rough_1k.webp'};
+  const timber=surface(0xffefd9,materialPath+'wood_plank_wall_diff_1k.webp',.55,.018,woodDetail),earth=surface(0xf5e5c5,'assets/textures/sand_01-diff-05b825608ef2.webp',.32,.035),hay=surface(0xc2ac76,'assets/stable-v131/straw.webp',1.4,.055);
+  const stone=surface(0x929ba5,materialPath+'castle_wall_slates_diff_1k.webp',.42,.085,stoneDetail);
   const plain=(color,roughness=.9)=>new T.MeshStandardMaterial({color,roughness});
-  const paving=surface(0xb2a992,'assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp',.8,.02),roof=plain(0x91644c);
+  const paving=surface(0xa6aeb8,materialPath+'castle_wall_slates_diff_1k.webp',.8,.04,stoneDetail),roof=plain(0x91644c);
   const iron=plain(0x322e28,.75),rope=plain(0x9a8158),leather=plain(0x4d3426),straw=plain(0xa18a55),grain=plain(0x9f8050),cloth=surface(0xa59472,'assets/textures/white_plaster_02-diff-6aa57de97b10.webp',4,.012),mud=plain(0x5a412b);
   iron.metalness=.45;
   const water=new T.MeshStandardMaterial({color:0x574e36,roughness:.19,metalness:.2});
@@ -52,13 +62,13 @@ stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)
   }
   // Enclosure height is the same 5.6m used by the ludus courtyard side walls.
   for(const side of [-1,1]){
-   put(plaster,side*22,WALL_HEIGHT/2,-12.5,.48,WALL_HEIGHT,34);
+   put(stone,side*22,WALL_HEIGHT/2,-12.5,.48,WALL_HEIGHT,34);
    put(stone,side*21.88,.42,-12.5,.56,.84,34);
    put(paving,side*22,5.65,-12.5,.66,.18,34);
   }
   put(stone,0,2.8,-29.5,44,5.6,.48);put(paving,0,5.65,-29.5,44.5,.18,.65);
   for(const side of [-1,1]){
-   put(plaster,side*12,2.8,4.5,20,5.6,.48);
+   put(stone,side*12,2.8,4.5,20,5.6,.48);
    put(stone,side*2.05,2.8,4.35,.48,5.6,.7);
    put(paving,side*12,5.65,4.5,20,.18,.65);
    for(let i=0;i<7;i++)put(timber,side*(.14+i*.27),1.8,4.46,.25,3.6,.18,box,0,0,0,.75+rand()*.2);
@@ -150,13 +160,13 @@ stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)
   put(straw,-21.2,.17,-20,.36,.3,.13);
   root.userData.trainingYardBounds={minX:-20.5,maxX:18,minZ:-17.5,maxZ:3.8};
   root.userData.stallFront=STALL_FRONT;
-  for(const {mat,geo,items}of batches.values()){const b=new T.InstancedMesh(geo,mat,items.length);items.forEach((p,i)=>{b.setMatrixAt(i,p.matrix);b.setColorAt(i,new T.Color(p.tint,p.tint,p.tint));});b.name='Ahır · ortak mimari';b.receiveShadow=true;b.castShadow=mat===timber||mat===stone||mat===roof||mat===plaster;b.computeBoundingSphere();root.add(b);}root.userData.staticBatches=batches.size;
+  for(const {mat,geo,items}of batches.values()){const b=new T.InstancedMesh(geo,mat,items.length);items.forEach((p,i)=>{b.setMatrixAt(i,p.matrix);b.setColorAt(i,new T.Color(p.tint,p.tint,p.tint));});b.name='Ahır · ortak mimari';b.receiveShadow=true;b.castShadow=mat===timber||mat===stone||mat===roof;b.computeBoundingSphere();root.add(b);}root.userData.staticBatches=batches.size;
   const shadowSize=64,shadowPixels=new Uint8Array(shadowSize*shadowSize*4);for(let y=0;y<shadowSize;y++)for(let x=0;x<shadowSize;x++){const r=Math.hypot((x+0.5)/shadowSize*2-1,(y+0.5)/shadowSize*2-1),i=(y*shadowSize+x)*4;shadowPixels[i+3]=Math.round(Math.max(0,1-r)**2*100);}const shadowMap=new T.DataTexture(shadowPixels,shadowSize,shadowSize);shadowMap.needsUpdate=true;
   const contactMaterial=new T.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});
   function contactShadow(w,d){const m=new T.Mesh(new T.PlaneGeometry(w,d),contactMaterial);m.rotation.x=-Math.PI/2;m.position.y=.008;m.name='Yumuşak temas gölgesi';return m;}
   root.userData.torchCount=0;root.userData.localLightLimit=0;root.userData.openAir=true;
   return {root,slots,bounds,spawn,groomPosition,tick(){},contactShadow};
  }
- return {create,width:WIDTH,depth:DEPTH,wallHeight:WALL_HEIGHT,spawn,groomPosition,version:159};
+ return {create,width:WIDTH,depth:DEPTH,wallHeight:WALL_HEIGHT,spawn,groomPosition,version:160};
 })();
 if(typeof module!=='undefined')module.exports=LudusStableEnvironment;

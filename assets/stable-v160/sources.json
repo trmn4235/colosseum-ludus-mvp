@@ -1,0 +1,61 @@
+{
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "processing": "Original 1024px source images recompressed to WebP; no generated or repainted texture pixels. Palette and physical scale are set by the game material.",
+  "assets": [
+    {
+      "file": "assets/stable-v160/wood_plank_wall_diff_1k.webp",
+      "asset": "wood_plank_wall",
+      "map": "diff",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_plank_wall/wood_plank_wall_diff_1k.jpg",
+      "source_sha256": "680a9959d3f805254e00b3ce9adaffb7b01dccbe84f3e89379bb5f91a116ada5",
+      "sha256": "b6ddbc44c16be63125c9a0518e1886ccf2d656bb00b7022998d5a389c8ef992c",
+      "bytes": 52846
+    },
+    {
+      "file": "assets/stable-v160/wood_plank_wall_disp_1k.webp",
+      "asset": "wood_plank_wall",
+      "map": "disp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_plank_wall/wood_plank_wall_disp_1k.jpg",
+      "source_sha256": "dd3476da38c1af609c028d6d0939bbf532a4c87991853c469e3da7ad551eee81",
+      "sha256": "eee3b77606083f6c272db9de4ce8098cf8a00b17f7d2f578d4739e8265a80ce3",
+      "bytes": 6970
+    },
+    {
+      "file": "assets/stable-v160/wood_plank_wall_rough_1k.webp",
+      "asset": "wood_plank_wall",
+      "map": "rough",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_plank_wall/wood_plank_wall_rough_1k.jpg",
+      "source_sha256": "11f02759e2e5f49c9963848ea537a7e020661c4913b734e6be7a432e23b75210",
+      "sha256": "674c4577afc67f8b65aaf3e7c81cd0c92ee0a8fd178129be46bb6112689e16cc",
+      "bytes": 23190
+    },
+    {
+      "file": "assets/stable-v160/castle_wall_slates_diff_1k.webp",
+      "asset": "castle_wall_slates",
+      "map": "diff",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/castle_wall_slates/castle_wall_slates_diff_1k.jpg",
+      "source_sha256": "1c42fe616560553caf8f61f298750e6a2cee06bf2a4af9156a930057d02da003",
+      "sha256": "8ff3d43e0c74c656d01a1a589c5e3d80dec3cfb6342ad34513c53ecd035c7329",
+      "bytes": 328430
+    },
+    {
+      "file": "assets/stable-v160/castle_wall_slates_disp_1k.webp",
+      "asset": "castle_wall_slates",
+      "map": "disp",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/castle_wall_slates/castle_wall_slates_disp_1k.jpg",
+      "source_sha256": "d0987f0ba04e5a4be165b2f3f4f84250cb440a623991a96b85bb37f2ebde5c15",
+      "sha256": "c2aae4ce14e1730d22f965135397e909810beb838ea445a7fd40bc4e3e3c63ef",
+      "bytes": 55484
+    },
+    {
+      "file": "assets/stable-v160/castle_wall_slates_rough_1k.webp",
+      "asset": "castle_wall_slates",
+      "map": "rough",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/castle_wall_slates/castle_wall_slates_rough_1k.jpg",
+      "source_sha256": "57f07432fea65e2282b31fc730978d5ae98a3cb432c3f7e48f5b9892c3104d6d",
+      "sha256": "ffe8c13c5a02f6416448d366d3baeeb6ac466aff66d978844ba01de12d5c359c",
+      "bytes": 283150
+    }
+  ]
+}

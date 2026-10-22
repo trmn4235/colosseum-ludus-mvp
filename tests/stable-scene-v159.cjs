@@ -35,6 +35,16 @@ await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html?room=stab
 await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
 await page.waitForFunction(()=>LudusPreview.stableRoom.groom&&LudusPreview.stableRoom.horses.length===12,null,{timeout:60000});
 await page.evaluate(()=>LudusPreview.ownerAvatar.ready);
+// A shader can compile with a missing image; wait for the actual sourced maps before judging its appearance.
+await page.waitForFunction(()=>{
+ const materials=new Set();LudusPreview.stableRoom.root.traverse(o=>{if(o.material?.userData.source)materials.add(o.material);});
+ return materials.size>=3&&[...materials].every(m=>['map','bumpMap','roughnessMap'].every(key=>m[key]?.image?.complete&&m[key].image.naturalWidth===1024));
+},null,{timeout:30000});
+const loadedMaterials=await page.evaluate(()=>{
+ const materials=new Set();LudusPreview.stableRoom.root.traverse(o=>{if(o.material?.userData.source)materials.add(o.material);});
+ return [...materials].map(m=>({source:m.userData.source,colorSpace:m.map.colorSpace,heightColorSpace:m.bumpMap.colorSpace,roughnessColorSpace:m.roughnessMap.colorSpace,files:['map','bumpMap','roughnessMap'].map(key=>m[key].image.currentSrc)}));
+});
+assert.ok(loadedMaterials.every(m=>m.colorSpace==='srgb'&&m.heightColorSpace===''&&m.roughnessColorSpace===''),'PBR data maps must not undergo color correction');
 async function render(){await page.evaluate(()=>{const p=LudusPreview;p.followOwner(.05,false);p.camera.updateMatrixWorld(true);p.stableRoom.tick(.04);p.stableSystem.tick();p.roomActions.tick();p.roomScene.updateMatrixWorld(true);p.renderer.shadowMap.needsUpdate=true;p.renderer.render(p.roomScene,p.camera);});}
 async function capture(name){
  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
@@ -44,7 +54,7 @@ async function capture(name){
 }
 await render();await capture('entry-874.png');
 const state=await page.evaluate(()=>{const p=LudusPreview;return{version:document.body.dataset.stableScene,features:p.stableRoom.root.userData,player:{...p.player},bounds:p.roomBounds,horses:p.stableRoom.horses.length,calls:p.renderer.info.render.calls,triangles:p.renderer.info.render.triangles};});console.log(JSON.stringify(state));
-assert.equal(state.version,'159');assert.equal(state.horses,12);assert.equal(state.features.wallHeight,5.6);
+assert.equal(state.version,'160');assert.equal(state.horses,12);assert.equal(state.features.wallHeight,5.6);
 assert.equal(await page.evaluate(()=>LudusPreview.allowed(0,-18)),true,'the entire route from the yard to the apron is open');
 assert.equal(await page.evaluate(()=>LudusPreview.allowed(0,-22)),false,'the half gates block entry into occupied horse rooms');
 await page.evaluate(()=>{const p=LudusPreview;for(const x of [-18.7,-8.5,1.7,18.7]){if(!p.allowed(x,-18.2))throw Error('blocked frontage '+x);}const ray=new THREE.Raycaster();for(const [x,z]of [[0,-10],[-12,-8],[12,-8],[0,1]]){ray.set(new THREE.Vector3(x,2,z),new THREE.Vector3(0,1,0));if(ray.intersectObject(p.stableRoom.root,true).length)throw Error('training yard roofed at '+x+','+z);}});
@@ -69,7 +79,7 @@ await page.evaluate(id=>{const key='ludus-return-v12:'+id,record=JSON.parse(sess
 await page.reload();await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
 assert.equal(await page.evaluate(()=>LudusPreview.player.z),-10,'legacy floor-plan position falls back to the new entry');
 assert.deepEqual(errors,[]);
-fs.writeFileSync(out+'/result.json',JSON.stringify({pass:true,state,errors},null,2));
+fs.writeFileSync(out+'/result.json',JSON.stringify({pass:true,state,loadedMaterials,errors},null,2));
 console.log('PASS: actual ludus entry, twelve stone rooms, unroofed sand yard, 5.6m walls, clear frontage, groom interaction, three viewports, re-entry, no account mutations.');
 }catch(e){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});throw e;}finally{await browser.close();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exit(1);});
