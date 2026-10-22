@@ -20,7 +20,7 @@ const root=path.resolve(__dirname,'..');
  grant usage on schema ludus_supply_private to service_role;
  `);
  await db.exec(fs.readFileSync(path.join(__dirname,'fixtures/career-combat-baseline-v162.sql'),'utf8'));
- await db.exec(fs.readFileSync(path.join(root,'supabase/migrations/20261022143121_participant_careers_v162.sql'),'utf8'));
+ await db.exec(fs.readFileSync(path.join(root,'supabase/migrations/20261022150912_participant_careers_v162.sql'),'utf8'));
  const u='00000000-0000-4000-8000-000000000001',other='00000000-0000-4000-8000-000000000002';
  const g='00000000-0000-4000-8000-000000000011',g2='00000000-0000-4000-8000-000000000012',h='00000000-0000-4000-8000-000000000021',h2='00000000-0000-4000-8000-000000000022';
  await db.exec(`insert into public.ludus_accounts values('${u}'),('${other}');insert into public.ludus_gladiators values('${g}','${u}'),('${g2}','${other}');insert into ludus_stable_private.horses(id,owner_id)values('${h}','${u}'),('${h2}','${u}');`);

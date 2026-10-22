@@ -16,7 +16,7 @@ Online yakın dövüş ve mermi isabetleri gerçek can kaybını oyuncuların ka
 
 ## Yayın sırası
 
-1. `20261022143121_participant_careers_v162.sql` geçişini uygula. Bu, eski istemcilerle uyumludur ve mevcut sonuçları değiştirmez.
+1. `20261022150912_participant_careers_v162.sql` geçişini uygula. Bu, eski istemcilerle uyumludur ve mevcut sonuçları değiştirmez.
 2. `caravan-combat-v126` Edge Function'ını klasöründeki yeni `career-combat-v162.js` dahil bütün bağımlılıklarıyla yayımla. Mevcut doğrulama/auth ayarını koru.
 3. Web dosyalarını birlikte yayımla. Yeni bağımlılıkların önbellek anahtarı `revision162`dir.
 4. Gerçek hesapla arena, ahır, kervan ve yarış seçimlerini kontrol et; bir sonuç sonrasında yalnızca katılan kişilerin kayıtlarının değiştiğini doğrula.
@@ -32,3 +32,7 @@ node tests/career-ui-v162.cjs
 ```
 
 SQL testi geçişi bağımsız bir PostgreSQL çalışma alanına uygular; gerçek oyuncu verisi değiştirilmez. Kontroller: arşiv/temizlik, tekrar kayıt, mod ayrımı, eski eksik verinin paydası, yarışa gerçek katılım, at sahipliği devri, servis yetkisi, kullanıcı izolasyonu. Savaş testi ölçüm eklenmeden ve eklendikten sonraki deterministik sonuçları karşılaştırır. Arayüz testi masaüstü ve yatay telefonda taşmayı ve iç içe panel kapanışını kontrol eder.
+
+## Yayın kaydı · 22 Ekim 2026
+
+Veritabanı geçişi uygulandı; dosya adı sunucunun kaydettiği `20261022150912` sürümüyle eşleştirildi. `caravan-combat-v126` sürüm 3 aktif; JWT doğrulaması korunuyor. Canlı kariyer RPC'si giriş yapan hesap için sürüm 162 döndürüyor. Arşive doğrudan erişim ve istemciden sonuç yazma kapalı.
