@@ -1,0 +1,34 @@
+COLOSSEUM & MAGNUS — STABLE V161
+
+Ready-made textures: Poly Haven, CC0 1.0 Universal.
+Dense Sand — Dimitrios Savva: https://polyhaven.com/a/dense_sand
+Cobblestone Floor 08 — Rob Tuytel: https://polyhaven.com/a/cobblestone_floor_08
+Brown Leather: https://polyhaven.com/a/brown_leather
+License: https://polyhaven.com/license
+Changes: official 1K JPG colour, displacement and roughness files recompressed to
+WebP. No generated replacement artwork. Source URLs and SHA-256 in sources.json.
+Brown Leather's source colour filename uses 'albedo'; local alias uses 'diff'.
+
+Ready-made props and straw texture: Wildfire Games / 0 A.D., CC BY-SA 3.0.
+https://www.wildfiregames.com/
+https://creativecommons.org/licenses/by-sa/3.0/
+Source repository revision: 61a3b9507d974084e6badb88a0826bd89a6d5b8b
+https://github.com/0ad/0ad/tree/61a3b9507d974084e6badb88a0826bd89a6d5b8b
+Original art license: ../caravan-field-v125/LICENSE-0AD.txt
+Source paths relative to binaries/data/mods/public/art/:
+  meshes/props/amphorae_treasure.dae
+  textures/skins/props/hele_props_a.dds
+  meshes/props/wrld_basket_a.dae
+  textures/skins/props/basket_rome_1.dds
+  meshes/props/wrld_hay_sm.dae
+  textures/skins/props/wrld_hay_a.dds
+  meshes/props/rome_blacksmith_bucket.dae
+  textures/skins/structural/rome_struct_2.png
+Changes: triangulation, UV-preserving COLLADA to GLB, authored axis transforms,
+normalization to unit height, DDS/PNG texture conversion to embedded JPG,
+1024px maximum texture size; separate straw texture recompressed as WebP.
+Adapted art assets remain CC BY-SA 3.0. Converter: scripts/prepare-stable-props-v161.mjs.
+These are existing game-art props, not claimed archaeological scans.
+
+Existing timber and slate scans: ../stable-v160/CREDITS.txt.
+Existing horse and groom models retain their own original credits and licenses.

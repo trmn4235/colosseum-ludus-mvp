@@ -35,6 +35,7 @@ await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html?room=stab
 await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
 await page.waitForFunction(()=>LudusPreview.stableRoom.groom&&LudusPreview.stableRoom.horses.length===12,null,{timeout:60000});
 await page.evaluate(()=>LudusPreview.ownerAvatar.ready);
+await page.evaluate(()=>LudusPreview.stableRoom.ready);
 // A shader can compile with a missing image; wait for the actual sourced maps before judging its appearance.
 await page.waitForFunction(()=>{
  const materials=new Set();LudusPreview.stableRoom.root.traverse(o=>{if(o.material?.userData.source)materials.add(o.material);});
@@ -54,7 +55,10 @@ async function capture(name){
 }
 await render();await capture('entry-874.png');
 const state=await page.evaluate(()=>{const p=LudusPreview;return{version:document.body.dataset.stableScene,features:p.stableRoom.root.userData,player:{...p.player},bounds:p.roomBounds,horses:p.stableRoom.horses.length,calls:p.renderer.info.render.calls,triangles:p.renderer.info.render.triangles};});console.log(JSON.stringify(state));
-assert.equal(state.version,'160');assert.equal(state.horses,12);assert.equal(state.features.wallHeight,5.6);
+assert.equal(state.version,'161');assert.equal(state.horses,12);assert.equal(state.features.wallHeight,5.6);
+assert.equal(state.features.sharedLudusWall,true);assert.equal(state.features.propsReady,true);assert.deepEqual(state.features.propErrors,[]);
+assert.ok(state.calls<115,'added details remain batched for mobile rendering');
+assert.ok(loadedMaterials.some(m=>m.source.endsWith('/dense_sand'))&&loadedMaterials.some(m=>m.source.endsWith('/cobblestone_floor_08')),'sand and paving use distinct ready-made scans');
 assert.equal(await page.evaluate(()=>LudusPreview.allowed(0,-18)),true,'the entire route from the yard to the apron is open');
 assert.equal(await page.evaluate(()=>LudusPreview.allowed(0,-22)),false,'the half gates block entry into occupied horse rooms');
 await page.evaluate(()=>{const p=LudusPreview;for(const x of [-18.7,-8.5,1.7,18.7]){if(!p.allowed(x,-18.2))throw Error('blocked frontage '+x);}const ray=new THREE.Raycaster();for(const [x,z]of [[0,-10],[-12,-8],[12,-8],[0,1]]){ray.set(new THREE.Vector3(x,2,z),new THREE.Vector3(0,1,0));if(ray.intersectObject(p.stableRoom.root,true).length)throw Error('training yard roofed at '+x+','+z);}});
@@ -65,6 +69,8 @@ for(const [width,height]of [[1280,720],[568,320]]){await page.setViewportSize({w
 await page.setViewportSize({width:1280,height:720});
 await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-6.2,z:-17.9,yaw:-.38,pitch:-.02});});await render();await capture('stone-rooms-1280.png');
 await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-12,z:-15.5,yaw:Math.PI-.30,pitch:.24});});await render();await capture('sand-yard-1280.png');
+await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:15.1,z:-8.8,yaw:-Math.PI/2,pitch:.10});});await render();await capture('tack-water-1280.png');
+await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-15.2,z:-10.5,yaw:Math.PI/2+.25,pitch:.08});});await render();await capture('fodder-storage-1280.png');
 for(let i=0;i<2;i++){await page.evaluate(()=>{const p=LudusPreview;p.leaveRoom();p.enterRoom(p.rooms.find(r=>r.kind==='stable'));});await render();}
 assert.equal(await page.evaluate(()=>LudusPreview.roomProps.children.filter(o=>o===LudusPreview.stableRoom.root).length),1);
 assert.equal(await page.evaluate(()=>__rpcCalls.filter(r=>r.name==='ludus_stable'&&r.args.p_action).length),0,'verification never buys or changes a horse');

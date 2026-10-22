@@ -1,10 +1,10 @@
 name: Stable husbandry and trade
 on:
   push:
-    branches: [main, codex/stable-materials-v160]
-    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'assets/stable-v160/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
+    branches: [main, codex/stable-realism-v161]
+    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'assets/stable-v160/**', 'assets/stable-v161/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
   pull_request:
-    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'assets/stable-v160/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
+    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'assets/stable-v160/**', 'assets/stable-v161/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
 permissions:
   contents: read
 jobs:
@@ -36,7 +36,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: stable-scene-v160
+          name: stable-scene-v161
           path: stable-scene-check/
           if-no-files-found: ignore
       - name: JavaScript syntax

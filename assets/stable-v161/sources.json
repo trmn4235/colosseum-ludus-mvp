@@ -1,0 +1,150 @@
+{
+  "textures": [
+    {
+      "file": "assets/stable-v161/dense_sand_diff_1k.webp",
+      "source": "https://polyhaven.com/a/dense_sand",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/dense_sand/dense_sand_diff_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "0d2430c115167a2da3f60d60eb9ea2aa51e71472e2672f94c7f5df78342081ff",
+      "sha256": "aef5a23f6b34925f2f8e30cc9605c93ef31803e2e4cc341fe4fdf984db6684f0",
+      "bytes": 170662
+    },
+    {
+      "file": "assets/stable-v161/dense_sand_disp_1k.webp",
+      "source": "https://polyhaven.com/a/dense_sand",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/dense_sand/dense_sand_disp_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "d0bf37757e865513200b96d63cfb5357cd69c32ca48f4a5b7c8bc25f667cfc72",
+      "sha256": "6e5c6192df181bfe40c246f7245b524b1d1f54cc7a31331f25414eb642f1fb46",
+      "bytes": 40796
+    },
+    {
+      "file": "assets/stable-v161/dense_sand_rough_1k.webp",
+      "source": "https://polyhaven.com/a/dense_sand",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/dense_sand/dense_sand_rough_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "79bd42b58ee4c463a9f85a75217a3fed7c28a8d03363324dc9b78ca3ee647ec4",
+      "sha256": "8939e24cfc2d3ef593384dc03d76515ce18122bf6364ece3b6254ec862e2710d",
+      "bytes": 67948
+    },
+    {
+      "file": "assets/stable-v161/cobblestone_floor_08_diff_1k.webp",
+      "source": "https://polyhaven.com/a/cobblestone_floor_08",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cobblestone_floor_08/cobblestone_floor_08_diff_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "ec131f7a99a1e7f9df25d4725609c55a6dad1df487630685e9a66ecbf41ec33a",
+      "sha256": "8fd6e7ee12939e7eeb515d648d6a68bddf2c4eadbc605c517b83e47d9dc65785",
+      "bytes": 304424
+    },
+    {
+      "file": "assets/stable-v161/cobblestone_floor_08_disp_1k.webp",
+      "source": "https://polyhaven.com/a/cobblestone_floor_08",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cobblestone_floor_08/cobblestone_floor_08_disp_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "e4784546b938190e7b6c045edad42226c39015cb4546a6d0023292e73148bf4a",
+      "sha256": "c56b47e9664913e05a264ab51b8cd87b6009726ecb00cd6a7b3b8398f0b52283",
+      "bytes": 58488
+    },
+    {
+      "file": "assets/stable-v161/cobblestone_floor_08_rough_1k.webp",
+      "source": "https://polyhaven.com/a/cobblestone_floor_08",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cobblestone_floor_08/cobblestone_floor_08_rough_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "f92bcaf897cd98bc3cf11e6409b3e42145e7d0f659eaaad8807dfb0c5d16afc6",
+      "sha256": "c3582394b94fd5e1aeabd87f0252452a4acfeda87f8cd1c418bdb2ec5e9ca7bd",
+      "bytes": 224302
+    },
+    {
+      "file": "assets/stable-v161/brown_leather_diff_1k.webp",
+      "source": "https://polyhaven.com/a/brown_leather",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_leather/brown_leather_albedo_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "7e9e1d6566d1fd91d4ceb4966c4820361e85d53a7a828b6bab3b2a093a876cd1",
+      "sha256": "9107fe6212ea2944b4f562275b44c4758b2e51d8ba80f4c844d01c03716c42ee",
+      "bytes": 232138
+    },
+    {
+      "file": "assets/stable-v161/brown_leather_disp_1k.webp",
+      "source": "https://polyhaven.com/a/brown_leather",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_leather/brown_leather_disp_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "61851ee80242aecfafba907d7bc0ed954f6a9bd8e5ba9a870afa11490418d0dd",
+      "sha256": "b9a34931cce53a601514851c34c73af1a194f430d250b3d53927c00e00980809",
+      "bytes": 173054
+    },
+    {
+      "file": "assets/stable-v161/brown_leather_rough_1k.webp",
+      "source": "https://polyhaven.com/a/brown_leather",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_leather/brown_leather_rough_1k.jpg",
+      "license": "CC0-1.0",
+      "original_sha256": "f9739ef2da2e3d17b9ec253f5042f61b10dc10f3ae28f6cf6491650d3d1b0ca3",
+      "sha256": "445d9005f44a7c6e4eaa1889208587f6134d563e7758b9843bc55bad2c285e48",
+      "bytes": 474376
+    }
+  ],
+  "props": {
+    "source": "https://github.com/0ad/0ad",
+    "revision": "61a3b9507d974084e6badb88a0826bd89a6d5b8b",
+    "license": "CC-BY-SA-3.0",
+    "originals": [
+      {
+        "path": "meshes/props/amphorae_treasure.dae",
+        "sha256": "c2eedf6843770de180bbb654b8f7e3b0b95259afbd88fad9842873e108d8fa56"
+      },
+      {
+        "path": "textures/skins/props/hele_props_a.dds",
+        "sha256": "88a111a8bab3c9b137fc0bc74b16e8c9d3cb84a033306ed2369e8caab77a5fb1"
+      },
+      {
+        "path": "meshes/props/wrld_basket_a.dae",
+        "sha256": "93e163055758cb66cc362439a0e46e2bdcc6482c97b835ee69b6c8499b837e47"
+      },
+      {
+        "path": "textures/skins/props/basket_rome_1.dds",
+        "sha256": "99cad757afd470a9ec119512650f902da9e0a014d3f5d144f2e7360df6e513ee"
+      },
+      {
+        "path": "meshes/props/wrld_hay_sm.dae",
+        "sha256": "b3e2c15f0f32ee9cdb54904e51ad4fabcba251469baed99e1ee84f514978e62c"
+      },
+      {
+        "path": "textures/skins/props/wrld_hay_a.dds",
+        "sha256": "55fbd96c316f31d465723df79fd12b1abee7cd86ce42fe7cb1dc4ae16553693d"
+      },
+      {
+        "path": "actors/props/special/eyecandy/hay_small.xml",
+        "sha256": "eb0d74b06445edac65cb8ceded659e0b8b67f112d8afe4b6be4b22fd60be3aa7"
+      },
+      {
+        "path": "meshes/props/rome_blacksmith_bucket.dae",
+        "sha256": "b6412973e32eaf28512d08b65ea7bac3fcc6359b8672874009a49bc88e3e24ab"
+      },
+      {
+        "path": "textures/skins/structural/rome_struct_2.png",
+        "sha256": "7ebc61edaa4e4febb00c769f825e8cb833cce2c6f83eef0528f64982b9dd8825"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "assets/stable-v161/amphorae.glb",
+        "sha256": "dbf148872d3a13e9248b2afb4848c4c16f98081b99ebb24e3f17a494fbe73b0e",
+        "bytes": 155052
+      },
+      {
+        "path": "assets/stable-v161/basket.glb",
+        "sha256": "9cce6e56053fe08e41a915fb327446b98eb73cf19c7d2919fc952262a4a42271",
+        "bytes": 11304
+      },
+      {
+        "path": "assets/stable-v161/bucket.glb",
+        "sha256": "c0c18acc0f5f78cdb902cec8849a54ea85b5aa214f8fa4a1efb61d8987e3bec6",
+        "bytes": 529796
+      },
+      {
+        "path": "assets/stable-v161/fodder.glb",
+        "sha256": "e874fd20f60ee701d2b1e20ef9450e5ee1d49f32d1975719dd1b7d4f2b2380a3",
+        "bytes": 13664
+      }
+    ]
+  }
+}

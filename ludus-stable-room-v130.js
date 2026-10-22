@@ -31,12 +31,12 @@ var LudusStableRoom=(()=>{
   model.updateMatrixWorld(true);model.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update();});
   return bones;
  }
- function create({T,props,colliders,wood,stone,shell,ambient,light,scene,outdoor,outdoorSun,getOwnerHeight=()=>1.78,player,onError}){
+ function create({T,props,colliders,wood,stone,ludusWall,shell,ambient,light,scene,outdoor,outdoorSun,getOwnerHeight=()=>1.78,player,onError}){
   let environment=null,root=null,template=null,horsePromise=null,groomPromise=null,groom=null,active=false,selected=null,herd=[],savedLighting=null;
   const slots=[],animals=new Map(),pool=[],bounds=[],coatMaterials=new Map();let selection=null,daylight=null,savedScene=null;
   const ownerHeight=()=>Math.max(1.6,Math.min(2,Number(getOwnerHeight())||1.78));
   function build(){
-   environment=LudusStableEnvironment.create(T);root=environment.root;slots.push(...environment.slots);bounds.push(...environment.bounds);
+   environment=LudusStableEnvironment.create(T,{ludusWall,onError});root=environment.root;slots.push(...environment.slots);bounds.push(...environment.bounds);
    const ring=new T.Mesh(new T.RingGeometry(.8,.85,40),new T.MeshBasicMaterial({color:0xe7ddbd,transparent:true,opacity:.65,side:T.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.visible=false;selection=ring;root.add(ring);
    const g=environment.groomPosition;bounds.push({kind:'stable-groom',minX:g.x-.4,maxX:g.x+.4,minZ:g.z-.35,maxZ:g.z+.35});
    daylight=new T.DirectionalLight(0xfff0d7,2.1);daylight.name='Ahır · gün ışığı';daylight.castShadow=true;
@@ -48,8 +48,9 @@ var LudusStableRoom=(()=>{
    return horsePromise||(horsePromise=new Promise((resolve,reject)=>new T.GLTFLoader().load('assets/caravan-field-v125/horse.glb',g=>{template=g;resolve(g);},undefined,reject)).catch(e=>{horsePromise=null;onError?.('At modelleri yüklenemedi. Ahıra yeniden girdiğinde tekrar denenecek.');throw e;}));
   }
   function makeHorse(){
-   const animal=cloneRig(template.scene),mixer=new T.AnimationMixer(animal),idle=template.animations.find(a=>a.name==='idle_loop');if(idle){mixer.clipAction(idle).play();mixer.update(0);}
+   const animal=cloneRig(template.scene),mixer=new T.AnimationMixer(animal),idle=template.animations.find(a=>a.name==='idle_loop');if(idle){const action=mixer.clipAction(idle);action.play();action.time=((animals.size+pool.length)*.61803398875%1)*idle.duration;mixer.update(0);}
    const model=normalizeModel(T,animal,2.12),group=new T.Group(),shadow=environment.contactShadow(1.8,2.8);shadow.position.y=-.012;group.add(model,shadow);root.add(group);group.userData.kind='owned-horse';
+   animal.traverse(o=>{if(o.isMesh)o.castShadow=true;});
    return {group,animal,model,mixer,id:null,coat:null,elapsed:0};
   }
   function applyCoat(entry,id){
@@ -99,9 +100,9 @@ var LudusStableRoom=(()=>{
    tick(dt){if(!active||dt<=0)return;syncDaylight();if(groom){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
     for(const [id,e]of animals){e.elapsed+=dt;const near=!player||Math.hypot(player.x-e.group.position.x,player.z-e.group.position.z)<15;if(id===selected?.id||near){if(e.elapsed>=1/30){e.mixer.update(Math.min(e.elapsed,.15));e.elapsed=0;}}else if(e.elapsed>=.25){e.mixer.update(e.elapsed);e.elapsed=0;}}
    },
-   get root(){return root;},get horse(){return animals.get(selected?.id)?.group||null;},get horses(){return [...animals.values()].map(e=>e.group);},get groom(){return groom;},get slots(){return slots;}
+   get root(){return root;},get ready(){return environment?.ready||Promise.resolve();},get horse(){return animals.get(selected?.id)?.group||null;},get horses(){return [...animals.values()].map(e=>e.group);},get groom(){return groom;},get slots(){return slots;}
   };
  }
- return {create,normalizeModel,cloneRig,relaxGroom,width:WIDTH,depth:DEPTH,spawn:LudusStableEnvironment.spawn,version:160};
+ return {create,normalizeModel,cloneRig,relaxGroom,width:WIDTH,depth:DEPTH,spawn:LudusStableEnvironment.spawn,version:161};
 })();
 if(typeof module!=='undefined')module.exports=LudusStableRoom;

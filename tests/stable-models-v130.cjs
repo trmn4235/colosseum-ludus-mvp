@@ -13,6 +13,7 @@ const stable=require('../ludus-stable-room-v130.js');
  const horses=Array.from({length:12},(_,i)=>({id:'horse-'+i,name:'At '+i,coat:LudusHorseAppearance.coats[i%7].id,stage:i===11?'foal':'adult'}));
  room.setHerd(horses);room.select(horses[0]);room.enter();
  for(let i=0;i<500&&(!room.groom||room.horses.length<12);i++)await new Promise(r=>setTimeout(r,10));
+ await room.ready;assert.equal(room.root.userData.propsReady,true);assert.deepEqual(room.root.userData.propErrors,[]);
  assert.equal(room.horses.length,12);assert.ok(room.groom);assert.equal(room.root.userData.width,44);assert.equal(room.root.userData.depth,34);assert.equal(room.slots.length,12);assert.ok(room.root.userData.staticBatches<40);
  assert.equal(light.intensity,0,'interior lamp is off');assert.equal(ambient.intensity,1.35,'same skylight as the courtyard');assert.equal(scene.background,outdoor.background);assert.equal(scene.environment,outdoor.environment);
  const lamps=[];room.root.traverse(o=>{if(o.isLight)lamps.push(o);});assert.equal(lamps.length,1);assert.ok(lamps[0].isDirectionalLight,'sunlight is the only local light');assert.equal(room.root.userData.torchCount,0);assert.equal(room.root.userData.localLightLimit,0);assert.equal(room.root.userData.openAir,true);
@@ -38,7 +39,7 @@ const stable=require('../ludus-stable-room-v130.js');
  for(let x=-20;x<=20;x+=.25)assert.ok(!colliders.some(c=>x>=c.minX-.28&&x<=c.maxX+.28&&-18.2>=c.minZ-.28&&-18.2<=c.maxZ+.28));
  const selected=room.horse;room.leave();assert.equal(shell.floor.visible,true);assert.equal(ambient.intensity,2.5);assert.equal(light.intensity,65);assert.equal(scene.background,originalBackground);assert.equal(scene.environment,null);assert.equal(colliders.length,0);
  room.enter();await new Promise(r=>setTimeout(r,0));assert.equal(room.horse,selected);assert.equal(requests.filter(x=>x.endsWith('horse.glb')).length,1);assert.equal(requests.filter(x=>x.endsWith('driver.glb')).length,1);
- room.setHerd(horses.slice(0,2));assert.equal(room.horses.length,2);room.setHerd(horses);assert.equal(room.horses.length,12);assert.equal(requests.length,2);
+ room.setHerd(horses.slice(0,2));assert.equal(room.horses.length,2);room.setHerd(horses);assert.equal(room.horses.length,12);assert.equal(requests.length,6,'horse, groom and four prop assets load once across room re-entry');
  // Preserve an authored scaled parent, the regression that synthetic unit boxes miss.
  const scaled=new T.Group();scaled.scale.setScalar(.01);const m=new T.Mesh(new T.BoxGeometry(40,180,20));m.position.y=90;scaled.add(m);const normalized=stable.normalizeModel(T,scaled,1.78);assert.ok(Math.abs(size(normalized).y-1.78)<.001);assert.equal(scaled.scale.y,.01);
  for(const c of LudusHorseAppearance.coats){assert.ok(fs.existsSync(path.join(root,LudusHorseAppearance.photo(c.id))));const mat=LudusHorseAppearance.material(T,new T.MeshStandardMaterial(),c.id),shader={uniforms:{},vertexShader:T.ShaderLib.standard.vertexShader,fragmentShader:T.ShaderLib.standard.fragmentShader};mat.onBeforeCompile(shader);assert.ok(shader.vertexShader.includes('stableRest = position'));assert.equal(shader.uniforms.stablePinto.value,c.id==='pinto'?1:0);}
