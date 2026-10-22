@@ -59,6 +59,7 @@ async function main(){
  if(process.env.LUDUS_REALISM_TEST==='1')await require('./arena-realism-visual-v114.cjs')(page,out);
  if(process.env.LUDUS_STABILITY_TEST==='1')await require('./arena-stability-browser-v115.cjs')(page,out);
  if(process.env.LUDUS_FLOW_TEST==='1')await require('./combat-flow-browser-v165.cjs')(page,out);
+ if(process.env.LUDUS_INPUT_TEST==='1'||process.env.LUDUS_FLOW_TEST==='1')await require('./combat-input-recovery-v165.cjs')(page);
  if(current){
   const stopped=await page.evaluate(()=>{__arena.step(1/60,false);const before=__drawCount(),time=__arena.combat.time;for(let i=0;i<60;i++)__arena.step(1/60,false);return {draws:__drawCount()-before,seconds:__arena.combat.time-time};});
   assert.equal(stopped.draws,0);assert.equal(stopped.seconds,0);
