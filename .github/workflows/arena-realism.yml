@@ -2,10 +2,10 @@ name: Arena combat realism
 on:
   push:
     branches: [main, codex/arena-combat-realism-v114]
-    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'tests/combat-stats-*', 'supabase/migrations/*arena_combat_realism*']
+    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/anatomy-*', 'tests/armour-grip-*', 'tests/equipment-stability-*', 'ludus.html', 'caravan-rig-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'tests/combat-stats-*', 'supabase/migrations/*arena_combat_realism*']
   pull_request:
     branches: [main]
-    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'supabase/migrations/*arena_combat_realism*']
+    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/anatomy-*', 'tests/armour-grip-*', 'tests/equipment-stability-*', 'ludus.html', 'caravan-rig-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'supabase/migrations/*arena_combat_realism*']
   workflow_dispatch:
 permissions:
   contents: read
@@ -26,6 +26,8 @@ jobs:
         run: node --test tests/arena-realism-v114.test.cjs tests/combat-feel-v23.test.cjs tests/bot-defense-v72.test.cjs tests/polearm-v105.test.cjs tests/arena-timing-v94.test.cjs
       - name: Authored motion, old/new replays and server evasion
         run: |
+          node tests/anatomy-v166.cjs
+          node tests/equipment-stability-v164.cjs
           node tests/motion-stability-v165.cjs
           node tests/combat-motion-v163.cjs
           node tests/combat-motion-replay-v163.cjs
@@ -49,6 +51,7 @@ jobs:
           LUDUS_AUTHORED_TEST: '1'
           LUDUS_STABILITY_TEST: '1'
           LUDUS_FLOW_TEST: '1'
+          LUDUS_FIT_TEST: '1'
           LUDUS_TEST_OUTPUT: /tmp/arena-realism-v114
         run: node tests/arena-browser-v96.cjs
       - name: Two online clients and authoritative movement

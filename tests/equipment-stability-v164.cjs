@@ -10,9 +10,9 @@ function state(c,variant){
 function landmarks(c,m){
  const T=c.THREE,body=m.equipmentFit164.body,g=body.geometry,points=[],p=new T.Vector3();
  for(let i=0;i<g.attributes.position.count;i++){
-  body.getVertexPosition(i,p).applyMatrix4(body.matrixWorld);let region=0;
-  for(let k=0;k<4;k++)if(/Spine|Hips|Neck|(Left|Right)(Shoulder|Arm)/.test(body.skeleton.bones[g.attributes.skinIndex.getComponent(i,k)].name))region+=g.attributes.skinWeight.getComponent(i,k);
-  if(p.y>1.05&&p.y<1.8&&region>.9)points.push({id:i,p:p.clone()});
+  body.getVertexPosition(i,p).applyMatrix4(body.matrixWorld);let region=0,trunk=0;
+  for(let k=0;k<4;k++){const name=body.skeleton.bones[g.attributes.skinIndex.getComponent(i,k)].name,w=g.attributes.skinWeight.getComponent(i,k);if(/Spine|Hips|Neck|(Left|Right)(Shoulder|Arm)/.test(name))region+=w;if(/Spine|Hips|Neck/.test(name))trunk+=w;}
+  if(p.y>1.05&&p.y<1.8&&region>.9)points.push({id:i,p:p.clone(),trunk});
  }
  const pairs=[];
  for(const slot of parts)m.gear[slot].group.traverse(o=>{
@@ -21,7 +21,9 @@ function landmarks(c,m){
   assert.ok(o.material.depthTest&&o.material.depthWrite&&!o.material.transparent&&o.material.polygonOffset);
   for(let i=0;i<o.geometry.attributes.position.count;i+=Math.max(1,Math.floor(o.geometry.attributes.position.count/60))){
    o.getVertexPosition(i,p).applyMatrix4(o.matrixWorld);let d=Infinity,id;
-   for(const b of points){const dist=p.distanceToSquared(b.p);if(dist<d){d=dist;id=b.id;}}
+   // A rigid front panel follows ribs, not the neighbouring upper-arm skin.
+   const torsoPanel=m.chestModel==='chest_plate'&&slot==='chest'&&p.y<1.61;
+   for(const b of points){if(torsoPanel&&b.trunk<.98)continue;const dist=p.distanceToSquared(b.p);if(dist<d){d=dist;id=b.id;}}
    assert.ok(Number.isFinite(d));pairs.push({o,i,id,slot,rest:Math.sqrt(d)});
   }
  });

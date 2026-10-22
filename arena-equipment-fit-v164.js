@@ -3,7 +3,7 @@
  * Inventory/drop templates remain rigid and unchanged.
  */
 var ArenaEquipmentFit = (() => {
-  const surfaces = new WeakMap(), fitted = new WeakMap(), materials = new WeakMap();
+  const surfaces = new WeakMap(), fitted = new WeakMap(), materials = new WeakMap(), bodies = new WeakMap();
   const slots = ['chest', 'shoulder', 'otherShoulder', 'collar'];
   const components = ['getX', 'getY', 'getZ', 'getW'];
   function wornMaterial(source) {
@@ -68,7 +68,45 @@ var ArenaEquipmentFit = (() => {
     const anchors = {};
     for (const name of slots) anchors[name] = inverseRoot.clone().multiply(m.gear[name].anchor.matrixWorld);
     const restBones = body.skeleton.bones.map((bone,i) => inverseRoot.clone().multiply(bone.matrixWorld).multiply(body.skeleton.boneInverses[i]));
-    m.equipmentFit164 = { body, surface, anchors, restBones, bind:new T.Matrix4() };
+    let shell=bodies.get(body.geometry);
+    if(!shell){
+      const geo=new T.BufferGeometry(),array=new Float32Array(body.geometry.attributes.position.count*3),p=new T.Vector3();
+      for(let i=0;i<body.geometry.attributes.position.count;i++){body.getVertexPosition(i,p).applyMatrix4(body.matrixWorld).applyMatrix4(inverseRoot);p.toArray(array,i*3);}
+      geo.setAttribute('position',new T.BufferAttribute(array,3));geo.setIndex(body.geometry.index.clone());
+      const mesh=new T.Mesh(geo,new T.MeshBasicMaterial({side:T.DoubleSide}));mesh.updateMatrixWorld(true);
+      shell={mesh,ray:new T.Raycaster(),hits:new Map()};bodies.set(body.geometry,shell);
+    }
+    const trunkId=body.skeleton.bones.findIndex(b=>/^(?:mixamorig:?)?Spine2(?:_\d+)?$/.test(b.name));
+    const torsoIds=body.skeleton.bones.map((b,i)=>/(Left|Right)(Shoulder|Arm)/.test(b.name)&&trunkId>=0?trunkId:i);
+    m.equipmentFit164 = { body, surface, anchors, restBones, shell, torsoIds, bind:new T.Matrix4() };
+  }
+  function chestSurface(p,data){
+    const T=THREE,s=data.shell,key=p.x.toFixed(4)+':'+p.y.toFixed(4);
+    let z=s.hits.get(key);if(z!==undefined)return z;
+    s.ray.set(new T.Vector3(p.x,p.y,1),new T.Vector3(0,0,-1));
+    const hits=s.ray.intersectObject(s.mesh,false);z=hits.length?hits[0].point.z:null;
+    s.hits.set(key,z);return z;
+  }
+  let strapMaterial;
+  function straps(data){
+    const T=THREE,s=data.shell;if(s.straps)return s.straps;
+    s.mesh.geometry.computeBoundingBox();
+    const vertices=[],indices=[],center=s.mesh.geometry.boundingBox.getCenter(new T.Vector3()).x;
+    function ribbon(rows){const start=vertices.length/3;rows.forEach(row=>row.forEach(p=>vertices.push(...p.toArray())));for(let i=0;i<rows.length-1;i++){const n=start+i*2;indices.push(n,n+2,n+1,n+1,n+2,n+3);}}
+    for(const height of [1.29,1.48]){
+      const rows=[];
+      for(let n=0;n<=48;n++){
+        const angle=.65+n/48*(Math.PI*2-1.3),dir=new T.Vector3(Math.sin(angle),0,Math.cos(angle)),row=[];
+        for(const edge of [-1,1]){
+          const origin=new T.Vector3(center,height+edge*.012,-.04);s.ray.set(origin.clone().add(dir),dir.clone().negate());
+          const hits=s.ray.intersectObject(s.mesh,false).filter(h=>h.point.clone().sub(origin).dot(dir)>.025).sort((a,b)=>a.point.distanceToSquared(origin)-b.point.distanceToSquared(origin));
+          if(hits.length)row.push(hits[0].point.clone().addScaledVector(dir,.009));
+        }
+        if(row.length===2)rows.push(row);
+      }
+      ribbon(rows);
+    }
+    const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vertices,3));g.setIndex(indices);g.computeVertexNormals();s.straps=g;return g;
   }
   function fitGeometry(source, transform, data, slot) {
     const T = THREE;
@@ -78,6 +116,22 @@ var ArenaEquipmentFit = (() => {
     const geometry = source.clone().applyMatrix4(transform), pos = geometry.attributes.position;
     const indices = new Uint16Array(pos.count*4), weights = new Float32Array(pos.count*4), p = new T.Vector3(), n = new T.Vector3();
     const blend = new T.Matrix4(), normal = new T.Matrix3(), normals = geometry.attributes.normal;
+    let flatPlate=false;
+    if(slot==='chest'){
+      geometry.computeBoundingBox();const box=geometry.boundingBox,center=box.getCenter(new T.Vector3()),depth=box.max.z-box.min.z;
+      // The source breastplate was a flat panel 17 cm in front of the torso.
+      // Fit its surface to the actual skin, including the shoulder-strap tips.
+      flatPlate=depth<.20;
+      if(flatPlate)for(let i=0;i<pos.count;i++){
+        p.fromBufferAttribute(pos,i);const relief=.008+.009*(p.z-box.min.z)/Math.max(.001,depth);
+        p.x=center.x+(p.x-center.x)*.86;
+        let z=chestSurface(p,data);
+        for(let n=0;z===null&&n<8;n++){p.x=center.x+(p.x-center.x)*.9;z=chestSurface(p,data);}
+        if(z!==null)p.z=z+relief;
+        pos.setXYZ(i,p.x,p.y,p.z);
+      }
+      geometry.computeVertexNormals();
+    }
     // Transfer in the captured rest pose. The shoulder rim/straps need the same
     // clavicle/upper-arm blend as the skin; exclude hands and lower arms above.
     const surface = data.surface;
@@ -86,7 +140,12 @@ var ArenaEquipmentFit = (() => {
       const samples = nearest(surface,p), influences = new Map();
       for (const {point,d} of samples) {
         const influence = 1/Math.max(.000004,d);
-        for (let k = 0; k < 4; k++) if (point.weights[k]) influences.set(point.ids[k], (influences.get(point.ids[k])||0)+point.weights[k]*influence);
+        for (let k = 0; k < 4; k++) if (point.weights[k]) {
+          // A metal breastplate must not stretch sideways with the upper arm.
+          // Keep its high shoulder tips flexible; the torso panel follows the ribs.
+          const id=(flatPlate&&p.y<1.61||slot==='strap')?data.torsoIds[point.ids[k]]:point.ids[k];
+          influences.set(id,(influences.get(id)||0)+point.weights[k]*influence);
+        }
       }
       const ranked = [...influences].sort((a,b) => b[1]-a[1]).slice(0,4), total = ranked.reduce((sum,x) => sum+x[1],0);
       blend.elements.fill(0);
@@ -107,6 +166,7 @@ var ArenaEquipmentFit = (() => {
     variants.set(key,geometry); return geometry;
   }
   function sync(m) {
+    if(m.teamBand)m.teamBand.group.visible=!m.gear.chest.group.visible;
     m.gear.helmet.group.traverse(o => { if (o.isMesh) { o.frustumCulled = false; o.material = wornMaterial(o.material); } });
     const data = m.equipmentFit164; if (!data) return;
     const T = THREE;
@@ -133,6 +193,11 @@ var ArenaEquipmentFit = (() => {
         mesh.frustumCulled = false;
         mesh.bind(data.body.skeleton,data.bind);
         old.parent.add(mesh); old.removeFromParent();
+      }
+      if(name==='chest'&&m.chestModel==='chest_plate'){
+        strapMaterial=strapMaterial||new T.MeshStandardMaterial({color:0x211b16,roughness:.8,metalness:.05,side:T.DoubleSide});
+        const mesh=new T.SkinnedMesh(fitGeometry(straps(data),new T.Matrix4(),data,'strap'),wornMaterial(strapMaterial));
+        mesh.name='fitted-breastplate-straps';mesh.userData.wornEquipment164=true;mesh.castShadow=mesh.receiveShadow=true;mesh.frustumCulled=false;mesh.bind(data.body.skeleton,data.bind);group.add(mesh);
       }
       group.userData.fitted164 = true;
     }

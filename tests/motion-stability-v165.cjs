@@ -32,7 +32,7 @@ async function main(){
    normal(f,m);
    anchors.forEach((a,i)=>{const shift=a.getWorldPosition(new T.Vector3()).distanceTo(before[i].p);maxAttachmentShift=Math.max(maxAttachmentShift,shift);assert.ok(shift<1e-7);const angle=a.getWorldQuaternion(new T.Quaternion()).normalize().angleTo(before[i].q.normalize());assert.ok(angle<1e-5,JSON.stringify({page,action:f.action,weapon:f.weapon,i,angle,shift}));});
    for(const side of ['Left','Right']){
-    const h=m.bones[side+'Hand'],axis=m.bones[side+'HandIndex1'].position.clone().normalize(),delta=m.rest.get(side+'Hand').q.clone().invert().multiply(h.quaternion),direction=axis.clone().applyQuaternion(delta),angle=axis.angleTo(direction);
+    const h=m.bones[side+'Hand'],axis=m.bones[side+'HandIndex1'].position.clone().normalize(),delta=m.bones.RightHand.userData.anatomy166?h.quaternion.clone():m.rest.get(side+'Hand').q.clone().invert().multiply(h.quaternion),direction=axis.clone().applyQuaternion(delta),angle=axis.angleTo(direction);
     maxSwing=Math.max(maxSwing,angle);assert.ok(angle<=Math.PI/5+1e-6,`${page}: bent ${side} wrist ${angle}`);
    }
    wristFrames++;

@@ -40,7 +40,8 @@ var ArenaMotionStability=(()=>{
   for(const side of ['Left','Right']){
    const hand=m.bones[side+'Hand'],rest=m.rest.get(side+'Hand'),finger=m.bones[side+'HandIndex1'];if(!hand||!rest||!finger)continue;
    const axis=s.axis.copy(finger.position).normalize();if(axis.lengthSq()<.5)continue;
-   s.delta.copy(rest.q).invert().multiply(hand.quaternion).normalize();
+   if(m.bones.RightHand.userData.anatomy166)s.delta.copy(hand.quaternion).normalize();
+   else s.delta.copy(rest.q).invert().multiply(hand.quaternion).normalize();
    if(s.delta.w<0)s.delta.set(-s.delta.x,-s.delta.y,-s.delta.z,-s.delta.w);
    const projection=s.delta.x*axis.x+s.delta.y*axis.y+s.delta.z*axis.z;
    s.twist.set(axis.x*projection,axis.y*projection,axis.z*projection,s.delta.w);
@@ -56,7 +57,7 @@ var ArenaMotionStability=(()=>{
    }
    if(swingAngle>maxSwing)s.swing.slerp(s.identity,1-maxSwing/swingAngle);
    if(twistAngle>maxTwist)s.twist.slerp(s.identity,1-maxTwist/twistAngle);
-   hand.quaternion.copy(rest.q).multiply(s.swing).multiply(s.twist);hand.updateWorldMatrix(false,true);
+   hand.quaternion.copy(m.bones.RightHand.userData.anatomy166?s.identity:rest.q).multiply(s.swing).multiply(s.twist);hand.updateWorldMatrix(false,true);
    for(const anchor of anchorList)if(anchor&&anchor.parent===hand){
     const pose=cache.get(anchor);anchor.position.copy(hand.worldToLocal(s.axis.copy(pose.p)));
     anchor.quaternion.copy(hand.getWorldQuaternion(s.inverse).invert().multiply(pose.q));anchor.updateWorldMatrix(false,true);

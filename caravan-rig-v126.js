@@ -515,6 +515,7 @@ var ImportedGladiator=(function(){
   const q=bones.Hips.getWorldQuaternion(new T.Quaternion());const forward=new T.Vector3(0,0,1).applyQuaternion(q);facing.rotation.y=-Math.atan2(forward.x,forward.z);
   root.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(facing),scale=2.08/(bounds.max.y-bounds.min.y);facing.scale.setScalar(scale);facing.position.y=-bounds.min.y*scale;
   root.updateMatrixWorld(true);
+  ArenaAnatomy.prepare(root,visual,bones);
   for(const [name,bone] of Object.entries(bones)){rest.set(name,{q:bone.quaternion.clone(),p:bone.parent.getWorldQuaternion(new T.Quaternion())});}
   const shadow=new T.Mesh(new T.CircleGeometry(.47,24),new T.MeshBasicMaterial({color:0x35281b,transparent:true,opacity:.18,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.012;root.add(shadow);
   const trail=new T.Mesh(new T.BufferGeometry().setAttribute('position',new T.BufferAttribute(new Float32Array(12),3)).setIndex([0,1,2,2,1,3]),new T.MeshBasicMaterial({color:0xffe2a7,transparent:true,opacity:0,side:T.DoubleSide,depthWrite:false}));trail.frustumCulled=false;root.add(trail);
@@ -526,13 +527,13 @@ var ImportedGladiator=(function(){
   const world=bone.getWorldQuaternion(q[0]),parent=bone.parent.getWorldQuaternion(q[1]).invert();
   bone.quaternion.copy(parent.multiply(q[2].setFromUnitVectors(current,desired)).multiply(world));bone.updateWorldMatrix(false,false);
  }
- function reach(m,left,localTarget){
+ function reach(m,left,localTarget,worldPole){
   const side=left?'Left':'Right',upper=m.bones[side+'Arm'],lower=m.bones[side+'ForeArm'],hand=m.bones[side+'Hand'],v=ik.reach;
   const shoulder=upper.getWorldPosition(v[0]),elbow=lower.getWorldPosition(v[1]),wrist=hand.getWorldPosition(v[2]),target=m.root.localToWorld(v[3].set(localTarget.x,localTarget.y,localTarget.z));
-  const a=shoulder.distanceTo(elbow),b=elbow.distanceTo(wrist),dir=v[4].copy(target).sub(shoulder),distance=Math.max(.02,Math.min(a+b-.002,dir.length()));dir.normalize();
-  const pole=v[5].set(left?-.8:.8,localTarget.y>1.75?.2:-.65,-.12).applyQuaternion(m.root.getWorldQuaternion(ik.reachQ)),perp=pole.addScaledVector(dir,-pole.dot(dir)).normalize(),along=(a*a-b*b+distance*distance)/(2*distance),height=Math.sqrt(Math.max(0,a*a-along*along));
+  const a=shoulder.distanceTo(elbow),b=elbow.distanceTo(wrist),dir=v[4].copy(target).sub(shoulder),distance=Math.max(Math.abs(a-b)+.002,Math.min(a+b-.002,dir.length()));dir.normalize();
+  const pole=worldPole?v[5].copy(worldPole):v[5].set(left?.8:-.8,-.65,-.12).applyQuaternion(m.root.getWorldQuaternion(ik.reachQ)),perp=pole.addScaledVector(dir,-pole.dot(dir)).normalize(),along=(a*a-b*b+distance*distance)/(2*distance),height=Math.sqrt(Math.max(0,a*a-along*along));
   const desiredElbow=v[6].copy(shoulder).addScaledVector(dir,along).addScaledVector(perp,height),desiredHand=v[7].copy(shoulder).addScaledVector(dir,distance);
-  alignBone(upper,lower,desiredElbow);alignBone(lower,hand,desiredHand);return hand.getWorldPosition(v[8]);
+  if(m.bones.RightHand.userData.anatomy166){upper.quaternion.copy(m.rest.get(side+'Arm').q);lower.quaternion.copy(m.rest.get(side+'ForeArm').q);upper.updateWorldMatrix(false,true);}alignBone(upper,lower,desiredElbow);alignBone(lower,hand,desiredHand);return hand.getWorldPosition(v[8]);
  }
  function plantFeet(m){
    const v=ik.feet,q=ik.feetQ,rootQ=m.root.getWorldQuaternion(q[0]);
@@ -550,6 +551,7 @@ var ImportedGladiator=(function(){
    }
  }
  function animate(f,m,time,dt){
+  ArenaAnatomy.begin(m);
   if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.begin(f,m,time,dt);
   ArenaRoll.begin(f,m);
   GroundFall.begin(f,m);
@@ -599,11 +601,11 @@ var ImportedGladiator=(function(){
   if(typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
   if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.apply(f,m,time);
    m.poleStep=m.authoredStep||fullBody?.step||null;if(planting&&!fallen)plantFeet(m);
-  if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=reach(m,left,strike.grip);
+  if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=m.bones.RightHand.userData.anatomy166?ArenaAnatomy.grip(m,left,strike,reach):reach(m,left,strike.grip);
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
    anchor.position.copy(anchor.parent.worldToLocal(hand));
    const pole=strike.pole||['spear','trident'].includes(f.attackWeapon||f.weapon);
-   if(pole){
+   if(pole&&!m.bones.RightHand.userData.anatomy166){
     const palm=anchor.parent,rest=anchor.userData.restQuaternion,desired=m.root.getWorldQuaternion(ik.strikeQ[0]).multiply(ik.strikeQ[1].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z)));
     palm.quaternion.copy(palm.parent.getWorldQuaternion(ik.strikeQ[2]).invert().multiply(desired).multiply(ik.strikeQ[1].copy(rest).invert()));palm.updateWorldMatrix(false,true);anchor.quaternion.copy(rest);anchor.position.set(0,0,0);
    }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=-(strike.choke||0);}
@@ -613,15 +615,16 @@ var ImportedGladiator=(function(){
   if(f.shield&&m.gear.shield){
    const guarding=f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time||f.action==='bash'||f.action==='attack'&&!f.attackLeft;
    if(guarding){const push=f.action==='bash'?Math.sin(Math.PI*Math.min(1,f.timer/Math.max(.01,f.duration)))*.14:0;
-    const gp=typeof ArenaMotion!=='undefined'?ArenaMotion.guardPoint(f):{x:.26,y:1.42,z:.29},response=ArenaMotion.shieldResponse(f);const desired=m.root.localToWorld(ik.strikeV[0].set(gp.x,gp.y,gp.z+push));reach(m,true,{x:gp.x,y:gp.y,z:gp.z+push});
+    const gp=typeof ArenaMotion!=='undefined'?ArenaMotion.guardPoint(f):{x:.26,y:1.42,z:.29},response=ArenaMotion.shieldResponse(f);const desired=m.root.localToWorld(ik.strikeV[0].set(gp.x,gp.y,gp.z+push));if(m.bones.RightHand.userData.anatomy166)ArenaAnatomy.grip(m,true,{grip:{x:gp.x,y:gp.y+.12,z:gp.z+push+.025},dir:{x:0,y:1,z:0}},reach,0);else reach(m,true,{x:gp.x,y:gp.y,z:gp.z+push});
     const anchor=m.gear.shield.anchor;anchor.quaternion.copy(anchor.parent.getWorldQuaternion(Q).invert().multiply(m.root.getWorldQuaternion(P))).multiply(ik.strikeQ[0].setFromEuler(E.set(response.pitch,response.yaw,response.roll)));anchor.position.copy(anchor.parent.worldToLocal(desired));
    }else{m.gear.shield.anchor.position.set(0,0,0);const rest=m.rest.get('LeftHand');m.gear.shield.anchor.quaternion.copy(rest.p).multiply(rest.q).invert();}
   }
   if(f.blocking&&!f.shield&&f.guardRegion){const gp=ArenaMotion.guardPoint(f);reach(m,!f.weapon,{x:gp.x,y:gp.y,z:gp.z});}
-  // This model has articulated index fingers only. Curl those around the handle.
+  ArenaAnatomy.carry(f,m,reach,strike);
+  // Repaired finger chains close around the grip; the driver retains its source rig.
   for(const side of ['Left','Right'])if(side==='Right'?!!f.weapon:!!(f.offhand||f.shield||f.leftGear))for(const index of [1,2,3]){
    const bone=m.bones[side+'HandIndex'+index],rest=m.rest.get(side+'HandIndex'+index);if(!bone||!rest)continue;
-   Q.setFromAxisAngle(ik.fingerAxis,(side==='Left'?1:-1)*.48);bone.quaternion.copy(rest.q).multiply(Q);
+   Q.setFromAxisAngle(m.bones.RightHand.userData.anatomy166?ik.strikeV[0].set(1,0,0):ik.fingerAxis,m.bones.RightHand.userData.anatomy166?(index===1?.8:.9):(side==='Left'?1:-1)*.48);bone.quaternion.copy(rest.q).multiply(Q);
   }
   ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);ArenaRoll.apply(f,m);if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.finish(f,m);
   const gripping=f.navJump?.kind==='rope'&&!f.navJump.released&&f.hp>0&&!fallen;
