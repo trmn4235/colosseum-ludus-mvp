@@ -1,7 +1,7 @@
-/* V139 open-air stable and relaxed groom; V130 husbandry models. Repeated architecture is instanced; owned horses share one asset. */
+/* V159 stone stable facing a sand courtyard; V130 husbandry models. Repeated architecture is instanced; owned horses share one asset. */
 var LudusStableRoom=(()=>{
  'use strict';
- const WIDTH=30,DEPTH=70,ROWS=6;
+ const WIDTH=LudusStableEnvironment.width,DEPTH=LudusStableEnvironment.depth;
  function cloneRig(source){
   const copy=source.clone(true),map=new Map();
   const pair=(a,b)=>{map.set(a,b);a.children.forEach((c,i)=>pair(c,b.children[i]));};pair(source,copy);
@@ -38,10 +38,10 @@ var LudusStableRoom=(()=>{
   function build(){
    environment=LudusStableEnvironment.create(T);root=environment.root;slots.push(...environment.slots);bounds.push(...environment.bounds);
    const ring=new T.Mesh(new T.RingGeometry(.8,.85,40),new T.MeshBasicMaterial({color:0xe7ddbd,transparent:true,opacity:.65,side:T.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.visible=false;selection=ring;root.add(ring);
-   bounds.push({kind:'stable-groom',minX:-2.9,maxX:-2.15,minZ:.4,maxZ:1.2});
+   const g=environment.groomPosition;bounds.push({kind:'stable-groom',minX:g.x-.4,maxX:g.x+.4,minZ:g.z-.35,maxZ:g.z+.35});
    daylight=new T.DirectionalLight(0xfff0d7,2.1);daylight.name='Ahır · gün ışığı';daylight.castShadow=true;
    daylight.shadow.mapSize.set(1024,1024);Object.assign(daylight.shadow.camera,{left:-34,right:34,top:34,bottom:-34,near:1,far:100});daylight.shadow.normalBias=.035;daylight.shadow.bias=-.00015;
-   daylight.target.position.set(0,0,-22.5);root.add(daylight,daylight.target);
+   daylight.target.position.set(0,0,-12.5);root.add(daylight,daylight.target);
   }
   function loadHorse(){
    if(template)return Promise.resolve(template);
@@ -61,13 +61,13 @@ var LudusStableRoom=(()=>{
    const wanted=new Set(herd.map(h=>h.id));for(const [id,e]of animals)if(!wanted.has(id)){e.group.visible=false;animals.delete(id);pool.push(e);}
    herd.slice(0,12).forEach((h,i)=>{
     let e=animals.get(h.id);if(!e){e=pool.pop()||makeHorse();e.id=h.id;animals.set(h.id,e);}
-    const s=slots[i];e.group.name=h.name||'At';e.group.userData.horseId=h.id;e.group.userData.coat=LudusHorseAppearance.coat(h).id;e.group.position.set(s.x,.02,s.z);e.group.rotation.y=s.side<0?Math.PI/2:-Math.PI/2;e.group.scale.setScalar(h.stage==='foal'?.55:h.stage==='young'?.8:1);e.group.visible=true;applyCoat(e,h.coat);
+    const s=slots[i];e.group.name=h.name||'At';e.group.userData.horseId=h.id;e.group.userData.coat=LudusHorseAppearance.coat(h).id;e.group.position.set(s.x,.02,s.z);e.group.rotation.y=s.yaw??(s.side<0?Math.PI/2:-Math.PI/2);e.group.scale.setScalar(h.stage==='foal'?.55:h.stage==='young'?.8:1);e.group.visible=true;applyCoat(e,h.coat);
    });
    const e=animals.get(selected?.id);selection.visible=!!e;if(e)selection.position.set(e.group.position.x,.10,e.group.position.z);
   }
   function loadGroom(){return groomPromise||(groomPromise=new Promise((resolve,reject)=>new T.GLTFLoader().load('assets/caravan-v128/driver.glb',g=>{
-   relaxGroom(T,g.scene);groom=normalizeModel(T,g.scene,ownerHeight());groom.position.set(-2.5,.035,.8);groom.rotation.y=.5;groom.name='Seyis';groom.userData.pose='relaxed-standing';root.add(groom);
-   const shadow=environment.contactShadow(.8,.8);shadow.position.set(-2.5,.01,.8);root.add(shadow);resolve(groom);
+   relaxGroom(T,g.scene);groom=normalizeModel(T,g.scene,ownerHeight());groom.position.set(environment.groomPosition.x,environment.groomPosition.y,environment.groomPosition.z);groom.rotation.y=.5;groom.name='Seyis';groom.userData.pose='relaxed-standing';root.add(groom);
+   const shadow=environment.contactShadow(.8,.8);shadow.position.set(environment.groomPosition.x,.01,environment.groomPosition.z);root.add(shadow);resolve(groom);
   },undefined,reject)).catch(e=>{groomPromise=null;onError?.('Seyis modeli yüklenemedi. Ahıra yeniden girdiğinde tekrar denenecek.');throw e;}));}
   function enter(){
    active=true;if(!root)build();props.add(root);colliders.push(...bounds.map(b=>({...b})));
@@ -95,13 +95,13 @@ var LudusStableRoom=(()=>{
   return {
    enter,leave,setHerd(horses){herd=(horses||[]).slice(0,12);sync();},
    select(h){selected=h;if(h&&!herd.some(x=>x.id===h.id))herd=[h];sync();},
-   viewFor(id){const i=herd.findIndex(h=>h.id===id),s=slots[i];return s?{x:0,z:s.z+.9,yaw:s.side<0?Math.PI/2:-Math.PI/2,pitch:.08}:null;},
+   viewFor(id){const i=herd.findIndex(h=>h.id===id),s=slots[i];return s?{...s.view}:null;},
    tick(dt){if(!active||dt<=0)return;syncDaylight();if(groom){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
     for(const [id,e]of animals){e.elapsed+=dt;const near=!player||Math.hypot(player.x-e.group.position.x,player.z-e.group.position.z)<15;if(id===selected?.id||near){if(e.elapsed>=1/30){e.mixer.update(Math.min(e.elapsed,.15));e.elapsed=0;}}else if(e.elapsed>=.25){e.mixer.update(e.elapsed);e.elapsed=0;}}
    },
    get root(){return root;},get horse(){return animals.get(selected?.id)?.group||null;},get horses(){return [...animals.values()].map(e=>e.group);},get groom(){return groom;},get slots(){return slots;}
   };
  }
- return {create,normalizeModel,cloneRig,relaxGroom,width:WIDTH,depth:DEPTH};
+ return {create,normalizeModel,cloneRig,relaxGroom,width:WIDTH,depth:DEPTH,spawn:LudusStableEnvironment.spawn,version:159};
 })();
 if(typeof module!=='undefined')module.exports=LudusStableRoom;

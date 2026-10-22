@@ -1,7 +1,7 @@
 name: Stable husbandry and trade
 on:
   push:
-    branches: [main]
+    branches: [main, codex/stable-yard-v159]
     paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
   pull_request:
     paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
@@ -18,13 +18,24 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-      - run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 jsdom@26.1.0 three@0.160.0
+      - run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 jsdom@26.1.0 three@0.160.0 playwright@1.56.1
       - name: Persistent game rules and transactions
         run: STABLE_FIXTURE_PATH=/tmp/stable-v129.json node tests/stable-v129.cjs
       - name: UI interactions and cached room models
         run: STABLE_FIXTURE_PATH=/tmp/stable-v129.json node tests/stable-ui-v129.cjs
       - name: Actual GLB scale, herd and aisle geometry
         run: node tests/stable-models-v130.cjs
+      - name: Install browser for real scene checks
+        run: npx playwright install --with-deps chromium
+      - name: Real game entry, stone rooms, training yard and groom
+        run: LUDUS_TEST_OUTPUT=stable-scene-check node tests/stable-scene-v159.cjs
+      - name: Preserve scene screenshots and verification result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stable-scene-v159
+          path: stable-scene-check/
+          if-no-files-found: ignore
       - name: JavaScript syntax
         run: |
           node --check ludus-stable-v129.js
