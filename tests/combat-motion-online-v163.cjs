@@ -41,7 +41,9 @@ async function main(){
    const asset=path.join(root,path.basename(u.pathname));if(fs.existsSync(asset)&&fs.statSync(asset).isFile())return route.fulfill({path:asset,contentType:mime[path.extname(asset)]||'application/octet-stream'});
    return route.abort();
   });
-  await p.goto(base+'/multiplayer.html?v=revision76',{waitUntil:'domcontentloaded'});
+  // The first live WebGL session shares the software GPU while the second loads.
+  // Use the same startup budget as the real-model readiness check below.
+  await p.goto(base+'/multiplayer.html?v=revision76',{waitUntil:'domcontentloaded',timeout:60000});
   try{await p.waitForFunction(()=>window.fixtureArena?.userData.drawGroups>0&&!document.getElementById('duelControls').hidden,null,{timeout:60000});}
   catch(e){console.error('Fixture loading state:',await p.locator('#queueMessage').textContent(),await p.locator('#queueCaption').textContent(),errors);throw e;}
   return p;
