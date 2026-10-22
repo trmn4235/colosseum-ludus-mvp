@@ -1,6 +1,6 @@
 // The actual ludus page, renderer, room entry and models; only account data is isolated.
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
-const {chromium}=require('playwright');
+const {chromium}=require('playwright'),{PNG}=require('pngjs');
 const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/stable-scene-v159';fs.mkdirSync(out,{recursive:true});
 const uid='00000000-0000-4000-8000-000000000159';
 const horse=(i)=>({id:'horse-'+i,name:'Aquila '+(i+1),sex:i%2?'male':'female',stage:'adult',coat:['dark_brown','black','white','grey','caramel','pinto','light_brown'][i%7],quality:70,feed_bar:90,energy:100,stats:{speed:70,stamina:70,power:70,agility:70,burst:70,temperament:70},genes:{},training:{},nutrition:70,training_history:70,care:80,experience:0,parents:[],sessions:0,matches:0,wins:0,lifetime_hours:0});
@@ -34,9 +34,15 @@ try{
 await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html?room=stable',{waitUntil:'domcontentloaded'});
 await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
 await page.waitForFunction(()=>LudusPreview.stableRoom.groom&&LudusPreview.stableRoom.horses.length===12,null,{timeout:60000});
-await page.evaluate(()=>{window.__freeze=true;});
+await page.evaluate(()=>LudusPreview.ownerAvatar.ready);
 async function render(){await page.evaluate(()=>{const p=LudusPreview;p.followOwner(.05,false);p.camera.updateMatrixWorld(true);p.stableRoom.tick(.04);p.stableSystem.tick();p.roomActions.tick();p.roomScene.updateMatrixWorld(true);p.renderer.shadowMap.needsUpdate=true;p.renderer.render(p.roomScene,p.camera);});}
-await render();await page.screenshot({path:out+'/entry-874.png'});
+async function capture(name){
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ const bytes=await page.screenshot({path:out+'/'+name}),img=PNG.sync.read(bytes),colors=new Set();
+ for(let y=90;y<img.height-20;y+=12)for(let x=20;x<img.width-20;x+=12){const i=(y*img.width+x)*4;colors.add([img.data[i]>>4,img.data[i+1]>>4,img.data[i+2]>>4].join(','));}
+ assert.ok(colors.size>16,'the screenshot contains the rendered scene, not an empty cleared canvas: '+name);
+}
+await render();await capture('entry-874.png');
 const state=await page.evaluate(()=>{const p=LudusPreview;return{version:document.body.dataset.stableScene,features:p.stableRoom.root.userData,player:{...p.player},bounds:p.roomBounds,horses:p.stableRoom.horses.length,calls:p.renderer.info.render.calls,triangles:p.renderer.info.render.triangles};});console.log(JSON.stringify(state));
 assert.equal(state.version,'159');assert.equal(state.horses,12);assert.equal(state.features.wallHeight,5.6);
 assert.equal(await page.evaluate(()=>LudusPreview.allowed(0,-18)),true,'the entire route from the yard to the apron is open');
@@ -45,10 +51,10 @@ await page.evaluate(()=>{const p=LudusPreview;for(const x of [-18.7,-8.5,1.7,18.
 await page.getByRole('button',{name:'Seyisle konuş'}).click();await page.locator('.stable-modal:not([hidden])').waitFor();
 assert.equal(await page.locator('.stable-tabs button').count(),7);
 await page.getByRole('button',{name:'Ahır panelini kapat'}).click();await render();
-for(const [width,height]of [[1280,720],[568,320]]){await page.setViewportSize({width,height});await render();await page.screenshot({path:out+'/entry-'+width+'.png'});}
+for(const [width,height]of [[1280,720],[568,320]]){await page.setViewportSize({width,height});await render();await capture('entry-'+width+'.png');}
 await page.setViewportSize({width:1280,height:720});
-await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-6.2,z:-17.9,yaw:-.38,pitch:-.02});});await render();await page.screenshot({path:out+'/stone-rooms-1280.png'});
-await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-12,z:-15.5,yaw:Math.PI-.30,pitch:.24});});await render();await page.screenshot({path:out+'/sand-yard-1280.png'});
+await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-6.2,z:-17.9,yaw:-.38,pitch:-.02});});await render();await capture('stone-rooms-1280.png');
+await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-12,z:-15.5,yaw:Math.PI-.30,pitch:.24});});await render();await capture('sand-yard-1280.png');
 for(let i=0;i<2;i++){await page.evaluate(()=>{const p=LudusPreview;p.leaveRoom();p.enterRoom(p.rooms.find(r=>r.kind==='stable'));});await render();}
 assert.equal(await page.evaluate(()=>LudusPreview.roomProps.children.filter(o=>o===LudusPreview.stableRoom.root).length),1);
 assert.equal(await page.evaluate(()=>__rpcCalls.filter(r=>r.name==='ludus_stable'&&r.args.p_action).length),0,'verification never buys or changes a horse');
