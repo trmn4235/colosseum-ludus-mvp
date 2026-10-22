@@ -40,7 +40,7 @@ async function main(){
   const originalAnimate=ImportedGladiator.animate;ImportedGladiator.animate=function(...args){poses++;return originalAnimate.apply(this,args)};
   for(let i=0;i<a.models.length;i++){
    const f=a.combat.fighters[i],m=a.models[i];f.x=(i%5-2)*2.8;f.z=(Math.floor(i/5)-2)*3;f.action='idle';f.move=0;f.angle=0;
-   ImportedGladiator.animate(f,m,0,1/60);m.root.visible=true;m.visual.traverse(o=>{if(o.isSkinnedMesh){skeletons++;if(o.visible)bodyMeshes++;}});
+   ImportedGladiator.animate(f,m,0,1/60);m.root.visible=true;m.visual.traverse(o=>{if(o.isSkinnedMesh&&!o.userData.wornEquipment164){skeletons++;if(o.visible)bodyMeshes++;}});
   }
   a.renderer.render(a.scene,a.camera);const info={calls:a.renderer.info.render.calls,triangles:a.renderer.info.render.triangles,bodyMeshes,skeletons,geometries:a.renderer.info.memory.geometries,textures:a.renderer.info.memory.textures};
   const actual=a.renderer.render;a.renderer.render=()=>{};poses=0;
@@ -54,6 +54,7 @@ async function main(){
  for(const [w,h]of [[667,375],[932,430],[1024,768]]){await page.setViewportSize({width:w,height:h});await page.evaluate(()=>__arena.step(1/60));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/arena-'+w+'.png'});}
  await page.setViewportSize({width:844,height:390});
  if(process.env.LUDUS_AUTHORED_TEST==='1')await require('./combat-motion-browser-v163.cjs')(page,out);
+ if(process.env.LUDUS_GEAR_TEST==='1')await require('./equipment-stability-browser-v164.cjs')(page,out);
  if(process.env.LUDUS_REALISM_TEST==='1')await require('./arena-realism-visual-v114.cjs')(page,out);
  if(process.env.LUDUS_STABILITY_TEST==='1')await require('./arena-stability-browser-v115.cjs')(page,out);
  if(current){
