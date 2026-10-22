@@ -48,10 +48,20 @@ await page.getByRole('button',{name:'Ahır panelini kapat'}).click();await rende
 for(const [width,height]of [[1280,720],[568,320]]){await page.setViewportSize({width,height});await render();await page.screenshot({path:out+'/entry-'+width+'.png'});}
 await page.setViewportSize({width:1280,height:720});
 await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-6.2,z:-17.9,yaw:-.38,pitch:-.02});});await render();await page.screenshot({path:out+'/stone-rooms-1280.png'});
-await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-6.2,z:-17.9,yaw:Math.PI-.45,pitch:-.08});});await render();await page.screenshot({path:out+'/sand-yard-1280.png'});
+await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:-12,z:-15.5,yaw:Math.PI-.30,pitch:.24});});await render();await page.screenshot({path:out+'/sand-yard-1280.png'});
 for(let i=0;i<2;i++){await page.evaluate(()=>{const p=LudusPreview;p.leaveRoom();p.enterRoom(p.rooms.find(r=>r.kind==='stable'));});await render();}
 assert.equal(await page.evaluate(()=>LudusPreview.roomProps.children.filter(o=>o===LudusPreview.stableRoom.root).length),1);
 assert.equal(await page.evaluate(()=>__rpcCalls.filter(r=>r.name==='ludus_stable'&&r.args.p_action).length),0,'verification never buys or changes a horse');
+// Return navigation uses the real saved frame; old floor-plan positions must not override the new entry.
+await page.route('**/pazar.html*',route=>route.fulfill({contentType:'text/html',body:'<p>Navigation fixture</p>'}));
+await page.evaluate(()=>{Object.assign(LudusPreview.player,{x:7,z:-18.2});LudusNavigation.go('pazar.html');});
+await page.waitForURL('**/pazar.html*');const frameId=new URL(page.url()).searchParams.get('nav');assert.ok(frameId);
+await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html?restore='+frameId);
+await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
+assert.equal(await page.evaluate(()=>LudusPreview.player.z),-18.2,'current floor-plan position survives a return');
+await page.evaluate(id=>{const key='ludus-return-v12:'+id,record=JSON.parse(sessionStorage.getItem(key));record.state.stableLayout=141;record.state.player={x:0,y:0,z:1.6,yaw:0,pitch:.14};sessionStorage.setItem(key,JSON.stringify(record));},frameId);
+await page.reload();await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
+assert.equal(await page.evaluate(()=>LudusPreview.player.z),-10,'legacy floor-plan position falls back to the new entry');
 assert.deepEqual(errors,[]);
 fs.writeFileSync(out+'/result.json',JSON.stringify({pass:true,state,errors},null,2));
 console.log('PASS: actual ludus entry, twelve stone rooms, unroofed sand yard, 5.6m walls, clear frontage, groom interaction, three viewports, re-entry, no account mutations.');

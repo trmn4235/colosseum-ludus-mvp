@@ -2,7 +2,7 @@
 var LudusStableEnvironment=(()=>{
  'use strict';
  const WIDTH=44,DEPTH=34,WALL_HEIGHT=5.6,STALL_FRONT=-21,STALL_BACK=-28.8;
- const spawn={x:0,y:0,z:-10,yaw:0,pitch:.04},groomPosition={x:-2.8,y:.035,z:-10.6};
+ const spawn={x:0,y:0,z:-10,yaw:0,pitch:.20},groomPosition={x:-2.8,y:.035,z:-10.6};
  function create(T){
   const root=new T.Group(),slots=[],bounds=[],textures=new Map(),batches=new Map(),dummy=new T.Object3D();
   root.name='Taş ahır ve kum antrenman avlusu';root.userData={version:159,width:WIDTH,depth:DEPTH,stalls:12,trainingYard:true,wallHeight:WALL_HEIGHT,features:['stone-horse-rooms','timber-half-doors','cobblestone-apron','sand-training-yard','open-sky','straw-bedding','mangers','water-troughs','bridles','hoofprints','courtyard-daylight','one-groom']};
@@ -24,7 +24,7 @@ stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)
    m.customProgramCacheKey=()=> 'stable-surface-v131-'+scale;return m;
   }
   const timber=surface(0xc4a37d,'assets/stable-v131/timber.webp',.65,.028),earth=surface(0xf5e5c5,'assets/textures/sand_01-diff-05b825608ef2.webp',.32,.035),hay=surface(0xc2ac76,'assets/stable-v131/straw.webp',1.4,.055);
-  const plaster=surface(0xeee6d5,'assets/textures/white_plaster_02-diff-6aa57de97b10.webp',.6,.025),stone=surface(0xcfc4b0,'assets/textures/stone_wall_02-diff-978ee90ff99a.webp',.6,.06);
+  const plaster=surface(0xeee6d5,'assets/textures/white_plaster_02-diff-6aa57de97b10.webp',.6,.025),stone=surface(0xe0d1b7,'assets/textures/white_sandstone_blocks_02-diff-291a56b4ab78.webp',.6,.06);
   function weather(m,code,key){const apply=m.onBeforeCompile;m.onBeforeCompile=s=>{apply(s);s.fragmentShader=s.fragmentShader.replace('#include <color_fragment>',code+'\n#include <color_fragment>');};m.customProgramCacheKey=()=> 'stable-weather-v131-'+key;}
   weather(plaster,'float stableDamp=(1.-smoothstep(.25,1.7,stableWorld.y))*(.8+.2*sin(stableWorld.z*2.3+sin(stableWorld.z*5.)));diffuseColor.rgb*=1.-stableDamp*.26;','plaster');
 
@@ -106,6 +106,8 @@ stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)
    put(iron,x+1.18,.96,front+.47,.065,.065,.065,hoop);
    bounds.push({kind:'stable-stall',minX:x-1.7,maxX:x+1.7,minZ:STALL_BACK-.2,maxZ:front+.25});
   }
+  // Small herds occupy the middle rooms first so the owner's horses are visible on entry.
+  slots.sort((a,b)=>Math.abs(a.x)-Math.abs(b.x)||a.x-b.x);slots.forEach((s,i)=>s.index=i);
   // Stone partitions and timber brackets carry a pitched terracotta roof over the rooms only.
   for(let i=0;i<=12;i++){
    const x=-20.4+i*3.4;
