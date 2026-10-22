@@ -1,10 +1,10 @@
 /* Open-air stable yard. Shared textures and instanced fences; daylight comes from the courtyard. */
 var LudusStableEnvironment=(()=>{
  'use strict';
- const WIDTH=30,DEPTH=54,POST_ROWS=[1,-6,-13,-20,-27,-34,-41,-48];
+ const WIDTH=30,DEPTH=70,POST_ROWS=[1,-6,-13,-20,-27,-34,-41,-48];
  function create(T){
   const root=new T.Group(),slots=[],bounds=[],textures=new Map(),batches=new Map(),dummy=new T.Object3D();
-  root.name='Açık hava ahırı';root.userData={width:WIDTH,depth:DEPTH,stalls:12,features:['compacted-earth','timber-floorboards','weathered-plaster','stone-plinths','open-sky','low-paddock-fences','straw-bedding','mangers','water-troughs','feed-sacks','staved-barrels','bridles','buckets','hoofprints','courtyard-daylight','one-groom']};
+  root.name='Açık hava ahırı';root.userData={width:WIDTH,depth:DEPTH,stalls:12,trainingYard:true,features:['compacted-earth','timber-floorboards','weathered-plaster','stone-plinths','open-sky','low-paddock-fences','straw-bedding','mangers','water-troughs','feed-sacks','staved-barrels','bridles','buckets','hoofprints','courtyard-daylight','one-groom']};
   let seed=131;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   function texture(path){if(typeof Image==='undefined')return null;if(textures.has(path))return textures.get(path);const t=new T.TextureLoader().load(path);t.wrapS=t.wrapT=T.RepeatWrapping;t.colorSpace=T.SRGBColorSpace;t.anisotropy=4;textures.set(path,t);return t;}
   function surface(color,file,scale=1,bump=.025){
@@ -39,8 +39,8 @@ stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)
    dummy.position.set(x,y,z);dummy.rotation.set(rx,ry,rz);dummy.scale.set(w,h,d);dummy.updateMatrix();batches.get(key).items.push({matrix:dummy.matrix.clone(),tint});
   }
   function beam(a,b,w=.13,mat=timber){const start=new T.Vector3(...a),end=new T.Vector3(...b),dir=end.clone().sub(start);dummy.position.copy(start).add(end).multiplyScalar(.5);dummy.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),dir.clone().normalize());dummy.scale.set(w,dir.length(),w);dummy.updateMatrix();const key=mat.uuid+box.uuid;if(!batches.has(key))batches.set(key,{mat,geo:box,items:[]});batches.get(key).items.push({matrix:dummy.matrix.clone(),tint:.84+rand()*.16});}
-  // Unbroken, granular earth; narrow board aprons and feed-store decking sit flush with it.
-  put(earth,0,-.12,-22.5,30,.24,54);
+  // Stone stable paving; narrow board aprons and feed-store decking sit flush with it.
+  put(stone,0,-.12,-22.5,30,.24,54);
   for(const side of [-1,1])for(let row=0;row<34;row++)for(let board=0;board<4;board++)put(timber,side*(2.75+board*.26),.015,3.7-row*1.55,.247,.045,1.52,box,0,0,0,.70+rand()*.28);
   for(const side of [-1,1])for(let i=0;i<28;i++)put(timber,side*(4.8+i*.34),.025,-46,.325,.065,6.7,box,0,0,0,.70+rand()*.28);
   for(let i=0;i<120;i++){const z=3-rand()*51,x=(rand()-.5)*4.8;put(mud,x,.008,z,.09+rand()*.04,.13,0.012,hoof,-Math.PI/2,0,rand()*Math.PI*2,.8+rand()*.2);}
@@ -71,9 +71,17 @@ stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)
   }
   for(let row=0;row<6;row++)for(const side of [-1,1]){
    const z=-2.5-row*7,front=side*3.8;slots.push({index:slots.length,side,z,x:side*5.05});
-   for(let i=0;i<22;i++)put(timber,front,.54,z-3.12+i*.297,.14,1.05,.279,box,0,0,0,.74+rand()*.25);
+   // Stone frontage with a separate timber half-door in the central opening.
+   for(const dz of [-2.2,2.2])put(stone,front,.7,z+dz,.36,1.4,2.65);
+   for(let i=0;i<6;i++)put(timber,front,.61,z-.75+i*.3,.16,1.2,.28,box,0,0,0,.74+rand()*.25);
+   for(const y of [.25,.95])put(iron,front-side*.1,y,z,.04,.075,1.7);
+   for(const dz of [-.97,.97])put(timber,front,1.9,z+dz,.22,3.8,.22);
+   put(timber,front,3.8,z,.24,.22,6.95);
+   put(timber,side*9.4,3.8,z,11.2,.18,6.95);
+   beam([front,3.7,z-3.3],[side*14.6,4.5,z-3.3],.18);
+   beam([front,3.7,z+3.3],[side*14.6,4.5,z+3.3],.18);
    for(const dz of [-3.34,3.34]){
-    for(let i=0;i<30;i++)put(timber,side*(3.95+i*.325),.58,z+dz,.31,1.15,.14,box,0,0,0,.76+rand()*.24);
+    for(let i=0;i<30;i++)put(stone,side*(3.95+i*.325),.85,z+dz,.31,1.7,.28,box,0,0,0,.76+rand()*.24);
     put(timber,side*8.75,1.58,z+dz,9.75,.14,.16);for(let x=4.1;x<13.6;x+=1.9)put(timber,side*x,.83,z+dz,.13,1.66,.13);put(timber,front,.85,z+dz,.21,1.7,.21);
    }
    put(timber,front,1.58,z,.18,.14,6.9);put(timber,front,1.10,z,.2,.12,6.9);
@@ -98,6 +106,27 @@ stableWorld=(modelMatrix*stablePoint).xyz;stableAxis=normalize(mat3(modelMatrix)
    for(let i=0;i<4;i++)put(rope,side*10,.13+i*.03,-45.7,.42-i*.055,.42-i*.055,.42-i*.055,hoop,Math.PI/2);
    bounds.push({kind:'stable-store',minX:side<0?-14:4.5,maxX:side<0?-4.5:14,minZ:-49,maxZ:-42.9});
   }
+  // Move the stable wing behind a dedicated open sand schooling yard.
+  for(const batch of batches.values())for(const item of batch.items)item.matrix.elements[14]-=16;
+  for(const slot of slots)slot.z-=16;
+  for(const b of bounds){b.minZ-=16;b.maxZ-=16;}
+  put(earth,0,-.1,-3.5,30,.2,16);
+  // Match the courtyard enclosure's full-height masonry rather than paddock rails.
+  for(const side of [-1,1]){
+   put(plaster,side*15,2.8,-3.5,.36,5.6,16);
+   put(stone,side*15,5.65,-3.5,.5,.16,16);
+   bounds.push({kind:'stable-yard-wall',minX:side*15-.25,maxX:side*15+.25,minZ:-11.5,maxZ:4.5});
+  }
+  for(const side of [-1,1]){
+   put(stone,side*8.5,2.8,4.5,13,5.6,.36);
+   put(stone,side*2,2.9,4.5,.5,5.8,.6);
+  }
+  // Walkable stone apron connects the stalls and the sand without a barrier.
+  put(stone,0,.015,-11,30,.03,1);
+  for(let i=0;i<90;i++){
+   put(mud,(rand()-.5)*25,.009,-10+rand()*13,.09,.012,.14,hoof,-Math.PI/2,0,rand()*6,.75);
+  }
+  root.userData.trainingYardBounds={minX:-14.5,maxX:14.5,minZ:-10.5,maxZ:4};
   for(const {mat,geo,items}of batches.values()){const b=new T.InstancedMesh(geo,mat,items.length);items.forEach((p,i)=>{b.setMatrixAt(i,p.matrix);b.setColorAt(i,new T.Color(p.tint,p.tint,p.tint));});b.name='Ahır · ortak mimari';b.receiveShadow=true;b.castShadow=mat===timber||mat===stone;b.computeBoundingSphere();root.add(b);}root.userData.staticBatches=batches.size;
   const shadowSize=64,shadowPixels=new Uint8Array(shadowSize*shadowSize*4);for(let y=0;y<shadowSize;y++)for(let x=0;x<shadowSize;x++){const r=Math.hypot((x+0.5)/shadowSize*2-1,(y+0.5)/shadowSize*2-1),i=(y*shadowSize+x)*4;shadowPixels[i+3]=Math.round(Math.max(0,1-r)**2*100);}const shadowMap=new T.DataTexture(shadowPixels,shadowSize,shadowSize);shadowMap.needsUpdate=true;
   const contactMaterial=new T.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});
