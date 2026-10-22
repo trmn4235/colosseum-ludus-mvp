@@ -41,7 +41,8 @@ test('a skipped pose does not overwrite authored roll or fall transforms',()=>{
 function simulation(fps,withImpacts){
  const frameStart=source.indexOf('function frame(now)'),activeBlock=block(source.indexOf('if(active()){',frameStart)),events=block(source.indexOf('function events(){'));
  const context=vm.createContext({performance:{now:()=>0},active:()=>true,worldInput:()=>({}),syncSurvivalWave(){},floating(){},burst(){},audio(){},Math,combat:{time:0,ticks:0,fighters:[{id:0,x:0}],pending:[],tick(dt){this.time+=dt;this.ticks++;this.fighters[0].x+=dt*4.2;},drain(){return this.pending.splice(0);}}});
- vm.runInContext('let accumulator=0,queuedAttack=null,hitStop=0,shake=0,hitUntil=0;'+events+';function step(now,dt){'+activeBlock+'}',context);
+ vm.runInContext(fs.readFileSync(path.join(root,'arena-motion-stability-v165.js'),'utf8'),context);
+ vm.runInContext('const motionTimeline=ArenaMotionStability.createTimeline();let accumulator=0,queuedAttack=null,hitStop=0,shake=0,hitUntil=0;'+events+';function step(now,dt){'+activeBlock+'}',context);
  const types=['hit','block','parry','bashhit'];
  for(let n=0;n<fps*10;n++){if(withImpacts&&n%5===0)context.combat.pending.push({type:types[Math.floor(n/5)%types.length],id:0,source:1,damage:1,metal:true,heavy:true});context.step(n*1000/fps,1/fps);}
  return {time:context.combat.time,distance:context.combat.fighters[0].x,ticks:context.combat.ticks};

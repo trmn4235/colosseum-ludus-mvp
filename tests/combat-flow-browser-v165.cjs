@@ -2,7 +2,8 @@ const assert=require('node:assert/strict');
 module.exports=async(page,out)=>{
  assert.equal(await page.locator('#sound').count(),0);
  const brawl=await page.evaluate(()=>{
-  const a=__arena,c=a.combat,p=c.fighters[0],render=a.renderer.render,tick=c.tick;let frames=0,kills=0;
+  const a=__arena,c=a.combat;a.resetResult();c.reset('normal','hoplomachus','solo20');const p=c.fighters[0],render=a.renderer.render,tick=c.tick;let frames=0,kills=0;
+  for(let i=0;i<a.models.length;i++){a.scene.remove(a.models[i].root);ImportedGladiator.dispose(a.models[i]);a.models[i]=ImportedGladiator.create(i,c.fighters[i].type);a.scene.add(a.models[i].root);}
   a.freeze();a.renderer.render=()=>{};
   Object.assign(p,{hp:10000,maxHp:10000,weapon:'trident',shield:true,chest:true,helmet:true,shoulders:true,gearBase:null});
   c.tick=function(dt){
