@@ -44,7 +44,9 @@ jobs:
           node tests/combat-stats-v75.cjs
           node tests/combat-values-v110.cjs
       - name: Install browser
-        run: npx playwright install --with-deps chromium
+        timeout-minutes: 3
+        # Hosted Ubuntu already supplies Chromium libraries; these tests are headless.
+        run: npx playwright install --only-shell chromium
       - name: Arena, mobile layouts and combat poses
         env:
           LUDUS_REALISM_TEST: '1'
