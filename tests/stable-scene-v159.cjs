@@ -28,7 +28,7 @@ const server=http.createServer((req,res)=>{const f=path.resolve(root,'.'+new URL
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox','--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
 const page=await browser.newPage({viewport:{width:874,height:402},hasTouch:true}),errors=[];
 page.on('pageerror',e=>{errors.push(e.message);console.error('PAGE ERROR',e.message);});
-page.on('console',m=>{if(m.type()==='error')console.error('CONSOLE',m.text().slice(0,350));});
+page.on('console',m=>{if(m.type()==='error'){console.error('CONSOLE',m.text().slice(0,350));if(m.text().includes('WebGLProgram'))errors.push(m.text());}});
 await page.route(/^https:/,r=>r.abort());
 try{
 await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html?room=stable',{waitUntil:'domcontentloaded'});
@@ -55,5 +55,5 @@ assert.equal(await page.evaluate(()=>__rpcCalls.filter(r=>r.name==='ludus_stable
 assert.deepEqual(errors,[]);
 fs.writeFileSync(out+'/result.json',JSON.stringify({pass:true,state,errors},null,2));
 console.log('PASS: actual ludus entry, twelve stone rooms, unroofed sand yard, 5.6m walls, clear frontage, groom interaction, three viewports, re-entry, no account mutations.');
-}finally{await browser.close();await new Promise(r=>server.close(r));}
+}catch(e){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});throw e;}finally{await browser.close();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exit(1);});

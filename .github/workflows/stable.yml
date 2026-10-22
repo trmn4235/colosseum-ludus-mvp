@@ -26,8 +26,10 @@ jobs:
       - name: Actual GLB scale, herd and aisle geometry
         run: node tests/stable-models-v130.cjs
       - name: Install browser for real scene checks
+        if: ${{ !cancelled() }}
         run: npx playwright install --with-deps chromium
       - name: Real game entry, stone rooms, training yard and groom
+        if: ${{ !cancelled() }}
         run: LUDUS_TEST_OUTPUT=stable-scene-check node tests/stable-scene-v159.cjs
       - name: Preserve scene screenshots and verification result
         if: always()

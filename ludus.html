@@ -1190,7 +1190,7 @@ function updateActivities(dt){GamePerformance.text($('place'),activeRoom?activeR
 }
 
 const ludusPose=p=>p&&Object.fromEntries(['x','z','y','yaw','pitch'].map(k=>[k,p[k]]));
-globalThis.LudusNavigation?.register(()=>({room:activeRoom?.kind||null,player:ludusPose(player),returnPose:activeRoom?ludusPose(returnPose):null,exploring}));
+globalThis.LudusNavigation?.register(()=>({room:activeRoom?.kind||null,player:ludusPose(player),returnPose:activeRoom?ludusPose(returnPose):null,stableLayout:activeRoom?.kind==='stable'?LudusStableRoom.version:null,exploring}));
 function restoreLudusPlace(){
  globalThis.LudusNavigation?.setOwner(playerAccount?.user_id);
  const requestedRoom=new URL(location.href).searchParams.get('room');
@@ -1199,12 +1199,16 @@ function restoreLudusPlace(){
  if(!saved&&new URL(window.location.href).searchParams.get('returnRoom')==='upgrades'){
   try{const old=JSON.parse(sessionStorage.getItem('ludus-upgrade-return')||'null');if(old?.owner===playerAccount?.user_id)saved={...old,exploring:true};}catch(e){}
  }
- const pose=p=>p&&['x','z','y','yaw','pitch'].every(k=>Number.isFinite(p[k]))&&Math.abs(p.x)<14&&Math.abs(p.z)<12&&p.y>=0&&p.y<=3.5&&Math.abs(p.pitch)<=1.1;
+ const pose=p=>p&&['x','z','y','yaw','pitch'].every(k=>Number.isFinite(p[k]))&&p.y>=0&&p.y<=3.5&&Math.abs(p.pitch)<=1.1;
+ const courtyardPose=p=>pose(p)&&Math.abs(p.x)<14&&Math.abs(p.z)<12;
  if(!playerAccount?.user_id||!saved||!pose(saved.player))return;
  if(saved.room){
-  const room=rooms.find(r=>r.kind===saved.room);if(!room||!pose(saved.returnPose)||Math.abs(saved.player.x)>=4.5||Math.abs(saved.player.z)>=4||saved.player.y!==0)return;
+  const room=rooms.find(r=>r.kind===saved.room);if(!room||!courtyardPose(saved.returnPose)||saved.player.y!==0)return;
+  if(room.kind!=='stable'&&(Math.abs(saved.player.x)>=4.5||Math.abs(saved.player.z)>=4))return;
   if(!exploring)toggleExplore();enterRoom(room);returnPose=ludusPose(saved.returnPose);
- }else if(saved.exploring&&!exploring)toggleExplore();
+  // A saved position from the old long aisle belongs to a different floor plan.
+  if(room.kind==='stable'&&(saved.stableLayout!==LudusStableRoom.version||!allowed(saved.player.x,saved.player.z)))return;
+ }else{if(!courtyardPose(saved.player))return;if(saved.exploring&&!exploring)toggleExplore();}
  Object.assign(player,ludusPose(saved.player));
 }
 
