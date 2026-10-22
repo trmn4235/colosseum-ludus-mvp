@@ -31,3 +31,7 @@ Multiplayer validates step/duck/jump/roll costs and durations in PostgreSQL. Duc
 - CPU-only scene-graph measurements: twelve characters take about 9.1 ms per attack pose frame in this environment. The browser scene still has twenty bodies/skeletons and 222 draw calls. These are not physical-device FPS measurements.
 
 Physical iPhone/Android and Safari testing was not available in this environment. The work does not claim a newly sourced dedicated whip, net or scissor pack; those use adapted body motion plus existing equipment simulation.
+
+## Deployment order
+
+Deploy the caravan verifier before publishing the client, then apply the V163 database migration once the new scripts are available on the public site. Existing rules 126/127 encounters continue through their original replay implementation. The migration changes the rules only for newly created encounters; it does not rewrite stored tickets or career records.
