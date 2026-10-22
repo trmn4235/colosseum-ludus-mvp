@@ -15,10 +15,11 @@ async function rigRuntime(page='arena.html',options={}){
  T.TextureLoader.prototype.load=function(url,onload){const t=new T.Texture();onload?.(t);return t;};
  context.ArenaAssetLoad=async name=>{const p=new URL(name,'https://fixture.invalid/').pathname.slice(1),bytes=fs.readFileSync(root+'/'+p);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};
  context.ArenaAssets={warmArena(){}};
+ for(const name of ['combat-curves-v163.js','combat-motion-v163.js','arena-authored-data-v163.js','arena-authored-motion-v163.js'])if(fs.existsSync(root+'/'+name))vm.runInContext(fs.readFileSync(root+'/'+name,'utf8'),context);
  const source=scripts(page,root),combat=scripts('arena.html',root).find(s=>s.text.includes('var ArenaClasses='));
  const marker="if(typeof module!=='undefined')module.exports=install;else install(root.ArenaCombat,root.ArenaClasses);",ending="})(typeof window!=='undefined'?window:globalThis);";
  const start=combat.text.indexOf('var ArenaClasses='),finish=combat.text.indexOf(ending,combat.text.indexOf(marker,start))+ending.length;vm.runInContext(combat.text.slice(start,finish),context);
- const graphics=source.find(s=>s.text.includes('var ImportedGladiator=')),endMarker="return {load,create,animate,dispose,get loaded(){return !!template;}};",end=graphics.text.indexOf('})();',graphics.text.indexOf(endMarker))+5;
+ const graphics=options.rigFile?{text:fs.readFileSync(root+'/'+options.rigFile,'utf8')}:source.find(s=>s.text.includes('var ImportedGladiator=')),endMarker="return {load,create,animate,dispose,get loaded(){return !!template;}};",end=graphics.text.indexOf('})();',graphics.text.indexOf(endMarker))+5;
  vm.runInContext(graphics.text.slice(0,end),context);
  context.ArenaAssetLoad=async name=>{const p=new URL(name,'https://fixture.invalid/').pathname.slice(1),bytes=fs.readFileSync(root+'/'+p);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};context.ArenaAssets.warmArena=()=>{};
  const locomotion=source.map(s=>s.attrs.match(/\bsrc=["']([^"'?]+)/)?.[1]).filter(name=>/^arena-locomotion(?:-data)?-v\d+\.js$/.test(name||''));

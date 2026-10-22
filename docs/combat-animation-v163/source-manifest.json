@@ -1,0 +1,241 @@
+{
+  "version": 163,
+  "samplingHz": 24,
+  "clips": [
+    {
+      "id": "pole",
+      "family": "kevin",
+      "file": "HumanM@AttackPolearm01.fbx",
+      "original": "HumanM@AttackPolearm01",
+      "sourceSha256": "edd1c35f9bc54c66e28c7b29b5cf338ff1b87d2754595b17a5c78f73dcbe2130",
+      "frames": 34,
+      "duration": 1.3666666746139526
+    },
+    {
+      "id": "poleIdle",
+      "family": "kevin",
+      "file": "HumanM@CombatIdlePolearm01.fbx",
+      "original": "HumanM@CombatIdlePolearm01",
+      "sourceSha256": "30420b8cae4cbe679f64807a538d45bc18c76201df73114bc3a5cca0674d2840",
+      "frames": 34,
+      "duration": 1.3333333730697632
+    },
+    {
+      "id": "slash",
+      "family": "kevin",
+      "file": "HumanM@Attack1H01_R.fbx",
+      "original": "HumanM@Attack1H01_R",
+      "sourceSha256": "8a18fb95f842bbda45f55346f4d04d6718db7dfd0a5ab12438169712a3fbb89a",
+      "frames": 28,
+      "duration": 1.100000023841858
+    },
+    {
+      "id": "shieldBash",
+      "family": "kevin",
+      "file": "HumanM@AttackShield01.fbx",
+      "original": "HumanM@AttackShield01",
+      "sourceSha256": "c21e3236ba547534923f33fa08cb44d8a75a9ff0e92dff8ef3ef306441e4887e",
+      "frames": 23,
+      "duration": 0.8999999761581421
+    },
+    {
+      "id": "crouch",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Crouch_Idle_Loop",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 72,
+      "duration": 2.933333396911621
+    },
+    {
+      "id": "jumpStart",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Jump_Start",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 34,
+      "duration": 1.3333333730697632
+    },
+    {
+      "id": "jumpAir",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Jump_Loop",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 61,
+      "duration": 2.5
+    },
+    {
+      "id": "jumpLand",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Jump_Land",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 32,
+      "duration": 1.2666666507720947
+    },
+    {
+      "id": "hitChest",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Hit_Chest",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 13,
+      "duration": 0.3333333432674408
+    },
+    {
+      "id": "hitHead",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Hit_Head",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 13,
+      "duration": 0.4333333373069763
+    },
+    {
+      "id": "jab",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Punch_Jab",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 22,
+      "duration": 0.8666666746139526
+    },
+    {
+      "id": "cross",
+      "family": "quaternius",
+      "file": "quaternius1.glb",
+      "original": "Punch_Cross",
+      "sourceSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "frames": 25,
+      "duration": 1
+    },
+    {
+      "id": "swordA",
+      "family": "quaternius",
+      "file": "quaternius2.glb",
+      "original": "Sword_Regular_A",
+      "sourceSha256": "8cee20ab1bc55130092447e810e26df22dd2803eccc54f52137a7d54d7ab88a8",
+      "frames": 13,
+      "duration": 0.4333333373069763
+    },
+    {
+      "id": "swordB",
+      "family": "quaternius",
+      "file": "quaternius2.glb",
+      "original": "Sword_Regular_B",
+      "sourceSha256": "8cee20ab1bc55130092447e810e26df22dd2803eccc54f52137a7d54d7ab88a8",
+      "frames": 14,
+      "duration": 0.5333333611488342
+    },
+    {
+      "id": "guard",
+      "family": "quaternius",
+      "file": "quaternius2.glb",
+      "original": "Idle_Shield_Loop",
+      "sourceSha256": "8cee20ab1bc55130092447e810e26df22dd2803eccc54f52137a7d54d7ab88a8",
+      "frames": 61,
+      "duration": 2.5
+    },
+    {
+      "id": "guardHit",
+      "family": "quaternius",
+      "file": "quaternius2.glb",
+      "original": "Shield_OneShot",
+      "sourceSha256": "8cee20ab1bc55130092447e810e26df22dd2803eccc54f52137a7d54d7ab88a8",
+      "frames": 21,
+      "duration": 0.8333333134651184
+    },
+    {
+      "id": "block",
+      "family": "quaternius",
+      "file": "quaternius2.glb",
+      "original": "Sword_Block",
+      "sourceSha256": "8cee20ab1bc55130092447e810e26df22dd2803eccc54f52137a7d54d7ab88a8",
+      "frames": 31,
+      "duration": 1.2333333492279053
+    },
+    {
+      "id": "throw",
+      "family": "quaternius",
+      "file": "quaternius2.glb",
+      "original": "OverhandThrow",
+      "sourceSha256": "8cee20ab1bc55130092447e810e26df22dd2803eccc54f52137a7d54d7ab88a8",
+      "frames": 34,
+      "duration": 1.3333333730697632
+    },
+    {
+      "id": "dodgeLeft",
+      "family": "kaykit",
+      "file": "kaykit-MovementAdvanced.glb",
+      "original": "Dodge_Left",
+      "sourceSha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56",
+      "frames": 13,
+      "duration": 0.4000000059604645
+    },
+    {
+      "id": "dodgeRight",
+      "family": "kaykit",
+      "file": "kaykit-MovementAdvanced.glb",
+      "original": "Dodge_Right",
+      "sourceSha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56",
+      "frames": 13,
+      "duration": 0.4000000059604645
+    },
+    {
+      "id": "dodgeBack",
+      "family": "kaykit",
+      "file": "kaykit-MovementAdvanced.glb",
+      "original": "Dodge_Backward",
+      "sourceSha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56",
+      "frames": 13,
+      "duration": 0.4000000059604645
+    },
+    {
+      "id": "dodgeForward",
+      "family": "kaykit",
+      "file": "kaykit-MovementAdvanced.glb",
+      "original": "Dodge_Forward",
+      "sourceSha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56",
+      "frames": 13,
+      "duration": 0.4000000059604645
+    },
+    {
+      "id": "stab",
+      "family": "kaykit",
+      "file": "kaykit-CombatMelee.glb",
+      "original": "Melee_1H_Attack_Stab",
+      "sourceSha256": "c55e6ec1c79e83ae21d46fe1cd921c1b64be8b9a524a24517e51c6ba99231459",
+      "frames": 40,
+      "duration": 1.600000023841858
+    },
+    {
+      "id": "chop",
+      "family": "kaykit",
+      "file": "kaykit-CombatMelee.glb",
+      "original": "Melee_1H_Attack_Chop",
+      "sourceSha256": "c55e6ec1c79e83ae21d46fe1cd921c1b64be8b9a524a24517e51c6ba99231459",
+      "frames": 27,
+      "duration": 1.0666667222976685
+    },
+    {
+      "id": "bowDraw",
+      "family": "kaykit",
+      "file": "kaykit-CombatRanged.glb",
+      "original": "Ranged_Bow_Draw",
+      "sourceSha256": "7fef1fc0e7b0feafd34b8e12d23f514c8c1f9d068047a691b854b56f1774dff5",
+      "frames": 34,
+      "duration": 1.3333333730697632
+    },
+    {
+      "id": "bowRelease",
+      "family": "kaykit",
+      "file": "kaykit-CombatRanged.glb",
+      "original": "Ranged_Bow_Release",
+      "sourceSha256": "7fef1fc0e7b0feafd34b8e12d23f514c8c1f9d068047a691b854b56f1774dff5",
+      "frames": 34,
+      "duration": 1.3333333730697632
+    }
+  ],
+  "targetRigSha256": "949112cc72a197cd7122bff696f113c4e5357137b0093c1a1ee4bb893c8a2425"
+}

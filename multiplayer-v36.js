@@ -116,7 +116,7 @@ return {load,prepare};
   $('duelBlock').disabled=!(p?.items||[]).some(i=>i.kind==='shield'&&i.equipped_slot==='off_hand');$('duelBlock').setAttribute('aria-pressed',String(block));
   for(const [id,f] of [['self',p],['rival',t]]){$(id+'Hp').max=f?.maxHp||100;$(id+'Stamina').max=f?.maxStamina||100;$(id+'Stamina').value=f?.stamina??100;$(id+'Stamina').hidden=!enhanced();}
   const foodBonus=Math.min(12,Math.max(0,Number(p?.gladiator?.combat_stamina_bonus)||0));const morale=Math.min(100,Math.max(0,Number(p?.gladiator?.combat_morale??50)));foodBonusLabel.hidden=!enhanced()||(!foodBonus&&morale===50)||p?.hp<=0||room.status!=='playing';foodBonusLabel.textContent='Beslenme +%'+foodBonus+' · Moral '+morale;foodBonusLabel.title='Kondisyon yenilenmesi: beslenme ×'+(1+foodBonus/100).toFixed(2)+' · moral ×'+(1+(morale-50)/1000).toFixed(3);
-  $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<25;
+  $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<18;
   document.querySelector('.mp-rule').textContent=throwable()?'Fırlat: 26 kondisyon · Silah maç sonuna kadar elden çıkar.':'Multiplayer Beta · Ödül ve kalıcı eşya kaybı yok';
   $('duelTarget').classList.toggle('locked',!!locked);$('duelTarget').setAttribute('aria-pressed',String(!!locked));
   $('queueNames').textContent=room.players.slice(0,6).map(x=>x.name).join(' · ')+(room.players.length>6?' · +'+(room.players.length-6):'');
@@ -126,7 +126,8 @@ return {load,prepare};
  async function rpc(args){let timer;const started=performance.now();try{const result=await Promise.race([client.rpc('ludus_match',args),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Bağlantı zaman aşımı')),10000);})]);if(result.data?.server_now)clockOffset=Date.parse(result.data.server_now)+(performance.now()-started)/2-Date.now();return result;}finally{clearTimeout(timer);}}
  function queueStep(){inputDirty=true;if(!pending&&!stopped&&room){clearTimeout(nextStep);step();}}
  function queueAttack(region=selectedRegion){if(!canAct(13)||attacks)return;attackRegion=region;attackHand=hand;attackId=crypto.randomUUID();attacks=1;queueStep();}
- function queueDodge(){if(!enhanced()||!canAct(25)||dodge)return;dodgeId=crypto.randomUUID();dodge=true;queueStep();}
+ let dodgeKind='step';
+ function queueDodge(kind='step'){if(!enhanced()||!canAct(kind==='roll'?25:kind==='jump'?22:18)||dodge)return;dodgeKind=kind;dodgeId=crypto.randomUUID();dodge=true;queueStep();}
  function castSpecial(){
   const throwing=throwable(),p=me(),t=target();if(special||(!throwing&&selectedWeapon()?.model!=='whip')||!canAct(throwing?26:28))return;
   if(!locked||!t){message('Özel hareket için önce hedefe kilitlen.');return;}
@@ -138,7 +139,7 @@ return {load,prepare};
  function changeHand(){if(!active())return;const w=weapons();if(w.length<2)return;hand=w.find(i=>i.equipped_slot!==hand).equipped_slot;showState(room);message(hand==='off_hand'?'Sol el silahı seçili.':'Sağ el silahı seçili.');}
  function setBlock(value){if(block===value)return;block=value;$('duelBlock').classList.toggle('pressed',value);queueStep();}
  async function step(){if(pending||stopped||!room)return;inputDirty=false;if(document.hidden){setTimeout(step,500);return;}pending=true;const sent=attacks,sentId=attackId,cast=special,castId=specialId,evade=dodge,sentDodge=dodgeId,p=me(),t=target(),x=joy.x+(keys.has('KeyD')||keys.has('ArrowRight')?1:0)-(keys.has('KeyA')||keys.has('ArrowLeft')?1:0),z=joy.z+(keys.has('KeyW')||keys.has('ArrowUp')?-1:0)+(keys.has('KeyS')||keys.has('ArrowDown')?1:0),dx=(t?.x??0)-(p?.x??0),dz=(t?.z??-1)-(p?.z??0),len=Math.max(.01,Math.hypot(dx,dz));
-  try{const r=await rpc({p_action:'step',p_room:room.id,p_input:{x:x*dz/len-z*dx/len,z:-x*dx/len-z*dz/len,attack:sent>0,attack_id:sentId||null,region:attackRegion,hand:cast?specialHand:sent?attackHand:hand,dodge:evade,dodge_id:sentDodge||null,block,special:cast,special_id:castId,target:cast?specialTarget:locked||''}});if(r.error)throw r.error;if(sent&&sentId===attackId){attacks=0;attackId=null;}if(cast&&castId===specialId){special=false;specialId=null;specialHand=null;specialTarget=null;}if(evade&&sentDodge===dodgeId){dodge=false;dodgeId=null;}showState(r.data);failure=0;}
+  try{const r=await rpc({p_action:'step',p_room:room.id,p_input:{x:x*dz/len-z*dx/len,z:-x*dx/len-z*dz/len,attack:sent>0,attack_id:sentId||null,region:attackRegion,hand:cast?specialHand:sent?attackHand:hand,dodge:evade,dodge_id:sentDodge||null,dodge_kind:dodgeKind,block,special:cast,special_id:castId,target:cast?specialTarget:locked||''}});if(r.error)throw r.error;if(sent&&sentId===attackId){attacks=0;attackId=null;}if(cast&&castId===specialId){special=false;specialId=null;specialHand=null;specialTarget=null;}if(evade&&sentDodge===dodgeId){dodge=false;dodgeId=null;}showState(r.data);failure=0;}
   catch(e){failure++;message('Bağlantı bekleniyor…');if(failure>20){stopped=true;message('Bağlantı koptu. Tekrar bağlan.');$('duelControls').hidden=true;$('mpRetry').hidden=false;}}
   finally{pending=false;if(!stopped)nextStep=setTimeout(step,inputDirty?0:room?.status==='waiting'?300:120);}
  }
@@ -161,6 +162,8 @@ return {load,prepare};
  $('duelAttack').onpointerup=e=>{if(attackGesture?.id!==e.pointerId)return;e.preventDefault();const region=gestureRegion(e);attackGesture=null;selectedRegion=region;$('duelRegionHint').hidden=true;queueAttack(region);};
  for(const type of ['pointercancel','lostpointercapture'])$('duelAttack').addEventListener(type,e=>{if(attackGesture?.id===e.pointerId){attackGesture=null;$('duelRegionHint').hidden=true;}});
  $('duelAttack').onclick=e=>{if(e.detail===0)queueAttack();};
+ CombatEvasionControls.mount({parent:$('duelControls'),active,perform:queueDodge});
+ $('duelDodge').setAttribute('aria-label','Kaçın · L');if($('duelDodge').querySelector('small'))$('duelDodge').querySelector('small').textContent='KAÇIN';
  $('duelDodge').onpointerdown=e=>{e.preventDefault();queueDodge();};$('duelDodge').onclick=e=>{if(e.detail===0)queueDodge();};
  $('duelSpecial').onclick=castSpecial;$('duelHand').onclick=changeHand;
  $('duelBlock').onpointerdown=e=>{if(!active()||e.currentTarget.disabled)return;e.preventDefault();blockPointers.add(e.pointerId);e.currentTarget.setPointerCapture(e.pointerId);setBlock(true);};
@@ -169,8 +172,8 @@ return {load,prepare};
  $('duelTarget').onclick=()=>{locked=locked?null:target()?.owner||null;if(room)showState(room);queueStep();};
  const ray=new THREE.Raycaster();$('duelCanvas').onpointerup=e=>{if(!active())return;const b=e.currentTarget.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1),camera);for(const id of rivals().map(p=>p.owner)){if(models.has(id)&&ray.intersectObject(models.get(id).root,true).length){locked=id;showState(room);queueStep();return;}}};
  window.addEventListener('keydown',e=>{if(e.target.matches('input,textarea')||!active())return;
-  if(!/^(Key[WASDJKLQERH]|Digit[1-5]|Arrow.*|Space|ShiftLeft|Tab)$/.test(e.code))return;e.preventDefault();keys.add(e.code);
-  if(!e.repeat){if(e.code==='KeyJ'||e.code==='Space')queueAttack();if(e.code==='KeyL')queueDodge();if(e.code==='KeyK'||e.code==='ShiftLeft')setBlock(true);if(e.code==='Tab')cycle();if(e.code==='KeyE')$('duelTarget').click();if(e.code==='KeyQ')castSpecial();if(e.code==='KeyR'||e.code==='KeyH')changeHand();if(e.code.startsWith('Digit')){selectedRegion=Object.keys(ArenaMotion.regions)[Number(e.code.slice(-1))-1];message(ArenaMotion.regions[selectedRegion].name);}}queueStep();
+  if(!/^(Key[WASDJKLQERHCVB]|Digit[1-5]|Arrow.*|Space|ShiftLeft|Tab)$/.test(e.code))return;e.preventDefault();keys.add(e.code);
+  if(!e.repeat){if(e.code==='KeyJ'||e.code==='Space')queueAttack();if(e.code==='KeyL')queueDodge();if(e.code==='KeyC')queueDodge('duck');if(e.code==='KeyV')queueDodge('jump');if(e.code==='KeyB')queueDodge('roll');if(e.code==='KeyK'||e.code==='ShiftLeft')setBlock(true);if(e.code==='Tab')cycle();if(e.code==='KeyE')$('duelTarget').click();if(e.code==='KeyQ')castSpecial();if(e.code==='KeyR'||e.code==='KeyH')changeHand();if(e.code.startsWith('Digit')){selectedRegion=Object.keys(ArenaMotion.regions)[Number(e.code.slice(-1))-1];message(ArenaMotion.regions[selectedRegion].name);}}queueStep();
  });
  window.addEventListener('keyup',e=>{keys.delete(e.code);if((e.code==='KeyK'||e.code==='ShiftLeft')&&!blockPointers.size&&!keys.has('KeyK')&&!keys.has('ShiftLeft'))setBlock(false);});
  function clear(){keys.clear();blockPointers.clear();resetStick();attackGesture=null;$('duelRegionHint').hidden=true;attacks=0;attackId=null;dodge=false;dodgeId=null;special=false;specialId=null;specialHand=null;specialTarget=null;setBlock(false);}
@@ -183,7 +186,7 @@ return {load,prepare};
     f.attackProfile=room.combat_version===23?{wind:p.wind,active:p.active,recover:p.recover,duration:p.wind+p.active+p.recover,pole:['spear','trident'].includes(f.attackWeapon),length:ArenaMotion.profile(f.attackWeapon).length}:ArenaMotion.profile(f.attackWeapon);f.duration=f.attackProfile.duration;}
    if(room.combat_version===23){
     if(Date.parse(p.recoil_until)>serverTime){
-     if(!['recoil','stagger'].includes(f.action)){const contact={...f,action:'attack',timer:Number(p.recoil_elapsed)||0};f.recoilBody=ArenaMotion.body(contact);f.recoilSample=ArenaMotion.sample(contact);}
+     if(!['recoil','stagger'].includes(f.action)){const contact={...f,action:'attack',timer:Number(p.recoil_elapsed)||0};f.recoilBody=ArenaMotion.body(contact);f.recoilSample=ArenaMotion.sample(contact);f.recoilPhase=ArenaAuthoredCombat.phase(contact);}
      f.action=Date.parse(p.stagger_until)>serverTime?'stagger':'recoil';f.timer=Math.max(0,(serverTime-Date.parse(p.recoil_at))/1000);f.duration=(Date.parse(p.recoil_until)-Date.parse(p.recoil_at))/1000;
     }else if(Date.parse(p.throw_until)>serverTime){
      f.action='spearcast';f.timer=Math.max(0,(serverTime-Date.parse(p.throw_at))/1000);f.duration=.7;f.attackLeft=p.throw_hand==='off_hand';f.blocking=false;
@@ -192,8 +195,8 @@ return {load,prepare};
      f.attackProfile={wind:p.wind,active:p.active,recover:p.recover,duration:p.wind+p.active+p.recover,pole:['spear','trident'].includes(f.attackWeapon),length:ArenaMotion.profile(f.attackWeapon).length};f.duration=f.attackProfile.duration;f.timer=Math.max(0,(serverTime-Date.parse(p.swing_at))/1000);
     }else if(['attack','recoil','stagger','spearcast'].includes(f.action)){f.action='idle';f.timer=0;f.recoilSample=null;}
     const defenseSerial=Number(p.defense_serial)||0;if(defenseSerial!==f._defenseSerial){if(f._defenseSerial!==undefined&&defenseSerial){if(p.last_defense==='evade'){f.passiveEvade=.36;if(p.owner===owner)message('Sıyrıldın.');}else{f.guardFlash=.20;f.guardImpact=p.last_defense==='perfect'?1:.65;const source=room.players.find(a=>a.owner===p.defense_from);f.guardImpactX=source?Math.sin(Math.atan2(source.x-p.x,source.z-p.z)-p.angle):0;f.guardImpactY=source?.strike_region==='head'?.8:source?.strike_region==='legs'?-.8:0;if(p.owner===owner&&p.last_defense==='perfect')message('Mükemmel blok · Karşı vuruş için saldır.');}}f._defenseSerial=defenseSerial;}
-   }else if(f.action==='attack'){f.timer+=dt;if(f.timer>f.duration)f.action='idle';}if(Date.parse(p.dodge_until)>serverTime){f.action='dodge';f.timer=Math.max(0,(serverTime-Date.parse(p.dodge_at))/1000);f.duration=.46;f.blocking=false;}else if(f.action==='dodge')f.action='idle';
-   if(p.pull_from){f.action='knocked';f.timer=.35;f.duration=.7;}else if(f.action==='knocked')f.action='idle';if(f.hp<=0){f.deadTime+=dt;f.action='dead';}let visual=f;if(f.action==='spearcast'&&f.timer<.27){visual={...f,[p.throw_hand==='off_hand'?'offhand':'weapon']:p.throw_weapon};}ImportedGladiator.animate(visual,m,t/1000,dt);m.teamMark.visible=p.owner===locked;}
+   }else if(f.action==='attack'){f.timer+=dt;if(f.timer>f.duration)f.action='idle';}if(Date.parse(p.dodge_until)>serverTime){const kind=p.dodge_kind||'roll';f.action=kind==='roll'?'dodge':'evade';const lateral=(p.dodge_dx||0)*Math.cos(f.angle)-(p.dodge_dz||0)*Math.sin(f.angle),forward=(p.dodge_dx||0)*Math.sin(f.angle)+(p.dodge_dz||0)*Math.cos(f.angle);f.evadeKind=kind==='step'?(Math.abs(lateral)>Math.abs(forward)?lateral>0?'stepLeft':'stepRight':forward>0?'stepForward':'stepBack'):kind;f.dx=p.dodge_dx;f.dz=p.dodge_dz;f.timer=Math.max(0,(serverTime-Date.parse(p.dodge_at))/1000);f.duration=(Date.parse(p.dodge_until)-Date.parse(p.dodge_at))/1000;f.blocking=false;}else if(['dodge','evade'].includes(f.action))f.action='idle';
+   if(p.pull_from){f.action='knocked';f.timer=.35;f.duration=.7;}else if(f.action==='knocked')f.action='idle';if(f.hp<=0){f.deadTime+=dt;f.action='dead';}let visual=f;if(f.action==='spearcast'&&f.timer<.27){visual={...f,[p.throw_hand==='off_hand'?'offhand':'weapon']:p.throw_weapon};}ArenaMotion.authored.reach(f,[...states.values()]);ImportedGladiator.animate(visual,m,t/1000,dt);m.teamMark.visible=p.owner===locked;}
    const liveShots=new Set();
    for(const player of room.players){const shot=player.projectile;if(!shot)continue;const key=player.owner+':'+shot.id;liveShots.add(key);let mesh=projectileViews.get(key);
     if(!mesh){mesh=ClassEquipment.weapon(shot.weapon).clone(true);mesh.name='online-projectile';scene.add(mesh);projectileViews.set(key,mesh);}

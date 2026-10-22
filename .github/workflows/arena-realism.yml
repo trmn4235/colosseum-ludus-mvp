@@ -2,10 +2,10 @@ name: Arena combat realism
 on:
   push:
     branches: [main, codex/arena-combat-realism-v114]
-    paths: ['arena*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'tests/combat-stats-*', 'supabase/migrations/*arena_combat_realism*']
+    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'tests/combat-stats-*', 'supabase/migrations/*arena_combat_realism*']
   pull_request:
     branches: [main]
-    paths: ['arena*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'supabase/migrations/*arena_combat_realism*']
+    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'supabase/migrations/*arena_combat_realism*']
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,6 +24,11 @@ jobs:
         run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1
       - name: Combat behavior and motion
         run: node --test tests/arena-realism-v114.test.cjs tests/combat-feel-v23.test.cjs tests/bot-defense-v72.test.cjs tests/polearm-v105.test.cjs tests/arena-timing-v94.test.cjs
+      - name: Authored motion, old/new replays and server evasion
+        run: |
+          node tests/combat-motion-v163.cjs
+          node tests/combat-motion-replay-v163.cjs
+          node tests/combat-motion-sql-v163.cjs
       - name: Death, accumulated loot and right shoulder camera
         run: node tests/arena-stability-v115.cjs
       - name: Real skeleton and contact geometry
@@ -40,6 +45,9 @@ jobs:
       - name: Arena, mobile layouts and combat poses
         env:
           LUDUS_REALISM_TEST: '1'
+          LUDUS_AUTHORED_TEST: '1'
           LUDUS_STABILITY_TEST: '1'
           LUDUS_TEST_OUTPUT: /tmp/arena-realism-v114
         run: node tests/arena-browser-v96.cjs
+      - name: Two online clients and authoritative movement
+        run: node tests/combat-motion-online-v163.cjs

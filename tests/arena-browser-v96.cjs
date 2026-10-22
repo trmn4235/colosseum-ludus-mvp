@@ -53,6 +53,7 @@ async function main(){
  await page.screenshot({path:out+'/arena-844.png'});
  for(const [w,h]of [[667,375],[932,430],[1024,768]]){await page.setViewportSize({width:w,height:h});await page.evaluate(()=>__arena.step(1/60));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/arena-'+w+'.png'});}
  await page.setViewportSize({width:844,height:390});
+ if(process.env.LUDUS_AUTHORED_TEST==='1')await require('./combat-motion-browser-v163.cjs')(page,out);
  if(process.env.LUDUS_REALISM_TEST==='1')await require('./arena-realism-visual-v114.cjs')(page,out);
  if(process.env.LUDUS_STABILITY_TEST==='1')await require('./arena-stability-browser-v115.cjs')(page,out);
  if(current){

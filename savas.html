@@ -9,7 +9,7 @@ var LudusNavigation=(function(){
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}
  function read(id){if(!/^[a-z0-9-]{8,80}$/i.test(id||''))return null;try{const r=JSON.parse(sessionStorage.getItem(prefix+id));return owner&&r?.owner===owner&&r.created>Date.now()-86400000&&local(r.url)?r:null;}catch{return null;}}
- function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision97');url.searchParams.delete('restore');url.searchParams.delete('nav');
+ function go(target){const url=local(target);if(!url)return;url.searchParams.set('v','revision163');url.searchParams.delete('restore');url.searchParams.delete('nav');
   try{if(owner){const current=here();for(const k of ['restore','choose','recovered'])current.searchParams.delete(k);const id=crypto.randomUUID(),record={owner,url:current.href,state:readState(),created:Date.now()};
    sessionStorage.setItem(prefix+id,JSON.stringify(record));url.searchParams.set('nav',id);
    const saved=[];for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k?.startsWith(prefix)){try{const r=JSON.parse(sessionStorage.getItem(k));saved.push({key:k,created:r.created||0});}catch{saved.push({key:k,created:0});}}}
@@ -17,7 +17,7 @@ var LudusNavigation=(function(){
   }}catch{}
   window.location.href=url.href;
  }
- function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision97');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
+ function back(fallback='ludus.html',params={}){const id=here().searchParams.get('nav'),record=read(id),url=(record&&local(record.url))||local(fallback)||local('ludus.html');if(record)url.searchParams.set('restore',id);url.searchParams.set('v','revision163');for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);window.location.href=url.href;}
  function restore(){const record=read(here().searchParams.get('restore'));return record&&file(new URL(record.url))===file(here())?record.state:null;}
  document.addEventListener('click',event=>{if(event.defaultPrevented||event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;const a=event.target.closest?.('a[href]');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const url=local(a.href);if(!url)return;
   if(a.hasAttribute('data-game-back')){event.preventDefault();back(a.href);}
@@ -148,7 +148,7 @@ body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#eb
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
 </style><style>.upgrade-level{display:block;position:static!important;flex:none;color:#f4d68f;font:700 13px/16px Arial,sans-serif;min-height:16px;white-space:nowrap}.slot,.item{gap:2px!important}.slot .icon,.item .icon{flex-shrink:1;min-height:0}.slot small,.item>span:last-child{line-height:1.1;overflow:hidden}.slot .icon{height:clamp(22px,6.5vh,48px)!important}.item .icon{height:clamp(22px,7vh,54px)!important}</style><script src="arena-fall-motion-v39.js?v=revision39"></script><script src="arena-ground-fall-v39.js?v=revision115"></script><script src="arena-roll-motion-v72.js?v=revision72"></script><script src="arena-roll-v72.js?v=revision84"></script><link rel="stylesheet" href="gladiator-exercise-v46.css?v=46"><script src="gladiator-exercise-v46.js?v=revision162"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><link rel="stylesheet" href="arena-art-v69.css?v=revision69"><link rel="stylesheet" href="arena-entrance-v70.css?v=revision70"><link rel="stylesheet" href="arena-title-v71.css?v=revision71"><link rel="preload" as="image" href="assets/arena-entrance-v70.webp"><link rel="preload" as="image" href="assets/arena-modes-v69.webp"><link rel="preload" as="image" href="assets/multiplayer-poster-v69.webp"><script src="arena-locomotion-data-v91.js?v=revision91"></script><script src="arena-locomotion-v91.js?v=revision94"></script><link rel="stylesheet" href="arena-tabs-v82.css?v=revision89"><link rel="stylesheet" href="survival-v83.css?v=revision83">
 <link rel="stylesheet" href="arena-cards-v93.css?v=revision93"><script src="survival-v83.js?v=revision83"></script><script src="ludus-client-v84.js?v=revision84"></script><link rel="stylesheet" href="naval-v97.css?v=revision106"><script src="naval-route-v97.js?v=revision106"></script><script src="ludus-production-v119.js?v=revision124"></script>
-<script src="ludus-manica-v119.js?v=revision119"></script><link rel="stylesheet" href="game-panels-v123.css?v=revision123"><link rel="stylesheet" href="participant-career-v162.css?v=revision162"><script src="participant-career-v162.js?v=revision162"></script></head><body data-art-direction="136" data-roman-screen="savas"><header class="top"><button id="back">‹ Geri dön</button><nav class="arena-tabs" role="tablist" aria-label="Arena türü"><button type="button" role="tab" id="tab-single" data-arena-tab="single" aria-controls="panel-single"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 23V11c0-7 12-7 12 0v12M8 12h16M12 15v7m8-7v7M13 5V2h6v3M10 23h12"/></svg><span>Singleplayer</span></button><button type="button" role="tab" id="tab-multi" data-arena-tab="multi" aria-controls="panel-multi"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 6l10-3 10 3v10c0 7-10 11-10 11S6 23 6 16Z"/><path d="M11 11l10 10m0-10L11 21"/></svg><span>Multiplayer</span></button><button type="button" role="tab" id="tab-clan" data-arena-tab="clan" aria-controls="panel-clan"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 19h24l-5 7H9Zm12-16v16M17 4l9 12h-9M13 7l-7 9h7M2 28q4-3 8 0t8 0t8 0"/></svg><span>KlanWar</span></button></nav></header><main class="page"><section id="activeBattle" class="status" hidden><span>Devam eden savaşın var. Ekipmanların bu savaşta kilitli.</span> <button id="resumeBattle" class="action">Devam et</button> <button id="abandonBattle" class="retry">Çekil · ekipmanı kaybet</button></section><div id="status" class="status" role="status"></div><section id="modePage"><div class="heading"><h1>Savaşını seç</h1><p>Arenada tek hedef: ayakta kalmak.</p></div><div class="modes arena-panel arena-card-grid" data-arena-panel="single" id="panel-single" role="tabpanel" aria-labelledby="tab-single">
+<script src="ludus-manica-v119.js?v=revision119"></script><link rel="stylesheet" href="game-panels-v123.css?v=revision123"><link rel="stylesheet" href="participant-career-v162.css?v=revision162"><script src="participant-career-v162.js?v=revision162"></script><script src="combat-curves-v163.js?v=revision163"></script><script src="combat-motion-v163.js?v=revision163"></script><script src="arena-authored-data-v163.js?v=revision163"></script><script src="arena-authored-motion-v163.js?v=revision163"></script></head><body data-art-direction="136" data-roman-screen="savas"><header class="top"><button id="back">‹ Geri dön</button><nav class="arena-tabs" role="tablist" aria-label="Arena türü"><button type="button" role="tab" id="tab-single" data-arena-tab="single" aria-controls="panel-single"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 23V11c0-7 12-7 12 0v12M8 12h16M12 15v7m8-7v7M13 5V2h6v3M10 23h12"/></svg><span>Singleplayer</span></button><button type="button" role="tab" id="tab-multi" data-arena-tab="multi" aria-controls="panel-multi"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 6l10-3 10 3v10c0 7-10 11-10 11S6 23 6 16Z"/><path d="M11 11l10 10m0-10L11 21"/></svg><span>Multiplayer</span></button><button type="button" role="tab" id="tab-clan" data-arena-tab="clan" aria-controls="panel-clan"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 19h24l-5 7H9Zm12-16v16M17 4l9 12h-9M13 7l-7 9h7M2 28q4-3 8 0t8 0t8 0"/></svg><span>KlanWar</span></button></nav></header><main class="page"><section id="activeBattle" class="status" hidden><span>Devam eden savaşın var. Ekipmanların bu savaşta kilitli.</span> <button id="resumeBattle" class="action">Devam et</button> <button id="abandonBattle" class="retry">Çekil · ekipmanı kaybet</button></section><div id="status" class="status" role="status"></div><section id="modePage"><div class="heading"><h1>Savaşını seç</h1><p>Arenada tek hedef: ayakta kalmak.</p></div><div class="modes arena-panel arena-card-grid" data-arena-panel="single" id="panel-single" role="tabpanel" aria-labelledby="tab-single">
 <button class="mode arena-choice " data-mode="4x5" aria-label="Takımlı Arena: dört takım, her takımda beş gladyatör">
 <span class="arena-choice-art art-teams"></span>
 <span class="arena-choice-copy"><span class="arena-kicker">4 TAKIM</span><strong class="arena-card-title">Takımlı Arena</strong><span class="arena-description">Her takımda 5 gladyatör.</span><span class="arena-detail">Toplam <b>20</b> gladyatör</span></span>
@@ -714,6 +714,7 @@ class ArenaCombat {
  }
  drain(){return this.events.splice(0);}
 }
+if(typeof ArenaAuthoredCombat!=='undefined')ArenaAuthoredCombat.install(ArenaCombat,Motion);
 if(typeof module!=='undefined'){require('./equipment-skills.js')(ArenaCombat,Classes);module.exports={ArenaCombat,delta,distance};}else root.ArenaCombat=ArenaCombat;
 })(typeof window!=='undefined'?window:globalThis);
 
@@ -1231,16 +1232,17 @@ var ImportedGladiator=(function(){
    }
  }
  function animate(f,m,time,dt){
+  if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.begin(f,m,time,dt);
   ArenaRoll.begin(f,m);
   GroundFall.begin(f,m);
   if(f.hp<=0&&f.corpseEquipment)f={...f,...f.corpseEquipment};
   // Reuse the existing sword rig for three short swings without extra model assets.
   if(f.action==='triple')f={...f,action:'attack',timer:f.timer%.2,chain:1+Math.floor(f.timer/.2)};
   m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;ClassEquipment.sync(m,f);
-   const planting=(['attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0)&&f.hp>0;
+   const planting=(['attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident'].includes(f.weapon))&&f.hp>0;
    if(planting&&(!m.plantedFeet||f.action==='attack'&&f.timer<(m.plantTimer||0))){m.root.updateMatrixWorld(true);m.plantedFeet={};m.plantElapsed=0;for(const side of ['Left','Right']){const foot=m.bones[side+'Foot'];if(foot)m.plantedFeet[side]={position:m.root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:m.root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}}
    if(!planting)m.plantedFeet=null;else m.plantElapsed=(m.plantElapsed||0)+Math.max(0,dt);m.plantTimer=f.timer;
-  for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children)g.rotation.set(g.userData.restRotation||0,0,0);}
+  for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children){g.rotation.set(g.userData.restRotation||0,0,0);g.position.y=0;}}
   const animation=typeof ArenaAnimations!=='undefined'?ArenaAnimations.pose(f,m,time,dt):null;
   const w=Math.sin(f.walk)*f.move,poses=animation?animation.poses:{Spine:[Math.sin(time*2+f.id)*.015,0,w*.015],LeftUpLeg:[w*.46,0,0],RightUpLeg:[-w*.46,0,0],LeftLeg:[Math.max(0,-w)*.65,0,0],RightLeg:[Math.max(0,w)*.65,0,0],LeftArm:[w*.12,0,0],RightArm:[-w*.15,0,0]};
   let drop=0,lean=animation?.lean||0,strike=null;
@@ -1276,7 +1278,8 @@ var ImportedGladiator=(function(){
   m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?fallen.shift:fullBody?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;if(fallen){m.body.position.y=fallen.lift;m.body.position.z=fallen.shift;m.body.quaternion.identity();if(fallen.state?.captured&&fallen.entry<1)m.body.quaternion.copy(fallen.state.rotation).slerp(ik.identity,fallen.entry);m.root.position.set(fallen.x,0,fallen.z);m.root.rotation.y=fallen.heading;}m.root.updateMatrixWorld(true);GroundFall.apply(m,fallen);GroundFall.ground(m,fallen);
   if(typeof ArenaLocomotion!=='undefined')ArenaLocomotion.apply(f,m,dt,alignBone,time);
   if(typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
-   m.poleStep=fullBody?.step||null;if(planting&&!fallen)plantFeet(m);
+  if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.apply(f,m,time);
+   m.poleStep=m.authoredStep||fullBody?.step||null;if(planting&&!fallen)plantFeet(m);
   if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=reach(m,left,strike.grip);
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
    anchor.position.copy(anchor.parent.worldToLocal(hand));
@@ -1284,7 +1287,7 @@ var ImportedGladiator=(function(){
    if(pole){
     const palm=anchor.parent,rest=anchor.userData.restQuaternion,desired=m.root.getWorldQuaternion(ik.strikeQ[0]).multiply(ik.strikeQ[1].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z)));
     palm.quaternion.copy(palm.parent.getWorldQuaternion(ik.strikeQ[2]).invert().multiply(desired).multiply(ik.strikeQ[1].copy(rest).invert()));palm.updateWorldMatrix(false,true);anchor.quaternion.copy(rest);anchor.position.set(0,0,0);
-   }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children)g.rotation.set(0,0,0);
+   }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=-(strike.choke||0);}
    const previous=ArenaMotion.sample(f,Math.max(0,f.timer-.035)),attr=m.trail.geometry.attributes.position;[previous.grip,previous.tip,strike.grip,strike.tip].forEach((v,i)=>attr.setXYZ(i,v.x,v.y,v.z));attr.needsUpdate=true;
   }
   // Guard follows the hand but keeps the shield face between fighter and opponent.
@@ -1300,7 +1303,7 @@ var ImportedGladiator=(function(){
    const bone=m.bones[side+'HandIndex'+index],rest=m.rest.get(side+'HandIndex'+index);if(!bone||!rest)continue;
    Q.setFromAxisAngle(ik.fingerAxis,(side==='Left'?1:-1)*.48);bone.quaternion.copy(rest.q).multiply(Q);
   }
-  ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);ArenaRoll.apply(f,m);
+  ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);ArenaRoll.apply(f,m);if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.finish(f,m);
   const flashed=f.flash>0;if(m.emissiveFlashed!==flashed){m.emissiveFlashed=flashed;for(const material of m.materials)material.emissive?.setHex(flashed?0x29100a:0);}m.root.updateMatrixWorld(true);GroundFall.finish(m,fallen);
  }
  function dispose(m){m.root.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.dispose();});m.materials.forEach(x=>x.dispose());for(const o of [m.trail,m.shadow]){o.geometry.dispose();o.material.dispose();}}

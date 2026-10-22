@@ -2,6 +2,9 @@ import './caravan-core-v126.js';
 import './career-combat-v162.js';
 import './caravan-simulation-v126.js';
 import './caravan-simulation-v127.js';
+import './combat-curves-v163.js';
+import './combat-motion-v163.js';
+import './caravan-simulation-v163.js';
 
 const cors = {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info','Content-Type':'application/json'};
 const url = Deno.env.get('SUPABASE_URL')!;
@@ -28,7 +31,7 @@ Deno.serve(async req=>{
   if(!ticket)throw Error('Bu hesaba ait baskın bulunamadı.');
   if(ticket.status==='resolved')return reply({result:ticket,replayed:true});
   if(!ticket.battle_started_at)throw Error('Önce savaşa giriş yap.');
-  const engine=ticket.encounter?.rules===127?(globalThis as any).CaravanSimulationV127:(globalThis as any).CaravanSimulation;
+  const engine=ticket.encounter?.rules===163?(globalThis as any).CaravanSimulationV163:ticket.encounter?.rules===127?(globalThis as any).CaravanSimulationV127:(globalThis as any).CaravanSimulation;
   const sim=engine.replay(ticket,body.commands,body.steps);
   if(!sim.combat.finished&&body.abandon!==true)throw Error('Savaş henüz bitmedi.');
   const result=await request('/rest/v1/rpc/ludus_caravan_verified_v162','Bearer '+service,service,{

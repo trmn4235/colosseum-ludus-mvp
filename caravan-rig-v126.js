@@ -550,16 +550,17 @@ var ImportedGladiator=(function(){
    }
  }
  function animate(f,m,time,dt){
+  if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.begin(f,m,time,dt);
   ArenaRoll.begin(f,m);
   GroundFall.begin(f,m);
   if(f.hp<=0&&f.corpseEquipment)f={...f,...f.corpseEquipment};
   // Reuse the existing sword rig for three short swings without extra model assets.
   if(f.action==='triple')f={...f,action:'attack',timer:f.timer%.2,chain:1+Math.floor(f.timer/.2)};
   m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;ClassEquipment.sync(m,f);
-   const planting=(['attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0)&&f.hp>0;
+   const planting=(['attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident'].includes(f.weapon))&&f.hp>0;
    if(planting&&(!m.plantedFeet||f.action==='attack'&&f.timer<(m.plantTimer||0))){m.root.updateMatrixWorld(true);m.plantedFeet={};m.plantElapsed=0;for(const side of ['Left','Right']){const foot=m.bones[side+'Foot'];if(foot)m.plantedFeet[side]={position:m.root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:m.root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}}
    if(!planting)m.plantedFeet=null;else m.plantElapsed=(m.plantElapsed||0)+Math.max(0,dt);m.plantTimer=f.timer;
-  for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children)g.rotation.set(g.userData.restRotation||0,0,0);}
+  for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children){g.rotation.set(g.userData.restRotation||0,0,0);g.position.y=0;}}
   const animation=typeof ArenaAnimations!=='undefined'?ArenaAnimations.pose(f,m,time,dt):null;
   const w=Math.sin(f.walk)*f.move,poses=animation?animation.poses:{Spine:[Math.sin(time*2+f.id)*.015,0,w*.015],LeftUpLeg:[w*.46,0,0],RightUpLeg:[-w*.46,0,0],LeftLeg:[Math.max(0,-w)*.65,0,0],RightLeg:[Math.max(0,w)*.65,0,0],LeftArm:[w*.12,0,0],RightArm:[-w*.15,0,0]};
   let drop=0,lean=animation?.lean||0,strike=null;
@@ -596,7 +597,8 @@ var ImportedGladiator=(function(){
   m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?fallen.shift:fullBody?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;if(fallen){m.body.position.y=fallen.lift;m.body.position.z=fallen.shift;m.body.quaternion.identity();if(fallen.state?.captured&&fallen.entry<1)m.body.quaternion.copy(fallen.state.rotation).slerp(ik.identity,fallen.entry);m.root.position.set(fallen.x,0,fallen.z);m.root.rotation.y=fallen.heading;}m.root.updateMatrixWorld(true);GroundFall.apply(m,fallen);GroundFall.ground(m,fallen);
   if(typeof ArenaLocomotion!=='undefined')ArenaLocomotion.apply(f,m,dt,alignBone,time);
   if(typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
-   m.poleStep=fullBody?.step||null;if(planting&&!fallen)plantFeet(m);
+  if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.apply(f,m,time);
+   m.poleStep=m.authoredStep||fullBody?.step||null;if(planting&&!fallen)plantFeet(m);
   if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=reach(m,left,strike.grip);
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
    anchor.position.copy(anchor.parent.worldToLocal(hand));
@@ -604,7 +606,7 @@ var ImportedGladiator=(function(){
    if(pole){
     const palm=anchor.parent,rest=anchor.userData.restQuaternion,desired=m.root.getWorldQuaternion(ik.strikeQ[0]).multiply(ik.strikeQ[1].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z)));
     palm.quaternion.copy(palm.parent.getWorldQuaternion(ik.strikeQ[2]).invert().multiply(desired).multiply(ik.strikeQ[1].copy(rest).invert()));palm.updateWorldMatrix(false,true);anchor.quaternion.copy(rest);anchor.position.set(0,0,0);
-   }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children)g.rotation.set(0,0,0);
+   }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=-(strike.choke||0);}
    const previous=ArenaMotion.sample(f,Math.max(0,f.timer-.035)),attr=m.trail.geometry.attributes.position;[previous.grip,previous.tip,strike.grip,strike.tip].forEach((v,i)=>attr.setXYZ(i,v.x,v.y,v.z));attr.needsUpdate=true;
   }
   // Guard follows the hand but keeps the shield face between fighter and opponent.
@@ -621,7 +623,7 @@ var ImportedGladiator=(function(){
    const bone=m.bones[side+'HandIndex'+index],rest=m.rest.get(side+'HandIndex'+index);if(!bone||!rest)continue;
    Q.setFromAxisAngle(ik.fingerAxis,(side==='Left'?1:-1)*.48);bone.quaternion.copy(rest.q).multiply(Q);
   }
-  ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);ArenaRoll.apply(f,m);
+  ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);ArenaRoll.apply(f,m);if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.finish(f,m);
   const gripping=f.navJump?.kind==='rope'&&!f.navJump.released&&f.hp>0&&!fallen;
   for(const anchor of [m.weaponAnchor,m.offhandAnchor,m.gear.shield?.group])if(anchor){if(gripping){if(!anchor.userData.ropeStowed){anchor.userData.ropeStowed=true;anchor.userData.ropeWasVisible=anchor.visible;}anchor.visible=false;}else if(anchor.userData.ropeStowed){anchor.visible=anchor.userData.ropeWasVisible;delete anchor.userData.ropeStowed;delete anchor.userData.ropeWasVisible;}}
   if(gripping){reach(m,true,{x:-.07,y:2.24,z:.13});reach(m,false,{x:.07,y:2.24,z:.13});}

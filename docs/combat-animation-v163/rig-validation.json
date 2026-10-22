@@ -1,0 +1,319 @@
+{
+  "samples": 2262,
+  "report": [
+    {
+      "kind": "gladius",
+      "left": false,
+      "region": "head",
+      "error": 0.0010380971217401201,
+      "minFoot": 0.12478313934442598,
+      "maxTip": 1.5090235966088836
+    },
+    {
+      "kind": "gladius",
+      "left": false,
+      "region": "chest",
+      "error": 0.0010382752403543985,
+      "minFoot": 0.12478313934442598,
+      "maxTip": 1.6757593528891785
+    },
+    {
+      "kind": "gladius",
+      "left": false,
+      "region": "legs",
+      "error": 0.001038479311236831,
+      "minFoot": 0.12478313934442598,
+      "maxTip": 1.688406555286949
+    },
+    {
+      "kind": "gladius",
+      "left": true,
+      "region": "head",
+      "error": 0.00001070486892644495,
+      "minFoot": 0.12478139689453882,
+      "maxTip": 1.5090245781079015
+    },
+    {
+      "kind": "gladius",
+      "left": true,
+      "region": "chest",
+      "error": 0.000012842807147770628,
+      "minFoot": 0.12478139689453882,
+      "maxTip": 1.6757615655234894
+    },
+    {
+      "kind": "gladius",
+      "left": true,
+      "region": "legs",
+      "error": 0.000011873568432687122,
+      "minFoot": 0.12478139689453882,
+      "maxTip": 1.6884095275592148
+    },
+    {
+      "kind": "sica",
+      "left": false,
+      "region": "head",
+      "error": 0.000012292384691457354,
+      "minFoot": 0.12478254775004274,
+      "maxTip": 1.011678677600533
+    },
+    {
+      "kind": "sica",
+      "left": false,
+      "region": "chest",
+      "error": 0.00001689225871454171,
+      "minFoot": 0.12478254775004274,
+      "maxTip": 1.0648264799078715
+    },
+    {
+      "kind": "sica",
+      "left": false,
+      "region": "legs",
+      "error": 0.000013616674839418973,
+      "minFoot": 0.12478254775004274,
+      "maxTip": 1.255103592149443
+    },
+    {
+      "kind": "sica",
+      "left": true,
+      "region": "head",
+      "error": 0.000006765997649354171,
+      "minFoot": 0.12478111444622375,
+      "maxTip": 1.011674564443572
+    },
+    {
+      "kind": "sica",
+      "left": true,
+      "region": "chest",
+      "error": 0.000006765997649354171,
+      "minFoot": 0.12478111444622375,
+      "maxTip": 1.0648227311339278
+    },
+    {
+      "kind": "sica",
+      "left": true,
+      "region": "legs",
+      "error": 0.000005853076057346819,
+      "minFoot": 0.12478111444622375,
+      "maxTip": 1.2550961818007873
+    },
+    {
+      "kind": "mace",
+      "left": false,
+      "region": "head",
+      "error": 0.03139110987880158,
+      "minFoot": 0.12478314602301066,
+      "maxTip": 1.6359326812309227
+    },
+    {
+      "kind": "mace",
+      "left": false,
+      "region": "chest",
+      "error": 0.03139114081898269,
+      "minFoot": 0.12478314602301066,
+      "maxTip": 1.8932648030873098
+    },
+    {
+      "kind": "mace",
+      "left": false,
+      "region": "legs",
+      "error": 0.031391162202987176,
+      "minFoot": 0.12478314602301066,
+      "maxTip": 1.8996412119646462
+    },
+    {
+      "kind": "mace",
+      "left": true,
+      "region": "head",
+      "error": 0.000007154402925529159,
+      "minFoot": 0.12478124726667966,
+      "maxTip": 1.6380428057775949
+    },
+    {
+      "kind": "mace",
+      "left": true,
+      "region": "chest",
+      "error": 0.000009854265371484938,
+      "minFoot": 0.12478124726667966,
+      "maxTip": 1.8979014041195483
+    },
+    {
+      "kind": "mace",
+      "left": true,
+      "region": "legs",
+      "error": 0.000009978705802353572,
+      "minFoot": 0.12478124726667966,
+      "maxTip": 1.9107384444751263
+    },
+    {
+      "kind": "whip",
+      "left": false,
+      "region": "head",
+      "error": 0.03139114512528061,
+      "minFoot": 0.12478314814518415,
+      "maxTip": 2.373307645395337
+    },
+    {
+      "kind": "whip",
+      "left": false,
+      "region": "chest",
+      "error": 0.03139117373037815,
+      "minFoot": 0.12478314814518415,
+      "maxTip": 2.593218089677772
+    },
+    {
+      "kind": "whip",
+      "left": false,
+      "region": "legs",
+      "error": 0.03139119991193984,
+      "minFoot": 0.12478314814518415,
+      "maxTip": 2.597532262158822
+    },
+    {
+      "kind": "whip",
+      "left": true,
+      "region": "head",
+      "error": 0.00002144724883828143,
+      "minFoot": 0.12478140190702491,
+      "maxTip": 2.3763411676191515
+    },
+    {
+      "kind": "whip",
+      "left": true,
+      "region": "chest",
+      "error": 0.00002328346909197527,
+      "minFoot": 0.12478140190702491,
+      "maxTip": 2.598346950530927
+    },
+    {
+      "kind": "whip",
+      "left": true,
+      "region": "legs",
+      "error": 0.000022287094593007982,
+      "minFoot": 0.12478140190702491,
+      "maxTip": 2.60560162639933
+    },
+    {
+      "kind": "spear",
+      "left": false,
+      "region": "head",
+      "error": 0.0000016363088990387281,
+      "minFoot": 0.12478323774914846,
+      "maxTip": 0.7300003805773776
+    },
+    {
+      "kind": "spear",
+      "left": false,
+      "region": "chest",
+      "error": 0.0000016411843360685116,
+      "minFoot": 0.12478323774914846,
+      "maxTip": 0.7300003805773776
+    },
+    {
+      "kind": "spear",
+      "left": false,
+      "region": "legs",
+      "error": 0.0000016050416836045503,
+      "minFoot": 0.12478323774914846,
+      "maxTip": 0.7300003726007147
+    },
+    {
+      "kind": "spear",
+      "left": true,
+      "region": "head",
+      "error": 0.000006069060540834579,
+      "minFoot": 0.12478140190699527,
+      "maxTip": 0.7300003331708117
+    },
+    {
+      "kind": "spear",
+      "left": true,
+      "region": "chest",
+      "error": 0.000006337433706556939,
+      "minFoot": 0.12478140190699527,
+      "maxTip": 0.7300003331708117
+    },
+    {
+      "kind": "spear",
+      "left": true,
+      "region": "legs",
+      "error": 0.000006188816251361201,
+      "minFoot": 0.12478140190699527,
+      "maxTip": 0.7300003619964817
+    },
+    {
+      "kind": "trident",
+      "left": false,
+      "region": "head",
+      "error": 0.0000012344558977768823,
+      "minFoot": 0.12478326581676374,
+      "maxTip": 0.7300004302861918
+    },
+    {
+      "kind": "trident",
+      "left": false,
+      "region": "chest",
+      "error": 0.0000012701998655758926,
+      "minFoot": 0.12478326581676374,
+      "maxTip": 0.7300004302861918
+    },
+    {
+      "kind": "trident",
+      "left": false,
+      "region": "legs",
+      "error": 0.0000012922656192867675,
+      "minFoot": 0.12478326581676374,
+      "maxTip": 0.7300004990321523
+    },
+    {
+      "kind": "trident",
+      "left": true,
+      "region": "head",
+      "error": 0.000006069060540934979,
+      "minFoot": 0.12478140190699527,
+      "maxTip": 0.7300003426365063
+    },
+    {
+      "kind": "trident",
+      "left": true,
+      "region": "chest",
+      "error": 0.0000063374337063574375,
+      "minFoot": 0.12478140190699527,
+      "maxTip": 0.7300003426365063
+    },
+    {
+      "kind": "trident",
+      "left": true,
+      "region": "legs",
+      "error": 0.000006188816251039489,
+      "minFoot": 0.12478140190699527,
+      "maxTip": 0.7300003301551006
+    }
+  ],
+  "evades": [
+    {
+      "kind": "duck",
+      "lowest": 1.1848800147717033,
+      "highest": 1.7648800147717036,
+      "foot": 0.12478314887375724
+    },
+    {
+      "kind": "jump",
+      "lowest": 1.567065334253362,
+      "highest": 2.2404919352027264,
+      "foot": 0.13750162223849843
+    },
+    {
+      "kind": "step",
+      "lowest": 1.588805729066476,
+      "highest": 1.7617702863712792,
+      "foot": 0.10868024636812806
+    },
+    {
+      "kind": "roll",
+      "lowest": 0.16976923963494256,
+      "highest": 1.7627962576413054,
+      "foot": 0.06544059514655148
+    }
+  ]
+}
