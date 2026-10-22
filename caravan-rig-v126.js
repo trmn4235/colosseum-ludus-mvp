@@ -627,6 +627,7 @@ var ImportedGladiator=(function(){
   const gripping=f.navJump?.kind==='rope'&&!f.navJump.released&&f.hp>0&&!fallen;
   for(const anchor of [m.weaponAnchor,m.offhandAnchor,m.gear.shield?.group])if(anchor){if(gripping){if(!anchor.userData.ropeStowed){anchor.userData.ropeStowed=true;anchor.userData.ropeWasVisible=anchor.visible;}anchor.visible=false;}else if(anchor.userData.ropeStowed){anchor.visible=anchor.userData.ropeWasVisible;delete anchor.userData.ropeStowed;delete anchor.userData.ropeWasVisible;}}
   if(gripping){reach(m,true,{x:-.07,y:2.24,z:.13});reach(m,false,{x:.07,y:2.24,z:.13});}
+  if(typeof ArenaMotionStability!=='undefined')ArenaMotionStability.wrists(f,m);
   const flashed=f.flash>0;if(m.emissiveFlashed!==flashed){m.emissiveFlashed=flashed;for(const material of m.materials)material.emissive?.setHex(flashed?0x29100a:0);}m.root.updateMatrixWorld(true);GroundFall.finish(m,fallen);
   if(f.navHeight){m.root.position.y+=f.navHeight;m.root.updateMatrixWorld(true);}m.shadow.visible=!f.navJump?.airborne;
  }

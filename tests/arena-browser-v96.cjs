@@ -20,6 +20,7 @@ async function main(){
    .replace('mainMenu();Promise.all([LudusBattle.load()',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,saveReward,begin,setPaused,dropBatch,animateCharacter,renderWeapons,
     freeze:()=>{paused=true;window.__stopLoop=true;},
     step:(dt,run=true)=>{paused=!run;window.__stopLoop=false;frame(last+dt*1000);paused=true;window.__stopLoop=true;},
+    resetResult:()=>{resultAt=0;$('result').hidden=true;resultRecorded=false;},
     get started(){return started;}};let drawCount=0;const originalRender=renderer.render;renderer.render=function(...args){drawCount++;return originalRender.apply(this,args)};window.__drawCount=()=>drawCount;
     mainMenu();Promise.all([LudusBattle.load()`));
   res.writeHead(200,{'content-type':mime[path.extname(filename)]||'application/octet-stream','cache-control':'no-store'}).end(body);
@@ -57,6 +58,7 @@ async function main(){
  if(process.env.LUDUS_GEAR_TEST==='1')await require('./equipment-stability-browser-v164.cjs')(page,out);
  if(process.env.LUDUS_REALISM_TEST==='1')await require('./arena-realism-visual-v114.cjs')(page,out);
  if(process.env.LUDUS_STABILITY_TEST==='1')await require('./arena-stability-browser-v115.cjs')(page,out);
+ if(process.env.LUDUS_FLOW_TEST==='1')await require('./combat-flow-browser-v165.cjs')(page,out);
  if(current){
   const stopped=await page.evaluate(()=>{__arena.step(1/60,false);const before=__drawCount(),time=__arena.combat.time;for(let i=0;i<60;i++)__arena.step(1/60,false);return {draws:__drawCount()-before,seconds:__arena.combat.time-time};});
   assert.equal(stopped.draws,0);assert.equal(stopped.seconds,0);
