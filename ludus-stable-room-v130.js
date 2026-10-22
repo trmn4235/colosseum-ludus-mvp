@@ -1,7 +1,7 @@
 /* V139 open-air stable and relaxed groom; V130 husbandry models. Repeated architecture is instanced; owned horses share one asset. */
 var LudusStableRoom=(()=>{
  'use strict';
- const WIDTH=30,DEPTH=54,ROWS=6;
+ const WIDTH=30,DEPTH=70,ROWS=6;
  function cloneRig(source){
   const copy=source.clone(true),map=new Map();
   const pair=(a,b)=>{map.set(a,b);a.children.forEach((c,i)=>pair(c,b.children[i]));};pair(source,copy);
