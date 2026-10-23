@@ -10,7 +10,7 @@ var ArenaClasses={
  provocator:{name:'Provocator',weapon:'gladius',shield:'large',color:0x8b3029,crest:true},
  scissor:{name:'Scissor',weapon:'gladius',shield:null,color:0x594534,armor:true,scissor:true}
 };
-var ArenaWeapons={gladius:{name:'Gladius',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident:{name:'Üç dişli mızrak',range:2.75},mace:{name:'Zincirli gürz',range:2.25},whip:{name:'Kırbaç',range:2}};
+var ArenaWeapons={gladius:{name:'Gladius',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident:{name:'Üç dişli mızrak',range:2.75},heavy_mace:{name:'Ağır gürz',range:1.95},warhammer:{name:'Savaş çekici',range:1.95},mace:{name:'Zincirli gürz',range:2.25},whip:{name:'Kırbaç',range:2}};
 // Master v7: six stats total 300; Overall is their mean, not character level.
 var ArenaBasicStats={murmillo:[60,55,50,60,35,40],thraex:[45,50,60,35,60,50],hoplomachus:[50,55,50,45,45,55],secutor:[55,55,50,55,40,45],retiarius:[40,55,45,30,65,65],provocator:[65,60,45,65,30,35],scissor:[50,50,60,40,55,45]};
 for(const [key,values] of Object.entries(ArenaBasicStats))ArenaClasses[key].stats=Object.fromEntries(['health','stamina','strength','defense','agility','speed'].map((s,i)=>[s,values[i]]));
@@ -22,7 +22,7 @@ var ArenaMotion=(function(){
  const regions={head:{name:'BAŞ',y:1.9,r:.25},chest:{name:'GÖVDE',y:1.38,r:.36},leftArm:{name:'SOL KOL',y:1.35,r:.24},rightArm:{name:'SAĞ KOL',y:1.35,r:.24},rightLeg:{name:'SAĞ BACAK',y:.65,r:.23},leftLeg:{name:'SOL BACAK',y:.65,r:.23},legs:{name:'BACAK',y:.65,r:.33}};
  const smooth=t=>{t=clamp(t);return t*t*(3-2*t);},mix=(a,b,t)=>a+(b-a)*t;
  // V114: preserve a readable preparation and a deliberate return to guard.
- function profile(kind,heavy=false,bot=false){const pole=kind==='spear'||kind==='trident',timings={gladius:[.25,.20,.45],sica:[.23,.19,.40],spear:[.32,.22,.48],trident:[.36,.24,.52],mace:[.40,.26,.56],whip:[.32,.24,.48]},v=timings[kind]||[.22,.18,.35],wind=v[0]*(heavy?1.35:bot?1.15:1),active=v[1],recover=v[2]*(heavy?1.2:1);return {wind,active,recover,duration:wind+active+recover,pole,length:pole?1.7:kind==='mace'?1.02:kind==='whip'?1.65:kind?.78:.18};}
+ function profile(kind,heavy=false,bot=false){const pole=kind==='spear'||kind==='trident',timings={gladius:[.25,.20,.45],sica:[.23,.19,.40],spear:[.32,.22,.48],trident:[.36,.24,.52],heavy_mace:[.40,.26,.56],warhammer:[.44,.26,.60],mace:[.40,.26,.56],whip:[.32,.24,.48]},v=timings[kind]||[.22,.18,.35],wind=v[0]*(heavy?1.35:bot?1.15:1),active=v[1],recover=v[2]*(heavy?1.2:1);return {wind,active,recover,duration:wind+active+recover,pole,length:pole?1.7:kind==='heavy_mace'?.86:kind==='warhammer'?1.02:kind==='mace'?1.02:kind==='whip'?1.65:kind?.78:.18};}
  function speedFactor(f){return Math.min(1.18,(.9+.002*clamp(Number(f.agility??50),0,100))*(1+clamp(Number(f.itemStats?.attack_speed||0)/100,0,.25)));}
  function pace(f){const p={...f.attackProfile},factor=speedFactor(f);for(const key of ['wind','active','recover'])p[key]/=factor;p.duration=p.wind+p.active+p.recover;return p;}
  function impactQuality(f,v){return ['spear','trident'].includes(f.attackWeapon??f.weapon)?clamp((Math.hypot(f.x-v.x,f.z-v.z)-.75)/1.05,.28,1):1;}
@@ -168,7 +168,7 @@ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),delta=(a,b)=>Math.atan2(Math.sin(
 class ArenaCombat {
  constructor(random=Math.random){this.random=random;this.reset();}
  reset(difficulty='normal',playerType='secutor',mode='4x5'){
-  Object.assign(this,{mode,allowDrops:true,difficulty,time:0,events:[],finished:false,result:null,combo:0,comboUntil:0,lockedTarget:null,nets:[],netSequence:0,projectiles:[],projectileSequence:0,drops:[],dropSequence:0});
+  Object.assign(this,{mode,equipmentVersion:168,allowDrops:true,difficulty,time:0,events:[],finished:false,result:null,combo:0,comboUntil:0,lockedTarget:null,nets:[],netSequence:0,projectiles:[],projectileSequence:0,drops:[],dropSequence:0});
   this.stats={hits:0,blocks:0,dodges:0,damage:0,damageTaken:0,kills:0,parries:0,knockdowns:0,nets:0};
   const names=['Cassius','Varro','Felix','Drusus','Marcus','Titus','Lucius','Cato','Brutus','Aulus','Flavius','Decimus','Gaius','Quintus','Severus','Nero','Octavius','Rufus','Maximus','Silvanus'];
   this.fighters=names.map((name,id)=>{const team=mode==='solo20'?id:Math.floor(id/5),k=id%5,col=[0,-1,1,-2,2][k],row=0,type=id===0&&Classes[playerType]?playerType:Object.keys(Classes)[id%7],c=Classes[type];return {
@@ -188,23 +188,23 @@ class ArenaCombat {
   if(!this.allowDrops||!f[slot])return null;
   const kind=slot==='weapon'||slot==='offhand'?f[slot]:slot==='leftGear'?f.leftGear:slot;
   const style=slot==='shield'?f.shieldStyle:slot==='helmet'?f.helmetStyle:f.type;
-  const d={id:++this.dropSequence,kind,style,slot,team:f.team,itemEntry:f.equipment?.[slot],helmetColor:f.helmetColor,durability:broken?Math.max(18,slot==='shield'?30:20):Math.max(1,f.wear[slot]||35),x:f.x+(slot==='weapon'?.6:-.6),z:f.z};this.bound(d,16.8);this.drops.push(d);
+  const d={id:++this.dropSequence,kind,style,slot,team:f.team,itemEntry:f.equipment?.[slot],helmetColor:f.helmetColor,shieldBreakerHits:slot==='shield'?(f.shieldBreakerHits||0):0,durability:broken?Math.max(18,slot==='shield'?30:20):Math.max(1,f.wear[slot]||35),x:f.x+(slot==='weapon'?.6:-.6),z:f.z};this.bound(d,16.8);this.drops.push(d);
   f[slot]=['weapon','offhand','leftGear'].includes(slot)?null:false;
   if(slot==='shield'){f.blocking=false;f.shieldHeldBy=null;}
   if(f.equipment)delete f.equipment[slot];root.LudusLoadout?.refresh(f);this.emit('equipmentdrop',{id:f.id,drop:d.id,kind,broken});return d;
  }
  dropWeapon(f,slot='weapon'){return this.dropEquipment(f,slot);}
- canPickup(f,d){return this.allowDrops&&!!d&&!(f.netBusy&&(d.kind==='net'||d.kind==='scissor'||d.kind==='shield'||(Weapons[d.kind]&&f.pickupHand==='offhand')));}
+ canPickup(f,d){return this.allowDrops&&!!d&&!d.shattered&&!(f.netBusy&&(d.kind==='net'||d.kind==='scissor'||d.kind==='shield'||(Weapons[d.kind]&&f.pickupHand==='offhand')));}
  nearestDrop(id=0,range=1.8,missing=false){const f=this.fighters[id];if(!f||f.hp<=0)return null;let best=null;for(const d of this.drops)if(this.canPickup(f,d)&&(!missing||this.needsDrop(f,d))&&distance(f,d)<range){best=d;range=distance(f,d);}return best;}
  needsDrop(f,d){return Weapons[d.kind]?!f.weapon:d.kind==='shield'||d.kind==='net'||d.kind==='scissor'?!f.shield&&!f.offhand&&!f.leftGear:!f[d.kind];}
- clearLeft(f){this.dropEquipment(f,'shield');this.dropEquipment(f,'offhand');this.dropEquipment(f,'leftGear');}
+ clearLeft(f){f.brokenShield=null;this.dropEquipment(f,'shield');this.dropEquipment(f,'offhand');this.dropEquipment(f,'leftGear');}
  pickup(id,dropId){
   const f=this.fighters[id],index=this.drops.findIndex(d=>d.id===dropId),d=this.drops[index];
   if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stunUntil>this.time||!this.canPickup(f,d)||distance(f,d)>1.8)return false;
   this.drops.splice(index,1);let slot;
   if(Weapons[d.kind]){slot=f.pickupHand;if(slot==='offhand'){this.clearLeft(f);f.dualMode=true;}else this.dropWeapon(f);f[slot]=d.kind;}
   else if(d.kind==='net'||d.kind==='scissor'){this.clearLeft(f);slot='leftGear';f.leftGear=d.kind;f.pickupHand='offhand';}
-  else if(d.kind==='shield'){this.clearLeft(f);slot='shield';f.shield=true;f.shieldStyle=d.style;f.pickupHand='offhand';}
+  else if(d.kind==='shield'){this.clearLeft(f);slot='shield';f.shieldBreakerHits=d.shieldBreakerHits||0;f.shield=true;f.shieldStyle=d.style;f.pickupHand='offhand';}
   else{slot=d.kind;this.dropEquipment(f,slot);f[slot]=true;if(slot==='helmet')f.helmetStyle=d.style;}
   if(f.equipment&&d.itemEntry)f.equipment[slot]=d.itemEntry;if(slot==='helmet'){f.helmetColor=d.helmetColor;f.helmetModel=d.itemEntry?.item?.model||d.helmetModel||d.helmetColor||d.style;}root.LudusLoadout?.refresh(f);f.wear[slot]=d.durability||40;this.emit('pickup',{id,kind:d.kind,drop:dropId,slot});return true;
  }
@@ -260,6 +260,12 @@ class ArenaCombat {
   attacker.recoilBody=Motion.body(attacker);attacker.recoilSample=Motion.sample(attacker);attacker.action=perfect?'stagger':'recoil';attacker.timer=0;attacker.duration=perfect?.62:attacker.attackKind==='heavy'?.30:.23;attacker.hitDone=true;
   if(perfect){victim.counterTarget=attacker.id;victim.counterUntil=this.time+.70;victim.parryReadyAt=Math.max(victim.parryReadyAt,this.time+.42);}
  }
+ shieldBreakerHit(attacker,victim){
+  if(this.equipmentVersion<168||!victim.shield||victim.guardRegion||!['mace','heavy_mace','warhammer'].includes(attacker.attackWeapon??attacker.weapon))return false;
+  victim.shieldBreakerHits=(victim.shieldBreakerHits||0)+1;
+  if(victim.shieldBreakerHits>=2){victim.brokenShield=victim.equipment?.shield;const d=this.dropEquipment(victim,'shield',true);if(d)d.shattered=true;victim.shield=false;victim.blocking=false;victim.shieldHeldBy=null;victim.wear.shield=0;this.emit('break',{id:victim.id,source:attacker.id,shield:true});}
+  return true;
+ }
  guard(attacker,victim,heavy=false,point=null){
   const source=Math.atan2(attacker.x-victim.x,attacker.z-victim.z),front=Math.abs(delta(source,victim.angle))<1.35;
   if(!victim.blocking||!this.canBlock(victim)||!front)return false;
@@ -267,11 +273,12 @@ class ArenaCombat {
   if(!victim.guardRegion&&attacker._meleeContact&&!attacker._shieldContact&&!victim._automaticGuard)return false;
   const perfect=attacker.action==='attack'&&!victim._automaticGuard&&victim.id===0&&this.time-victim.guardPressedAt<=.20&&victim.guardPressedAt>=0;
   const cost=perfect?6:heavy?34:20;if(victim.stamina<cost){victim.stamina=0;victim.blocking=false;victim.guardPressedAt=-99;this.wearEquipment(victim,'shield',25);this.emit('break',{id:victim.id,source:attacker.id});return false;}
+  const breaker=this.shieldBreakerHit(attacker,victim);
   victim.stamina-=cost;victim.regenDelay=.9;victim.guardFlash=.20;victim.guardImpact=heavy?1:.65;if(victim.id===0)this.stats.blocks++;
   const gp=Motion.guardPoint(victim),c=Math.cos(victim.angle),s=Math.sin(victim.angle);victim.guardImpactX=point?clamp(((point.x-victim.x)*c-(point.z-victim.z)*s-gp.x)/.4,-1,1):0;victim.guardImpactY=point?clamp((point.y-(victim.navHeight||0)-gp.y)/.56,-1,1):0;
   attacker.strikeConnected=true;this.deflectAttack(attacker,victim,perfect);
   if(perfect){victim.guardPressedAt=-99;this.stats.parries++;this.wearEquipment(attacker,attacker.attackLeft?'offhand':'weapon',heavy?26:15);this.emit('parry',{id:victim.id,source:attacker.id,point,perfect:true});}
-  else{this.wearEquipment(victim,'shield',heavy?29:10);this.emit('block',{id:victim.id,source:attacker.id,point,heavy});}return true;
+  else{if(!breaker)this.wearEquipment(victim,'shield',heavy?29:10);this.emit('block',{id:victim.id,source:attacker.id,point,heavy});}return true;
  }
  hit(attacker,victim,geometric=false,guardPoint=null){
   if(!this.enemy(attacker,victim)||victim.action==='knocked'&&victim.timer<.8)return false;
@@ -534,8 +541,8 @@ if(false)module.exports=install;else install(root.ArenaCombat,root.ArenaClasses)
   const combatValues=root.LudusCombatValues?.create({client:options.client,getUser:options.getUser,getSelected:()=>selected,host:panel});
   const phase=g=>options.phase?.(g)||(Date.parse(record(g).injured_until)>now()?'injured':record(g).status==='available'?'available':record(g).status);
   const canDress=g=>phase(g)==='available'&&record(g).status==='available'&&!record(g).clan_roster_id;
-  const fits=(item,slot)=>slot==='main_hand'?item.kind==='weapon'&&['gladius','sica','spear','trident','mace','whip'].includes(item.model):slot==='off_hand'?['weapon','shield'].includes(item.kind):item.kind===slot;
-  const itemName=item=>item.name||({gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident:'Üç dişli mızrak',mace:'Zincirli gürz',whip:'Kırbaç',net:'Ağ',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',gold:'Gladyatör miğferi',silver:'Şövalye miğferi',starter:'Başlangıç ekipmanı'})[item.model]||item.model;
+  const fits=(item,slot)=>slot==='main_hand'?item.kind==='weapon'&&['gladius','sica','spear','trident','mace','whip','heavy_mace','warhammer'].includes(item.model):slot==='off_hand'?['weapon','shield'].includes(item.kind):item.kind===slot;
+  const itemName=item=>item.name||({gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident:'Üç dişli mızrak',heavy_mace:'Ağır gürz',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',net:'Ağ',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',gold:'Gladyatör miğferi',silver:'Şövalye miğferi',starter:'Başlangıç ekipmanı'})[item.model]||item.model;
   const candidates=()=> (options.inventory?.()||[]).filter(i=>fits(i,gearSlot)&&!i.locked_battle_id&&!i.clan_vault_id&&!i.clan_roster_id&&(!i.equipped_by||i.equipped_by===record(selected).id)&&!(i.equipped_by===record(selected).id&&i.equipped_slot===gearSlot));
   const eligible=g=>{const r=record(g);return phase(g)==='available'&&r.status==='available'&&!r.clan_roster_id&&!r.trained_today&&!r.exercise_completed&&energy(r,now())>0&&Number(r.base_stats?.[stat]??50)<100;};
   function node(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
@@ -632,7 +639,7 @@ LudusLoadout.combatSlot=function(slot,item){return slot==='main_hand'?'weapon':s
 LudusLoadout.inventorySlot=slot=>({weapon:'main_hand',shield:'off_hand',offhand:'off_hand',leftGear:'off_hand',greaves:'legs',shoulders:'gloves'})[slot]||slot;
 LudusLoadout.initialize=function(combat,ticket){if(ticket.rule_version!==2){combat.allowDrops=false;return;}combat.allowDrops=true;for(const f of combat.fighters){f.equipment={};f.gearBase=f.id===0?ticket.snapshot.gladiator:{name:f.name,class:f.type,level:1,base_stats:{health:100,stamina:100,strength:10,defense:10,agility:10}};for(const entry of ticket.loot.filter(e=>e.actor===f.id))f.equipment[this.combatSlot(entry.slot,entry.item)]=entry;this.refresh(f,true);}};
 LudusLoadout.refresh=function(f,initial=false){if(!f.equipment||!f.gearBase)return;const damage=f.maxHp-f.hp,hp=f.hp,stamina=f.stamina,hand=f.pickupHand;const items=Object.entries(f.equipment).map(([slot,entry])=>({...entry.item,equipped_slot:this.inventorySlot(slot)}));this.apply(f,f.gearBase,items);if(!initial){f.hp=hp<=0?0:Math.max(1,f.maxHp-damage);f.stamina=Math.max(0,Math.min(stamina,f.maxStamina));f.pickupHand=hand;}const h=items.find(i=>i.equipped_slot==='helmet');f.helmetModel=h?.model;f.helmetColor=['gold','silver'].includes(h?.model)?h.model:null;};
-LudusLoadout.exitSlots=function(f){if(f.hp<=0)return {};return Object.fromEntries(Object.entries(f.equipment||{}).filter(([slot])=>f[slot]).map(([slot,entry])=>[this.inventorySlot(slot),entry.token]));};
+LudusLoadout.exitSlots=function(f){if(f.hp<=0)return {};return Object.fromEntries(Object.entries({...f.equipment,...(!f.shield&&!f.offhand&&!f.leftGear&&f.brokenShield?{shield:f.brokenShield}:{})}).filter(([slot])=>f[slot]||slot==='shield'&&f.brokenShield).map(([slot,entry])=>[this.inventorySlot(slot),entry.token]));};
 
 // C.docx master v1.0. Deterministic rules only: no client-side rolls or currency writes.
 var LudusItemSystem = (() => {
@@ -777,7 +784,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
  const guard=P.guard;
  P.guard=function(a,v,heavy,point){
   const s=v.itemStats||{};const facing=Math.abs(Math.atan2(Math.sin(Math.atan2(a.x-v.x,a.z-v.z)-v.angle),Math.cos(Math.atan2(a.x-v.x,a.z-v.z)-v.angle)))<1.1;
-  const shieldGuard=()=>{const before=v.stamina,blocked=guard.call(this,a,v,heavy,point);if(blocked&&v.shield){const spent=Math.max(0,before-v.stamina);v.stamina=Math.min(v.maxStamina??100,v.stamina+spent*clamp((s.block_power||0)/100,0,.4));}return blocked;};
+  const shieldGuard=()=>{const before=v.stamina,hadShield=v.shield,blocked=guard.call(this,a,v,heavy,point);if(blocked&&hadShield){const spent=Math.max(0,before-v.stamina);v.stamina=Math.min(v.maxStamina??100,v.stamina+spent*clamp((s.block_power||0)/100,0,.4));}return blocked;};
   if(!v.blocking&&v.action==='idle'&&facing){
    if((v.weapon||v.offhand||v.leftGear==='scissor')&&v.stamina>=6&&this.random()<clamp((s.parry_rate||0)/100,0,.2)){this.deflectAttack(a,v,false);this.emit('parry',{id:v.id,source:a.id,point,perfect:false});v.stamina=Math.max(0,v.stamina-6);return true;}
    if(v.shield&&this.random()<clamp((s.block_rate||0)/100,0,.3)){v.blocking=true;v._automaticGuard=true;try{return shieldGuard();}finally{v.blocking=false;v._automaticGuard=false;}}

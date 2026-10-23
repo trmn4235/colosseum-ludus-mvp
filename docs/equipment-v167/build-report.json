@@ -1,0 +1,94 @@
+[
+  {
+    "id": "warhammer",
+    "version": 167,
+    "source": "Hammer_3.fbx",
+    "handOrigin": [
+      0,
+      0,
+      0
+    ],
+    "longAxis": "+Y",
+    "triangles": 5332,
+    "paint": "Hand-authored PBR materials and deterministic vertex patina; no generative AI",
+    "originalTexturesIncluded": false,
+    "bytes": 337084,
+    "sourceTriangles": 267830,
+    "bounds": {
+      "min": [
+        -0.3030741810798645,
+        -0.32990604639053345,
+        -0.18196426331996918
+      ],
+      "max": [
+        0.3466392159461975,
+        0.8191757798194885,
+        0.1832239031791687
+      ]
+    },
+    "parts": [
+      {
+        "name": "Torus",
+        "sourceTriangles": 55296,
+        "triangles": 1078,
+        "simplificationError": 0.003985655959695578
+      },
+      {
+        "name": "Куб",
+        "sourceTriangles": 1254,
+        "triangles": 1254,
+        "simplificationError": 0
+      },
+      {
+        "name": "Окружность001",
+        "sourceTriangles": 96256,
+        "triangles": 1500,
+        "simplificationError": 0.0005969357443973422
+      },
+      {
+        "name": "Окружность",
+        "sourceTriangles": 115024,
+        "triangles": 1500,
+        "simplificationError": 0.000572275195736438
+      }
+    ],
+    "sha256": "b4851eb43210961450e8f2539392bc629a0e153580b9fb644536b04ab81de34e"
+  },
+  {
+    "id": "heavy_mace",
+    "version": 167,
+    "source": "Mace_2_optimized.fbx",
+    "handOrigin": [
+      0,
+      0,
+      0
+    ],
+    "longAxis": "+Y",
+    "triangles": 3126,
+    "paint": "Hand-authored PBR materials and deterministic vertex patina; no generative AI",
+    "originalTexturesIncluded": false,
+    "bytes": 189856,
+    "sourceTriangles": 3126,
+    "bounds": {
+      "min": [
+        -0.1040448546409607,
+        -0.24552838504314423,
+        -0.10410914570093155
+      ],
+      "max": [
+        0.1040448546409607,
+        0.8326376676559448,
+        0.10398055613040924
+      ]
+    },
+    "parts": [
+      {
+        "name": "Mace_2_UV",
+        "sourceTriangles": 3126,
+        "triangles": 3126,
+        "simplificationError": 0
+      }
+    ],
+    "sha256": "ef408acb1ce5b1c08e1bf01d436a8edaddc71b4ea9a1029a4181d8a381c3a7eb"
+  }
+]

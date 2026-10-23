@@ -4,7 +4,7 @@
 const steps=[['inspect','Gladyatörlerini tanı','Sınıfını ve özelliklerini incele.'],['equipment','Ekipmanını hazırla','Takılı eşyalarını kontrol et.'],['mission','İlk görevine çık','Hazır bir gladyatörü göreve gönder.'],['training','Antrenmana başla','Diğer gladyatörünle çalış.']];
 const classes={murmillo:'Murmillo',thraex:'Thraex',hoplomachus:'Hoplomachus',secutor:'Secutor',retiarius:'Retiarius',provocator:'Provocator',scissor:'Scissor'};
 const slots={main_hand:'Silah',off_hand:'İkinci el',helmet:'Miğfer',chest:'Zırh',gloves:'Kolluk',legs:'Bacaklık'};
-const names={gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident:'Üç dişli mızrak',net:'Ağ',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',mace:'Zincirli gürz',whip:'Kırbaç'};
+const names={gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident:'Üç dişli mızrak',net:'Ağ',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',heavy_mace:'Ağır gürz',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç'};
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,fn,cls='')=>{const n=el('button',cls,text);n.type='button';n.onclick=fn;if(text)n.setAttribute('aria-label',text);return n;};
 const number=n=>Number(n||0).toLocaleString('tr-TR',{maximumFractionDigits:1});

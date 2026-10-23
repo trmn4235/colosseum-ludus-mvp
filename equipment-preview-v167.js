@@ -1,0 +1,18 @@
+(function(){
+ 'use strict';const T=THREE,api=LudusEquipmentCatalog,canvas=document.getElementById('viewer'),status=document.getElementById('status'),retry=document.getElementById('retry');let renderer,current,id='warhammer',sequence=0,drag,angle=-.25;
+ try{renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false});}catch(error){document.getElementById('fallback').style.display='block';status.textContent='Bu cihazda 3D görünüm açılamadı. Boyanmış modellerin önizlemesi gösteriliyor.';document.querySelectorAll('nav button').forEach(b=>b.disabled=true);return;}
+ renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+ const scene=new T.Scene();scene.background=new T.Color('#f5f3ee');const camera=new T.PerspectiveCamera(33,1,.01,30),pivot=new T.Group();scene.add(pivot);scene.add(new T.HemisphereLight(0xffffff,0x787064,2));
+ for(const [pos,power,color]of [[[1,3,3],3,0xfff4e5],[[-3,1,-2],2,0xddeaff],[[2,1,-3],2,0xffffff]]){const light=new T.DirectionalLight(color,power);light.position.set(...pos);scene.add(light);}
+ const env=new T.Scene();env.background=new T.Color(0x777777);
+ for(const [x,y,z,sx,sy,sz,color]of [[0,3,0,4,.05,4,0xffffff],[-3,1,0,.05,3,4,0xf1f4ff],[3,1,0,.05,3,2,0x555555],[0,1,4,3,2,.05,0xffffff]]){const panel=new T.Mesh(new T.BoxGeometry(sx,sy,sz),new T.MeshBasicMaterial({color}));panel.position.set(x,y,z);env.add(panel);}
+ const generator=new T.PMREMGenerator(renderer),environment=generator.fromScene(env,.08);scene.environment=environment.texture;generator.dispose();env.traverse(o=>{if(o.isMesh){o.geometry.dispose();o.material.dispose();}});
+ let size=1;function frame(){const aspect=canvas.clientWidth/canvas.clientHeight;camera.aspect=aspect;const distance=size/(2*Math.tan(T.MathUtils.degToRad(camera.fov/2)))*Math.max(1,1/aspect)*1.38;camera.position.set(0,size*.08,distance);camera.lookAt(0,0,0);camera.updateProjectionMatrix();pivot.rotation.y=angle;renderer.render(scene,camera);}
+ function resize(){renderer.setSize(innerWidth,innerHeight,false);frame();}addEventListener('resize',resize);resize();
+ async function select(next){id=next;const ticket=++sequence;retry.style.display='none';status.textContent='Model hazırlanıyor…';document.querySelectorAll('[data-item]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.item===id)));
+  try{const template=await api.load(T,id);if(ticket!==sequence)return;const model=template.clone(true);model.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(model),centre=bounds.getCenter(new T.Vector3()),extent=bounds.getSize(new T.Vector3());model.position.sub(centre);if(current)pivot.remove(current);current=model;pivot.add(current);size=Math.max(extent.y,extent.x);angle=-.25;status.textContent=api.entry(id).paint;frame();document.body.dataset.ready=id;}
+  catch(error){if(ticket!==sequence)return;status.textContent='Model yüklenemedi. Yeniden deneyebilirsin.';retry.style.display='block';document.body.dataset.ready='error';}
+ }
+ document.querySelectorAll('[data-item]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.item)));retry.addEventListener('click',()=>{api.retry(id);select(id);});document.getElementById('reset').addEventListener('click',()=>{angle=-.25;frame();});
+ canvas.addEventListener('pointerdown',e=>{drag=e.clientX;canvas.setPointerCapture(e.pointerId);});canvas.addEventListener('pointermove',e=>{if(drag===undefined)return;angle+=(e.clientX-drag)*.008;drag=e.clientX;frame();});for(const name of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(name,()=>{drag=undefined;});select(id);
+})();

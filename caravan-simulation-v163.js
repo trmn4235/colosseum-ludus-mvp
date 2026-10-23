@@ -8,7 +8,7 @@
   root.ArenaAuthoredCombat.install(root.ArenaCombat,root.ArenaMotion,{defaultVersion:0});
   const e=ticket.encounter,team=ticket.team;
   if(e?.version!==126||e.rules!==163||!Array.isArray(team)||team.length<2||team.length>5||e.guards<team.length||e.guards>team.length+1||e.archers!==1)throw Error('Savaş kaydı geçersiz.');
-  const random=seeded(e.seed),combat=new root.ArenaCombat(random);combat.reset('normal',team[0].class,'caravan');combat.allowDrops=true;combat.motionVersion=163;
+  const random=seeded(e.seed),combat=new root.ArenaCombat(random);combat.reset('normal',team[0].class,'caravan');combat.allowDrops=true;combat.equipmentVersion=167;combat.motionVersion=163;
   const types=Object.keys(root.ArenaClasses),average=team.reduce((n,g)=>n+Number(g.overall||50),0)/team.length;
   const bots=Array.from({length:e.guards},(_,i)=>{const type=types[Math.floor(random()*types.length)],c=root.ArenaClasses[type];return{name:'Muhafız '+(i+1),class:type,overall:average,items:[{kind:'weapon',model:c.weapon,equipped_slot:'main_hand'},...(c.shield?[{kind:'shield',model:c.shield,equipped_slot:'off_hand'}]:[]),{kind:'helmet',model:'roman',equipped_slot:'helmet'},{kind:'chest',model:'gladiator_chest',equipped_slot:'chest'},{kind:'legs',model:'starter',equipped_slot:'legs'}]};});
   const archer={name:'Okçu kervancı',class:'retiarius',overall:average,items:[],archer:true};

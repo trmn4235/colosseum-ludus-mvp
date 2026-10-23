@@ -1,0 +1,11 @@
+/* Fits existing white/burgundy item surfaces without adding a scrolling page. */
+.equipment-subcategories-v168{display:flex;gap:4px;flex-shrink:0;justify-content:center;padding:2px 0}
+.equipment-subcategories-v168[hidden],.forum-subcategory-v168[hidden]{display:none!important}
+.equipment-subcategories-v168 button{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;padding:3px 7px;font:clamp(10px,2.2dvh,13px) Arial;background:#fff;border:1px solid #d6c7b0;color:#50202c;border-radius:4px}
+.equipment-subcategories-v168 button[aria-pressed=true]{background:#702333;color:white;border-color:#702333}
+.equipment-subcategories-v168 img{width:24px;height:24px;object-fit:contain}
+.forum-subcategory-v168{display:flex;align-items:center;gap:8px;font:12px Arial;padding:3px 0;color:#562335}
+.forum-subcategory-v168 select,#supplyCraftSubcategory{min-width:0;max-width:220px;font:12px Arial;padding:4px;color:#562335;background:#fff;border:1px solid #d6c7b0;border-radius:4px}
+.equipment-feature-v168{display:block;color:#762637;font:11px/1.25 Arial;margin:3px 0}
+@media(max-height:440px){.equipment-subcategories-v168 button{padding:2px 5px}.equipment-subcategories-v168 img{width:19px;height:19px}.forum-subcategory-v168{padding:1px 0}.equipment-feature-v168{font-size:10px}}
+@media(max-height:350px){#forumMarket .forum-list-panel{gap:2px}#forumMarket .forum-mine-panel{height:54px;min-height:54px;padding:4px 7px}#forumMarket .forum-mine-panel h2{font-size:11px;line-height:12px;padding:0;margin:0 0 2px}#forumMarket .forum-subcategory-v168{padding:0}#forumMarket .forum-subcategory-v168 select{padding:3px 5px}}
