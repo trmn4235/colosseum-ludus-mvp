@@ -1,0 +1,29 @@
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict'),vm=require('node:vm');
+const {chromium}=require('playwright'),root=path.resolve(__dirname,'..');
+const travel=fs.readFileSync(root+'/rome-travel-v148.js','utf8'),dest=fs.readFileSync(root+'/rome-destinations-v148.js','utf8');
+async function cacheChecks(){
+ for(const file of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-assets-v126.js'])for(const stuck of ['open','match','put']){
+  const source=fs.readFileSync(root+'/'+file,'utf8'),start=source.indexOf('var ARENA_ASSET_BASE='),end=source.indexOf('function ArenaAssetLoad',start),bytes=new ArrayBuffer(12),view=new DataView(bytes);view.setUint32(0,0x46546c67,true);view.setUint32(4,2,true);view.setUint32(8,12,true);let fetches=0;
+  const cache={match:()=>stuck==='match'?new Promise(()=>{}):Promise.resolve(null),put:()=>stuck==='put'?new Promise(()=>{}):Promise.resolve(),delete:()=>Promise.resolve()};
+  const c=vm.createContext({URL,Map,Set,Promise,ArrayBuffer,DataView,Uint8Array,AbortController,Response,document:{baseURI:'https://fixture.invalid/arena.html'},caches:{open:()=>stuck==='open'?new Promise(()=>{}):Promise.resolve(cache)},fetch:async()=>{fetches++;return new Response(bytes)},setTimeout:(fn,ms)=>setTimeout(fn,ms===1200?1:ms),clearTimeout});vm.runInContext(source.slice(start,end),c);
+  const [a,b]=await Promise.all([c.ArenaAssets.load('test.glb'),c.ArenaAssets.load('test.glb')]);assert.equal(a.byteLength,12);assert.equal(a,b);assert.equal(fetches,1,file+' '+stuck+' must not block or duplicate network');
+ }
+}
+const server=http.createServer((req,res)=>{
+ const u=new URL(req.url,'http://local');if(u.pathname==='/rome.js')return res.end(travel);if(u.pathname==='/dest.js')return res.end(dest);
+ if(u.pathname.startsWith('/assets/')||u.pathname==='/slow.png'||u.pathname==='/blocked.js')return; // Deliberately never completes.
+ const blocked=u.searchParams.has('blocked'),circus=u.searchParams.get('travel')!=='colosseum';
+ res.setHeader('Content-Type','text/html');res.end('<!doctype html><html><head><script src="/dest.js"></script><script src="/rome.js"></script>'+(blocked?'<script src="/blocked.js"></script>':'')+'</head><body><div id="modePage">Modes</div><div id="setupPage" hidden>Equipment</div><div id="status">Hesabın yükleniyor…</div><button id="retry" hidden>Retry</button><div id="loading"></div><div id="loadText"></div><img src="/slow.png"><script>window.CircusPreview={visit:{active:false}};</script></body></html>');
+});
+(async()=>{await cacheChecks();await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,args:['--no-sandbox'],headless:true}),base='http://127.0.0.1:'+server.address().port;let cases=0;
+ try{
+  async function page(query='travel=colosseum',waitUntil='domcontentloaded'){const p=await browser.newPage({viewport:{width:932,height:430}});await p.clock.install();await p.goto(base+'/?'+query,{waitUntil});return p;}
+  for(const setup of [false,true]){const p=await page();await p.evaluate(setup=>{document.getElementById('modePage').hidden=setup;document.getElementById('setupPage').hidden=!setup;document.getElementById('status').textContent='';RomeTravel.pageReady();},setup);await p.clock.fastForward(6500);await p.clock.fastForward(500);assert.equal(await p.evaluate(()=>RomeTravel.active),false,'optional stalled images and document load cannot block ready UI');assert.notEqual(await p.evaluate(()=>document.readyState),'complete');await p.close();cases++;}
+  {const p=await page();await p.evaluate(()=>{document.getElementById('status').textContent='Hesap yüklenemedi: bağlantı hatası';document.getElementById('retry').hidden=false;});await p.clock.fastForward(500);assert.equal(await p.locator('.rome-travel-recovery').isVisible(),true);assert.match(await p.locator('.rome-travel-stage').innerText(),/bağlantı hatası/);await p.close();cases++;}
+  {const p=await page();await p.clock.fastForward(26000);assert.equal(await p.locator('.rome-travel-recovery').isVisible(),true);assert.equal(await p.evaluate(()=>RomeTravel.active),true,'deadline must not pretend the account loaded');await p.evaluate(()=>{document.getElementById('status').textContent='';RomeTravel.pageReady();});await p.clock.fastForward(1000);await p.clock.fastForward(500);assert.equal(await p.evaluate(()=>RomeTravel.active),false,'late success can recover');await p.close();cases++;}
+  {const p=await page('travel=colosseum&blocked=1','commit');for(let i=0;i<100&&!await p.evaluate(()=>!!window.RomeTravel);i++)await new Promise(r=>setTimeout(r,30));assert.equal(await p.evaluate(()=>!!window.RomeTravel),true);await p.clock.fastForward(26000);assert.equal(await p.locator('.rome-travel-recovery').isVisible(),true,'blocked parser still offers recovery');await p.close();cases++;}
+  {const p=await page();await p.evaluate(()=>{document.getElementById('status').textContent='';window.dispatchEvent(new ErrorEvent('error',{message:'dependency failed'}));});await p.clock.fastForward(7000);assert.equal(await p.evaluate(()=>RomeTravel.active),true);assert.equal(await p.locator('.rome-travel-recovery').isVisible(),true);await p.close();cases++;}
+  {const p=await page('travel=palatine');await p.evaluate(()=>{document.getElementById('loadText').textContent='3D sahne açılamadı';document.getElementById('retry').hidden=false;});await p.clock.fastForward(500);assert.match(await p.locator('.rome-travel-stage').innerText(),/3D sahne açılamadı/);await p.close();cases++;}
+  console.log(JSON.stringify({passed:true,cacheStallCases:15,arrivalCases:cases}));
+ }finally{await browser.close();server.closeAllConnections();server.close();}
+})().catch(e=>{console.error(e);server.closeAllConnections();server.close();process.exitCode=1;});

@@ -24,11 +24,3 @@ Rebake the CC0 motion with `node tools/bake-fall-motion-v39.cjs /absolute/path/A
 - Existing CC0 roll, fall, recovery and locomotion stay in their existing modules. Net casting and scissor/disarm use adapted body clips with the game's equipment logic; no separate historical net/scissor animation pack is claimed.
 
 Reproduce with Three 0.160.0: `node tools/bake-combat-motion-v163.mjs SOURCE_DIR THREE_PACKAGE_DIR`, then `node tools/calibrate-combat-motion-v163.cjs`. The latter requires the shipped rig/equipment assets. Pose and contact curves use the same phase mapping; weapon length is never scaled to fit a target. Raw author assets are required only for the offline first step.
-
-## V170 — Fantasy Bandit movement selection
-
-- Creator: **tokeshi**; [Fantasy Bandit](https://www.cgtrader.com/free-3d-models/character/man/fantasy-bandit).
-- Acquisition license: **Royalty Free License (no AI)**; deterministic skeletal conversion only.
-- Selected: `walk`, `run_forward`, `idle`. Other downloaded clips are not integrated.
-- No original source mesh, texture, or FBX is distributed. Integrated movement curves and source hashes: `arena-locomotion-data-v170.js`.
-- Reproduction, stride calibration, runtime priorities, and limitations: `docs/locomotion-v170.md`.
