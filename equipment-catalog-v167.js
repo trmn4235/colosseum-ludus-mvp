@@ -3,6 +3,8 @@
 (function(root){
  'use strict';
  const records=Object.freeze({
+  pit_stone_mace:Object.freeze({id:'pit_stone_mace',label:'Taş gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_stone_mace.cme',triangles:1908,height:.94}),
+  pit_wood_mace:Object.freeze({id:'pit_wood_mace',label:'Ahşap gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_wood_mace.cme',triangles:3580,height:.84}),
   warhammer:Object.freeze({id:'warhammer',label:'Savaş çekici',kind:'weapon',subcategory:'blunt',file:'warhammer.cme',triangles:5332,height:1.094,paint:'Koyu çelik, eskitilmiş bronz, deri'}),
   heavy_mace:Object.freeze({id:'heavy_mace',label:'Ağır gürz',kind:'weapon',subcategory:'blunt',file:'heavy_mace.cme',triangles:3126,height:1.078,paint:'Dövme çelik, bronz, deri ve ahşap'}),
   sylvain_helmet:Object.freeze({id:'sylvain_helmet',label:'Vizörlü gladyatör miğferi',kind:'helmet',file:'sylvain_helmet.cme',triangles:11674,height:.36,paint:'Sylvain Delandre · özgün 1K dokular'})

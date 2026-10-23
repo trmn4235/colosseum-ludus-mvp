@@ -70,8 +70,9 @@ async function setup(){const db=await database();await db.exec(`
  await sql(`reset role;select set_config('request.jwt.claims','{"is_anonymous":true}',false);`);await assert.rejects(rpc(),/Giriş/);
  await sql(`select set_config('request.jwt.claim.sub','',false);`);await assert.rejects(rpc(),/Giriş/);
  const statsFn=fs.readFileSync(root+'/arena.html','utf8').split('\n').find(l=>l.startsWith('function battleResultStats()'));
- const sandbox={combat:{stats:{kills:3},mode:'4x5',time:20,fighters:[{hp:100}]},naval:{},LudusLoadout:{exitSlots:()=>({})}};
+ const sandbox={pitRequested:false,combat:{stats:{kills:3},mode:'4x5',time:20,fighters:[{hp:100}]},naval:{},LudusLoadout:{exitSlots:()=>({})}};
  vm.createContext(sandbox);vm.runInContext(statsFn,sandbox);assert.equal(sandbox.battleResultStats().game_mode,'naval4x5');sandbox.naval=null;assert.equal(sandbox.battleResultStats().game_mode,'4x5');sandbox.combat.survival={stage:11,completed:10};assert.equal(sandbox.battleResultStats().survival_completed,10);assert.equal(sandbox.battleResultStats().game_mode,'survival');
+ sandbox.combat.survival=null;sandbox.pitRequested=true;sandbox.combat.fighters=[{hp:80},{hp:0},{hp:0},{hp:0}];assert.equal(sandbox.battleResultStats().opponents_defeated,3);assert.equal(sandbox.battleResultStats().alive,true);
  console.log('PASS: 22 server milestones, real training and food APIs, historical receipts, distinct starters, wrong-owner/anonymous/direct-write guards, failed enhancement, four modes, wave 10, claim/read requirements, permanent completion and advanced unlock.');
  }finally{await db.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
