@@ -1,0 +1,65 @@
+[
+  {
+    "file": "assets/pit-v174/linen-color.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fabric_pattern_07/fabric_pattern_07_col_1_1k.jpg",
+    "sha256": "aeb7a1487b77aec55e39de662def4d371f5c7c617f62d1f291d7f9932ffebdc9",
+    "license": "CC0",
+    "asset": "fabric_pattern_07"
+  },
+  {
+    "file": "assets/pit-v174/linen-normal.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fabric_pattern_07/fabric_pattern_07_nor_gl_1k.jpg",
+    "sha256": "f6955bbdead9f023f2357f6f8808ed49627d10882cd2a3cb6b5a5ace155abc45",
+    "license": "CC0",
+    "asset": "fabric_pattern_07"
+  },
+  {
+    "file": "assets/pit-v174/linen-rough.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fabric_pattern_07/fabric_pattern_07_rough_1k.jpg",
+    "sha256": "3d90ac40b5c32a15649cc8525b7eeed133ea46b63a0e3eae5e34911d5c967e3a",
+    "license": "CC0",
+    "asset": "fabric_pattern_07"
+  },
+  {
+    "file": "assets/pit-v174/wall-normal.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plaster_stone_wall_02/plaster_stone_wall_02_nor_gl_1k.jpg",
+    "sha256": "9e1d2d908dfd22565700a1215dd71a4747f78de4b58ce738e476eb588e9e4c55",
+    "license": "CC0",
+    "asset": "plaster_stone_wall_02"
+  },
+  {
+    "file": "assets/pit-v174/gate-normal.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wooden_gate/wooden_gate_nor_gl_1k.jpg",
+    "sha256": "d5c5e8f48595628a510337528b4222d71a18cb0f25f458e7647c394483b7c4b7",
+    "license": "CC0",
+    "asset": "wooden_gate"
+  },
+  {
+    "file": "assets/pit-v174/wall-color.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plaster_stone_wall_02/plaster_stone_wall_02_diff_1k.jpg",
+    "sha256": "e6d6ae8c9a536e0222c90f0b8027a085b3f96442d1f6bcbb31a8d50eb24fd09e",
+    "asset": "plaster_stone_wall_02",
+    "license": "CC0"
+  },
+  {
+    "file": "assets/pit-v174/wall-rough.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plaster_stone_wall_02/plaster_stone_wall_02_rough_1k.jpg",
+    "sha256": "c5f11a672bde2f02e01e5934fae75dd2e3d037c18b18563e4e02e7e3631c925a",
+    "asset": "plaster_stone_wall_02",
+    "license": "CC0"
+  },
+  {
+    "file": "assets/pit-v174/gate-color.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wooden_gate/wooden_gate_diff_1k.jpg",
+    "sha256": "b9f1ead6ccad0e7c847c9fb07f67b8f29f623a57dbbeeb5f5819ab29296fef56",
+    "asset": "wooden_gate",
+    "license": "CC0"
+  },
+  {
+    "file": "assets/pit-v174/gate-rough.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wooden_gate/wooden_gate_rough_1k.jpg",
+    "sha256": "25d827e4625070c29e463bff4648987ff716a0eaf21022954acc6150b682310a",
+    "asset": "wooden_gate",
+    "license": "CC0"
+  }
+]

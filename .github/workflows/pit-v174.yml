@@ -1,0 +1,22 @@
+name: Pit courtyard and exhibition
+on:
+  push:
+    branches: [main, codex/pit-realism-v174]
+    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+  pull_request:
+    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+permissions:
+  contents: read
+jobs:
+  pit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock playwright@1.56.1
+      - run: node tests/pit-model-v172.cjs && node tests/pit-exhibition-v174.cjs
+      - run: npx playwright install --with-deps --only-shell chromium
+      - run: node tests/pit-browser-v172.cjs && node tests/pit-combat-browser-v172.cjs
