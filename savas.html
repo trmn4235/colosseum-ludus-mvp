@@ -1633,7 +1633,7 @@ var LUDUS_CLASS_PORTRAITS={"murmillo":"assets/textures/murmillo-3e675f23b653.web
     if(!saved.started&&saved.slots&&typeof saved.slots==='object'){const slots=getSlots(),used=new Set();for(const [s,id] of Object.entries(saved.slots)){if(!slotNames[s])continue;const it=items.find(i=>i.id===id);if(id===null)slots[s]=null;else if(it&&!it.locked_battle_id&&(!it.equipped_by||it.equipped_by===selected.id)&&fits(it,s)&&!used.has(id)){slots[s]=id;used.add(id);}}}
     if(['4x5','solo20','survival','naval4x5'].includes(saved.mode)&&new URL(location.href).searchParams.get('choose')!=='1'){mode=saved.mode;showMode();}
    }}
-   if(pitChoice){mode=pitChoice==='online'?'multiplayer':'pit';showMode();}const fp=await wait(client.rpc('ludus_pit',{p_action:'state'}),'Şan durumu alınıyor…');pitFame=fp.error?null:fp.data;
+   if(pitChoice){mode=pitChoice==='online'?'multiplayer':'pit';showMode();}const fp=await wait(client.rpc('ludus_pit',{p_action:'state'}),'Şan durumu alınıyor…');pitFame=!fp.error&&Array.isArray(fp.data?.roster)&&Number.isFinite(fp.data.entry_fame)?fp.data:null;
    const stoneWallet=await wait(client.from('ludus_stones').select('family,quantity').eq('owner_id',owner),'Taş kesesi alınıyor…');if(!stoneWallet.error)a.data.sapphires=(stoneWallet.data||[]).filter(s=>s.family==='sapphire').reduce((n,s)=>n+s.quantity,0);$('activeBattle').hidden=!activeTicket;status('');if(mode)ensurePreview();
   }catch(e){status('Hesap yüklenemedi: '+e.message);$('retry').hidden=false;globalThis.RomeTravel?.fail('Hesap yüklenemedi: '+e.message);}
   finally{accountLoading=false;busy=false;render();if($('retry').hidden)globalThis.RomeTravel?.pageReady();}
