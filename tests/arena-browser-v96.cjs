@@ -17,12 +17,12 @@ async function main(){
   if(filename.endsWith('/arena.html'))body=Buffer.from(body.toString()
    .replace('function frame(now){const cpuStart','function frame(now){if(window.__stopLoop)return;const cpuStart')
    .replace('var LudusBattle=(function(){',fixture+'\nLudusClient.create=()=>window.__fixtureClient;var LudusBattle=(function(){')
-   .replace('mainMenu();Promise.all([LudusBattle.load()',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,saveReward,begin,setPaused,dropBatch,animateCharacter,renderWeapons,
+   .replace('mainMenu();Promise.all([ticketReady',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,saveReward,begin,setPaused,dropBatch,animateCharacter,renderWeapons,
     freeze:()=>{paused=true;window.__stopLoop=true;},
     step:(dt,run=true)=>{paused=!run;window.__stopLoop=false;frame(last+dt*1000);paused=true;window.__stopLoop=true;},
     resetResult:()=>{resultAt=0;$('result').hidden=true;resultRecorded=false;},
     get started(){return started;}};let drawCount=0;const originalRender=renderer.render;renderer.render=function(...args){drawCount++;return originalRender.apply(this,args)};window.__drawCount=()=>drawCount;
-    mainMenu();Promise.all([LudusBattle.load()`));
+    mainMenu();Promise.all([ticketReady`));
   res.writeHead(200,{'content-type':mime[path.extname(filename)]||'application/octet-stream','cache-control':'no-store'}).end(body);
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;

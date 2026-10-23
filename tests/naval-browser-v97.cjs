@@ -17,12 +17,12 @@ async function main(){
   if(filename.endsWith('/arena.html'))body=Buffer.from(body.toString()
    .replace('function frame(now){const cpuStart','function frame(now){if(window.__stopLoop)return;const cpuStart')
    .replace('var LudusBattle=(function(){',fixture+'\nLudusClient.create=()=>window.__fixtureClient;var LudusBattle=(function(){')
-   .replace('mainMenu();Promise.all([LudusBattle.load()',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,begin,setPaused,toast,
+   .replace('mainMenu();Promise.all([ticketReady',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,begin,setPaused,toast,
     animateCharacter,sun,get renderProfile(){return renderProfile},get cameraMode(){return cameraMode},
     get naval(){return naval},get view(){return navalView},
     freeze:()=>{paused=true;window.__stopLoop=true;},
     step:(dt,run=true)=>{paused=!run;window.__stopLoop=false;frame(last+dt*1000);paused=true;window.__stopLoop=true;},
-    get started(){return started;}};mainMenu();Promise.all([LudusBattle.load()`));
+    get started(){return started;}};mainMenu();Promise.all([ticketReady`));
   if(filename.endsWith('/savas.html'))body=Buffer.from(body.toString().replace(" const $=id=>document.getElementById(id),client=LudusClient.create",fixture+"\nLudusClient.create=()=>window.__fixtureClient; const $=id=>document.getElementById(id),client=LudusClient.create"));
   res.writeHead(200,{'content-type':mime[path.extname(filename)]||'application/octet-stream','cache-control':'no-store'}).end(body);
  });
