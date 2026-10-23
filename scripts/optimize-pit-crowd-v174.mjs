@@ -1,0 +1,2 @@
+import {NodeIO} from '@gltf-transform/core';import {weld,simplify,prune,dedup} from '@gltf-transform/functions';import {MeshoptSimplifier} from 'meshoptimizer';
+await MeshoptSimplifier.ready;const io=new NodeIO();const path=process.argv[2];const doc=await io.read(path);await doc.transform(weld(),simplify({simplifier:MeshoptSimplifier,ratio:.12,error:.003,lockBorder:false}),prune(),dedup());await io.write(path,doc);let tri=0;for(const m of doc.getRoot().listMeshes())for(const p of m.listPrimitives())tri+=p.getIndices().getCount()/3;console.log({triangles:tri});
