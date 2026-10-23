@@ -81,6 +81,8 @@ return {load,prepare};
  let owner=null,room=null,pending=false,stopped=false,scene,renderer,camera,ready=false,last=performance.now(),keys=new Set(),joy={x:0,z:0},attacks=0,special=false,specialId=null,specialHand=null,specialTarget=null,block=false,failure=0,locked=null,clockOffset=0,attackId=null,inputDirty=false,nextStep=null;
  const models=new Map(),states=new Map(),whipLines=new Map(),projectileViews=new Map();
  const selection=(()=>{try{return JSON.parse(sessionStorage.getItem('ludus-duel-selection')||'null');}catch{return null;}})();
+ const pitRequested=new URLSearchParams(location.search).get('venue')==='pit';const roomKey=pitRequested?'ludus-pit-room':'ludus-match-room';
+ if(pitRequested){document.querySelector('.queue-title h1').textContent='ŞAN AVLUSU';document.querySelector('.mp-top strong').textContent='ŞAN AVLUSU · BİRE BİR';document.querySelector('.queue-title>span').textContent='BİRE BİR · OYUNCU DÜELLOSU';document.querySelector('.mp-rule').textContent='Galibiyet +10 Şan · Ekipmanın korunur';document.querySelector('#duelResult p').textContent='Şan sonucu hesabına kaydedildi · Ekipmanın korundu';}
  function fitViewport(){const h=Math.round(Math.min(innerHeight,window.visualViewport?.height||innerHeight));for(const el of [document.documentElement,document.body]){el.style.setProperty('height',h+'px','important');el.style.setProperty('min-height','0','important');}document.documentElement.style.setProperty('--game-height',h+'px');}
  window.addEventListener('resize',fitViewport);window.visualViewport?.addEventListener('resize',fitViewport);fitViewport();
  function message(t){$('mpStatus').textContent=t;}
@@ -89,11 +91,11 @@ return {load,prepare};
   scene=new THREE.Scene();scene.background=new THREE.Color('#a9c9de');scene.fog=new THREE.Fog('#cbbfa6',80,180);RomanVisualAssets.environment(scene);camera=new THREE.PerspectiveCamera(48,1,.1,250);
   scene.add(new THREE.HemisphereLight(0xfff4db,0x655340,1.6));const sun=new THREE.DirectionalLight(0xffe8bf,2);sun.position.set(25,55,30);scene.add(sun);
   const material=new THREE.MeshStandardMaterial({color:0xe0c79e,roughness:1});RomanVisualAssets.material(material,'sand_01',1/1.5,.32,true);
-  const floor=new THREE.Mesh(new THREE.CircleGeometry(56,96),material);floor.rotation.x=-Math.PI/2;floor.position.y=-.015;scene.add(floor);
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(56,96),material);floor.rotation.x=-Math.PI/2;floor.position.y=-.015;scene.add(floor);if(pitRequested)floor.visible=false;
  }
  function prepare(){if(ready)return Promise.resolve();if(preparePromise)return preparePromise;
   if(!renderer)makeStage();
-  preparePromise=Promise.all([ImportedGladiator.load(t=>{$('queueMessage').textContent=t;}),ColosseumEnvironment.load(scene,renderer,t=>{$('queueCaption').textContent=t;})]).then(()=>{ready=true;syncModels();}).catch(e=>{preparePromise=null;throw e;});
+  preparePromise=Promise.all([ImportedGladiator.load(t=>{$('queueMessage').textContent=t;}),(pitRequested?PitArena.load(scene,renderer):ColosseumEnvironment.load(scene,renderer,t=>{$('queueCaption').textContent=t;}))]).then(()=>{ready=true;syncModels();}).catch(e=>{preparePromise=null;throw e;});
   return preparePromise;
  }
  function active(){return ready&&!stopped&&room?.status==='playing'&&(me()?.hp||0)>0;}
@@ -117,11 +119,11 @@ return {load,prepare};
   for(const [id,f] of [['self',p],['rival',t]]){$(id+'Hp').max=f?.maxHp||100;$(id+'Stamina').max=f?.maxStamina||100;$(id+'Stamina').value=f?.stamina??100;$(id+'Stamina').hidden=!enhanced();}
   const foodBonus=Math.min(12,Math.max(0,Number(p?.gladiator?.combat_stamina_bonus)||0));const morale=Math.min(100,Math.max(0,Number(p?.gladiator?.combat_morale??50)));foodBonusLabel.hidden=!enhanced()||(!foodBonus&&morale===50)||p?.hp<=0||room.status!=='playing';foodBonusLabel.textContent='Beslenme +%'+foodBonus+' · Moral '+morale;foodBonusLabel.title='Kondisyon yenilenmesi: beslenme ×'+(1+foodBonus/100).toFixed(2)+' · moral ×'+(1+(morale-50)/1000).toFixed(3);
   $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<18;
-  document.querySelector('.mp-rule').textContent=throwable()?'Fırlat: 26 kondisyon · Silah maç sonuna kadar elden çıkar.':'Multiplayer Beta · Ödül ve kalıcı eşya kaybı yok';
+  document.querySelector('.mp-rule').textContent=pitRequested?'Galibiyet +10 Şan · Ekipmanın korunur':throwable()?'Fırlat: 26 kondisyon · Silah maç sonuna kadar elden çıkar.':'Multiplayer Beta · Ödül ve kalıcı eşya kaybı yok';
   $('duelTarget').classList.toggle('locked',!!locked);$('duelTarget').setAttribute('aria-pressed',String(!!locked));
   $('queueNames').textContent=room.players.slice(0,6).map(x=>x.name).join(' · ')+(room.players.length>6?' · +'+(room.players.length-6):'');
-  updateLobby();message(waiting?'Ortak maç kuyruğu':p?.hp<=0?'Elendin · Maçı izliyorsun':room.combat_version===23&&Date.parse(p?.counter_until)>Date.now()+clockOffset?'Karşı vuruş hazır · Saldırı tuşunu kullan.':'Multiplayer · Son kalan kazanır');
-  if(room.status==='finished'){stopped=true;$('duelControls').hidden=true;$('matchLobby').hidden=true;$('duelResult').hidden=false;$('resultTitle').textContent=room.winner===owner?'Zafer!':room.winner?'Savaş tamamlandı':'Maç iptal edildi';sessionStorage.removeItem('ludus-match-room');}
+  updateLobby();message(waiting?(pitRequested?'Bire bir düello · Rakip bekleniyor':'Ortak maç kuyruğu'):p?.hp<=0?'Elendin · Maçı izliyorsun':room.combat_version===23&&Date.parse(p?.counter_until)>Date.now()+clockOffset?'Karşı vuruş hazır · Saldırı tuşunu kullan.':'Multiplayer · Son kalan kazanır');
+  if(room.status==='finished'){stopped=true;$('duelControls').hidden=true;$('matchLobby').hidden=true;$('duelResult').hidden=false;$('resultTitle').textContent=room.winner===owner?'Zafer!':room.winner?'Savaş tamamlandı':'Maç iptal edildi';sessionStorage.removeItem(roomKey);}
  }
  async function rpc(args){let timer;const started=performance.now();try{const result=await Promise.race([client.rpc('ludus_match',args),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Bağlantı zaman aşımı')),10000);})]);if(result.data?.server_now)clockOffset=Date.parse(result.data.server_now)+(performance.now()-started)/2-Date.now();return result;}finally{clearTimeout(timer);}}
  function queueStep(){inputDirty=true;if(!pending&&!stopped&&room){clearTimeout(nextStep);step();}}
@@ -143,12 +145,12 @@ return {load,prepare};
   catch(e){failure++;message('Bağlantı bekleniyor…');if(failure>20){stopped=true;message('Bağlantı koptu. Tekrar bağlan.');$('duelControls').hidden=true;$('mpRetry').hidden=false;}}
   finally{pending=false;if(!stopped)nextStep=setTimeout(step,inputDirty?0:room?.status==='waiting'?300:120);}
  }
- async function join(){if(pending||!ready||stopped)return;pending=true;stopped=false;message('Maç aranıyor…');try{const a=await client.auth.getUser();if(a.error||!a.data.user||a.data.user.is_anonymous)throw Error('Hesabına giriş yap.');owner=a.data.user.id;const saved=sessionStorage.getItem('ludus-match-room');let r=saved?await rpc({p_action:'state',p_room:saved}):null;if(r?.error||r?.data?.status==='finished')r=null;
-  if(!r){if(!selection?.gladiator)throw Error('Önce gladyatörünü seç.');r=await rpc({p_action:'join',p_gladiator:selection.gladiator,p_slots:selection.slots||{}});}if(r.error)throw r.error;sessionStorage.setItem('ludus-match-room',r.data.id);showState(r.data);pending=false;step();}
+ async function join(){if(pending||!ready||stopped)return;pending=true;stopped=false;message('Maç aranıyor…');try{const a=await client.auth.getUser();if(a.error||!a.data.user||a.data.user.is_anonymous)throw Error('Hesabına giriş yap.');owner=a.data.user.id;const saved=sessionStorage.getItem(roomKey);let r=saved?await rpc({p_action:'state',p_room:saved}):null;if(r?.error||r?.data?.status==='finished')r=null;
+  if(!r){if(!selection?.gladiator)throw Error('Önce gladyatörünü seç.');r=await rpc({p_action:'join',p_gladiator:selection.gladiator,p_slots:selection.slots||{},p_input:{venue:pitRequested?'pit':'colosseum'}});}if(r.error)throw r.error;sessionStorage.setItem(roomKey,r.data.id);showState(r.data);pending=false;step();}
   catch(e){message(e.message||'Maç başlatılamadı.');$('queueMessage').textContent=e.message||'Bağlantı kurulamadı.';$('mpRetry').hidden=false;}finally{pending=false;}
  }
- function travelBack(){if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision84';}
- async function leave(){if($('mpBack').disabled)return;stopped=true;$('mpBack').disabled=$('queueCancel').disabled=true;try{while(pending)await new Promise(r=>setTimeout(r,20));if(room&&room.status!=='finished'){const r=await rpc({p_action:'leave',p_room:room.id});if(r.error)throw r.error;}sessionStorage.removeItem('ludus-match-room');travelBack();}catch(e){message('Çıkış kaydedilemedi. Tekrar dene.');$('mpBack').disabled=$('queueCancel').disabled=false;stopped=false;step();}}
+ function travelBack(){if(pitRequested){location.href='san-avlusu.html?v=revision172';return;}if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision84';}
+ async function leave(){if($('mpBack').disabled)return;stopped=true;$('mpBack').disabled=$('queueCancel').disabled=true;try{while(pending)await new Promise(r=>setTimeout(r,20));if(room&&room.status!=='finished'){const r=await rpc({p_action:'leave',p_room:room.id});if(r.error)throw r.error;}sessionStorage.removeItem(roomKey);travelBack();}catch(e){message('Çıkış kaydedilemedi. Tekrar dene.');$('mpBack').disabled=$('queueCancel').disabled=false;stopped=false;step();}}
  $('mpBack').onclick=$('queueCancel').onclick=leave;$('mpRetry').onclick=()=>{$('mpRetry').hidden=true;join();};$('resultBack').onclick=travelBack;
  const stick=$('duelStick');let pointer=null;
  function resetStick(){pointer=null;joy={x:0,z:0};$('duelKnob').style.transform='';}
@@ -204,7 +206,7 @@ return {load,prepare};
     mesh.visible=age>=0&&clock<end+200&&shot.outcome!=='cancelled';mesh.position.set(shot.origin_x+shot.dx*distance,1.35,shot.origin_z+shot.dz*distance);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(shot.dx,0,shot.dz));
    }
    for(const[key,mesh]of projectileViews)if(!liveShots.has(key)){scene.remove(mesh);projectileViews.delete(key);}
-   const p=me(),f=states.get(owner),r=target();$('duelAttack').classList.toggle('counter-ready',room.combat_version===23&&Date.parse(p?.counter_until)>Date.now()+clockOffset&&p?.counter_target===r?.owner);if(f){const dx=(r?.x??0)-f.x,dz=(r?.z??-1)-f.z,len=Math.max(.01,Math.hypot(dx,dz)),goal=new THREE.Vector3(f.x-dx/len*4.2,3.1,f.z-dz/len*4.2);camera.position.lerp(goal,1-Math.exp(-dt*7));camera.lookAt(f.x+dx*.2,1.1,f.z+dz*.2);}
+   const p=me(),f=states.get(owner),r=target();$('duelAttack').classList.toggle('counter-ready',room.combat_version===23&&Date.parse(p?.counter_until)>Date.now()+clockOffset&&p?.counter_target===r?.owner);if(f){const dx=(r?.x??0)-f.x,dz=(r?.z??-1)-f.z,len=Math.max(.01,Math.hypot(dx,dz)),goal=new THREE.Vector3(f.x-dx/len*4.2,3.1,f.z-dz/len*4.2);if(pitRequested){goal.x=Math.max(-7.65,Math.min(7.65,goal.x));goal.z=Math.max(-5.65,Math.min(5.65,goal.z));}camera.position.lerp(goal,1-Math.exp(-dt*7));if(pitRequested){camera.position.x=Math.max(-7.65,Math.min(7.65,camera.position.x));camera.position.z=Math.max(-5.65,Math.min(5.65,camera.position.z));}camera.lookAt(f.x+dx*.2,1.1,f.z+dz*.2);}
    for(const p of room.players){let line=whipLines.get(p.owner);const victim=room.players.find(x=>x.owner===p.pull_target&&x.pull_from===p.owner);if(!victim){if(line)line.visible=false;continue;}if(!line){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3));line=new THREE.Line(g,new THREE.LineBasicMaterial({color:0x503521}));line.frustumCulled=false;whipLines.set(p.owner,line);scene.add(line);}line.visible=true;const a=states.get(p.owner),b=states.get(victim.owner);if(a&&b){line.geometry.attributes.position.array.set([a.x,1.15,a.z,b.x,.35,b.z]);line.geometry.attributes.position.needsUpdate=true;}}
   }else{camera.position.set(0,4.5,9);camera.lookAt(0,0,0);}if(typeof GamePerformance!=='undefined'){GamePerformance.beginVisibility(camera);for(const [who,m]of models)GamePerformance.characterVisibility(m,who===owner);}renderer.render(scene,camera);
  }

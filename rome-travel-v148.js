@@ -21,7 +21,8 @@ var RomeTravel=(()=>{
   const urls=destination.id==='colosseum'?['assets/arena-entrance-v70.webp','assets/arena-modes-v69.webp','assets/survival-poster-v83.jpeg','assets/clan-water-20x2-v81.webp']:[];
   let imagesDone=urls.length===0;Promise.all(urls.map(warm)).then(()=>imagesDone=true);
   function check(){if(ready)return;
-   if(destination.id==='colosseum'){
+   if(destination.id==='pit'){if(pageIsReady&&!scriptFailed)return finish();}
+   else if(destination.id==='colosseum'){
     const mode=document.getElementById('modePage'),setup=document.getElementById('setupPage'),status=document.getElementById('status'),retry=document.getElementById('retry');
     if(retry&&!retry.hidden){recover(status?.textContent||'Hesap yüklenemedi. Yeniden dene.');}
     else if(imagesDone&&(pageIsReady||(!scriptFailed&&(mode&&!mode.hidden||setup&&!setup.hidden)&&status&&!/yükleniyor/i.test(status.textContent))))return finish();

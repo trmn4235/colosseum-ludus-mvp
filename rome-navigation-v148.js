@@ -1,6 +1,6 @@
 // Tab-local return frames. State is restored only for its authenticated owner.
 var LudusNavigation=(function(){
- const prefix='ludus-return-v12:',pages=new Set(['ludus.html','gelistirmeler.html','savas.html','pazar.html','arena.html','gorevler.html','ludus-seviye.html','klan.html','multiplayer.html','roma.html','circus-maximus.html']);
+ const prefix='ludus-return-v12:',pages=new Set(['ludus.html','gelistirmeler.html','savas.html','pazar.html','arena.html','gorevler.html','ludus-seviye.html','klan.html','multiplayer.html','roma.html','circus-maximus.html','san-avlusu.html']);
  let owner=null,readState=()=>null;
  const here=()=>new URL(window.location.href),file=url=>url.pathname.split('/').pop();
  function local(value){try{const url=new URL(value,here()),base=here();return url.origin===base.origin&&url.pathname.slice(0,url.pathname.lastIndexOf('/')+1)===base.pathname.slice(0,base.pathname.lastIndexOf('/')+1)&&pages.has(file(url))?url:null;}catch{return null;}}

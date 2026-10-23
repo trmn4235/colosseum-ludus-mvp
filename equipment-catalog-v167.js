@@ -3,7 +3,7 @@
 (function(root){
  'use strict';
  const records=Object.freeze({
-  warhammer:Object.freeze({id:'warhammer',label:'Savaş çekici',kind:'weapon',subcategory:'blunt',file:'warhammer.cme',triangles:5332,height:1.149,paint:'Koyu çelik, eskitilmiş bronz, deri'}),
+  warhammer:Object.freeze({id:'warhammer',label:'Savaş çekici',kind:'weapon',subcategory:'blunt',file:'warhammer.cme',triangles:5332,height:1.094,paint:'Koyu çelik, eskitilmiş bronz, deri'}),
   heavy_mace:Object.freeze({id:'heavy_mace',label:'Ağır gürz',kind:'weapon',subcategory:'blunt',file:'heavy_mace.cme',triangles:3126,height:1.078,paint:'Dövme çelik, bronz, deri ve ahşap'}),
   sylvain_helmet:Object.freeze({id:'sylvain_helmet',label:'Vizörlü gladyatör miğferi',kind:'helmet',file:'sylvain_helmet.cme',triangles:11674,height:.36,paint:'Sylvain Delandre · özgün 1K dokular'})
  });
@@ -25,6 +25,8 @@
    let bytes=options.bytes;
    if(!bytes){const response=await root.fetch('assets/equipment-v167/'+records[id].file);if(!response.ok)throw Error('Ekipman indirilemedi ('+response.status+')');bytes=await response.arrayBuffer();}
    const model=await new T.GLTFLoader().parseAsync(await decode(bytes),'');const group=model.scene;
+   // V172: the forged-steel primitive is the head. Bronze shaft, pommel and leather stay byte-for-byte unchanged.
+   if(id==='warhammer')group.traverse(o=>{if(o.isMesh&&o.material?.name==='Forged dark steel'){const g=o.geometry.clone();g.computeBoundingBox();const c=g.boundingBox.getCenter(new T.Vector3());g.translate(-c.x,-c.y,-c.z);g.scale(.75,.75,.75);g.translate(c.x,c.y,c.z);g.computeBoundingBox();g.computeBoundingSphere();o.geometry=g;o.userData.headScale=.75;}});
    group.updateMatrixWorld(true);const box=new T.Box3().setFromObject(group),size=box.getSize(new T.Vector3());if(!Number.isFinite(size.y)||size.y<=0)throw Error('Ekipman ölçüsü geçersiz');
    if(records[id].kind==='helmet'){const c=box.getCenter(new T.Vector3()),s=records[id].height/size.y;const wrapper=new T.Group();wrapper.add(group);group.scale.multiplyScalar(s);group.position.sub(c.multiplyScalar(s));wrapper.userData.catalogId=id;cache.set(id,wrapper);}else cache.set(id,group);
    const result=cache.get(id);result.name=records[id].label;result.userData.catalogId=id;result.userData.materialVersion=167;
