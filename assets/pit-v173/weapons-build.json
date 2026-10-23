@@ -1,0 +1,18 @@
+[
+  {
+    "id": "pit_stone_mace",
+    "triangles": 1908,
+    "height": 0.94,
+    "bytes": 196604,
+    "sourceSha256": "90b73d99f02c6759cfe3ca7060cef6b30ec6a51771a838ef9bff3c216eb0501f",
+    "packedSha256": "cf6acbd223f68e97ec39499ae7dd959e13f792e3310eac6cedcc48bee1400a02"
+  },
+  {
+    "id": "pit_wood_mace",
+    "triangles": 3580,
+    "height": 0.84,
+    "bytes": 367192,
+    "sourceSha256": "04858bbe0c17348ed53533cb6a18d22da55f271007cbbf4961ae3127e985da95",
+    "packedSha256": "b5ec106141e6fba93cfc2f0d4732644865ac136332a3889fc93b16cdd1823f34"
+  }
+]

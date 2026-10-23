@@ -440,13 +440,13 @@ var ClassEquipment=(function(){
 
  function sync(m,f){
   // Plain battle clothing fills empty NPC armour slots visually; it creates no loot or stats.
-  const uniform=f.navalUniform,helmetVisible=f.helmet!==false||!!uniform?.helmet,chestVisible=!!f.chest||!!uniform?.chest,greavesVisible=f.greaves!==false||!!uniform?.greaves,shouldersVisible=f.shoulders!==false||!!uniform?.shoulders;
+  const visualWeapon=f.pitWeapon||f.weapon,uniform=f.navalUniform,helmetVisible=f.helmet!==false||!!uniform?.helmet,chestVisible=!!f.chest||!!uniform?.chest,greavesVisible=f.greaves!==false||!!uniform?.greaves,shouldersVisible=f.shoulders!==false||!!uniform?.shoulders;
   const revisionV84=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0),flagsV84=(f.shield?1:0)|(helmetVisible?2:0)|(chestVisible?4:0)|(greavesVisible?8:0)|(shouldersVisible?16:0)|(f.netBusy?32:0)|(f.hp>0?64:0)|(uniform&&!f.helmet?128:0)|(uniform&&!f.chest?256:0)|(uniform&&!f.shoulders?512:0)|(uniform&&!f.greaves?1024:0),s=m.gearStateV84;
-  if(s&&m.equippedWeapon===f.weapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===f.weapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
-  m.gearStateV84={revision:revisionV84,weapon:f.weapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
+  if(s&&m.equippedWeapon===visualWeapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===visualWeapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
+  m.gearStateV84={revision:revisionV84,weapon:visualWeapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
 
   const revision=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0);if(m.assetRevision!==revision){m.assetRevision=revision;m.helmetStyle=undefined;m.equippedWeapon=undefined;m.offhandKind=undefined;m.shieldStyle=undefined;}
-  setWeapon(m,f.weapon);
+  setWeapon(m,visualWeapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
   m.gear.left.group.visible=!!f.leftGear&&!(f.leftGear==='net'&&f.netBusy);
