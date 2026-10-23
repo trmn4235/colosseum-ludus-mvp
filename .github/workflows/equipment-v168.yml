@@ -1,0 +1,27 @@
+name: Equipment categories and shield breaking
+on:
+  pull_request:
+    branches: [main]
+    paths: ['equipment-*', 'assets/items-v168/**', 'ludus-supply-v85.js', 'market-v56.js', 'forum-market-v66.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-*', 'tests/equipment-*', 'supabase/migrations/*equipment_groups*', '.github/workflows/equipment-v168.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  equipment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1
+      - run: |
+          node --test tests/equipment-groups-v168.cjs tests/equipment-catalog-v167.cjs tests/equipment-arena-v30.test.cjs tests/forum-market-v66.test.cjs
+          node tests/equipment-sql-v168.cjs
+          node tests/combat-motion-replay-v163.cjs
+          LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          node tests/equipment-browser-v168.cjs
+          node tests/equipment-production-browser-v168.cjs

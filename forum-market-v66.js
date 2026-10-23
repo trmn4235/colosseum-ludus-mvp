@@ -2,7 +2,7 @@
 (()=>{
  'use strict';
  const kinds={weapon:'Silah',shield:'Kalkan',helmet:'Başlık',chest:'Zırh',gloves:'Kolluk',legs:'Bacaklık',gladiator:'Gladyatör'};
- const models={gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident:'Trident',net:'Ağ',mace:'Zincirli Gürz',whip:'Kırbaç',scissor:'Kol Bıçağı',large:'Büyük Kalkan',round:'Yuvarlak Kalkan',small:'Küçük Kalkan',gladiator:'Gladyatör Başlığı',gold:'Gladyatör Başlığı',knights:'Şövalye Başlığı',silver:'Şövalye Başlığı',winged:'Kanatlı Başlık',roman:'Roma Başlığı',gladiator_chest:'Gladyatör Zırhı',chest_plate:'İşlemeli Zırh',armor_shoulder:'Çift Omuzluk',shoulder_armor:'Omuz Koruma',legs:'Bacaklık',murmillo:'Murmillo',thraex:'Thraex',hoplomachus:'Hoplomachus',secutor:'Secutor',retiarius:'Retiarius',provocator:'Provocator'};
+ const models={gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident:'Trident',net:'Ağ',heavy_mace:'Ağır gürz',warhammer:'Savaş çekici',mace:'Zincirli Gürz',whip:'Kırbaç',scissor:'Kol Bıçağı',large:'Büyük Kalkan',round:'Yuvarlak Kalkan',small:'Küçük Kalkan',gladiator:'Gladyatör Başlığı',gold:'Gladyatör Başlığı',knights:'Şövalye Başlığı',silver:'Şövalye Başlığı',winged:'Kanatlı Başlık',roman:'Roma Başlığı',gladiator_chest:'Gladyatör Zırhı',chest_plate:'İşlemeli Zırh',armor_shoulder:'Çift Omuzluk',shoulder_armor:'Omuz Koruma',legs:'Bacaklık',murmillo:'Murmillo',thraex:'Thraex',hoplomachus:'Hoplomachus',secutor:'Secutor',retiarius:'Retiarius',provocator:'Provocator'};
  const number=value=>Number(value).toLocaleString('tr-TR',{maximumFractionDigits:2});
  const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const model=a=>a.class||a.model||a.kind;
@@ -31,6 +31,7 @@
   return rows.filter(r=>{
    const a=asset(r);if(!a)return false;
    if(f.kind&&kind(a)!==f.kind)return false;
+   if(f.subcategory&&!globalThis.LudusEquipmentGroups?.matches(a,f.subcategory))return false;
    if(f.model&&model(a)!==f.model)return false;
    if(f.plus!==''&&f.plus!=null&&Number(a.enhancement||0)<Number(f.plus))return false;
    if(f.max&&Number.isFinite(Number(f.max))&&Number(r.price)>Number(f.max))return false;
@@ -48,7 +49,7 @@
  const $=id=>document.getElementById(id),basic=globalThis.LudusBasicMarket;
  if(!basic||!$('forumMarket'))return;
  let owner=null,data=null,section='basic',view='browse',selected=null,sellKey='',hours=24,busy=false,loading=false,pending=null,loadSerial=0,noticeTimer=null,serverOffset=0;
- const filters={kind:'weapon',query:'',model:'',plus:'',stone:'',max:'',sort:'price'};
+ const filters={kind:'weapon',subcategory:'',query:'',model:'',plus:'',stone:'',max:'',sort:'price'};
  const compare={model:'',plus:'',stone:'close'};
  const storageKey=()=> 'ludus-forum-pending-v66:'+owner;
  const coin='<i class="forum-coin" aria-hidden="true">◉</i>';
@@ -91,7 +92,7 @@
   if(section==='forum'){renderBrowse();if(owner&&!busy)loadMarket();}
  }
  function showView(next){view=next==='create'?'create':'browse';$('forumBrowse').hidden=view!=='browse';$('forumCreate').hidden=view!=='create';$('forumBackList').hidden=view!=='create';$('forumNewListing').hidden=view==='create';$('forumViewTitle').textContent=view==='create'?'Yeni İlan Oluştur':'Forum Pazarı';$('forumViewCaption').textContent=view==='create'?'Satış fiyatını belirle, benzer ilanlarla karşılaştır.':'Ludus’tan Ludus’a · Geliştirilmiş ekipman ve gladyatör ticareti';if(view==='create')renderCreate();else renderBrowse();}
- function setCategory(k){filters.kind=k;filters.model='';filters.plus='';selected=null;renderCategories();populateModels();renderBrowse();}
+ function setCategory(k){filters.kind=k;filters.subcategory='';filters.model='';filters.plus='';selected=null;renderCategories();populateModels();renderBrowse();}
  function renderCategories(){
   $('forumCategories').replaceChildren();for(const [k,label]of Object.entries(kinds)){const b=document.createElement('button');b.type='button';b.innerHTML=symbol(k)+'<span>'+escape(label)+'</span>';b.classList.toggle('active',filters.kind===k);b.setAttribute('aria-pressed',String(filters.kind===k));b.onclick=()=>setCategory(k);$('forumCategories').append(b);}
  }
@@ -99,8 +100,12 @@
   select.replaceChildren();if(blank!=null){const o=document.createElement('option');o.value='';o.textContent=blank;select.append(o);}
   for(const [val,label]of rows){const o=document.createElement('option');o.value=val;o.textContent=label;select.append(o);}select.value=value;
  }
- function modelOptions(k){const all=[...activeListings().map(r=>asset(r)),...sellAssets().map(r=>r.a)];return [...new Map(all.filter(a=>kind(a)===k).map(a=>[model(a),modelName(a)])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'tr'));}
- function populateModels(){options($('forumModel'),modelOptions(filters.kind),filters.model,'Tüm modeller');}
+ function renderSubcategories(){
+  let select=$('forumSubcategory');if(!select){const label=document.createElement('label');label.className='forum-subcategory-v168';label.textContent='Alt kategori ';select=document.createElement('select');select.id='forumSubcategory';select.setAttribute('aria-label','Forum alt kategorisi');label.append(select);$('forumCategories').after(label);select.onchange=()=>{filters.subcategory=select.value;filters.model='';populateModels();renderBrowse();};}
+  const groups=LudusEquipmentGroups.groups.filter(g=>g.kind===filters.kind);select.parentElement.hidden=!groups.length;if(!groups.some(g=>g.id===filters.subcategory))filters.subcategory='';options(select,groups.map(g=>[g.id,g.name]),filters.subcategory,'Tümü');
+ }
+ function modelOptions(k){const all=[...activeListings().map(r=>asset(r)),...sellAssets().map(r=>r.a)];return [...new Map(all.filter(a=>kind(a)===k&&LudusEquipmentGroups.matches(a,filters.subcategory)).map(a=>[model(a),modelName(a)])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'tr'));}
+ function populateModels(){renderSubcategories();options($('forumModel'),modelOptions(filters.kind),filters.model,'Tüm modeller');}
  function renderBrowse(){
   const rows=filterListings(activeListings(),filters);if(!rows.some(r=>r.id===selected))selected=rows[0]?.id||null;
   $('forumListings').replaceChildren();
@@ -120,8 +125,8 @@
   if(!mine.length){const p=document.createElement('p');p.className='forum-compare-help';p.textContent='İlanların burada görünür. Satışa koyacağın eşyayı envanterinden seç.';$('forumMine').append(p);return;}
   for(const r of mine){const a=asset(r),row=document.createElement('div');row.className='forum-mine-row';row.innerHTML=icon(a)+'<span class="forum-mine-name">'+escape(title(a))+'</span>'+priced(r.price)+'<span class="forum-mine-status '+(r.status==='sold'?'sold':'')+'">'+(r.status==='sold'?'Satıldı':'Aktif')+'</span>';if(r.status==='active'){const b=document.createElement('button');b.type='button';b.textContent='Kaldır';b.disabled=busy||!!pending;b.setAttribute('aria-label',title(a)+' ilanını kaldır');b.onclick=()=>confirmCancel(r);row.append(b);}else row.title='Net gelir: '+number(r.net_income||0)+' denarius';$('forumMine').append(row);}
  }
- function syncFilters(){for(const [key,id]of [['query','forumQuery'],['model','forumModel'],['plus','forumPlus'],['stone','forumStone'],['max','forumMaxPrice'],['sort','forumSort']])$(id).value=filters[key];}
- function clearFilters(){Object.assign(filters,{query:'',model:'',plus:'',stone:'',max:'',sort:'price'});syncFilters();renderBrowse();}
+ function syncFilters(){renderSubcategories();for(const [key,id]of [['query','forumQuery'],['model','forumModel'],['plus','forumPlus'],['stone','forumStone'],['max','forumMaxPrice'],['sort','forumSort']])$(id).value=filters[key];}
+ function clearFilters(){Object.assign(filters,{subcategory:'',query:'',model:'',plus:'',stone:'',max:'',sort:'price'});syncFilters();renderBrowse();}
  function renderCreate(){
   const assets=sellAssets();$('forumAssetPicker').replaceChildren();const blank=document.createElement('option');blank.value='';blank.textContent=assets.length?'Satılacak varlığı seç…':'Satılabilir eşya veya gladyatör yok';$('forumAssetPicker').append(blank);
   for(const [type,label]of [['item','Envanterimdeki Eşyalar'],['gladiator','Hazır ve Ekipmansız Gladyatörler']]){const group=document.createElement('optgroup');group.label=label;for(const r of assets.filter(r=>r.type===type)){const o=document.createElement('option');o.value=type+':'+r.a.id;o.textContent=title(r.a);group.append(o);}if(group.children.length)$('forumAssetPicker').append(group);}
@@ -200,7 +205,7 @@
  for(const [id,which]of [['forumPriceUnder','under'],['forumPriceSame','same'],['forumPriceSuggested','suggested']])$(id).onclick=()=>{const r=selling();if(!r)return;const m=marketMetrics(r.a);if(m.low==null)return;$('forumPrice').value=String(which==='under'?Math.max(1,Number(m.low)-1):which==='same'?m.low:Math.round(Number(m.average)));updatePrice();};
  for(const [key,id]of [['model','forumCompareModel'],['plus','forumComparePlus'],['stone','forumCompareStone']])$(id).onchange=()=>{compare[key]=$(id).value;renderCompare();};
  $('forumCreate').onsubmit=e=>{e.preventDefault();const r=selling(),p=priceInfo($('forumPrice').value);if(!r||!p||$('forumPublish').disabled)return;act('create',{asset_type:r.type,asset_id:r.a.id,price:p.price,hours});};
- $('forumBuy').onclick=confirmBuy;$('forumHistory').onclick=history;$('forumSimilar').onclick=()=>{const r=picked();if(!r)return;const a=asset(r);filters.kind=kind(a);filters.model=model(a);filters.plus=String(a.enhancement||0);filters.query='';renderCategories();populateModels();syncFilters();renderBrowse();};
+ $('forumBuy').onclick=confirmBuy;$('forumHistory').onclick=history;$('forumSimilar').onclick=()=>{const r=picked();if(!r)return;const a=asset(r);filters.kind=kind(a);filters.subcategory=LudusEquipmentGroups.groupFor(a)?.id||'';filters.model=model(a);filters.plus=String(a.enhancement||0);filters.query='';renderCategories();populateModels();syncFilters();renderBrowse();};
  $('forumDialogClose').onclick=closeDialog;$('forumDialogs').onclick=e=>{if(e.target===$('forumDialogs')){const r=$('forumDialogs').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDialog();}};
  globalThis.LudusNavigation?.register(()=>({...basic.getNavigationState(),marketSection:section,forumFilters:{...filters},forumSelected:selected}));
  globalThis.addEventListener('ludus-basic-market-ready',connect);
