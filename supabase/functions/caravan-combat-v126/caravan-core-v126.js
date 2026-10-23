@@ -197,7 +197,7 @@ class ArenaCombat {
  canPickup(f,d){return this.allowDrops&&!!d&&!d.shattered&&!(f.netBusy&&(d.kind==='net'||d.kind==='scissor'||d.kind==='shield'||(Weapons[d.kind]&&f.pickupHand==='offhand')));}
  nearestDrop(id=0,range=1.8,missing=false){const f=this.fighters[id];if(!f||f.hp<=0)return null;let best=null;for(const d of this.drops)if(this.canPickup(f,d)&&(!missing||this.needsDrop(f,d))&&distance(f,d)<range){best=d;range=distance(f,d);}return best;}
  needsDrop(f,d){return Weapons[d.kind]?!f.weapon:d.kind==='shield'||d.kind==='net'||d.kind==='scissor'?!f.shield&&!f.offhand&&!f.leftGear:!f[d.kind];}
- clearLeft(f){this.dropEquipment(f,'shield');this.dropEquipment(f,'offhand');this.dropEquipment(f,'leftGear');}
+ clearLeft(f){f.brokenShield=null;this.dropEquipment(f,'shield');this.dropEquipment(f,'offhand');this.dropEquipment(f,'leftGear');}
  pickup(id,dropId){
   const f=this.fighters[id],index=this.drops.findIndex(d=>d.id===dropId),d=this.drops[index];
   if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stunUntil>this.time||!this.canPickup(f,d)||distance(f,d)>1.8)return false;
@@ -639,7 +639,7 @@ LudusLoadout.combatSlot=function(slot,item){return slot==='main_hand'?'weapon':s
 LudusLoadout.inventorySlot=slot=>({weapon:'main_hand',shield:'off_hand',offhand:'off_hand',leftGear:'off_hand',greaves:'legs',shoulders:'gloves'})[slot]||slot;
 LudusLoadout.initialize=function(combat,ticket){if(ticket.rule_version!==2){combat.allowDrops=false;return;}combat.allowDrops=true;for(const f of combat.fighters){f.equipment={};f.gearBase=f.id===0?ticket.snapshot.gladiator:{name:f.name,class:f.type,level:1,base_stats:{health:100,stamina:100,strength:10,defense:10,agility:10}};for(const entry of ticket.loot.filter(e=>e.actor===f.id))f.equipment[this.combatSlot(entry.slot,entry.item)]=entry;this.refresh(f,true);}};
 LudusLoadout.refresh=function(f,initial=false){if(!f.equipment||!f.gearBase)return;const damage=f.maxHp-f.hp,hp=f.hp,stamina=f.stamina,hand=f.pickupHand;const items=Object.entries(f.equipment).map(([slot,entry])=>({...entry.item,equipped_slot:this.inventorySlot(slot)}));this.apply(f,f.gearBase,items);if(!initial){f.hp=hp<=0?0:Math.max(1,f.maxHp-damage);f.stamina=Math.max(0,Math.min(stamina,f.maxStamina));f.pickupHand=hand;}const h=items.find(i=>i.equipped_slot==='helmet');f.helmetModel=h?.model;f.helmetColor=['gold','silver'].includes(h?.model)?h.model:null;};
-LudusLoadout.exitSlots=function(f){if(f.hp<=0)return {};return Object.fromEntries(Object.entries({...f.equipment,...(!f.shield&&f.brokenShield?{shield:f.brokenShield}:{})}).filter(([slot])=>f[slot]||slot==='shield'&&f.brokenShield).map(([slot,entry])=>[this.inventorySlot(slot),entry.token]));};
+LudusLoadout.exitSlots=function(f){if(f.hp<=0)return {};return Object.fromEntries(Object.entries({...f.equipment,...(!f.shield&&!f.offhand&&!f.leftGear&&f.brokenShield?{shield:f.brokenShield}:{})}).filter(([slot])=>f[slot]||slot==='shield'&&f.brokenShield).map(([slot,entry])=>[this.inventorySlot(slot),entry.token]));};
 
 // C.docx master v1.0. Deterministic rules only: no client-side rolls or currency writes.
 var LudusItemSystem = (() => {
