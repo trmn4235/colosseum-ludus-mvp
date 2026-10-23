@@ -10,7 +10,7 @@ var ArenaAssets=(function(){
   const job={listeners:new Set([text=>status(label+text)])};pending.set(key.href,job);
   const emit=text=>{for(const listener of job.listeners)try{listener(text);}catch{}};
   job.promise=(async()=>{
-   let cache;try{cache=await caches.open('ludus-models-v1');const response=await cache.match(key.href);if(response){const bytes=await response.arrayBuffer();if(valid(bytes)){emit(' hazırlanıyor…');return bytes;}await cache.delete(key.href);}}catch{}
+   let cache,timer;const cached=await Promise.race([(async()=>{try{cache=await caches.open('ludus-models-v1');const response=await cache.match(key.href);if(response){const bytes=await response.arrayBuffer();if(valid(bytes))return bytes;cache.delete(key.href).catch(()=>{});}}catch{}return null;})(),new Promise(resolve=>{timer=setTimeout(()=>resolve(null),1200);})]);clearTimeout(timer);if(cached){emit(' hazırlanıyor…');return cached;}
    emit(' yükleniyor…');
    const bytes=await new Promise((resolve,reject)=>{
     let settled=false,started=0,failed=0,fallback=false;const errors=[],controllers=[],timers=new Set();
@@ -37,7 +37,7 @@ var ArenaAssets=(function(){
     }
     run(local,0);
    });
-   if(cache)try{await cache.put(key.href,new Response(bytes,{headers:{'Content-Type':'model/gltf-binary'}}));}catch{}
+   if(cache)try{cache.put(key.href,new Response(bytes,{headers:{'Content-Type':'model/gltf-binary'}})).catch(()=>{});}catch{}
    emit(' hazırlanıyor…');return bytes;
   })().finally(()=>pending.delete(key.href));return job.promise;
  }
