@@ -34,6 +34,7 @@
   ['net','Savaş ağı','weapon','net',{rope:8,lead:4}],
   ['shield-medium','Küçük kalkan','shield','round',{wood:3,resin:1,leather:2,bronze:1}],
   ['shield-large','Büyük kalkan','shield','large',{wood:6,resin:2,leather:3,bronze:2}],
+  ['helmet-sylvain','Vizörlü gladyatör miğferi','helmet','sylvain_helmet',{steel:5,leather:3,linen:2,wool_cloth:1}],
   ['helmet-gold','Gladyatör miğferi','helmet','gold',{bronze:4,leather:3,linen:2,wool_cloth:1}],
   ['helmet-roman','Roma miğferi','helmet','roman',{bronze:4,leather:2,linen:3,wool_cloth:1}],
   ['helmet-silver','Secutor miğferi','helmet','silver',{iron:12,leather:4,linen:3,wool_cloth:1}],
@@ -61,12 +62,13 @@
  const revised=new Set(['tin','lead','manica','spear','trident','bow','helmet-silver','helmet-winged']);
  const retired=['wooden_handle','shield_frame_small','shield_frame_large','lead_weight','net_mesh'];
  const caravanPhoto='assets/items-v119/caravan.webp';
- function photo(sku){if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
+ function photo(sku){if(sku==='helmet-sylvain')return 'assets/items-v169/helmet-sylvain.webp';if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
  function skuForItem(item){
   if(known.has(item?.sku))return item.sku;
   const k=item?.kind,m=item?.model;
   if(k==='weapon')return equipment.find(x=>x[2]===k&&x[3]===m)?.[0]||null;
   if(k==='shield')return m==='large'?'shield-large':'shield-medium';
+  if(k==='helmet'&&m==='sylvain_helmet')return 'helmet-sylvain';
   if(k==='helmet')return ['roman','roman_helmet'].includes(m)?'helmet-roman':['silver','knights','knights_helm'].includes(m)?'helmet-silver':['winged','winged_helmet_gameready'].includes(m)?'helmet-winged':'helmet-gold';
   if(k==='chest')return m==='chest_plate'?'chest-plate':'chest';
   if(k==='gloves')return m==='manica'?'manica':m==='shoulder_armor'?'shoulder-armor':'gloves';

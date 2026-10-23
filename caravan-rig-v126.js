@@ -208,8 +208,9 @@ var LUDUS_HELMET_DATA={"gladiator":"assets/equipment/gladiator-9bcb0ac9d566.glb"
    Decorative wings/crests are deliberately excluded from fit measurements. */
 var LudusHelmets=(function(){
  const T=THREE,templates={},waiting=new T.Group();let pending,referenceHead;
- const names={gladiator:'Gladyatör miğferi',knights:'Secutor miğferi',winged:'Thraex miğferi',roman:'Roma miğferi'};
+ const names={sylvain_helmet:'Vizörlü gladyatör miğferi',gladiator:'Gladyatör miğferi',knights:'Secutor miğferi',winged:'Thraex miğferi',roman:'Roma miğferi'};
  function model(value,type='murmillo'){
+  if(value==='sylvain_helmet')return value;
   if(value==='roman'||value==='roman_helmet')return 'roman';
   if(value==='gold'||value==='gladiator'||value==='gladiator_helmet')return 'gladiator';
   if(value==='silver'||value==='knights'||value==='knights_helm')return 'knights';
@@ -233,10 +234,10 @@ var LudusHelmets=(function(){
    if(merged)geometries.forEach(g=>g.dispose());
   }return group;
  }
- async function load(){if(pending)return pending;pending=Promise.all(Object.keys(names).map(async key=>{
+ async function load(){if(pending)return pending;pending=Promise.all(Object.keys(names).filter(key=>key!=='sylvain_helmet').map(async key=>{
    const sourceKey=['knights','winged'].includes(key)?'gladiator':key;const bytes=await ArenaAssetLoad(LUDUS_HELMET_DATA[sourceKey]);const source=await new T.GLTFLoader().parseAsync(bytes,'');templates[key]=prepare(source.scene,sourceKey);if(key==='knights')templates[key].traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.color.setHex(0xa9aeb1);o.material.metalness=.8;}});
   })).catch(error=>{pending=null;throw error;});return pending;}
- function get(value,type){return templates[model(value,type)]||waiting;}
+ function get(value,type){const key=model(value,type);if(key==='sylvain_helmet')return globalThis.LudusEquipmentCatalog?.request(T,key)||waiting;return templates[key]||waiting;}
  function headFit(m){
   if(referenceHead)return referenceHead;
   m.root.updateMatrixWorld(true);const origin=m.root.worldToLocal(m.bones.Head.getWorldPosition(new T.Vector3())),bounds=new T.Box3();
@@ -444,7 +445,7 @@ var ClassEquipment=(function(){
   if(s&&m.equippedWeapon===f.weapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===f.weapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
   m.gearStateV84={revision:revisionV84,weapon:f.weapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
 
-  const revision=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0);if(m.assetRevision!==revision){m.assetRevision=revision;m.equippedWeapon=undefined;m.offhandKind=undefined;m.shieldStyle=undefined;}
+  const revision=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0);if(m.assetRevision!==revision){m.assetRevision=revision;m.helmetStyle=undefined;m.equippedWeapon=undefined;m.offhandKind=undefined;m.shieldStyle=undefined;}
   setWeapon(m,f.weapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
