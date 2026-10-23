@@ -51,12 +51,13 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  await q('update ludus_progression set experience=ludus_private.level_threshold(30)where owner_id=$1',[A]);
  if(process.env.LUDUS_MARKET_HISTORY_TEST||process.env.LUDUS_CARAVAN_LOADOUT_TEST||process.env.LUDUS_CARAVAN_RAIDS_TEST)await db.exec(migration('market_history_v121'));
  const initialItems=(await q('select count(*)::integer n from ludus_items where owner_id=$1',[A]))[0].n;
+ await db.exec(migration('sylvain_helmet_v169'));await db.exec(migration('sylvain_helmet_v169'));
  const catalog=require('../ludus-production-v119.js');
  if(process.env.LUDUS_EQUIPMENT_TEST){const extra=migration('equipment_groups_v168').split('-- Expand only')[0];await db.exec(extra);globalThis.LudusProduction=catalog;require('../equipment-groups-v168.js');}
  const call=async(action='state',key=null,id=randomUUID())=>(await q('select ludus_supply($1,$2,1,$3)as s',[action,key,id]))[0].s;
  const stock=async(sku)=>(await call()).resources.find(r=>r.sku===sku).quantity;
  await db.exec('set role authenticated');let s=await call();
- assert.equal(s.resources.length,29);assert.equal(s.recipes.length,process.env.LUDUS_EQUIPMENT_TEST?35:33);
+ assert.equal(s.resources.length,29);assert.equal(s.recipes.length,process.env.LUDUS_EQUIPMENT_TEST?36:34);
  assert.equal(s.jobs[0].cargo.iron,24,'old cargo is unchanged');
  assert.equal(Number(s.gold),Number(before),'no money minted');
  assert.equal(s.recipes.filter(r=>r.sku==='gladius').length,1);
@@ -139,5 +140,5 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  fs.writeFileSync('/tmp/production-state-v119.json',JSON.stringify(await call()));
 
  await db.exec('reset role;set role anon');await assert.rejects(()=>call(),/permission denied/);
- await db.close();console.log((process.env.LUDUS_EQUIPMENT_TEST?'V168 PASS: all 35 recipes':'V119 PASS: all 33 recipes')+' and exact debits, 6 ingots, separate manica, inactive assembly parts, integer inputs, one steel Gladius, raw-to-item chain, 50 arrows only, replay, ownership, rollback, capacity, legacy cargo and currency preserved.');
+ await db.close();console.log((process.env.LUDUS_EQUIPMENT_TEST?'V169 PASS: all 36 recipes':'V169 PASS: all 34 recipes')+' and exact debits, 6 ingots, separate manica, inactive assembly parts, integer inputs, one steel Gladius, raw-to-item chain, 50 arrows only, replay, ownership, rollback, capacity, legacy cargo and currency preserved.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -127,7 +127,7 @@ body[data-roman-screen="ludus"] #accountLink:after{content:none!important}
 body[data-roman-screen="ludus"] #accountLink[hidden]{display:none!important}
 body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#ebce89}
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
-</style><script defer src="market-v56.js?v=revision168"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="forum-market-v66.css?v=resource-photo95"><script defer src="forum-market-v66.js?v=revision168"></script><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><script src="ludus-client-v84.js?v=revision84"></script><script src="ludus-production-v119.js?v=revision124"></script><script src="equipment-groups-v168.js?v=revision168"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
+</style><script defer src="market-v56.js?v=revision168"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="forum-market-v66.css?v=resource-photo95"><script defer src="forum-market-v66.js?v=revision169"></script><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><script src="ludus-client-v84.js?v=revision84"></script><script src="ludus-production-v119.js?v=revision169"></script><script src="equipment-groups-v168.js?v=revision168"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
 <link rel="stylesheet" href="game-panels-v123.css?v=revision123"></head><body data-art-direction="136" data-roman-screen="pazar"><header><a data-game-back href="ludus.html?v=revision96">‹ Geri dön</a><span class="market-title">Pazar</span><div class="market-wallet" role="status" aria-label="Denarius bakiyesi"><svg class="market-wallet-coin" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><circle cx="20" cy="20" r="14" fill="none" stroke="var(--ui-burgundy)" stroke-width="1"/><path d="M16 11h5c11 0 11 18 0 18h-5V11Zm3 3v12h2c7 0 7-12 0-12h-2Z" fill="var(--ui-burgundy)"/></svg><div><small>DENARIUS</small><strong id="balance">—</strong></div></div></header><div class="market-workspace">
  <aside id="marketSections" aria-label="Pazar bölümleri">
   <small>LUDUS<br>PAZARI</small>
@@ -173,7 +173,7 @@ var ARENA_SUPABASE_CONFIG = Object.freeze({
 // Original small SVG equipment illustrations; no external images or additional requests.
 var LUDUS_ARMOUR_NAMES={gladiator_chest:'Gladyatör göğüs zırhı',chest_plate:'İşlemeli göğüs zırhı',armor_shoulder:'İşlemeli çift omuzluk',shoulder_armor:'Çift omuz koruma'};
 function LudusArmourName(i){if(i?.model==='manica')return 'Kolluk';return i?.kind==='chest'?LUDUS_ARMOUR_NAMES[i.model==='chest_plate'?'chest_plate':'gladiator_chest']:i?.kind==='gloves'?LUDUS_ARMOUR_NAMES[i.model==='shoulder_armor'?'shoulder_armor':'armor_shoulder']:null;}
-var LUDUS_HELMET_NAMES={gold:'Gladyatör miğferi',gladiator:'Gladyatör miğferi',silver:'Secutor miğferi',knights:'Secutor miğferi',winged:'Thraex miğferi',roman:'Roma miğferi'};
+var LUDUS_HELMET_NAMES={sylvain_helmet:'Vizörlü gladyatör miğferi',gold:'Gladyatör miğferi',gladiator:'Gladyatör miğferi',silver:'Secutor miğferi',knights:'Secutor miğferi',winged:'Thraex miğferi',roman:'Roma miğferi'};
 var LUDUS_EQUIPMENT_ATLAS="assets/textures/shared-ui-91a94259c0b5.webp";
 /* V16 original atlas. One embedded sheet serves every equipment tile. */
 // C.docx master v1.0. Deterministic rules only: no client-side rolls or currency writes.
@@ -322,7 +322,7 @@ body{position:fixed!important;inset:0!important}
 </script>
 <script>/* Shared read-only equipment details. Uses the same stat rules as combat. */
 var LudusInspect=(function(){
- const names={gladius:'Gladius',sica:'Eğri kılıç',spear:'Mızrak',trident:'Trident',net:'Ağ',heavy_mace:'Ağır gürz',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan'};
+ const names={sylvain_helmet:'Vizörlü gladyatör miğferi',gladius:'Gladius',sica:'Eğri kılıç',spear:'Mızrak',trident:'Trident',net:'Ağ',heavy_mace:'Ağır gürz',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan'};
  const kinds={weapon:'Silah',shield:'Kalkan',helmet:'Miğfer',chest:'Göğüs zırhı',gloves:'Kolluk / omuzluk',legs:'Bacaklık'};
  const style=document.createElement('style');style.textContent=`
  #equipmentInspect{position:fixed;inset:0;z-index:80;background:#160d08b8;display:grid;place-items:center}

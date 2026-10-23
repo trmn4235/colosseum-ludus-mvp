@@ -5,7 +5,7 @@
  const records=Object.freeze({
   warhammer:Object.freeze({id:'warhammer',label:'Savaş çekici',kind:'weapon',subcategory:'blunt',file:'warhammer.cme',triangles:5332,height:1.149,paint:'Koyu çelik, eskitilmiş bronz, deri'}),
   heavy_mace:Object.freeze({id:'heavy_mace',label:'Ağır gürz',kind:'weapon',subcategory:'blunt',file:'heavy_mace.cme',triangles:3126,height:1.078,paint:'Dövme çelik, bronz, deri ve ahşap'}),
-  sylvain_helmet:Object.freeze({id:'sylvain_helmet',label:'Gladyatör miğferi',kind:'helmet',file:'sylvain_helmet.cme',triangles:11674,height:.36,paint:'Sylvain Delandre · özgün 1K dokular'})
+  sylvain_helmet:Object.freeze({id:'sylvain_helmet',label:'Vizörlü gladyatör miğferi',kind:'helmet',file:'sylvain_helmet.cme',triangles:11674,height:.36,paint:'Sylvain Delandre · özgün 1K dokular'})
  });
  const cache=new Map(),pending=new Map(),failures=new Map(),waiting=new Map();let revision=0;
  const signature=new Uint8Array([67,77,69,49,54,55,0,1]);

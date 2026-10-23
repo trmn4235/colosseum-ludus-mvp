@@ -24,7 +24,7 @@ CGTrader terms: https://www.cgtrader.com/pages/terms-and-conditions (sections 21
 - Model: https://sketchfab.com/3d-models/gladiator-helmet-6e5ede2ebea147bd82ffeafaf96cf6a2
 - Author: https://sketchfab.com/lemanitek
 - License: Creative Commons Attribution 4.0 International — https://creativecommons.org/licenses/by/4.0/
-- Sketchfab's 1K GLB variant; original textures retained, runtime display scale normalized. 11,674 triangles. No animation. Credit the author and identify any further changes.
+- Sketchfab's 1K GLB variant; original textures retained, runtime display scale normalized. 11,674 triangles. No authored animation. V169: fitted to the player head, rigid attachment driven by the existing character skeleton; original geometry and textures retained. The transparent inventory photograph is a render of this licensed mesh. Game label: Vizörlü gladyatör miğferi.
 
 ## Manica, still not acquired
 
