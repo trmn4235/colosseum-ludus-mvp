@@ -5,7 +5,7 @@ var ArenaBattleResult=(()=>{
  const number=value=>Math.max(0,Number(value)||0).toLocaleString('tr-TR',{maximumFractionDigits:0});
  function rewardRows(reward){
   const rows=[];
-  for(const [key,label,icon]of [['gold','Denarius','coin'],['ludus_exp','Ludus EXP','exp'],['diamonds','Elmas','diamond']])if(Number(reward[key])>0)rows.push({label,value:number(reward[key]),icon});
+  for(const [key,label,icon]of [['fame','Şan','exp'],['gold','Denarius','coin'],['ludus_exp','Ludus EXP','exp'],['diamonds','Elmas','diamond']])if(Number(reward[key])>0)rows.push({label,value:number(reward[key]),icon});
   if(reward.stone?.name)rows.push({label:String(reward.stone.name),value:number(reward.stone.quantity||1),icon:'stone'});
   else if(Number(reward.sapphires)>0)rows.push({label:'Safir',value:number(reward.sapphires),icon:'stone'});
   if(reward.kind)rows.push({label:kinds[reward.kind]||'Eşya',value:'1',icon:'equipment'});
@@ -28,12 +28,12 @@ var ArenaBattleResult=(()=>{
  function show(doc,combat){
   const survival=!!combat.survival;const win=combat.result==='win',solo=combat.mode==='solo20',player=combat.fighters[0];
   doc.getElementById('result').dataset.outcome=win?'win':'loss';
-  doc.getElementById('resultMode').textContent=survival?'SURVIVAL':solo?'SOLO 20':'4 × 5 TAKIM SAVAŞI';
+  doc.getElementById('resultMode').textContent=combat.mode==='pit'?'ŞAN AVLUSU · BİRE BİR':survival?'SURVIVAL':solo?'SOLO 20':'4 × 5 TAKIM SAVAŞI';
   doc.getElementById('resultTitle').textContent=survival?'STAGE '+combat.survival.stage:win?'ZAFER':'MAĞLUBİYET';
-  doc.getElementById('resultDescription').textContent=survival?'Tek hedef sendin · Mücadelen sona erdi':solo?'Yirmi gladyatör · Son kalan kazanır':'Dört takım · Beşer gladyatör';
+  doc.getElementById('resultDescription').textContent=combat.mode==='pit'?'Şan düellosu · Ekipmanın korunur':survival?'Tek hedef sendin · Mücadelen sona erdi':solo?'Yirmi gladyatör · Son kalan kazanır':'Dört takım · Beşer gladyatör';
   doc.getElementById('resultGladiator').textContent=player.name;
-  doc.getElementById('resultRank').textContent=survival?number(combat.survival.completed):solo?number(win?1:combat.stats.placement||combat.fighters.filter(f=>f.hp>0).length+1)+' / 20':win?'Takım zaferi':'Takım mağlubiyeti';
-  doc.getElementById('resultRankLabel').textContent=survival?'TAMAMLANAN STAGE':solo?'SOLO 20 DERECESİ':'TAKIM SONUCU';
+  doc.getElementById('resultRank').textContent=combat.mode==='pit'?(win?'Düello galibiyeti':'Düello mağlubiyeti'):survival?number(combat.survival.completed):solo?number(win?1:combat.stats.placement||combat.fighters.filter(f=>f.hp>0).length+1)+' / 20':win?'Takım zaferi':'Takım mağlubiyeti';
+  doc.getElementById('resultRankLabel').textContent=combat.mode==='pit'?'DÜELLO SONUCU':survival?'TAMAMLANAN STAGE':solo?'SOLO 20 DERECESİ':'TAKIM SONUCU';
   const list=doc.getElementById('resultStats');list.replaceChildren();
   for(const [label,value]of statsRows(combat)){const row=doc.createElement('div'),dt=doc.createElement('dt'),dd=doc.createElement('dd');dt.textContent=label;dd.textContent=value;row.append(dt,dd);list.append(row);}
  }

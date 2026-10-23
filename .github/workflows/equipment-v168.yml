@@ -2,7 +2,7 @@ name: Equipment categories and shield breaking
 on:
   pull_request:
     branches: [main]
-    paths: ['rome-*', 'tests/loading-recovery-*', 'tests/account-loading-*', 'equipment-*', 'assets/items-v168/**', 'assets/items-v169/**', 'ludus.html', 'ludus-production-v119.js', 'tests/helmet-*', 'supabase/migrations/*sylvain_helmet*', 'ludus-supply-v85.js', 'market-v56.js', 'forum-market-v66.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-*', 'tests/equipment-*', 'supabase/migrations/*equipment_groups*', '.github/workflows/equipment-v168.yml']
+    paths: ['pit-*', 'san-avlusu.html', 'tests/pit-*', 'supabase/migrations/*pit_arena*', 'rome-*', 'tests/loading-recovery-*', 'tests/account-loading-*', 'equipment-*', 'assets/items-v168/**', 'assets/items-v169/**', 'ludus.html', 'ludus-production-v119.js', 'tests/helmet-*', 'supabase/migrations/*sylvain_helmet*', 'ludus-supply-v85.js', 'market-v56.js', 'forum-market-v66.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-*', 'tests/equipment-*', 'supabase/migrations/*equipment_groups*', '.github/workflows/equipment-v168.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,6 +21,8 @@ jobs:
           node tests/equipment-sql-v168.cjs
           node tests/combat-motion-replay-v163.cjs
           node tests/account-loading-v171.cjs
+          node tests/pit-model-v172.cjs
+          node tests/pit-sql-v172.cjs
           LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs
       - run: npx playwright install --with-deps chromium
       - run: |
@@ -29,3 +31,5 @@ jobs:
           node tests/helmet-production-browser-v169.cjs
           node tests/loading-recovery-v171.cjs
           node tests/rome-travel-v148.cjs
+          node tests/pit-browser-v172.cjs
+          node tests/pit-combat-browser-v172.cjs
