@@ -32,12 +32,12 @@ var CircusWarView=(()=>{
   }
   function show(value){extras.visible=value;race.teams.forEach((t,i)=>{t.rider.visible=!value;t.cart.scale.set(value?1.18:1,1,value?1.6:1);t.wheels.forEach(w=>{w.userData.warRest=w.userData.warRest||w.position.clone();const parent=value?t.group:t.cart;if(w.parent!==parent){parent.add(w);w.position.copy(w.userData.warRest);w.position.x*=value?1.18:1;w.scale.setScalar(1);w.rotation.z=0;}});baskets[i].visible=value;crews[i].forEach(m=>m.root.visible=value);if(!value)t.horses.forEach((h,k)=>h.hand=t.bones[(k?'Right':'Left')+'Hand']);});if(!value)race.setExternal(null);}
   function update(s,dt,camera){show(true);race.setExternal(s);race.sync(s.time,dt);
-   for(let i=0;i<4;i++){const t=s.teams[i],rt=race.teams[i];baskets[i].visible=!t.eliminated;baskets[i].rotation.z=rt.cart.rotation.z;
+   for(let i=0;i<4;i++){const t=s.teams[i],rt=race.teams[i];baskets[i].visible=!t.eliminated;baskets[i].rotation.z=rt.cart.rotation.z;baskets[i].position.y=.73+(t.broken?-.18:rt.cart.position.y);
     for(let j=0;j<2;j++){const m=crews[i][j],g=t.crew[j],fall=g.hp<=0?Math.min(1,(s.time-(g.downAt??s.time))/.9):0;m.root.visible=g.hp>0||fall<1;m.root.userData.gladiatorId=g.id;m.root.name=g.name;if(!m.root.visible)continue;
      for(const[name,q]of Object.entries(m.rest))m.bones[name].quaternion.copy(q);
      const shooting=g.hp<=0?g.downSlot==='archer':j===t.archer,moving=t.speed>1,duck=g.duck||0,draw=t.drawUntil?Math.max(0,Math.min(1,1-(t.drawUntil-s.time)/.85)):0,releasing=shooting&&s.time-t.lastShot<.3;
      const aim=i===3&&s.role===j?s.aimYaw:t.shotYaw-rt.group.rotation.y;
-     m.root.position.set(0,.73-duck*.48+(moving?Math.sin(rt.travel*2+i)*.009:0),shooting?-.72:.30);m.root.rotation.set(duck*.28,shooting||t.whipStart!==null?aim:0,rt.cart.rotation.z*.6);
+     m.root.position.set(0,.73+(t.broken?-.18:rt.cart.position.y)-duck*.48+(moving?Math.sin(rt.travel*2+i)*.009:0),shooting?-.72:.30);m.root.rotation.set(duck*.28,shooting||t.whipStart!==null?aim:0,rt.cart.rotation.z*.6);
      // Counterlean keeps the rider's weight over the cart; knees visibly bend under cover.
      if(m.bones.Spine)m.bones.Spine.rotation.x+=duck*.35;
      for(const side of['Left','Right']){if(m.bones[side+'UpLeg'])m.bones[side+'UpLeg'].rotation.x-=duck*.9;if(m.bones[side+'Leg'])m.bones[side+'Leg'].rotation.x+=duck*1.7;}
