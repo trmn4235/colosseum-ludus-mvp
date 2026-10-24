@@ -22,7 +22,7 @@
   function render(now=performance.now()) {
     frame = 0;
     if (!renderer || lost || document.hidden) return;
-    if(visit?.active){const dt=lastRaceTime?Math.min((now-lastRaceTime)/1000,.05):0;lastRaceTime=now;visit.update(dt);if(visit.heat.status==='running')renderer.shadowMap.needsUpdate=true;}
+    if(visit?.active){const dt=lastRaceTime?Math.min((now-lastRaceTime)/1000,.05):0;lastRaceTime=now;visit.update(dt);if(visit.heat.status==='running'||visit.war?.active)renderer.shadowMap.needsUpdate=true;}
     if(race?.active&&sun.shadow.needsUpdate){race.root.visible=false;renderer.render(scene,camera);race.root.visible=true;}
     renderer.render(scene,camera);
     if(visit?.needsFrame)invalidate();else lastRaceTime=0;
