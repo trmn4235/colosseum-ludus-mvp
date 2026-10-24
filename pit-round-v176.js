@@ -11,7 +11,7 @@ var PitRound=(()=>{
   combat.fighters.forEach((f,i)=>{
    const entry=roster[i],g=i===0?snap.gladiator:pairs&&i===1?snap.teammate:entry;
    f.type=g.class;f.gearBase=g;f.team=pairs?Math.floor(i/2):i;
-   f.house=entry.house;f.equipment={};
+   f.house=entry.house;f.pitAttackRate=1.2;f.equipment={};
    for(const loan of ticket.loot||[])if(loan.actor===i)f.equipment.weapon=loan;
    loadout.refresh(f,true);arena.equip(f,f.equipment.weapon?.item);
    f.name=g.name;f.pitWaiting=!pairs&&i>=4;

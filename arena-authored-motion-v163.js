@@ -35,7 +35,7 @@ var ArenaAuthoredMotion=(()=>{
   if(m.headHeight163===undefined){m.root.updateMatrixWorld(true);m.headHeight163=m.root.worldToLocal(m.bones.Head.getWorldPosition(math().v[0])).y;}
   const choice=choose(f,time),key=choice?f.action+':'+choice[0]:null;
   if(m.authored163?.key!==key||f.timer+.001<(m.authored163?.timer||0)&&f.action!=='idle'){
-   m.authored163={key,age:0,timer:f.timer,entry:Object.fromEntries(m.boneEntries.map(([n,b])=>[n,b.quaternion.clone()]))};
+   m.authored163={key,exit:!!f.pitWeapon&&!choice&&!!m.authored163?.key,age:0,timer:f.timer,...(f.pitWeapon?{body:m.body.position.clone(),anchors:[m.weaponAnchor,m.offhandAnchor].map(a=>({position:a.position.clone(),quaternion:a.quaternion.clone()}))}:{}),entry:Object.fromEntries(m.boneEntries.map(([n,b])=>[n,b.quaternion.clone()]))};
   }
   if(m.authored163){m.authored163.age+=Math.max(0,dt);m.authored163.timer=f.timer;}
  }
@@ -51,7 +51,8 @@ var ArenaAuthoredMotion=(()=>{
    m.body.position.y=f.evadeKind==='duck'||f.evadeKind==='jump'?ArenaAuthoredCombat.evadeOffset(f):hips.y*scale*weight;
    m.body.position.z=0;m.body.rotation.set(0,0,0);
   }else if(['attack','recoil','stagger','netcast','spearcast','bash','hook'].includes(f.action)){
-   m.body.position.y=hips.y*scale*weight*entry;m.body.position.z=Math.max(-.16,Math.min(.18,hips.z*scale))*weight*entry;m.body.rotation.set(0,0,0);
+   const height=f.pitWeapon?Math.max(-.10,Math.min(.10,(hips.y-c.hips[0][1])*scale*.35)):hips.y*scale;
+   m.body.position.y=height*weight*entry;m.body.position.z=Math.max(-.16,Math.min(.18,hips.z*scale))*weight*entry;m.body.rotation.set(0,0,0);
   }
   m.root.updateMatrixWorld(true);const rootQ=m.root.getWorldQuaternion(q[0]);
   for(const [source,frames] of Object.entries(c.rotations)){
@@ -76,6 +77,13 @@ var ArenaAuthoredMotion=(()=>{
   m.authored163Clip=c.original;m.authoredClip=name;m.root.updateMatrixWorld(true);return true;
  }
  function finish(f,m){
+  if(f.pitWeapon&&f.hp>0&&f.action==='idle'&&m.authored163?.exit&&m.authored163.age<.12){
+   const w=smooth(m.authored163.age/.12),q=math().q[6],v=math().v[3];
+   for(const [name,bone]of m.boneEntries){const previous=m.authored163.entry[name];if(previous){q.copy(bone.quaternion);bone.quaternion.copy(previous).slerp(q,w);}}
+   v.copy(m.body.position);m.body.position.copy(m.authored163.body).lerp(v,w);
+   for(const [i,anchor]of [m.weaponAnchor,m.offhandAnchor].entries()){const previous=m.authored163.anchors[i];q.copy(anchor.quaternion);anchor.quaternion.copy(previous.quaternion).slerp(q,w);v.copy(anchor.position);anchor.position.copy(previous.position).lerp(v,w);}
+   m.root.updateMatrixWorld(true);
+  }
   if(f.motionVersion!==163||f.action!=='evade')return;
   const s=math();m.root.updateMatrixWorld(true);
   const min=Math.min(m.bones.LeftFoot.getWorldPosition(s.v[0]).y,m.bones.RightFoot.getWorldPosition(s.v[1]).y),floor=m.root.position.y+.055;

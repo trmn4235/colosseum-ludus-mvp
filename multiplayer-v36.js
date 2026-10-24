@@ -152,12 +152,9 @@ return {load,prepare};
  function travelBack(){if(pitRequested){location.href='san-avlusu.html?v=revision172';return;}if(globalThis.LudusNavigation)LudusNavigation.back();else location.href='savas.html?v=revision84';}
  async function leave(){if($('mpBack').disabled)return;stopped=true;$('mpBack').disabled=$('queueCancel').disabled=true;try{while(pending)await new Promise(r=>setTimeout(r,20));if(room&&room.status!=='finished'){const r=await rpc({p_action:'leave',p_room:room.id});if(r.error)throw r.error;}sessionStorage.removeItem(roomKey);travelBack();}catch(e){message('Çıkış kaydedilemedi. Tekrar dene.');$('mpBack').disabled=$('queueCancel').disabled=false;stopped=false;step();}}
  $('mpBack').onclick=$('queueCancel').onclick=leave;$('mpRetry').onclick=()=>{$('mpRetry').hidden=true;join();};$('resultBack').onclick=travelBack;
- const stick=$('duelStick');let pointer=null;
- function resetStick(){pointer=null;joy={x:0,z:0};$('duelKnob').style.transform='';}
- function move(e){if(e.pointerId!==pointer)return;const b=stick.getBoundingClientRect(),rad=b.width*.32,dx=(e.clientX-b.left-b.width/2)/rad,dz=(e.clientY-b.top-b.height/2)/rad,len=Math.max(1,Math.hypot(dx,dz));joy={x:dx/len,z:dz/len};$('duelKnob').style.transform='translate('+joy.x*rad+'px,'+joy.z*rad+'px)';}
- stick.onpointerdown=e=>{if(!active()||pointer!==null)return;e.preventDefault();pointer=e.pointerId;stick.setPointerCapture(pointer);move(e);queueStep();};
- stick.onpointermove=e=>{if(e.pointerId===pointer){e.preventDefault();move(e);}};
- for(const type of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(type,e=>{if(e.pointerId===pointer){resetStick();queueStep();}});
+ const stick=$('duelStick');
+ const movementControl=CombatPointer.stick(stick,{active,change:(x,z)=>{joy={x,z};const r=stick.getBoundingClientRect().width*.32;$('duelKnob').style.transform=x||z?'translate('+x*r+'px,'+z*r+'px)':'';queueStep();}});
+ function resetStick(){movementControl.reset();}
  function gestureRegion(e){const dx=e.clientX-attackGesture.x,dy=e.clientY-attackGesture.y;if(Math.hypot(dx,dy)<16)return 'chest';return Math.abs(dy)>Math.abs(dx)?dy<0?'head':'legs':dx<0?'leftArm':'rightArm';}
  $('duelAttack').onpointerdown=e=>{if(!active()||attackGesture)return;e.preventDefault();attackGesture={id:e.pointerId,x:e.clientX,y:e.clientY};e.currentTarget.setPointerCapture(e.pointerId);$('duelRegionHint').hidden=false;$('duelRegionHint').textContent='↑ Baş · ↓ Bacak · ← / → Kol';};
  $('duelAttack').onpointermove=e=>{if(attackGesture?.id!==e.pointerId)return;selectedRegion=gestureRegion(e);$('duelRegionHint').textContent=ArenaMotion.regions[selectedRegion].name;};

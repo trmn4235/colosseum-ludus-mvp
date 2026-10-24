@@ -1,0 +1,114 @@
+[
+  {
+    "asset": "large_sandstone_blocks",
+    "file": "large_sandstone_blocks-color.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/large_sandstone_blocks/large_sandstone_blocks_diff_1k.jpg",
+    "sha256": "2ad242551c841b0c3227bdaec693acc4a4fff3fee6a9576aa501310af2595ee9",
+    "license": "CC0"
+  },
+  {
+    "asset": "large_sandstone_blocks",
+    "file": "large_sandstone_blocks-normal.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/large_sandstone_blocks/large_sandstone_blocks_nor_gl_1k.jpg",
+    "sha256": "7b258af6729615a78aff76ceaa153b23011bd1df39b370b7a7e06ad6193b5d82",
+    "license": "CC0"
+  },
+  {
+    "asset": "large_sandstone_blocks",
+    "file": "large_sandstone_blocks-rough.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/large_sandstone_blocks/large_sandstone_blocks_rough_1k.jpg",
+    "sha256": "f6ecff09649153976a53a612d8ba1bea02c2cbebc56adf981709af2601d9fb84",
+    "license": "CC0"
+  },
+  {
+    "asset": "old_sandstone_02",
+    "file": "old_sandstone_02-color.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/old_sandstone_02/old_sandstone_02_diff_1k.jpg",
+    "sha256": "a58111224570bb33eba3c348bc7e3207255b5efb07f9cf274209c56b71d6825c",
+    "license": "CC0"
+  },
+  {
+    "asset": "old_sandstone_02",
+    "file": "old_sandstone_02-normal.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/old_sandstone_02/old_sandstone_02_nor_gl_1k.jpg",
+    "sha256": "4dcaa85f9de33d77cec4e89e6f63cd1afecb81e436104c1b7eb4b151fe0b7f75",
+    "license": "CC0"
+  },
+  {
+    "asset": "old_sandstone_02",
+    "file": "old_sandstone_02-rough.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/old_sandstone_02/old_sandstone_02_rough_1k.jpg",
+    "sha256": "5473aa8e1c244f8e191f4e6616b75062af98fc04594c2c28f66c44aa078c0ebe",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_crate_01",
+    "file": "scene.gltf",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wooden_crate_01/wooden_crate_01_1k.gltf",
+    "sha256": "fd9c6073acfc671e12b64666053f2805ae33aff5d3dbbcfe5c97c08c06644927",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_crate_01",
+    "file": "textures/wooden_crate_01_diff_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_crate_01/wooden_crate_01_diff_1k.jpg",
+    "sha256": "16653f4abaf4c1d9bca94bde3bd8c54d0ea9a5298d1648abcf57de1f7ecc34cc",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_crate_01",
+    "file": "textures/wooden_crate_01_nor_gl_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_crate_01/wooden_crate_01_nor_gl_1k.jpg",
+    "sha256": "f4ea44c7dc1686123d337039cb713d74e8a2dbc6d1bd2beeac276d06f5df3fab",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_crate_01",
+    "file": "wooden_crate_01.bin",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wooden_crate_01/wooden_crate_01.bin",
+    "sha256": "85f381f8035f7a6f2f3b848640894c6d3333b261946dd8a338c0fe19e0bea21e",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_crate_01",
+    "file": "textures/wooden_crate_01_arm_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_crate_01/wooden_crate_01_arm_1k.jpg",
+    "sha256": "cd0b031c3924905e16ffd78ead062c2cc274148c4104d09635310097738b4679",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_bowl_01",
+    "file": "scene.gltf",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wooden_bowl_01/wooden_bowl_01_1k.gltf",
+    "sha256": "7fe0d6aa4b58e1b9bfc704a8142f4f23f651640c5701b26037fbee3c01613c3b",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_bowl_01",
+    "file": "textures/wooden_bowl_01_diff_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bowl_01/wooden_bowl_01_diff_1k.jpg",
+    "sha256": "7c33269d85411cf905d5bb53d95bd148c174b26a3cfb86ee58a26735123098b1",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_bowl_01",
+    "file": "wooden_bowl_01.bin",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wooden_bowl_01/wooden_bowl_01.bin",
+    "sha256": "2659e19ea140aed29edca6761b6ee117e0a488ac14cd32c30fd0f1116f645761",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_bowl_01",
+    "file": "textures/wooden_bowl_01_nor_gl_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bowl_01/wooden_bowl_01_nor_gl_1k.jpg",
+    "sha256": "f25955450f21c80e8db34b4621ceec3778199f73c8d5c3350367640cac8cc214",
+    "license": "CC0"
+  },
+  {
+    "asset": "wooden_bowl_01",
+    "file": "textures/wooden_bowl_01_arm_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bowl_01/wooden_bowl_01_arm_1k.jpg",
+    "sha256": "206e84e320ebc4eb538a1509d3a59cfce5feb96596f7cae3700382d1a0790c81",
+    "license": "CC0"
+  }
+]

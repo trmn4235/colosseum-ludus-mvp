@@ -6,13 +6,13 @@
  const link=make('link');link.rel='stylesheet';link.href='caravan-battle-v127.css?v=revision128';document.head.append(link);document.body.classList.add('caravan-battle');
  const overlay=make('section','cb-overlay'),card=make('div','cb-card'),title=make('h2','','Av ekibi hazırlanıyor'),copy=make('p','','Orman yolu ve gladyatörler yükleniyor…');card.append(title,copy);overlay.append(card);overlay.hidden=true;document.body.append(overlay);
  let motionTimeline;
- let client,owner,ticket,state,field,sim,touchControls,controlSettings,dropBatch,models=[],paused=true,saving=false,saved=false,settlementStarted=false,abandon=false,storeKey,lastSave=0,accumulator=0,cameraYaw=Math.PI,cameraPitch=.52,pointer=null,toastUntil=0,presentation=null,firstDeathSeen=false;
+ let movementControl,client,owner,ticket,state,field,sim,touchControls,controlSettings,dropBatch,models=[],paused=true,saving=false,saved=false,settlementStarted=false,abandon=false,storeKey,lastSave=0,accumulator=0,cameraYaw=Math.PI,cameraPitch=.52,pointer=null,toastUntil=0,presentation=null,firstDeathSeen=false;
  const keys=new Set(),stick={x:0,y:0,id:null},held=new Set(),buttons={},bars=[],arrowMeshes=[];
  const keyFlags={KeyJ:1,KeyK:2,ShiftLeft:2};let queued=0,selectedRegion='chest',guardRegion=null;
  function action(text,fn,cls=''){const b=make('button',cls,text);b.type='button';b.onclick=fn;return b;}
  function returnLink(){const a=make('a','','Ludus’a dön');a.href='ludus.html';return a;}
  function message(text){$('cbToast').textContent=text;toastUntil=performance.now()+3500;}
- function clear(){touchControls?.reset();queued=0;guardRegion=null;keys.clear();held.clear();stick.x=stick.y=0;stick.id=null;pointer=null;for(const b of Object.values(buttons))b.classList.remove('held');const dot=document.querySelector('.cb-pad span');if(dot)dot.style.transform='';}
+ function clear(){movementControl?.reset();touchControls?.reset();queued=0;guardRegion=null;keys.clear();held.clear();stick.x=stick.y=0;stick.id=null;pointer=null;for(const b of Object.values(buttons))b.classList.remove('held');const dot=document.querySelector('.cb-pad span');if(dot)dot.style.transform='';}
  function checkpoint(){
   if(!state||!storeKey||saved)return true;
   try{localStorage.setItem(storeKey,JSON.stringify({owner,raid,seed:ticket.encounter.seed,commands:state.commands,steps:state.steps,abandon}));return true;}
@@ -29,8 +29,7 @@
   const vitals=make('div','cb-vitals vitals');vitals.innerHTML='<strong id="cbPlayer"></strong><div class="meter"><span id="hpFill"></span><label id="hpText"></label><small>CAN</small></div><div class="meter energy"><span id="stFill"></span><label id="stText"></label><small>KONDİSYON</small></div>';hud.append(vitals);
   for(const [id,label]of [['hpFill','Can'],['stFill','Kondisyon']]){$(id)?.setAttribute('aria-label',label);const bar=vitals.querySelector('#'+id);bar.setAttribute('role','progressbar');bar.setAttribute('aria-label',label);bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax','100');}
   const pad=make('div','cb-pad'),dot=make('span');pad.setAttribute('aria-label','Savaş hareket kolu');pad.append(dot);hud.append(pad);
-  function move(e){const b=pad.getBoundingClientRect(),r=b.width*.35,x=e.clientX-b.left-b.width/2,y=e.clientY-b.top-b.height/2,d=Math.max(r,Math.hypot(x,y));stick.x=x/d;stick.y=-y/d;dot.style.transform='translate('+stick.x*r+'px,'+-stick.y*r+'px)';}
-  pad.onpointerdown=e=>{if(paused||stick.id!==null)return;stick.id=e.pointerId;pad.setPointerCapture(e.pointerId);move(e);};pad.onpointermove=e=>{if(e.pointerId===stick.id)move(e);};for(const event of ['pointerup','pointercancel','lostpointercapture'])pad.addEventListener(event,e=>{if(e.pointerId===stick.id){stick.id=null;stick.x=stick.y=0;dot.style.transform='';}});
+  movementControl=CombatPointer.stick(pad,{active:()=>!paused&&!state?.combat.finished,radius:.35,change:(x,y)=>{stick.x=x;stick.y=-y;const r=pad.getBoundingClientRect().width*.35;dot.style.transform=x||y?'translate('+x*r+'px,'+y*r+'px)':'';}});
   const actions=make('div','cb-actions actions'),paths={target:'M12 2v6m0 8v6M2 12h6m8 0h6 M18 12a6 6 0 1 0-12 0 6 6 0 0 0 12 0',hand:'M4 9a8 8 0 0 1 14-3l2 3M20 3v6h-6M20 15a8 8 0 0 1-14 3l-2-3M4 21v-6h6',block:'M4 4l8-2 8 2v8c0 5-8 10-8 10S4 17 4 12zM12 4v15',attack:'M7 17L20 3l1 5L10 19M5 13l7 7M4 21l4-5',special:'M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z',dodge:'M3 12h17m-6-6l6 6-6 6'};
   for(const [id,label]of [['target','Hedef kilidi'],['hand','Ekipman değiştir'],['block','BLOK'],['attack','SALDIR'],['special','ÖZEL'],['dodge',(sim===CaravanSimulationV163||sim===CaravanSimulationV168)?'KAÇIN':'YUVARLAN']]){const b=make('button','action');b.type='button';b.id=id;b.setAttribute('aria-label',label);b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+paths[id]+'"/></svg><small'+(id==='special'?' id="specialLabel"':'')+'>'+label+'</small>';actions.append(b);}
   hud.append(actions);const pickup=action('Silahı al',()=>queue(32),'cb-pickup');pickup.id='pickup';pickup.hidden=true;pickup.setAttribute('aria-label','Yerdeki silahı al');hud.append(pickup);
@@ -105,7 +104,7 @@
  async function init(){
   if(!/^[a-f0-9-]{36}$/i.test(raid))throw Error('Baskın kimliği geçersiz. Kervan avından giriş yap.');
   const files=['assets/runtime/supabase-59d39487c358.js','ludus-client-v84.js','arena-fall-motion-v39.js','arena-ground-fall-v39.js','arena-roll-motion-v72.js','arena-roll-v72.js','arena-locomotion-data-v91.js','arena-locomotion-v91.js','ludus-manica-v119.js','caravan-core-v126.js','caravan-simulation-v126.js','caravan-simulation-v127.js','combat-curves-v163.js','combat-motion-v163.js','caravan-simulation-v163.js','caravan-simulation-v168.js','equipment-catalog-v167.js','arena-authored-data-v163.js','arena-authored-motion-v163.js','combat-control-settings-v44.js','arena-controls-v43.js','combat-evasion-controls-v163.js','caravan-assets-v126.js','arena-anatomy-v166.js','arena-equipment-fit-v164.js','arena-motion-stability-v165.js','caravan-rig-v126.js','ludus-caravan-outfit-v122.js','naval-performance-v106.js'];
-  for(const [i,file]of files.entries()){await script(file+'?v=revision171');CaravanLoading.set('scripts',(i+1)/files.length,'Savaş kontrolleri hazırlanıyor…');}
+  for(const [i,file]of files.entries()){await script(file+'?v=revision177');CaravanLoading.set('scripts',(i+1)/files.length,'Savaş kontrolleri hazırlanıyor…');}
   motionTimeline=ArenaMotionStability.createTimeline();
   client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
   const user=await client.auth.getUser();if(user.error||!user.data.user||user.data.user.is_anonymous)throw Error('Kervan avına girmek için hesabına giriş yap.');owner=user.data.user.id;storeKey='caravan-combat-v126:'+owner+':'+raid;

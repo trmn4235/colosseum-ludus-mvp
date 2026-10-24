@@ -2,9 +2,9 @@ name: Pit courtyard and exhibition
 on:
   push:
     branches: [main, codex/pit-realism-v174, codex/pit-v175]
-    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'assets/pit-v177/**', 'combat-pointer-v177.js', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
   pull_request:
-    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'assets/pit-v177/**', 'combat-pointer-v177.js', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
 permissions:
   contents: read
 jobs:
@@ -22,4 +22,5 @@ jobs:
       - run: npx playwright install --with-deps --only-shell chromium
       - run: node tests/pit-people-v175.cjs && node tests/pit-gallery-v175.cjs
       - run: node tests/pit-browser-v172.cjs && node tests/pit-combat-browser-v172.cjs
+      - run: node tests/pit-controls-v177.cjs
       - run: node tests/pit-browser-v176.cjs

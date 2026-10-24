@@ -1,7 +1,7 @@
 (()=>{
  'use strict';const $=id=>document.getElementById(id),client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1'),names=['Varro','Felix','Marcus','Titus'];
  let state=null,owner=null,busy=false,pending=null,clockOffset=0,scene,renderer,camera,world,view='overview',yaw=.5,last=0,keeper=null,keeperPromise=null,rigs=null,rigPromise=null,rigError=null,dialogue='home',booting=false,polling=false,actionMessage='';
- let cameraSnap=true;let exhibition=null,exhibitionId=null,velocity={x:0,z:0},cameraTarget=null;let galleryRoofs=[],dominus=null,appearance={},walkSpeed=0,fightMode='1x10',fightRequest=null,fightBusy=false,fightStep=0,fightSelection=[];const keys=new Set(),stick={x:0,z:0};
+ let cameraSnap=true;let exhibition=null,exhibitionId=null,velocity={x:0,z:0},cameraTarget=null;let galleryRoofs=[],dominus=null,appearance={},walkSpeed=0,fightMode='1x10',fightRequest=null,fightBusy=false;const keys=new Set(),stick={x:0,z:0};
  const pendingKey=()=>`pit-request-v172:${owner}`;
  function notice(text){$('pitStatus').textContent=text;$('pitStatus').hidden=!text;}
  const nearKeeper=()=>view==='overview'&&!!keeper?.root.userData.loaded&&!!dominus?.root.userData.loaded&&dominus.root.position.distanceTo(keeper.root.position)<2.8;
@@ -48,42 +48,53 @@
  $('betStake').oninput=preview;$('betForm').onsubmit=e=>{e.preventDefault();if($('betForm').reportValidity())act('bet',{fighter:Number($('betFighter').value),stake:Number($('betStake').value)});};
  $('startBout').onclick=()=>act('start');$('nextBout').onclick=()=>act('next');$('retryAction').onclick=()=>act(pending?.action);$('circusClose').onclick=()=>{$('circusDialog').close();showView(view);};$('bookmakerLabel').onclick=()=>talk();$('betClose').onclick=()=>$('betDialog').close();$('watchBout').onclick=()=>{$('betDialog').close();showView('watch');};
  async function showView(next){view=next;cameraSnap=true;cameraTarget=null;document.body.dataset.view=next;clearMove();notice(next==='watch'?'Gösteri müsabakası · Herkes tek':'');if(next==='watch')try{await loadRigs();}catch(e){rigError=e.message;notice('Gladyatörler görüntülenemedi. Müsabaka ve kuponun sunucuda devam ediyor.');}}
- const script=file=>file==='equipment-catalog-v167.js'&&typeof LudusEquipmentCatalog!=='undefined'?Promise.resolve():new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=file+'?v=revision175';s.onload=resolve;s.onerror=()=>reject(Error('Model bileşeni açılamadı'));document.head.append(s);});
+ const script=file=>file==='equipment-catalog-v167.js'&&typeof LudusEquipmentCatalog!=='undefined'?Promise.resolve():new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=file+'?v=revision177';s.onload=resolve;s.onerror=()=>reject(Error('Model bileşeni açılamadı'));document.head.append(s);});
  async function loadKeeper(){if(keeperPromise)return keeperPromise;keeperPromise=(async()=>{await script('owner-avatar.js');dominus=LudusOwner.create(appearance);dominus.root.name='Dominus';scene.add(dominus.root);keeper=LudusOwner.create({version:2,hair:'curls',beard:'full',hairColor:'#34251e',skinTone:.35,height:178});keeper.root.name='Gaius';scene.add(keeper.root);await Promise.all([PitPeople.fit(keeper),PitPeople.fit(dominus)]);dominus.root.position.set(-2,PitArena.galleryY,PitArena.half.z+2.2);dominus.root.rotation.y=-Math.PI/2;keeper.root.position.set(1.5,PitArena.galleryY,PitArena.half.z+2.2);keeper.root.rotation.y=-Math.PI/2;for(const actor of [dominus,keeper])actor.root.traverse(o=>{if(o.isMesh&&o.visible)o.castShadow=true;});keeper.root.traverse(o=>{if(o.name==='OwnerWhiteTunic'&&o.material)o.material.color.setHex(0x807768);});for(const actor of [dominus,keeper])actor.root.userData.contact=PitDetails.actorShadow(THREE,scene);cameraSnap=true;})().catch(e=>{keeperPromise=null;throw e;});return keeperPromise;}
  function fightPage(){
-  const pairs=fightMode==='2x5',saved=fightSelection[fightStep];
-  $('fightTitle').textContent=pairs?`2x5 · ${fightStep?'Takım arkadaşın':'İlk gladyatörün'}`:'1x10 · Gladyatörün';
-  $('fightGladiator').replaceChildren(...(state?.roster||[]).filter(g=>!fightStep||g.id!==fightSelection[0]?.gladiator).map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.name+' · '+g.fame+' Şan';o.disabled=g.ready===false;return o;}));
-  const ready=[...$('fightGladiator').options].find(o=>!o.disabled);
-  if(ready)$('fightGladiator').value=ready.value;if(saved&&[...$('fightGladiator').options].some(o=>o.value===saved.gladiator&&!o.disabled))$('fightGladiator').value=saved.gladiator;
-  for(const radio of $('fightForm').querySelectorAll('[name=weapon]'))radio.checked=radio.value===(saved?.pit_weapon||'pit_stone_mace');
-  $('fightRules').textContent=pairs?'5 takım, 10 savaşçı. Hepsi aynı anda başlar. İlk gladyatörü sen yönetirsin; diğeri yanında dövüşür.':'İlk 4 gladyatör kuma çıkar. Her ölümde sıradaki girer; toplam 10 kişi. Son kalan kazanır.';
-  const enough=!pairs||(state?.roster||[]).filter(g=>g.ready!==false).length>=2;
-  $('fightMessage').textContent=!enough?'Hazır iki farklı gladyatör gerekiyor.':fightStep?'Şimdi takım arkadaşının silahını seç.':'Herkes zırhsız. Silah bu maç için verilir.';
-  $('fightStart').textContent=pairs&&!fightStep?'Takım arkadaşını seç':'Silahı al ve katıl';$('fightStart').disabled=!ready||!enough;
-  $('fightBack').hidden=!fightStep;
+  const pairs=fightMode==='2x5',roster=state?.roster||[],ready=roster.filter(g=>g.ready!==false);
+  $('fightTitle').textContent=pairs?'2x5 · İki savaşçını hazırla':'1x10 · Savaşçını hazırla';
+  $('fightForm').dataset.pairs=String(pairs);$('fighterLoadout1').hidden=!pairs;
+  for(const [i,id] of ['fightGladiator','fightMate'].entries()){
+   const select=$(id),saved=select.value;
+   select.replaceChildren(...roster.map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.name+' · '+g.fame+' Şan'+(g.ready===false?' · Hazır değil':'');o.disabled=g.ready===false;return o;}));
+   select.value=ready.some(g=>g.id===saved)?saved:ready[i]?.id||'';select.required=i===0||pairs;select.disabled=i===1&&!pairs;
+  }
+  if(pairs&&$('fightMate').value===$('fightGladiator').value)$('fightMate').value=ready.find(g=>g.id!==$('fightGladiator').value)?.id||'';
+  $('fightRules').textContent=pairs?'5 takım · 10 gladyatör · İki savaşçının silahını ayrı seç. İlkini sen yönetirsin; takım arkadaşın yanında dövüşür.':'İlk 4 gladyatör kuma çıkar. Her ölümde sıradaki girer; toplam 10 kişi. Son kalan kazanır.';
+  $('fightStart').textContent=pairs?'İki gladyatörle katıl':'Silahı al ve katıl';updateFight();
  }
- async function openFight(mode){fightMode=mode==='2x5'?'2x5':'1x10';fightRequest=null;fightStep=0;fightSelection=[];$('circusDialog').close();fightPage();$('fightDialog').showModal();}
+ let previousFighters=[];
+ function updateFight(event){
+  fightRequest=null;const pairs=fightMode==='2x5',roster=state?.roster||[],selects=[$('fightGladiator'),$('fightMate')],ids=selects.map(el=>el.value);
+  if(pairs&&ids[0]&&ids[0]===ids[1]){
+   const changed=event?.target===selects[1]?1:0,other=1-changed;
+   ids[other]=roster.find(g=>g.ready!==false&&g.id===previousFighters[changed]&&g.id!==ids[changed])?.id||roster.find(g=>g.ready!==false&&g.id!==ids[changed])?.id||'';
+   selects[other].value=ids[other];
+  }
+  previousFighters=ids.slice();
+  const ready=id=>roster.some(g=>g.id===id&&g.ready!==false);
+  const valid=ready(ids[0])&&(!pairs||ready(ids[1])&&ids[1]!==ids[0]);$('fightStart').disabled=!valid||fightBusy;
+  const selections=[...$('fightForm').querySelectorAll('.fighter-loadout')].filter(el=>!el.hidden).map(el=>{const select=el.querySelector('select'),g=roster.find(g=>g.id===select.value),weapon=el.querySelector('input:checked');return g?g.name+' · '+(weapon?.value==='pit_wood_mace'?'Ahşap gürz':'Taş gürz'):'';});
+  $('fightMessage').textContent=valid?selections.join('   /   '):pairs?'Hazır iki farklı gladyatör seç.':'Hazır bir gladyatör seç.';
+ }
+ async function openFight(mode){fightMode=mode==='2x5'?'2x5':'1x10';fightRequest=null;$('circusDialog').close();fightPage();$('fightDialog').showModal();}
  $('fightClose').onclick=()=>{if(!fightBusy){$('fightDialog').close();talk(fightMode);}};
- $('fightBack').onclick=()=>{if(!fightBusy){fightSelection[fightStep]={gladiator:$('fightGladiator').value,pit_weapon:new FormData($('fightForm')).get('weapon')};fightStep=0;fightPage();}};
  $('fightDialog').addEventListener('cancel',e=>{if(fightBusy)e.preventDefault();});
  $('fightForm').onsubmit=async e=>{
   e.preventDefault();if(fightBusy||!$('fightForm').reportValidity())return;
-  fightSelection[fightStep]={gladiator:$('fightGladiator').value,pit_weapon:new FormData($('fightForm')).get('weapon')};
-  if(fightMode==='2x5'&&!fightStep){fightStep=1;fightPage();return;}
-  const first=fightSelection[0],second=fightSelection[1],slots={pit_weapon:first.pit_weapon,pit_mode:fightMode,...(fightMode==='2x5'?{teammate:second.gladiator,teammate_weapon:second.pit_weapon}:{})};
-  if(second&&fightMode==='2x5'&&second.gladiator===first.gladiator){$('fightMessage').textContent='İki farklı gladyatör seç.';return;}
+  const data=new FormData($('fightForm')),first={gladiator:$('fightGladiator').value,pit_weapon:data.get('weapon')},second={gladiator:$('fightMate').value,pit_weapon:data.get('mate_weapon')},slots={pit_weapon:first.pit_weapon,pit_mode:fightMode,...(fightMode==='2x5'?{teammate:second.gladiator,teammate_weapon:second.pit_weapon}:{})};
+  if(fightMode==='2x5'&&(!second.gladiator||second.gladiator===first.gladiator)){$('fightMessage').textContent='İki farklı gladyatör seç.';return;}
   fightBusy=true;for(const control of $('fightDialog').querySelectorAll('button,input,select'))control.disabled=true;
   $('fightMessage').textContent='Gaius isimleri kaydediyor. Kapılar birazdan açılacak…';const key='pit-start-v176:'+owner;
   try{
    if(!fightRequest){try{const saved=JSON.parse(sessionStorage.getItem(key));if(saved?.gladiator===first.gladiator&&JSON.stringify(saved?.slots)===JSON.stringify(slots))fightRequest=saved;}catch{}}
    fightRequest=fightRequest||{gladiator:first.gladiator,slots,id:crypto.randomUUID()};sessionStorage.setItem(key,JSON.stringify(fightRequest));
    let timer;const r=await Promise.race([client.rpc('ludus_start_battle_v2',{p_gladiator:fightRequest.gladiator,p_mode:'pit',p_slots:fightRequest.slots,p_request:fightRequest.id}),new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('Bağlantı zaman aşımı. Aynı isteği yeniden dene.')),12000))]).finally(()=>clearTimeout(timer));
-   if(r.error)throw r.error;sessionStorage.setItem('ludus-active-battle',r.data.id);sessionStorage.removeItem(key);location.assign('arena.html?battle='+encodeURIComponent(r.data.id)+'&v=revision176');
+   if(r.error)throw r.error;sessionStorage.setItem('ludus-active-battle',r.data.id);sessionStorage.removeItem(key);location.assign('arena.html?battle='+encodeURIComponent(r.data.id)+'&v=revision177');
   }catch(e){$('fightMessage').textContent=e.message||'Bağlantı kurulamadı. Aynı isteği yeniden deneyebilirsin.';if(e.code){sessionStorage.removeItem(key);fightRequest=null;}}
-  finally{fightBusy=false;for(const control of $('fightDialog').querySelectorAll('button,input,select'))control.disabled=false;}
+  finally{fightBusy=false;for(const control of $('fightDialog').querySelectorAll('button,input,select'))control.disabled=false;$('fightMate').disabled=fightMode!=='2x5';}
  };
- $('fightGladiator').onchange=()=>fightRequest=null;$('fightForm').querySelectorAll('[name=weapon]').forEach(el=>el.onchange=()=>fightRequest=null);
+ $('fightGladiator').onchange=$('fightMate').onchange=updateFight;$('fightForm').querySelectorAll('input[type=radio]').forEach(el=>el.onchange=updateFight);
  async function loadRigs(){if(rigPromise)return rigPromise;rigPromise=(async()=>{for(const f of ['arena-runtime-v96.js','arena-fall-motion-v39.js','arena-ground-fall-v39.js','arena-roll-motion-v72.js','arena-roll-v72.js','arena-locomotion-data-v91.js','arena-locomotion-v91.js','ludus-manica-v119.js','caravan-core-v126.js','caravan-assets-v126.js','combat-curves-v163.js','combat-motion-v163.js','equipment-catalog-v167.js','arena-authored-data-v163.js','arena-authored-motion-v163.js','arena-anatomy-v166.js','arena-equipment-fit-v164.js','arena-motion-stability-v165.js','caravan-rig-v126.js'])await script(f);await Promise.all([ImportedGladiator.load(()=>{}),PitArena.preload()]);exhibition=PitExhibition.create(state.bout);exhibitionId=state.bout.id;const c=exhibition.combat;rigs=Array.from({length:4},(_,i)=>{const f=c.fighters[i],type=i?'thraex':'secutor';if(f){f.name=names[i];f.type=type;}const m=ImportedGladiator.create(i,type);m.root.visible=!!f;scene.add(m.root);return{f,m};});})().catch(e=>{rigPromise=null;throw e;});return rigPromise;}
  async function stage(){renderer=new THREE.WebGLRenderer({canvas:$('pitScene'),antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;scene=new THREE.Scene();scene.background=new THREE.Color('#c4d3db');scene.fog=new THREE.Fog('#c4d3db',40,90);camera=new THREE.PerspectiveCamera(48,1,.1,100);scene.add(new THREE.HemisphereLight(0xe4efff,0xb2a697,1.55));const sun=new THREE.DirectionalLight(0xffecd2,2.5);sun.position.set(-15,24,12);sun.target.position.set(0,2,0);scene.add(sun.target);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<1100?1024:2048,innerWidth<1100?1024:2048);Object.assign(sun.shadow.camera,{left:-24,right:24,top:22,bottom:-22,near:.5,far:75});sun.shadow.bias=-.00012;sun.shadow.normalBias=.018;sun.shadow.radius=2;scene.add(sun);world=await PitArena.load(scene,renderer);world.traverse(o=>{if(o.name==='Bordo keten gölgelik')galleryRoofs.push(o);});requestAnimationFrame(frame);}
  function constrainCamera(position,target){

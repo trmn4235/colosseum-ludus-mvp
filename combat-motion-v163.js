@@ -4,7 +4,7 @@
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),mix=(a,b,t)=>a+(b-a)*t,smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
 const enabled=f=>f?.motionVersion===163;
 const pole=kind=>kind==='spear'||kind==='trident';
-function clipName(f){const kind=f.attackWeapon??f.weapon;if(pole(kind))return 'pole';if(!kind)return f.chain===2?'cross':'jab';if(f.attackKind==='heavy')return 'chop';if(kind==='gladius'&&f.chain===3)return 'stab';if(kind==='sica')return f.chain===2?'swordB':'swordA';return f.chain===2?'swordB':'slash';}
+function clipName(f){const kind=f.attackWeapon??f.weapon;if(f.pitWeapon&&kind==='heavy_mace')return f.attackKind==='heavy'||f.chain===3?'chop':f.chain===2?'swordB':'swordA';if(pole(kind))return 'pole';if(!kind)return f.chain===2?'cross':'jab';if(f.attackKind==='heavy')return 'chop';if(kind==='gladius'&&f.chain===3)return 'stab';if(kind==='sica')return f.chain===2?'swordB':'swordA';return f.chain===2?'swordB':'slash';}
 function curve(name){return root.LUDUS_COMBAT_CURVES?.clips[name];}
 function phase(f,time=f.timer,name=clipName(f)){
  const c=curve(name),p=f.attackProfile;if(!c||!p)return 0;
@@ -92,6 +92,7 @@ function install(A,M,options={}){
   const region=M.regions[f.attackRegion]||M.regions.chest;
   const regionShift=clamp(region.y-1.38,-.46,.42)*(active?smooth(time/Math.max(.01,f.attackProfile.wind)):.15);
   s.grip=c.rigHands?{x:hand.x*sign,y:hand.y,z:hand.z}:{x:clamp(hand.x*sign,-.65,.65),y:clamp(hand.y*1.06+regionShift+(isPole?.26:.13),.72,1.95),z:clamp(hand.z*1.06,-.38,.72)};
+  if(f.pitWeapon&&kind==='heavy_mace')s.grip.y=clamp(s.grip.y-Math.min(0,vector(c.hips,u).y)*.8,1.05,1.85);
   if(active){const entry=smooth(time/.085),rest=base.sample({...f,action:'idle'},0).grip;for(const k of ['x','y','z'])s.grip[k]=mix(rest[k],s.grip[k],entry);}
   if(isPole){
    const p=f.attackProfile||M.profile(kind),choke=clamp(Number(f.poleChoke)||0,0,p.length-.2),length=p.length-choke;
@@ -110,7 +111,7 @@ function install(A,M,options={}){
   if(!enabled(f)&&!enabled(v))return base.contact(f,v,from,to);
   const target=M.target(v,f.attackRegion),a=M.sample(f,from),b=M.sample(f,to),world=p=>M.world(f,p);
   if(pole(f.attackWeapon))return Math.min(M.segmentDistance(world(a.tip),world(b.tip),target),M.segmentDistance(world({x:b.tip.x-b.dir.x*.18,y:b.tip.y-b.dir.y*.18,z:b.tip.z-b.dir.z*.18}),world(b.tip),target))<target.r+.045;
-  if(f.attackWeapon==='mace')return M.segmentDistance(world(a.tip),world(b.tip),target)<target.r+.14;
+  if(f.attackWeapon==='mace'||f.pitWeapon&&f.attackWeapon==='heavy_mace')return M.segmentDistance(world(a.tip),world(b.tip),target)<target.r+.14;
   for(let i=1;i<b.points.length;i++)if(Math.min(M.segmentDistance(world(a.points[i-1]),world(a.points[i]),target),M.segmentDistance(world(b.points[i-1]),world(b.points[i]),target),M.segmentDistance(world(a.points[i]),world(b.points[i]),target))<target.r+.07)return true;return false;
  };
  M.shieldContact=function(f,v,from,to){

@@ -44,8 +44,12 @@ var ArenaTouchControls = (() => {
   for(const [id,key] of [['hpFill','heart'],['stFill','energy']]){const badge=document.createElement('i');badge.className='vital-icon';badge.innerHTML=svg(key);document.getElementById(id).parentElement.append(badge);}
   function applyLayout(value){layout=value;document.body.dataset.controlLayout=value;held=gesture=null;release();block.classList.remove('pressed');targets.forEach(b=>b.classList.remove('selected'));setMode(mode);attack.setAttribute('aria-label',layout==='classic'?'Saldır; kaydırarak bölge seç':'Saldırı modunu seç');block.setAttribute('aria-label',layout==='classic'?'Savunmak için basılı tut':'Savunma modunu seç');}
   addEventListener('combat-control-layout',e=>applyLayout(e.detail));
+  function reset(){held=gesture=null;release();block.classList.remove('pressed');targets.forEach(b=>b.classList.remove('selected'));}
+  for(const type of ['pointerup','pointercancel','lostpointercapture'])window.addEventListener(type,e=>{if(held===e.pointerId){held=null;release();block.classList.remove('pressed');}if(gesture?.id===e.pointerId)gesture=null;});
+  for(const type of ['touchend','touchcancel'])window.addEventListener(type,e=>{if(!e.touches.length)reset();},{passive:true});
+  window.addEventListener('pagehide',reset);
   applyLayout(layout);
-  return {reset(){held=gesture=null;release();targets.forEach(b=>b.classList.remove('selected'));},get mode(){return mode;},get layout(){return layout;}};
+  return {reset,get mode(){return mode;},get layout(){return layout;}};
  }
  return {mount};
 })();

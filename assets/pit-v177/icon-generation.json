@@ -1,0 +1,17 @@
+{
+  "mode": "builtin",
+  "transparent_background": true,
+  "referenced_image_paths": [],
+  "outputs": [
+    {
+      "file": "stone-icon.webp",
+      "original": "exec-81c0bee7-b6a8-4a1c-bddd-477a0236a18a.png",
+      "prompt": "A single original realistic stone arena mace game inventory icon. A long worn ashwood handle fitted with a single rough rounded granite head secured by crossed rawhide lashings; small dark leather collar. Original ancient utilitarian design, no fantasy decoration. Three-quarter view, whole object diagonally from lower left to upper right, 12 percent margin on all sides in a square composition. Museum quality product photography, subtle neutral soft studio highlights, natural granular grey stone, detailed wood grain. No reference image. No text, hands, border, ground or extra objects. Transparent background with true alpha. High clarity at 140px thumbnail size."
+    },
+    {
+      "file": "wood-icon.webp",
+      "original": "exec-748b0ab4-da50-4222-ad43-c1c889521ffe.png",
+      "prompt": "A single original realistic wooden arena mace game inventory icon. A long worn ashwood handle broadening into a stout wooden club head with two modest dark forged iron bands and short blunt iron studs. Original ancient utilitarian design, no fantasy decoration. Three-quarter view, whole object diagonally from lower left to upper right, 12 percent margin on all sides in a square composition. Museum quality product photography, subtle neutral soft studio highlights, natural dark wood grain and textured iron. No reference image. No text, hands, border, ground or extra objects. Transparent background with true alpha. High clarity at 140px thumbnail size."
+    }
+  ]
+}
