@@ -9,8 +9,8 @@ const server=http.createServer((req,res)=>{
  if(!file.startsWith(root+'/')||!fs.existsSync(file)||!fs.statSync(file).isFile())return res.writeHead(404).end();
  let body=fs.readFileSync(file);res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.glb':'model/gltf-binary','.webp':'image/webp'})[path.extname(file)]||'application/octet-stream');
  if(uri==='/ludus-client-v84.js')body=stub;
- if(uri==='/caravan-field-v125.js')body=body.toString().replace('window.CaravanField={','window.CaravanField={stop(){cancelAnimationFrame(raf);raf=0;},resetClock(){last=0;},clock(now){tick(now);cancelAnimationFrame(raf);raf=0;},advance(dt){for(const m of mixers)m.update(dt);detail.update(dt);battle.frame(dt);},');
- if(uri==='/caravan-battle-v126.js')body=body.toString().replace('models.push(m);','models.push(m);window.testModels=models;');
+ if(uri==='/caravan-field-v125.js')body=body.toString().replace('window.CaravanField={','window.CaravanField={get renderScale(){return quality;},stop(){cancelAnimationFrame(raf);raf=0;},resetClock(){last=0;},clock(now){tick(now);cancelAnimationFrame(raf);raf=0;},advance(dt){for(const m of mixers)m.update(dt);detail.update(dt);battle.frame(dt);},');
+ if(uri==='/caravan-battle-v126.js')body=body.toString().replace('models.push(m);','models.push(m);window.testModels=models;').replace('window.CaravanBattle={','window.CaravanBattle={testRenderActors:renderActors,');
  res.end(body);
 });
 (async()=>{
@@ -40,6 +40,7 @@ const server=http.createServer((req,res)=>{
   assert.ok(metrics.color.triangles<800000,JSON.stringify(metrics));assert.ok(metrics.shadow.triangles<1100000,JSON.stringify(metrics));assert.ok(metrics.shadow.calls<330);
   assert.ok(metrics.pixelRatio<=1.25);assert.ok(metrics.fullBodies<=3);for(const c of metrics.clock)assert.ok(Math.abs(c.seconds-2)<1/30+.0001,JSON.stringify(c));
   assert.ok(!requests.some(url=>/gladiator_chest.*\.glb/.test(url)),'Retired armour must not download');
+  if(process.env.LUDUS_RENDER_SCALE_TEST==='1'){await require('./caravan-pacing-v188.cjs')(page);await require('./render-scale-browser-v188.cjs')(page,'caravan');}
   console.log(JSON.stringify({metrics,errors}));
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;server.close();});

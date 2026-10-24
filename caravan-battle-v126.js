@@ -72,7 +72,7 @@
    const signature=f.action+':'+(f.hp>0)+':'+(f.move>.025)+':'+(f.reaction>0)+':'+!!(f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time),changed=m.poseSignature!==signature;
    m.poseDelta=(m.poseDelta||0)+dt;m.poseBudget=(m.poseBudget||0)+dt;
    const interval=NavalPerformance.interval(distance),due=!m.corpseSettled&&(focus||changed||m.root.visible&&m.poseBudget+1e-6>=interval);
-   if(due){ImportedGladiator.animate(pose,m,time,Math.min(.25,m.poseDelta));m.poseDelta=0;m.poseBudget%=interval;m.poseSignature=signature;if(f.hp<=0&&m.lastFall?.entry>=1&&m.lastFall.down.a===m.lastFall.down.c.frames-1)ArenaRuntime.settleCorpse(m);}
+   if(due){ImportedGladiator.animate(pose,m,time,Math.min(.25,m.poseDelta));m.poseDelta=0;m.poseBudget=changed?NavalPerformance.phase(f.id,interval):m.poseBudget%interval;m.poseSignature=signature;if(f.hp<=0&&m.lastFall?.entry>=1&&m.lastFall.down.a===m.lastFall.down.c.frames-1)ArenaRuntime.settleCorpse(m);}
    else if(f.hp>0&&f.action!=='knocked'&&f.action!=='dodge'){m.root.position.set(pose.x,pose.navHeight||0,pose.z);m.root.rotation.y=pose.angle;}
    GamePerformance.characterShadows(m,f.hp>0&&NavalPerformance.shadow(f.id));
    if(f.caravanHood&&m.gear.helmet){if(!m.caravanHood){m.caravanHood=m.gear.helmet.group.clone(false);m.caravanHood.add(LudusCaravanOutfit.get(THREE).clone(true));m.gear.helmet.group.parent.add(m.caravanHood);m.shadowRevisionV84=-1;}m.caravanHood.position.copy(m.gear.helmet.group.position);m.caravanHood.quaternion.copy(m.gear.helmet.group.quaternion);m.caravanHood.scale.copy(m.gear.helmet.group.scale);m.caravanHood.visible=true;m.gear.helmet.group.visible=false;}

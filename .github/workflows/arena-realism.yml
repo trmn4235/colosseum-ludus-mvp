@@ -2,10 +2,10 @@ name: Arena combat realism
 on:
   push:
     branches: [main, codex/arena-combat-realism-v114]
-    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/anatomy-*', 'tests/armour-grip-*', 'tests/equipment-stability-*', 'ludus.html', 'caravan-rig-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'tests/combat-stats-*', 'supabase/migrations/*arena_combat_realism*']
+    paths: ['arena-runtime-v96.js', 'tests/render-scale-browser-v188.cjs', 'arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/anatomy-*', 'tests/armour-grip-*', 'tests/equipment-stability-*', 'ludus.html', 'caravan-rig-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'tests/combat-stats-*', 'supabase/migrations/*arena_combat_realism*']
   pull_request:
     branches: [main]
-    paths: ['arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/anatomy-*', 'tests/armour-grip-*', 'tests/equipment-stability-*', 'ludus.html', 'caravan-rig-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'supabase/migrations/*arena_combat_realism*']
+    paths: ['arena-runtime-v96.js', 'tests/render-scale-browser-v188.cjs', 'arena*', 'combat-*', 'tests/combat-motion-*', 'tests/combat-flow-*', 'tests/motion-stability-*', 'tests/anatomy-*', 'tests/armour-grip-*', 'tests/equipment-stability-*', 'ludus.html', 'caravan-rig-*', 'tests/arena-timing-*', '.github/workflows/arena-realism.yml', 'supabase/migrations/*combat_motion*', 'savas.html', 'multiplayer*', 'combat-inspector-*', 'tests/arena-realism-*', 'tests/arena-stability-*', 'supabase/migrations/*arena_combat_realism*']
   workflow_dispatch:
 permissions:
   contents: read
@@ -57,4 +57,4 @@ jobs:
           LUDUS_TEST_OUTPUT: /tmp/arena-realism-v114
         run: node tests/arena-browser-v96.cjs
       - name: Two online clients and authoritative movement
-        run: node tests/combat-motion-online-v163.cjs
+        run: LUDUS_RENDER_SCALE_TEST=1 node tests/combat-motion-online-v163.cjs

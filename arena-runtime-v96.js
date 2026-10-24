@@ -40,7 +40,7 @@ var ArenaRuntime = (() => {
   function frameDelta(now,last){return last?Math.max(0,Math.min(.25,(now-last)/1000)):0;}
   function pixelRatio(ratio,touch=false,width=0,height=0){
     const maximum=Math.min(Math.max(1,ratio||1),touch?1.25:1.5),pixels=width*height,budget=touch?900000:1600000;
-    return pixels?Math.max(.875,Math.min(maximum,Math.sqrt(budget/pixels))):maximum;
+    return pixels?Math.min(maximum,Math.sqrt(budget/pixels)):maximum;
   }
   const mergedBodies = new WeakMap();
   function optimizeRig(root) {
@@ -132,27 +132,33 @@ var ArenaRuntime = (() => {
 
   class AdaptiveQuality {
     constructor(maximum = 1.25, minimum = .875) {
-      this.maximum = maximum; this.minimum = Math.min(maximum, minimum); this.reset();
+      this.setBounds(maximum, minimum); this.reset();
+    }
+    setBounds(maximum, minimum = this.minimum) {
+      this.maximum = maximum; this.minimum = Math.min(maximum, minimum);
     }
     reset(now = 0) {
-      this.last = null; this.elapsed = 0; this.frames = 0; this.fast = 0;
+      this.last = null; this.elapsed = 0; this.frames = 0; this.slow = 0; this.fast = 0;
       this.cooldown = now + 2000;
     }
     sample(now, current) {
       const dt = this.last === null ? 0 : now - this.last; this.last = now;
-      if (dt <= 0 || dt > 250) { this.elapsed = 0; this.frames = 0; this.fast = 0; return null; }
+      // Ignore background/loading gaps. Repeated 250–1000 ms frames must still
+      // lower the load: the old 250 ms cutoff stranded the slowest devices.
+      if (dt <= 0 || dt > 1000) { this.elapsed = 0; this.frames = 0; this.slow = 0; this.fast = 0; return null; }
       if (now < this.cooldown) return null;
-      this.elapsed += dt; this.frames++;
-      if (this.elapsed < 1500 || this.frames < 30) return null;
-      const mean = this.elapsed / this.frames, duration = this.elapsed;
-      this.elapsed = 0; this.frames = 0;
-      if (mean > 21.5) {
+      this.elapsed += dt; this.frames++; if (dt > 22.5) this.slow++;
+      // Low-FPS devices cannot wait for thirty frames to form each sample.
+      if (this.elapsed < 1000 || this.frames < 8 && this.elapsed < 2000) return null;
+      const mean = this.elapsed / this.frames, duration = this.elapsed, slow = this.slow / this.frames;
+      this.elapsed = 0; this.frames = 0; this.slow = 0;
+      if (mean > 21.5 && slow > .25) {
         this.fast = 0;
         if (current > this.minimum + .001) {
           this.cooldown = now + 2000;
-          return Math.max(this.minimum, +(current - .125).toFixed(3));
+          return Math.max(this.minimum, +(current - (mean > 50 ? .25 : .125)).toFixed(3));
         }
-      } else if (mean < 17.8) {
+      } else if (mean < 17.8 && slow < .1) {
         this.fast += duration;
         if (this.fast >= 6000 && current < this.maximum - .001) {
           this.fast = 0; this.cooldown = now + 3000;
@@ -162,6 +168,31 @@ var ArenaRuntime = (() => {
       return null;
     }
   }
-  return { optimizeRig, settleCorpse, DropBatch, AdaptiveQuality, beginPose, endPose, matrixCache, frameDelta, pixelRatio };
+
+  // Only the WebGL drawing buffer changes; photographs, text and touch targets
+  // retain their CSS size. Every gameplay host uses the same measured controller.
+  class RenderScale {
+    constructor(renderer, {touch=false, minimum=.75, maximum=Infinity} = {}) {
+      this.renderer=renderer; this.touch=touch; this.minimum=minimum; this.cap=maximum;
+      this.quality=new AdaptiveQuality(1,minimum); this.configured=false;
+    }
+    resize(width,height,ratio=1) {
+      if (!(width>0 && height>0)) return;
+      const maximum=Math.min(this.cap,pixelRatio(ratio,this.touch,width,height));
+      this.quality.setBounds(maximum,this.minimum);
+      const current=this.renderer.getPixelRatio(),next=this.configured?Math.min(maximum,Math.max(this.quality.minimum,current)):maximum;
+      if (Math.abs(next-current)>.00001) this.renderer.setPixelRatio(next);
+      this.renderer.setSize(width,height,false); this.width=width; this.height=height; this.sourceRatio=ratio; this.configured=true;
+    }
+    reset(now=0) { this.quality.reset(now); }
+    restore(now=0) { this.renderer.setPixelRatio(this.quality.maximum); this.reset(now); }
+    sample(now,active=true) {
+      if (!active) { this.reset(now); return null; }
+      const next=this.quality.sample(now,this.renderer.getPixelRatio());
+      if (next!==null) this.renderer.setPixelRatio(next);
+      return next;
+    }
+  }
+  return { optimizeRig, settleCorpse, DropBatch, AdaptiveQuality, RenderScale, beginPose, endPose, matrixCache, frameDelta, pixelRatio };
 })();
 if (typeof module !== 'undefined') module.exports = ArenaRuntime;

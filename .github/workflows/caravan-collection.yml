@@ -2,10 +2,10 @@ name: Caravan collection regression
 on:
   push:
     branches: [main, codex/caravan-collection-v116]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'assets/caravan-v122/**', 'assets/caravan-v123/**', 'assets/caravan-v124/**', 'game-panels-v123.css', 'tests/game-panels-v123.cjs', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*', 'supabase/migrations/*caravan_loadout*', '.github/workflows/caravan-collection.yml']
+    paths: ['arena-runtime-v96.js', 'tests/render-scale-browser-v188.cjs', 'ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'assets/caravan-v122/**', 'assets/caravan-v123/**', 'assets/caravan-v124/**', 'game-panels-v123.css', 'tests/game-panels-v123.cjs', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*', 'supabase/migrations/*caravan_loadout*', '.github/workflows/caravan-collection.yml']
   pull_request:
     branches: [main]
-    paths: ['ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'assets/caravan-v122/**', 'assets/caravan-v123/**', 'assets/caravan-v124/**', 'game-panels-v123.css', 'tests/game-panels-v123.cjs', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*', 'supabase/migrations/*caravan_loadout*']
+    paths: ['arena-runtime-v96.js', 'tests/render-scale-browser-v188.cjs', 'ludus*', 'caravan-collection-v116.css', 'assets/caravan-v116/**', 'assets/caravan-v117/**', 'assets/caravan-v122/**', 'assets/caravan-v123/**', 'assets/caravan-v124/**', 'game-panels-v123.css', 'tests/game-panels-v123.cjs', 'tests/caravan-*', 'tests/production-*', 'production-items-v118.css', 'rome-supply-v120.css', 'assets/supply-v120/**', 'assets/items-v118/**', 'assets/items-v119/**', 'supabase/migrations/*production_items*', 'supabase/migrations/*caravan_collection*', 'supabase/migrations/*market_history*', 'supabase/migrations/*caravan_loadout*']
   workflow_dispatch:
 permissions:
   contents: read
@@ -49,7 +49,7 @@ jobs:
       - name: Caravan equipment reservation, return and two-fighter preparation
         run: LUDUS_CARAVAN_LOADOUT_TEST=1 node tests/production-v119.cjs
       - name: Selected hunt artwork, spear entrance and shared game windows
-        run: LUDUS_MODERN_PANELS_TEST=1 node tests/production-browser-v122.cjs
+        run: LUDUS_RENDER_SCALE_TEST=1 LUDUS_MODERN_PANELS_TEST=1 node tests/production-browser-v122.cjs
 
       - name: Safari equipment and artwork bounds with the real game theme
         run: LUDUS_WEBKIT_TEST=1 LUDUS_SUPPLY_UI_ONLY=1 node tests/production-browser-v122.cjs

@@ -145,7 +145,7 @@
   if(allowed(camera.position.x,camera.position.z+dz))camera.position.z+=dz;
   camera.position.y=height(camera.position.x,camera.position.z)+1.72;
  }
- function resize(){if(!renderer)return;renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?56:53;camera.updateProjectionMatrix();if(!walking&&!battle)setMode(mode);renderRequired=true;}
+ function resize(){if(!renderer)return;quality.resize(innerWidth,innerHeight,devicePixelRatio);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?56:53;camera.updateProjectionMatrix();if(!walking&&!battle)setMode(mode);renderRequired=true;}
  function fail(message){failed=true;CaravanLoading.fail(message);$('enter').disabled=true;}
  function bind(){
   $('enter').onclick=()=>explore(true);$('overview').onclick=()=>explore(false);$('retry').onclick=()=>location.reload();
@@ -171,14 +171,14 @@
   if(covered&&!renderRequired){quality.reset(now);raf=requestAnimationFrame(tick);return;}
   if(ready&&!document.querySelector('dialog[open]')){for(const mixer of mixers)mixer.update(dt);for(const c of caravans)c.settle();if(!reduceMotion){clock.value+=dt;if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(battle)battle.frame(dt);else if(walking){let remaining=dt;while(remaining>0){const step=Math.min(remaining,1/60);move(step);remaining-=step;}}}
   detail?.update(dt);renderer.render(scene,camera);renderRequired=false;frame++;
-  const ratio=quality.sample(now,renderer.getPixelRatio());if(ratio!==null){renderer.setPixelRatio(ratio);renderer.setSize(innerWidth,innerHeight);}
+  quality.sample(now,!covered);
   raf=requestAnimationFrame(tick);
  }
  async function start(){
   bind();setMode(mode);
   try{
    renderer=new T.WebGLRenderer({canvas:$('field'),antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(ArenaRuntime.pixelRatio(devicePixelRatio,coarse,innerWidth,innerHeight));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;
-   quality=new ArenaRuntime.AdaptiveQuality(ArenaRuntime.pixelRatio(devicePixelRatio,coarse,innerWidth,innerHeight),1);scene=new T.Scene();scene.background=new T.Color(0xa2b3a0);scene.fog=new T.Fog(0xa4b3a8,35,104);camera=new T.PerspectiveCamera(53,innerWidth/innerHeight,.09,155);resize();
+   quality=new ArenaRuntime.RenderScale(renderer,{touch:coarse});scene=new T.Scene();scene.background=new T.Color(0xa2b3a0);scene.fog=new T.Fog(0xa4b3a8,35,104);camera=new T.PerspectiveCamera(53,innerWidth/innerHeight,.09,155);resize();
    scene.add(new T.HemisphereLight(0xc9dcec,0x67654b,1.6));const sun=new T.DirectionalLight(0xffe7c6,3.1);sun.position.set(-18,29,13);sun.target.position.set(0,0,-4);scene.add(sun,sun.target);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.autoUpdate=false;sun.shadow.needsUpdate=true;Object.assign(sun.shadow.camera,{left:-22,right:22,top:28,bottom:-25,near:1,far:80});sun.shadow.bias=-.00018;sun.shadow.normalBias=.035;
    const names=['horse','wagon','oak-a','oak-c','pine','fern','oak-near','oak-umbrella','bush'];total=names.length+3;
    let deadline;const loaded=await Promise.race([Promise.all([...names.map((name,i)=>loadModel(name,['At','Ahşap araba','Meşe ağaçları','Orman ağaçları','Çam ağaçları','Orman bitkileri','Yakın meşe','Geniş taçlı ağaç','Çalılıklar'][i])),texture('road','Toprak yol'),texture('forest-floor','Orman zemini'),texture('road-normal','Zemin ayrıntıları')]),new Promise((_,reject)=>{deadline=setTimeout(()=>reject(Error('Yükleme zaman aşımına uğradı. Bağlantını kontrol edip yeniden dene.')),45000);})]).finally(()=>clearTimeout(deadline));

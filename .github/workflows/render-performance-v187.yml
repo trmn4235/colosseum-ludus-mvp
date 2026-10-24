@@ -2,9 +2,9 @@ name: Full scene performance budgets
 on:
   push:
     branches: [main]
-    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', '.github/workflows/render-performance-v187.yml']
+    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', 'tests/render-scale-v188.test.cjs', 'tests/render-scale-browser-v188.cjs', 'tests/caravan-pacing-v188.cjs', '.github/workflows/render-performance-v187.yml']
   pull_request:
-    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', '.github/workflows/render-performance-v187.yml']
+    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', 'tests/render-scale-v188.test.cjs', 'tests/render-scale-browser-v188.cjs', 'tests/caravan-pacing-v188.cjs', '.github/workflows/render-performance-v187.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,6 +12,8 @@ jobs:
   render-budgets:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      LUDUS_RENDER_SCALE_TEST: '1'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -22,7 +24,7 @@ jobs:
       - name: Exact animation poses, retired armour and elapsed time
         run: node tests/render-runtime-v187.cjs
       - name: Existing pose scheduling and body detail regressions
-        run: node --test tests/arena-timing-v94.test.cjs tests/naval-performance-v106.test.cjs
+        run: node --test tests/arena-timing-v94.test.cjs tests/naval-performance-v106.test.cjs tests/adaptive-quality-v96.test.cjs tests/render-scale-v188.test.cjs
       - run: npm install --no-save --no-package-lock playwright@1.64.1
       - run: npx playwright install --with-deps chromium
       - name: Twenty gladiators, full shadows and low-FPS clock

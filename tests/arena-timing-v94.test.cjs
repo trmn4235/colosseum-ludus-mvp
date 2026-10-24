@@ -3,11 +3,11 @@ const root=path.resolve(process.env.LUDUS_TIMING_ROOT||path.join(__dirname,'..')
 const source=fs.readFileSync(path.join(root,'arena.html'),'utf8');
 function block(start){let depth=0;const first=source.indexOf('{',start);for(let i=first;i<source.length;i++){if(source[i]==='{')depth++;else if(source[i]==='}'&&!--depth)return source.slice(start,i+1);}throw Error('Unclosed source block');}
 const animation=block(source.indexOf('function animateCharacter('));
-function fixture(distance=10){
+function fixture(distance=10,id=1){
  const model={root:{position:{x:0,y:0,z:0,set(x,y,z){Object.assign(this,{x,y,z});}},rotation:{y:0}}};
- const fighter={id:1,x:distance,z:0,angle:0,hp:100,action:'idle',move:1};
+ const fighter={id,x:distance,z:0,angle:0,hp:100,action:'idle',move:1};
  const poses=[];
- const context=vm.createContext({naval:null,NavalPerformance:{character(){},shadow(){return true;}},combat:{fighters:[{x:0,z:0}]},GamePerformance:{characterShadows(){}},ImportedGladiator:{animate(f,m,t,dt){poses.push({t,dt,action:f.action});m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;}}});
+ const context=vm.createContext({naval:null,NavalPerformance:{...require('../naval-performance-v106.js'),character(){},shadow(){return true;}},combat:{fighters:[{x:0,z:0}]},GamePerformance:{characterShadows(){}},ImportedGladiator:{animate(f,m,t,dt){poses.push({t,dt,action:f.action});m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;}}});
  vm.runInContext(animation,context);return{model,fighter,poses,animate:context.animateCharacter};
 }
 for(const [label,intervals] of Object.entries({'60 Hz':[1/60],'60.24 Hz':[.0166],'30.03 Hz':[.0333],'30 Hz':[1/30],'120 Hz':[1/120],'uneven frames':[.010,.018,.024,.013,.019]})){
@@ -49,4 +49,17 @@ function simulation(fps,withImpacts){
 }
 for(const fps of [30,60,120])test('repeated impacts never pause simulation or movement at '+fps+' FPS',()=>{
  const quiet=simulation(fps,false),impacts=simulation(fps,true);assert.deepEqual(impacts,quiet);assert.ok(Math.abs(impacts.time-10)<1/60+.000001);assert.ok(Math.abs(impacts.distance-42)<.08);
+});
+
+for(const fps of [60,120])test('twenty distant arena poses spread evenly across frames at '+fps+' Hz',()=>{
+ const group=Array.from({length:20},(_,i)=>fixture(12,i+1)),counts=[];
+ for(let frame=0;frame<fps*3;frame++){
+  let count=0;
+  for(const f of group){const before=f.poses.length;f.animate(f.fighter,f.model,frame/fps,1/fps);count+=f.poses.length-before;}
+  if(frame>fps)counts.push(count);
+ }
+ const maximum=Math.max(...counts),minimum=Math.min(...counts);
+ assert.ok(maximum<=Math.ceil(20*30/fps)+2,JSON.stringify({fps,maximum,minimum}));
+ assert.ok(minimum>=Math.floor(20*30/fps)-2,JSON.stringify({fps,maximum,minimum}));
+ for(const f of group)assert.ok(Math.abs(f.poses.length-90)<2,'each fighter keeps 30 poses per second');
 });

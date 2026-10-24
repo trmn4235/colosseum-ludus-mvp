@@ -17,7 +17,7 @@ async function main(){
   if(filename.endsWith('/arena.html'))body=Buffer.from(body.toString()
    .replace('function frame(now){const cpuStart','function frame(now){if(window.__stopLoop)return;const cpuStart')
    .replace('var LudusBattle=(function(){',fixture+'\nLudusClient.create=()=>window.__fixtureClient;var LudusBattle=(function(){')
-   .replace('mainMenu();Promise.all([ticketReady',`window.__arena={combat,renderer,scene,camera,models,events,showResult,hud,saveReward,begin,setPaused,dropBatch,animateCharacter,renderWeapons,
+   .replace('mainMenu();Promise.all([ticketReady',`window.__arena={renderScale:adaptiveQuality,get now(){return last;},combat,renderer,scene,camera,models,events,showResult,hud,saveReward,begin,setPaused,dropBatch,animateCharacter,renderWeapons,
     freeze:()=>{paused=true;window.__stopLoop=true;},
     step:(dt,run=true)=>{paused=!run;window.__stopLoop=false;frame(last+dt*1000);paused=true;window.__stopLoop=true;},
     resetResult:()=>{resultAt=0;$('result').hidden=true;resultRecorded=false;},
@@ -34,6 +34,7 @@ async function main(){
  if(current){assert.equal(await page.locator('#intro').count(),0);assert.ok(!await page.getByText('Arena hazırlanıyor',{exact:false}).count());}
  await page.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:60000});await page.evaluate(()=>__arena.freeze());
  if(process.env.LUDUS_PERFORMANCE_TEST==='1')await require('./arena-budget-v187.cjs')(page);
+ if(process.env.LUDUS_RENDER_SCALE_TEST==='1')await require('./render-scale-browser-v188.cjs')(page,'arena');
  if(process.env.LUDUS_FIT_TEST==='1'){await require('./armour-grip-browser-v166.cjs')(page,out);if(process.env.LUDUS_FIT_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  // Render exactly the same twenty fighters, camera, shadow mode and resolution in both revisions.
  const comparison=await page.evaluate(()=>{

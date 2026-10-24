@@ -268,7 +268,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-</script><script src="owner-three-r160.js?v=revision26"></script><script src="arena-runtime-v96.js?v=revision187"></script><script src="naval-performance-v106.js?v=revision187"></script><script>/* Previz-Lowpoly Colosseum with concept textures, Neberkenezer, CC BY 4.0.
+</script><script src="owner-three-r160.js?v=revision26"></script><script src="arena-runtime-v96.js?v=revision188"></script><script src="naval-performance-v106.js?v=revision187"></script><script>/* Previz-Lowpoly Colosseum with concept textures, Neberkenezer, CC BY 4.0.
  * Source: https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30
  * Changes: scale 0.01, static geometry batching, simplified material lighting.
  */
@@ -1808,7 +1808,7 @@ if(typeof THREE==='undefined'){fatal('3D motor yüklenemedi. arena.html dosyası
 let renderer;try{renderer=ArenaCreateRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){fatal('Bu tarayıcı 3D görüntüyü başlatamadı. Safari’de yeniden açmayı dene.');return;}
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();setPaused(true);fatal('3D görüntü kesildi. Sayfayı yeniden açarak devam edebilirsin.');});
 const touchDevice=matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;
-let renderRequested=true,shadowAt=0,sceneShown=false;const adaptiveQuality=new ArenaRuntime.AdaptiveQuality(Math.min(Math.max(1,devicePixelRatio||1),touchDevice?1.25:1.6));
+let renderRequested=true,shadowAt=0,sceneShown=false;const adaptiveQuality=new ArenaRuntime.RenderScale(renderer,{touch:touchDevice});
 let renderProfile=ArenaRenderProfile.resolve('auto',devicePixelRatio,matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0);
 renderer.setPixelRatio(renderProfile.dpr);renderer.shadowMap.enabled=renderProfile.shadows;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
 const scene=new THREE.Scene();scene.background=new THREE.Color('#c4d8da');scene.fog=new THREE.Fog('#d6c9ac',100,225);
@@ -1866,7 +1866,7 @@ let resultRecorded=false;
 const perfMeter=new ArenaPerformance();let perfRefresh=0;
 let width=1,height=1;const floaters=[],sparks=[];
 const combatFeedback=document.createElement('div');combatFeedback.id='combatFeedback';$('hud').append(combatFeedback);for(const id of ['toast','combo','floaters','regionHint']){const node=$(id);if(node)combatFeedback.append(node);}
-function resize(){renderRequested=true;const vv=window.visualViewport;const w=vv?vv.width:innerWidth,h=vv?vv.height:innerHeight;app.style.width=w+'px';app.style.height=h+'px';app.style.left=(vv?vv.offsetLeft:0)+'px';app.style.top=(vv?vv.offsetTop:0)+'px';width=w;height=h;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);const wasPortrait=portrait;portrait=h>w&&w<700;if(portrait&&!wasPortrait&&started)setPaused(true);}
+function resize(){renderRequested=true;const vv=window.visualViewport;const w=vv?vv.width:innerWidth,h=vv?vv.height:innerHeight;app.style.width=w+'px';app.style.height=h+'px';app.style.left=(vv?vv.offsetLeft:0)+'px';app.style.top=(vv?vv.offsetTop:0)+'px';width=w;height=h;camera.aspect=w/h;camera.updateProjectionMatrix();if($('quality').value==='auto')adaptiveQuality.resize(w,h,devicePixelRatio);else renderer.setSize(w,h,false);const wasPortrait=portrait;portrait=h>w&&w<700;if(portrait&&!wasPortrait&&started)setPaused(true);}
 window.addEventListener('resize',resize);window.visualViewport?.addEventListener('resize',resize);window.visualViewport?.addEventListener('scroll',resize);resize();
 function toast(text){$('toast').classList.toggle('energy-warning',/kondisyon|enerji/i.test(text));$('toast').classList.add('visible');$('toast').textContent=text;toastUntil=performance.now()+1900;$('toast').style.opacity='1';}
 let impactNoise=null,remoteAudioAt=0;
@@ -1940,7 +1940,7 @@ function animateCharacter(f,m,t,dt){
  }
  const poseDt=m.poseDelta;m.poseDelta=0;
  // Keep the remainder: resetting this clock caused 30 Hz to collapse to 15 or 20 Hz.
- m.poseBudget=near?0:changed?(naval?NavalPerformance.phase(f.id,interval):0):Math.max(0,m.poseBudget-interval*Math.floor((m.poseBudget+1e-6)/interval));
+ m.poseBudget=near?0:changed?NavalPerformance.phase(f.id,interval):Math.max(0,m.poseBudget-interval*Math.floor((m.poseBudget+1e-6)/interval));
  m.poseAction=f.action;m.poseAlive=alive;m.poseMoving=moving;m.poseReacting=reacting;m.poseGuarding=guarding;
  ImportedGladiator.animate(f,m,t,poseDt);
  // Never freeze by wall-clock death age: a culled fighter may not have fallen yet.
@@ -2098,12 +2098,12 @@ function frame(now){const cpuStart=performance.now();requestAnimationFrame(frame
  for(let i=sparks.length-1;i>=0;i--){const s=sparks[i];if(!paused){s.life-=dt;s.y-=dt*8;s.m.position.x+=s.x*dt;s.m.position.y+=s.y*dt;s.m.position.z+=s.z*dt;}if(s.life<=0){scene.remove(s.m);sparkPool.push(s);sparks.splice(i,1);}}
  for(let i=dust.length-1;i>=0;i--){const d=dust[i];if(!paused){d.age+=dt;d.m.position.x+=d.dx*dt;d.m.position.z+=d.dz*dt;d.m.position.y+=dt*.12;d.m.scale.setScalar(1+d.age*3);d.m.material.opacity=Math.max(0,.2-d.age*.25);}if(d.age>.8){scene.remove(d.m);dustPool.push(d);dust.splice(i,1);}}
  hudClock+=dt;if(hudClock>.06){hud(now);if(active()&&!naval)for(const f of combat.fighters)if(Math.hypot(f.x-p.x,f.z-p.z)<8&&f.move>.2&&Math.sin(f.walk)>.8)dustPuff(f);hudClock=0;}if(resultAt&&now>resultAt){resultAt=0;showResult();}
- const automatic=(touchDevice||naval)&&$('quality').value==='auto';
- if(automatic){const dpr=adaptiveQuality.sample(now,renderer.getPixelRatio());if(dpr!==null){renderer.setPixelRatio(dpr);renderRequested=true;}}
+ const automatic=$('quality').value==='auto';
+ if(adaptiveQuality.sample(now,automatic)!==null)renderRequested=true;
  renderer.shadowMap.autoUpdate=false;
  if(naval){
   if(now>=shadowAt){sun.position.set(p.x-16,23,p.z-9);sun.target.position.set(p.x,0,p.z);renderer.shadowMap.needsUpdate=true;shadowAt=now+NavalPerformance.shadowInterval($('quality').value,renderer.getPixelRatio());}
- }else if(now>=shadowAt){renderer.shadowMap.needsUpdate=true;shadowAt=now+1000/30;}
+ }else if(now>=shadowAt){renderer.shadowMap.needsUpdate=true;shadowAt=now+(automatic&&renderer.getPixelRatio()<=.875?1000/15:1000/30);}
  if(pitRequested&&scene.userData.pitRoot)PitSurface.update(scene.userData.pitRoot,now/1000,camera,combat.fighters);
  renderer.render(scene,camera);renderRequested=false;if(!sceneShown){sceneShown=true;document.body.classList.add('arena-ready');}
  if(active()&&!document.hidden)perfMeter.sample(now,performance.now()-cpuStart,{calls:renderer.info?.render?.calls??null,triangles:renderer.info?.render?.triangles??null,alive:combat.fighters.filter(f=>f.hp>0).length,size:width+'×'+height,dpr:renderer.getPixelRatio?.()??null,quality:renderProfile.label});else perfMeter.suspend();
