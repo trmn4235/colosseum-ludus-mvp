@@ -1,0 +1,26 @@
+/* Shared white/burgundy/gold finishes. V157 NPC dimensions stay unchanged. */
+#driveHUD .drive-position{top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));width:94px;box-sizing:border-box;padding:4px 8px;border:1px solid #dac38d66;border-radius:10px;background:linear-gradient(140deg,#452731b8,#231b27a3);box-shadow:0 3px 12px #160d1826;text-align:center}
+#driveHUD #driveRank,#driveHUD #driveLap,#driveHUD #driveSpeed{position:static;display:block;transform:none;letter-spacing:0;font:500 12px/26px Arial;color:#fff4df;margin:0;font-variant-numeric:tabular-nums}
+#driveHUD #driveLap,#driveHUD #driveSpeed{border-top:1px solid #e7d09b26}
+#driveHUD .drive-condition{left:max(14px,env(safe-area-inset-left));top:max(14px,env(safe-area-inset-top));width:142px}
+#driveHUD .drive-condition span{color:#efdaa4;font:10px Arial;letter-spacing:0}
+#driveHUD #driveStamina{height:4px}#driveHUD #driveStaminaFill{background:linear-gradient(90deg,#b79b53,#f1d88b)}
+#driveHUD .drive-steer{left:max(14px,env(safe-area-inset-left));bottom:max(100px,calc(env(safe-area-inset-bottom) + 82px));gap:6px}
+#driveHUD .drive-steer button{width:70.4px;height:70.4px;border-radius:50%;font:44.8px Georgia!important;background:#28212799!important;border-color:#d9bf8299}
+#driveHUD #driveBoost{right:max(14px,env(safe-area-inset-right));bottom:max(100px,calc(env(safe-area-inset-bottom) + 82px));width:78px;height:66px;min-height:0;border-radius:33px;font:15px Georgia;background:linear-gradient(150deg,#963d56d9,#652c3ed9);border-color:#dfbb7ca3}
+#driveHUD #driveTiming{height:8px}#driveHUD #driveFeedback{min-height:25px;height:auto;font:10px/1.35 Arial;padding-top:1px;text-wrap:balance}
+#driveHUD .drive-timing{bottom:max(20px,env(safe-area-inset-bottom));width:58%}
+#driveHUD #driveRetry{max-width:90%;white-space:normal}
+#driveHUD button:active,#warHUD button:active{filter:brightness(1.2)}
+#warSetup .war-person{position:relative;background:linear-gradient(180deg,#ede8db,#fffdf6);border:1px solid #d9c9a8;border-radius:6px}
+#warSetup .war-person>img{width:100%;height:100%;object-fit:contain;object-position:center;max-height:175px}
+#warSetup .war-role-seal{position:absolute;right:7px;bottom:7px;width:28px;height:28px;display:grid;place-items:center;border:1px solid #b6a16d;border-radius:50%;background:#fffdf6ed;color:#762c3e}
+#warSetup .war-role-seal svg{width:17px;height:17px;filter:none;stroke:currentColor;stroke-width:1.4}
+#warSetup .war-portrait img{image-rendering:auto}
+#warSetup .war-card{box-shadow:0 2px 6px #5533240a;border-color:#d3c4a4;background:#fdfbf5}
+#warSetup .war-card select{border-color:#b6a16d;border-radius:6px;color:#573039;background:#fffdf9}
+#warSetup .war-card select:focus{outline:2px solid #b69a5c66;outline-offset:1px}
+#warHUD #warTargets span{padding:4px 7px 7px;border-radius:5px;background:#241922b8;border:1px solid #dac38d66;text-shadow:0 1px 2px #000}
+#warHUD #warTargets span::after{content:'';position:absolute;bottom:2px;left:5%;height:2px;width:calc(var(--target-health,100%) * .9);background:#e8c477;border-radius:2px}
+#warHUD #warCountdown:not(:empty){inset:auto;left:50%;top:42%;transform:translate(-50%,-50%);width:76px;height:76px;display:grid;place-items:center;font:44px Georgia;border-radius:50%;border:1px solid #dfc27f99;background:#30202a9c;box-shadow:0 3px 18px #17101833;color:#ffefcc}
+@media(orientation:portrait){#driveHUD .drive-timing{width:calc(100% - 40px)}#driveHUD .drive-steer,#driveHUD #driveBoost{bottom:max(132px,calc(env(safe-area-inset-bottom) + 114px))}#warSetup .war-person>img{max-height:190px}}

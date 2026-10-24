@@ -231,7 +231,7 @@
       woodNormal:['textures/wooden_gate-nor_gl-9c9095cd8a7d.webp',false],
       woodRough:['textures/wooden_gate-rough-f62304f04b81.webp',false],
       spectators:['circus-v145/spectators-16.webp',true],relief:['circus-v143/stone-reliefs.webp',true],
-      sand:['circus-v144/arena-sand.webp',true],sandNormal:['circus-v142/sand-nor_gl.webp',false],sandRough:['circus-v142/sand-rough.webp',false],
+      sand:['circus-v142/sand-diff.webp',true],sandNormal:['circus-v142/sand-nor_gl.webp',false],sandRough:['circus-v142/sand-rough.webp',false],
       roof:['circus-v142/roof-diff.webp',true],roofNormal:['circus-v142/roof-nor_gl.webp',false],roofRough:['circus-v142/roof-rough.webp',false]
     };
     const [maps,trees,statues]=await Promise.all([
@@ -244,7 +244,7 @@
     status('Tribünler ve anıtlar yerleştiriliyor…');
     await new Promise(resolve => requestAnimationFrame(resolve));
     model = createCircusMaximus(T, { textures,trees:trees.some(Boolean),sculptures:Object.fromEntries(statues.filter(([,g])=>g)) });
-    statues.forEach(([,g])=>g?.dispose());scene.add(model.group);
+    statues.forEach(([,g])=>g?.dispose());scene.add(model.group);CircusVisuals.environment(T,model,scene);
     Object.values(model.materials).forEach(m=>m.envMapIntensity=m===model.materials.water ? 1.05 : .5);plantTrees(T,trees);
     gallery=CircusGallery.create(T,scene,model.materials);
     ready = true; setView('overview'); renderer.shadowMap.needsUpdate = true;

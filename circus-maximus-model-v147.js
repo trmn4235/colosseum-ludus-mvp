@@ -8,7 +8,7 @@
   'use strict';
   options = options || {};
   const group = new T.Group(); group.name = 'Circus Maximus';
-  const sculptures = options.sculptures || {};
+  const sculptures = options.sculptures || {},lapEggs=[];
   const textures = options.textures || {}, batches = new Map(), crowd = new T.Group(), treePlacements=[];
   crowd.name = 'Spectators';
   let seed = 141;
@@ -32,7 +32,7 @@
     teal: material('Patinated bronze', 0x527c76, { metalness:.65,roughness:.68 }),
     wood: material('Cedar gates', 0xc5ae91, { map: textures.wood || null, normalMap: textures.woodNormal || null, normalScale: new T.Vector2(.35,.35), roughnessMap: textures.woodRough || null }),
     water: new T.MeshPhysicalMaterial({name:'Shallow basin water',color:0x7e9b8d,vertexColors:true,roughness:.085,metalness:0,ior:1.333,clearcoat:.4,clearcoatRoughness:.12,transparent:true,opacity:.78,depthWrite:false,side:T.DoubleSide}),
-    sand: material('Rutted track sand', 0xf4eadb, { map: textures.sand || null, roughness:1 }),
+    sand: material('Rutted track sand', 0xf4eadb, { map: textures.sand || null, normalMap:textures.sandNormal||null,normalScale:new T.Vector2(.20,.20),roughnessMap:textures.sandRough||null, roughness:.94 }),
     ground: material('Dry earth and grass', 0xc4c1a7, { map: textures.sand || null, normalMap: textures.sandNormal || null, normalScale:new T.Vector2(.35,.35) }),
     paving: material('Exterior paving', 0xbbb5a6, { map:textures.stone || null, normalMap:textures.stoneNormal || null, normalScale:new T.Vector2(.7,.7), roughnessMap:textures.stoneRough || null }),
     tree: material('Cypress foliage', 0x4b6040),
@@ -692,7 +692,7 @@
     box(M.red,0,4.74,z+.92,8.1,.19,.06);
     for(let i=-3;i<=3;i++){
       const x=i*1.12;add(cylinder,M.gold,x,5.33,z,.24,.2,.24);
-      if(z<0)add(sphere,M.gold,x,5.91,z,.31,.53,.31);else dolphin(x,5.9,z,.81);
+      if(z<0){const egg=new T.Mesh(sphere.clone(),M.gold.clone());egg.name='Live lap egg '+(i+4);egg.position.set(x,5.91,z);egg.scale.set(.31,.53,.31);egg.castShadow=egg.receiveShadow=true;group.add(egg);lapEggs.push(egg);}else dolphin(x,5.9,z,.81);
     }
     for(const x of [-3.2,3.2]){box(M.marble,x,1.76,z,1.2,.3,1.3);rod(M.gold,[x,5.27,z],[x,6.45,z],.055);}
   }
@@ -924,7 +924,7 @@
       `).replace('#include <begin_vertex>',`#include <begin_vertex>
         vec3 center=(modelMatrix*instanceMatrix*vec4(0,0,0,1)).xyz;
         vec3 toEye=cameraPosition-center;
-        vec2 facing=normalize(mix(seatDirection,normalize(toEye.xz),.72));
+        vec2 facing=normalize(mix(seatDirection,normalize(toEye.xz),smoothstep(7.0,38.0,length(toEye.xz))*.72));
         vec3 right=vec3(facing.y,0.0,-facing.x);
         // Keep seated torsos upright, including the overview camera.
         float tilt=clamp(toEye.y/max(length(toEye.xz),.001),0.0,.18);
@@ -964,5 +964,5 @@
   crowd.visible=options.crowd!==false;group.add(crowd);
   ownGeometries.forEach(g=>g.dispose());
   group.userData={sculptures:Object.keys(sculptures),realismAreas:20,crowdVariants:16,version:145,kind:'artistic-reconstruction',spectators:spectators.length,startingGates:12,rows:ROWS,photoCrowd:!!textures.spectators,rearWall:{radius:76,centerZ:START,height:28.4,joins:[[-76,START],[76,START]]},passages:passageCenters.length+passageCenters.filter(z=>z<=-108||z>=-36).length,reliefAtlas:!!textures.relief};
-  return {group,crowd,materials:M,treePlacements,metadata:group.userData};
+  return {group,crowd,materials:M,treePlacements,lapEggs,groundHeightAt:(x,z)=>z<START||z>TURN?.065:trackHeightAt(x,z),metadata:group.userData};
 });
