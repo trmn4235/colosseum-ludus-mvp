@@ -1,0 +1,11 @@
+{
+  "ludus": {"photo":"assets/rome-v181/ludus-loading.webp","page":"ludus.html","selectors":"#loading","travel":true},
+  "pit": {"photo":"assets/pit-v173/map.webp","page":"san-avlusu.html","selectors":"html.rome-arriving","travel":true},
+  "colosseum": {"photo":"assets/rome-v148/colosseum.webp","page":"savas.html","selectors":"html.rome-arriving","travel":true},
+  "palatine": {"photo":"assets/rome-v148/circus-palatine.webp","page":"circus-maximus.html","selectors":"#loading,html.rome-arriving","travel":true},
+  "arena": {"photo":"gladiator-arena-empty-v48.webp","page":"arena.html","selectors":"#app,#fatal"},
+  "caravan": {"photo":"assets/caravan-v128/loading.webp","page":"caravan-field.html","selectors":"#loading"},
+  "victory": {"photo":"assets/caravan-v138/victory.webp","page":"caravan-field.html","selectors":".caravan-victory","secondary":true,"shade":false},
+  "login": {"photo":"assets/colosseum-magnus-login-v40.webp","page":"index.html","selectors":".stage,#artworkFallback","fit":"contain","shade":false},
+  "multiplayer": {"photo":"assets/multiplayer-poster-v69.webp","page":"multiplayer.html","selectors":"#matchLobby .queue-scene","fit":"contain","shade":false}
+}

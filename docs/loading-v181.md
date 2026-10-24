@@ -1,0 +1,11 @@
+# V181 — Photographic loading and Ludus map destination
+
+The black Şan Avlusu loading frame was reproduced by failing the request for `assets/pit-v173/map.webp`. The live file was present and returned 200, but the travel layer depended on a single external CSS image. Navigation waited only 120 ms, without confirming image readiness. A late/failed image therefore exposed the solid dark fallback. Existing loading checks verified the CSS URL and opaque coverage, not decoded image availability.
+
+Each of the eight entry pages now embeds a small JPEG photograph in its initial HTML. Nine surfaces are covered, including the caravan's pending victory screen. The full photograph is layered over this preview and preloaded with high priority; failed or delayed image requests cannot remove the embedded layer. UTF-8 metadata stays within the first 1024 bytes. Existing layouts, readiness gates, error messages and retry actions remain intact. `scripts/build-loading-art-v181.cjs` deterministically compiles the previews from `assets/loading-v181/manifest.json` using ImageMagick.
+
+Travel also embeds the destination previews so the source-page transition has the correct photo. Two animation frames allow it to paint before navigation. The arrival overlay is created before heavy parser-blocking dependencies, and direct entry into Ludus, Şan Avlusu or Circus Maximus selects its artwork automatically. Ludus reveals only after its existing account/model readiness promise completes. Errors continue to show the photo with recovery controls.
+
+Ludus is the fourth map destination, with a circular marker, a separate panoramic card and an elevated training photograph for loading. Four complete 3:1 cards fit in landscape; portrait uses a compact 2-by-2 card grid. The user-selected panoramic attachment is used byte for byte. Aventine remains absent as an entry.
+
+Validation: failed and deliberately stalled image requests, photographic preview decoding, nine real loading surfaces, direct entry, timeout/retry and late recovery, four map viewport sizes and Ludus navigation, existing account timeout tests, full Ludus courtyard/guide flow, and the existing seven-viewport loading transition checks. Browser checks are Chromium; no physical iPhone/Safari performance measurement is claimed.
