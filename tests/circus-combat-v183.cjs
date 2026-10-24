@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-global.CircusDriving=require('../circus-driving-v183');global.CircusMotion=require('../circus-motion-v183');global.CircusPhysics=require('../circus-physics-v183');const C=require('../circus-war-core-v183');
+global.CircusDriving=require('../circus-driving-v183');global.CircusMotion=require('../circus-motion-v183');global.CircusPhysics=require('../circus-physics-v183');const C=require('../circus-war-core-v185');
 const roster=Array.from({length:4},(_,i)=>({name:'Team '+i,quality:70,crew:[0,1].map(j=>({id:`${i}-${j}`,name:'Fighter '+j})),horses:[{id:i+'a'},{id:i+'b'}]}));
 function fresh(){return C.initial(roster,183);}
 let s=fresh();assert.equal(C.LAPS,7);C.damage(s,3,1);assert.equal(s.teams[3].crew[1].hp,50);C.damage(s,3,1);assert.equal(s.teams[3].archer,-1);assert.equal(C.switchRole(s),false);

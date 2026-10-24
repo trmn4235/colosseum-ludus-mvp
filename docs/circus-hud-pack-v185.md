@@ -1,0 +1,9 @@
+# Circus Maximus V185
+
+The combat HUD follows the approved October 24 control arrangement. Position, lap and speed are equal 12 px tabular readouts in one compact burgundy/gold panel directly below the centered pause button. The yellow bar remains boost stamina, now identified by the existing horse-cart pictogram from `ludus-door-icons-v41.js` and an accessible progress value.
+
+Compared with V184, steering controls are 70.4 × 70.4 px (+60%), boost is 78 × 66 px (+50%), and lock / wheel targeting / whip are 50.6 × 50.6 px (+15%). Role swap sits beneath the steering pair and remains available in archer mode. The duck button and player keyboard shortcut are removed. Bot cover and projectile hit volumes remain in the combat simulation. On portrait screens the timing bar sits directly above both thumb-control groups to prevent overlap.
+
+`circus-war-core-v185.js` gives the three opponents forward / side / rear slots around the player. Their speed and steering converge using the existing physical movement model, with no position resets. A defeated or broken side rival is replaced by the lead rival; the last rival then takes that place. Bend radius and turning losses are included in speed matching. A slower response to the player's speed preserves the benefit of successful boosts; crashes still lose ground. The final 300 m progressively release formation pacing for the finish. Old V183 session saves remain compatible and acquire formation state when resumed.
+
+Validation: combat regression suite; deterministic pack tests across three seeds and both bends, crew/wheel eliminations, 3 m whip opportunities, boost advantage, wall penalties, saved-session replay, and actual finishing distance; rendered browser checks in 932×430, 667×375, 390×844 and 1440×900, with equal status typography, exact button dimensions, correct action order and no HUD-group overlap in both roles.

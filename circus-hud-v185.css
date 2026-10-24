@@ -1,0 +1,49 @@
+/* V185: equal race readouts, two thumb groups and an unobstructed timing lane. */
+#warHUD{--war-left:max(14px,env(safe-area-inset-left));--war-right:max(14px,env(safe-area-inset-right));--war-bottom:max(18px,env(safe-area-inset-bottom));--war-action:50.6px}
+#warHUD .war-crew{left:var(--war-left);top:max(12px,env(safe-area-inset-top));width:158px}
+#warHUD .war-crew>div{font-size:10px;gap:2px;margin-bottom:6px}
+#warHUD .war-crew b{font-size:9px}#warHUD .war-crew i{height:4px;border:0;background:#251b1b99}
+#warHUD .war-crew small{display:none}#warHUD .war-crew>div.active>span{color:#f4d892}
+#warHUD #warVehicle{display:flex;align-items:center;gap:7px;margin:2px 0 0;height:20px}
+#warHUD .war-cart-icon{display:flex;flex:none;color:#eed493}
+#warHUD .war-cart-icon svg{width:27px;height:21px;stroke-width:1.5}
+#warHUD #warCondition{position:static;flex:1;width:auto;height:4px;border:0;border-radius:4px;background:#30271a88}
+#warHUD #warCondition i{height:100%;background:linear-gradient(90deg,#b79b53,#f1d88b)}
+#warHUD .war-place{top:max(12px,env(safe-area-inset-top));right:var(--war-right);width:94px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
+#warHUD .war-place #warPause{float:none;flex:none;width:34px;height:34px;margin:0;border-radius:10px;background:#39202ab8;border-color:#cfb77b99;box-shadow:0 2px 8px #160e1726}
+#warHUD #warPause svg{width:18px;height:18px}
+#warHUD .war-stats{box-sizing:border-box;width:100%;padding:4px 8px;border:1px solid #dac38d66;border-radius:10px;background:linear-gradient(140deg,#452731b8,#231b27a3);box-shadow:0 3px 12px #160d1826;text-shadow:0 1px 3px #0007}
+#warHUD .war-stats>div{display:grid;grid-template-columns:1fr 34px;align-items:center;gap:4px;height:26px}
+#warHUD .war-stats>div+div{border-top:1px solid #e7d09b26}
+#warHUD .war-stats strong,#warHUD .war-stats span,#warHUD #warSpeed{position:static;display:block;margin:0;font:500 12px/1.2 Arial,sans-serif;letter-spacing:0;font-variant-numeric:tabular-nums}
+#warHUD .war-stats strong{color:#fff7e5;text-align:center}#warHUD .war-stats span{color:#e7cb91;text-align:left}
+#warHUD #warWheelStatus{position:static;width:100%;font:9px/1.3 Arial;color:#ffb798;text-align:center}
+#warHUD #warWheelStatus:empty{display:none}
+#warHUD .war-drive-controls{position:absolute;left:var(--war-left);bottom:var(--war-bottom);display:flex;flex-direction:column;align-items:center;gap:9px;width:146.8px}
+#warHUD #warSteering{position:static;display:flex;gap:6px}
+#warHUD #warSteering button{box-sizing:border-box;width:70.4px;height:70.4px;font:44.8px Georgia;border-radius:50%;background:#28212799;border-color:#d9bf8299;box-shadow:0 2px 7px #0002}
+#warHUD #warSwap{box-sizing:border-box;width:44px;height:44px;min-width:44px;min-height:44px;display:grid;place-items:center;border-radius:50%;padding:0;background:#422331a3;border-color:#c9ae7280;box-shadow:none}
+#warHUD #warSwap svg{width:21px;height:21px}
+#warHUD .war-combat-controls{position:absolute;right:var(--war-right);bottom:var(--war-bottom);display:flex;flex-direction:column;align-items:center;gap:10px}
+#warHUD .war-actions{position:static;display:grid;grid-template-columns:repeat(3,var(--war-action));gap:6px;align-items:center}
+#warHUD .war-actions button{box-sizing:border-box;width:var(--war-action);height:var(--war-action);min-width:var(--war-action);min-height:var(--war-action);position:relative;border-radius:50%;border:1px solid #d9bf8299;background:#422331a3;box-shadow:0 2px 7px #0002;padding:0;display:grid;place-items:center}
+#warHUD .war-actions svg{width:24.15px;height:24.15px;stroke-width:1.5}
+#warHUD .war-primary-actions{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:66px}
+#warHUD #warBoost{position:static;box-sizing:border-box;width:78px;height:66px;border-radius:33px;background:linear-gradient(150deg,#963d56d9,#652c3ed9);border-color:#dfbb7ca3;font:15px Georgia;box-shadow:0 3px 9px #190b1733;padding:0}
+#warHUD #warFire{box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:50%;background:#422331a3;border-color:#d9bf8299}
+#warHUD #warFire svg{width:23px;height:23px}
+#warHUD .war-timing{left:50%;bottom:max(23px,calc(env(safe-area-inset-bottom) + 5px));width:46%;max-width:460px}
+#warHUD #warTiming{height:8px}#warHUD #warTimingText{font:9px Arial;min-height:11px;margin-top:5px;color:#f0e7d6}
+#warHUD #warHint{left:26%;right:26%;bottom:max(57px,calc(env(safe-area-inset-bottom) + 39px));font:10px/1.3 Arial}
+#warHUD #warHint:empty{display:none}
+#warHUD #warLockLabel{top:24%;font-size:10px}
+#warHUD #warWhipMeter{left:10px;right:10px;bottom:6px;height:3px}
+#warHUD button[aria-pressed=true],#warHUD button.locked{background:#9b7839cc;border-color:#efd08b;outline:1px solid #efd08b88}
+#warHUD #warWhip.ready{background:#b59043;outline:2px solid #ffeab1}
+@media(orientation:portrait){
+ #warHUD .war-crew{width:142px}
+ #warHUD .war-timing{width:calc(100% - 40px);max-width:460px;left:50%;bottom:max(160px,calc(env(safe-area-inset-bottom) + 142px))}
+ #warHUD #warHint{left:20px;right:20px;bottom:max(199px,calc(env(safe-area-inset-bottom) + 181px))}
+ #warHUD #warLockLabel{top:25%}
+}
+@media(max-width:359px) and (orientation:portrait){#warHUD{--war-left:max(6px,env(safe-area-inset-left));--war-right:max(6px,env(safe-area-inset-right))}#warHUD .war-actions{gap:3px}}

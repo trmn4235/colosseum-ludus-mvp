@@ -23,6 +23,8 @@ jobs:
       - run: npx playwright install --with-deps chromium --only-shell
       - name: Seven laps, bot roles, collision and horse immunity
         run: node tests/circus-combat-v183.cjs
+      - name: Nearby opponents, leader handoff and physical pursuit
+        run: node tests/circus-war-pack-v185.cjs
       - name: Two gladiators, two horses, controls and mobile frames
         run: node tests/circus-war-browser-v183.cjs
       - name: Preserve clerk, betting and ordinary race registration
