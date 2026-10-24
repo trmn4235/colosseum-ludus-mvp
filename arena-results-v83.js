@@ -6,6 +6,7 @@ var ArenaBattleResult=(()=>{
  function rewardRows(reward){
   const rows=[];
   for(const [key,label,icon]of [['fame','Şan','exp'],['gold','Denarius','coin'],['ludus_exp','Ludus EXP','exp'],['diamonds','Elmas','diamond']])if(Number(reward[key])>0)rows.push({label,value:number(reward[key]),icon});
+  if(Number(reward.teammate_fame)>0)rows.push({label:'Takım arkadaşının Şanı',value:number(reward.teammate_fame),icon:'exp'});
   if(reward.stone?.name)rows.push({label:String(reward.stone.name),value:number(reward.stone.quantity||1),icon:'stone'});
   else if(Number(reward.sapphires)>0)rows.push({label:'Safir',value:number(reward.sapphires),icon:'stone'});
   if(reward.kind)rows.push({label:kinds[reward.kind]||'Eşya',value:'1',icon:'equipment'});
@@ -34,6 +35,14 @@ var ArenaBattleResult=(()=>{
   doc.getElementById('resultGladiator').textContent=player.name;
   doc.getElementById('resultRank').textContent=combat.mode==='pit'?(win?'Düello galibiyeti':'Düello mağlubiyeti'):survival?number(combat.survival.completed):solo?number(win?1:combat.stats.placement||combat.fighters.filter(f=>f.hp>0).length+1)+' / 20':win?'Takım zaferi':'Takım mağlubiyeti';
   doc.getElementById('resultRankLabel').textContent=combat.mode==='pit'?'DÜELLO SONUCU':survival?'TAMAMLANAN STAGE':solo?'SOLO 20 DERECESİ':'TAKIM SONUCU';
+  if(combat.pitRound){
+   const pairs=combat.pitRound.mode==='2x5';
+   doc.getElementById('resultMode').textContent='ŞAN AVLUSU · '+combat.pitRound.mode;
+   doc.getElementById('resultDescription').textContent=pairs?'Beş takım · İkişer gladyatör':'On gladyatör · Sırayla katılım';
+   doc.getElementById('resultGladiator').textContent=combat.fighters.filter(f=>f.team===0).map(f=>f.name).join(' · ');
+   doc.getElementById('resultRank').textContent=pairs?(win?'Takım zaferi':'Takım mağlubiyeti'):(win?'Son kalan savaşçı':'Savaşçın elendi');
+   doc.getElementById('resultRankLabel').textContent= combat.pitRound.mode+' SONUCU';
+  }
   const list=doc.getElementById('resultStats');list.replaceChildren();
   for(const [label,value]of statsRows(combat)){const row=doc.createElement('div'),dt=doc.createElement('dt'),dd=doc.createElement('dd');dt.textContent=label;dd.textContent=value;row.append(dt,dd);list.append(row);}
  }
