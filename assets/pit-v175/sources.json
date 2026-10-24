@@ -1,0 +1,79 @@
+[
+  {
+    "file": "bench.glb",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/painted_wooden_bench/painted_wooden_bench_1k.gltf",
+    "sha256": "2289ab82f3fe3045bf18f7b9541743d2c65b9f071cb34bbe424d2bc998f3e507",
+    "license": "CC0",
+    "asset": "painted_wooden_bench"
+  },
+  {
+    "file": "painted_wooden_bench.bin",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/painted_wooden_bench/painted_wooden_bench.bin",
+    "sha256": "5799bcb20924105cccd6424de8cdb8e67eb57fddc19c395befeac634a7b2e013",
+    "license": "CC0",
+    "asset": "painted_wooden_bench"
+  },
+  {
+    "file": "paving-color.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/large_grey_tiles/large_grey_tiles_diff_1k.jpg",
+    "sha256": "2cd00e2ddd516fdc165169252c194bf67b3ee483f2925442dc428cbae5fd04c8",
+    "license": "CC0",
+    "asset": "large_grey_tiles"
+  },
+  {
+    "file": "paving-normal.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/large_grey_tiles/large_grey_tiles_nor_gl_1k.jpg",
+    "sha256": "9185560cc045b0c90434c1bfe64922759a5bebfdad18a1b6af860ed0e332cfc8",
+    "license": "CC0",
+    "asset": "large_grey_tiles"
+  },
+  {
+    "file": "paving-rough.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/large_grey_tiles/large_grey_tiles_rough_1k.jpg",
+    "sha256": "2042fd8d9775e4e91ca6474549e504ec08ded4664cb6b59890142d6fe97709c8",
+    "license": "CC0",
+    "asset": "large_grey_tiles"
+  },
+  {
+    "file": "plaster-color.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_diff_1k.jpg",
+    "sha256": "440310f05af089f2c93353167573403cbc3f805948203237b5d26431eeb9e19c",
+    "license": "CC0",
+    "asset": "painted_plaster_wall"
+  },
+  {
+    "file": "plaster-normal.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_nor_gl_1k.jpg",
+    "sha256": "8eb01647d126eb5341e2c325821ad48c8ca11349dbef53447c95422c5d91cc9d",
+    "license": "CC0",
+    "asset": "painted_plaster_wall"
+  },
+  {
+    "file": "plaster-rough.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_rough_1k.jpg",
+    "sha256": "e0564c297b22ab1cf4ef02a82157b84ce3b92eb4fd49d9c64b7256a8b300af82",
+    "license": "CC0",
+    "asset": "painted_plaster_wall"
+  },
+  {
+    "file": "textures/painted_wooden_bench_arm_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_bench/painted_wooden_bench_arm_1k.jpg",
+    "sha256": "878785565eeff706b8f1e4db7e3d794a544e9cf0e56cee424d9a271ab4ead47e",
+    "license": "CC0",
+    "asset": "painted_wooden_bench"
+  },
+  {
+    "file": "textures/painted_wooden_bench_diff_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_bench/painted_wooden_bench_diff_1k.jpg",
+    "sha256": "9bc533313091ee71eaca5fa6334b71d27935d9d75311f64df6a53c28a67c435c",
+    "license": "CC0",
+    "asset": "painted_wooden_bench"
+  },
+  {
+    "file": "textures/painted_wooden_bench_nor_gl_1k.jpg",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_bench/painted_wooden_bench_nor_gl_1k.jpg",
+    "sha256": "a0f53740d77fc61aac01de0b7e1ae6109445d1756839f739ae31fdf10c9911f2",
+    "license": "CC0",
+    "asset": "painted_wooden_bench"
+  }
+]

@@ -1,16 +1,16 @@
 name: Pit courtyard and exhibition
 on:
   push:
-    branches: [main, codex/pit-realism-v174]
-    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+    branches: [main, codex/pit-realism-v174, codex/pit-v175]
+    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'tests/pit-*', '.github/workflows/pit-v174.yml']
   pull_request:
-    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'tests/pit-*', '.github/workflows/pit-v174.yml']
 permissions:
   contents: read
 jobs:
   pit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -19,4 +19,5 @@ jobs:
       - run: npm install --no-save --no-package-lock playwright@1.56.1
       - run: node tests/pit-model-v172.cjs && node tests/pit-exhibition-v174.cjs
       - run: npx playwright install --with-deps --only-shell chromium
+      - run: node tests/pit-people-v175.cjs && node tests/pit-gallery-v175.cjs
       - run: node tests/pit-browser-v172.cjs && node tests/pit-combat-browser-v172.cjs
