@@ -9,3 +9,5 @@ Yay için ayrı bir avlu savaş modülü vardır. Saldırma düğmesi yayı gere
 Sunucuda yalnızca özel avlu ödünç silahı doğrulamasına `pit_bow` eklenir. Envanter, sahiplik, iki farklı gladyatör, müsabaka katılımı, tekrar istek güvenliği ve +1 şan kuralları korunur. Üretim yayları bu ödünç seçime dahil edilmez.
 
 Doğrulama: gerçek yerel SQL ile iki yaylı takım ve tekrar istek, üç ekran boyutunda altı kart, gerçek tarayıcıda yeşil isabet/sarı boşa atış ve dost engeli, duraklatma, iki ayrı yay modeli, üç zaman adımında ok çarpışması, menzil, duvar, kondisyon, kesilen atış ve tek ok/tek hasar.
+
+Avlu kamera çarpışması gerçek duvar/direk sınırlarını kullanır. Örneklenmiş seyircilerin kaynak geometrisi merkezde hayalet engel oluşturmaz; yayla yana nişan alırken kamera gladyatörün sırtına sıkışmaz.
