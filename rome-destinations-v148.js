@@ -1,7 +1,7 @@
 /* Geographic anchors are documented in assets/rome-v148/SOURCES.md. */
 var RomeDestinations=(()=>{
  const places=[
-  {id:'pit',cardPhoto:'assets/rome-v179/pit-card.webp',pinPhoto:'assets/rome-v179/pit-pin.webp',name:'Şan Avlusu',entry:'Küçük gladyatör arenası',description:'Şan · 1x10 · 2x5 · Bahis',photo:'assets/pit-v173/map.webp',target:'san-avlusu.html?travel=pit&v=revision176',lat:41.8917,lon:12.4892,tag:'ŞAN AVLUSU',preload:[]},
+  {id:'pit',cardPhoto:'assets/rome-v180/pit-card.jpeg',pinPhoto:'assets/rome-v179/pit-pin.webp',name:'Şan Avlusu',entry:'Küçük gladyatör arenası',description:'Şan · 1x10 · 2x5 · Bahis',photo:'assets/pit-v173/map.webp',target:'san-avlusu.html?travel=pit&v=revision176',lat:41.8917,lon:12.4892,tag:'ŞAN AVLUSU',preload:[]},
   {id:'colosseum',cardPhoto:'assets/rome-v179/colosseum-card.webp',pinPhoto:'assets/rome-v179/colosseum-pin.webp',name:'Colosseum',entry:'Flavianus Amfitiyatrosu',description:'Singleplayer · Multiplayer · KlanWar',photo:'assets/rome-v148/colosseum.webp',target:'savas.html?choose=1&travel=colosseum&v=revision148',lat:41.889373,lon:12.492438,tag:'SAVAŞLAR',preload:['savas.html','arena-tabs-v82.css?v=revision89','assets/arena-entrance-v70.webp','assets/arena-modes-v69.webp']},
   {id:'palatine',cardPhoto:'assets/rome-v179/palatine-card.webp',pinPhoto:'assets/rome-v179/palatine-pin.webp',name:'Circus Maximus',entry:'Palatine tarafından giriş',description:'Gişe · Kupon · Tribün · Yarışa katılım',photo:'assets/rome-v148/circus-palatine.webp',target:'circus-maximus.html?entrance=palatine&travel=palatine&v=revision148',lat:41.8870,lon:12.4863,tag:'PALATINE',preload:['circus-maximus.html','owner-three-r160.js?v=revision26','circus-maximus-model-v147.js?v=revision147','assets/circus-v146/chariot.glb']},
  ];

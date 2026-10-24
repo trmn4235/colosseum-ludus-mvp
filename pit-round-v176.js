@@ -38,7 +38,7 @@ var PitRound=(()=>{
  function score(combat){
   const r=combat.pitRound;if(!r)return combat.fighters.length+' KİŞİ · '+combat.fighters.filter(f=>f.hp>0).length+' AYAKTA';
   const living=combat.fighters.filter(f=>!f.pitWaiting&&f.hp>0);
-  return r.mode==='1x10'?`1x10 · ${r.entered}/10 · ${living.length} ayakta`:`2x5 · ${new Set(living.map(f=>f.team)).size}/5 takım · ${living.length}/10 ayakta`;
+  return r.mode==='1x10'?`${r.entered}/10`:`${new Set(living.map(f=>f.team)).size}/5`;
  }
  function stats(combat){
   const r=combat.pitRound;

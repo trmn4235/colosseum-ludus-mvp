@@ -53,13 +53,12 @@ async function main(){
  const a=await open(A),b=await open(B);clearInterval(bootHeartbeat);
  for(const kind of ['duck','jump','step','roll']){
   await serialized(async()=>{const rows=await players(db,'spear');rows[1].z=8;await setMatch(db,rows);});
-  await a.waitForFunction(()=>window.fixtureLastMatch?.players[0].stamina===100);const selector=kind==='step'?'#duelDodge':'[data-evasion='+kind+']';
-  await a.locator(selector).dispatchEvent('pointerdown',{pointerId:45});
+  await a.waitForFunction(()=>window.fixtureLastMatch?.players[0].stamina===100);if(kind==='step')await a.locator('#duelDodge').dispatchEvent('pointerdown',{pointerId:45});else await a.keyboard.press({duck:'KeyC',jump:'KeyV',roll:'KeyB'}[kind]);
   await b.waitForFunction(kind=>window.fixtureLastMatch?.players[0].dodge_kind===kind,kind);const sent=inputs.filter(x=>x.owner===A&&x.dodge).at(-1);assert.equal(sent.dodge_kind,kind);
   await b.waitForFunction(()=>Date.parse(window.fixtureLastMatch.players[0].dodge_until)<Date.now());
  }
- for(const [width,height]of [[667,375],[844,390],[932,430]]){await a.setViewportSize({width,height});const boxes=await a.locator('.evasion163 button,.duel-action,#duelStick').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return{name:e.id||e.dataset.evasion,x:b.x,y:b.y,w:b.width,h:b.height};}));for(const a of boxes.filter(b=>['duck','jump','roll'].includes(b.name))){assert.ok(a.x>=0&&a.y>=0&&a.x+a.w<=width&&a.y+a.h<=height);for(const b of boxes.filter(b=>b.name!==a.name))assert.ok(!(Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>1&&Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)>1),a.name+' overlaps '+b.name);}}
- await a.screenshot({path:path.join(out,'online-motion-v163.png')});assert.deepEqual(errors,[]);console.log(JSON.stringify({sessions:2,realModels:true,touchActions:4,serverAcknowledged:true,viewports:3,errors}));
+ for(const [width,height]of [[667,375],[844,390],[932,430]]){await a.setViewportSize({width,height});const boxes=await a.locator('.evasion163 button,.duel-action,#duelStick').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return{name:e.id||e.dataset.evasion,x:b.x,y:b.y,w:b.width,h:b.height};}));assert.equal(await a.locator('.evasion163').count(),0);for(const a of boxes.filter(b=>b.name==='duelStick')){assert.ok(a.x>=0&&a.y>=0&&a.x+a.w<=width&&a.y+a.h<=height);for(const b of boxes.filter(b=>b.name!==a.name))assert.ok(!(Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>1&&Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)>1),a.name+' overlaps '+b.name);}}
+ await a.screenshot({path:path.join(out,'online-motion-v163.png')});assert.deepEqual(errors,[]);console.log(JSON.stringify({sessions:2,realModels:true,touchActions:1,keyboardActions:3,serverAcknowledged:true,viewports:3,errors}));
  await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exitCode=1;});

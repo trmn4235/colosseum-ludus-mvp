@@ -4,7 +4,7 @@
 const quests=[
  ['inspect','Gladyatörlerini tanı','Başlangıçtaki iki gladyatörünün sınıfını ve özelliklerini incele.','İki gladyatörün detayını ayrı ayrı aç.','inspect'],
  ['combat','Gerçek gücünü gör','Savaş Değerleri panelini aç ve bir değerin katkı kaynaklarını incele.','Gladyatör detayında ÖZELLİKLER yanındaki kalkan simgesine, ardından bir değere dokun.','inspect'],
- ['controls','Kontrollerini hazırla','Ayarlar’dan bir dövüş kontrol düzeni seç ve kaydet.','Klasik veya Bölgesel düzeni seçip Kontrolleri kaydet düğmesine dokun.','settings'],
+ ['controls','Kontrollerini hazırla','Ayarlar’dan dövüş kontrollerini incele.','Saldır’a dokun, Blok’u basılı tut. Ayarlar’da Kontrolleri kaydet düğmesine dokun.','settings'],
  ['buy_equipment','İlk ekipman alışverişi','Basic Pazar’dan bir ekipman satın al.','Gladyatörünün kullanabildiği bir silah veya zırh seç.','market'],
  ['equip','Gladyatörünü donat','Satın aldığın bir ekipmanı gladyatörüne tak.','Gladyatör detayında uygun ekipman yuvasına dokun ve yeni eşyanı seç.','equipment'],
  ['training','İlk antrenmanlar','Başlangıçtaki iki gladyatörünü birer kez antrenmana gönder.','Bir özellik seçip çalıştır. İki farklı gladyatörün antrenmanı ayrı sayılır.','training'],

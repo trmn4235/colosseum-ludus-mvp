@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');
+module.exports=async(page,screenshot)=>{
+ assert.equal(await page.evaluate(()=>CombatControlSettings.load()),'classic');assert.equal(await page.locator('.body-target,.evasion163').count(),0);
+ await page.evaluate(()=>{CombatControlSettings.save('regions');const c=__pitTest.combat;c.botStep=()=>{};for(const f of c.fighters)if(!f.pitWaiting)Object.assign(f,{hp:1000,action:'idle',cooldown:999});});
+ assert.equal(await page.evaluate(()=>localStorage.getItem('ludus-combat-controls')),'classic');
+ for(const [width,height]of [[667,375],[932,430],[1366,768]]){await page.setViewportSize({width,height});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const ui=await page.evaluate(()=>{const s=document.getElementById('stick').getBoundingClientRect(),score=document.getElementById('teamScore'),st=getComputedStyle(score),b=score.getBoundingClientRect();return{size:s.width,height:s.height,score:score.textContent,background:st.backgroundColor,border:st.borderWidth,scoreY:b.y,overflow:[...document.querySelectorAll('#stick,.action')].filter(e=>{const r=e.getBoundingClientRect();return r.x<0||r.y<0||r.right>innerWidth+1||r.bottom>innerHeight+1;}).map(e=>({id:e.id,rect:e.getBoundingClientRect().toJSON()}))};});assert.ok(Math.abs(ui.size-(height<=480?115.2:151.2))<.1);assert.equal(ui.size,ui.height);assert.match(ui.score,/^\d+\/(10|5)$/);assert.equal(ui.border,'0px');assert.equal(ui.background,'rgba(0, 0, 0, 0)');assert.ok(ui.scoreY>=(height<=480?53:61));assert.deepEqual(ui.overflow,[]);}
+ await page.setViewportSize({width:932,height:430});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+ await page.evaluate(()=>{const f=__pitTest.combat.fighters[0];Object.assign(f,{action:'idle',cooldown:0,stunUntil:0,stamina:100});});const block=await page.locator('#block').boundingBox();await page.mouse.move(block.x+block.width/2,block.y+block.height/2);await page.mouse.down();assert.equal(await page.evaluate(()=>__pitTest.input().block),true);await page.mouse.up();assert.equal(await page.evaluate(()=>__pitTest.input().block),false);await page.locator('#attack').click();assert.ok(await page.evaluate(()=>__pitTest.combat.fighters[0].stamina<100));
+ for(const [name,px,pz,angle]of [['north',0,1,0],['west',-1,0,Math.PI/2],['corner',1,1,Math.PI*1.25]]){
+  await page.evaluate(({px,pz,angle})=>{const c=__pitTest.combat,f=c.fighters[0],b=PitArena.bounds;Object.assign(f,{x:px*b.x,z:pz*b.z,angle});__pitTest.setAim(angle);}, {px,pz,angle});
+  const frame=await page.evaluate(()=>__pitTest.renderer.info.render.frame);await page.waitForFunction(n=>__pitTest.renderer.info.render.frame>n+4,frame,{timeout:90000});
+  assert.ok(await page.evaluate(()=>{const p=__pitTest.camera.position,b=PitArena.bounds;return Math.abs(p.x)<=b.x-.219&&Math.abs(p.z)<=b.z-.219&&p.y>=3.65;}));await screenshot('v180-wall-'+name);
+ }
+ await page.locator('#pause').click();assert.equal(await page.locator('#controlLayout').isVisible(),false);await page.locator('#resume').click();
+ console.log('V180 UI PASS: classic migration, removed extra controls, +20% stick, bare counter and three wall/corner views.');
+};

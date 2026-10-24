@@ -22,5 +22,5 @@ jobs:
       - run: npx playwright install --with-deps --only-shell chromium
       - run: node tests/pit-people-v175.cjs && node tests/pit-gallery-v175.cjs
       - run: node tests/pit-browser-v172.cjs && node tests/pit-combat-browser-v172.cjs
-      - run: node tests/pit-controls-v177.cjs && node tests/pit-archery-v178.cjs
+      - run: node tests/pit-controls-v177.cjs && node tests/pit-archery-v178.cjs && node tests/pit-camera-v180.cjs
       - run: node tests/pit-browser-v176.cjs

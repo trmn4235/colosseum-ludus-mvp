@@ -91,7 +91,7 @@ async function main(){
   await measure('keyboard',568,220);await page.locator('#repeatPassword').fill('preview-password-only');
   assert.ok(await page.locator('#repeatPassword').evaluate(n=>{const b=n.getBoundingClientRect();return b.top>=0&&b.bottom<=innerHeight;}),'focused field is reachable with keyboard');
   await page.goto('http://ui-v79.test/controls-fixture');
-  for(const preset of ['classic','regions'])for(const [width,height]of viewports){
+  for(const preset of ['classic'])for(const [width,height]of viewports){
    await page.setViewportSize({width,height});await page.evaluate(preset=>document.body.dataset.controlLayout=preset,preset);
    const report=await page.evaluate(()=>{
     const rect=n=>{const b=n.getBoundingClientRect();return{x:b.x,y:b.y,width:b.width,height:b.height,right:b.right,bottom:b.bottom};};

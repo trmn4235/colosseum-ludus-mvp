@@ -3,7 +3,7 @@
  'use strict';
  const raid=new URLSearchParams(location.search).get('raid');if(!raid)return;
  const $=id=>document.getElementById(id),make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
- const link=make('link');link.rel='stylesheet';link.href='caravan-battle-v127.css?v=revision128';document.head.append(link);document.body.classList.add('caravan-battle');
+ const link=make('link');link.rel='stylesheet';link.href='caravan-battle-v127.css?v=revision180';document.head.append(link);document.body.classList.add('caravan-battle');
  const overlay=make('section','cb-overlay'),card=make('div','cb-card'),title=make('h2','','Av ekibi hazırlanıyor'),copy=make('p','','Orman yolu ve gladyatörler yükleniyor…');card.append(title,copy);overlay.append(card);overlay.hidden=true;document.body.append(overlay);
  let motionTimeline;
  let movementControl,client,owner,ticket,state,field,sim,touchControls,controlSettings,dropBatch,models=[],paused=true,saving=false,saved=false,settlementStarted=false,abandon=false,storeKey,lastSave=0,accumulator=0,cameraYaw=Math.PI,cameraPitch=.52,pointer=null,toastUntil=0,presentation=null,firstDeathSeen=false;
@@ -104,7 +104,7 @@
  async function init(){
   if(!/^[a-f0-9-]{36}$/i.test(raid))throw Error('Baskın kimliği geçersiz. Kervan avından giriş yap.');
   const files=['assets/runtime/supabase-59d39487c358.js','ludus-client-v84.js','arena-fall-motion-v39.js','arena-ground-fall-v39.js','arena-roll-motion-v72.js','arena-roll-v72.js','arena-locomotion-data-v91.js','arena-locomotion-v91.js','ludus-manica-v119.js','caravan-core-v126.js','caravan-simulation-v126.js','caravan-simulation-v127.js','combat-curves-v163.js','combat-motion-v163.js','caravan-simulation-v163.js','caravan-simulation-v168.js','equipment-catalog-v167.js','arena-authored-data-v163.js','arena-authored-motion-v163.js','combat-control-settings-v44.js','arena-controls-v43.js','combat-evasion-controls-v163.js','caravan-assets-v126.js','arena-anatomy-v166.js','arena-equipment-fit-v164.js','arena-motion-stability-v165.js','caravan-rig-v126.js','ludus-caravan-outfit-v122.js','naval-performance-v106.js'];
-  for(const [i,file]of files.entries()){await script(file+'?v=revision177');CaravanLoading.set('scripts',(i+1)/files.length,'Savaş kontrolleri hazırlanıyor…');}
+  for(const [i,file]of files.entries()){await script(file+'?v=revision180');CaravanLoading.set('scripts',(i+1)/files.length,'Savaş kontrolleri hazırlanıyor…');}
   motionTimeline=ArenaMotionStability.createTimeline();
   client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
   const user=await client.auth.getUser();if(user.error||!user.data.user||user.data.user.is_anonymous)throw Error('Kervan avına girmek için hesabına giriş yap.');owner=user.data.user.id;storeKey='caravan-combat-v126:'+owner+':'+raid;

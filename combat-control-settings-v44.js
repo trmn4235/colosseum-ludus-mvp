@@ -1,9 +1,9 @@
-/* Add future layouts here; only implemented layouts can be selected. */
+/* V180: classic controls are the only supported layout. Migrate saved preferences. */
 var CombatControlSettings=(()=>{
- const layouts={classic:'Klasik',regions:'Bölgesel'},key='ludus-combat-controls';
- function load(){try{const value=localStorage.getItem(key);return layouts[value]?value:'regions';}catch{return'regions';}}
- function save(value){if(!layouts[value])return;try{localStorage.setItem(key,value);}catch{}document.body.dataset.controlLayout=value;dispatchEvent(new CustomEvent('combat-control-layout',{detail:value}));}
- function bind(select){select.replaceChildren();for(const [value,label]of Object.entries(layouts)){const option=document.createElement('option');option.value=value;option.textContent=label;select.append(option);}select.value=load();select.addEventListener('change',()=>save(select.value));addEventListener('combat-control-layout',event=>{select.value=event.detail;});}
- addEventListener('storage',event=>{if(event.key===key){document.body.dataset.controlLayout=load();dispatchEvent(new CustomEvent('combat-control-layout',{detail:load()}));}});
+ const layouts={classic:'Klasik'},key='ludus-combat-controls';
+ function load(){try{if(localStorage.getItem(key)!=='classic')localStorage.setItem(key,'classic');}catch{}return'classic';}
+ function save(){load();document.body.dataset.controlLayout='classic';dispatchEvent(new CustomEvent('combat-control-layout',{detail:'classic'}));}
+ function bind(select){if(!select)return;select.replaceChildren();const option=document.createElement('option');option.value='classic';option.textContent='Klasik';select.append(option);select.value=load();select.disabled=true;const label=select.closest('label');if(label){label.hidden=true;label.style.setProperty('display','none','important');}}
+ addEventListener('storage',event=>{if(event.key===key)save();});
  return {layouts,load,save,bind};
 })();

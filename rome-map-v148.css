@@ -5,5 +5,5 @@
 @media(max-height:500px){.rome-card strong{font-size:18px;margin:1px 0}.rome-card{padding:5px 10px}.rome-card small{font-size:7px}.rome-card .rome-entry{font-size:9px}}
 
 /* V179: each banner and circular marker has its own composition. */
-.rome-card{aspect-ratio:3/1;justify-content:center;background:#eee7d5}.rome-card>img{object-fit:contain}.rome-card:hover>img{transform:none}.rome-card::before{background:linear-gradient(90deg,#24131ad9 0%,#24131a85 38%,#24131a08 75%)}.rome-card .rome-detail{display:none}.rome-pin img{width:72%;height:72%;object-fit:contain;border-radius:0}.rome-pin{padding:0;background:#eee8d8}
+.rome-card{aspect-ratio:3/1;justify-content:center;background:#eee7d5}.rome-card>img{object-fit:contain}.rome-card:hover>img{transform:none}.rome-card::before{background:linear-gradient(90deg,#24131ad9 0%,#24131a85 38%,#24131a08 75%)}.rome-card .rome-detail{display:none}.rome-pin img{width:100%;height:100%;object-fit:cover;border-radius:50%}.rome-pin{padding:3px;background:#eee8d8}
 @media(max-width:600px) and (min-height:501px){.rome-layout{grid-template-rows:minmax(180px,1fr) auto}#romeCards{flex:none}.rome-card{aspect-ratio:3/1}}

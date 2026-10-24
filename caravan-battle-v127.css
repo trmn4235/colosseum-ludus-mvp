@@ -1,4 +1,4 @@
-@import url("arena-controls-v43.css?v=revision127");
+@import url("arena-controls-v43.css?v=revision180");
 body.caravan-battle .intro,body.caravan-battle .modes,body.caravan-battle .field-bottom,body.caravan-battle #help,body.caravan-battle .preview-label{display:none!important}
 body.caravan-battle .shade{opacity:.35;pointer-events:none}
 body.caravan-battle .identity h1{font-size:16px}
