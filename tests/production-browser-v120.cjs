@@ -59,7 +59,7 @@ const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHe
  async function images(){await page.locator('#supplyModal img').evaluateAll(imgs=>Promise.all(imgs.map(i=>i.decode())));}
  async function map(){await page.evaluate(()=>{const s=LudusPreview.supplySystem;s.close();s.enter();return s.open('map');});await images();await fit('.supply-frame');await fit('.supply-map');assert.equal(await page.locator('[data-destination]').count(),16);assert.equal(await page.locator('.supply-tabs button').count(),3);assert.equal(await page.locator('#supplyRegion option').count(),17);assert.match(await page.locator('.supply-map-art').getAttribute('src'),/supply-v91\/rome-panorama.webp$/);const ratio=await page.locator('.supply-map').evaluate(e=>e.clientWidth/e.clientHeight);assert.ok(Math.abs(ratio-2)<.02);}
  try{
-  await page.goto('http://127.0.0.1:'+server.address().port+'/caravan-ui');await page.waitForFunction(()=>LudusPreview.supplySystem.state?.recipes?.length===33);
+  await page.goto('http://127.0.0.1:'+server.address().port+'/caravan-ui');await page.waitForFunction(count=>LudusPreview.supplySystem.state?.recipes?.length===count,supply.recipes.length);
   await page.evaluate(async()=>{__supply.gold=10000;__supply.caravans=__supply.workers=6;__supply.free_caravans=6;__supply.busy_caravans=0;__supply.jobs=[];await LudusPreview.supplySystem.refresh();});
   for(const [width,height]of [[1366,768],[932,430],[844,390],[768,353],[667,375]]){
    await page.setViewportSize({width,height});await map();await fit('.supply-node-name');await fit('.supply-map-controls');
