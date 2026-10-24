@@ -52,7 +52,7 @@
   return sim.packet({x:-Math.cos(cameraYaw)*x+Math.sin(cameraYaw)*z,z:Math.sin(cameraYaw)*x+Math.cos(cameraYaw)*z,face:Math.atan2(Math.sin(cameraYaw),Math.cos(cameraYaw)),flags,region:selectedRegion,guardRegion});
  }
  function bow(){const T=THREE,g=new T.Group(),pts=[];for(let i=0;i<=18;i++){const y=-.55+i/18*1.1;pts.push(new T.Vector3(.16*(1-Math.pow(y/.55,2)),y,0));}g.add(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),18,.018,5,false),new T.MeshStandardMaterial({color:0x61442e,roughness:.8})));const string=new T.BufferGeometry().setFromPoints([pts[0],pts.at(-1)]);g.add(new T.Line(string,new T.LineBasicMaterial({color:0xc0b69e})));return g;}
- const projectileViews=new Map();let dropIds='',hudClock=1;
+ const projectileViews=new Map();let dropIds='',hudClock=1,hudState='';
  const itemName=d=>ArenaWeapons[d.kind]?.name||({shield:'Kalkan',helmet:'Miğfer',chest:'Göğüs zırhı',greaves:'Bacaklık',shoulders:'Kolluk',net:'Ağ',scissor:'Kol bıçağı'})[d.kind]||'Ekipman';
  function renderEquipment(updateHud){
   const c=state.combat,p=c.fighters[0];dropBatch.update(c.drops,d=>ClassEquipment.item(d),true);
@@ -65,7 +65,7 @@
  function renderActors(dt){
   const c=state.combat,alpha=Math.min(1,accumulator/sim.STEP),time=c.finished?c.time:Math.max(0,c.time-(1-alpha)*sim.STEP);
   const display=f=>c.finished?f:motionTimeline.read(f,c.time,alpha,sim.STEP);
-  hudClock+=dt;const updateHud=hudClock>=.08;if(updateHud)hudClock%=.08;
+  hudClock+=dt;const pHud=c.fighters[0],nextHud=[c.lockedTarget,pHud.pickupHand,pHud.action,paused,c.finished].join(':');const updateHud=hudClock>=.08||nextHud!==hudState;if(updateHud){hudClock%=.08;hudState=nextHud;}
   GamePerformance.beginVisibility(field.camera);NavalPerformance.beginFrame(c.fighters,c.fighters[0],false,c.lockedTarget);
   for(const f of c.fighters){const m=models[f.id],distance=Math.hypot(f.x-c.fighters[0].x,f.z-c.fighters[0].z),focus=NavalPerformance.focus(f.id),pose=display(f);
    GamePerformance.characterVisibility(m,focus,f);NavalPerformance.character(m,f,distance);
