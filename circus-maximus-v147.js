@@ -3,7 +3,7 @@
   'use strict';
   const $ = id => document.getElementById(id), canvas = $('stadium'), pointers = new Map();
   const buttons = [...document.querySelectorAll('[data-view]')];
-  let race=null,racePromise=null,lastRaceTime=0,visit=null,visitPromise=null,gallery=null;
+  let race=null,racePromise=null,lastRaceTime=0,shadowAt=0,visit=null,visitPromise=null,gallery=null;
   let renderer,scene,camera,model,sun,skyResources=[],ready=false,lost=false,frame=0,view='overview',orbit,look,pinch=0;
   const presets = {
     overview: { label: 'Hipodromun tamamı' },
@@ -19,11 +19,21 @@
   function cinema(){const hidden=document.body.classList.toggle('cinema');$('cinema').setAttribute('aria-pressed',String(hidden));$('cinema').setAttribute('aria-label',hidden?'Arayüzü göster':'Arayüzü gizle');$('cinema').title=hidden?'Arayüzü göster (H)':'Arayüzü gizle (H)';}
   $('cinema').onclick=cinema;
   if (!matchMedia('(pointer:coarse)').matches) $('hint').innerHTML = 'Bakmak için sürükle <b>·</b> Yakınlaşmak için fare tekerleğini kullan';
+  let staticCasters=null,staticShadows=true;
+  function staticShadowPass(enabled){
+    if(!model||staticShadows===enabled)return;
+    if(!staticCasters){staticCasters=[];model.group.traverse(o=>{if(o.isMesh&&o.castShadow)staticCasters.push(o);});}
+    for(const o of staticCasters)o.castShadow=enabled;staticShadows=enabled;
+  }
   function render(now=performance.now()) {
     frame = 0;
     if (!renderer || lost || document.hidden) return;
-    if(visit?.active){const dt=lastRaceTime?Math.min((now-lastRaceTime)/1000,.05):0;lastRaceTime=now;visit.update(dt);if(visit.heat.status==='running'||visit.war?.active)renderer.shadowMap.needsUpdate=true;}
+    if(visit?.active){const dt=ArenaRuntime.frameDelta(now,lastRaceTime);lastRaceTime=now;visit.update(dt);if((visit.heat.status==='running'||visit.war?.active)&&now>=shadowAt){renderer.shadowMap.needsUpdate=true;shadowAt=now+1000/30;}}
+    // The stadium already has a cached sun shadow. Only moving race objects
+    // belong in the small live shadow map; restore architecture only for a rebake.
+    if(sun.shadow.needsUpdate||!race?.active)staticShadowPass(true);
     if(race?.active&&sun.shadow.needsUpdate){race.root.visible=false;renderer.render(scene,camera);race.root.visible=true;}
+    if(race?.active)staticShadowPass(false);
     renderer.render(scene,camera);
     if(visit?.needsFrame)invalidate();else lastRaceTime=0;
   }
@@ -208,7 +218,7 @@
     if (!window.THREE || !window.createCircusMaximus) throw Error('Sahne dosyaları yüklenemedi. Yeniden dene.');
     const T = THREE;
     renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, matchMedia('(pointer:coarse)').matches ? 1.5 : 1.75));
+    renderer.setPixelRatio(ArenaRuntime.pixelRatio(devicePixelRatio,matchMedia('(pointer:coarse)').matches,innerWidth,innerHeight));
     renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
     scene = new T.Scene(); scene.background = new T.Color(0xd3dedb); scene.fog = new T.Fog(0xd5d9d5, 1400, 2800);

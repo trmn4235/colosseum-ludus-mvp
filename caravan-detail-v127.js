@@ -26,7 +26,7 @@ var CaravanDetail=(()=>{
   const dust=new T.Points(dustGeo,new T.PointsMaterial({map:texture,color:0xc9b897,size:.55,transparent:true,opacity:.23,depthWrite:false}));dust.name='Footfall dust';dust.frustumCulled=false;scene.add(dust);let cursor=0,shadow=null,shadowClock=0;
   function footDust(x,z,force=1){if(reduceMotion)return;for(let i=0;i<(force>1?3:1);i++){const n=cursor++%64;ages[n]=0;positions[n*3]=x+(i-1)*.1;positions[n*3+1]=height(x,z)+.09;positions[n*3+2]=z;}dustGeo.attributes.position.needsUpdate=true;}
   function battleShadow(){if(shadow)return;shadow=new T.DirectionalLight(0xffe8cd,.85);shadow.position.set(-18,29,13);shadow.target.position.set(0,0,13);scene.add(shadow,shadow.target);shadow.castShadow=true;shadow.shadow.mapSize.set(1024,1024);Object.assign(shadow.shadow.camera,{left:-12,right:12,top:14,bottom:-14,near:1,far:65});shadow.shadow.bias=-.0002;shadow.shadow.normalBias=.025;shadow.shadow.autoUpdate=false;shadow.shadow.needsUpdate=true;}
-  function update(dt){for(let i=0;i<64;i++)if(ages[i]<1.5){ages[i]+=dt;positions[i*3]+=.10*dt;positions[i*3+1]+=.09*dt;if(ages[i]>=1.5)positions[i*3+1]=-1000;}dustGeo.attributes.position.needsUpdate=true;if(shadow&&(shadowClock+=dt)>=1/20){shadowClock=0;shadow.shadow.needsUpdate=true;}}
+  function update(dt){for(let i=0;i<64;i++)if(ages[i]<1.5){ages[i]+=dt;positions[i*3]+=.10*dt;positions[i*3+1]+=.09*dt;if(ages[i]>=1.5)positions[i*3+1]=-1000;}dustGeo.attributes.position.needsUpdate=true;if(shadow&&(shadowClock+=dt)>=1/20){shadowClock%=1/20;shadow.shadow.needsUpdate=true;}}
   return {footDust,battleShadow,update,props,get shadow(){return shadow;}};
  }
  return {create};

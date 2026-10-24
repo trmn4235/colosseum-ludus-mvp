@@ -1,0 +1,35 @@
+name: Full scene performance budgets
+on:
+  push:
+    branches: [main]
+    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', '.github/workflows/render-performance-v187.yml']
+  pull_request:
+    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', '.github/workflows/render-performance-v187.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render-budgets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Exact animation poses, retired armour and elapsed time
+        run: node tests/render-runtime-v187.cjs
+      - name: Existing pose scheduling and body detail regressions
+        run: node --test tests/arena-timing-v94.test.cjs tests/naval-performance-v106.test.cjs
+      - run: npm install --no-save --no-package-lock playwright@1.64.1
+      - run: npx playwright install --with-deps chromium
+      - name: Twenty gladiators, full shadows and low-FPS clock
+        env:
+          LUDUS_PERFORMANCE_TEST: '1'
+        run: node tests/arena-browser-v96.cjs
+      - name: Full 5v6 caravan, replay, pause and 10–120 FPS clock
+        run: node tests/caravan-performance-v187.cjs
+      - name: Eight horses and eight crew, live shadows and clock
+        run: node tests/circus-performance-v187.cjs

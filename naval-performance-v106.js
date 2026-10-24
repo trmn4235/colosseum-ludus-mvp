@@ -1,4 +1,4 @@
-/* Naval rendering budget. Simulation and collision stay at 60 Hz for all 20 actors. */
+/* Shared crowded-scene body and shadow budget. Combat/collision rates are unchanged. */
 var NavalPerformance=(()=>{
  const cache=new WeakMap();let data=null,pending=null,detailBudget=false;const shadowIds=new Set([0]),fullIds=new Set([0]);
  function decode(buffer){
@@ -53,11 +53,12 @@ var NavalPerformance=(()=>{
   for(const f of nearby.slice(0,detailed?7:3))shadowIds.add(f.id);
   detailBudget=!detailed;fullIds.clear();fullIds.add(0);
   // Boarding can put all 20 actors on one deck. Keep the focus opponent and
-  // two closest bodies at original detail; the others retain the 18k body.
+  // one closest body at original detail; the others retain the 18k body.
   const target=nearby.find(f=>f.id===targetId);if(target)fullIds.add(target.id);
-  for(const f of nearby){if(fullIds.size>=4)break;fullIds.add(f.id);}
+  for(const f of nearby){if(fullIds.size>=3)break;fullIds.add(f.id);}
  }
  function shadow(id){return shadowIds.has(id);}
+ function focus(id){return fullIds.has(id);}
  function interval(distance,detailed=false){return !detailed&&distance>24?1/20:1/30;}
  function phase(id,interval){return ((id*.61803398875)%1)*interval;}
  function shadowInterval(mode,dpr){return mode==='high'?1000/30:dpr<=1?1000/15:1000/20;}
@@ -100,6 +101,6 @@ var NavalPerformance=(()=>{
   const callback=function(...args){previous?.apply(this,args);update();};scene.onBeforeRender=callback;
   return{update,metrics,batches,dispose(){if(scene.onBeforeRender===callback)scene.onBeforeRender=previous;for(const state of states.values())restore(state);for(const batch of batches.values()){batch.removeFromParent();batch.dispose();}states.clear();batches.clear();}};
  }
- return{load,decode,level,character,beginFrame,shadow,interval,phase,shadowInterval,uniforms,get ready(){return!!data;}};
+ return{load,decode,level,character,beginFrame,shadow,focus,interval,phase,shadowInterval,uniforms,get ready(){return!!data;}};
 })();
 if(typeof module!=='undefined')module.exports=NavalPerformance;

@@ -33,6 +33,7 @@ async function main(){
  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});
  if(current){assert.equal(await page.locator('#intro').count(),0);assert.ok(!await page.getByText('Arena hazırlanıyor',{exact:false}).count());}
  await page.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:60000});await page.evaluate(()=>__arena.freeze());
+ if(process.env.LUDUS_PERFORMANCE_TEST==='1')await require('./arena-budget-v187.cjs')(page);
  if(process.env.LUDUS_FIT_TEST==='1'){await require('./armour-grip-browser-v166.cjs')(page,out);if(process.env.LUDUS_FIT_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  // Render exactly the same twenty fighters, camera, shadow mode and resolution in both revisions.
  const comparison=await page.evaluate(()=>{

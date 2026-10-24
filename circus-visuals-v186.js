@@ -58,7 +58,7 @@ var CircusVisuals=(()=>{
   for(let k=0;k<128;k++){stamp.position.set(0,-100,0);stamp.updateMatrix();marks.setMatrixAt(k,stamp.matrix);}
   function update(time,dt,external){
    scene.userData.raceEnvironment?.update(time,teams[3].distance,external?7:5);
-   details.forEach(({t,wheelDetails})=>{reins(t);wheelDetails.forEach((g,k)=>g.visible=!!external?.teams[teams.indexOf(t)]?.wheels[k]);});
+   details.forEach(({t,wheelDetails})=>{if(!external)reins(t);wheelDetails.forEach((g,k)=>g.visible=!!external?.teams[teams.indexOf(t)]?.wheels[k]);});
    if(dt<=0)return;
    if(time<lastDust){lastDust=lastMark=0;particles.forEach(p=>p.life=0);markLife.fill(0);}
    if(time-lastDust>.09){lastDust=time;for(const t of teams){if(t.speed<4)continue;for(const w of t.wheels){const p=w.getWorldPosition(tempA);p.y=(window.CircusPreview?.model?.groundHeightAt?.(p.x,p.z)??.065)+.08;puff(p,t.speed,Math.sign(w.position.x),(cursor%7)/7);}for(const h of t.horses){const p=t.group.localToWorld(tempA.set(h.horse.position.x,0,1.25+Math.sin(h.action.time*8)*.25));p.y=(window.CircusPreview?.model?.groundHeightAt?.(p.x,p.z)??.065)+.08;puff(p,t.speed,Math.sign(h.horse.position.x),(cursor%5)/5);}}}

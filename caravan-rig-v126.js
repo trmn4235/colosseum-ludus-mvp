@@ -253,12 +253,12 @@ var LudusHelmets=(function(){
 })();
 
 
-var LUDUS_ARMOUR_DATA={"gladiator_chest":"assets/equipment/gladiator_chest-e2f685b66fb6.glb","chest_plate":"assets/equipment/chest_plate-6376ad0c8654.glb","armor_shoulder":"assets/equipment/armor_shoulder-c17b1581ca44.glb","shoulder_armor":"assets/equipment/shoulder_armor-a71778444187.glb"};
-/* Four user-supplied armours. Templates and textures are shared by all fighters. */
+var LUDUS_ARMOUR_DATA={"chest_plate":"assets/equipment/chest_plate-6376ad0c8654.glb","armor_shoulder":"assets/equipment/armor_shoulder-c17b1581ca44.glb","shoulder_armor":"assets/equipment/shoulder_armor-a71778444187.glb"};
+/* V187: retired 50,880-triangle chest aliases to the existing light plate; inventory stats stay intact. */
 var LudusArmour=(function(){
  const T=THREE,templates={},empty=new T.Group();let pending;
  const names={gladiator_chest:'Gladyatör göğüs zırhı',chest_plate:'İşlemeli göğüs zırhı',armor_shoulder:'İşlemeli çift omuzluk',shoulder_armor:'Çift omuz koruma'};
- function model(kind,value){return kind==='chest'?(value==='chest_plate'?'chest_plate':'gladiator_chest'):(value==='manica'?'manica':value==='shoulder_armor'?'shoulder_armor':'armor_shoulder');}
+ function model(kind,value){return kind==='chest'?'chest_plate':(value==='manica'?'manica':value==='shoulder_armor'?'shoulder_armor':'armor_shoulder');}
  function merge(scene){scene.updateMatrixWorld(true);const g=new T.Group(),batches=new Map();scene.traverse(o=>{if(!o.isMesh)return;const geo=o.geometry.clone().applyMatrix4(o.matrixWorld),mat=o.material;for(const [name,attr]of Object.entries(geo.attributes))if(attr.isInterleavedBufferAttribute){const data=new attr.data.array.constructor(attr.count*attr.itemSize);for(let i=0;i<attr.count;i++)for(let k=0;k<attr.itemSize;k++)data[i*attr.itemSize+k]=attr.data.array[i*attr.data.stride+attr.offset+k];geo.setAttribute(name,new T.BufferAttribute(data,attr.itemSize,attr.normalized));}mat.side=T.DoubleSide;mat.envMapIntensity=.8;const signature=mat.uuid+':'+!!geo.index+':'+Object.keys(geo.attributes).sort().join(',');if(!batches.has(signature))batches.set(signature,{mat,list:[]});batches.get(signature).list.push(geo);});for(const {mat,list}of batches.values()){const joined=list.length>1?ArenaGeometryUtils.mergeGeometries(list,false):list[0];for(const geo of joined?[joined]:list){geo.computeBoundingBox();geo.computeBoundingSphere();const o=new T.Mesh(geo,mat);o.castShadow=o.receiveShadow=true;g.add(o);}if(joined&&list.length>1)list.forEach(x=>x.dispose());}return g;}
  function subset(mesh,test){const src=mesh.geometry,index=src.index,indices=[];for(let i=0;i<(index?.count||src.attributes.position.count);i+=3){const a=index?index.getX(i):i,b=index?index.getX(i+1):i+1,c=index?index.getX(i+2):i+2;const x=(src.attributes.position.getX(a)+src.attributes.position.getX(b)+src.attributes.position.getX(c))/3;if(test(x))indices.push(a,b,c);}const remap=new Map(),used=[];for(const i of indices)if(!remap.has(i)){remap.set(i,used.length);used.push(i);}const geo=new T.BufferGeometry();for(const [name,attr]of Object.entries(src.attributes)){const data=new attr.array.constructor(used.length*attr.itemSize);used.forEach((old,n)=>{for(let k=0;k<attr.itemSize;k++)data[n*attr.itemSize+k]=attr.array[old*attr.itemSize+k];});geo.setAttribute(name,new T.BufferAttribute(data,attr.itemSize,attr.normalized));}geo.setIndex(indices.map(i=>remap.get(i)));geo.computeBoundingBox();geo.computeBoundingSphere();const o=new T.Mesh(geo,mesh.material);o.castShadow=o.receiveShadow=true;return o;}
  function prepare(scene,key){const whole=merge(scene),box=new T.Box3().setFromObject(whole),center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3());
@@ -273,7 +273,7 @@ var LudusArmour=(function(){
   for(const side of ['left','right']){const b=new T.Box3().setFromObject(pieces[side]),c=b.getCenter(new T.Vector3());pieces[side].traverse(o=>{if(o.isMesh)o.geometry.translate(-c.x,-c.y,-c.z);});pieces[side].userData.asset=key+'-'+side+'-v19';}
   pieces.collar.userData.asset=key+'-collar-v19';return pieces;
  }
- async function load(){if(pending)return pending;pending=Promise.all(Object.keys(names).map(async key=>{const bytes=await ArenaAssetLoad(LUDUS_ARMOUR_DATA[key]);const gltf=await new T.GLTFLoader().parseAsync(bytes,'');templates[key]=prepare(gltf.scene,key);})).catch(error=>{pending=null;throw error;});return pending;}
+ async function load(){if(pending)return pending;pending=Promise.all(Object.keys(LUDUS_ARMOUR_DATA).map(async key=>{const bytes=await ArenaAssetLoad(LUDUS_ARMOUR_DATA[key]);const gltf=await new T.GLTFLoader().parseAsync(bytes,'');templates[key]=prepare(gltf.scene,key);})).catch(error=>{pending=null;throw error;});return pending;}
  function get(kind,value,side){const key=model(kind,value);if(key==='manica')return side?empty:LudusManica.get(T).whole;const t=templates[key];return t?.[side||'whole']||t?.whole||empty;}
  return {load,get,model,names,prepare,get loaded(){return Object.keys(templates).length;}};
 })();
@@ -552,6 +552,7 @@ var ImportedGladiator=(function(){
    }
  }
  function animate(f,m,time,dt){
+  ArenaRuntime.beginPose();try{
   ArenaAnatomy.begin(m);
   if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.begin(f,m,time,dt);
   ArenaRoll.begin(f,m);
@@ -635,6 +636,7 @@ var ImportedGladiator=(function(){
   if(typeof ArenaMotionStability!=='undefined')ArenaMotionStability.wrists(f,m);
   const flashed=f.flash>0;if(m.emissiveFlashed!==flashed){m.emissiveFlashed=flashed;for(const material of m.materials)material.emissive?.setHex(flashed?0x29100a:0);}m.root.updateMatrixWorld(true);GroundFall.finish(m,fallen);
   if(f.navHeight){m.root.position.y+=f.navHeight;m.root.updateMatrixWorld(true);}m.shadow.visible=!f.navJump?.airborne;
+  }finally{ArenaRuntime.endPose();}
  }
  function dispose(m){m.root.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.dispose();});m.materials.forEach(x=>x.dispose());for(const o of [m.trail,m.shadow]){o.geometry.dispose();o.material.dispose();}}
  return {load,create,animate,dispose,get loaded(){return !!template;}};

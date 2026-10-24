@@ -1,5 +1,47 @@
 /* Shared rig cleanup and measured rendering budget. Combat timing is never scaled. */
 var ArenaRuntime = (() => {
+  // V187: cache transforms only inside one synchronous pose evaluation. A changed
+  // local transform or parent revision always recomputes its world matrix. Outside
+  // this scope Three.js retains its original update and lifecycle behaviour.
+  const matrixCache = {enabled:true, localUpdates:0, worldUpdates:0, reused:0};
+  const transforms = new WeakMap(); let poseDepth=0, poseEpoch=0, installed=false;
+  function installMatrixCache(T) {
+    if(installed||!T?.Object3D)return;installed=true;
+    const prototype=T.Object3D.prototype,tree=prototype.updateMatrixWorld,world=prototype.updateWorldMatrix;
+    function refresh(node){
+      let row=transforms.get(node);if(!row){row={epoch:0,version:0,parentVersion:-1,local:new Float64Array(16),trs:new Float64Array(10)};transforms.set(node,row);}
+      const fresh=row.epoch!==poseEpoch,p=node.position,q=node.quaternion,s=node.scale,a=row.trs;
+      const changed=fresh||a[0]!==p.x||a[1]!==p.y||a[2]!==p.z||a[3]!==q.x||a[4]!==q.y||a[5]!==q.z||a[6]!==q.w||a[7]!==s.x||a[8]!==s.y||a[9]!==s.z;
+      if(node.matrixAutoUpdate&&changed){node.updateMatrix();matrixCache.localUpdates++;a[0]=p.x;a[1]=p.y;a[2]=p.z;a[3]=q.x;a[4]=q.y;a[5]=q.z;a[6]=q.w;a[7]=s.x;a[8]=s.y;a[9]=s.z;}
+      const elements=node.matrix.elements,parent=node.parent,parentRow=parent&&transforms.get(parent),parentVersion=parentRow?.epoch===poseEpoch?parentRow.version:-1;
+      let dirty=fresh||node.matrixWorldNeedsUpdate||node.matrixAutoUpdate&&changed||row.parent!==parent||row.parentVersion!==parentVersion;
+      if(!node.matrixAutoUpdate)for(let i=0;i<16;i++)if(row.local[i]!==elements[i]){dirty=true;break;}
+      // A parent outside this scope can have a manually assigned world matrix.
+      if(parent&&parentVersion===-1)dirty=true;
+      if(dirty){if(parent)node.matrixWorld.multiplyMatrices(parent.matrixWorld,node.matrix);else node.matrixWorld.copy(node.matrix);if(!node.matrixAutoUpdate)row.local.set(elements);row.version++;matrixCache.worldUpdates++;}else matrixCache.reused++;
+      row.epoch=poseEpoch;row.parent=parent;row.parentVersion=parentVersion;node.matrixWorldNeedsUpdate=false;return dirty;
+    }
+    prototype.updateWorldMatrix=function(parents,children){
+      if(!poseDepth||!matrixCache.enabled)return world.call(this,parents,children);
+      if(parents&&this.parent?.matrixWorldAutoUpdate)this.parent.updateWorldMatrix(true,false);
+      refresh(this);
+      if(children)for(const child of this.children)if(child.matrixWorldAutoUpdate)child.updateWorldMatrix(false,true);
+    };
+    prototype.updateMatrixWorld=function(force){
+      if(!poseDepth||!matrixCache.enabled)return tree.call(this,force);
+      const dirty=refresh(this);
+      for(const child of this.children)if(child.matrixWorldAutoUpdate||force||dirty)child.updateMatrixWorld(force||dirty);
+    };
+  }
+  function beginPose(){if(!installed&&typeof THREE!=='undefined')installMatrixCache(THREE);if(poseDepth++===0)poseEpoch++;}
+  function endPose(){poseDepth=Math.max(0,poseDepth-1);}
+  // Real elapsed time down to 4 FPS; hidden/paused hosts reset their last timestamp.
+  // Fixed-step simulations consume this in bounded 1/30 or 1/60 second steps.
+  function frameDelta(now,last){return last?Math.max(0,Math.min(.25,(now-last)/1000)):0;}
+  function pixelRatio(ratio,touch=false,width=0,height=0){
+    const maximum=Math.min(Math.max(1,ratio||1),touch?1.25:1.5),pixels=width*height,budget=touch?900000:1600000;
+    return pixels?Math.max(.875,Math.min(maximum,Math.sqrt(budget/pixels))):maximum;
+  }
   const mergedBodies = new WeakMap();
   function optimizeRig(root) {
     const meshes = [], removed = [], skeletons = new Set();
@@ -120,6 +162,6 @@ var ArenaRuntime = (() => {
       return null;
     }
   }
-  return { optimizeRig, settleCorpse, DropBatch, AdaptiveQuality };
+  return { optimizeRig, settleCorpse, DropBatch, AdaptiveQuality, beginPose, endPose, matrixCache, frameDelta, pixelRatio };
 })();
 if (typeof module !== 'undefined') module.exports = ArenaRuntime;

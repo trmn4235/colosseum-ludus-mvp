@@ -214,8 +214,9 @@
       colors[i * 3] = colors[i * 3 + 1] = colors[i * 3 + 2] = tint * variation;
     }
     g.setAttribute('color', new T.BufferAttribute(colors, 3));
-    if (!batches.has(mat)) batches.set(mat, []);
-    batches.get(mat).push(g);
+    const key=mat.uuid+':'+Math.floor(x/160)+':'+Math.floor(z/120);
+    if (!batches.has(key)) batches.set(key, {mat,parts:[]});
+    batches.get(key).parts.push(g);
   }
   const box = (mat, x, y, z, w, h, d, ry = 0, tint = 1) => add(cube, mat, x, y, z, w, h, d, ry, tint);
   function rod(mat,a,b,r=.04){
@@ -880,8 +881,8 @@
     add(pebble,M.stone,x,trackHeightAt(x,z)+s*.22,z,s,s*(.28+random()*.23),s*(.55+random()*.6),random()*6.28,.57+random()*.4);
   }
   for(let z=-320;z<370;z+=25)for(const side of [-1,1])tree(side*(230+random()*23),z,10+random()*8);
-  // Merge static parts by material: no per-seat or per-column draw calls.
-  for(const [mat, parts] of batches){
+  // Merge by material and spatial cell, preserving geometry/UVs while allowing culling.
+  for(const {mat,parts} of batches.values()){
     const total=parts.reduce((n,g)=>n+g.attributes.position.count,0),merged=new T.BufferGeometry();
     for(const [name,size]of [['position',3],['normal',3],['uv',2],['color',3]]){
       const values=new Float32Array(total*size);let offset=0;

@@ -5,19 +5,19 @@ var CircusWarView=(()=>{
  const trackCamera=CircusRace.trackCamera;
  async function create(T,race,scene){
   const res=await fetch('gladiator-mobile.glb',{signal:AbortSignal.timeout(45000)});if(!res.ok)throw Error('Gladyatör görseli yüklenemedi. Tekrar dene.');const gltf=await new T.GLTFLoader().parseAsync(await res.arrayBuffer(),'');
-  gltf.scene.traverse(o=>{if(o.isMesh){const a=gltf.parser.associations.get(o),name=a?.meshes!==undefined?gltf.parser.json.meshes[a.meshes]?.name:'';o.userData.sourcePart=name;if(/^(weapon|shield|helmet)_geo/.test(name||''))o.visible=false;}});
+  gltf.scene.traverse(o=>{if(o.isMesh){const a=gltf.parser.associations.get(o),name=a?.meshes!==undefined?gltf.parser.json.meshes[a.meshes]?.name:'';o.userData.sourcePart=name;if(/^(weapon|shield|helmet)_geo/.test(name||'')){o.visible=false;o.userData.replaceGear=true;}}});
   const extras=new T.Group();extras.name='Ciritler ve kırbaçlar';scene.add(extras);extras.visible=false;
   const line=new T.Line(new T.BufferGeometry().setFromPoints(Array.from({length:73},()=>new T.Vector3())),new T.LineBasicMaterial({color:0xe6c766,transparent:true,opacity:.4,depthWrite:false}));line.frustumCulled=false;extras.add(line);
   const shafts=new Map(),shaftGeo=new T.CylinderGeometry(.026,.031,1.85,8),tipGeo=new T.ConeGeometry(.075,.30,4),wood=new T.MeshStandardMaterial({color:0x9c7040,roughness:.85}),iron=new T.MeshStandardMaterial({color:0x9d9c91,metalness:.65,roughness:.4});shaftGeo.rotateX(Math.PI/2);tipGeo.rotateX(Math.PI/2);tipGeo.translate(0,0,1.06);
   const crews=[],quaternion=new T.Quaternion();
   function align(model,boneName,endName,target){const b=model.bones[boneName],e=model.bones[endName];if(!b||!e)return;model.root.updateMatrixWorld(true);const origin=b.getWorldPosition(new T.Vector3()),a=e.getWorldPosition(new T.Vector3()).sub(origin).normalize(),v=model.root.localToWorld(new T.Vector3(...target)).sub(origin).normalize();const rot=new T.Quaternion().setFromUnitVectors(a,v).multiply(b.getWorldQuaternion(new T.Quaternion()));b.quaternion.copy(b.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(rot));}
   function reach(m,side,target){const upper=m.bones[side+'Arm'],lower=m.bones[side+'ForeArm'],hand=m.bones[side+'Hand'];m.root.updateMatrixWorld(true);const p=upper.getWorldPosition(new T.Vector3()),e=lower.getWorldPosition(new T.Vector3()),h=hand.getWorldPosition(new T.Vector3()),goal=m.root.localToWorld(new T.Vector3(...target)),a=p.distanceTo(e),b=e.distanceTo(h),dir=goal.sub(p),d=Math.max(Math.abs(a-b)+.003,Math.min(a+b-.003,dir.length()));dir.normalize();const pole=new T.Vector3(side==='Left'?.7:-.7,-.6,-.2).applyQuaternion(m.root.getWorldQuaternion(new T.Quaternion()));pole.addScaledVector(dir,-pole.dot(dir)).normalize();const along=(a*a-b*b+d*d)/(2*d),height=Math.sqrt(Math.max(0,a*a-along*along)),elbow=p.clone().addScaledVector(dir,along).addScaledVector(pole,height),wrist=p.clone().addScaledVector(dir,d);align(m,side+'Arm',side+'ForeArm',m.root.worldToLocal(elbow).toArray());align(m,side+'ForeArm',side+'Hand',m.root.worldToLocal(wrist).toArray());}
-  function javelin(){const root=new T.Group();root.name='Cirit · 2.15 metre';root.add(new T.Mesh(shaftGeo,wood),new T.Mesh(tipGeo,iron));for(const z of[-.1,-.055,-.01,.035]){const wrap=new T.Mesh(new T.TorusGeometry(.033,.006,4,8),darkLeather);wrap.position.z=z;root.add(wrap);}return root;}
+  function javelin(){const root=new T.Group();root.name='Cirit · 2.15 metre';root.add(new T.Mesh(shaftGeo,wood),new T.Mesh(tipGeo,iron));for(const z of[-.1,-.055,-.01,.035]){const wrap=new T.Mesh(new T.TorusGeometry(.033,.006,4,8),darkLeather);wrap.position.z=z;root.add(wrap);}CircusVisuals.merge(T,root);return root;}
   const darkLeather=new T.MeshStandardMaterial({color:0x171c1b,roughness:.96}),rimMat=new T.MeshStandardMaterial({color:0x363c36,roughness:.91});
   function quiver(){const root=new T.Group();root.name='Uzun siyah deri cirit sepeti';const body=new T.Mesh(new T.CylinderGeometry(.22,.15,1.02,16,1,true),darkLeather);body.position.y=.51;root.add(body);const bottom=new T.Mesh(new T.CylinderGeometry(.15,.15,.035,16),darkLeather);root.add(bottom);
    for(const y of[.04,.81,1.02]){const rim=new T.Mesh(new T.TorusGeometry(y===.04?.15:.22,.017,5,20),rimMat);rim.rotation.x=Math.PI/2;rim.position.y=y;root.add(rim);}
    for(let k=0;k<13;k++){const stitch=new T.Mesh(new T.BoxGeometry(.04,.009,.012),rimMat);stitch.position.set(.03,.1+k*.067,.158+k*.004);root.add(stitch);}
-   const stored=[];for(let k=0;k<5;k++){const j=javelin();j.rotation.x=-Math.PI/2+(k-2)*.018;j.position.set(Math.cos(k*2.4)*.11,1.06,Math.sin(k*2.4)*.1);root.add(j);stored.push(j);}root.userData.stored=stored;return root;
+   CircusVisuals.merge(T,root);const stored=[];for(let k=0;k<5;k++){const j=javelin();j.rotation.x=-Math.PI/2+(k-2)*.018;j.position.set(Math.cos(k*2.4)*.11,1.06,Math.sin(k*2.4)*.1);root.add(j);stored.push(j);}root.userData.stored=stored;return root;
   }
   function whipModel(){const root=new T.Group(),handle=new T.Mesh(new T.CylinderGeometry(.035,.045,.36,8),wood);root.name='Kırbaç';handle.rotation.x=Math.PI/2;root.add(handle);const pts=Array.from({length:23},(_,k)=>{const a=k/22*Math.PI*3;return new T.Vector3(Math.cos(a)*.095,-.12-k*.008,.18+Math.sin(a)*.095);});root.add(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),24,.012,5,false),darkLeather));return root;}
   const baskets=[],lashes=[],embedded=[];CircusVisuals.grain(darkLeather,'race186-black-quiver');CircusVisuals.grain(wood,'race186-javelin-wood');
@@ -25,7 +25,7 @@ var CircusWarView=(()=>{
    const pair=[];for(let j=0;j<2;j++){
     const visual=CircusRace.cloneRig(gltf.scene),root=new T.Group(),facing=new T.Group();root.add(facing);facing.add(visual);const bones={},rest={};visual.traverse(o=>{if(o.isBone)bones[o.name.replace(/^mixamorig:?/,'').replace(/_\d+$/,'')]=o;});root.updateMatrixWorld(true);const forward=new T.Vector3(0,0,1).applyQuaternion(bones.Hips.getWorldQuaternion(new T.Quaternion()));facing.rotation.y=-Math.atan2(forward.x,forward.z);root.updateMatrixWorld(true);const box=new T.Box3().setFromObject(visual),scale=1.74/(box.max.y-box.min.y);facing.scale.setScalar(scale);facing.position.y=-box.min.y*scale;
     for(const [name,b]of Object.entries(bones))rest[name]=b.quaternion.clone();visual.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
-    const weapon=javelin(),whip=whipModel();root.add(weapon,whip);weapon.visible=false;const actor={root,visual,facing,bones,rest,javelin:weapon,whip};CircusVisuals.dress(T,actor,i);root.visible=false;race.teams[i].group.add(root);pair.push(actor);
+    const weapon=javelin(),whip=whipModel();root.add(weapon,whip);weapon.visible=false;const actor={root,visual,facing,bones,rest,javelin:weapon,whip};CircusVisuals.dress(T,actor,i);ArenaRuntime.optimizeRig(visual);root.visible=false;race.teams[i].group.add(root);pair.push(actor);
    }crews.push(pair);
    embedded[i]=race.teams[i].wheels.map(w=>{const j=javelin(),sign=Math.sign(w.position.x);j.position.set(sign*1.05,.18,.1);j.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),new T.Vector3(-sign,0,0));j.visible=false;w.add(j);return j;});
    const basket=quiver();for(const y of[.14,.76]){const strap=new T.Mesh(new T.BoxGeometry(.10,.075,.32),rimMat);strap.position.set(-.20,y,0);basket.add(strap);}basket.position.set(.78,.73,-.92);race.teams[i].group.add(basket);baskets.push(basket);
@@ -33,7 +33,7 @@ var CircusWarView=(()=>{
 
   }
   function show(value){extras.visible=value;race.teams.forEach((t,i)=>{t.rider.visible=!value;t.cart.scale.set(value?1.18:1,1,value?1.6:1);t.wheels.forEach(w=>{w.userData.warRest=w.userData.warRest||w.position.clone();const parent=value?t.group:t.cart;if(w.parent!==parent){parent.add(w);w.position.copy(w.userData.warRest);w.position.x*=value?1.18:1;w.scale.setScalar(1);w.rotation.z=0;}});t.contactShadow.scale.set(value?1.18:1,1,value?1.6:1);baskets[i].visible=value;crews[i].forEach(m=>m.root.visible=value);if(!value)t.horses.forEach((h,k)=>h.hand=t.bones[(k?'Right':'Left')+'Hand']);});if(!value){embedded.flat().forEach(j=>j.visible=false);race.setExternal(null);}}
-  function update(s,dt,camera){show(true);race.setExternal(s);race.sync(s.time,dt);
+  function update(s,dt,camera){ArenaRuntime.beginPose();try{show(true);race.setExternal(s);race.sync(s.time,dt);
    for(let i=0;i<4;i++){const t=s.teams[i],rt=race.teams[i];baskets[i].visible=!t.eliminated;baskets[i].rotation.z=rt.cart.rotation.z;baskets[i].position.y=.73+(t.broken?-.18:rt.cart.position.y);
     for(let j=0;j<2;j++){const m=crews[i][j],g=t.crew[j],fall=g.hp<=0?Math.min(1,(s.time-(g.downAt??s.time))/.9):0;m.root.visible=g.hp>0||fall<1;m.root.userData.gladiatorId=g.id;m.root.name=g.name;if(!m.root.visible)continue;
      for(const[name,q]of Object.entries(m.rest))m.bones[name].quaternion.copy(q);
@@ -67,6 +67,7 @@ var CircusWarView=(()=>{
    goal.set(safe.x,aiming?3.5:3.65+own.speed*.018,safe.z);goal.y+=Math.max(0,3.2-Math.hypot(goal.x-p.x,goal.z-p.z));
    if(!camera.userData.warReady||dt===0)camera.position.copy(goal);else camera.position.lerp(goal,1-Math.exp(-14*dt));camera.userData.warReady=true;
    const look=center.clone().addScaledVector(dir,aiming?18:12);if(aiming)look.y+=Math.tan(s.aimPitch)*18;camera.lookAt(look);camera.rotateZ(-own.turn*.013*Math.min(1,own.speed/18));const fov=58+Math.min(5,Math.max(0,own.speed-18)*.5);if(Math.abs(camera.fov-fov)>.02){camera.fov+=(fov-camera.fov)*.15;camera.updateProjectionMatrix();}return q;
+   }finally{ArenaRuntime.endPose();}
   }
   return{show,update,crews,extras,baskets,lashes};
  }

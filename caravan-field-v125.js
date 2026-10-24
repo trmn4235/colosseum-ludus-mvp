@@ -166,10 +166,10 @@
   $('back').onclick=e=>{if(battle){e.preventDefault();battle.pause();return;}if(document.referrer&&new URL(document.referrer).origin===location.origin&&/\/ludus\.html$/.test(new URL(document.referrer).pathname)){e.preventDefault();history.back();}};
  }
  let quality,particles,detail,renderRequired=true;
- function tick(now){raf=0;if(document.hidden||lost)return;const dt=Math.min(last?(now-last)/1000:0,.05);last=now;
+ function tick(now){raf=0;if(document.hidden||lost)return;const dt=ArenaRuntime.frameDelta(now,last);last=now;
   const covered=document.querySelector('dialog[open],#loading:not([hidden]),.cb-overlay:not([hidden])');
   if(covered&&!renderRequired){quality.reset(now);raf=requestAnimationFrame(tick);return;}
-  if(ready&&!document.querySelector('dialog[open]')){for(const mixer of mixers)mixer.update(dt);for(const c of caravans)c.settle();if(!reduceMotion){clock.value+=dt;if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(battle)battle.frame(dt);else if(walking)move(dt);}
+  if(ready&&!document.querySelector('dialog[open]')){for(const mixer of mixers)mixer.update(dt);for(const c of caravans)c.settle();if(!reduceMotion){clock.value+=dt;if(particles)particles.position.y=Math.sin(clock.value*.2)*.18;}if(battle)battle.frame(dt);else if(walking){let remaining=dt;while(remaining>0){const step=Math.min(remaining,1/60);move(step);remaining-=step;}}}
   detail?.update(dt);renderer.render(scene,camera);renderRequired=false;frame++;
   const ratio=quality.sample(now,renderer.getPixelRatio());if(ratio!==null){renderer.setPixelRatio(ratio);renderer.setSize(innerWidth,innerHeight);}
   raf=requestAnimationFrame(tick);
@@ -177,8 +177,8 @@
  async function start(){
   bind();setMode(mode);
   try{
-   renderer=new T.WebGLRenderer({canvas:$('field'),antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,coarse?1.75:2));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;
-   quality=new ArenaRuntime.AdaptiveQuality(Math.min(devicePixelRatio,coarse?1.75:2),1);scene=new T.Scene();scene.background=new T.Color(0xa2b3a0);scene.fog=new T.Fog(0xa4b3a8,35,104);camera=new T.PerspectiveCamera(53,innerWidth/innerHeight,.09,155);resize();
+   renderer=new T.WebGLRenderer({canvas:$('field'),antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(ArenaRuntime.pixelRatio(devicePixelRatio,coarse,innerWidth,innerHeight));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;
+   quality=new ArenaRuntime.AdaptiveQuality(ArenaRuntime.pixelRatio(devicePixelRatio,coarse,innerWidth,innerHeight),1);scene=new T.Scene();scene.background=new T.Color(0xa2b3a0);scene.fog=new T.Fog(0xa4b3a8,35,104);camera=new T.PerspectiveCamera(53,innerWidth/innerHeight,.09,155);resize();
    scene.add(new T.HemisphereLight(0xc9dcec,0x67654b,1.6));const sun=new T.DirectionalLight(0xffe7c6,3.1);sun.position.set(-18,29,13);sun.target.position.set(0,0,-4);scene.add(sun,sun.target);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.autoUpdate=false;sun.shadow.needsUpdate=true;Object.assign(sun.shadow.camera,{left:-22,right:22,top:28,bottom:-25,near:1,far:80});sun.shadow.bias=-.00018;sun.shadow.normalBias=.035;
    const names=['horse','wagon','oak-a','oak-c','pine','fern','oak-near','oak-umbrella','bush'];total=names.length+3;
    let deadline;const loaded=await Promise.race([Promise.all([...names.map((name,i)=>loadModel(name,['At','Ahşap araba','Meşe ağaçları','Orman ağaçları','Çam ağaçları','Orman bitkileri','Yakın meşe','Geniş taçlı ağaç','Çalılıklar'][i])),texture('road','Toprak yol'),texture('forest-floor','Orman zemini'),texture('road-normal','Zemin ayrıntıları')]),new Promise((_,reject)=>{deadline=setTimeout(()=>reject(Error('Yükleme zaman aşımına uğradı. Bağlantını kontrol edip yeniden dene.')),45000);})]).finally(()=>clearTimeout(deadline));
