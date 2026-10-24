@@ -2,9 +2,9 @@ name: Circus war chariots
 on:
   push:
     branches: [main]
-    paths: ['circus-*', 'tests/circus-war-*', 'tests/circus-dialogue-v152.cjs', 'tests/circus-driving-v158.cjs', '.github/workflows/circus-war-v182.yml']
+    paths: ['circus-*', 'tests/circus-war-*', 'tests/circus-combat-*', 'tests/circus-driving-v183.cjs', 'tests/circus-dialogue-v152.cjs', 'tests/circus-driving-v158.cjs', '.github/workflows/circus-war-v182.yml']
   pull_request:
-    paths: ['circus-*', 'tests/circus-war-*', 'tests/circus-dialogue-v152.cjs', 'tests/circus-driving-v158.cjs', '.github/workflows/circus-war-v182.yml']
+    paths: ['circus-*', 'tests/circus-war-*', 'tests/circus-combat-*', 'tests/circus-driving-v183.cjs', 'tests/circus-dialogue-v152.cjs', 'tests/circus-driving-v158.cjs', '.github/workflows/circus-war-v182.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,10 +22,10 @@ jobs:
       - run: npm install --no-save --no-package-lock playwright@1.56.1
       - run: npx playwright install --with-deps chromium --only-shell
       - name: Seven laps, bot roles, collision and horse immunity
-        run: node tests/circus-war-v182.cjs
+        run: node tests/circus-combat-v183.cjs
       - name: Two gladiators, two horses, controls and mobile frames
-        run: node tests/circus-war-browser-v182.cjs
+        run: node tests/circus-war-browser-v183.cjs
       - name: Preserve clerk, betting and ordinary race registration
         run: node tests/circus-dialogue-v152.cjs
       - name: Preserve five-lap manual race
-        run: node tests/circus-driving-v158.cjs
+        run: node tests/circus-driving-v183.cjs
