@@ -1,0 +1,33 @@
+/* Compact combat HUD: crew/condition left, race/vehicle right, controls at the edges. */
+#warHUD .war-crew{left:max(14px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));width:158px}
+#warHUD .war-crew>div{font-size:10px;gap:2px;margin-bottom:6px}
+#warHUD .war-crew b{font-size:9px}#warHUD .war-crew i{height:4px;border:0;background:#251b1b99}
+#warHUD .war-crew small{display:none}
+#warHUD .war-place{top:max(12px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right))}
+#warHUD .war-place strong{font-size:21px}#warHUD .war-place span{font-size:10px}
+#warHUD .war-place button{width:30px;height:30px;margin-left:10px;background:#321d2780;border-color:#c8a65d66}
+#warHUD .war-place svg{width:17px;height:17px}
+#warHUD #warSpeed{left:auto;bottom:auto;right:max(54px,calc(env(safe-area-inset-right) + 40px));top:max(55px,calc(env(safe-area-inset-top) + 43px));font:12px Arial}
+#warHUD #warWheelStatus{left:auto;bottom:auto;right:max(54px,calc(env(safe-area-inset-right) + 40px));top:max(73px,calc(env(safe-area-inset-top) + 61px));font:9px Arial;color:#e8dfce}
+#warHUD #warWheelStatus.damaged{color:#ffb798}
+#warHUD #warCondition{left:max(14px,env(safe-area-inset-left));bottom:auto;top:max(67px,calc(env(safe-area-inset-top) + 55px));width:158px;height:3px;border:0;background:#30271a88}
+#warHUD .war-actions{right:max(14px,env(safe-area-inset-right));bottom:max(73px,calc(env(safe-area-inset-bottom) + 60px));display:grid;grid-template-columns:repeat(3,44px);gap:5px;align-items:center}
+#warHUD .war-actions button,#warHUD #warSwap{width:44px;height:44px;min-width:44px;min-height:44px;border-radius:50%;border:1px solid #c9ae7270;background:#4223318c;box-shadow:none;gap:0;padding:0;font:10px Georgia}
+#warHUD .war-actions button>span{display:none}
+#warHUD .war-actions svg{width:21px;height:21px;stroke-width:1.5}
+#warHUD #warBoost{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:52px;height:44px;border-radius:22px;background:#763144b0}
+#warHUD #warSteering{left:max(14px,env(safe-area-inset-left));bottom:max(73px,calc(env(safe-area-inset-bottom) + 60px));gap:6px}
+#warHUD #warSteering button{width:44px;height:44px;font:28px Georgia;border-radius:50%;background:#28212788;border-color:#c9ae7270;box-shadow:none}
+#warHUD .war-timing{left:50%;bottom:max(17px,env(safe-area-inset-bottom));width:48%;max-width:460px}
+#warHUD #warTiming{height:8px}#warHUD #warTimingText{font:9px Arial;min-height:11px;margin-top:5px;color:#f0e7d6}
+#warHUD #warHint{left:25%;right:25%;bottom:max(49px,calc(env(safe-area-inset-bottom) + 35px));font:10px Arial;line-height:1.3}
+#warHUD #warHint:empty{display:none}
+#warHUD #warLockLabel{top:24%;font-size:10px}
+#warHUD #warWhipMeter{left:9px;right:9px;bottom:5px;height:3px}
+@media(orientation:portrait){#warHUD .war-crew{width:142px}#warHUD #warCondition{width:142px}#warHUD .war-timing{width:58%;left:44%}#warHUD #warHint{left:15px;right:15px;bottom:max(49px,calc(env(safe-area-inset-bottom) + 35px))}#warHUD #warLockLabel{top:21%}}
+#warHUD .war-place{display:grid;grid-template-columns:auto 30px;grid-template-rows:24px 14px;column-gap:10px;min-width:80px}
+#warHUD .war-place button{float:none;margin:0;grid-column:2;grid-row:1/3}
+#warHUD .war-place strong{grid-column:1;grid-row:1;line-height:24px}
+#warHUD .war-place span{grid-column:1;grid-row:2;line-height:14px}
+#warHUD .war-crew>div.active>span{color:#f4d892}
+#warHUD .war-actions button[aria-pressed=true],#warHUD .war-actions button.locked{background:#9b7839cc;border-color:#efd08b;outline:1px solid #efd08b88}
