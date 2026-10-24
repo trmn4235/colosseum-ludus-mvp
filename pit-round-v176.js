@@ -32,6 +32,7 @@ var PitRound=(()=>{
    f.angle=Math.atan2(-f.x,-f.z);round.entered++;round.nextEntryAt=combat.time+.65;
    combat.emit('pitentry',{id:f.id,name:f.name,entered:round.entered,total:10});
   };
+  if(combat.fighters.some(f=>f.pitBow))PitArchery.install(combat,arena.bounds);
   return combat;
  }
  function score(combat){

@@ -48,7 +48,7 @@
  $('betStake').oninput=preview;$('betForm').onsubmit=e=>{e.preventDefault();if($('betForm').reportValidity())act('bet',{fighter:Number($('betFighter').value),stake:Number($('betStake').value)});};
  $('startBout').onclick=()=>act('start');$('nextBout').onclick=()=>act('next');$('retryAction').onclick=()=>act(pending?.action);$('circusClose').onclick=()=>{$('circusDialog').close();showView(view);};$('bookmakerLabel').onclick=()=>talk();$('betClose').onclick=()=>$('betDialog').close();$('watchBout').onclick=()=>{$('betDialog').close();showView('watch');};
  async function showView(next){view=next;cameraSnap=true;cameraTarget=null;document.body.dataset.view=next;clearMove();notice(next==='watch'?'Gösteri müsabakası · Herkes tek':'');if(next==='watch')try{await loadRigs();}catch(e){rigError=e.message;notice('Gladyatörler görüntülenemedi. Müsabaka ve kuponun sunucuda devam ediyor.');}}
- const script=file=>file==='equipment-catalog-v167.js'&&typeof LudusEquipmentCatalog!=='undefined'?Promise.resolve():new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=file+'?v=revision177';s.onload=resolve;s.onerror=()=>reject(Error('Model bileşeni açılamadı'));document.head.append(s);});
+ const script=file=>file==='equipment-catalog-v167.js'&&typeof LudusEquipmentCatalog!=='undefined'?Promise.resolve():new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=file+'?v=revision178';s.onload=resolve;s.onerror=()=>reject(Error('Model bileşeni açılamadı'));document.head.append(s);});
  async function loadKeeper(){if(keeperPromise)return keeperPromise;keeperPromise=(async()=>{await script('owner-avatar.js');dominus=LudusOwner.create(appearance);dominus.root.name='Dominus';scene.add(dominus.root);keeper=LudusOwner.create({version:2,hair:'curls',beard:'full',hairColor:'#34251e',skinTone:.35,height:178});keeper.root.name='Gaius';scene.add(keeper.root);await Promise.all([PitPeople.fit(keeper),PitPeople.fit(dominus)]);dominus.root.position.set(-2,PitArena.galleryY,PitArena.half.z+2.2);dominus.root.rotation.y=-Math.PI/2;keeper.root.position.set(1.5,PitArena.galleryY,PitArena.half.z+2.2);keeper.root.rotation.y=-Math.PI/2;for(const actor of [dominus,keeper])actor.root.traverse(o=>{if(o.isMesh&&o.visible)o.castShadow=true;});keeper.root.traverse(o=>{if(o.name==='OwnerWhiteTunic'&&o.material)o.material.color.setHex(0x807768);});for(const actor of [dominus,keeper])actor.root.userData.contact=PitDetails.actorShadow(THREE,scene);cameraSnap=true;})().catch(e=>{keeperPromise=null;throw e;});return keeperPromise;}
  function fightPage(){
   const pairs=fightMode==='2x5',roster=state?.roster||[],ready=roster.filter(g=>g.ready!==false);
@@ -74,7 +74,7 @@
   previousFighters=ids.slice();
   const ready=id=>roster.some(g=>g.id===id&&g.ready!==false);
   const valid=ready(ids[0])&&(!pairs||ready(ids[1])&&ids[1]!==ids[0]);$('fightStart').disabled=!valid||fightBusy;
-  const selections=[...$('fightForm').querySelectorAll('.fighter-loadout')].filter(el=>!el.hidden).map(el=>{const select=el.querySelector('select'),g=roster.find(g=>g.id===select.value),weapon=el.querySelector('input:checked');return g?g.name+' · '+(weapon?.value==='pit_wood_mace'?'Ahşap gürz':'Taş gürz'):'';});
+  const selections=[...$('fightForm').querySelectorAll('.fighter-loadout')].filter(el=>!el.hidden).map(el=>{const select=el.querySelector('select'),g=roster.find(g=>g.id===select.value),weapon=el.querySelector('input:checked');return g?g.name+' · '+({pit_wood_mace:'Ahşap gürz',pit_stone_mace:'Taş gürz',pit_bow:'Yay'}[weapon?.value]||''):'';});
   $('fightMessage').textContent=valid?selections.join('   /   '):pairs?'Hazır iki farklı gladyatör seç.':'Hazır bir gladyatör seç.';
  }
  async function openFight(mode){fightMode=mode==='2x5'?'2x5':'1x10';fightRequest=null;$('circusDialog').close();fightPage();$('fightDialog').showModal();}
@@ -90,7 +90,7 @@
    if(!fightRequest){try{const saved=JSON.parse(sessionStorage.getItem(key));if(saved?.gladiator===first.gladiator&&JSON.stringify(saved?.slots)===JSON.stringify(slots))fightRequest=saved;}catch{}}
    fightRequest=fightRequest||{gladiator:first.gladiator,slots,id:crypto.randomUUID()};sessionStorage.setItem(key,JSON.stringify(fightRequest));
    let timer;const r=await Promise.race([client.rpc('ludus_start_battle_v2',{p_gladiator:fightRequest.gladiator,p_mode:'pit',p_slots:fightRequest.slots,p_request:fightRequest.id}),new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('Bağlantı zaman aşımı. Aynı isteği yeniden dene.')),12000))]).finally(()=>clearTimeout(timer));
-   if(r.error)throw r.error;sessionStorage.setItem('ludus-active-battle',r.data.id);sessionStorage.removeItem(key);location.assign('arena.html?battle='+encodeURIComponent(r.data.id)+'&v=revision177');
+   if(r.error)throw r.error;sessionStorage.setItem('ludus-active-battle',r.data.id);sessionStorage.removeItem(key);location.assign('arena.html?battle='+encodeURIComponent(r.data.id)+'&v=revision178');
   }catch(e){$('fightMessage').textContent=e.message||'Bağlantı kurulamadı. Aynı isteği yeniden deneyebilirsin.';if(e.code){sessionStorage.removeItem(key);fightRequest=null;}}
   finally{fightBusy=false;for(const control of $('fightDialog').querySelectorAll('button,input,select'))control.disabled=false;$('fightMate').disabled=fightMode!=='2x5';}
  };

@@ -440,7 +440,7 @@ var ClassEquipment=(function(){
 
  function sync(m,f){
   // Plain battle clothing fills empty NPC armour slots visually; it creates no loot or stats.
-  const visualWeapon=f.pitWeapon||f.weapon,uniform=f.navalUniform,helmetVisible=f.helmet!==false||!!uniform?.helmet,chestVisible=!!f.chest||!!uniform?.chest,greavesVisible=f.greaves!==false||!!uniform?.greaves,shouldersVisible=f.shoulders!==false||!!uniform?.shoulders;
+  const visualWeapon=f.pitBow?null:f.pitWeapon||f.weapon,uniform=f.navalUniform,helmetVisible=f.helmet!==false||!!uniform?.helmet,chestVisible=!!f.chest||!!uniform?.chest,greavesVisible=f.greaves!==false||!!uniform?.greaves,shouldersVisible=f.shoulders!==false||!!uniform?.shoulders;
   const revisionV84=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0),flagsV84=(f.shield?1:0)|(helmetVisible?2:0)|(chestVisible?4:0)|(greavesVisible?8:0)|(shouldersVisible?16:0)|(f.netBusy?32:0)|(f.hp>0?64:0)|(uniform&&!f.helmet?128:0)|(uniform&&!f.chest?256:0)|(uniform&&!f.shoulders?512:0)|(uniform&&!f.greaves?1024:0),s=m.gearStateV84;
   if(s&&m.equippedWeapon===visualWeapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===visualWeapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
   m.gearStateV84={revision:revisionV84,weapon:visualWeapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
@@ -560,7 +560,7 @@ var ImportedGladiator=(function(){
   // Reuse the existing sword rig for three short swings without extra model assets.
   if(f.action==='triple')f={...f,action:'attack',timer:f.timer%.2,chain:1+Math.floor(f.timer/.2)};
   m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;ClassEquipment.sync(m,f);
-   const planting=(['attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident'].includes(f.weapon))&&f.hp>0;
+   const planting=(['bowshot','attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident'].includes(f.weapon))&&f.hp>0;
    if(planting&&(!m.plantedFeet||f.action==='attack'&&f.timer<(m.plantTimer||0))){m.root.updateMatrixWorld(true);m.plantedFeet={};m.plantElapsed=0;for(const side of ['Left','Right']){const foot=m.bones[side+'Foot'];if(foot)m.plantedFeet[side]={position:m.root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:m.root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}}
    if(!planting)m.plantedFeet=null;else m.plantElapsed=(m.plantElapsed||0)+Math.max(0,dt);m.plantTimer=f.timer;
   for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children){g.rotation.set(g.userData.restRotation||0,0,0);g.position.y=0;}}
@@ -622,6 +622,7 @@ var ImportedGladiator=(function(){
   }
   if(f.blocking&&!f.shield&&f.guardRegion){const gp=ArenaMotion.guardPoint(f);reach(m,!f.weapon,{x:gp.x,y:gp.y,z:gp.z});}
   ArenaAnatomy.carry(f,m,reach,strike);
+  if(f.pitBow&&typeof PitArchery!=='undefined')PitArchery.pose(f,m,time,reach);
   // Repaired finger chains close around the grip; the driver retains its source rig.
   for(const side of ['Left','Right'])if(side==='Right'?!!f.weapon:!!(f.offhand||f.shield||f.leftGear))for(const index of [1,2,3]){
    const bone=m.bones[side+'HandIndex'+index],rest=m.rest.get(side+'HandIndex'+index);if(!bone||!rest)continue;

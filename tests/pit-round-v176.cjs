@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'..'),read=n=>fs.readFileSync(path.join(root,'
 async function setup(){
  const db=await database();await db.exec(read('survival_v83'));await require('./combat-motion-sql-v163.cjs').install(db);
  await db.exec("create table if not exists public.ludus_shop_catalog(sku text primary key,name text,kind text,model text,price integer,category text);create table ludus_supply_private.production_recipes_v118(sku text primary key,name text,kind text,model text,ingredients jsonb,output_type text,output_quantity int,sort_order int);create table ludus_supply_private.recipes(sku text primary key,ingredients jsonb);");
- for(const name of ['equipment_groups_v168','pit_arena_v172','pit_four_fighters_v173','pit_ten_fighters_v176'])await db.exec(read(name));return db;
+ for(const name of ['equipment_groups_v168','pit_arena_v172','pit_four_fighters_v173','pit_ten_fighters_v176','pit_bow_v178'])await db.exec(read(name));return db;
 }
 function simulation(ticket){
  const c=runtime();for(const file of ['pit-round-v176.js','pit-arena-v172.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),c);
@@ -45,7 +45,8 @@ function simulation(ticket){
  await assert.rejects(()=>finish(second.id,{...teamStats,team_alive:0}),/doğrulanamadı/);
  const teamPrize=await finish(second.id,teamStats);assert.equal(teamPrize.fame,1);assert.equal(teamPrize.teammate_fame,1);await finish(second.id,teamStats);assert.equal((await q('select points from ludus_pit_private.fame where gladiator_id=$1',[mate]))[0].points,1);
  const legacy=await start({pit_weapon:'pit_stone_mace'});assert.equal(legacy.snapshot.pit_version,173);await q("update ludus_battles set started_at=now()-interval '30 seconds' where id=$1",[legacy.id]);assert.equal((await finish(legacy.id,{opponents_defeated:3,kills:1,alive:true})).fame,1);
+ const bowStart=await start({...two,pit_weapon:'pit_bow',teammate_weapon:'pit_bow'}),bowTicket=(await q('select * from ludus_battles where id=$1',[bowStart.id]))[0];assert.equal(bowTicket.snapshot.items[0].pit_model,'pit_bow');assert.equal(bowTicket.loot[1].item.pit_model,'pit_bow');assert.deepEqual(await start({...two,pit_weapon:'pit_bow',teammate_weapon:'pit_bow'},bowTicket.start_request_id),bowStart);
  const permissions=(await q("select has_function_privilege('authenticated','ludus_pit_private.start(uuid,jsonb,uuid)','EXECUTE') s,has_function_privilege('authenticated','ludus_pit_private.lineup(text)','EXECUTE') l"))[0];assert.deepEqual(permissions,{s:false,l:false});
- fs.writeFileSync('/tmp/pit-fixtures-v176.json',JSON.stringify({user:u,g:ticket.snapshot.gladiator,mate:teamTicket.snapshot.teammate,state,tickets:[ticket,teamTicket]}));
+ fs.writeFileSync('/tmp/pit-fixtures-v176.json',JSON.stringify({user:u,g:ticket.snapshot.gladiator,mate:teamTicket.snapshot.teammate,state,tickets:[ticket,teamTicket,bowTicket]}));
  console.log('V176 PASS: sequential entrants; no premature victory; five allied pairs; teammate can win; actual lineups; ownership, readiness, per-fighter weapons, replay safety, legacy and both fame awards.');
 }finally{await db.close();}})().catch(e=>{console.error(e.message,e.where,e.stack);process.exitCode=1;});

@@ -5,7 +5,7 @@ var PitArena=(()=>{
  function clamp(p){p.x=Math.max(-bounds.x,Math.min(bounds.x,p.x));p.z=Math.max(-bounds.z,Math.min(bounds.z,p.z));return p;}
  function galleryContains(x,z){return Math.abs(x)<=half.x+3.35&&Math.abs(z)<=half.z+3.35&&(Math.abs(x)>=half.x+1.25||Math.abs(z)>=half.z+1.25);}
  function moveGallery(p,dx,dz){if(galleryContains(p.x+dx,p.z))p.x+=dx;if(galleryContains(p.x,p.z+dz))p.z+=dz;return p;}
- function equip(f,item){f.weapon='heavy_mace';f.pitWeapon=weapons.includes(item?.pit_model)?item.pit_model:weapons[f.id%2];f.helmet=f.chest=f.shoulders=f.greaves=f.shield=false;f.offhand=f.leftGear=f.navalUniform=null;return f;}
+ function equip(f,item){f.pitBow=item?.pit_model==='pit_bow';f.archer=f.pitBow;f.weapon=f.pitBow?null:'heavy_mace';f.pitWeapon=f.pitBow?'pit_bow':weapons.includes(item?.pit_model)?item.pit_model:weapons[f.id%2];f.helmet=f.chest=f.shoulders=f.greaves=f.shield=false;f.offhand=f.leftGear=f.navalUniform=null;return f;}
  async function preload(){await Promise.all(weapons.map(id=>LudusEquipmentCatalog.load(THREE,id)));}
  async function load(scene,renderer){
   const T=THREE,root=new T.Group();root.name='Şan Avlusu · Dikdörtgen';root.userData.pit=true;root.userData.sandArea=width*depth;root.userData.obstacles=[];root.userData.cloths=[];root.userData.crowd=[];root.userData.cameraObstacles=[];root.userData.detailGroups=[];root.userData.crowdLods=[];
