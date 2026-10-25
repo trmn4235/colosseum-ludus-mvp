@@ -11,7 +11,8 @@ async function rigRuntime(page='arena.html',options={}){
  if(fs.existsSync(root+'/ludus-manica-v119.js'))vm.runInContext(fs.readFileSync(root+'/ludus-manica-v119.js','utf8'),context);
  if(fs.existsSync(root+'/arena-runtime-v96.js'))vm.runInContext(fs.readFileSync(root+'/arena-runtime-v96.js','utf8'),context);
  const T=context.THREE,OriginalLoader=T.GLTFLoader;
- T.GLTFLoader=class extends OriginalLoader{constructor(...args){super(...args);this.register(()=>({name:'CPU_TEXTURE_PLACEHOLDERS',loadTexture:()=>Promise.resolve(new T.Texture())}));}};
+ // CPU scene-graph checks do not decode images; browser tests exercise real PNG/JPEG/WebP.
+ T.GLTFLoader=class extends OriginalLoader{constructor(...args){super(...args);for(const name of ['CPU_TEXTURE_PLACEHOLDERS','EXT_texture_webp'])this.register(()=>({name,loadTexture:()=>Promise.resolve(new T.Texture())}));}};
  T.TextureLoader.prototype.load=function(url,onload){const t=new T.Texture();onload?.(t);return t;};
  context.ArenaAssetLoad=async name=>{const p=new URL(name,'https://fixture.invalid/').pathname.slice(1),bytes=fs.readFileSync(root+'/'+p);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};
  context.ArenaAssets={warmArena(){}};

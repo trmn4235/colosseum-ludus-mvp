@@ -2,10 +2,10 @@ name: Equipment categories and shield breaking
 on:
   push:
     branches: [main]
-    paths: ['equipment-*', 'assets/equipment-v189/**', 'assets/items-v189/**', 'ludus-production-v119.js', 'tests/helmet*', 'supabase/migrations/*lightweight_helmets*', '.github/workflows/equipment-v168.yml']
+    paths: ['assets/equipment-v190/**', 'tests/classic-equipment*', 'scripts/pack-classic-equipment-v190.mjs', 'equipment-*', 'assets/equipment-v189/**', 'assets/items-v189/**', 'ludus-production-v119.js', 'tests/helmet*', 'supabase/migrations/*lightweight_helmets*', '.github/workflows/equipment-v168.yml']
   pull_request:
     branches: [main]
-    paths: ['assets/equipment-v189/**', 'assets/items-v189/**', 'supabase/migrations/*lightweight_helmets*', 'pit-*', 'san-avlusu.html', 'tests/pit-*', 'supabase/migrations/*pit*', 'rome-*', 'tests/loading-recovery-*', 'tests/account-loading-*', 'equipment-*', 'assets/items-v168/**', 'assets/items-v169/**', 'ludus.html', 'ludus-production-v119.js', 'tests/helmet-*', 'supabase/migrations/*sylvain_helmet*', 'ludus-supply-v85.js', 'market-v56.js', 'forum-market-v66.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-*', 'tests/equipment-*', 'supabase/migrations/*equipment_groups*', '.github/workflows/equipment-v168.yml']
+    paths: ['assets/equipment-v190/**', 'tests/classic-equipment*', 'scripts/pack-classic-equipment-v190.mjs', 'assets/equipment-v189/**', 'assets/items-v189/**', 'supabase/migrations/*lightweight_helmets*', 'pit-*', 'san-avlusu.html', 'tests/pit-*', 'supabase/migrations/*pit*', 'rome-*', 'tests/loading-recovery-*', 'tests/account-loading-*', 'equipment-*', 'assets/items-v168/**', 'assets/items-v169/**', 'ludus.html', 'ludus-production-v119.js', 'tests/helmet-*', 'supabase/migrations/*sylvain_helmet*', 'ludus-supply-v85.js', 'market-v56.js', 'forum-market-v66.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-*', 'tests/equipment-*', 'supabase/migrations/*equipment_groups*', '.github/workflows/equipment-v168.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,7 +20,7 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1
       - run: |
-          node --test tests/helmets-v189.cjs tests/helmet-v169.cjs tests/equipment-groups-v168.cjs tests/equipment-catalog-v167.cjs tests/equipment-arena-v30.test.cjs tests/forum-market-v66.test.cjs
+          node --test tests/classic-equipment-v190.cjs tests/helmets-v189.cjs tests/helmet-v169.cjs tests/equipment-groups-v168.cjs tests/equipment-catalog-v167.cjs tests/equipment-arena-v30.test.cjs tests/forum-market-v66.test.cjs
           node tests/equipment-sql-v168.cjs
           node tests/combat-motion-replay-v163.cjs
           node tests/account-loading-v171.cjs
@@ -35,6 +35,8 @@ jobs:
           node tests/helmet-production-browser-v169.cjs
           node tests/helmets-render-v189.cjs
           LUDUS_WEBKIT_TEST=1 node tests/helmets-render-v189.cjs
+          node tests/classic-equipment-render-v190.cjs
+          LUDUS_WEBKIT_TEST=1 node tests/classic-equipment-render-v190.cjs
           node tests/loading-recovery-v171.cjs
           node tests/rome-travel-v148.cjs
           node tests/pit-browser-v172.cjs

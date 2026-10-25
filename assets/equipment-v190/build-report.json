@@ -1,0 +1,131 @@
+[
+  {
+    "file": "roman_scutum_shield.glb",
+    "version": 190,
+    "sourceBytes": 4394088,
+    "bytes": 204436,
+    "reductionPercent": 95.35,
+    "triangles": 1466,
+    "textures": [
+      {
+        "role": "baseColour",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 1758361,
+        "bytes": 72064,
+        "lossless": false
+      },
+      {
+        "role": "occlusionRoughnessMetalness",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 256,
+        "height": 256,
+        "sourceBytes": 1554113,
+        "bytes": 84432,
+        "lossless": true
+      },
+      {
+        "role": "normal",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 985642,
+        "bytes": 7786,
+        "lossless": false
+      }
+    ],
+    "decodedTextureBytesWithMips": 3145728,
+    "sourceSha256": "df8791f7ac7c59c64600578772f34cb82e6089cdd0497404dcd7fb628965f06a",
+    "sha256": "83d2fd903a4704c54358cba98b253ab53c72296a8b285c3059c4a72de7156d3e"
+  },
+  {
+    "file": "roman_shield.glb",
+    "version": 190,
+    "sourceBytes": 2941088,
+    "bytes": 179768,
+    "reductionPercent": 93.89,
+    "triangles": 1246,
+    "textures": [
+      {
+        "role": "baseColour",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 1100867,
+        "bytes": 40114,
+        "lossless": false
+      },
+      {
+        "role": "occlusionRoughnessMetalness",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 256,
+        "height": 256,
+        "sourceBytes": 965599,
+        "bytes": 70350,
+        "lossless": true
+      },
+      {
+        "role": "normal",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 800069,
+        "bytes": 31170,
+        "lossless": false
+      }
+    ],
+    "decodedTextureBytesWithMips": 3145728,
+    "sourceSha256": "c8444b6f753f8cffc17d35994e3e441ca39c06098187fa03e95f03380eedbd2f",
+    "sha256": "32b3b8c6bd8815dcf7eebc1168f3131d30c1165c7ca09f24cddbaebf3781830a"
+  },
+  {
+    "file": "roman_spatha.glb",
+    "version": 190,
+    "sourceBytes": 1942872,
+    "bytes": 221964,
+    "reductionPercent": 88.58,
+    "triangles": 4994,
+    "textures": [
+      {
+        "role": "baseColour",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 590275,
+        "bytes": 24910,
+        "lossless": false
+      },
+      {
+        "role": "occlusionRoughnessMetalness",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 256,
+        "height": 256,
+        "sourceBytes": 578720,
+        "bytes": 40470,
+        "lossless": true
+      },
+      {
+        "role": "normal",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 535049,
+        "bytes": 21466,
+        "lossless": false
+      }
+    ],
+    "decodedTextureBytesWithMips": 3145728,
+    "sourceSha256": "94e67eee3290dd9b9de7d04a003bed29735ddc7b4f323b10dfb921fefdfccf44",
+    "sha256": "64670b599206e56636e2864b4ecf59bc02d56c6928d77c605a00ef9eac3e1ee4"
+  }
+]

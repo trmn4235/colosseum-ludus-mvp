@@ -825,7 +825,7 @@ var ImportedEquipment=(function(){
   if(pending)return pending;
   pending=(async()=>{let done=0,failed=0;await Promise.all(Object.entries(files).map(async([kind,file])=>{
    try{
-    const bytes=await ArenaAssetLoad(file,()=>{},'Ekipman');
+    const bytes=await ArenaAssetLoad('assets/equipment-v190/'+file,()=>{},'Ekipman');
     const model=await new T.GLTFLoader().parseAsync(bytes,'');templates[kind]=prepare(model.scene,kind);
    }catch(e){failed++;}finally{done++;status(done<3?'Yeni ekipmanlar yükleniyor… '+done+'/3':failed?'Yeni ekipman: '+(3-failed)+'/3 · Yüklenemeyenlerde eski görünüm kullanılıyor.':'Yeni ekipmanlar hazır · 3/3');}
   }));})();return pending;
