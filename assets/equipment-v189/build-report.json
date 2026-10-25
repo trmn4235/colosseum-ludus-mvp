@@ -1,0 +1,133 @@
+[
+  {
+    "id": "viking_helmet",
+    "sourceTriangles": 440866,
+    "triangles": 4076,
+    "primitives": 1,
+    "bytes": 322476,
+    "sourceBytes": 9742796,
+    "textures": [
+      {
+        "name": "viking-normal",
+        "width": 512,
+        "height": 512,
+        "bytes": 55280,
+        "mime": "image/webp"
+      },
+      {
+        "name": "viking-base",
+        "width": 512,
+        "height": 512,
+        "bytes": 97918,
+        "mime": "image/jpeg"
+      },
+      {
+        "name": "helmet_metal-helmet_rough",
+        "width": 256,
+        "height": 256,
+        "bytes": 36952,
+        "mime": "image/webp"
+      }
+    ],
+    "parts": [
+      {
+        "part": "Cylinder",
+        "sourceTriangles": 342528,
+        "triangles": 1999
+      },
+      {
+        "part": "Cube.006",
+        "sourceTriangles": 1152,
+        "triangles": 150
+      },
+      {
+        "part": "Cube.026",
+        "sourceTriangles": 3072,
+        "triangles": 199
+      },
+      {
+        "part": "Cube",
+        "sourceTriangles": 15360,
+        "triangles": 300
+      },
+      {
+        "part": "Cube.001",
+        "sourceTriangles": 26976,
+        "triangles": 450
+      },
+      {
+        "part": "Cube.002",
+        "sourceTriangles": 9728,
+        "triangles": 199
+      },
+      {
+        "part": "Cube.003",
+        "sourceTriangles": 16130,
+        "triangles": 259
+      },
+      {
+        "part": "Cube.004",
+        "sourceTriangles": 12960,
+        "triangles": 260
+      },
+      {
+        "part": "Cube.005",
+        "sourceTriangles": 12960,
+        "triangles": 260
+      }
+    ],
+    "sha256": "612a975cb036a06e8a821eb2aacd68dbb2c9505edd8dcbdd81562d316539d39a"
+  },
+  {
+    "id": "steel_helmet",
+    "sourceTriangles": 3454,
+    "triangles": 2358,
+    "primitives": 1,
+    "bytes": 173100,
+    "sourceBytes": 137472,
+    "textures": [
+      {
+        "name": "Original base colour",
+        "width": 512,
+        "height": 512,
+        "bytes": 28272,
+        "mime": "image/jpeg"
+      },
+      {
+        "name": "Original normal",
+        "width": 512,
+        "height": 512,
+        "bytes": 54396,
+        "mime": "image/webp"
+      },
+      {
+        "name": "Original roughness and metalness",
+        "width": 256,
+        "height": 256,
+        "bytes": 7792,
+        "mime": "image/webp"
+      }
+    ],
+    "parts": [
+      {
+        "part": "Helmet_low",
+        "sourceTriangles": 1304,
+        "triangles": 1304,
+        "error": 0
+      },
+      {
+        "part": "Topcross_low",
+        "sourceTriangles": 130,
+        "triangles": 130,
+        "error": 0
+      },
+      {
+        "part": "Rivets_low",
+        "sourceTriangles": 2020,
+        "triangles": 924,
+        "error": 0.019206510856747627
+      }
+    ],
+    "sha256": "2994f069565b7f32ba8a9f8dc50188dec6bf8791cc909c59a64ab898a539ed27"
+  }
+]

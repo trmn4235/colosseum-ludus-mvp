@@ -7,6 +7,8 @@
   pit_wood_mace:Object.freeze({id:'pit_wood_mace',label:'Ahşap gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_wood_mace.cme',triangles:3580,height:.84}),
   warhammer:Object.freeze({id:'warhammer',label:'Savaş çekici',kind:'weapon',subcategory:'blunt',file:'warhammer.cme',triangles:5332,height:1.094,paint:'Koyu çelik, eskitilmiş bronz, deri'}),
   heavy_mace:Object.freeze({id:'heavy_mace',label:'Ağır gürz',kind:'weapon',subcategory:'blunt',file:'heavy_mace.cme',triangles:3126,height:1.078,paint:'Dövme çelik, bronz, deri ve ahşap'}),
+  viking_helmet:Object.freeze({id:'viking_helmet',label:'Boynuzlu Viking miğferi',kind:'helmet',file:'../equipment-v189/viking_helmet.cme',triangles:4076,height:.33,paint:'sujanmondals605 · hafifletilmiş oyun modeli'}),
+  steel_helmet:Object.freeze({id:'steel_helmet',label:'Çelik miğfer',kind:'helmet',file:'../equipment-v189/steel_helmet.cme',triangles:2358,height:.35,paint:'lesrode · özgün dokular, hafifletilmiş model'}),
   sylvain_helmet:Object.freeze({id:'sylvain_helmet',label:'Vizörlü gladyatör miğferi',kind:'helmet',file:'sylvain_helmet.cme',triangles:11674,height:.36,paint:'Sylvain Delandre · özgün 1K dokular'})
  });
  const cache=new Map(),pending=new Map(),failures=new Map(),waiting=new Map();let revision=0;

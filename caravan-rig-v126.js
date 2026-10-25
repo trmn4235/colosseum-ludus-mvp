@@ -208,9 +208,9 @@ var LUDUS_HELMET_DATA={"gladiator":"assets/equipment/gladiator-9bcb0ac9d566.glb"
    Decorative wings/crests are deliberately excluded from fit measurements. */
 var LudusHelmets=(function(){
  const T=THREE,templates={},waiting=new T.Group();let pending,referenceHead;
- const names={sylvain_helmet:'Vizörlü gladyatör miğferi',gladiator:'Gladyatör miğferi',knights:'Secutor miğferi',winged:'Thraex miğferi',roman:'Roma miğferi'};
+ const names={viking_helmet:'Boynuzlu Viking miğferi',steel_helmet:'Çelik miğfer',sylvain_helmet:'Vizörlü gladyatör miğferi',gladiator:'Gladyatör miğferi',knights:'Secutor miğferi',winged:'Thraex miğferi',roman:'Roma miğferi'};
  function model(value,type='murmillo'){
-  if(value==='sylvain_helmet')return value;
+  if(globalThis.LudusEquipmentCatalog?.entry(value)?.kind==='helmet')return value;
   if(value==='roman'||value==='roman_helmet')return 'roman';
   if(value==='gold'||value==='gladiator'||value==='gladiator_helmet')return 'gladiator';
   if(value==='silver'||value==='knights'||value==='knights_helm')return 'knights';
@@ -234,10 +234,10 @@ var LudusHelmets=(function(){
    if(merged)geometries.forEach(g=>g.dispose());
   }return group;
  }
- async function load(){if(pending)return pending;pending=Promise.all(Object.keys(names).filter(key=>key!=='sylvain_helmet').map(async key=>{
+ async function load(){if(pending)return pending;pending=Promise.all(['gladiator','knights','winged','roman'].map(async key=>{
    const sourceKey=['knights','winged'].includes(key)?'gladiator':key;const bytes=await ArenaAssetLoad(LUDUS_HELMET_DATA[sourceKey]);const source=await new T.GLTFLoader().parseAsync(bytes,'');templates[key]=prepare(source.scene,sourceKey);if(key==='knights')templates[key].traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.color.setHex(0xa9aeb1);o.material.metalness=.8;}});
   })).catch(error=>{pending=null;throw error;});return pending;}
- function get(value,type){const key=model(value,type);if(key==='sylvain_helmet')return globalThis.LudusEquipmentCatalog?.request(T,key)||waiting;return templates[key]||waiting;}
+ function get(value,type){const key=model(value,type);if(globalThis.LudusEquipmentCatalog?.entry(key)?.kind==='helmet')return globalThis.LudusEquipmentCatalog.request(T,key)||waiting;return templates[key]||waiting;}
  function headFit(m){
   if(referenceHead)return referenceHead;
   m.root.updateMatrixWorld(true);const origin=m.root.worldToLocal(m.bones.Head.getWorldPosition(new T.Vector3())),bounds=new T.Box3();
