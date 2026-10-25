@@ -201,7 +201,7 @@ var QuaterniusMotion=(function(){
  return {apply,select};
 })();
 
-var LUDUS_HELMET_DATA={"gladiator":"assets/equipment/gladiator-9bcb0ac9d566.glb","knights":"assets/equipment/knights-e30cc69af0fd.glb","winged":"assets/equipment/winged-111637d14990.glb","roman":"assets/equipment/roman-6d187d4b7f8c.glb"};
+var LUDUS_HELMET_DATA={"gladiator":"assets/equipment-v195/gladiator.glb","knights":"assets/equipment-v195/knights.glb","winged":"assets/equipment-v195/winged.glb","roman":"assets/equipment-v195/roman.glb"};
 /* User supplied rigid helmets, shared and fitted to the actual naked head.
    Decorative wings/crests are deliberately excluded from fit measurements. */
 /* User supplied rigid helmets, shared and fitted to the actual naked head.
@@ -223,7 +223,10 @@ var LudusHelmets=(function(){
   const fit={roman:{scale:[.17,.195,.20],shift:[0,.011,-.050]},gladiator:{scale:[.95,.95,.95],shift:[0,-.133,-.008]},knights:{scale:[.028,.021,.025],shift:[0,.039,.024]},winged:{scale:[.0086,.0100,.0094],shift:[0,0,-.018]}}[key];
   const transform=new T.Matrix4().makeTranslation(...fit.shift).multiply(new T.Matrix4().makeScale(...fit.scale));
   const group=new T.Group(),batches=new Map();group.userData.asset=key+'-helmet-v18';group.userData.helmetModel=key;
-  wrapper.traverse(o=>{if(!o.isMesh)return;const geometry=o.geometry.clone().applyMatrix4(new T.Matrix4().multiplyMatrices(transform,o.matrixWorld));
+  wrapper.traverse(o=>{if(!o.isMesh)return;const geometry=o.geometry.clone();
+   // Unpack interleaved attributes once so fitted helmets still batch into shared meshes.
+   for(const [name,a] of Object.entries(geometry.attributes)){if(!a.isInterleavedBufferAttribute)continue;const values=new a.array.constructor(a.count*a.itemSize);for(let i=0;i<a.count;i++)for(let j=0;j<a.itemSize;j++)values[i*a.itemSize+j]=a.data.array[i*a.data.stride+a.offset+j];geometry.setAttribute(name,new T.BufferAttribute(values,a.itemSize,a.normalized));}
+   geometry.applyMatrix4(new T.Matrix4().multiplyMatrices(transform,o.matrixWorld));
    const material=o.material;material.envMapIntensity=.65;material.side=T.DoubleSide;
    const signature=material.uuid+':'+Object.keys(geometry.attributes).sort().join(',')+':'+!!geometry.index;
    if(!batches.has(signature))batches.set(signature,{material,geometries:[]});batches.get(signature).geometries.push(geometry);

@@ -26,6 +26,7 @@ CGTrader terms: https://www.cgtrader.com/pages/terms-and-conditions (sections 21
 - License: Creative Commons Attribution 4.0 International — https://creativecommons.org/licenses/by/4.0/
 - Sketchfab's 1K GLB variant; original textures retained, runtime display scale normalized. 11,674 triangles. No authored animation. V169: fitted to the player head, rigid attachment driven by the existing character skeleton; original geometry and textures retained. The transparent inventory photograph is a render of this licensed mesh. Game label: Vizörlü gladyatör miğferi.
 - V191: the active derivative is `../equipment-v191/sylvain_helmet.cme`, reduced to 6,652 triangles and one rigid mesh. Original colour/normal images resized to 512 px, material maps to 256 px, encoded as WebP. Source attribution and the original package are retained.
+- V195: the active derivative is now `../equipment-v195/sylvain_helmet.cme`, 342,928 bytes including all textures. The 6,652 triangles and vertex positions are unchanged; original textures are recompressed to meet the 350 KB transfer limit.
 
 ## Manica, still not acquired
 

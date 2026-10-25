@@ -15,7 +15,7 @@ const server=http.createServer((req,res)=>{const url=new URL(req.url,'http://loc
  try{
   const page=await browser.newPage({viewport:{width:640,height:640}}),errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(new URL(r.url()).pathname));await page.goto('http://127.0.0.1:'+server.address().port+'/fixture');
   await page.evaluate(async()=>{await ImportedGladiator.load(()=>{});await Promise.all(Array.from({length:20},()=>LudusEquipmentCatalog.load(THREE,'sylvain_helmet')));});
-  assert.equal(requests.filter(p=>p==='/assets/equipment-v191/sylvain_helmet.cme').length,1);assert.ok(!requests.includes('/assets/equipment-v167/sylvain_helmet.cme'));
+  assert.equal(requests.filter(p=>p==='/assets/equipment-v195/sylvain_helmet.cme').length,1);assert.ok(!requests.includes('/assets/equipment-v167/sylvain_helmet.cme'));
   for(const file of ['roman_scutum_shield.glb','roman_shield.glb']){assert.equal(requests.filter(p=>p==='/assets/equipment-v190/'+file).length,1);assert.ok(!requests.includes('/'+file));}
   const result=await page.evaluate(async()=>{
    const T=THREE,scene=new T.Scene(),renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});renderer.setSize(640,640);renderer.setPixelRatio(1);renderer.setClearColor(0,0);document.body.replaceChildren(renderer.domElement);
