@@ -69,9 +69,9 @@ const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHe
    await page.evaluate(()=>{const s=LudusPreview.supplySystem;s.close();s.enter();return s.open('cities');});await page.locator('#caravanCity').selectOption('1');await page.waitForSelector('[data-good]');await fit('.caravan-city-detail');await fit('.caravan-goods');await fit('.caravan-good');await fit('.caravan-purchase');assert.equal(await page.locator('[data-good]').count(),height<=400?4:5);await page.getByRole('button',{name:'Sonraki ürünler',exact:true}).click();assert.equal(await page.locator('[data-good]').count(),4);assert.equal(await page.locator('[data-good][aria-pressed=true]').count(),1);if(height<=400){await page.getByRole('button',{name:'Sonraki ürünler',exact:true}).click();assert.equal(await page.locator('[data-good]').count(),1);}await images();await page.screenshot({path:out+'/cities-'+width+'.png'});
   }
   if(!process.env.SKIP_ITEM_IMAGES){
-   await page.setViewportSize({width:1366,height:900});const catalog=require('../ludus-production-v119.js'),seen=new Map([...catalog.resources,...catalog.recipes].map(r=>[r.sku,r]));assert.equal(seen.size,43);
+   await page.setViewportSize({width:1366,height:900});const catalog=require('../ludus-production-v119.js'),seen=new Map([...catalog.resources,...catalog.recipes].map(r=>[r.sku,r]));assert.equal(seen.size,45);
    await page.setContent('<base href="http://127.0.0.1:'+server.address().port+'/"><style>body{margin:0;padding:20px;background:#f4eddf;font:15px Georgia;color:#591823}main{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}article{height:160px;background:#fffdf8;border:1px solid #c8b58a;border-radius:6px;text-align:center;padding:8px;box-sizing:border-box}img{width:100%;height:120px;object-fit:contain}p{margin:3px}</style><main>'+[...seen.values()].map(r=>'<article><img src="'+catalog.photo(r.sku)+'"><p>'+r.name+'</p></article>').join('')+'</main>');
-   await page.locator('img').evaluateAll(imgs=>Promise.all(imgs.map(i=>i.decode())));await page.screenshot({path:out+'/all-43-items.png',fullPage:true});
+   await page.locator('img').evaluateAll(imgs=>Promise.all(imgs.map(i=>i.decode())));await page.screenshot({path:out+'/all-'+seen.size+'-items.png',fullPage:true});
   }
   if(process.env.LUDUS_EQUIPMENT_VISUAL_TEST){
    await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html');
@@ -79,6 +79,6 @@ const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHe
    const gear=await page.evaluate(()=>{const g=LudusPreview.roster.find(g=>g.model?.gear);g.state.shoulders=true;g.state.shoulderModel='manica';ImportedGladiator.animate(g.state,g.model,0,0);const manica=g.model.gear.Leftmanica.group.visible&&g.model.gear.Rightmanica.group.visible;const shouldersEmpty=g.model.gear.shoulder.group.children.length===0;g.state.shoulderModel='armor_shoulder';ImportedGladiator.animate(g.state,g.model,0,0);return{manica,shouldersEmpty,switched:!g.model.gear.Leftmanica.group.visible,heights:[...['Left','Right'].map(s=>new THREE.Box3().setFromObject(g.model.gear[s+'manica'].group).getSize(new THREE.Vector3()).length())]};});
    assert.ok(gear.manica&&gear.shouldersEmpty&&gear.switched,JSON.stringify(gear));assert.ok(gear.heights.every(h=>h>0));
   }
-  assert.deepEqual(errors,[]);console.log('V119 browser PASS: symmetric photo cards, 7 food items, 22 production resources, 34 recipes, integer outputs, paginated city stock; 5 landscape viewports.');
+  assert.deepEqual(errors,[]);console.log('V189 browser PASS: symmetric photo cards, 7 food items, 22 production resources, 36 recipes, integer outputs, paginated city stock; 5 landscape viewports.');
  }catch(e){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});console.error({errors});throw e;}finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
