@@ -46,3 +46,6 @@
 /* V119: complete caravan unit. */
 .supply-reward-note{display:flex;align-items:center;gap:7px;min-width:0}.supply-reward-note>img{width:56px;height:42px;object-fit:contain;flex:none}
 @media(max-height:400px){.supply-reward-note>img{width:40px;height:30px}.supply-reward-note{gap:4px}}
+
+/* V193: keep all five Halberd inputs visible on short landscape screens. */
+@media(max-height:350px){.supply-modal .supply-ingredients{gap:1px;flex-shrink:0}}

@@ -1,0 +1,19 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{chromium}=require('playwright');
+const root=path.resolve(__dirname,'..'),out='/tmp/halberd-v193/production';fs.mkdirSync(out,{recursive:true});const state=JSON.parse(fs.readFileSync('/tmp/production-state-v119.json'));
+for(const r of state.resources)r.quantity=100;state.jobs=[];
+const styles=[...fs.readFileSync(root+'/ludus.html','utf8').split('</head>')[0].matchAll(/<style\b[^>]*>[\s\S]*?<\/style>|<link\b[^>]*rel="stylesheet"[^>]*>/gi)].map(m=>m[0]).join('\n');
+const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;height:100%;overflow:hidden}</style>${styles}</head><body data-art-direction="136" data-roman-screen="ludus"><script src="ludus-production-v119.js"></script><script src="equipment-groups-v168.js"></script><script src="ludus-supply-v85.js"></script><script>const state=${JSON.stringify(state)};window.calls=[];window.system=LudusSupply.create({client:{rpc:async(name,args)=>{calls.push({name,args});return{data:{...state,server_now:new Date().toISOString()}};}},ready:Promise.resolve({user_id:state.user_id}),inRoom:()=>true,blocked:()=>false});system.enter('forge');system.open();</script></body></html>`;
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{}),args:['--no-sandbox']});const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin!=='http://production.test')return r.abort();if(u.pathname==='/fixture')return r.fulfill({body:html,contentType:'text/html'});const p=path.join(root,u.pathname);if(!fs.existsSync(p))return r.fulfill({status:404});return r.fulfill({body:fs.readFileSync(p),contentType:p.endsWith('.js')?'text/javascript':p.endsWith('.css')?'text/css':p.endsWith('.webp')?'image/webp':'application/octet-stream'});});
+try{await page.goto('http://production.test/fixture');await page.locator('#supplyCraftFilter').waitFor();
+for(const [width,height]of [[1366,768],[932,430],[844,390],[667,375],[568,320]]){
+ await page.setViewportSize({width,height});await page.locator('#supplyCraftFilter').selectOption('weapon');
+ await page.locator('#supplyCraftSubcategory').selectOption('swords');for(const [sku,label,folder] of [['halberd','Halberd','items-v193']]){await page.locator('[data-recipe="'+sku+'"]').click();
+ assert.equal(await page.locator('.supply-ingredients li').count(),5);assert.ok((await page.locator('.supply-craft-detail').textContent()).includes(label));
+ assert.match(await page.locator('.supply-output').textContent(),/Çıktı: 1/);assert.ok(await page.locator('[data-craft="'+sku+'"]').isEnabled());
+ const images=await page.locator('.supply-craft-detail img').evaluateAll(es=>Promise.all(es.map(async e=>{await e.decode();return {src:e.getAttribute('src'),width:e.naturalWidth}})));
+ assert.ok(images.some(i=>i.src==='assets/'+folder+'/'+sku+'.webp'&&i.width===512));
+ const boxes=await page.locator('.supply-frame,.supply-craft-detail,.supply-ingredients,.supply-ingredients li,.supply-primary,.supply-catalog-bar').evaluateAll(es=>es.filter(e=>e.getClientRects().length).map(e=>{const r=e.getBoundingClientRect();return{cls:e.className,x:r.x,y:r.y,right:r.right,bottom:r.bottom,w:e.scrollWidth-e.clientWidth,h:e.scrollHeight-e.clientHeight};}));
+ assert.ok(boxes.every(b=>b.x>=0&&b.y>=0&&b.right<=width+1&&b.bottom<=height+1&&b.w<=2&&b.h<=2),JSON.stringify(boxes));
+ await page.screenshot({path:out+'/production-'+sku+'-'+width+'.png'});}
+}
+assert.deepEqual(errors,[]);console.log('V193 Halberd production UI PASS: swords category, generated icon, five ingredients, one output and five screen sizes.');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

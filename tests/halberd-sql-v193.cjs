@@ -1,0 +1,25 @@
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const {fixtureDatabase,players,setMatch,call,A,B}=require('./online-projectiles-v76.cjs');
+const migration=n=>fs.readFileSync('supabase/migrations/'+fs.readdirSync('supabase/migrations').find(f=>f.endsWith('_'+n+'.sql')),'utf8');
+(async()=>{const db=await fixtureDatabase();try{
+ await require('./combat-motion-sql-v163.cjs').install(db);
+ await db.exec('create table if not exists public.ludus_shop_catalog(sku text primary key,name text,kind text,model text,price integer,category text);create table ludus_supply_private.production_recipes_v118(sku text primary key,name text,kind text,model text,ingredients jsonb,output_type text,output_quantity int,sort_order int);create table ludus_supply_private.recipes(sku text primary key,ingredients jsonb);');
+ await db.exec(migration('equipment_groups_v168'));await db.exec(migration('halberd_v193'));await db.exec(migration('halberd_v193'));
+ assert.deepEqual((await db.query("select ingredients,output_quantity from ludus_supply_private.production_recipes_v118 where sku='halberd'")).rows[0],{ingredients:{steel:7,wood:3,leather:2,resin:2,rope:1},output_quantity:1});
+ assert.equal((await db.query("select subcategory from ludus_shop_catalog where sku='halberd'")).rows[0].subcategory,'swords');
+ const rows=await players(db,'halberd');rows[1].z=2;await setMatch(db,rows);const state=await call(db,A,'step',{attack:true,attack_id:'halberd-test',target:B});
+ const a=state.players[0];assert.equal(a.strike_weapon,'halberd');assert.equal(a.wind,.36);assert.equal(a.active,.24);assert.equal(a.recover,.52);
+ const at=new Date(Date.parse(a.strike_at)+1).toISOString();const hit=(await db.query('select private.ludus_resolve_combat_v36($1,$2) p',[state.players,at])).rows[0].p;assert.ok(hit[1].hp<100);assert.ok(hit[0].recoil_until);assert.deepEqual((await db.query('select private.ludus_resolve_combat_v36($1,$2) p',[hit,at])).rows[0].p,hit);
+ const fresh=await players(db,'halberd');await setMatch(db,fresh);const special=await call(db,A,'step',{special:true,special_id:'halberd-no-throw',target:B});assert.ok(!special.players[0].projectile);assert.equal(special.players[0].items.length,1);
+ const shield={...fresh[1],items:[{kind:'shield',equipped_slot:'off_hand',id:'s'}]};assert.deepEqual((await db.query("select private.ludus_shield_impact_v168($1,'halberd') p",[shield])).rows[0].p,shield);
+ const body=(await db.query("select pg_get_functiondef('private.ludus_hit_v73(jsonb,jsonb,text,text,numeric,numeric,numeric,boolean)'::regprocedure) b")).rows[0].b;assert.match(body,/scissor','halberd/);
+ const glad=(await db.query("insert into ludus_gladiators(owner_id,name,class,status,base_stats,stat_version)values($1,'Halberd tester','secutor','available',$2,7)returning id",[A,{health:50,strength:50,defense:50,agility:50,speed:50,conditioning:50}])).rows[0].id;
+ const gear=(await db.query("insert into ludus_items(owner_id,kind,model,equipped_by,equipped_slot)values($1,'weapon','halberd',$2,'main_hand')returning id",[A,glad])).rows[0].id;
+ await db.query("update ludus_matches set status='finished'");await db.query("select set_config('request.jwt.claim.sub',$1,false)",[A]);
+ const request=require('node:crypto').randomUUID(),start=async()=>(await db.query("select ludus_start_battle_v2($1,'4x5',$2,$3) r",[glad,{main_hand:gear},request])).rows[0].r;
+ const ticket=await start();assert.equal((await start()).id,ticket.id);assert.equal(ticket.snapshot.items.find(i=>i.id===gear).model,'halberd');
+ const loot=(await db.query('select loot from ludus_battles where id=$1',[ticket.id])).rows[0].loot,token=loot.find(i=>i.inventory_id===gear).token;
+ await db.query("update ludus_battles set started_at=now()-interval '30 seconds' where id=$1",[ticket.id]);const stats={alive:true,kills:15,seconds:30,exit_slots:{main_hand:token}},finish=async()=>(await db.query('select ludus_finish_battle_v2($1,true,$2) r',[ticket.id,stats])).rows[0].r;
+ const reward=await finish();assert.deepEqual(await finish(),reward);assert.deepEqual((await db.query('select model,equipped_slot,locked_battle_id from ludus_items where id=$1',[gear])).rows[0],{model:'halberd',equipped_slot:'main_hand',locked_battle_id:null});
+ console.log('V193 SQL PASS: idempotent recipe, swords category, server timings, hit/recoil, replay, no throwing or shield breaker.');
+ }finally{await db.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

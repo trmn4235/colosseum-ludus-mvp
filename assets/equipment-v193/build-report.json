@@ -1,0 +1,35 @@
+{
+  "sourceBytes": 28467484,
+  "sourceSha256": "363617fe412d51279a75fbb426ee0fe7dfcc3dc3a48fa3ab5711a19613750b73",
+  "sourceTriangles": 372992,
+  "height": 1.8,
+  "gripFromButt": 0.1,
+  "sourceImages": [
+    {
+      "name": "concrete_floor.jpg.001",
+      "width": 4608,
+      "height": 3456,
+      "packedBytes": 1241216
+    },
+    {
+      "name": "wood_texture.jpg.001",
+      "width": 960,
+      "height": 720,
+      "packedBytes": 227494
+    }
+  ],
+  "version": 193,
+  "bytes": 58424,
+  "triangles": 2899,
+  "primitives": 4,
+  "textures": [
+    {
+      "role": "color",
+      "width": 256,
+      "height": 256,
+      "bytes": 7214
+    }
+  ],
+  "decodedTextureBytesWithMips": 349525.3333333333,
+  "sha256": "ab6876eea953dc6157be9b7e74a946c7c9195b17b6aa680b13235a8ee6e20b2e"
+}

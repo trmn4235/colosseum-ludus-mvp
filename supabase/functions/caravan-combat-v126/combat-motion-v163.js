@@ -3,7 +3,7 @@
 'use strict';
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),mix=(a,b,t)=>a+(b-a)*t,smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
 const enabled=f=>f?.motionVersion===163;
-const pole=kind=>kind==='spear'||kind==='trident';
+const pole=kind=>kind==='spear'||kind==='trident'||kind==='halberd';
 function clipName(f){const kind=f.attackWeapon??f.weapon;if(f.pitWeapon&&kind==='heavy_mace')return f.attackKind==='heavy'||f.chain===3?'chop':f.chain===2?'swordB':'swordA';if(pole(kind))return 'pole';if(!kind)return f.chain===2?'cross':'jab';if(f.attackKind==='heavy')return 'chop';if(kind==='gladius'&&f.chain===3)return 'stab';if(kind==='sica')return f.chain===2?'swordB':'swordA';return f.chain===2?'swordB':'slash';}
 function curve(name){return root.LUDUS_COMBAT_CURVES?.clips[name];}
 function phase(f,time=f.timer,name=clipName(f)){

@@ -27,7 +27,7 @@ var ArenaAuthoredMotion=(()=>{
   if(f.archer&&f.bowDrawUntil>time)return ['bowDraw',clamp(1-(f.bowDrawUntil-time)/.35),1];
   if(f.guardFlash>0)return ['guardHit',clamp(1-f.guardFlash/.20),.7];
   if(f.blocking||f.absoluteBlockUntil>time)return [f.shield?'guard':'block',f.shield?(time%clips.guard.duration)/clips.guard.duration:.5,.9];
-  if(f.action==='idle'&&['spear','trident'].includes(f.weapon)&&f.move<.1)return ['poleIdle',(time%clips.poleIdle.duration)/clips.poleIdle.duration,.65];
+  if(f.action==='idle'&&['spear','trident','halberd'].includes(f.weapon)&&f.move<.1)return ['poleIdle',(time%clips.poleIdle.duration)/clips.poleIdle.duration,.65];
   return null;
  }
  function begin(f,m,time,dt){

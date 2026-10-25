@@ -3,6 +3,7 @@
 (function(root){
  'use strict';
  const records=Object.freeze({
+  halberd:Object.freeze({id:'halberd',label:'Halberd',kind:'weapon',subcategory:'swords',file:'../equipment-v193/halberd.cme',triangles:2899,height:1.80}),
   pit_axe:Object.freeze({id:'pit_axe',label:'Balta',kind:'weapon',venue:'pit',file:'../pit-v192/pit_axe.cme',triangles:1585,height:.90}),
   pit_stone_mace:Object.freeze({id:'pit_stone_mace',label:'Taş gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_stone_mace.cme',triangles:1908,height:.94}),
   pit_wood_mace:Object.freeze({id:'pit_wood_mace',label:'Ahşap gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_wood_mace.cme',triangles:3580,height:.84}),
@@ -33,7 +34,7 @@
    // V172: the forged-steel primitive is the head. Bronze shaft, pommel and leather stay byte-for-byte unchanged.
    if(id==='warhammer')group.traverse(o=>{if(o.isMesh&&o.material?.name==='Forged dark steel'){const g=o.geometry.clone();g.computeBoundingBox();const c=g.boundingBox.getCenter(new T.Vector3());g.translate(-c.x,-c.y,-c.z);g.scale(.75,.75,.75);g.translate(c.x,c.y,c.z);g.computeBoundingBox();g.computeBoundingSphere();o.geometry=g;o.userData.headScale=.75;}});
    group.updateMatrixWorld(true);const box=new T.Box3().setFromObject(group),size=box.getSize(new T.Vector3());if(!Number.isFinite(size.y)||size.y<=0)throw Error('Ekipman ölçüsü geçersiz');
-   if(records[id].kind==='helmet'){const c=box.getCenter(new T.Vector3()),s=records[id].height/size.y;const wrapper=new T.Group();wrapper.add(group);group.scale.multiplyScalar(s);group.position.sub(c.multiplyScalar(s));wrapper.userData.catalogId=id;cache.set(id,wrapper);}else cache.set(id,group);
+   if(records[id].kind==='helmet'){const c=box.getCenter(new T.Vector3()),s=records[id].height/size.y;const wrapper=new T.Group();wrapper.add(group);group.scale.multiplyScalar(s);group.position.sub(c.multiplyScalar(s));wrapper.userData.catalogId=id;cache.set(id,wrapper);}else if(id==='halberd'){const wrapper=new T.Group();wrapper.add(group);group.rotation.y=Math.PI/2;cache.set(id,wrapper);}else cache.set(id,group);
    const result=cache.get(id);result.name=records[id].label;result.userData.catalogId=id;result.userData.materialVersion=167;
    result.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.envMapIntensity=.8;});}});
    revision++;failures.delete(id);return result;
