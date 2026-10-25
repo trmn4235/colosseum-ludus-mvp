@@ -403,7 +403,7 @@ var ClassEquipment=(function(){
   m.teamMark=new T.Group();m.root.add(m.teamMark);
  }
  function setWeapon(m,kind){if(m.equippedWeapon===kind)return;m.equippedWeapon=kind;replaceWeapon(m.weaponAnchor,kind);}
- function replaceWeapon(anchor,kind){anchor.clear();if(kind){const g=weapon(kind).clone(true);g.rotation.x=kind==='spear'||kind==='trident'?.25:2.75;g.userData.restRotation=g.rotation.x;anchor.add(g);}}
+ function replaceWeapon(anchor,kind){anchor.clear();if(kind){const g=weapon(kind).clone(true);g.rotation.x=['spear','trident','halberd'].includes(kind)?.25:2.75;g.userData.restRotation=g.rotation.x;anchor.add(g);}}
  const teamColors=Array.from({length:20},(_,i)=>i<4?(typeof NavalRoute!=='undefined'&&NavalRoute.requested()?[0x8d2947,0xeee6d0,0x696d76,0x3d8766]:[0x1677e8,0xc32125,0x29a65a,0x9b55da])[i]:new T.Color().setHSL(i/20,.7,.5).getHex());
  const teamMaterials=teamColors.map(color=>new T.MeshStandardMaterial({color,roughness:.65}));
  const ringMaterials=teamColors.map(color=>new T.MeshBasicMaterial({color,side:T.DoubleSide,transparent:true,opacity:.85,depthWrite:false}));
@@ -561,7 +561,7 @@ var ImportedGladiator=(function(){
   // Reuse the existing sword rig for three short swings without extra model assets.
   if(f.action==='triple')f={...f,action:'attack',timer:f.timer%.2,chain:1+Math.floor(f.timer/.2)};
   m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;ClassEquipment.sync(m,f);
-   const planting=(['bowshot','attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident'].includes(f.weapon))&&f.hp>0;
+   const planting=(['bowshot','attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident','halberd'].includes(f.weapon))&&f.hp>0;
    if(planting&&(!m.plantedFeet||f.action==='attack'&&f.timer<(m.plantTimer||0))){m.root.updateMatrixWorld(true);m.plantedFeet={};m.plantElapsed=0;for(const side of ['Left','Right']){const foot=m.bones[side+'Foot'];if(foot)m.plantedFeet[side]={position:m.root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:m.root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}}
    if(!planting)m.plantedFeet=null;else m.plantElapsed=(m.plantElapsed||0)+Math.max(0,dt);m.plantTimer=f.timer;
   for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children){g.rotation.set(g.userData.restRotation||0,0,0);g.position.y=0;}}
@@ -606,7 +606,7 @@ var ImportedGladiator=(function(){
   if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=m.bones.RightHand.userData.anatomy166?ArenaAnatomy.grip(m,left,strike,reach):reach(m,left,strike.grip);
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
    anchor.position.copy(anchor.parent.worldToLocal(hand));
-   const pole=strike.pole||['spear','trident'].includes(f.attackWeapon||f.weapon);
+   const pole=strike.pole||['spear','trident','halberd'].includes(f.attackWeapon||f.weapon);
    if(pole&&!m.bones.RightHand.userData.anatomy166){
     const palm=anchor.parent,rest=anchor.userData.restQuaternion,desired=m.root.getWorldQuaternion(ik.strikeQ[0]).multiply(ik.strikeQ[1].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z)));
     palm.quaternion.copy(palm.parent.getWorldQuaternion(ik.strikeQ[2]).invert().multiply(desired).multiply(ik.strikeQ[1].copy(rest).invert()));palm.updateWorldMatrix(false,true);anchor.quaternion.copy(rest);anchor.position.set(0,0,0);
