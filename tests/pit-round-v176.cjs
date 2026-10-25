@@ -48,6 +48,8 @@ function simulation(ticket){
  const bowStart=await start({...two,pit_weapon:'pit_bow',teammate_weapon:'pit_bow'}),bowTicket=(await q('select * from ludus_battles where id=$1',[bowStart.id]))[0];assert.equal(bowTicket.snapshot.items[0].pit_model,'pit_bow');assert.equal(bowTicket.loot[1].item.pit_model,'pit_bow');assert.deepEqual(await start({...two,pit_weapon:'pit_bow',teammate_weapon:'pit_bow'},bowTicket.start_request_id),bowStart);
  // Close synthetic fixture battles before preparing the next independent loadout.
  await q('update ludus_battles set finished_at=now() where id=$1',[bowStart.id]);
+ // Axe cases use rested fixtures; previous battles must not introduce random fatigue injuries.
+ await q('update ludus_gladiators set fatigue_value=0,fatigue=0,fatigue_rest_from=now() where id in($1,$2)',[g,mate]);
  const axeStart=await start({...two,pit_weapon:'pit_axe',teammate_weapon:'pit_axe'}),axeTicket=(await q('select * from ludus_battles where id=$1',[axeStart.id]))[0];
  assert.equal(axeTicket.snapshot.items[0].pit_model,'pit_axe');assert.equal(axeTicket.loot[1].item.pit_model,'pit_axe');
  assert.deepEqual(await start({...two,pit_weapon:'pit_axe',teammate_weapon:'pit_axe'},axeTicket.start_request_id),axeStart);
