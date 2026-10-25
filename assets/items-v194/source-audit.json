@@ -1,0 +1,38 @@
+[
+  {
+    "source": "knights_helm.glb",
+    "sourceBytes": 5870608,
+    "sourceSha256": "ea2c03937d44b4f9b64e9c24090ba4adbc7902d224874232ace42be2185658f5",
+    "gameModel": "assets/equipment/knights-e30cc69af0fd.glb",
+    "gameBytes": 612424,
+    "gameSha256": "e30cc69af0fd59456b00eff3582ff56356943a840dfbce5eaef7b78347bc691a",
+    "sourceGeometrySha256": "bfe279b4e25f5ed4b59cf30eec1fc267a487ac525a9bb7e3606af2b9aff2be3d",
+    "gameGeometrySha256": "bfe279b4e25f5ed4b59cf30eec1fc267a487ac525a9bb7e3606af2b9aff2be3d",
+    "triangles": 3271,
+    "geometryIdentical": true
+  },
+  {
+    "source": "winged_helmet_gameready.glb",
+    "sourceBytes": 3855936,
+    "sourceSha256": "3413877e0f7a164bdddaa1f148a8ef4f9d4b4b71fb8e5b58637850944c1dc7eb",
+    "gameModel": "assets/equipment/winged-111637d14990.glb",
+    "gameBytes": 520556,
+    "gameSha256": "111637d14990f9791d862941a9ff7de801d17358f07e184dea6492c694affca4",
+    "sourceGeometrySha256": "ba5ecab446057c1f76bfe653ce8d9695de8c9af270ca26fa6ddf89997ed20290",
+    "gameGeometrySha256": "ba5ecab446057c1f76bfe653ce8d9695de8c9af270ca26fa6ddf89997ed20290",
+    "triangles": 3896,
+    "geometryIdentical": true
+  },
+  {
+    "source": "gladiator_helmet.glb",
+    "sourceBytes": 2998444,
+    "sourceSha256": "45df2e8b6cd22498185f122f592318819f4e6a2500d01cdb85c9a15d474df620",
+    "gameModel": "assets/equipment/gladiator-9bcb0ac9d566.glb",
+    "gameBytes": 447244,
+    "gameSha256": "9bcb0ac9d56695da631f80944fc5175100cfe6002ef490d29e2b9016f0f1bd78",
+    "sourceGeometrySha256": "751dd0e557962faf0d83eb5c933e9b9d3c0c2d81038059818966985418dfb07a",
+    "gameGeometrySha256": "751dd0e557962faf0d83eb5c933e9b9d3c0c2d81038059818966985418dfb07a",
+    "triangles": 4347,
+    "geometryIdentical": true
+  }
+]

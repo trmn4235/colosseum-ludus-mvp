@@ -40,8 +40,8 @@
   ['helmet-sylvain','Vizörlü gladyatör miğferi','helmet','sylvain_helmet',{steel:5,leather:3,linen:2,wool_cloth:1}],
   ['helmet-gold','Gladyatör miğferi','helmet','gold',{bronze:4,leather:3,linen:2,wool_cloth:1}],
   ['helmet-roman','Roma miğferi','helmet','roman',{bronze:4,leather:2,linen:3,wool_cloth:1}],
-  ['helmet-silver','Secutor miğferi','helmet','silver',{iron:12,leather:4,linen:3,wool_cloth:1}],
-  ['helmet-winged','Thraex miğferi','helmet','winged',{iron:10,bronze:1,leather:4,linen:3,wool_cloth:1}],
+  ['helmet-silver','Şövalye miğferi','helmet','silver',{iron:12,leather:4,linen:3,wool_cloth:1}],
+  ['helmet-winged','Kanatlı miğfer','helmet','winged',{iron:10,bronze:1,leather:4,linen:3,wool_cloth:1}],
   ['chest','Gladyatör göğüs zırhı','chest','gladiator_chest',{iron:14,leather:7,linen:4,wool_cloth:2}],
   ['chest-plate','İşlemeli göğüs zırhı','chest','chest_plate',{iron:18,leather:8,linen:5,wool_cloth:3}],
   ['gloves','İşlemeli çift omuzluk','gloves','armor_shoulder',{leather:2,bronze:1,wool_cloth:1}],
@@ -65,7 +65,7 @@
  const revised=new Set(['tin','lead','manica','spear','trident','bow','helmet-silver','helmet-winged']);
  const retired=['wooden_handle','shield_frame_small','shield_frame_large','lead_weight','net_mesh'];
  const caravanPhoto='assets/items-v119/caravan.webp';
- function photo(sku){if(sku==='halberd')return 'assets/items-v193/halberd.webp';if(sku==='helmet-viking'||sku==='helmet-steel')return 'assets/items-v189/'+sku+'.webp';if(sku==='helmet-sylvain')return 'assets/items-v169/helmet-sylvain.webp';if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
+ function photo(sku){if(['helmet-gold','helmet-silver','helmet-winged','helmet-roman'].includes(sku))return 'assets/items-v194/'+sku+'.webp';if(sku==='halberd')return 'assets/items-v193/halberd.webp';if(sku==='helmet-viking'||sku==='helmet-steel')return 'assets/items-v189/'+sku+'.webp';if(sku==='helmet-sylvain')return 'assets/items-v169/helmet-sylvain.webp';if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
  function skuForItem(item){
   if(known.has(item?.sku))return item.sku;
   const k=item?.kind,m=item?.model;
@@ -78,12 +78,13 @@
   if(k==='legs')return 'legs';
   return null;
  }
+ function nameForItem(item){const sku=skuForItem(item);return recipes.find(r=>r.sku===sku)?.name||resources.find(r=>r.sku===sku)?.name||null;}
  function artwork(item){
   const sku=skuForItem(item),src=photo(sku);if(!src)return null;
   const name=recipes.find(r=>r.sku===sku)?.name||resources.find(r=>r.sku===sku)?.name||'Ekipman';
   return '<svg class="equipment-icon item-photo-v118" style="display:block;width:100%;height:100%;overflow:hidden" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+name+'"><image href="'+src+'" x="4" y="4" width="88" height="88" preserveAspectRatio="xMidYMid meet"/></svg>';
  }
- const api={version:119,retired,caravanPhoto,raw,processed,equipment,supplies,resources,recipes,photo,skuForItem,artwork};
+ const api={version:119,retired,caravanPhoto,raw,processed,equipment,supplies,resources,recipes,photo,skuForItem,nameForItem,artwork};
  root.LudusProduction=api;
  if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -7,8 +7,8 @@
  const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const model=a=>a.class||a.model||a.kind;
  const kind=a=>a.class?'gladiator':a.kind;
- const modelName=a=>a.class?(a.class==='scissor'?'Scissor':models[a.class]||a.class):models[model(a)]||globalThis.LudusArmourName?.(a)||kinds[a.kind]||'Eşya';
- const name=a=>a.name||globalThis.LudusArmourName?.(a)||modelName(a);
+ const modelName=a=>(a.kind==='helmet'?globalThis.LudusProduction?.nameForItem?.(a):null)||(a.class?(a.class==='scissor'?'Scissor':models[a.class]||a.class):models[model(a)]||globalThis.LudusArmourName?.(a)||kinds[a.kind]||'Eşya');
+ const name=a=>(a.kind==='helmet'?globalThis.LudusProduction?.nameForItem?.(a):null)||a.name||globalThis.LudusArmourName?.(a)||modelName(a);
  const title=a=>name(a)+(a.class?' · Sv. '+(a.level||1):' +'+(a.enhancement||0));
  const asset=r=>r.asset||r.snapshot;
  function gems(a){
