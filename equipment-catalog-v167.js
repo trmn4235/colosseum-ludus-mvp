@@ -3,6 +3,7 @@
 (function(root){
  'use strict';
  const records=Object.freeze({
+  pit_axe:Object.freeze({id:'pit_axe',label:'Balta',kind:'weapon',venue:'pit',file:'../pit-v192/pit_axe.cme',triangles:1585,height:.90}),
   pit_stone_mace:Object.freeze({id:'pit_stone_mace',label:'Taş gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_stone_mace.cme',triangles:1908,height:.94}),
   pit_wood_mace:Object.freeze({id:'pit_wood_mace',label:'Ahşap gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_wood_mace.cme',triangles:3580,height:.84}),
   warhammer:Object.freeze({id:'warhammer',label:'Savaş çekici',kind:'weapon',subcategory:'blunt',file:'warhammer.cme',triangles:5332,height:1.094,paint:'Koyu çelik, eskitilmiş bronz, deri'}),

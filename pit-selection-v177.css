@@ -8,14 +8,14 @@
 #fightDialog .fighter-loadout h3{margin:0;font:17px Georgia;color:#733343;font-weight:normal}
 #fightDialog #fightForm .fighter-select{grid-column:auto;grid-row:auto;display:flex;align-items:center;gap:10px;padding:0;font:12px Georgia;color:#53575a}
 #fightDialog .fighter-select select{min-width:0;flex:1;font:14px Georgia;padding:8px;background:#f6f4ed;border:1px solid #c7b79b;color:#292d30;border-radius:4px}
-#fightDialog #fightForm fieldset{grid-column:auto;grid-row:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-width:0;min-height:0;gap:7px;margin:0;padding:0;border:0}
+#fightDialog #fightForm fieldset{grid-column:auto;grid-row:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));min-width:0;min-height:0;gap:7px;margin:0;padding:0;border:0}
 #fightDialog fieldset legend{font:11px Georgia;color:#686660;padding:0 0 5px;letter-spacing:.8px}
 #fightDialog .weapon-card{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:3px;min-width:0;min-height:0;position:relative;margin:0;padding:6px 8px 9px;background:#f4f3ee;border:1px solid #dedad0;border-radius:6px;overflow:hidden;cursor:pointer}
 #fightDialog .weapon-card:has(input:checked){background:#f3ebdc;border:2px solid #a7864f;box-shadow:inset 0 0 0 2px #fff9eb}
 #fightDialog .weapon-card img{position:static;width:100%;height:100%;min-height:0;max-height:none;object-fit:contain;filter:drop-shadow(0 3px 3px #332a2222);transform:none}
 #fightDialog .weapon-card input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2}
 #fightDialog .weapon-card span{position:static;font:15px Georgia;color:#3d3431;text-align:center}
-#fightDialog .weapon-selection{position:absolute;top:6px;right:7px;bottom:auto;left:auto;font:9px Arial;background:#743545;color:#fff7e6;padding:4px 6px;border-radius:3px;letter-spacing:.4px}
+#fightDialog .weapon-selection{position:absolute;top:6px;right:7px;bottom:auto;left:auto;font:clamp(6px,.85vw,9px) Arial;background:#743545;color:#fff7e6;padding:4px 6px;border-radius:3px;letter-spacing:.4px}
 #fightDialog #fightForm .fight-rules{grid-column:1/-1;grid-row:2;margin:0;text-align:center;font:12px/1.3 Georgia;max-width:none;padding:0;color:#68615a}
 #fightDialog #fightMessage{grid-column:1/-1;grid-row:3;min-height:16px;margin:0;text-align:center;font:13px/1.25 Georgia;color:#703643}
 #fightDialog #fightStart{grid-column:1/-1;grid-row:4;justify-self:center;width:min(360px,100%);padding:10px 18px;min-height:40px;font:16px Georgia;background:#733342;border:1px solid #b89b62;border-radius:5px;color:#fff4dc}

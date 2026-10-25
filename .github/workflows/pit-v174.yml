@@ -2,9 +2,9 @@ name: Pit courtyard and exhibition
 on:
   push:
     branches: [main, codex/pit-realism-v174, codex/pit-v175]
-    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'assets/pit-v177/**', 'assets/pit-v178/**', 'combat-pointer-v177.js', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+    paths: ['equipment-catalog-v167.js', 'assets/pit-v192/**', 'scripts/*pit-axe*', 'pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'assets/pit-v177/**', 'assets/pit-v178/**', 'combat-pointer-v177.js', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
   pull_request:
-    paths: ['pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'assets/pit-v177/**', 'assets/pit-v178/**', 'combat-pointer-v177.js', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
+    paths: ['equipment-catalog-v167.js', 'assets/pit-v192/**', 'scripts/*pit-axe*', 'pit-*', 'san-avlusu.html', 'assets/pit-v174/**', 'assets/pit-v175/**', 'assets/pit-v176/**', 'assets/pit-v177/**', 'assets/pit-v178/**', 'combat-pointer-v177.js', 'arena.html', 'arena-results-v83.js', 'supabase/migrations/*pit*', 'tests/pit-*', '.github/workflows/pit-v174.yml']
 permissions:
   contents: read
 jobs:
@@ -18,7 +18,7 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --no-package-lock playwright@1.56.1 @electric-sql/pglite@0.5.11
       - run: node tests/pit-model-v172.cjs && node tests/pit-exhibition-v174.cjs
-      - run: node tests/pit-round-v176.cjs
+      - run: node tests/pit-round-v176.cjs && node --test tests/pit-axe-v192.cjs
       - run: npx playwright install --with-deps --only-shell chromium
       - run: node tests/pit-people-v175.cjs && node tests/pit-gallery-v175.cjs
       - run: node tests/pit-browser-v172.cjs && node tests/pit-combat-browser-v172.cjs
