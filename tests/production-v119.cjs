@@ -55,6 +55,7 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  await db.exec(migration('lightweight_helmets_v189'));await db.exec(migration('lightweight_helmets_v189'));
  await db.exec("alter table ludus_shop_catalog add column if not exists subcategory text");
  await db.exec(migration('halberd_v193').split('-- Combat registration:')[0]);
+ await db.exec(migration('helmet_identity_v194'));await db.exec(migration('helmet_identity_v194'));
  const catalog=require('../ludus-production-v119.js');
  if(process.env.LUDUS_EQUIPMENT_TEST){const extra=migration('equipment_groups_v168').split('-- Expand only')[0];await db.exec(extra);globalThis.LudusProduction=catalog;require('../equipment-groups-v168.js');}
  const call=async(action='state',key=null,id=randomUUID())=>(await q('select ludus_supply($1,$2,1,$3)as s',[action,key,id]))[0].s;
@@ -70,7 +71,7 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  assert.ok(!s.resources.some(r=>r.sku==='salt'));
 
  assert.deepEqual(new Set(s.recipes.map(r=>r.sku)),new Set(catalog.recipes.map(r=>r.sku)));
- for(const r of s.recipes)assert.deepEqual(r.ingredients,catalog.recipes.find(c=>c.sku===r.sku).ingredients,r.sku+' client/server recipe');
+ for(const r of s.recipes){const c=catalog.recipes.find(c=>c.sku===r.sku);assert.deepEqual(r.ingredients,c.ingredients,r.sku+' client/server recipe');assert.equal(r.name,c.name,r.sku+' client/server name');}
  for(const sku of ['iron','copper','tin','lead','bronze','steel'])assert.ok(s.resources.some(r=>r.sku===sku),sku+' ingot exists');
  assert.deepEqual(s.recipes.find(r=>r.sku==='bronze').ingredients,{copper:3,tin:1,charcoal:1});
  for(const sku of catalog.retired){assert.ok(!s.resources.some(r=>r.sku===sku));await assert.rejects(()=>call('craft',sku),/tarifi bulunamadı/);}

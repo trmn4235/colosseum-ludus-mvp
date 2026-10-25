@@ -95,12 +95,12 @@ var LudusItemSystem = (() => {
 if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
 
 var LUDUS_EQUIPMENT_ATLAS="clan-equipment-0-v35.webp";
-var LUDUS_HELMET_ICONS={"gladiator":"clan-equipment-1-v35.webp","knights":"clan-equipment-2-v35.webp","winged":"clan-equipment-3-v35.webp","roman":"clan-equipment-4-v35.webp"};
+var LUDUS_HELMET_ICONS={"gladiator":"assets/items-v194/helmet-gold.webp","knights":"assets/items-v194/helmet-silver.webp","winged":"assets/items-v194/helmet-winged.webp","roman":"assets/items-v194/helmet-roman.webp","viking_helmet":"assets/items-v189/helmet-viking.webp","steel_helmet":"assets/items-v189/helmet-steel.webp","sylvain_helmet":"assets/items-v169/helmet-sylvain.webp"};
 var LUDUS_ARMOUR_ICONS={"gladiator_chest":"clan-equipment-5-v35.webp","chest_plate":"clan-equipment-6-v35.webp","armor_shoulder":"clan-equipment-7-v35.webp","shoulder_armor":"clan-equipment-8-v35.webp"};
 var LudusIcons=(function(){
  const cells={gladius:0,sica:1,spear:2,trident:3,net:4,mace:5,whip:6,scissor:7};
  const bounds=[[8,6,299,301],[329,5,293,298],[629,5,299,302],[953,7,292,301],[7,337,295,242],[329,313,281,279],[650,351,281,241],[956,319,289,278],[44,607,236,292],[339,614,269,288],null,null,[16,910,265,323],[319,926,296,300],[660,916,278,313],[945,942,292,270]];
- function helmetKey(value){return value==='roman'||value==='roman_helmet'?'roman':value==='silver'||value==='knights'||value==='knights_helm'?'knights':value==='winged'||value==='winged_helmet_gameready'?'winged':'gladiator';}
+ function helmetKey(value){if(['viking_helmet','steel_helmet','sylvain_helmet'].includes(value))return value;return value==='roman'||value==='roman_helmet'?'roman':value==='silver'||value==='knights'||value==='knights_helm'?'knights':value==='winged'||value==='winged_helmet_gameready'?'winged':'gladiator';}
  function index(it){if(!it)return -1;if(it.kind==='weapon')return cells[it.model]??0;if(it.kind==='shield')return it.model==='large'?8:9;if(it.kind==='helmet')return helmetKey(it.model)==='knights'?11:10;return {chest:12,gloves:13,legs:14,pouch:15}[it.kind]??-1;}
  function svg(it){const photo=globalThis.LudusProduction?.artwork(it);if(photo)return photo;const n=index(it),label=String(it?.name||'Ekipman görünümü').replace(/[&<>"']/g,'');
   if(n<0)return '<svg viewBox="0 0 96 96" role="img" aria-label="Boş ekipman yuvası"><path d="M48 33v30M33 48h30" stroke="#cbb381" stroke-width="2"/><circle cx="48" cy="48" r="30" fill="none" stroke="#cbb38155" stroke-width="1"/></svg>';

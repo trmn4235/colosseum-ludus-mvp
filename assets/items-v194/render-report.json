@@ -1,0 +1,30 @@
+[
+  {
+    "sku": "helmet-gold",
+    "id": "gladiator",
+    "triangles": 4347,
+    "drawCalls": 1,
+    "iconBytes": 17244
+  },
+  {
+    "sku": "helmet-silver",
+    "id": "knights",
+    "triangles": 3271,
+    "drawCalls": 2,
+    "iconBytes": 23912
+  },
+  {
+    "sku": "helmet-winged",
+    "id": "winged",
+    "triangles": 3896,
+    "drawCalls": 1,
+    "iconBytes": 27646
+  },
+  {
+    "sku": "helmet-roman",
+    "id": "roman",
+    "triangles": 11290,
+    "drawCalls": 1,
+    "iconBytes": 19584
+  }
+]

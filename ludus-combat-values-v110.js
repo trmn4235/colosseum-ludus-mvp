@@ -48,7 +48,7 @@
    return (vals.length===2?vals.map(signed).join(' – '):signed(vals[0]))+(m.unit?' '+m.unit:'');
   }
   function sourceName(s){
-   const item=s.name||models[s.model]||s.model||'Ekipman';
+   const item=(s.kind==='helmet'?globalThis.LudusProduction?.nameForItem?.(s):null)||s.name||models[s.model]||s.model||'Ekipman';
    switch(s.kind){
     case 'base':return ['Temel özellikler','Gladyatörün kendi değerleri'];
     case 'level':return ['Seviye '+s.level,'Seviye çarpanı'];

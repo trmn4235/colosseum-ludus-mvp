@@ -7,13 +7,13 @@ const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewpor
 try{await page.goto('http://production.test/fixture');await page.locator('#supplyCraftFilter').waitFor();
 for(const [width,height]of [[1366,768],[932,430],[844,390],[667,375],[568,320]]){
  await page.setViewportSize({width,height});await page.locator('#supplyCraftFilter').selectOption('helmet');
- assert.equal(await page.locator('[data-recipe]').count(),7);for(const [sku,label,folder] of [['helmet-sylvain','Vizörlü gladyatör miğferi','items-v169'],['helmet-viking','Boynuzlu Viking miğferi','items-v189'],['helmet-steel','Çelik miğfer','items-v189']]){await page.locator('[data-recipe="'+sku+'"]').click();
- assert.equal(await page.locator('.supply-ingredients li').count(),4);assert.ok((await page.locator('.supply-craft-detail').textContent()).includes(label));
+ assert.equal(await page.locator('[data-recipe]').count(),7);for(const [sku,label,folder] of [['helmet-sylvain','Vizörlü gladyatör miğferi','items-v169'],['helmet-viking','Boynuzlu Viking miğferi','items-v189'],['helmet-steel','Çelik miğfer','items-v189'],['helmet-gold','Gladyatör miğferi','items-v194'],['helmet-silver','Şövalye miğferi','items-v194'],['helmet-winged','Kanatlı miğfer','items-v194'],['helmet-roman','Roma miğferi','items-v194']]){await page.locator('[data-recipe="'+sku+'"]').click();
+ assert.equal(await page.locator('.supply-ingredients li').count(),sku==='helmet-winged'?5:4);assert.ok((await page.locator('.supply-craft-detail').textContent()).includes(label));
  assert.match(await page.locator('.supply-output').textContent(),/Çıktı: 1/);assert.ok(await page.locator('[data-craft="'+sku+'"]').isEnabled());
  const images=await page.locator('.supply-craft-detail img').evaluateAll(es=>Promise.all(es.map(async e=>{await e.decode();return {src:e.getAttribute('src'),width:e.naturalWidth}})));
- assert.ok(images.some(i=>i.src==='assets/'+folder+'/'+sku+'.webp'&&i.width===320));
+ assert.ok(images.some(i=>i.src==='assets/'+folder+'/'+sku+'.webp'&&i.width===(folder==='items-v194'?512:320)));
  const boxes=await page.locator('.supply-frame,.supply-craft-detail,.supply-ingredients,.supply-ingredients li,.supply-primary,.supply-catalog-bar').evaluateAll(es=>es.filter(e=>e.getClientRects().length).map(e=>{const r=e.getBoundingClientRect();return{cls:e.className,x:r.x,y:r.y,right:r.right,bottom:r.bottom,w:e.scrollWidth-e.clientWidth,h:e.scrollHeight-e.clientHeight};}));
  assert.ok(boxes.every(b=>b.x>=0&&b.y>=0&&b.right<=width+1&&b.bottom<=height+1&&b.w<=2&&b.h<=2),JSON.stringify(boxes));
  await page.screenshot({path:out+'/production-'+sku+'-'+width+'.png'});}
 }
-assert.deepEqual(errors,[]);console.log('V189 helmet production UI PASS: three distinct models, actual icon, four integer inputs, one output and five screen sizes.');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});
+assert.deepEqual(errors,[]);console.log('V194 helmet production UI PASS: seven distinct names and matching model icons, integer ingredients, one output and five screen sizes.');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});
