@@ -1,0 +1,109 @@
+{
+  "sourceBytes": 37939438,
+  "sourceSha256": "bbc21332dd45e9392ee3348bf16d15346910731bd12fc58ec63bb795237d11c1",
+  "sourceTriangles": 4840,
+  "height": 0.9,
+  "handOrigin": [
+    0,
+    0,
+    0
+  ],
+  "gripFromButt": 0.14,
+  "sourceImages": [
+    {
+      "name": "DefaultMaterial_BaseColor.jpg.004",
+      "role": "color",
+      "width": 2048,
+      "height": 2048,
+      "packedBytes": 961295
+    },
+    {
+      "name": "DefaultMaterial_Normal.jpg.004",
+      "role": "normal",
+      "width": 2048,
+      "height": 2048,
+      "packedBytes": 1858903
+    },
+    {
+      "name": "DefaultMaterial_Roughness.jpg.004",
+      "role": "roughness",
+      "width": 2048,
+      "height": 2048,
+      "packedBytes": 1655664
+    },
+    {
+      "name": "DefaultMaterial_Metallic.jpg.004",
+      "role": "metallic",
+      "width": 2048,
+      "height": 2048,
+      "packedBytes": 947624
+    },
+    {
+      "name": "wood_table_worn_diff_8k.png",
+      "role": "color",
+      "width": 2048,
+      "height": 2048,
+      "packedBytes": 1026326
+    },
+    {
+      "name": "wood_table_worn_nor_gl_8k.png",
+      "role": "normal",
+      "width": 2048,
+      "height": 2048,
+      "packedBytes": 13400640
+    },
+    {
+      "name": "wood_table_worn_rough_8k.png",
+      "role": "roughness",
+      "width": 2048,
+      "height": 2048,
+      "packedBytes": 5461359
+    }
+  ],
+  "sourceTextureBytes": 25311811,
+  "version": 192,
+  "bytes": 129456,
+  "triangles": 1585,
+  "primitives": 2,
+  "textures": [
+    {
+      "role": "normal",
+      "width": 128,
+      "height": 128,
+      "bytes": 640
+    },
+    {
+      "role": "color",
+      "width": 256,
+      "height": 256,
+      "bytes": 8904
+    },
+    {
+      "role": "materialData",
+      "width": 64,
+      "height": 64,
+      "bytes": 5380
+    },
+    {
+      "role": "normal",
+      "width": 128,
+      "height": 128,
+      "bytes": 580
+    },
+    {
+      "role": "color",
+      "width": 256,
+      "height": 256,
+      "bytes": 8822
+    },
+    {
+      "role": "materialData",
+      "width": 64,
+      "height": 64,
+      "bytes": 2000
+    }
+  ],
+  "decodedTextureBytesWithMips": 917503.9999999999,
+  "sha256": "602387f4b16313884de5d152e497dc7976f0234c19e941d0c72c9715b5f7370d",
+  "iconBytes": 8544
+}
