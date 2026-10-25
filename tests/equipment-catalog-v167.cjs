@@ -13,7 +13,7 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html'])te
  assert.equal(requests,2);assert.equal(api.revision,2);const data=fs.readFileSync(root+'/assets/equipment-v167/warhammer.cme');data[data.length-1]^=1;await assert.rejects(api.decode(data));
 });
 test('Helmet retains embedded images; catalog resources are not raw downloadable GLBs',async()=>{
- const c=await rigRuntime('arena.html');c.crypto=webcrypto;vm.runInContext(catalog,c);const b=fs.readFileSync(root+'/assets/equipment-v167/sylvain_helmet.cme'),raw=await c.LudusEquipmentCatalog.decode(b),v=new DataView(raw),n=v.getUint32(12,true),d=JSON.parse(new TextDecoder().decode(new Uint8Array(raw,20,n)));
+ const c=await rigRuntime('arena.html');c.crypto=webcrypto;vm.runInContext(catalog,c);const b=fs.readFileSync(root+'/assets/equipment-v167/'+c.LudusEquipmentCatalog.entry('sylvain_helmet').file),raw=await c.LudusEquipmentCatalog.decode(b),v=new DataView(raw),n=v.getUint32(12,true),d=JSON.parse(new TextDecoder().decode(new Uint8Array(raw,20,n)));
  assert.equal(d.images.length,4);assert.ok(d.images.every(i=>i.bufferView!==undefined&&!i.uri));assert.equal(d.animations?.length||0,0);const g=await c.LudusEquipmentCatalog.load(c.THREE,'sylvain_helmet',{bytes:b});const box=new c.THREE.Box3().setFromObject(g);assert.ok(Math.abs(box.max.y-box.min.y-.36)<1e-5);
  for(const f of fs.readdirSync(root+'/assets/equipment-v167'))assert.ok(!/\.(fbx|rar|glb)$/i.test(f));
 });

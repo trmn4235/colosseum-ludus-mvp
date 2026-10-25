@@ -1,0 +1,88 @@
+{
+  "version": 191,
+  "helmet": {
+    "file": "sylvain_helmet.cme",
+    "sourceBytes": 4824976,
+    "bytes": 434936,
+    "sourceTriangles": 11674,
+    "triangles": 6652,
+    "sourcePrimitives": 3,
+    "primitives": 1,
+    "textures": [
+      {
+        "role": "baseColour",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 1314664,
+        "bytes": 56188
+      },
+      {
+        "role": "materialData",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 256,
+        "height": 256,
+        "sourceBytes": 1253942,
+        "bytes": 90210
+      },
+      {
+        "role": "normal",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 512,
+        "height": 512,
+        "sourceBytes": 1262896,
+        "bytes": 71392
+      },
+      {
+        "role": "materialData",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "width": 256,
+        "height": 256,
+        "sourceBytes": 345026,
+        "bytes": 35756
+      }
+    ],
+    "sourceDecodedTextureBytesWithMips": 22369621.333333332,
+    "decodedTextureBytesWithMips": 3495253.3333333335,
+    "sourceSha256": "7e12b78e5a8b240ebaa33e239111dfab07f7914f8a993a5b7f8a5b1edf466f2f",
+    "sha256": "1cf973beb84b60603dd72c25f8f8ebb464a0ef4d72432b38d4a2c72badf7be09"
+  },
+  "icons": [
+    {
+      "file": "stone-icon.webp",
+      "sourceBytes": 760952,
+      "bytes": 27886,
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 512,
+      "height": 512,
+      "alpha": true,
+      "sourceSha256": "dfbf61526f4858e1854be7aa33e6c52865f3076d5230e6aa84bd976dacc73cc2",
+      "sha256": "261e15691fbe9450f78922015be4c3ed49bcef6d3b28b539e4b8479258367c91"
+    },
+    {
+      "file": "wood-icon.webp",
+      "sourceBytes": 747338,
+      "bytes": 32016,
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 512,
+      "height": 512,
+      "alpha": true,
+      "sourceSha256": "7912b17db624949b8281c000e4a8e395cfc98f6ef2ea5154a50ff1bc2463f3d8",
+      "sha256": "793ee2dbdb4e8ec2a6c2316a7e10c4688bbe51d44896b32b2af3eb04c89721fa"
+    }
+  ],
+  "greaves": {
+    "sourceTrianglesPerPair": 5096,
+    "trianglesPerPair": 2312,
+    "sourceSharedGeometryBytes": 72184,
+    "sharedGeometryBytes": 37272,
+    "drawCallsPerPair": 4,
+    "note": "Procedural geometry; both legs, fighters and dropped items share the template buffers. No external mesh download."
+  }
+}

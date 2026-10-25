@@ -19,7 +19,7 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
    assert.equal(m.gear.helmet.group,stable,'no per-frame rebuilding/flicker');assert.equal(stable.visible,true);
   }
  }
- assert.equal(requests,1);let meshCount=0;stable.traverse(o=>{if(o.isMesh){meshCount++;assert.equal(o.frustumCulled,false)}});assert.equal(meshCount,3);
+ assert.equal(requests,1);let meshCount=0;stable.traverse(o=>{if(o.isMesh){meshCount++;assert.equal(o.frustumCulled,false)}});assert.equal(meshCount,1);
  Object.assign(f,{hp:100,action:'idle',helmetModel:'roman'});c.ImportedGladiator.animate(f,m,4,1/60);assert.equal(m.helmetStyle,'roman');
  f.helmetModel='sylvain_helmet';c.ImportedGladiator.animate(f,m,5,1/60);assert.equal(m.gear.helmet.group.userData.catalogId,'sylvain_helmet');assert.equal(requests,1);
  const drop=c.ClassEquipment.item({kind:'helmet',itemEntry:{item:{kind:'helmet',model:'sylvain_helmet'}}});assert.equal(drop,c.LudusEquipmentCatalog.get('sylvain_helmet'));
