@@ -14,17 +14,23 @@ const {server}=new Function('require','__dirname','process',fixture+'\nreturn{se
   await page.evaluate(async()=>{await LudusPreview.accountReady;await LudusPreview.residentsReady;});
   await page.locator('#loading').waitFor({state:'hidden',timeout:90000});await page.bringToFront();
   assert.equal(await page.evaluate(()=>LudusPreview.roster[0].state.shieldStyle),'shield_viridis');
+  async function tap(target){
+   await target.waitFor({state:'visible'});assert.equal(await target.isEnabled(),true);
+   const point=await target.evaluate(e=>{const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;return{x,y,width:r.width,height:r.height,onScreen:x>=0&&y>=0&&x<innerWidth&&y<innerHeight,hit:e.contains(document.elementFromPoint(x,y))};});
+   assert.ok(point.width>0&&point.height>0&&point.onScreen&&point.hit,'Tap must reach the visible item: '+JSON.stringify(point));
+   await page.touchscreen.tap(point.x,point.y);
+  }
   for(const row of rows){
    await page.evaluate(()=>LudusPreview.exercisePanel.open(LudusPreview.roster[0],{slot:'off_hand'}));
-   if(!await page.locator('[data-item="'+row.id+'"]').count())await page.getByRole('button',{name:'Sonraki eşya sayfası',exact:true}).click();
+   if(!await page.locator('[data-item="'+row.id+'"]').count())await tap(page.getByRole('button',{name:'Sonraki eşya sayfası',exact:true}));
    const choice=page.locator('[data-item="'+row.id+'"]');
-   try{await choice.click();}catch(error){console.error('Shield picker state',await choice.evaluate(e=>({rect:e.getBoundingClientRect().toJSON(),disabled:e.disabled,visibility:getComputedStyle(e).visibility,ordersHidden:document.getElementById('orders').hidden,loadingHidden:document.getElementById('loading').hidden})),errors);throw error;}
+   try{await tap(choice);}catch(error){console.error('Shield picker state',error.message,await page.evaluate(()=>({selected:LudusPreview.roster[0].state.shieldStyle,ordersHidden:document.getElementById('orders').hidden,loadingHidden:document.getElementById('loading').hidden,choices:[...document.querySelectorAll('[data-item]')].map(e=>e.dataset.item),calls:__rpcCalls.filter(r=>r.name==='ludus_equip_item')})),errors);throw error;}
    await page.waitForFunction(id=>LudusPreview.roster[0].state.shieldStyle===id,row.id);
    const stats=await page.evaluate(async id=>{const v=LudusPreview,g=v.roster[0],m=g.model;await LudusEquipmentCatalog.load(THREE,id);v.exercisePanel.close();v.roster.forEach(r=>{r.body.visible=r===g});Object.assign(g.state,{x:0,z:0,angle:0,action:'idle',blocking:false,hp:100});for(let i=0;i<16;i++)ImportedGladiator.animate(g.state,m,i/60,1/60);v.camera.position.set(1.6,1.65,3.3);v.camera.lookAt(.1,1,0);v.renderer.render(v.scene,v.camera);return{model:m.gear.shield.group.userData.catalogId,visible:m.gear.shield.group.visible,recipe:LudusProduction.skuForItem({kind:'shield',model:id}),icon:LudusProduction.photo(LudusProduction.skuForItem({kind:'shield',model:id})),calls:__rpcCalls.filter(r=>r.name==='ludus_equip_item').length};},row.id);
    assert.equal(stats.model,row.id);assert.equal(stats.visible,true);assert.equal(stats.recipe,row.sku);assert.equal(stats.icon,'assets/items-v198/'+row.sku+'.webp');await page.screenshot({path:path.join(out,row.id+'.png')});
   }
   await page.evaluate(()=>{const v=LudusPreview;if(!v.exploring)v.toggleExplore();v.enterRoom(v.rooms.find(r=>r.kind==='upgrades'));const s=v.supplySystem;s.enter('forge');return s.open();});await page.locator('#supplyCraftFilter').selectOption('shield');
-  for(const [width,height]of [[874,402],[667,375],[568,320]]){await page.setViewportSize({width,height});for(const row of rows){await page.locator('#supplyCraftSubcategory').selectOption(row.group);await page.locator('[data-recipe="'+row.sku+'"]').click();assert.ok((await page.locator('.supply-craft-detail').innerText()).includes(row.label));assert.match(await page.locator('.supply-output').innerText(),/Çıktı: 1/);assert.ok(await page.locator('[data-craft="'+row.sku+'"]').isEnabled());
+  for(const [width,height]of [[874,402],[667,375],[568,320]]){await page.setViewportSize({width,height});for(const row of rows){await page.locator('#supplyCraftSubcategory').selectOption(row.group);await tap(page.locator('[data-recipe="'+row.sku+'"]'));assert.ok((await page.locator('.supply-craft-detail').innerText()).includes(row.label));assert.match(await page.locator('.supply-output').innerText(),/Çıktı: 1/);assert.ok(await page.locator('[data-craft="'+row.sku+'"]').isEnabled());
     const image=await page.locator('.supply-craft-detail img').evaluateAll(es=>Promise.all(es.map(async e=>{await e.decode();return{src:e.getAttribute('src'),width:e.naturalWidth};})));assert.ok(image.some(i=>i.src==='assets/items-v198/'+row.sku+'.webp'&&i.width===320));
     const box=await page.locator('.supply-craft-detail').boundingBox();assert.ok(box.x>=0&&box.y>=0&&box.x+box.width<=width+1&&box.y+box.height<=height+1);await page.screenshot({path:path.join(out,row.sku+'-'+width+'.png')});}}
   assert.deepEqual(errors,[]);console.log('V198 '+(safari?'WebKit':'Chromium')+' PASS: saved shield on courtyard entry, all six selected through equipment UI, exact live models/icons and mobile recipe categories.');

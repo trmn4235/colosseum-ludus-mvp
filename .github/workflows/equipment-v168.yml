@@ -33,11 +33,15 @@ jobs:
           node tests/pit-sql-v173.cjs
           LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs
       - run: npx playwright install --with-deps chromium webkit
-      - run: |
-          node tests/shields-browser-v198.cjs
-          LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shields-v198-webkit node tests/shields-browser-v198.cjs
+      - name: Selected shield models in Chromium and WebKit
+        run: |
           node scripts/render-shields-v198.cjs
           LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shield-renders-webkit node scripts/render-shields-v198.cjs
+      - name: Selected shield equipment and production on touch screens
+        run: |
+          node tests/shields-browser-v198.cjs
+          LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shields-v198-webkit node tests/shields-browser-v198.cjs
+      - run: |
           node tests/arm-equipment-courtyard-v197.cjs
           LUDUS_WEBKIT_TEST=1 node tests/arm-equipment-courtyard-v197.cjs
           node scripts/render-armour-v196.cjs
