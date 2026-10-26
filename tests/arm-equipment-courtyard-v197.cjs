@@ -2,6 +2,8 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{createRequire}=require('node:module');
 const root=path.resolve(__dirname,'..'),req=createRequire(__dirname+'/production-browser-v119.cjs'),{chromium,webkit}=req('playwright');
 let fixture=fs.readFileSync(__dirname+'/production-browser-v119.cjs','utf8');fixture=fixture.slice(0,fixture.lastIndexOf('\n(async()=>{'));
+// This suite needs no caravan reward state from an unrelated workflow.
+fixture=fixture.replace("const progress=JSON.parse(fs.readFileSync('/tmp/caravan-progress-v116.json'));","const progress={rewards:[]};");
 const {server}=new Function('require','__dirname','process',fixture+'\nreturn{server};')(req,__dirname,process);
 const out=process.env.LUDUS_TEST_OUTPUT||'/tmp/arm-fit-v197-'+(process.env.LUDUS_WEBKIT_TEST?'webkit':'chromium');fs.mkdirSync(out,{recursive:true});
 (async()=>{
