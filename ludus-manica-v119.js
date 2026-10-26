@@ -7,10 +7,10 @@ var LudusManica=(()=>{
   const leather=new T.MeshStandardMaterial({color:0x4a2d1c,roughness:.9,side:T.DoubleSide});
   const guard=new T.Group(),plates=[],straps=[];
   for(let i=0;i<7;i++){
-   const r=.047+i*.0025,g=new T.CylinderGeometry(r,r+.002,.035,12,1,true,.25,Math.PI*1.8);
+   const r=.064+i*.0058,g=new T.CylinderGeometry(r,r+.002,.035,12,1,true,.25,Math.PI*1.8);
    g.translate(0,-.108+i*.036,0);plates.push(g);
   }
-  for(const y of [-.075,.075]){const g=new T.CylinderGeometry(.067,.067,.015,12,1,true);g.translate(0,y,0);straps.push(g);}
+  for(const y of [-.075,.075]){const r=.085+y*.14,g=new T.CylinderGeometry(r,r,.015,12,1,true);g.translate(0,y,0);straps.push(g);}
   for(const [parts,material]of [[plates,bronze],[straps,leather]]){
    const joined=typeof ArenaGeometryUtils!=='undefined'?ArenaGeometryUtils.mergeGeometries(parts,false):null;
    for(const geometry of joined?[joined]:parts){const mesh=new T.Mesh(geometry,material);mesh.castShadow=mesh.receiveShadow=true;guard.add(mesh);}
@@ -23,6 +23,7 @@ var LudusManica=(()=>{
  // V196: two permanent bind-pose mounts; imported segments share catalog buffers.
  function imported(id){return !!globalThis.LudusEquipmentCatalog?.entry(id)?.armour;}
  function mount(T,m,fitLimb){
+  for(const side of ['Left','Right']){const slot=fitLimb(m,side+'ForeArm',side+'Hand',get(T).single,.25);slot.group.visible=false;m.gear[side+'manica']=slot;}
   for(const [key,start,end]of [['armUpper','RightArm','RightForeArm'],['armFore','RightForeArm','RightHand']]){
    const slot=fitLimb(m,start,end,new T.Group(),.25);slot.group.scale.y/=.84;slot.group.userData.bindScaleY=slot.group.scale.y;slot.group.visible=false;m.gear[key]=slot;
   }
@@ -39,6 +40,6 @@ var LudusManica=(()=>{
   }
   for(const key of ['armUpper','armFore'])m.gear[key].group.visible=visible&&m.gear[key].group.children.length>0;
  }
- function cap(T,id){const template=globalThis.LudusEquipmentCatalog?.get(id),part=template?.getObjectByName('cap');if(!part)return null;if(!caps196.has(template)){const g=new T.Group(),clone=part.clone(true);clone.position.set(0,0,-.05);g.add(clone);g.userData.rigidArmour196=true;caps196.set(template,g);}return caps196.get(template);}
+ function cap(T,id){const template=globalThis.LudusEquipmentCatalog?.get(id),part=template?.getObjectByName('cap');if(!part)return null;if(!caps196.has(template)){const g=new T.Group(),clone=part.clone(true);clone.position.set(-.015,id==='manica_segmented'?.065:.05,id==='manica_segmented'?-.075:-.05);if(id==='manica_segmented')clone.scale.multiplyScalar(1.08);g.add(clone);g.userData.rigidArmour196=true;caps196.set(template,g);}return caps196.get(template);}
  return{get,imported,mount,sync,cap};
 })();
