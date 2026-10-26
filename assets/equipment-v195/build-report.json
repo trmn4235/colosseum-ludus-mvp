@@ -1,0 +1,306 @@
+{
+  "version": 195,
+  "maxModelAndTextureBytes": 350000,
+  "helmets": [
+    {
+      "id": "gladiator",
+      "source": "assets/equipment/gladiator-9bcb0ac9d566.glb",
+      "file": "assets/equipment-v195/gladiator.glb",
+      "sourceBytes": 447244,
+      "bytes": 280688,
+      "sourceTriangles": 4347,
+      "triangles": 4347,
+      "positionsIdentical": true,
+      "positionSha256": "ad7848741ce9bbef4dbc69f910e44d93a87424485aa417fd61aa8ab899595194",
+      "sourceSha256": "9bcb0ac9d56695da631f80944fc5175100cfe6002ef490d29e2b9016f0f1bd78",
+      "sha256": "c3e43d3c7c9b64b86904e7891d43f2bba0c65e2aba4010e9c354b2963d03a749",
+      "icon": "assets/items-v194/helmet-gold.webp",
+      "iconBytes": 17244,
+      "textures": [
+        {
+          "role": "baseColour",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 75622,
+          "bytes": 54046
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 22623,
+          "bytes": 2978
+        },
+        {
+          "role": "normal",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 96111,
+          "bytes": 60984
+        }
+      ],
+      "decodedTextureBytesWithMips": 3145728
+    },
+    {
+      "id": "knights",
+      "source": "assets/equipment/knights-e30cc69af0fd.glb",
+      "file": "assets/equipment-v195/knights.glb",
+      "sourceBytes": 612424,
+      "bytes": 314788,
+      "sourceTriangles": 3271,
+      "triangles": 3271,
+      "positionsIdentical": true,
+      "positionSha256": "bcd533f807571ac06727282772cbd1123dd537ce8827c5d10c35062bd32ae38d",
+      "sourceSha256": "e30cc69af0fd59456b00eff3582ff56356943a840dfbce5eaef7b78347bc691a",
+      "sha256": "53e4b3a98c8d44eaa31bed5b59de4a17ac217e882fa54e1efbd3d19cdb227e17",
+      "icon": "assets/items-v194/helmet-silver.webp",
+      "iconBytes": 23912,
+      "textures": [
+        {
+          "role": "baseColour",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 106563,
+          "bytes": 72188
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 86015,
+          "bytes": 18288
+        },
+        {
+          "role": "normal",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 59945,
+          "bytes": 36182
+        },
+        {
+          "role": "baseColour",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 68026,
+          "bytes": 47864
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 93334,
+          "bytes": 21122
+        },
+        {
+          "role": "normal",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 50957,
+          "bytes": 30878
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 7795,
+          "bytes": 174
+        }
+      ],
+      "decodedTextureBytesWithMips": 6640981.333333332
+    },
+    {
+      "id": "winged",
+      "source": "assets/equipment/winged-111637d14990.glb",
+      "file": "assets/equipment-v195/winged.glb",
+      "sourceBytes": 520556,
+      "bytes": 266440,
+      "sourceTriangles": 3896,
+      "triangles": 3896,
+      "positionsIdentical": true,
+      "positionSha256": "3c08ece0669cfb6566936fb79a62ae209aa1e792402e524f772a744ec5a1325a",
+      "sourceSha256": "111637d14990f9791d862941a9ff7de801d17358f07e184dea6492c694affca4",
+      "sha256": "06832dbc83e70e2f4cc0a890f4c753e5a3d083e1d5da5c95093362a3cc93c74e",
+      "icon": "assets/items-v194/helmet-winged.webp",
+      "iconBytes": 27646,
+      "textures": [
+        {
+          "role": "baseColour",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 95537,
+          "bytes": 64912
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 145773,
+          "bytes": 25958
+        },
+        {
+          "role": "normal",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 66793,
+          "bytes": 41278
+        }
+      ],
+      "decodedTextureBytesWithMips": 3145728
+    },
+    {
+      "id": "roman",
+      "source": "assets/equipment/roman-6d187d4b7f8c.glb",
+      "file": "assets/equipment-v195/roman.glb",
+      "sourceBytes": 601112,
+      "bytes": 343380,
+      "sourceTriangles": 11290,
+      "triangles": 11290,
+      "positionsIdentical": true,
+      "positionSha256": "969da2ae531e320579dac44e04f5ef6e43c822c61f358248e092a46b86d624eb",
+      "sourceSha256": "6d187d4b7f8ce9ebe0148bb8ed1e58b447ac62a7a6ace31970495e5e15952d37",
+      "sha256": "d298bcc8b3fe633ee25b8642f21c1eb816ab79f816c773e46a99b1d3038571eb",
+      "icon": "assets/items-v194/helmet-roman.webp",
+      "iconBytes": 19584,
+      "textures": [
+        {
+          "role": "baseColour",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 54368,
+          "bytes": 27494
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 60148,
+          "bytes": 12560
+        },
+        {
+          "role": "normal",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 51602,
+          "bytes": 34822
+        }
+      ],
+      "decodedTextureBytesWithMips": 3145728
+    },
+    {
+      "id": "sylvain_helmet",
+      "source": "assets/equipment-v191/sylvain_helmet.cme",
+      "file": "assets/equipment-v195/sylvain_helmet.cme",
+      "sourceBytes": 434936,
+      "bytes": 342928,
+      "sourceTriangles": 6652,
+      "triangles": 6652,
+      "positionsIdentical": true,
+      "positionSha256": "031dc4a7a0f0c32d8f41baf9e62f8e6557ab7c589049e6f813f1981026fb14f1",
+      "sourceSha256": "1cf973beb84b60603dd72c25f8f8ebb464a0ef4d72432b38d4a2c72badf7be09",
+      "sha256": "10c41960906c6ae59f6dcf8aa9f1c177bcb6aab1ef974aa3d153bffb29a72f82",
+      "icon": "assets/items-v169/helmet-sylvain.webp",
+      "iconBytes": 12538,
+      "textures": [
+        {
+          "role": "baseColour",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 56188,
+          "bytes": 55334
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 256,
+          "sourceHeight": 256,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 90210,
+          "bytes": 21026
+        },
+        {
+          "role": "normal",
+          "sourceWidth": 512,
+          "sourceHeight": 512,
+          "width": 512,
+          "height": 512,
+          "sourceBytes": 71392,
+          "bytes": 58002
+        },
+        {
+          "role": "materialData",
+          "sourceWidth": 256,
+          "sourceHeight": 256,
+          "width": 256,
+          "height": 256,
+          "sourceBytes": 35756,
+          "bytes": 27166
+        }
+      ],
+      "decodedTextureBytesWithMips": 3495253.3333333335
+    },
+    {
+      "id": "viking_helmet",
+      "source": "assets/equipment-v189/viking_helmet.cme",
+      "file": "assets/equipment-v189/viking_helmet.cme",
+      "sourceBytes": 322476,
+      "bytes": 322476,
+      "sourceTriangles": 4076,
+      "triangles": 4076,
+      "positionsIdentical": true,
+      "unchanged": true,
+      "sourceSha256": "612a975cb036a06e8a821eb2aacd68dbb2c9505edd8dcbdd81562d316539d39a",
+      "sha256": "612a975cb036a06e8a821eb2aacd68dbb2c9505edd8dcbdd81562d316539d39a",
+      "icon": "assets/items-v189/helmet-viking.webp",
+      "iconBytes": 6382
+    },
+    {
+      "id": "steel_helmet",
+      "source": "assets/equipment-v189/steel_helmet.cme",
+      "file": "assets/equipment-v189/steel_helmet.cme",
+      "sourceBytes": 173100,
+      "bytes": 173100,
+      "sourceTriangles": 2358,
+      "triangles": 2358,
+      "positionsIdentical": true,
+      "unchanged": true,
+      "sourceSha256": "2994f069565b7f32ba8a9f8dc50188dec6bf8791cc909c59a64ab898a539ed27",
+      "sha256": "2994f069565b7f32ba8a9f8dc50188dec6bf8791cc909c59a64ab898a539ed27",
+      "icon": "assets/items-v189/helmet-steel.webp",
+      "iconBytes": 5408
+    }
+  ]
+}

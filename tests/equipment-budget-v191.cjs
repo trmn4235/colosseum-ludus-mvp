@@ -6,11 +6,12 @@ function baselineSource(){
  return html.slice(start,end).replace('var ClassEquipment=','var ClassEquipmentV190=').replace(/ function detailedGreave\(\)[\s\S]*?(?= function fitLimb)/,fs.readFileSync(root+'/tests/fixtures/greave-v190.js','utf8'));
 }
 test('active helmet and icons meet transfer, texture and geometry budgets',async()=>{
+ const active=require('../assets/equipment-v195/build-report.json').helmets.find(h=>h.id==='sylvain_helmet');
  const c=await rigRuntime();c.crypto=crypto.webcrypto;vm.runInContext(fs.readFileSync(root+'/equipment-catalog-v167.js','utf8'),c);
  const file='assets/equipment-v167/'+c.LudusEquipmentCatalog.entry('sylvain_helmet').file,b=fs.readFileSync(root+'/'+file),raw=Buffer.from(await c.LudusEquipmentCatalog.decode(b)),j=JSON.parse(raw.subarray(20,20+raw.readUInt32LE(12)));
- assert.equal(crypto.createHash('sha256').update(b).digest('hex'),report.helmet.sha256);assert.equal(b.length,report.helmet.bytes);assert.ok(b.length<500000);
+ assert.equal(crypto.createHash('sha256').update(b).digest('hex'),active.sha256);assert.equal(b.length,active.bytes);assert.ok(b.length<=350000);
  assert.ok(j.extensionsRequired.includes('EXT_texture_webp'));assert.equal(j.images.length,4);assert.ok(j.images.every(i=>i.bufferView!==undefined&&i.mimeType==='image/webp'&&!i.uri));
- assert.equal(j.meshes.length,1);assert.equal(j.meshes[0].primitives.length,1);assert.equal(j.animations?.length||0,0);assert.ok(report.helmet.decodedTextureBytesWithMips<3.4*1024*1024);
+ assert.equal(j.meshes.length,1);assert.equal(j.meshes[0].primitives.length,1);assert.equal(j.animations?.length||0,0);assert.ok(active.decodedTextureBytesWithMips<3.4*1024*1024);
  const g=await c.LudusEquipmentCatalog.load(c.THREE,'sylvain_helmet',{bytes:b});assert.equal(count(g),6652);assert.equal(c.LudusEquipmentCatalog.entry('sylvain_helmet').triangles,count(g));
  for(const r of report.icons){const data=fs.readFileSync(root+'/assets/pit-v191/'+r.file);assert.equal(data.length,r.bytes);assert.equal(crypto.createHash('sha256').update(data).digest('hex'),r.sha256);assert.ok(data.length<35000);assert.ok(r.alpha);assert.equal(r.width,512);}
  const selection=fs.readFileSync(root+'/san-avlusu.html','utf8');assert.ok(!/pit-v178\/(?:stone|wood)-icon\.png/.test(selection));assert.equal((selection.match(/assets\/pit-v191\/(?:stone|wood)-icon\.webp/g)||[]).length,4);
@@ -36,7 +37,7 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
  c.ImportedGladiator.dispose(m);
 });
 test('every entry point and dynamic loader invalidates changed cached scripts',()=>{
- for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(root+'/'+page,'utf8'),/equipment-catalog-v167\.js\?v=revision193/);
- assert.match(fs.readFileSync(root+'/caravan-field.html','utf8'),/caravan-battle-v126\.js\?v=revision194/);
- assert.match(fs.readFileSync(root+'/san-avlusu.html','utf8'),/pit-visit-v172\.js\?v=revision194/);
+ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(root+'/'+page,'utf8'),/equipment-catalog-v167\.js\?v=revision195/);
+ assert.match(fs.readFileSync(root+'/caravan-field.html','utf8'),/caravan-battle-v126\.js\?v=revision195/);
+ assert.match(fs.readFileSync(root+'/san-avlusu.html','utf8'),/pit-visit-v172\.js\?v=revision195/);
 });
