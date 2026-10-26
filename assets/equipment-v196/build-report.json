@@ -1,0 +1,250 @@
+{
+  "version": 196,
+  "maxModelAndTextureBytes": 350000,
+  "items": [
+    {
+      "id": "manica_segmented",
+      "file": "manica_segmented.cme",
+      "sourceFile": "andy-gladiator.glb",
+      "sourceBytes": 13354164,
+      "sourceTriangles": 116768,
+      "extractedTriangles": 6404,
+      "triangles": 2450,
+      "bytes": 105616,
+      "drawCalls": 3,
+      "segments": [
+        "cap",
+        "upper",
+        "fore"
+      ],
+      "side": "Right",
+      "sourceSha256": "b7bcc003c67f35a65049236937f08e0aa9b4c73e22b6a844914c2747b117f8aa",
+      "sha256": "8612f03865933b14ffd425b3626d725a957a784d94a7d6f5cd4515df3222f2e0",
+      "textures": [
+        {
+          "role": "base",
+          "width": 384,
+          "height": 384,
+          "bytes": 20102
+        },
+        {
+          "role": "normal",
+          "width": 384,
+          "height": 384,
+          "bytes": 26358
+        },
+        {
+          "role": "orm",
+          "width": 384,
+          "height": 384,
+          "bytes": 7456
+        }
+      ],
+      "crops": [
+        {
+          "material": "Shoulder_armour1_4",
+          "uvBounds": [
+            0,
+            0,
+            0.9852051782608032,
+            1
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 2359296
+    },
+    {
+      "id": "manica_lion",
+      "file": "manica_lion.cme",
+      "sourceFile": "maned-gladiator.glb",
+      "sourceBytes": 18679688,
+      "sourceTriangles": 45243,
+      "extractedTriangles": 3831,
+      "triangles": 2687,
+      "bytes": 183164,
+      "drawCalls": 3,
+      "segments": [
+        "cap",
+        "upper",
+        "fore"
+      ],
+      "side": "Right",
+      "sourceSha256": "92743fd311c8f31befae08dd26f69b5a57bb4784b86ab32a9f3891ac644be1b6",
+      "sha256": "c066f80c537c8b2711786e46829b3a955c26dba31388d3646c2f22b857d1284a",
+      "textures": [
+        {
+          "role": "base",
+          "width": 512,
+          "height": 256,
+          "bytes": 20660
+        },
+        {
+          "role": "normal",
+          "width": 512,
+          "height": 256,
+          "bytes": 37268
+        },
+        {
+          "role": "orm",
+          "width": 512,
+          "height": 256,
+          "bytes": 52932
+        }
+      ],
+      "crops": [
+        {
+          "material": "lambert5SG",
+          "uvBounds": [
+            0.001955999881029129,
+            0.11994900077581405,
+            0.9977269816398621,
+            1
+          ]
+        },
+        {
+          "material": "lambert8SG",
+          "uvBounds": [
+            0.009322999864816665,
+            0.0054189999401569365,
+            0.3108919906616211,
+            0.4700770127773285
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 2097152
+    },
+    {
+      "id": "trident_gladiator",
+      "file": "trident_gladiator.cme",
+      "sourceFile": "maned-gladiator.glb",
+      "sourceBytes": 18679688,
+      "sourceTriangles": 45243,
+      "extractedTriangles": 1368,
+      "triangles": 1368,
+      "bytes": 69392,
+      "drawCalls": 1,
+      "segments": [
+        "weapon"
+      ],
+      "sourceSha256": "92743fd311c8f31befae08dd26f69b5a57bb4784b86ab32a9f3891ac644be1b6",
+      "sha256": "77abc8c6e0940729cee9fc1bcef42786bbd750a92b24e3ed37a19f6408ab55e8",
+      "textures": [
+        {
+          "role": "base",
+          "width": 256,
+          "height": 256,
+          "bytes": 8802
+        },
+        {
+          "role": "normal",
+          "width": 256,
+          "height": 256,
+          "bytes": 12552
+        },
+        {
+          "role": "orm",
+          "width": 256,
+          "height": 256,
+          "bytes": 17392
+        }
+      ],
+      "crops": [
+        {
+          "material": "lambert12SG",
+          "uvBounds": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 1048576
+    },
+    {
+      "id": "manica_leather",
+      "file": "manica_leather.cme",
+      "sourceFile": "leather-arm.glb",
+      "sourceBytes": 7603900,
+      "sourceTriangles": 11918,
+      "extractedTriangles": 11918,
+      "triangles": 3177,
+      "bytes": 167500,
+      "drawCalls": 1,
+      "segments": [
+        "fore"
+      ],
+      "side": "Right",
+      "sourceSha256": "ce25b118118e32c315c5ee1b92290142b58413a795c164a0b64dff4ae3a7ec81",
+      "sha256": "fc887de7a6d5cb7c67613f409de20d02a98ae2138dba3d764b4d303861177227",
+      "textures": [
+        {
+          "role": "base",
+          "width": 510,
+          "height": 340,
+          "bytes": 24122
+        },
+        {
+          "role": "normal",
+          "width": 510,
+          "height": 340,
+          "bytes": 14932
+        },
+        {
+          "role": "orm",
+          "width": 510,
+          "height": 340,
+          "bytes": 35928
+        }
+      ],
+      "crops": [
+        {
+          "material": "Buckleblinn1SG",
+          "uvBounds": [
+            0,
+            0,
+            0.5388090062141419,
+            1
+          ]
+        },
+        {
+          "material": "Buckleblinn3SG",
+          "uvBounds": [
+            0,
+            0,
+            0.8054159927368164,
+            0.7452639985084534
+          ]
+        },
+        {
+          "material": "Buckleblinn4SG",
+          "uvBounds": [
+            0,
+            0,
+            0.9914320158958435,
+            0.9578369903564453
+          ]
+        },
+        {
+          "material": "Buckleblinn5SG",
+          "uvBounds": [
+            0,
+            0,
+            1,
+            0.9881709861755371
+          ]
+        },
+        {
+          "material": "Buckleblinn7SG",
+          "uvBounds": [
+            0.005567000135779381,
+            0,
+            0.9894300150871277,
+            0.9878559756278992
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 2774400
+    }
+  ]
+}

@@ -19,6 +19,6 @@ test('packing preserves every triangle, vertex position and material assignment'
 test('every rig uses the budgeted files without falling back to a heavier helmet',()=>{
  for(const file of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js']){const s=fs.readFileSync(file,'utf8'),data=JSON.parse(s.match(/var LUDUS_HELMET_DATA=(\{[^;]+\});/)[1]);for(const row of report.helmets.filter(h=>!h.id.endsWith('_helmet')))assert.equal(data[row.id],row.file,file+' '+row.id);}
  for(const row of report.helmets.filter(h=>h.id.endsWith('_helmet'))){const file=require('node:path').normalize('assets/equipment-v167/'+c.LudusEquipmentCatalog.entry(row.id).file);assert.equal(file,row.file);}
- for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(page,'utf8'),/equipment-catalog-v167\.js\?v=revision195/);
- assert.match(fs.readFileSync('caravan-battle-v126.js','utf8'),/revision195/);assert.match(fs.readFileSync('pit-visit-v172.js','utf8'),/file==='caravan-rig-v126.js'\?'revision195'/);
+ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(page,'utf8'),/equipment-catalog-v167\.js\?v=revision196/);
+ assert.match(fs.readFileSync('caravan-battle-v126.js','utf8'),/revision196/);assert.match(fs.readFileSync('pit-visit-v172.js','utf8'),/s.src=file\+'\?v='\+\('revision196'\)/);
 });

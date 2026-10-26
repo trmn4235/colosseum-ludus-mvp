@@ -1,0 +1,30 @@
+[
+  {
+    "sku": "manica-segmented",
+    "id": "manica_segmented",
+    "triangles": 2450,
+    "drawCalls": 3,
+    "iconBytes": 12566
+  },
+  {
+    "sku": "manica-lion",
+    "id": "manica_lion",
+    "triangles": 2687,
+    "drawCalls": 3,
+    "iconBytes": 11430
+  },
+  {
+    "sku": "manica-leather",
+    "id": "manica_leather",
+    "triangles": 3177,
+    "drawCalls": 1,
+    "iconBytes": 14962
+  },
+  {
+    "sku": "trident-gladiator",
+    "id": "trident_gladiator",
+    "triangles": 1368,
+    "drawCalls": 1,
+    "iconBytes": 3650
+  }
+]

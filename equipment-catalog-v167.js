@@ -3,6 +3,10 @@
 (function(root){
  'use strict';
  const records=Object.freeze({
+  manica_segmented:Object.freeze({id:'manica_segmented',label:'Plakalı gladyatör kolluğu',kind:'gloves',file:'../equipment-v196/manica_segmented.cme',triangles:2450,height:0.25,armour:true,side:'Right'}),
+  manica_lion:Object.freeze({id:'manica_lion',label:'Aslan başlı gladyatör kolluğu',kind:'gloves',file:'../equipment-v196/manica_lion.cme',triangles:2687,height:0.25,armour:true,side:'Right'}),
+  trident_gladiator:Object.freeze({id:'trident_gladiator',label:'Gladyatör tridenti',kind:'weapon',file:'../equipment-v196/trident_gladiator.cme',triangles:1368,height:1.8,subcategory:'polearms'}),
+  manica_leather:Object.freeze({id:'manica_leather',label:'Tokalı deri kolluk',kind:'gloves',file:'../equipment-v196/manica_leather.cme',triangles:3177,height:0.25,armour:true,side:'Right'}),
   halberd:Object.freeze({id:'halberd',label:'Halberd',kind:'weapon',subcategory:'swords',file:'../equipment-v193/halberd.cme',triangles:2899,height:1.80}),
   pit_axe:Object.freeze({id:'pit_axe',label:'Balta',kind:'weapon',venue:'pit',file:'../pit-v192/pit_axe.cme',triangles:1585,height:.90}),
   pit_stone_mace:Object.freeze({id:'pit_stone_mace',label:'Taş gürz',kind:'weapon',venue:'pit',file:'../pit-v173/pit_stone_mace.cme',triangles:1908,height:.94}),

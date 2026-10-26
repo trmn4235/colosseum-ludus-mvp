@@ -135,7 +135,7 @@ var ArenaAnatomy=(()=>{
   for(const left of [false,true]){
    const kind=left?f.offhand:f.weapon;if(!kind||active&&!!active.left===left)continue;
    const anchor=left?m.offhandAnchor:m.weaponAnchor;
-   const strike=(['spear','trident','halberd'].includes(kind))?(typeof ArenaMotion.poleGuard==='function'?ArenaMotion.poleGuard(f,left):{grip:{x:left?.34:-.34,y:1.27,z:.25},dir:{x:0,y:.18,z:.98366661},pole:true}):{grip:{x:left?.34:-.34,y:1.23,z:.20},dir:{x:left?.15:-.15,y:.96,z:.2364}};if(!strike)continue;
+   const strike=(['spear','trident','trident_gladiator','halberd'].includes(kind))?(typeof ArenaMotion.poleGuard==='function'?ArenaMotion.poleGuard(f,left):{grip:{x:left?.34:-.34,y:1.27,z:.25},dir:{x:0,y:.18,z:.98366661},pole:true}):{grip:{x:left?.34:-.34,y:1.23,z:.20},dir:{x:left?.15:-.15,y:.96,z:.2364}};if(!strike)continue;
    if(!strike.pole&&anchor.children[0]?.userData.asset==='roman_spatha.glb')for(const axis of ['x','y','z'])strike.grip[axis]+=strike.dir[axis]*.065;
    const point=grip(m,left,strike,reach);anchor.position.copy(anchor.parent.worldToLocal(point));
    const {v,q}=m.grip166[left?'Left':'Right'];

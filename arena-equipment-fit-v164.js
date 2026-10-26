@@ -172,7 +172,7 @@ var ArenaEquipmentFit = (() => {
     const T = THREE;
     for (const name of slots) {
       const group = m.gear[name].group;
-      if (group.userData.fitted164) continue;
+      if (group.userData.fitted164 || group.userData.rigidArmour196) continue;
       group.updateMatrix();
       const placement = group.matrix.clone();
       // The imported caps were centred in front of the deltoid; the full cuirass

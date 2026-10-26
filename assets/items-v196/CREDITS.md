@@ -1,0 +1,1 @@
+Inventory icons are deterministic Three.js renders of the corresponding V196 source-derived equipment. See [source licenses and attribution](../equipment-v196/CREDITS.md). No generative imagery was used.

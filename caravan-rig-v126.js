@@ -261,7 +261,7 @@ var LUDUS_ARMOUR_DATA={"chest_plate":"assets/equipment/chest_plate-6376ad0c8654.
 var LudusArmour=(function(){
  const T=THREE,templates={},empty=new T.Group();let pending;
  const names={gladiator_chest:'Gladyatör göğüs zırhı',chest_plate:'İşlemeli göğüs zırhı',armor_shoulder:'İşlemeli çift omuzluk',shoulder_armor:'Çift omuz koruma'};
- function model(kind,value){return kind==='chest'?'chest_plate':(value==='manica'?'manica':value==='shoulder_armor'?'shoulder_armor':'armor_shoulder');}
+ function model(kind,value){return kind==='chest'?'chest_plate':LudusManica.imported(value)?value:(value==='manica'?'manica':value==='shoulder_armor'?'shoulder_armor':'armor_shoulder');}
  function merge(scene){scene.updateMatrixWorld(true);const g=new T.Group(),batches=new Map();scene.traverse(o=>{if(!o.isMesh)return;const geo=o.geometry.clone().applyMatrix4(o.matrixWorld),mat=o.material;for(const [name,attr]of Object.entries(geo.attributes))if(attr.isInterleavedBufferAttribute){const data=new attr.data.array.constructor(attr.count*attr.itemSize);for(let i=0;i<attr.count;i++)for(let k=0;k<attr.itemSize;k++)data[i*attr.itemSize+k]=attr.data.array[i*attr.data.stride+attr.offset+k];geo.setAttribute(name,new T.BufferAttribute(data,attr.itemSize,attr.normalized));}mat.side=T.DoubleSide;mat.envMapIntensity=.8;const signature=mat.uuid+':'+!!geo.index+':'+Object.keys(geo.attributes).sort().join(',');if(!batches.has(signature))batches.set(signature,{mat,list:[]});batches.get(signature).list.push(geo);});for(const {mat,list}of batches.values()){const joined=list.length>1?ArenaGeometryUtils.mergeGeometries(list,false):list[0];for(const geo of joined?[joined]:list){geo.computeBoundingBox();geo.computeBoundingSphere();const o=new T.Mesh(geo,mat);o.castShadow=o.receiveShadow=true;g.add(o);}if(joined&&list.length>1)list.forEach(x=>x.dispose());}return g;}
  function subset(mesh,test){const src=mesh.geometry,index=src.index,indices=[];for(let i=0;i<(index?.count||src.attributes.position.count);i+=3){const a=index?index.getX(i):i,b=index?index.getX(i+1):i+1,c=index?index.getX(i+2):i+2;const x=(src.attributes.position.getX(a)+src.attributes.position.getX(b)+src.attributes.position.getX(c))/3;if(test(x))indices.push(a,b,c);}const remap=new Map(),used=[];for(const i of indices)if(!remap.has(i)){remap.set(i,used.length);used.push(i);}const geo=new T.BufferGeometry();for(const [name,attr]of Object.entries(src.attributes)){const data=new attr.array.constructor(used.length*attr.itemSize);used.forEach((old,n)=>{for(let k=0;k<attr.itemSize;k++)data[n*attr.itemSize+k]=attr.array[old*attr.itemSize+k];});geo.setAttribute(name,new T.BufferAttribute(data,attr.itemSize,attr.normalized));}geo.setIndex(indices.map(i=>remap.get(i)));geo.computeBoundingBox();geo.computeBoundingSphere();const o=new T.Mesh(geo,mesh.material);o.castShadow=o.receiveShadow=true;return o;}
  function prepare(scene,key){const whole=merge(scene),box=new T.Box3().setFromObject(whole),center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3());
@@ -277,7 +277,7 @@ var LudusArmour=(function(){
   pieces.collar.userData.asset=key+'-collar-v19';return pieces;
  }
  async function load(){if(pending)return pending;pending=Promise.all(Object.keys(LUDUS_ARMOUR_DATA).map(async key=>{const bytes=await ArenaAssetLoad(LUDUS_ARMOUR_DATA[key]);const gltf=await new T.GLTFLoader().parseAsync(bytes,'');templates[key]=prepare(gltf.scene,key);})).catch(error=>{pending=null;throw error;});return pending;}
- function get(kind,value,side){const key=model(kind,value);if(key==='manica')return side?empty:LudusManica.get(T).whole;const t=templates[key];return t?.[side||'whole']||t?.whole||empty;}
+ function get(kind,value,side){const key=model(kind,value);if(LudusManica.imported(key))return side?(side==='right'?LudusManica.cap(T,key)||empty:empty):globalThis.LudusEquipmentCatalog.request(T,key);if(key==='manica')return side?empty:LudusManica.get(T).whole;const t=templates[key];return t?.[side||'whole']||t?.whole||empty;}
  return {load,get,model,names,prepare,get loaded(){return Object.keys(templates).length;}};
 })();
 
@@ -348,9 +348,9 @@ var ClassEquipment=(function(){
 
  function weapon(kind){const selected=globalThis.LudusEquipmentCatalog?.request(T,kind);if(selected)return selected;const imported=typeof ImportedEquipment!=='undefined'&&ImportedEquipment.weapon(kind);if(imported)return imported;if(weapons[kind])return weapons[kind];const g=new T.Group();g.userData.kind=kind;
   mesh(g,new T.CylinderGeometry(.024,.03,.24,8),dark);
-  if(kind==='spear'||kind==='trident'){
+  if(kind==='spear'||(kind==='trident'||kind==='trident_gladiator')){
    mesh(g,new T.CylinderGeometry(.022,.026,1.8,8),dark,0,.4);
-   if(kind==='trident'){box(g,.4,.045,.045,bronze,0,1.3);for(const x of [-.18,0,.18]){box(g,.026,.28,.026,steel,x,1.43);mesh(g,new T.ConeGeometry(.04,.18,6),steel,x,1.65);}}
+   if((kind==='trident'||kind==='trident_gladiator')){box(g,.4,.045,.045,bronze,0,1.3);for(const x of [-.18,0,.18]){box(g,.026,.28,.026,steel,x,1.43);mesh(g,new T.ConeGeometry(.04,.18,6),steel,x,1.65);}}
    else mesh(g,new T.ConeGeometry(.07,.38,4),steel,0,1.48);
   }else if(kind==='mace'){
    mesh(g,new T.CylinderGeometry(.027,.035,.5,8),dark,0,.16);
@@ -403,10 +403,10 @@ var ClassEquipment=(function(){
   for(const a of [m.weaponAnchor,m.offhandAnchor])a.userData.restQuaternion=a.quaternion.clone();
   setWeapon(m,ArenaClasses[m.type].weapon);
   m.teamBand=attach(m,'Hips',new T.Group(),[0,.04,0]);
-  m.teamMark=new T.Group();m.root.add(m.teamMark);
+  m.teamMark=new T.Group();m.root.add(m.teamMark);LudusManica.mount(T,m,fitLimb);
  }
  function setWeapon(m,kind){if(m.equippedWeapon===kind)return;m.equippedWeapon=kind;replaceWeapon(m.weaponAnchor,kind);}
- function replaceWeapon(anchor,kind){anchor.clear();if(kind){const g=weapon(kind).clone(true);g.rotation.x=['spear','trident','halberd'].includes(kind)?.25:2.75;g.userData.restRotation=g.rotation.x;anchor.add(g);}}
+ function replaceWeapon(anchor,kind){anchor.clear();if(kind){const g=weapon(kind).clone(true);g.rotation.x=['spear','trident','trident_gladiator','halberd'].includes(kind)?.25:2.75;g.userData.restRotation=g.rotation.x;anchor.add(g);}}
  const teamColors=Array.from({length:20},(_,i)=>i<4?(typeof NavalRoute!=='undefined'&&NavalRoute.requested()?[0x8d2947,0xeee6d0,0x696d76,0x3d8766]:[0x1677e8,0xc32125,0x29a65a,0x9b55da])[i]:new T.Color().setHSL(i/20,.7,.5).getHex());
  const teamMaterials=teamColors.map(color=>new T.MeshStandardMaterial({color,roughness:.65}));
  const ringMaterials=teamColors.map(color=>new T.MeshBasicMaterial({color,side:T.DoubleSide,transparent:true,opacity:.85,depthWrite:false}));
@@ -448,7 +448,7 @@ var ClassEquipment=(function(){
   if(s&&m.equippedWeapon===visualWeapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===visualWeapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
   m.gearStateV84={revision:revisionV84,weapon:visualWeapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
 
-  const revision=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0);if(m.assetRevision!==revision){m.assetRevision=revision;m.helmetStyle=undefined;m.equippedWeapon=undefined;m.offhandKind=undefined;m.shieldStyle=undefined;}
+  const revision=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0);if(m.assetRevision!==revision){m.assetRevision=revision;m.helmetStyle=undefined;m.equippedWeapon=undefined;m.offhandKind=undefined;m.shieldStyle=undefined;m.shoulderModel=undefined;}
   setWeapon(m,visualWeapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
@@ -463,7 +463,7 @@ var ClassEquipment=(function(){
   for(const side of ['Left','Right'])if(m.gear[side+'manica'])m.gear[side+'manica'].group.visible=!!f.shoulders&&shoulderModel==='manica';
   for(const side of ['Left','Right'])m.gear[side+'greave'].group.visible=greavesVisible;for(const key of ['shoulder','otherShoulder','collar'])m.gear[key].group.visible=shouldersVisible&&(key!=='collar'||shoulderModel==='armor_shoulder');
   if(m.team!==f.team){m.team=f.team;const team=f.team||0;m.teamBand.group.clear();const band=new T.Mesh(bandGeo,dark);band.scale.z=.68;m.teamBand.group.add(band);m.teamMark.clear();const ring=new T.Mesh(teamRings[team],ringMaterials[team]);ring.rotation.x=-Math.PI/2;ring.position.y=.035;m.teamMark.add(ring);}
-  m.teamMark.visible=f.hp>0;ArenaEquipmentFit.sync(m);
+  LudusManica.sync(T,m,f);m.teamMark.visible=f.hp>0;ArenaEquipmentFit.sync(m);
  }
  function item(d){if(d.kind==='helmet')return LudusHelmets.get(d.itemEntry?.item?.model||d.helmetModel||d.helmetColor||d.style);if(d.kind==='shoulders')return LudusArmour.get('gloves',d.itemEntry?.item?.model||d.shoulderModel);if(d.kind==='shield')return shield(d.style||'secutor');if(d.kind==='chest')return LudusArmour.get('chest',d.itemEntry?.item?.model||d.chestModel);if(d.kind==='greaves')return parts('murmillo').greave;if(d.kind==='net'||d.kind==='scissor')return parts(d.kind==='net'?'retiarius':'scissor').left;return weapon(d.kind);}
  const flexAxis=new T.Vector3(0,1,0),flexDirection=new T.Vector3();
@@ -564,7 +564,7 @@ var ImportedGladiator=(function(){
   // Reuse the existing sword rig for three short swings without extra model assets.
   if(f.action==='triple')f={...f,action:'attack',timer:f.timer%.2,chain:1+Math.floor(f.timer/.2)};
   m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;ClassEquipment.sync(m,f);
-   const planting=(['bowshot','attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident','halberd'].includes(f.weapon))&&f.hp>0;
+   const planting=(['bowshot','attack','recoil','stagger','hurt'].includes(f.action)||f.guardFlash>0||f.reaction>0||f.motionVersion===163&&f.action==='evade'&&f.evadeKind==='duck'||f.motionVersion===163&&f.action==='idle'&&f.move<.1&&['spear','trident','trident_gladiator','halberd'].includes(f.weapon))&&f.hp>0;
    if(planting&&(!m.plantedFeet||f.action==='attack'&&f.timer<(m.plantTimer||0))){m.root.updateMatrixWorld(true);m.plantedFeet={};m.plantElapsed=0;for(const side of ['Left','Right']){const foot=m.bones[side+'Foot'];if(foot)m.plantedFeet[side]={position:m.root.worldToLocal(foot.getWorldPosition(new T.Vector3())),quaternion:m.root.getWorldQuaternion(new T.Quaternion()).invert().multiply(foot.getWorldQuaternion(new T.Quaternion()))};}}
    if(!planting)m.plantedFeet=null;else m.plantElapsed=(m.plantElapsed||0)+Math.max(0,dt);m.plantTimer=f.timer;
   for(const anchor of [m.weaponAnchor,m.offhandAnchor]){anchor.position.set(0,0,0);anchor.quaternion.copy(anchor.userData.restQuaternion);for(const g of anchor.children){g.rotation.set(g.userData.restRotation||0,0,0);g.position.y=0;}}
@@ -609,7 +609,7 @@ var ImportedGladiator=(function(){
   if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=m.bones.RightHand.userData.anatomy166?ArenaAnatomy.grip(m,left,strike,reach):reach(m,left,strike.grip);
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
    anchor.position.copy(anchor.parent.worldToLocal(hand));
-   const pole=strike.pole||['spear','trident','halberd'].includes(f.attackWeapon||f.weapon);
+   const pole=strike.pole||['spear','trident','trident_gladiator','halberd'].includes(f.attackWeapon||f.weapon);
    if(pole&&!m.bones.RightHand.userData.anatomy166){
     const palm=anchor.parent,rest=anchor.userData.restQuaternion,desired=m.root.getWorldQuaternion(ik.strikeQ[0]).multiply(ik.strikeQ[1].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z)));
     palm.quaternion.copy(palm.parent.getWorldQuaternion(ik.strikeQ[2]).invert().multiply(desired).multiply(ik.strikeQ[1].copy(rest).invert()));palm.updateWorldMatrix(false,true);anchor.quaternion.copy(rest);anchor.position.set(0,0,0);
