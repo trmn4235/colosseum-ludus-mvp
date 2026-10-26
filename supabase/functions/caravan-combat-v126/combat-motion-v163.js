@@ -117,7 +117,7 @@ function install(A,M,options={}){
  M.shieldContact=function(f,v,from,to){
   if(!enabled(f))return base.shieldContact(f,v,from,to);
   if(!v.blocking||!v.shield||v.shieldHeldBy!==null)return null;
-  const c=Math.cos(v.angle),s=Math.sin(v.angle),g=M.guardPoint(v),width=['thraex','hoplomachus'].includes(v.shieldStyle)?.34:.40,height=['thraex','hoplomachus'].includes(v.shieldStyle)?.39:.56;
+  const c=Math.cos(v.angle),s=Math.sin(v.angle),g=M.guardPoint(v),width=['thraex','hoplomachus','shield_parma','shield_celtic','shield_azure'].includes(v.shieldStyle)?.34:.40,height=['thraex','hoplomachus','shield_parma','shield_celtic','shield_azure'].includes(v.shieldStyle)?.39:.56;
   const r=M.shieldResponse(v),cp=Math.cos(r.pitch),sp=Math.sin(r.pitch),cy=Math.cos(r.yaw),sy=Math.sin(r.yaw),cr=Math.cos(r.roll),sr=Math.sin(r.roll);
   const local=p=>{const x=(p.x-v.x)*c-(p.z-v.z)*s-g.x,y=p.y-(v.navHeight||0)-g.y,z=(p.x-v.x)*s+(p.z-v.z)*c-g.z,yy=y*cp+z*sp,zz=-y*sp+z*cp,xx=x*cy-zz*sy;return{x:xx*cr+yy*sr,y:-xx*sr+yy*cr,z:x*sy+zz*cy};};
   const cross=(a,b)=>{const x=local(a),y=local(b),dz=y.z-x.z;if(Math.abs(dz)<1e-8)return null;const u=-x.z/dz;if(u<0||u>1)return null;return Math.abs(mix(x.x,y.x,u))<=width+.07&&Math.abs(mix(x.y,y.y,u))<=height+.07?{x:mix(a.x,b.x,u),y:mix(a.y,b.y,u),z:mix(a.z,b.z,u)}:null;};

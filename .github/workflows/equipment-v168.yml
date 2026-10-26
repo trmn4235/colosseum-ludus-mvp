@@ -2,28 +2,32 @@ name: Equipment categories and shield breaking
 on:
   push:
     branches: [main]
-    paths: ['assets/equipment-v197/**', 'assets/items-v197/**', 'scripts/*arm*-v197*', 'assets/equipment-v196/**', 'assets/items-v196/**', 'scripts/*armour-v196*', 'tests/arm-equipment*', 'supabase/migrations/*arm_equipment*', 'ludus-manica-v119.js', 'arena-equipment-fit-v164.js', 'assets/equipment-v195/**', 'scripts/pack-helmet-budget-v195.mjs', 'tests/helmet-budget-v195.cjs', 'tests/helmet-budget-browser-v195.cjs', 'assets/items-v194/**', 'tests/helmet-identity-*', 'scripts/render-helmet-icons-v194.cjs', 'supabase/migrations/*helmet_identity*', 'assets/equipment-v193/**', 'assets/items-v193/**', 'tests/halberd-*', 'supabase/migrations/*halberd*', 'assets/equipment-v191/**', 'assets/pit-v191/**', 'scripts/pack-equipment-v191.mjs', 'tests/equipment-budget-v191.cjs', 'tests/equipment-render-v191.cjs', 'tests/fixtures/greave-v190.js', 'san-avlusu.html', 'pit-visit-v172.js', 'assets/equipment-v190/**', 'tests/classic-equipment*', 'scripts/pack-classic-equipment-v190.mjs', 'equipment-*', 'assets/equipment-v189/**', 'assets/items-v189/**', 'ludus-production-v119.js', 'tests/helmet*', 'supabase/migrations/*lightweight_helmets*', '.github/workflows/equipment-v168.yml']
+    paths: ['assets/equipment-v198/**', 'assets/items-v198/**', 'scripts/*shields-v198*', 'tests/shields-*', 'supabase/migrations/*selected_shields*', 'assets/equipment-v197/**', 'assets/items-v197/**', 'scripts/*arm*-v197*', 'assets/equipment-v196/**', 'assets/items-v196/**', 'scripts/*armour-v196*', 'tests/arm-equipment*', 'supabase/migrations/*arm_equipment*', 'ludus-manica-v119.js', 'arena-equipment-fit-v164.js', 'assets/equipment-v195/**', 'scripts/pack-helmet-budget-v195.mjs', 'tests/helmet-budget-v195.cjs', 'tests/helmet-budget-browser-v195.cjs', 'assets/items-v194/**', 'tests/helmet-identity-*', 'scripts/render-helmet-icons-v194.cjs', 'supabase/migrations/*helmet_identity*', 'assets/equipment-v193/**', 'assets/items-v193/**', 'tests/halberd-*', 'supabase/migrations/*halberd*', 'assets/equipment-v191/**', 'assets/pit-v191/**', 'scripts/pack-equipment-v191.mjs', 'tests/equipment-budget-v191.cjs', 'tests/equipment-render-v191.cjs', 'tests/fixtures/greave-v190.js', 'san-avlusu.html', 'pit-visit-v172.js', 'assets/equipment-v190/**', 'tests/classic-equipment*', 'scripts/pack-classic-equipment-v190.mjs', 'equipment-*', 'assets/equipment-v189/**', 'assets/items-v189/**', 'ludus-production-v119.js', 'tests/helmet*', 'supabase/migrations/*lightweight_helmets*', '.github/workflows/equipment-v168.yml']
   pull_request:
     branches: [main]
-    paths: ['assets/equipment-v197/**', 'assets/items-v197/**', 'scripts/*arm*-v197*', 'assets/equipment-v196/**', 'assets/items-v196/**', 'scripts/*armour-v196*', 'tests/arm-equipment*', 'supabase/migrations/*arm_equipment*', 'ludus-manica-v119.js', 'arena-equipment-fit-v164.js', 'assets/equipment-v195/**', 'scripts/pack-helmet-budget-v195.mjs', 'tests/helmet-budget-v195.cjs', 'tests/helmet-budget-browser-v195.cjs', 'assets/items-v194/**', 'tests/helmet-identity-*', 'scripts/render-helmet-icons-v194.cjs', 'supabase/migrations/*helmet_identity*', 'assets/equipment-v193/**', 'assets/items-v193/**', 'tests/halberd-*', 'supabase/migrations/*halberd*', 'assets/equipment-v191/**', 'assets/pit-v191/**', 'scripts/pack-equipment-v191.mjs', 'tests/equipment-budget-v191.cjs', 'tests/equipment-render-v191.cjs', 'tests/fixtures/greave-v190.js', 'san-avlusu.html', 'pit-visit-v172.js', 'assets/equipment-v190/**', 'tests/classic-equipment*', 'scripts/pack-classic-equipment-v190.mjs', 'assets/equipment-v189/**', 'assets/items-v189/**', 'supabase/migrations/*lightweight_helmets*', 'pit-*', 'san-avlusu.html', 'tests/pit-*', 'supabase/migrations/*pit*', 'rome-*', 'tests/loading-recovery-*', 'tests/account-loading-*', 'equipment-*', 'assets/items-v168/**', 'assets/items-v169/**', 'ludus.html', 'ludus-production-v119.js', 'tests/helmet-*', 'supabase/migrations/*sylvain_helmet*', 'ludus-supply-v85.js', 'market-v56.js', 'forum-market-v66.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-*', 'tests/equipment-*', 'supabase/migrations/*equipment_groups*', '.github/workflows/equipment-v168.yml']
+    paths: ['assets/equipment-v198/**', 'assets/items-v198/**', 'scripts/*shields-v198*', 'tests/shields-*', 'supabase/migrations/*selected_shields*', 'assets/equipment-v197/**', 'assets/items-v197/**', 'scripts/*arm*-v197*', 'assets/equipment-v196/**', 'assets/items-v196/**', 'scripts/*armour-v196*', 'tests/arm-equipment*', 'supabase/migrations/*arm_equipment*', 'ludus-manica-v119.js', 'arena-equipment-fit-v164.js', 'assets/equipment-v195/**', 'scripts/pack-helmet-budget-v195.mjs', 'tests/helmet-budget-v195.cjs', 'tests/helmet-budget-browser-v195.cjs', 'assets/items-v194/**', 'tests/helmet-identity-*', 'scripts/render-helmet-icons-v194.cjs', 'supabase/migrations/*helmet_identity*', 'assets/equipment-v193/**', 'assets/items-v193/**', 'tests/halberd-*', 'supabase/migrations/*halberd*', 'assets/equipment-v191/**', 'assets/pit-v191/**', 'scripts/pack-equipment-v191.mjs', 'tests/equipment-budget-v191.cjs', 'tests/equipment-render-v191.cjs', 'tests/fixtures/greave-v190.js', 'san-avlusu.html', 'pit-visit-v172.js', 'assets/equipment-v190/**', 'tests/classic-equipment*', 'scripts/pack-classic-equipment-v190.mjs', 'assets/equipment-v189/**', 'assets/items-v189/**', 'supabase/migrations/*lightweight_helmets*', 'pit-*', 'san-avlusu.html', 'tests/pit-*', 'supabase/migrations/*pit*', 'rome-*', 'tests/loading-recovery-*', 'tests/account-loading-*', 'equipment-*', 'assets/items-v168/**', 'assets/items-v169/**', 'ludus.html', 'ludus-production-v119.js', 'tests/helmet-*', 'supabase/migrations/*sylvain_helmet*', 'ludus-supply-v85.js', 'market-v56.js', 'forum-market-v66.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-*', 'tests/equipment-*', 'supabase/migrations/*equipment_groups*', '.github/workflows/equipment-v168.yml']
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   equipment:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --user 1001 --shm-size=1g
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1
+      - run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1 sharp@0.34.3
       - run: |
-          node --test tests/arm-equipment-fit-v197.cjs tests/arm-equipment-v196.cjs tests/helmet-budget-v195.cjs tests/helmet-identity-v194.cjs tests/halberd-v193.cjs tests/equipment-budget-v191.cjs tests/classic-equipment-v190.cjs tests/helmets-v189.cjs tests/helmet-v169.cjs tests/equipment-groups-v168.cjs tests/equipment-catalog-v167.cjs tests/equipment-arena-v30.test.cjs tests/forum-market-v66.test.cjs
+          node --test tests/shields-v198.cjs tests/arm-equipment-fit-v197.cjs tests/arm-equipment-v196.cjs tests/helmet-budget-v195.cjs tests/helmet-identity-v194.cjs tests/halberd-v193.cjs tests/equipment-budget-v191.cjs tests/classic-equipment-v190.cjs tests/helmets-v189.cjs tests/helmet-v169.cjs tests/equipment-groups-v168.cjs tests/equipment-catalog-v167.cjs tests/equipment-arena-v30.test.cjs tests/forum-market-v66.test.cjs
           node tests/equipment-sql-v168.cjs
           node tests/halberd-sql-v193.cjs
           node tests/arm-equipment-sql-v196.cjs
+          node tests/shields-sql-v198.cjs
           LUDUS_HALBERD_TEST=1 node tests/gladiator-equipment-v49.cjs
           node tests/combat-motion-replay-v163.cjs
           node tests/account-loading-v171.cjs
@@ -31,7 +35,15 @@ jobs:
           node tests/pit-sql-v172.cjs
           node tests/pit-sql-v173.cjs
           LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs
-      - run: npx playwright install --with-deps chromium webkit
+      - name: Selected shield models in Chromium and WebKit
+        run: |
+          node scripts/render-shields-v198.cjs
+          LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shield-renders-webkit node scripts/render-shields-v198.cjs
+      - name: Selected shield equipment and production on touch screens
+        timeout-minutes: 5
+        run: |
+          node tests/shields-browser-v198.cjs
+          LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shields-v198-webkit node tests/shields-browser-v198.cjs
       - run: |
           node tests/arm-equipment-courtyard-v197.cjs
           LUDUS_WEBKIT_TEST=1 node tests/arm-equipment-courtyard-v197.cjs

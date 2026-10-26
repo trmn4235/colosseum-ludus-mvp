@@ -37,7 +37,7 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
  c.ImportedGladiator.dispose(m);
 });
 test('every entry point and dynamic loader invalidates changed cached scripts',()=>{
- for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(root+'/'+page,'utf8'),/equipment-catalog-v167\.js\?v=revision197/);
- assert.match(fs.readFileSync(root+'/caravan-field.html','utf8'),/caravan-battle-v126\.js\?v=revision197/);
- assert.match(fs.readFileSync(root+'/san-avlusu.html','utf8'),/pit-visit-v172\.js\?v=revision197/);
+ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(root+'/'+page,'utf8'),/equipment-catalog-v167\.js\?v=revision198/);
+ assert.match(fs.readFileSync(root+'/caravan-field.html','utf8'),/caravan-battle-v126\.js\?v=revision198/);
+ assert.match(fs.readFileSync(root+'/san-avlusu.html','utf8'),/pit-visit-v172\.js\?v=revision198/);
 });

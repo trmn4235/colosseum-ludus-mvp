@@ -11,7 +11,7 @@
   const start=source?.indexOf('var ARENA_ASSET_BASE='),sceneStart=source?.indexOf(marker),end=source?.indexOf('const player={x:0,z:7',sceneStart);
   if((!lib&&!libNode)||start<0||sceneStart<start||end<sceneStart)throw Error('Avlu sürümü bu denemeyle uyumlu değil.');
   if(lib)inject(lib);else await script(libNode.getAttribute('src'));inject(scripts.find(s=>s.textContent.includes('var LudusClanEmblems='))?.textContent||'');
-  await script('training-motion-v50.js?v=revision196');await script('arena-fall-motion-v39.js?v=revision39');await script('arena-ground-fall-v39.js?v=revision84');await script('ludus-city-v29.js?v=revision39');
+  await script('training-motion-v50.js?v=revision198');await script('arena-fall-motion-v39.js?v=revision39');await script('arena-ground-fall-v39.js?v=revision84');await script('ludus-city-v29.js?v=revision39');
   let core=source.slice(start,sceneStart);
   // The existing rig's hand solver also plants the wooden practice blade in guard.
   const guardPoint='m.trail.material.opacity=strike?.active?.2:0;';

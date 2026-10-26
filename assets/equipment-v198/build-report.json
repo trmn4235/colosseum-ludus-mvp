@@ -1,0 +1,477 @@
+{
+  "version": 198,
+  "maxModelAndTextureBytes": 350000,
+  "items": [
+    {
+      "number": 2,
+      "id": "shield_dura",
+      "sku": "shield-dura",
+      "label": "Dura Europos oval kalkanı",
+      "height": 1.12,
+      "group": "large_shields",
+      "triangles": 2484,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "file": "shield_dura.cme",
+      "sourceBytes": 3412436,
+      "sourceTriangles": 2484,
+      "bytes": 239980,
+      "drawCalls": 1,
+      "bounds": {
+        "min": [
+          -0.4591155755500585,
+          -0.5600000023841858,
+          -0.0694723352669367
+        ],
+        "max": [
+          0.4591155755500585,
+          0.5600000023841858,
+          0.0694723352669367
+        ]
+      },
+      "sourceSha256": "3a1a3055e40ba4b75dbf0499739fcb301648e64439307751ca60ee8bf1a8dc99",
+      "sha256": "c5cfc82b0358d3be6a1e0a93a0ad6ac1d26a9f99c4dd6562a41e12d7229cb9a1",
+      "textures": [
+        {
+          "role": "base",
+          "width": 512,
+          "height": 512,
+          "bytes": 55488
+        },
+        {
+          "role": "normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 66230
+        },
+        {
+          "role": "orm",
+          "width": 512,
+          "height": 512,
+          "bytes": 70064
+        }
+      ],
+      "crops": [
+        {
+          "material": "Material.012",
+          "uvBounds": [
+            0.016640360355377196,
+            0.014108537584543227,
+            0.989975278377533,
+            0.9819888520240784
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 4194304
+    },
+    {
+      "number": 7,
+      "id": "shield_parma",
+      "sku": "shield-parma",
+      "label": "Ahşap Parma kalkanı",
+      "height": 0.74,
+      "group": "small_medium_shields",
+      "triangles": 2016,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "file": "shield_parma.cme",
+      "sourceBytes": 3228332,
+      "sourceTriangles": 15989,
+      "bytes": 203452,
+      "drawCalls": 1,
+      "bounds": {
+        "min": [
+          -0.3700000047683716,
+          -0.3700000047683716,
+          -0.08990568787695818
+        ],
+        "max": [
+          0.3700000047683716,
+          0.3700000047683716,
+          0.0892281991326993
+        ]
+      },
+      "sourceSha256": "3574a01bce242c60ee02f40d157a2d91e5aa9948f4c7411ab36d97b478df83d3",
+      "sha256": "4c61166136be35d3bcac035bbeece24354fe451c1689010bb7ca45276947f982",
+      "textures": [
+        {
+          "role": "base",
+          "width": 512,
+          "height": 512,
+          "bytes": 39820
+        },
+        {
+          "role": "normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 63324
+        },
+        {
+          "role": "orm",
+          "width": 512,
+          "height": 512,
+          "bytes": 53962
+        }
+      ],
+      "crops": [
+        {
+          "material": "ParmaShieldRT",
+          "uvBounds": [
+            0.006339660733938217,
+            0.00633960485458374,
+            0.9853460836410523,
+            0.9936603355407715
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 4194304
+    },
+    {
+      "number": 8,
+      "id": "shield_celtic",
+      "sku": "shield-celtic",
+      "label": "Yeşil motifli kalkan",
+      "height": 0.78,
+      "group": "small_medium_shields",
+      "triangles": 3432,
+      "rotation": [
+        1.5707963267948966,
+        0,
+        0
+      ],
+      "file": "shield_celtic.cme",
+      "sourceBytes": 536287,
+      "sourceTriangles": 7808,
+      "bytes": 230076,
+      "drawCalls": 1,
+      "bounds": {
+        "min": [
+          -0.38955819606781006,
+          -0.38948294520378113,
+          -0.0649135706449825
+        ],
+        "max": [
+          0.38948294520378113,
+          0.38955819606781006,
+          0.06608764058602636
+        ]
+      },
+      "sourceSha256": "4916fc0d838f441408e3c28329cd705d0d89e6ba33c75b5caa75af93393be92d",
+      "sha256": "0aff72ceca55347d9bc6453ac7988f95f960b61254cc885e9ca5d724e6daafc8",
+      "textures": [
+        {
+          "role": "base",
+          "width": 512,
+          "height": 512,
+          "bytes": 33358
+        },
+        {
+          "role": "normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 656
+        },
+        {
+          "role": "orm",
+          "width": 512,
+          "height": 512,
+          "bytes": 57040
+        }
+      ],
+      "crops": [
+        {
+          "material": "Shield_PBR",
+          "uvBounds": [
+            0,
+            0.01863699674606323,
+            1,
+            1
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 4194304
+    },
+    {
+      "number": 17,
+      "id": "shield_azure",
+      "sku": "shield-azure",
+      "label": "Mavi demir kuşaklı kalkan",
+      "height": 0.8,
+      "group": "small_medium_shields",
+      "triangles": 3422,
+      "rotation": [
+        0,
+        -1.5707963267948966,
+        0
+      ],
+      "file": "shield_azure.cme",
+      "sourceBytes": 14975896,
+      "sourceTriangles": 3422,
+      "bytes": 220760,
+      "drawCalls": 1,
+      "bounds": {
+        "min": [
+          -0.3982421397884528,
+          -0.4000000059604645,
+          -0.1370036947811607
+        ],
+        "max": [
+          0.3982421397884528,
+          0.4000000059604645,
+          0.1370036947811607
+        ]
+      },
+      "sourceSha256": "8ad2f947a04e3e595cec72d1c773620b686bd18846fc4f5b7dc5b26e1ec6d56e",
+      "sha256": "66c328053d850659021037780e9b9c7245ba1fc6bfc64f92074d928b602433a7",
+      "textures": [
+        {
+          "role": "base",
+          "width": 510,
+          "height": 510,
+          "bytes": 36430
+        },
+        {
+          "role": "normal",
+          "width": 510,
+          "height": 510,
+          "bytes": 53598
+        },
+        {
+          "role": "orm",
+          "width": 510,
+          "height": 510,
+          "bytes": 58216
+        }
+      ],
+      "crops": [
+        {
+          "material": "wood",
+          "uvBounds": [
+            0,
+            0,
+            0.9903491187095642,
+            1
+          ]
+        },
+        {
+          "material": "shape",
+          "uvBounds": [
+            0.018014038801193236,
+            0.03514527797698975,
+            0.9672502326965332,
+            0.9774996089935303
+          ]
+        },
+        {
+          "material": "frame",
+          "uvBounds": [
+            0,
+            0,
+            0.5276414799690247,
+            1
+          ]
+        },
+        {
+          "material": "Material.001",
+          "uvBounds": [
+            0,
+            0,
+            0.3642210114002228,
+            1
+          ]
+        },
+        {
+          "material": "holder",
+          "uvBounds": [
+            0,
+            0,
+            0.8997543501853943,
+            1
+          ]
+        },
+        {
+          "material": "midback",
+          "uvBounds": [
+            0.022479290962219237,
+            0.022536988258361815,
+            0.9754256057739258,
+            0.9774629521369934
+          ]
+        },
+        {
+          "material": "material",
+          "uvBounds": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 4161600
+    },
+    {
+      "number": 19,
+      "id": "shield_viridis",
+      "sku": "shield-viridis",
+      "label": "Yeşil Roma kule kalkanı",
+      "height": 1.24,
+      "group": "large_shields",
+      "triangles": 2599,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "file": "shield_viridis.cme",
+      "sourceBytes": 4512880,
+      "sourceTriangles": 13498,
+      "bytes": 332052,
+      "drawCalls": 1,
+      "bounds": {
+        "min": [
+          -0.32384106209328534,
+          -0.6200000047683716,
+          -0.09129430949799375
+        ],
+        "max": [
+          0.32384106209328534,
+          0.6200000047683716,
+          0.09042754620425061
+        ]
+      },
+      "sourceSha256": "3c73b78233d02ef36a54749f2b83381f18c00b36fe8edaa2ff296cbff064205c",
+      "sha256": "db5b40744a9e9ee8df7f763de16e82c75bb51777c41fdd17c4edb67c70fcc59b",
+      "textures": [
+        {
+          "role": "base",
+          "width": 512,
+          "height": 512,
+          "bytes": 54338
+        },
+        {
+          "role": "normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 67472
+        },
+        {
+          "role": "orm",
+          "width": 512,
+          "height": 512,
+          "bytes": 125302
+        }
+      ],
+      "crops": [
+        {
+          "material": "MTA_Shield_2",
+          "uvBounds": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 4194304
+    },
+    {
+      "number": 22,
+      "id": "shield_aquila",
+      "sku": "shield-aquila",
+      "label": "Kartal işlemeli kule kalkanı",
+      "height": 1.3,
+      "group": "large_shields",
+      "triangles": 2799,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "file": "shield_aquila.cme",
+      "sourceBytes": 10928532,
+      "sourceTriangles": 16026,
+      "bytes": 249552,
+      "drawCalls": 1,
+      "bounds": {
+        "min": [
+          -0.2844431793612964,
+          -0.6499999761581421,
+          -0.08149550593910802
+        ],
+        "max": [
+          0.2844431793612964,
+          0.6499999761581421,
+          0.08029531426249135
+        ]
+      },
+      "sourceSha256": "5762ead3219aa60542e67682e0b7788340fce9cda2b5921439c3d8d99264870c",
+      "sha256": "3858efd4da8200220304b460476b7a09935cfb241fb5b2b3febdecb302f4d3da",
+      "textures": [
+        {
+          "role": "base",
+          "width": 512,
+          "height": 512,
+          "bytes": 47952
+        },
+        {
+          "role": "normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 45464
+        },
+        {
+          "role": "orm",
+          "width": 512,
+          "height": 512,
+          "bytes": 73382
+        }
+      ],
+      "crops": [
+        {
+          "material": "Shield_Metal",
+          "uvBounds": [
+            0.00046000013127923,
+            0.0006389998644590377,
+            0.9914569902420044,
+            0.9998970079421997
+          ]
+        },
+        {
+          "material": "Shield_Wood",
+          "uvBounds": [
+            0,
+            0,
+            0.832243983745575,
+            1
+          ]
+        },
+        {
+          "material": "Shield_Handles",
+          "uvBounds": [
+            0.0040619996190071105,
+            0.003280999958515167,
+            0.996129994392395,
+            0.9158160138130188
+          ]
+        },
+        {
+          "material": "Shield_Edge",
+          "uvBounds": [
+            0.004808000177145004,
+            0,
+            0.9851530241966248,
+            1
+          ]
+        }
+      ],
+      "decodedTextureBytesWithMips": 4194304
+    }
+  ]
+}

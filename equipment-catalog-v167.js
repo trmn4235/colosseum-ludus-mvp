@@ -3,6 +3,12 @@
 (function(root){
  'use strict';
  const records=Object.freeze({
+  shield_dura:Object.freeze({"id":"shield_dura","label":"Dura Europos oval kalkanı","kind":"shield","file":"../equipment-v198/shield_dura.cme","triangles":2484,"height":1.12,"subcategory":"large_shields"}),
+  shield_parma:Object.freeze({"id":"shield_parma","label":"Ahşap Parma kalkanı","kind":"shield","file":"../equipment-v198/shield_parma.cme","triangles":2016,"height":0.74,"subcategory":"small_medium_shields"}),
+  shield_celtic:Object.freeze({"id":"shield_celtic","label":"Yeşil motifli kalkan","kind":"shield","file":"../equipment-v198/shield_celtic.cme","triangles":3432,"height":0.78,"subcategory":"small_medium_shields"}),
+  shield_azure:Object.freeze({"id":"shield_azure","label":"Mavi demir kuşaklı kalkan","kind":"shield","file":"../equipment-v198/shield_azure.cme","triangles":3422,"height":0.8,"subcategory":"small_medium_shields"}),
+  shield_viridis:Object.freeze({"id":"shield_viridis","label":"Yeşil Roma kule kalkanı","kind":"shield","file":"../equipment-v198/shield_viridis.cme","triangles":2599,"height":1.24,"subcategory":"large_shields"}),
+  shield_aquila:Object.freeze({"id":"shield_aquila","label":"Kartal işlemeli kule kalkanı","kind":"shield","file":"../equipment-v198/shield_aquila.cme","triangles":2799,"height":1.3,"subcategory":"large_shields"}),
   manica_segmented:Object.freeze({id:'manica_segmented',label:'Plakalı gladyatör kolluğu',kind:'gloves',file:'../equipment-v197/manica_segmented.cme',triangles:2450,height:0.25,armour:true,side:'Right'}),
   manica_lion:Object.freeze({id:'manica_lion',label:'Aslan başlı gladyatör kolluğu',kind:'gloves',file:'../equipment-v197/manica_lion.cme',triangles:2687,height:0.25,armour:true,side:'Right'}),
   trident_gladiator:Object.freeze({id:'trident_gladiator',label:'Gladyatör tridenti',kind:'weapon',file:'../equipment-v197/trident_gladiator.cme',triangles:1368,height:2.16,subcategory:'polearms'}),

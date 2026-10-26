@@ -6,8 +6,8 @@
   {id:'polearms',kind:'weapon',name:'Trident, mızrak',models:['trident','trident_gladiator','spear'],icon:'trident'},
   {id:'blunt',kind:'weapon',name:'Gürzler, çekiçler',models:['mace','heavy_mace','warhammer'],icon:'heavy_mace'},
   {id:'flexible',kind:'weapon',name:'Ağ, kırbaç',models:['net','whip'],icon:'net'},
-  {id:'large_shields',kind:'shield',name:'Büyük kalkanlar',models:['large'],icon:'shield-large'},
-  {id:'small_medium_shields',kind:'shield',name:'Küçük & orta kalkanlar',models:['small','round','medium'],icon:'shield-medium'}
+  {id:'large_shields',kind:'shield',name:'Büyük kalkanlar',models:['large','shield_dura','shield_viridis','shield_aquila'],icon:'shield-large'},
+  {id:'small_medium_shields',kind:'shield',name:'Küçük & orta kalkanlar',models:['small','round','medium','shield_parma','shield_celtic','shield_azure'],icon:'shield-medium'}
  ].map(g=>Object.freeze({...g,models:Object.freeze(g.models)})));
  const additions=[
   ['heavy_mace','Ağır gürz','weapon','heavy_mace',{steel:3,bronze:1,wood:2,leather:1,resin:1}],

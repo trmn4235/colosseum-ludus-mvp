@@ -389,7 +389,7 @@ var ClassEquipment=(function(){
   anchor.quaternion.copy(q).invert();anchor.scale.set(1/s.x,1/s.y,1/s.z);bone.add(anchor);
   const group=template.clone(true);group.position.set(...offset);group.rotation.set(...rotation);anchor.add(group);return {anchor,group};
  }
- function shield(type){return (typeof ImportedEquipment!=='undefined'&&ImportedEquipment.shield(type))||parts(type).shield;}
+ function shield(type){type=({large:'murmillo',round:'hoplomachus',medium:'hoplomachus',small:'thraex'})[type]||type;if(globalThis.LudusEquipmentCatalog?.entry(type)?.kind==='shield')return LudusEquipmentCatalog.request(T,type);return (typeof ImportedEquipment!=='undefined'&&ImportedEquipment.shield(type))||parts(type).shield;}
  function equip(m){const p=parts(m.type);m.gear={};
   m.gear.helmet=attach(m,'Head',teamHelmet(m.type,0));LudusHelmets.fit(m.gear.helmet,m);
   m.gear.shield=attach(m,'LeftHand',shield(ArenaClasses[m.type].shield?m.type:'secutor'),[0,.12,.1]);
@@ -465,7 +465,7 @@ var ClassEquipment=(function(){
   if(m.team!==f.team){m.team=f.team;const team=f.team||0;m.teamBand.group.clear();const band=new T.Mesh(bandGeo,dark);band.scale.z=.68;m.teamBand.group.add(band);m.teamMark.clear();const ring=new T.Mesh(teamRings[team],ringMaterials[team]);ring.rotation.x=-Math.PI/2;ring.position.y=.035;m.teamMark.add(ring);}
   LudusManica.sync(T,m,f);m.teamMark.visible=f.hp>0;ArenaEquipmentFit.sync(m);
  }
- function item(d){if(d.kind==='helmet')return LudusHelmets.get(d.itemEntry?.item?.model||d.helmetModel||d.helmetColor||d.style);if(d.kind==='shoulders')return LudusArmour.get('gloves',d.itemEntry?.item?.model||d.shoulderModel);if(d.kind==='shield')return shield(d.style||'secutor');if(d.kind==='chest')return LudusArmour.get('chest',d.itemEntry?.item?.model||d.chestModel);if(d.kind==='greaves')return parts('murmillo').greave;if(d.kind==='net'||d.kind==='scissor')return parts(d.kind==='net'?'retiarius':'scissor').left;return weapon(d.kind);}
+ function item(d){if(d.kind==='helmet')return LudusHelmets.get(d.itemEntry?.item?.model||d.helmetModel||d.helmetColor||d.style);if(d.kind==='shoulders')return LudusArmour.get('gloves',d.itemEntry?.item?.model||d.shoulderModel);if(d.kind==='shield')return shield(d.itemEntry?.item?.model||d.style||'secutor');if(d.kind==='chest')return LudusArmour.get('chest',d.itemEntry?.item?.model||d.chestModel);if(d.kind==='greaves')return parts('murmillo').greave;if(d.kind==='net'||d.kind==='scissor')return parts(d.kind==='net'?'retiarius':'scissor').left;return weapon(d.kind);}
  const flexAxis=new T.Vector3(0,1,0),flexDirection=new T.Vector3();
  function animateFlex(m,f){if(typeof ArenaMotion==='undefined')return;
   for(const [anchor,kind,left] of [[m.weaponAnchor,f.weapon,false],[m.offhandAnchor,f.offhand,true]]){const g=anchor.children[0];if(!g||!['mace','whip'].includes(kind))continue;
