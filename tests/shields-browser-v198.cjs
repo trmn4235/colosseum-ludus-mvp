@@ -9,11 +9,13 @@ fixture=fixture.replace('  __rpcCalls.push({name,args});',`  __rpcCalls.push({na
 const {server}=new Function('require','__dirname','process',fixture+'\nreturn{server};')(req,__dirname,process),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/shields-v198/courtyard';fs.mkdirSync(out,{recursive:true});
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const safari=!!process.env.LUDUS_WEBKIT_TEST,browser=await(safari?webkit:chromium).launch(safari?{headless:true}:{headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
- try{const page=await browser.newPage({viewport:{width:874,height:402},hasTouch:true}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route(/^https:/,r=>r.abort());await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html',{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.LudusPreview?.roster?.[0]?.model?.gear,null,{timeout:90000});
-  page.setDefaultTimeout(30000);
-  // WebKit can expose the first rig before the rest of the courtyard finishes loading.
-  await page.evaluate(async()=>{await LudusPreview.accountReady;await LudusPreview.residentsReady;});
-  await page.locator('#loading').waitFor({state:'hidden',timeout:90000});await page.bringToFront();
+ const errors=[];let page;
+ async function openCourtyard(width,height){
+  page=await browser.newPage({viewport:{width,height},hasTouch:true});page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));await page.route(/^https:/,r=>r.abort());
+  await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html',{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.LudusPreview?.roster?.[0]?.model?.gear,null,{timeout:90000});
+  await page.evaluate(async()=>{await LudusPreview.accountReady;await LudusPreview.residentsReady;});await page.locator('#loading').waitFor({state:'hidden',timeout:90000});await page.bringToFront();
+ }
+ try{await openCourtyard(874,402);
   assert.equal(await page.evaluate(()=>LudusPreview.roster[0].state.shieldStyle),'shield_viridis');
   async function tap(target){
    await target.waitFor({state:'visible'});assert.equal(await target.isEnabled(),true);
@@ -31,13 +33,16 @@ const {server}=new Function('require','__dirname','process',fixture+'\nreturn{se
    assert.equal(stats.model,row.id);assert.equal(stats.visible,true);assert.equal(stats.recipe,row.sku);assert.equal(stats.icon,'assets/items-v198/'+row.sku+'.webp');await page.screenshot({path:path.join(out,row.id+'.png')});
   }
   console.log('V198 '+(safari?'WebKit':'Chromium')+': all six shields equipped by touch and rendered in the courtyard.');
-  await page.evaluate(()=>{const v=LudusPreview;if(!v.exploring)v.toggleExplore();v.enterRoom(v.rooms.find(r=>r.kind==='upgrades'));const s=v.supplySystem;s.enter('forge');return s.open();});await page.locator('#supplyCraftFilter').selectOption('shield');
-  for(const [width,height]of [[874,402],[667,375],[568,320]]){await page.setViewportSize({width,height});for(const row of rows){console.log('V198 recipe check',safari?'WebKit':'Chromium',width,height,row.sku);await page.locator('#supplyCraftSubcategory').selectOption(row.group);await tap(page.locator('[data-recipe="'+row.sku+'"]'));assert.ok((await page.locator('.supply-craft-detail').innerText()).includes(row.label));assert.match(await page.locator('.supply-output').innerText(),/Çıktı: 1/);assert.ok(await page.locator('[data-craft="'+row.sku+'"]').isEnabled());
+  await page.close();
+  // Test each phone viewport from a clean opening, without resizing a live WebGL courtyard.
+  for(const [width,height]of [[874,402],[667,375],[568,320]]){await openCourtyard(width,height);
+   await page.evaluate(()=>{const v=LudusPreview;if(!v.exploring)v.toggleExplore();v.enterRoom(v.rooms.find(r=>r.kind==='upgrades'));const s=v.supplySystem;s.enter('forge');return s.open();});await page.locator('#supplyCraftFilter').selectOption('shield');
+   for(const row of rows){console.log('V198 recipe check',safari?'WebKit':'Chromium',width,height,row.sku);await page.locator('#supplyCraftSubcategory').selectOption(row.group);await tap(page.locator('[data-recipe="'+row.sku+'"]'));assert.ok((await page.locator('.supply-craft-detail').innerText()).includes(row.label));assert.match(await page.locator('.supply-output').innerText(),/Çıktı: 1/);assert.ok(await page.locator('[data-craft="'+row.sku+'"]').isEnabled());
     await page.waitForFunction(()=>{const es=[...document.querySelectorAll('.supply-craft-detail img')];return es.length>0&&es.every(e=>e.complete&&e.naturalWidth>0);},null,{timeout:20000,polling:100});
     const image=await page.locator('.supply-craft-detail img').evaluateAll(es=>es.map(e=>({src:e.getAttribute('src'),width:e.naturalWidth})));assert.ok(image.some(i=>i.src==='assets/items-v198/'+row.sku+'.webp'&&i.width===320));
-    // Resize/stock refresh replaces the detail node; measure the current visible node atomically.
+    // Stock refresh replaces the detail node; measure the current visible node atomically.
     try{await page.waitForFunction(({label,width,height})=>{const e=document.querySelector('.supply-craft-detail');if(!e||!e.innerText.includes(label))return false;const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&r.x>=0&&r.y>=0&&r.right<=width+1&&r.bottom<=height+1;},{label:row.label,width,height},{timeout:15000,polling:100});}catch(error){console.error('Recipe layout state',await page.evaluate(()=>({viewport:[innerWidth,innerHeight],hidden:document.getElementById('supplyModal')?.hidden,details:[...document.querySelectorAll('.supply-craft-detail')].map(e=>({text:e.innerText,box:e.getBoundingClientRect().toJSON(),display:getComputedStyle(e).display}))})));throw error;}
-    await page.screenshot({path:path.join(out,row.sku+'-'+width+'.png'),timeout:30000});}console.log('V198 '+(safari?'WebKit':'Chromium')+': six recipe layouts fit '+width+'x'+height);}
+    await page.screenshot({path:path.join(out,row.sku+'-'+width+'.png'),timeout:30000});}console.log('V198 '+(safari?'WebKit':'Chromium')+': six recipe layouts fit '+width+'x'+height);await page.close();}
   assert.deepEqual(errors,[]);console.log('V198 '+(safari?'WebKit':'Chromium')+' PASS: saved shield on courtyard entry, all six selected through equipment UI, exact live models/icons and mobile recipe categories.');
  }finally{await browser.close();server.closeAllConnections();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1;});
