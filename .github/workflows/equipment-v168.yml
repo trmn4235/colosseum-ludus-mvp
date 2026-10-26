@@ -40,6 +40,7 @@ jobs:
           node scripts/render-shields-v198.cjs
           LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shield-renders-webkit node scripts/render-shields-v198.cjs
       - name: Selected shield equipment and production on touch screens
+        timeout-minutes: 5
         run: |
           node tests/shields-browser-v198.cjs
           LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shields-v198-webkit node tests/shields-browser-v198.cjs
