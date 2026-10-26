@@ -10,11 +10,16 @@ const {server}=new Function('require','__dirname','process',fixture+'\nreturn{se
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const safari=!!process.env.LUDUS_WEBKIT_TEST,browser=await(safari?webkit:chromium).launch(safari?{headless:true}:{headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try{const page=await browser.newPage({viewport:{width:874,height:402},hasTouch:true}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route(/^https:/,r=>r.abort());await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html',{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.LudusPreview?.roster?.[0]?.model?.gear,null,{timeout:90000});
+  // WebKit can expose the first rig before the rest of the courtyard finishes loading.
+  await page.evaluate(async()=>{await LudusPreview.accountReady;await LudusPreview.residentsReady;});
+  await page.locator('#loading').waitFor({state:'hidden',timeout:90000});await page.bringToFront();
   assert.equal(await page.evaluate(()=>LudusPreview.roster[0].state.shieldStyle),'shield_viridis');
   for(const row of rows){
    await page.evaluate(()=>LudusPreview.exercisePanel.open(LudusPreview.roster[0],{slot:'off_hand'}));
    if(!await page.locator('[data-item="'+row.id+'"]').count())await page.getByRole('button',{name:'Sonraki eşya sayfası',exact:true}).click();
-   await page.locator('[data-item="'+row.id+'"]').click();await page.waitForFunction(id=>LudusPreview.roster[0].state.shieldStyle===id,row.id);
+   const choice=page.locator('[data-item="'+row.id+'"]');
+   try{await choice.click();}catch(error){console.error('Shield picker state',await choice.evaluate(e=>({rect:e.getBoundingClientRect().toJSON(),disabled:e.disabled,visibility:getComputedStyle(e).visibility,ordersHidden:document.getElementById('orders').hidden,loadingHidden:document.getElementById('loading').hidden})),errors);throw error;}
+   await page.waitForFunction(id=>LudusPreview.roster[0].state.shieldStyle===id,row.id);
    const stats=await page.evaluate(async id=>{const v=LudusPreview,g=v.roster[0],m=g.model;await LudusEquipmentCatalog.load(THREE,id);v.exercisePanel.close();v.roster.forEach(r=>{r.body.visible=r===g});Object.assign(g.state,{x:0,z:0,angle:0,action:'idle',blocking:false,hp:100});for(let i=0;i<16;i++)ImportedGladiator.animate(g.state,m,i/60,1/60);v.camera.position.set(1.6,1.65,3.3);v.camera.lookAt(.1,1,0);v.renderer.render(v.scene,v.camera);return{model:m.gear.shield.group.userData.catalogId,visible:m.gear.shield.group.visible,recipe:LudusProduction.skuForItem({kind:'shield',model:id}),icon:LudusProduction.photo(LudusProduction.skuForItem({kind:'shield',model:id})),calls:__rpcCalls.filter(r=>r.name==='ludus_equip_item').length};},row.id);
    assert.equal(stats.model,row.id);assert.equal(stats.visible,true);assert.equal(stats.recipe,row.sku);assert.equal(stats.icon,'assets/items-v198/'+row.sku+'.webp');await page.screenshot({path:path.join(out,row.id+'.png')});
   }
