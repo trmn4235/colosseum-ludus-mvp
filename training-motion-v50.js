@@ -85,8 +85,8 @@ var ArenaMotion=(function(){
  // Test the same shield face used by the hand IK, before the body is reached.
   function shieldContact(f,v,from,to){
    if(!v.blocking||!v.shield||v.shieldHeldBy!==null)return null;
-   const c=Math.cos(v.angle),s=Math.sin(v.angle),halfWidth=['thraex','hoplomachus'].includes(v.shieldStyle)?.34:.40;
-   const halfHeight=['thraex','hoplomachus'].includes(v.shieldStyle)?.39:.56;
+   const c=Math.cos(v.angle),s=Math.sin(v.angle),halfWidth=['thraex','hoplomachus','shield_parma','shield_celtic','shield_azure'].includes(v.shieldStyle)?.34:.40;
+   const halfHeight=['thraex','hoplomachus','shield_parma','shield_celtic','shield_azure'].includes(v.shieldStyle)?.39:.56;
    const guard=guardPoint(v);
    const local=p=>({x:(p.x-v.x)*c-(p.z-v.z)*s-guard.x,y:p.y-guard.y,z:(p.x-v.x)*s+(p.z-v.z)*c-guard.z});
    function cross(a,b){const aa=local(a),bb=local(b),dz=bb.z-aa.z;if(Math.abs(dz)<1e-7)return null;const u=-aa.z/dz;if(u<0||u>1)return null;

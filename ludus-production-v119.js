@@ -24,6 +24,12 @@
   ['wool_cloth','Yünlü kumaş',{wool:3}]
  ];
  const equipment=[
+  ["shield-dura","Dura Europos oval kalkanı","shield","shield_dura",{"wood":6,"resin":2,"leather":3,"bronze":2}],
+  ["shield-parma","Ahşap Parma kalkanı","shield","shield_parma",{"wood":3,"resin":1,"leather":2,"bronze":1}],
+  ["shield-celtic","Yeşil motifli kalkan","shield","shield_celtic",{"wood":4,"resin":2,"leather":2,"iron":2}],
+  ["shield-azure","Mavi demir kuşaklı kalkan","shield","shield_azure",{"wood":4,"resin":2,"leather":2,"steel":2}],
+  ["shield-viridis","Yeşil Roma kule kalkanı","shield","shield_viridis",{"wood":7,"resin":3,"leather":3,"steel":3}],
+  ["shield-aquila","Kartal işlemeli kule kalkanı","shield","shield_aquila",{"wood":7,"resin":3,"leather":3,"iron":3,"bronze":1}],
   ['manica-segmented','Plakalı gladyatör kolluğu','gloves','manica_segmented',{steel:3,leather:2,wool_cloth:1}],
   ['manica-lion','Aslan başlı gladyatör kolluğu','gloves','manica_lion',{steel:3,bronze:1,leather:3}],
   ['manica-leather','Tokalı deri kolluk','gloves','manica_leather',{leather:4,iron:1,wool_cloth:1}],
@@ -69,12 +75,12 @@
  const revised=new Set(['tin','lead','manica','spear','trident','bow','helmet-silver','helmet-winged']);
  const retired=['wooden_handle','shield_frame_small','shield_frame_large','lead_weight','net_mesh'];
  const caravanPhoto='assets/items-v119/caravan.webp';
- function photo(sku){if(['manica-segmented','manica-lion','manica-leather','trident-gladiator'].includes(sku))return 'assets/items-v197/'+sku+'.webp';if(['helmet-gold','helmet-silver','helmet-winged','helmet-roman'].includes(sku))return 'assets/items-v194/'+sku+'.webp';if(sku==='halberd')return 'assets/items-v193/halberd.webp';if(sku==='helmet-viking'||sku==='helmet-steel')return 'assets/items-v189/'+sku+'.webp';if(sku==='helmet-sylvain')return 'assets/items-v169/helmet-sylvain.webp';if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
+ function photo(sku){if(['shield-dura','shield-parma','shield-celtic','shield-azure','shield-viridis','shield-aquila'].includes(sku))return 'assets/items-v198/'+sku+'.webp';if(['manica-segmented','manica-lion','manica-leather','trident-gladiator'].includes(sku))return 'assets/items-v197/'+sku+'.webp';if(['helmet-gold','helmet-silver','helmet-winged','helmet-roman'].includes(sku))return 'assets/items-v194/'+sku+'.webp';if(sku==='halberd')return 'assets/items-v193/halberd.webp';if(sku==='helmet-viking'||sku==='helmet-steel')return 'assets/items-v189/'+sku+'.webp';if(sku==='helmet-sylvain')return 'assets/items-v169/helmet-sylvain.webp';if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
  function skuForItem(item){
   if(known.has(item?.sku))return item.sku;
   const k=item?.kind,m=item?.model;
   if(k==='weapon')return equipment.find(x=>x[2]===k&&x[3]===m)?.[0]||null;
-  if(k==='shield')return m==='large'?'shield-large':'shield-medium';
+  if(k==='shield')return equipment.find(x=>x[2]===k&&x[3]===m)?.[0]||(m==='large'?'shield-large':'shield-medium');
   if(k==='helmet'){const exact=equipment.find(x=>x[2]===k&&x[3]===m);if(exact)return exact[0];}
   if(k==='helmet')return ['roman','roman_helmet'].includes(m)?'helmet-roman':['silver','knights','knights_helm'].includes(m)?'helmet-silver':['winged','winged_helmet_gameready'].includes(m)?'helmet-winged':'helmet-gold';
   if(k==='chest')return m==='chest_plate'?'chest-plate':'chest';

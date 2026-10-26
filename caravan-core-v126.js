@@ -143,8 +143,8 @@ var ArenaMotion=(function(){
  // Test the same shield face used by the hand IK, before the body is reached.
   function shieldContact(f,v,from,to){
    if(!v.blocking||!v.shield||v.shieldHeldBy!==null)return null;
-   const c=Math.cos(v.angle),s=Math.sin(v.angle),halfWidth=['thraex','hoplomachus'].includes(v.shieldStyle)?.34:.40;
-   const halfHeight=['thraex','hoplomachus'].includes(v.shieldStyle)?.39:.56;
+   const c=Math.cos(v.angle),s=Math.sin(v.angle),halfWidth=['thraex','hoplomachus','shield_parma','shield_celtic','shield_azure'].includes(v.shieldStyle)?.34:.40;
+   const halfHeight=['thraex','hoplomachus','shield_parma','shield_celtic','shield_azure'].includes(v.shieldStyle)?.39:.56;
    const guard=guardPoint(v);
    const rotation=shieldResponse(v),cp=Math.cos(rotation.pitch),sp=Math.sin(rotation.pitch),cy=Math.cos(rotation.yaw),sy=Math.sin(rotation.yaw),cr=Math.cos(rotation.roll),sr=Math.sin(rotation.roll);
    const local=p=>{const x=(p.x-v.x)*c-(p.z-v.z)*s-guard.x,y=p.y-(v.navHeight||0)-guard.y,z=(p.x-v.x)*s+(p.z-v.z)*c-guard.z,yy=y*cp+z*sp,zz=-y*sp+z*cp,xx=x*cy-zz*sy;return{x:xx*cr+yy*sr,y:-xx*sr+yy*cr,z:x*sy+zz*cy};};
@@ -542,7 +542,7 @@ if(false)module.exports=install;else install(root.ArenaCombat,root.ArenaClasses)
   const phase=g=>options.phase?.(g)||(Date.parse(record(g).injured_until)>now()?'injured':record(g).status==='available'?'available':record(g).status);
   const canDress=g=>phase(g)==='available'&&record(g).status==='available'&&!record(g).clan_roster_id;
   const fits=(item,slot)=>slot==='main_hand'?item.kind==='weapon'&&['gladius','sica','spear','trident','trident_gladiator','mace','whip','heavy_mace','warhammer','halberd'].includes(item.model):slot==='off_hand'?['weapon','shield'].includes(item.kind):item.kind===slot;
-  const itemName=item=>item.name||({gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident_gladiator:'Gladyatör tridenti',trident:'Üç dişli mızrak',heavy_mace:'Ağır gürz',halberd:'Halberd',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',net:'Ağ',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',gold:'Gladyatör miğferi',silver:'Şövalye miğferi',starter:'Başlangıç ekipmanı'})[item.model]||item.model;
+  const itemName=item=>item.name||({gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident_gladiator:'Gladyatör tridenti',trident:'Üç dişli mızrak',heavy_mace:'Ağır gürz',halberd:'Halberd',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',net:'Ağ',scissor:'Kol bıçağı',shield_dura:'Dura Europos oval kalkanı',shield_parma:'Ahşap Parma kalkanı',shield_celtic:'Yeşil motifli kalkan',shield_azure:'Mavi demir kuşaklı kalkan',shield_viridis:'Yeşil Roma kule kalkanı',shield_aquila:'Kartal işlemeli kule kalkanı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',gold:'Gladyatör miğferi',silver:'Şövalye miğferi',starter:'Başlangıç ekipmanı'})[item.model]||item.model;
   const candidates=()=> (options.inventory?.()||[]).filter(i=>fits(i,gearSlot)&&!i.locked_battle_id&&!i.clan_vault_id&&!i.clan_roster_id&&(!i.equipped_by||i.equipped_by===record(selected).id)&&!(i.equipped_by===record(selected).id&&i.equipped_slot===gearSlot));
   const eligible=g=>{const r=record(g);return phase(g)==='available'&&r.status==='available'&&!r.clan_roster_id&&!r.trained_today&&!r.exercise_completed&&energy(r,now())>0&&Number(r.base_stats?.[stat]??50)<100;};
   function node(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
@@ -625,7 +625,7 @@ var LudusLoadout={apply(f,g,items){
  f.tactics=Math.min(100,Math.max(0,Number(g.stat_version===46?(g.base_stats?.tactics??50):(globalThis.LudusExercise?.profile(g.class)?.tactics??50))));
  f.name=g.name;f.weapon=slots.main_hand?.model||null;f.offhand=null;f.leftGear=null;f.shield=slots.off_hand?.kind==='shield';
  if(slots.off_hand?.kind==='weapon'){if(['net','scissor'].includes(slots.off_hand.model))f.leftGear=slots.off_hand.model;else f.offhand=slots.off_hand.model;}
- f.shieldStyle=({large:'murmillo',round:'hoplomachus',small:'thraex'})[slots.off_hand?.model]||g.class;
+ f.shieldStyle=({large:'murmillo',round:'hoplomachus',small:'thraex'})[slots.off_hand?.model]||(['shield_dura','shield_parma','shield_celtic','shield_azure','shield_viridis','shield_aquila'].includes(slots.off_hand?.model)?slots.off_hand.model:g.class);
  f.helmet=!!slots.helmet;f.helmetModel=slots.helmet?.model;f.helmetColor=['gold','silver'].includes(slots.helmet?.model)?slots.helmet.model:null;f.chest=!!slots.chest;f.chestModel=slots.chest?.model;f.greaves=!!slots.legs;f.shoulders=!!slots.gloves;f.shoulderModel=slots.gloves?.model;f.spareSword=false;
  f.pickupHand=f.leftGear||f.shield?'offhand':'weapon';f.dualMode=!!f.offhand;
  const native=ArenaClasses[g.class||f.type].stats,profile=g.stat_version===7?g.base_stats:native,overall=Number(g.overall??50);
