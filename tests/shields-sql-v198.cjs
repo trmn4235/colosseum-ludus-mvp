@@ -6,8 +6,9 @@ const migration=n=>fs.readFileSync('supabase/migrations/'+fs.readdirSync('supaba
  await db.exec('create table if not exists public.ludus_shop_catalog(sku text primary key,name text,kind text,model text,price integer,category text);create table ludus_supply_private.production_recipes_v118(sku text primary key,name text,kind text,model text,ingredients jsonb,output_type text,output_quantity int,sort_order int);create table ludus_supply_private.recipes(sku text primary key,ingredients jsonb);');
  for(const name of ['gladiator_equipment_v49','equipment_groups_v168','halberd_v193','arm_equipment_v196','selected_shields_v198','selected_shields_v198'])await db.exec(migration(name));
  const q=async(sql,args=[])=>(await db.query(sql,args)).rows;await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
- const glad=(await q("insert into ludus_gladiators(owner_id,name,class,status,base_stats,stat_version)values($1,'Shield tester','murmillo','available',$2,7)returning id",[A,{health:50,strength:50,defense:50,agility:50,speed:50,conditioning:50}]))[0].id;
  for(const row of rows){
+  // A completed battle can injure its fighter; keep the six equipment cases independent.
+  const glad=(await q("insert into ludus_gladiators(owner_id,name,class,status,base_stats,stat_version)values($1,'Shield tester','murmillo','available',$2,7)returning id",[A,{health:50,strength:50,defense:50,agility:50,speed:50,conditioning:50}]))[0].id;
   const recipe=(await q('select * from ludus_supply_private.production_recipes_v118 where sku=$1',[row.sku]))[0];assert.equal(recipe.model,row.id);assert.equal(recipe.output_quantity,1);assert.equal((await q('select subcategory from ludus_shop_catalog where sku=$1',[row.sku]))[0].subcategory,row.group);
   const item=(await q("insert into ludus_items(owner_id,kind,model)values($1,'shield',$2)returning id",[A,row.id]))[0].id;await q('select ludus_equip_item($1,$2,$3)',[glad,'off_hand',item]);
   await q("select set_config('request.jwt.claim.sub',$1,false)",[B]);await assert.rejects(()=>q('select ludus_equip_item($1,$2,$3)',[glad,'off_hand',item]));await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
