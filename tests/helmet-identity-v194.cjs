@@ -25,7 +25,7 @@ test('names and four generated-from-model icons agree throughout the UI and sour
  const report=require('../assets/items-v194/source-audit.json');for(const r of report){assert.equal(r.geometryIdentical,true);assert.equal(r.sourceGeometrySha256,r.gameGeometrySha256);assert.equal(crypto.createHash('sha256').update(fs.readFileSync(r.gameModel)).digest('hex'),r.gameSha256);}
  for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js']){const s=fs.readFileSync(page,'utf8');assert.ok(!s.includes("['knights','winged'].includes(key)?'gladiator'"));assert.ok(!s.includes('Secutor miğferi')&&!s.includes('Thraex miğferi'));}
  for(const page of ['gelistirmeler.html','pazar.html','klan.html','savas.html','multiplayer.html']){const s=fs.readFileSync(page,'utf8');for(const sku of ['helmet-gold','helmet-silver','helmet-winged','helmet-roman'])assert.ok(s.includes('assets/items-v194/'+sku+'.webp'),page+' fallback icon '+sku);}
- for(const page of ['ludus.html','klan.html','pazar.html','gelistirmeler.html'])assert.match(fs.readFileSync(page,'utf8'),/ludus-production-v119.js\?v=revision194/);
+ for(const page of ['ludus.html','klan.html','pazar.html','gelistirmeler.html'])assert.match(fs.readFileSync(page,'utf8'),/ludus-production-v119.js\?v=revision196/);
 });
 
 test('shared titles and fallback icons preserve all seven identities even without the production module',()=>{

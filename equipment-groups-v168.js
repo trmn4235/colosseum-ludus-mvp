@@ -3,7 +3,7 @@
  'use strict';
  const groups=Object.freeze([
   {id:'swords',kind:'weapon',name:'Kılıçlar',models:['gladius','sica','scissor','halberd'],icon:'gladius'},
-  {id:'polearms',kind:'weapon',name:'Trident, mızrak',models:['trident','spear'],icon:'trident'},
+  {id:'polearms',kind:'weapon',name:'Trident, mızrak',models:['trident','trident_gladiator','spear'],icon:'trident'},
   {id:'blunt',kind:'weapon',name:'Gürzler, çekiçler',models:['mace','heavy_mace','warhammer'],icon:'heavy_mace'},
   {id:'flexible',kind:'weapon',name:'Ağ, kırbaç',models:['net','whip'],icon:'net'},
   {id:'large_shields',kind:'shield',name:'Büyük kalkanlar',models:['large'],icon:'shield-large'},

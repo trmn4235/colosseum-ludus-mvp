@@ -1,0 +1,11 @@
+# Selected arm guards and trident — V196
+
+All three source models are available for free download under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). The original authors retain their rights.
+
+- **Plakalı gladyatör kolluğu** (`manica_segmented`): [Gladiator – rigged for UE4/5](https://sketchfab.com/3d-models/gladiator-rigged-for-ue45-6d87963667a344e2859c96081d570254), by [Andy Woodhead](https://sketchfab.com/Andywoodhead). Extracted only the shoulder/arm plates and their straps. The character, clothing, helmet, sword, shield, skeleton and animations are omitted.
+- **Aslan başlı gladyatör kolluğu** (`manica_lion`) and **Gladyatör tridenti** (`trident_gladiator`): [Gladiator](https://sketchfab.com/3d-models/gladiator-0d09ee1dde8d419b83f8014292badc9f), by [maned](https://sketchfab.com/maned). Two independent equipment packages. The arm guard excludes the hand glove, torso straps and body. The trident excludes the shield. This source is marked **NoAI**: all edits here are deterministic geometry/texture processing; inventory icons are direct Three.js renders, not generated imagery.
+- **Tokalı deri kolluk** (`manica_leather`): [Arm Piece Armor](https://sketchfab.com/3d-models/arm-piece-armor-65091d727c074ecb8170953dbcf2af8f), by [eissg](https://sketchfab.com/eissg).
+
+Adaptations: isolated geometry; baked source bind pose; bone-axis alignment and game-scale fitting; connected-component selection; reduced triangles; cropped UVs and padded shared PBR texture atlases; compressed embedded WebP textures; optional clearcoat removed; redundant materials, textures, character data and animation removed. Shoulder caps retain rigid plate contours on the shoulder mount; upper and lower arm parts use independent bind-pose mounts. Radial clearance was adjusted smoothly for the game body. Each item is loaded only when selected, then shared across fighters and ground drops. CME is the existing client resource envelope, not DRM.
+
+The exact source checksums, selected/source triangles, final triangle counts, draw calls, image sizes, decoded texture memory and transfer bytes are recorded in `build-report.json`. Source GLBs are not distributed with the game.

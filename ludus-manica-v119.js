@@ -1,6 +1,6 @@
 /* Shared, batched forearm guards. No extra model download or per-frame allocation. */
 var LudusManica=(()=>{
- let cached;
+ let cached;const caps196=new WeakMap();
  function get(T){
   if(cached)return cached;
   const bronze=new T.MeshStandardMaterial({color:0xa77d39,metalness:.72,roughness:.42,side:T.DoubleSide});
@@ -20,5 +20,25 @@ var LudusManica=(()=>{
   const whole=new T.Group();for(const x of [-.085,.085]){const g=guard.clone(true);g.position.x=x;whole.add(g);}
   whole.userData.armourModel='manica';cached={single:guard,whole};return cached;
  }
- return{get};
+ // V196: two permanent bind-pose mounts; imported segments share catalog buffers.
+ function imported(id){return !!globalThis.LudusEquipmentCatalog?.entry(id)?.armour;}
+ function mount(T,m,fitLimb){
+  for(const [key,start,end]of [['armUpper','RightArm','RightForeArm'],['armFore','RightForeArm','RightHand']]){
+   const slot=fitLimb(m,start,end,new T.Group(),.25);slot.group.scale.y/=.84;slot.group.userData.bindScaleY=slot.group.scale.y;slot.group.visible=false;m.gear[key]=slot;
+  }
+ }
+ function sync(T,m,f){
+  const id=imported(f.shoulderModel)?f.shoulderModel:null,visible=f.shoulders!==false&&!!id;
+  const catalog=globalThis.LudusEquipmentCatalog;if(visible)catalog.request(T,id);const loaded=id&&catalog.get(id),revision=catalog?.revision||0;
+  if(m.manicaId196!==id||m.manicaRevision196!==revision||m.manicaLoaded196!==!!loaded){
+   m.manicaId196=id;m.manicaRevision196=revision;m.manicaLoaded196=!!loaded;
+   for(const [key,name]of [['armUpper','upper'],['armFore','fore']]){
+    const group=m.gear[key].group;group.clear();group.userData.catalogId=id;group.scale.set(1,group.userData.bindScaleY,1);
+    const part=loaded?.getObjectByName(name);if(part){const clone=part.clone(true);clone.position.set(0,0,0);clone.traverse(o=>{if(o.isMesh)o.frustumCulled=false});group.add(clone);}
+   }
+  }
+  for(const key of ['armUpper','armFore'])m.gear[key].group.visible=visible&&m.gear[key].group.children.length>0;
+ }
+ function cap(T,id){const template=globalThis.LudusEquipmentCatalog?.get(id),part=template?.getObjectByName('cap');if(!part)return null;if(!caps196.has(template)){const g=new T.Group(),clone=part.clone(true);clone.position.set(0,0,-.05);g.add(clone);g.userData.rigidArmour196=true;caps196.set(template,g);}return caps196.get(template);}
+ return{get,imported,mount,sync,cap};
 })();

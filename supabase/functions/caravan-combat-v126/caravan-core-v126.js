@@ -10,7 +10,7 @@ var ArenaClasses={
  provocator:{name:'Provocator',weapon:'gladius',shield:'large',color:0x8b3029,crest:true},
  scissor:{name:'Scissor',weapon:'gladius',shield:null,color:0x594534,armor:true,scissor:true}
 };
-var ArenaWeapons={gladius:{name:'Gladius',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident:{name:'Üç dişli mızrak',range:2.75},heavy_mace:{name:'Ağır gürz',range:1.95},warhammer:{name:'Savaş çekici',range:1.95},halberd:{name:'Halberd',range:2.75},mace:{name:'Zincirli gürz',range:2.25},whip:{name:'Kırbaç',range:2}};
+var ArenaWeapons={gladius:{name:'Gladius',range:2.25},sica:{name:'Eğri kılıç',range:2.25},spear:{name:'Mızrak',range:2.85},trident_gladiator:{name:'Gladyatör tridenti',range:2.75},trident:{name:'Üç dişli mızrak',range:2.75},heavy_mace:{name:'Ağır gürz',range:1.95},warhammer:{name:'Savaş çekici',range:1.95},halberd:{name:'Halberd',range:2.75},mace:{name:'Zincirli gürz',range:2.25},whip:{name:'Kırbaç',range:2}};
 // Master v7: six stats total 300; Overall is their mean, not character level.
 var ArenaBasicStats={murmillo:[60,55,50,60,35,40],thraex:[45,50,60,35,60,50],hoplomachus:[50,55,50,45,45,55],secutor:[55,55,50,55,40,45],retiarius:[40,55,45,30,65,65],provocator:[65,60,45,65,30,35],scissor:[50,50,60,40,55,45]};
 for(const [key,values] of Object.entries(ArenaBasicStats))ArenaClasses[key].stats=Object.fromEntries(['health','stamina','strength','defense','agility','speed'].map((s,i)=>[s,values[i]]));
@@ -22,10 +22,10 @@ var ArenaMotion=(function(){
  const regions={head:{name:'BAŞ',y:1.9,r:.25},chest:{name:'GÖVDE',y:1.38,r:.36},leftArm:{name:'SOL KOL',y:1.35,r:.24},rightArm:{name:'SAĞ KOL',y:1.35,r:.24},rightLeg:{name:'SAĞ BACAK',y:.65,r:.23},leftLeg:{name:'SOL BACAK',y:.65,r:.23},legs:{name:'BACAK',y:.65,r:.33}};
  const smooth=t=>{t=clamp(t);return t*t*(3-2*t);},mix=(a,b,t)=>a+(b-a)*t;
  // V114: preserve a readable preparation and a deliberate return to guard.
- function profile(kind,heavy=false,bot=false){const pole=kind==='spear'||kind==='trident'||kind==='halberd',timings={gladius:[.25,.20,.45],sica:[.23,.19,.40],spear:[.32,.22,.48],trident:[.36,.24,.52],heavy_mace:[.40,.26,.56],warhammer:[.44,.26,.60],halberd:[.36,.24,.52],mace:[.40,.26,.56],whip:[.32,.24,.48]},v=timings[kind]||[.22,.18,.35],wind=v[0]*(heavy?1.35:bot?1.15:1),active=v[1],recover=v[2]*(heavy?1.2:1);return {wind,active,recover,duration:wind+active+recover,pole,length:pole?1.7:kind==='heavy_mace'?.86:kind==='warhammer'?1.02:kind==='mace'?1.02:kind==='whip'?1.65:kind?.78:.18};}
+ function profile(kind,heavy=false,bot=false){const pole=kind==='spear'||(kind==='trident'||kind==='trident_gladiator')||kind==='halberd',timings={gladius:[.25,.20,.45],sica:[.23,.19,.40],spear:[.32,.22,.48],trident_gladiator:[.36,.24,.52],trident:[.36,.24,.52],heavy_mace:[.40,.26,.56],warhammer:[.44,.26,.60],halberd:[.36,.24,.52],mace:[.40,.26,.56],whip:[.32,.24,.48]},v=timings[kind]||[.22,.18,.35],wind=v[0]*(heavy?1.35:bot?1.15:1),active=v[1],recover=v[2]*(heavy?1.2:1);return {wind,active,recover,duration:wind+active+recover,pole,length:pole?1.7:kind==='heavy_mace'?.86:kind==='warhammer'?1.02:kind==='mace'?1.02:kind==='whip'?1.65:kind?.78:.18};}
  function speedFactor(f){return Math.min(1.18,(.9+.002*clamp(Number(f.agility??50),0,100))*(1+clamp(Number(f.itemStats?.attack_speed||0)/100,0,.25)));}
  function pace(f){const p={...f.attackProfile},factor=speedFactor(f);for(const key of ['wind','active','recover'])p[key]/=factor;p.duration=p.wind+p.active+p.recover;return p;}
- function impactQuality(f,v){return ['spear','trident','halberd'].includes(f.attackWeapon??f.weapon)?clamp((Math.hypot(f.x-v.x,f.z-v.z)-.75)/1.05,.28,1):1;}
+ function impactQuality(f,v){return ['spear','trident','trident_gladiator','halberd'].includes(f.attackWeapon??f.weapon)?clamp((Math.hypot(f.x-v.x,f.z-v.z)-.75)/1.05,.28,1):1;}
  function shieldResponse(f){const w=Math.sin(Math.PI*clamp((f.guardFlash||0)/.20))*(f.guardImpact||.65),x=f.guardImpactX||0,y=f.guardImpactY||0;return {x:x*.025*w,y:y*.018*w,z:-.105*w,pitch:-y*.12*w,yaw:x*.17*w,roll:-x*.04*w};}
  function reaction(f){
   const poses={};if(!(f.reaction>0)||f.hp<=0||['knocked','stunned'].includes(f.action))return {poses,drop:0};
@@ -95,7 +95,7 @@ var ArenaMotion=(function(){
    const local=flexible(kind,phase,weight),points=(local.length?local:[{x:0,y:0,z:0},{x:0,y:p.length,z:0}]).map(v=>{const r=orient(v,dir);return{x:grip.x+r.x,y:grip.y+r.y,z:grip.z+r.z};});
   return {grip,tip:points[points.length-1],points,local,dir,phase,wind,recovery,weight,pole:p.pole,left:!!f.attackLeft,cut:cut*swing,active:!ready&&!returning};
  }
- function poleGuard(f,left=false){const kind=left?f.offhand:f.weapon;if(!['spear','trident','halberd'].includes(kind))return null;return sample({...f,action:'idle',attackWeapon:kind,attackProfile:profile(kind),attackRegion:'chest',attackLeft:left},0);}
+ function poleGuard(f,left=false){const kind=left?f.offhand:f.weapon;if(!['spear','trident','trident_gladiator','halberd'].includes(kind))return null;return sample({...f,action:'idle',attackWeapon:kind,attackProfile:profile(kind),attackRegion:'chest',attackLeft:left},0);}
  function body(f){const poses={},attack=f.action==='attack';let drop=0,lean=0,shift=0,step=null;
   if(attack){
    const s=sample(f),p=f.attackProfile||profile(f.attackWeapon||f.weapon),side=f.attackLeft?-1:1,reverse=f.chain===2,overhead=(f.chain===3&&(f.attackWeapon||f.weapon)!=='gladius')||f.attackKind==='heavy';
@@ -214,7 +214,7 @@ class ArenaCombat {
   this.emit('hands',{id,hand:f.pickupHand});return true;
  }
  canBlock(f){return (!!f.shield&&f.shieldHeldBy===null)||!!(f.guardRegion&&(f.weapon||f.offhand));}
- specialKind(f){const left=f.pickupHand==='offhand',weapon=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'hook';if(f.shield)return 'bash';}if(weapon==='spear'||weapon==='trident')return 'throw';return weapon?'lunge':null;}
+ specialKind(f){const left=f.pickupHand==='offhand',weapon=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'hook';if(f.shield)return 'bash';}if(weapon==='spear'||(weapon==='trident'||weapon==='trident_gladiator'))return 'throw';return weapon?'lunge':null;}
  special(id=0){
   const f=this.fighters[id];if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stunUntil>this.time)return false;
   const kind=this.specialKind(f);if(!kind||(kind==='net'?f.nextNet:f.specialUntil)>this.time)return false;
@@ -412,8 +412,8 @@ class ArenaCombat {
   if(this.botDefend(f,threat))return;
   const weapon=f.weapon||f.offhand,range=Weapons[weapon]?.range||1.2;
   // Collision ranges are broad-phase limits; close to the actual blade arc before striking.
-  const spacing=['spear','trident','halberd'].includes(weapon)?1.9:weapon==='whip'?1.3:weapon==='mace'?1.15:weapon?1.1:.85;
-  if(['spear','trident','halberd'].includes(weapon)&&d<1.45&&f.stamina>=20){
+  const spacing=['spear','trident','trident_gladiator','halberd'].includes(weapon)?1.9:weapon==='whip'?1.3:weapon==='mace'?1.15:weapon?1.1:.85;
+  if(['spear','trident','trident_gladiator','halberd'].includes(weapon)&&d<1.45&&f.stamina>=20){
    f.x-=Math.sin(a)*1.2*dt;f.z-=Math.cos(a)*1.2*dt;f.move=.32;
   }else if(f.stamina<20+16*this.botTactics(f)&&d<3.3){
    const side=f.id%2?1:-1;f.x+=(-Math.sin(a)*1.7+Math.cos(a)*side*.5)*dt;f.z+=(-Math.cos(a)*1.7-Math.sin(a)*side*.5)*dt;f.move=.5;
@@ -472,7 +472,7 @@ const install=(Combat,Classes)=>{
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
  p.attack=function(...args){const ok=attack.apply(this,args);if(ok){const f=this.fighters[args[0]];f.attackProfile=Motion.pace(f);f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;}return ok;};
  p.reset=function(...args){const r=reset.apply(this,args);for(const f of this.fighters){const s=Classes[f.type].stats;f.skillReady=[0,0];f.overall=50;f.maxHp=f.hp=s.health*2;f.maxStamina=f.stamina=s.stamina*2;f.attackBonus=s.strength/50;f.defenseBonus=s.defense/50;f.speedBonus=s.speed/50;f.agility=s.agility;f.spareSword=false;}return r;};
- p.specialKind=function(f,index){const left=index===undefined?f.pickupHand==='offhand':index===1,w=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'disarm';if(f.shield)return 'bash';}if(['spear','trident','gladius','sica'].includes(w))return 'throw';if(w==='whip')return 'pull';return null;};
+ p.specialKind=function(f,index){const left=index===undefined?f.pickupHand==='offhand':index===1,w=left?f.offhand:f.weapon;if(left){if(f.leftGear==='net')return 'net';if(f.leftGear==='scissor')return 'disarm';if(f.shield)return 'bash';}if(['spear','trident','trident_gladiator','gladius','sica'].includes(w))return 'throw';if(w==='whip')return 'pull';return null;};
  p.skillNames=function(f){return [0,1].map(i=>({net:'AĞ AT',disarm:'SİLAH DÜŞÜR',bash:'KALKAN VUR',throw:'FIRLAT',pull:'ÇEK'}[this.specialKind(f,i)]||'ÖZEL YOK'));};
  p.knock=function(t,seconds){t.stunUntil=this.time+seconds;t.knockedUntil=t.stunUntil;t.action='knocked';t.timer=0;t.duration=seconds;t.knockOrigin=null;t.knockAngle=null;t.blocking=false;this.emit('knockdown',{id:t.id});};
  p.special=function(id=0,index){
@@ -541,8 +541,8 @@ if(false)module.exports=install;else install(root.ArenaCombat,root.ArenaClasses)
   const combatValues=root.LudusCombatValues?.create({client:options.client,getUser:options.getUser,getSelected:()=>selected,host:panel});
   const phase=g=>options.phase?.(g)||(Date.parse(record(g).injured_until)>now()?'injured':record(g).status==='available'?'available':record(g).status);
   const canDress=g=>phase(g)==='available'&&record(g).status==='available'&&!record(g).clan_roster_id;
-  const fits=(item,slot)=>slot==='main_hand'?item.kind==='weapon'&&['gladius','sica','spear','trident','mace','whip','heavy_mace','warhammer','halberd'].includes(item.model):slot==='off_hand'?['weapon','shield'].includes(item.kind):item.kind===slot;
-  const itemName=item=>item.name||({gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident:'Üç dişli mızrak',heavy_mace:'Ağır gürz',halberd:'Halberd',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',net:'Ağ',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',gold:'Gladyatör miğferi',silver:'Şövalye miğferi',starter:'Başlangıç ekipmanı'})[item.model]||item.model;
+  const fits=(item,slot)=>slot==='main_hand'?item.kind==='weapon'&&['gladius','sica','spear','trident','trident_gladiator','mace','whip','heavy_mace','warhammer','halberd'].includes(item.model):slot==='off_hand'?['weapon','shield'].includes(item.kind):item.kind===slot;
+  const itemName=item=>item.name||({gladius:'Gladius',sica:'Sica',spear:'Mızrak',trident_gladiator:'Gladyatör tridenti',trident:'Üç dişli mızrak',heavy_mace:'Ağır gürz',halberd:'Halberd',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',net:'Ağ',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan',gold:'Gladyatör miğferi',silver:'Şövalye miğferi',starter:'Başlangıç ekipmanı'})[item.model]||item.model;
   const candidates=()=> (options.inventory?.()||[]).filter(i=>fits(i,gearSlot)&&!i.locked_battle_id&&!i.clan_vault_id&&!i.clan_roster_id&&(!i.equipped_by||i.equipped_by===record(selected).id)&&!(i.equipped_by===record(selected).id&&i.equipped_slot===gearSlot));
   const eligible=g=>{const r=record(g);return phase(g)==='available'&&r.status==='available'&&!r.clan_roster_id&&!r.trained_today&&!r.exercise_completed&&energy(r,now())>0&&Number(r.base_stats?.[stat]??50)<100;};
   function node(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
@@ -764,7 +764,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
   }
   if(v.action==='idle'&&this.random()<clamp((t.dodge_rate||0)/100,0,.2)){v.passiveEvade=.36;this.emit('evade',{id:v.id,source:a.id,passive:true});if(v.id===0)this.stats.dodges++;return true;}
   const critical=this.random()<clamp(((s.critical_rate||0)-(t.critical_resistance||0))/100,0,.35);
-  const piercing=['spear','trident','scissor','halberd'].includes(a.attackWeapon||a.weapon),projectile=['spearcast','swordcast','throw'].includes(a.action)||a.itemProjectile;
+  const piercing=['spear','trident','trident_gladiator','scissor','halberd'].includes(a.attackWeapon||a.weapon),projectile=['spearcast','swordcast','throw'].includes(a.action)||a.itemProjectile;
   let resistance=(t.damage_reduction||0)+(projectile?t.projectile_resistance||0:piercing?t.pierce_resistance||0:t.slash_resistance||0);
   base*=1-clamp(resistance/100,0,.55);
   // Penetration removes item defense, never the gladiator's class defense.
