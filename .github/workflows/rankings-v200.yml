@@ -2,9 +2,9 @@ name: Imperial rankings
 on:
   push:
     branches: [main]
-    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', 'supabase/migrations/*imperial_rankings_v200*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
+    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', '*rank*v203*', 'supabase/migrations/*imperial_rankings*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
   pull_request:
-    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', 'supabase/migrations/*imperial_rankings_v200*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
+    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', '*rank*v203*', 'supabase/migrations/*imperial_rankings*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,16 +22,17 @@ jobs:
       - name: Ranking formulas, immutable results and access controls
         run: |
           node tests/rankings-v200.cjs
+          node tests/rankings-v203.cjs
           node tests/rankings-telemetry-v200.cjs
           node tests/career-combat-v162.cjs
           node tests/careers-v162.cjs
       - name: Chromium touch layouts and interactions
-        run: node tests/rankings-browser-v200.cjs
+        run: node tests/rankings-browser-v203.cjs
       - name: WebKit touch layouts and interactions
-        run: LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/rankings-webkit-v200 node tests/rankings-browser-v200.cjs
+        run: LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/rankings-webkit-v203 node tests/rankings-browser-v203.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: imperial-rankings-screens
-          path: /tmp/rankings*-v200/*.png
+          path: /tmp/rankings*-v203/*.png
           retention-days: 7

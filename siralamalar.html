@@ -4,25 +4,28 @@
  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
  <meta name="theme-color" content="#651c2b"><meta name="apple-mobile-web-app-capable" content="yes">
  <title>İmparatorluk Sıralaması · Colosseum &amp; Magnus</title>
- <link rel="stylesheet" href="rankings-v200.css?v=revision200">
+ <link rel="stylesheet" href="rankings-v203.css?v=revision203">
 </head>
 <body>
  <main class="rank-app">
   <header class="rank-header">
-   <a id="rankBack" class="icon-button" href="ludus.html?v=revision200" aria-label="Geri dön"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7M7 12h14"/></svg></a>
+   <a id="rankBack" class="icon-button" href="ludus.html?v=revision203" aria-label="Geri dön"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7M7 12h14"/></svg></a>
    <div class="rank-brand"><small>COLOSSEUM &amp; MAGNUS</small><h1>İmparatorluk Sıralaması</h1></div>
    <nav class="rank-scope" aria-label="Sıralama türü"><button data-scope="players" aria-pressed="true">Oyuncular</button><button data-scope="guilds" aria-pressed="false">Hanedanlar</button></nav>
    <button id="rankRules" class="icon-button" aria-label="Puanlar nasıl hesaplanıyor?">?</button>
    <button id="rankRefresh" class="icon-button" aria-label="Sıralamayı yenile"><svg viewBox="0 0 24 24"><path d="M20 9a8 8 0 1 0 0 6M20 3v6h-6"/></svg></button>
   </header>
   <section class="rank-sheet" aria-label="Sıralamalar">
-   <nav id="rankCategories" class="rank-categories" aria-label="Sıralama kategorisi"></nav>
+   <div class="rank-navigation">
+    <nav id="rankSections" class="rank-sections" aria-label="Oyuncu sıralaması"><button data-section="power" aria-pressed="true">Güç</button><button data-section="achievements" aria-pressed="false">Başarılar</button></nav>
+    <nav id="rankCategories" class="rank-categories" aria-label="Sıralama kategorisi"></nav>
+   </div>
    <div class="rank-tools">
     <label class="rank-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="rankSearch" type="search" maxlength="60" placeholder="Oyuncu ara…" aria-label="İsimle ara" autocomplete="off" spellcheck="false"></label>
     <label class="rank-select"><span>Hanedan</span><select id="rankClan" aria-label="Hanedan filtresi"><option value="">Tüm hanedanlar</option></select></label>
     <label class="rank-select rank-sort"><span>Sırala</span><select id="rankSort" aria-label="Sıralama ölçütü"><option value="score">Puana göre</option><option value="wins">Zafere göre</option></select></label>
    </div>
-   <div class="rank-context"><div class="rank-context-title"><h2 id="rankTitle">Gladyatör gücü</h2><span id="rankCount"></span></div><nav id="rankGroups" class="rank-groups" aria-label="Alt grup"></nav><p id="rankNotice" role="status"></p></div>
+   <div class="rank-context"><div class="rank-context-title"><h2 id="rankTitle">Genel güç</h2><span id="rankCount"></span></div><nav id="rankGroups" class="rank-groups" aria-label="Alt grup"></nav><p id="rankNotice" role="status"></p></div>
    <div id="rankTable" class="rank-table" data-metrics="power" aria-busy="true">
     <div id="rankHead" class="rank-columns" aria-hidden="true"></div>
     <div id="rankRows" class="rank-rows"></div>
@@ -37,6 +40,6 @@
  <script src="assets/runtime/supabase-59d39487c358.js"></script>
  <script src="ludus-client-v84.js?v=revision84"></script>
  <script src="rank-emblems-v200.js?v=revision200"></script>
- <script src="rankings-v200.js?v=revision200"></script>
+ <script src="rankings-v203.js?v=revision203"></script>
 </body>
 </html>
