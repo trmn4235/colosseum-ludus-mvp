@@ -45,8 +45,8 @@ async function run(){
   for(const id of ['caravanHud','gladiatorHud','friendsOpen','messagesOpen'])await page.locator('#'+id).tap();
   await page.locator('#accountLink').tap();await page.locator('#beginnerHelp').tap();assert.deepEqual(await page.evaluate(()=>hudClicks),{caravans:1,gladiators:1,friends:1,messages:1,help:1});
   for(const [id,target]of [['ludusMap','roma.html'],['imperialRankings','siralamalar.html'],['ludusLevelBadge','ludus-seviye.html']])assert.equal(new URL(await page.locator('#'+id).getAttribute('href'),'http://hud.test/').pathname,'/'+target);
-  await page.setViewportSize({width:393,height:852});assert(await page.locator('#landscapeGate').isVisible());assert.equal(await page.locator('#ludusHud').isVisible(),false);
-  await page.setViewportSize({width:852,height:393});assert.equal(await page.locator('#ludusHud').getAttribute('inert'),null);assert(await page.locator('#imperialRankings').isVisible());
+  await page.setViewportSize({width:393,height:852});await page.locator('#landscapeGate').waitFor({state:'visible'});assert(await page.locator('#landscapeGate').isVisible());assert.equal(await page.locator('#ludusHud').isVisible(),false);
+  await page.setViewportSize({width:852,height:393});await page.waitForFunction(()=>document.getElementById('landscapeGate').hidden&&!document.getElementById('ludusHud').inert);assert.equal(await page.locator('#ludusHud').getAttribute('inert'),null);assert(await page.locator('#imperialRankings').isVisible());
   assert.deepEqual(errors,[]);await context.close();console.log('PASS availability states, live updates, level centering, retained handlers, settings/help, destinations and rotation.');
  }finally{await browser.close();}
 }
