@@ -1441,5 +1441,5 @@ body{position:fixed!important;inset:0!important}
  async function heartbeat(){if(!owner||document.hidden)return;if(open){call();return;}try{await client.rpc('ludus_social',{p_action:'ping'});}catch{}}
  client.auth.getUser().then(r=>{if(r.data.user&&!r.data.user.is_anonymous){owner=r.data.user.id;heartbeat();}}).catch(()=>{});setInterval(heartbeat,20000);document.addEventListener('visibilitychange',heartbeat);window.addEventListener('resize',()=>{if(open)render();});render();
 })();
-</script></body></html>
+</script><script src="rankings-entry-v200.js?v=revision200"></script></body></html>
 
