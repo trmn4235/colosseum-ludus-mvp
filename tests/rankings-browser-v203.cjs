@@ -36,8 +36,8 @@ async function run(){
    const ready=()=>page.waitForFunction(()=>document.querySelector('#rankTable').getAttribute('aria-busy')==='false'&&window.rankFixture?.requests.length>0);
    await ready();
    async function layout(label){const result=await page.evaluate(()=>{
-    const els=[...document.querySelectorAll('.rank-header,.rank-sheet,.rank-navigation,.rank-categories,.rank-tools,.rank-context,.rank-table,.rank-footer,.rank-row,.rank-value,dialog[open]')];
-    return {body:document.documentElement.scrollHeight<=innerHeight+1,overflow:els.filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<-.5||r.right>innerWidth+.5||r.top<-.5||r.bottom>innerHeight+.5||e.scrollHeight>e.clientHeight+2||e.classList.contains('rank-value')&&e.scrollWidth>e.clientWidth+2)}).map(e=>({tag:e.className||e.id,h:e.clientHeight,sh:e.scrollHeight})),rows:document.querySelectorAll('.rank-row').length};
+    const els=[...document.querySelectorAll('.rank-header,.rank-sheet,.rank-navigation,.rank-categories,.rank-categories button,.rank-tools,.rank-context,.rank-table,.rank-footer,.rank-row,.rank-value,dialog[open]')];
+    return {body:document.documentElement.scrollHeight<=innerHeight+1,overflow:els.filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<-.5||r.right>innerWidth+.5||r.top<-.5||r.bottom>innerHeight+.5||e.scrollHeight>e.clientHeight+2||(e.classList.contains('rank-value')||e.matches('.rank-categories button'))&&e.scrollWidth>e.clientWidth+2)}).map(e=>({tag:e.className||e.id,text:e.matches('.rank-categories button')?e.textContent:null,w:e.clientWidth,sw:e.scrollWidth,h:e.clientHeight,sh:e.scrollHeight})),rows:document.querySelectorAll('.rank-row').length};
    });assert.equal(result.body,true,label+' body');assert.deepEqual(result.overflow,[],width+'×'+height+' '+label);return result;}
    await layout('general power');await page.screenshot({path:path.join(out,`power-${width}x${height}.png`)});
    assert.equal(await page.locator('.rank-row').first().locator('.rank-value').count(),5);
