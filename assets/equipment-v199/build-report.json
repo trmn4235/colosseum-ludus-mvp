@@ -1,0 +1,13 @@
+{
+  "version": 199,
+  "source": "assets/equipment/gladiator_chest-e2f685b66fb6.glb",
+  "sourceBytes": 1212096,
+  "sourceTriangles": 50880,
+  "sourceSha256": "e2f685b66fb67d8f54722651c6400bbbf433947cdc9e95a4dc3f2b29d3ee5a22",
+  "file": "assets/equipment-v199/gladiator_chest.glb",
+  "bytes": 67616,
+  "triangles": 3305,
+  "primitives": 1,
+  "sha256": "cf6545654244105a505a71e2aad993de341be7c4993ae99c65afd50b06333143",
+  "textures": []
+}

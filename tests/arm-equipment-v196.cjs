@@ -26,6 +26,6 @@ test('transfer, triangles, embedded textures and source provenance stay bounded'
  }
 });
 test('three arm recipes and one polearm use distinct names and realistic inventory artwork',()=>{
- const p=require('../ludus-production-v119.js'),g=require('../equipment-groups-v168.js');for(const id of ids){const row=p.recipes.find(r=>r.model===id);assert.ok(row);assert.equal(p.skuForItem({kind:row.kind,model:id}),row.sku);assert.equal(row.output_quantity,1);assert.ok(fs.statSync(p.photo(row.sku)).size<25000);assert.match(p.artwork(row),/items-v197/);if(row.kind==='weapon')assert.equal(g.groupFor(row).id,'polearms');else assert.equal(row.kind,'gloves');}
+ const p=require('../ludus-production-v119.js'),g=require('../equipment-groups-v168.js');for(const id of ids){const row=p.recipes.find(r=>r.model===id);assert.ok(row);assert.equal(p.skuForItem({kind:row.kind,model:id}),row.sku);assert.equal(row.output_quantity,1);assert.ok(fs.statSync(p.photo(row.sku)).size<25000);assert.match(p.artwork(row),/items-v199/);if(row.kind==='weapon')assert.equal(g.groupFor(row).id,'polearms');else assert.equal(row.kind,'gloves');}
  for(const name of ['caravan-core-v126.js','combat-motion-v163.js'])assert.equal(fs.readFileSync(name,'utf8'),fs.readFileSync('supabase/functions/caravan-combat-v126/'+name,'utf8'));
 });

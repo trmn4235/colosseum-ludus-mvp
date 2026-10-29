@@ -127,7 +127,7 @@ body[data-roman-screen="ludus"] #accountLink:after{content:none!important}
 body[data-roman-screen="ludus"] #accountLink[hidden]{display:none!important}
 body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#ebce89}
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
-</style><script defer src="market-v56.js?v=revision168"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="forum-market-v66.css?v=resource-photo95"><script defer src="forum-market-v66.js?v=revision194"></script><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><script src="ludus-client-v84.js?v=revision84"></script><script src="ludus-production-v119.js?v=revision198"></script><script src="equipment-groups-v168.js?v=revision198"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
+</style><script defer src="market-v56.js?v=revision168"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="forum-market-v66.css?v=resource-photo95"><script defer src="forum-market-v66.js?v=revision199"></script><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><script src="ludus-client-v84.js?v=revision84"></script><script src="item-visuals-v199.js?v=revision199"></script><script src="ludus-production-v119.js?v=revision199"></script><script src="equipment-groups-v168.js?v=revision199"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
 <link rel="stylesheet" href="game-panels-v123.css?v=revision123"></head><body data-art-direction="136" data-roman-screen="pazar"><header><a data-game-back href="ludus.html?v=revision96">‹ Geri dön</a><span class="market-title">Pazar</span><div class="market-wallet" role="status" aria-label="Denarius bakiyesi"><svg class="market-wallet-coin" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><circle cx="20" cy="20" r="14" fill="none" stroke="var(--ui-burgundy)" stroke-width="1"/><path d="M16 11h5c11 0 11 18 0 18h-5V11Zm3 3v12h2c7 0 7-12 0-12h-2Z" fill="var(--ui-burgundy)"/></svg><div><small>DENARIUS</small><strong id="balance">—</strong></div></div></header><div class="market-workspace">
  <aside id="marketSections" aria-label="Pazar bölümleri">
   <small>LUDUS<br>PAZARI</small>
@@ -172,7 +172,7 @@ var ARENA_SUPABASE_CONFIG = Object.freeze({
 
 // Original small SVG equipment illustrations; no external images or additional requests.
 var LUDUS_ARMOUR_NAMES={gladiator_chest:'Gladyatör göğüs zırhı',chest_plate:'İşlemeli göğüs zırhı',armor_shoulder:'İşlemeli çift omuzluk',shoulder_armor:'Çift omuz koruma'};
-function LudusArmourName(i){if(i?.model==='manica')return 'Kolluk';return i?.kind==='chest'?LUDUS_ARMOUR_NAMES[i.model==='chest_plate'?'chest_plate':'gladiator_chest']:i?.kind==='gloves'?LUDUS_ARMOUR_NAMES[i.model==='shoulder_armor'?'shoulder_armor':'armor_shoulder']:null;}
+function LudusArmourName(i){const exact=globalThis.LudusItemVisuals?.nameForItem(i);if(exact)return exact;if(i?.model==='manica')return 'Kolluk';return i?.kind==='chest'?LUDUS_ARMOUR_NAMES[i.model==='chest_plate'?'chest_plate':'gladiator_chest']:i?.kind==='gloves'?LUDUS_ARMOUR_NAMES[i.model==='shoulder_armor'?'shoulder_armor':'armor_shoulder']:null;}
 var LUDUS_HELMET_NAMES={"gold":"Gladyatör miğferi","gladiator":"Gladyatör miğferi","gladiator_helmet":"Gladyatör miğferi","silver":"Şövalye miğferi","knights":"Şövalye miğferi","knights_helm":"Şövalye miğferi","winged":"Kanatlı miğfer","winged_helmet_gameready":"Kanatlı miğfer","roman":"Roma miğferi","roman_helmet":"Roma miğferi","viking_helmet":"Boynuzlu Viking miğferi","steel_helmet":"Çelik miğfer","sylvain_helmet":"Vizörlü gladyatör miğferi"};
 var LUDUS_EQUIPMENT_ATLAS="assets/textures/shared-ui-91a94259c0b5.webp";
 /* V16 original atlas. One embedded sheet serves every equipment tile. */
@@ -282,14 +282,7 @@ var LudusIcons=(function(){
  const bounds=[[8,6,299,301],[329,5,293,298],[629,5,299,302],[953,7,292,301],[7,337,295,242],[329,313,281,279],[650,351,281,241],[956,319,289,278],[44,607,236,292],[339,614,269,288],null,null,[16,910,265,323],[319,926,296,300],[660,916,278,313],[945,942,292,270]];
  function helmetKey(value){if(['viking_helmet','steel_helmet','sylvain_helmet'].includes(value))return value;return value==='roman'||value==='roman_helmet'?'roman':value==='silver'||value==='knights'||value==='knights_helm'?'knights':value==='winged'||value==='winged_helmet_gameready'?'winged':'gladiator';}
  function index(it){if(!it)return -1;if(it.kind==='weapon')return cells[it.model]??0;if(it.kind==='shield')return it.model==='large'?8:9;if(it.kind==='helmet')return helmetKey(it.model)==='knights'?11:10;return {chest:12,gloves:13,legs:14,pouch:15}[it.kind]??-1;}
- function svg(it){const photo=globalThis.LudusProduction?.artwork(it);if(photo)return photo;const n=index(it),label=String(it?.name||'Ekipman görünümü').replace(/[&<>"']/g,'');
-  if(n<0)return '<svg viewBox="0 0 96 96" role="img" aria-label="Boş ekipman yuvası"><path d="M48 33v30M33 48h30" stroke="#cbb381" stroke-width="2"/><circle cx="48" cy="48" r="30" fill="none" stroke="#cbb38155" stroke-width="1"/></svg>';
-  if(it.kind==='helmet')return '<svg class="equipment-icon" data-equipment="helmet" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+label+'" style="display:block;width:100%;height:100%;overflow:hidden"><rect width="96" height="96" fill="#fff"/><image x="4" y="4" width="88" height="88" preserveAspectRatio="xMidYMid meet" href="'+LUDUS_HELMET_ICONS[helmetKey(it.model)]+'"/></svg>';
-  if(it.kind==='chest'||it.kind==='gloves'){const key=it.kind==='chest'?(it.model==='chest_plate'?'chest_plate':'gladiator_chest'):(it.model==='shoulder_armor'?'shoulder_armor':'armor_shoulder');return '<svg class="equipment-icon" data-equipment="'+key+'" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+label+'" style="display:block;width:100%;height:100%;overflow:hidden"><rect width="96" height="96" fill="#fff"/><image x="3" y="3" width="90" height="90" preserveAspectRatio="xMidYMid meet" href="'+(LUDUS_ARMOUR_ICONS[key]||LUDUS_HELMET_ICONS.gladiator)+'"/></svg>';}
-  const b=bounds[n],scale=84/Math.max(b[2],b[3]),x=(96-b[2]*scale)/2,y=(96-b[3]*scale)/2,id='equipment-crop-'+n+'-'+(++iconSequence);
-  return '<svg class="equipment-icon" data-equipment="'+n+'" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+label+'" style="display:block;width:100%;height:100%;overflow:hidden"><rect width="96" height="96" fill="#fff"/><defs><clipPath id="'+id+'"><rect x="'+x+'" y="'+y+'" width="'+(b[2]*scale)+'" height="'+(b[3]*scale)+'"/></clipPath></defs><image clip-path="url(#'+id+')" x="'+(x-b[0]*scale)+'" y="'+(y-b[1]*scale)+'" width="'+(1254*scale)+'" height="'+(1254*scale)+'" href="'+LUDUS_EQUIPMENT_ATLAS+'"/></svg>';
-
- }
+ function svg(it){const art=globalThis.LudusProduction?.artwork(it)||globalThis.LudusItemVisuals?.artwork(it);if(art)return art;return globalThis.LudusItemVisuals?.placeholder(it)||'<svg class="equipment-icon" viewBox="0 0 96 96" role="img" aria-label="Eşya görseli yüklenemedi"><circle cx="48" cy="48" r="30" fill="none" stroke="#b8aa91"/></svg>';}
  return {svg,index,bounds,helmetKey};
 })();
 
@@ -322,7 +315,7 @@ body{position:fixed!important;inset:0!important}
 </script>
 <script>/* Shared read-only equipment details. Uses the same stat rules as combat. */
 var LudusInspect=(function(){
- const names={sylvain_helmet:'Vizörlü gladyatör miğferi',gladius:'Gladius',sica:'Eğri kılıç',spear:'Mızrak',trident:'Trident',net:'Ağ',heavy_mace:'Ağır gürz',halberd:'Halberd',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Yuvarlak kalkan',small:'Küçük kalkan'};
+ const names={sylvain_helmet:'Vizörlü gladyatör miğferi',gladius:'Gladius',sica:'Eğri kılıç',spear:'Mızrak',trident:'Trident',net:'Ağ',heavy_mace:'Ağır gürz',halberd:'Halberd',warhammer:'Savaş çekici',mace:'Zincirli gürz',whip:'Kırbaç',scissor:'Kol bıçağı',large:'Büyük kalkan',round:'Küçük kalkan',small:'Küçük kalkan'};
  const kinds={weapon:'Silah',shield:'Kalkan',helmet:'Miğfer',chest:'Göğüs zırhı',gloves:'Kolluk / omuzluk',legs:'Bacaklık'};
  const style=document.createElement('style');style.textContent=`
  #equipmentInspect{position:fixed;inset:0;z-index:80;background:#160d08b8;display:grid;place-items:center}
@@ -349,7 +342,7 @@ var LudusInspect=(function(){
  layer.innerHTML='<section class="inspect-paper"><div class="inspect-head"><h2 id="inspectTitle"></h2><button id="inspectClose" aria-label="Eşya bilgilerini kapat">×</button></div><div class="inspect-body"><div id="inspectArt"></div><div class="inspect-data"><p id="inspectMeta"></p><ul id="inspectStats"></ul><p id="inspectStones"></p></div></div><p id="inspectHint"></p></section>';
  document.body.append(layer);let previous=null;
  const $=id=>document.getElementById(id),number=v=>Number(v.toFixed(2)).toLocaleString('tr-TR');
- const title=i=>(i.kind==='helmet'?globalThis.LudusProduction?.nameForItem?.(i):null)||i.name||(i.model==='manica'?'Kolluk':null)||(i.kind==='helmet'?(LUDUS_HELMET_NAMES[i.model]||'Gladyatör miğferi'):names[i.model]||kinds[i.kind]||'Eşya');
+ const title=i=>(globalThis.LudusItemVisuals?.nameForItem?.(i)||(i.kind==='helmet'?globalThis.LudusProduction?.nameForItem?.(i):null))||i.name||(i.model==='manica'?'Kolluk':null)||(i.kind==='helmet'?(LUDUS_HELMET_NAMES[i.model]||'Gladyatör miğferi'):names[i.model]||kinds[i.kind]||'Eşya');
  function close(){layer.hidden=true;previous?.focus();previous=null;}
  $('inspectClose').onclick=close;layer.onclick=e=>{if(e.target===layer)close();};
  document.addEventListener('keydown',e=>{if(!layer.hidden&&e.key==='Escape'){e.preventDefault();close();}else if(!layer.hidden&&e.key==='Tab'){e.preventDefault();$('inspectClose').focus();}});

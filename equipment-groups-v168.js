@@ -23,8 +23,8 @@
   const photo=p.photo,sku=p.skuForItem;
   p.equipment.push(...additions);
   p.recipes.push(...additions.map(([sku,name,kind,model,ingredients])=>({sku,name,kind,model,ingredients,output_type:'equipment',output_quantity:1,group:'equipment',subcategory:'blunt'})));
-  p.photo=id=>additions.some(a=>a[0]===id)?'assets/items-v168/'+id+'.webp':photo(id);
-  p.skuForItem=i=>additions.find(a=>a[0]===i?.sku||i?.kind==='weapon'&&a[3]===i.model)?.[0]||sku(i);
+  p.photo=id=>root.LudusItemVisuals?.photo(id)||(additions.some(a=>a[0]===id)?'assets/items-v168/'+id+'.webp':photo(id));
+  p.skuForItem=i=>root.LudusItemVisuals?sku(i):(additions.find(a=>a[0]===i?.sku||i?.kind==='weapon'&&a[3]===i.model)?.[0]||sku(i));
   const art=p.artwork;p.artwork=i=>{const id=p.skuForItem(i);if(!additions.some(a=>a[0]===id))return art(i);return '<svg class="equipment-icon item-photo-v118" viewBox="0 0 96 96" role="img" aria-label="'+additions.find(a=>a[0]===id)[1]+'"><image href="'+p.photo(id)+'" x="4" y="4" width="88" height="88" preserveAspectRatio="xMidYMid meet"/></svg>';};
   p.version=168;
  }

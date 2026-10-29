@@ -4,6 +4,7 @@
  */
 (function(root){
  'use strict';
+ const visuals=root.LudusItemVisuals||(typeof module!=='undefined'&&module.exports?require('./item-visuals-v199.js'):null);
  const raw=[
   ['iron_ore','Demir cevheri',1.5],['copper_ore','Bakır cevheri',1.2],
   ['tin_ore','Kalay cevheri',2],['lead_ore','Kurşun cevheri',1],
@@ -75,8 +76,10 @@
  const revised=new Set(['tin','lead','manica','spear','trident','bow','helmet-silver','helmet-winged']);
  const retired=['wooden_handle','shield_frame_small','shield_frame_large','lead_weight','net_mesh'];
  const caravanPhoto='assets/items-v119/caravan.webp';
- function photo(sku){if(['shield-dura','shield-parma','shield-celtic','shield-azure','shield-viridis','shield-aquila'].includes(sku))return 'assets/items-v198/'+sku+'.webp';if(['manica-segmented','manica-lion','manica-leather','trident-gladiator'].includes(sku))return 'assets/items-v197/'+sku+'.webp';if(['helmet-gold','helmet-silver','helmet-winged','helmet-roman'].includes(sku))return 'assets/items-v194/'+sku+'.webp';if(sku==='halberd')return 'assets/items-v193/halberd.webp';if(sku==='helmet-viking'||sku==='helmet-steel')return 'assets/items-v189/'+sku+'.webp';if(sku==='helmet-sylvain')return 'assets/items-v169/helmet-sylvain.webp';if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
+ function photo(sku){const exact=visuals?.photo(sku);if(exact)return exact;if(['shield-dura','shield-parma','shield-celtic','shield-azure','shield-viridis','shield-aquila'].includes(sku))return 'assets/items-v198/'+sku+'.webp';if(['manica-segmented','manica-lion','manica-leather','trident-gladiator'].includes(sku))return 'assets/items-v197/'+sku+'.webp';if(['helmet-gold','helmet-silver','helmet-winged','helmet-roman'].includes(sku))return 'assets/items-v194/'+sku+'.webp';if(sku==='halberd')return 'assets/items-v193/halberd.webp';if(sku==='helmet-viking'||sku==='helmet-steel')return 'assets/items-v189/'+sku+'.webp';if(sku==='helmet-sylvain')return 'assets/items-v169/helmet-sylvain.webp';if(sku==='mace')return 'assets/caravan-v124/mace.webp';if(revised.has(sku))return 'assets/items-v119/'+sku+'.webp';return existing.has(sku)?'assets/resource-icons-v95/'+sku+'.webp':known.has(sku)?'assets/items-v118/'+sku+'.webp':null;}
  function skuForItem(item){
+  const visual=visuals?.entry(item);if(visual)return visual.sku;
+  if(visuals&&item?.kind&&item?.model&&['weapon','shield','helmet','chest','gloves','legs'].includes(item.kind))return null;
   if(known.has(item?.sku))return item.sku;
   const k=item?.kind,m=item?.model;
   if(k==='weapon')return equipment.find(x=>x[2]===k&&x[3]===m)?.[0]||null;

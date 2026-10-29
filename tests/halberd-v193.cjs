@@ -21,6 +21,6 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
  assert.equal(requests,1);
 });
 test('Halberd category, exact recipe, icon and client/server simulation match',()=>{
- const p=require('../ludus-production-v119.js'),g=require('../equipment-groups-v168.js'),r=p.recipes.find(r=>r.sku==='halberd');assert.deepEqual(r.ingredients,{steel:7,wood:3,leather:2,resin:2,rope:1});assert.equal(r.output_quantity,1);assert.equal(g.groupFor(r).id,'swords');assert.equal(g.breaker(r),false);assert.equal(p.photo('halberd'),'assets/items-v193/halberd.webp');assert.match(p.artwork({kind:'weapon',model:'halberd'}),/items-v193\/halberd.webp/);assert.ok(fs.statSync(p.photo('halberd')).size<25000);
+ const p=require('../ludus-production-v119.js'),g=require('../equipment-groups-v168.js'),r=p.recipes.find(r=>r.sku==='halberd');assert.deepEqual(r.ingredients,{steel:7,wood:3,leather:2,resin:2,rope:1});assert.equal(r.output_quantity,1);assert.equal(g.groupFor(r).id,'swords');assert.equal(g.breaker(r),false);assert.equal(p.photo('halberd'),'assets/items-v199/halberd.webp');assert.match(p.artwork({kind:'weapon',model:'halberd'}),/items-v199\/halberd.webp/);assert.ok(fs.statSync(p.photo('halberd')).size<25000);
  for(const name of ['caravan-core-v126.js','combat-motion-v163.js'])assert.equal(fs.readFileSync(name,'utf8'),fs.readFileSync('supabase/functions/caravan-combat-v126/'+name,'utf8'));
 });

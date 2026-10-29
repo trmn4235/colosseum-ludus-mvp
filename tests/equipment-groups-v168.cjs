@@ -2,10 +2,10 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const {runtime,item,g}=require('./combat-stats-v73.cjs');
 const groups=require('../equipment-groups-v168.js');
 test('six complete mutually exclusive subcategories and matching item artwork',()=>{
- const c=vm.createContext({});for(const file of ['ludus-production-v119.js','equipment-groups-v168.js'])vm.runInContext(fs.readFileSync(require('node:path').join(__dirname,'..',file),'utf8'),c);
+ const c=vm.createContext({});for(const file of ['item-visuals-v199.js','ludus-production-v119.js','equipment-groups-v168.js'])vm.runInContext(fs.readFileSync(require('node:path').join(__dirname,'..',file),'utf8'),c);
  assert.equal(c.LudusEquipmentGroups.groups.length,6);
  for(const r of c.LudusProduction.recipes.filter(r=>['weapon','shield'].includes(r.kind))){assert.equal(c.LudusEquipmentGroups.groups.filter(g=>g.kind===r.kind&&g.models.includes(r.model)).length,1,r.sku);assert.ok(fs.existsSync(require('node:path').join(__dirname,'..',c.LudusProduction.photo(r.sku))));}
- for(const id of ['heavy_mace','warhammer']){const r=c.LudusProduction.recipes.find(r=>r.sku===id);assert.equal(r.output_quantity,1);assert.ok(Object.values(r.ingredients).every(n=>Number.isInteger(n)&&n>0));assert.match(c.LudusProduction.artwork({kind:'weapon',model:id}),new RegExp('items-v168/'+id));}
+ for(const id of ['heavy_mace','warhammer']){const r=c.LudusProduction.recipes.find(r=>r.sku===id);assert.equal(r.output_quantity,1);assert.ok(Object.values(r.ingredients).every(n=>Number.isInteger(n)&&n>0));assert.match(c.LudusProduction.artwork({kind:'weapon',model:id}),new RegExp('items-v199/'+id));}
  const forum=require('../forum-market-v66.js');global.LudusEquipmentGroups=groups;
  assert.deepEqual(forum.filterListings(['gladius','mace','heavy_mace','warhammer','net'].map(model=>({asset:{kind:'weapon',model},price:100})),{kind:'weapon',subcategory:'blunt'}).map(r=>r.asset.model),['mace','heavy_mace','warhammer']);
 });

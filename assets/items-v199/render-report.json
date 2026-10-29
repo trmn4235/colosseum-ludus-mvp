@@ -1,0 +1,222 @@
+[
+  {
+    "sku": "manica-segmented",
+    "model": "manica_segmented",
+    "icon": "assets/items-v199/manica-segmented.webp",
+    "triangles": 2450,
+    "drawCalls": 3,
+    "bytes": 10500,
+    "geometrySha256": "f5c96f39fc9c033d22916b5fb74624070540b41de90f0d273d718ea64efeb40a",
+    "sha256": "762574097898f5d9036952a0f32feba26cb1bc8a1e970779f009768457e571ff"
+  },
+  {
+    "sku": "manica-lion",
+    "model": "manica_lion",
+    "icon": "assets/items-v199/manica-lion.webp",
+    "triangles": 2687,
+    "drawCalls": 3,
+    "bytes": 11334,
+    "geometrySha256": "91fe3d42200322fb11aa9f0ac21b2f70d8d1d1452680a56465ca70904e7c9e38",
+    "sha256": "e72a5ab7871939c8d635be9eef91d9764e79dbb53d6f6a42bb7294a380711312"
+  },
+  {
+    "sku": "manica-leather",
+    "model": "manica_leather",
+    "icon": "assets/items-v199/manica-leather.webp",
+    "triangles": 3177,
+    "drawCalls": 1,
+    "bytes": 13604,
+    "geometrySha256": "dbf960d86a574e5e6b56f41a19e0cda462cf3abbe6fe7dd56e838dae9b539334",
+    "sha256": "818d6cd0116338d7f9d030f4c4e901303ff36512f6b093721260cc703859a87f"
+  },
+  {
+    "sku": "trident-gladiator",
+    "model": "trident_gladiator",
+    "icon": "assets/items-v199/trident-gladiator.webp",
+    "triangles": 1368,
+    "drawCalls": 1,
+    "bytes": 7624,
+    "geometrySha256": "4f0a4dc5591c3b41cc6696e58b801814787db99610708845d0d119eaaf08294e",
+    "sha256": "086df941665a425419c5b30410b3c968bb89e3c9e3b1995f0cd424136772b9cb"
+  },
+  {
+    "sku": "halberd",
+    "model": "halberd",
+    "icon": "assets/items-v199/halberd.webp",
+    "triangles": 2899,
+    "drawCalls": 4,
+    "bytes": 7848,
+    "geometrySha256": "570cfab4fc8f7028c60d860290dbc521129497800c99999617ef411975dc0cb4",
+    "sha256": "1548e8b9db132e7102a334f53464b974360e5518d3d1b393444d0a5217fb2d56"
+  },
+  {
+    "sku": "spear",
+    "model": "spear",
+    "icon": "assets/items-v199/spear.webp",
+    "triangles": 76,
+    "drawCalls": 2,
+    "bytes": 4696,
+    "geometrySha256": "75ef3b88aff5c571e12891cb683cbc24f43748b66bca416f8f7b1795d916a96a",
+    "sha256": "0096e792233025be9af17d1e4d379c9bb85054a8d2e4e6aef61091f5be8afe9e"
+  },
+  {
+    "sku": "trident",
+    "model": "trident",
+    "icon": "assets/items-v199/trident.webp",
+    "triangles": 166,
+    "drawCalls": 3,
+    "bytes": 7070,
+    "geometrySha256": "f57382c03869836b15773cff10c2e5bdbfb59ccb3de1accbbfa329383057b957",
+    "sha256": "1cee5d912f31c05e1f9fe16bfd794d26ff3ba6274e7a7b5a66c862f46a93ea40"
+  },
+  {
+    "sku": "mace",
+    "model": "mace",
+    "icon": "assets/items-v199/mace.webp",
+    "triangles": 882,
+    "drawCalls": 15,
+    "bytes": 8502,
+    "geometrySha256": "87699db0730102afebdbec2155f1ca1f2e9fab6613edf5bf7136b799238a52d6",
+    "sha256": "ad14a8b2ebdb3e86db1d851a6181a1ac95a82c691be67530866e53d1d733b875"
+  },
+  {
+    "sku": "whip",
+    "model": "whip",
+    "icon": "assets/items-v199/whip.webp",
+    "triangles": 224,
+    "drawCalls": 9,
+    "bytes": 5350,
+    "geometrySha256": "e2a7b139596546e21de4afa6b0c81a8e9dfd1ade8c7536117fac53496b069ed2",
+    "sha256": "cd43ef4fea784f8739f5764311a8918bb0221ab3e7004117cd9ebdaa35b7219f"
+  },
+  {
+    "sku": "scissor",
+    "model": "scissor",
+    "icon": "assets/items-v199/scissor.webp",
+    "triangles": 264,
+    "drawCalls": 2,
+    "bytes": 7818,
+    "geometrySha256": "89446e6c21397456319b170e771120592f72ecdbc94fe56dd1d4bd0ba88e2613",
+    "sha256": "d9c43cbb300c1db0b3f71b07f33c94ae50533eb5ed672b7ca70e8f3133440e69"
+  },
+  {
+    "sku": "net",
+    "model": "net",
+    "icon": "assets/items-v199/net.webp",
+    "triangles": 672,
+    "drawCalls": 1,
+    "bytes": 13528,
+    "geometrySha256": "c3eafe2b908b526c0c6bb5e1788ec03de7d4f73741703005dc69e463e4a46ea2",
+    "sha256": "9d3bec4a2ec91e813a876c3ba732139b044b681872ea8ea3712520730fe75736"
+  },
+  {
+    "sku": "shield-medium",
+    "model": "round",
+    "icon": "assets/items-v199/shield-medium.webp",
+    "triangles": 1246,
+    "drawCalls": 1,
+    "bytes": 19524,
+    "geometrySha256": "b31f95484f592673f5c6f8dda48cc446c25db869f57a0b3799da7b20cccbdf18",
+    "sha256": "ab216e3dca5ad156eeacd53c059aa0385cd4a480aca5d1c9639b4134a8165d5b"
+  },
+  {
+    "sku": "shield-large",
+    "model": "large",
+    "icon": "assets/items-v199/shield-large.webp",
+    "triangles": 1466,
+    "drawCalls": 1,
+    "bytes": 18392,
+    "geometrySha256": "1ff58857a79fdfb3c34b4a5bd7ac686a645f00f249af2f3d216296bfd9f31889",
+    "sha256": "99dbec53998de1c4ff82e849d3f71eed06a9a6722acceb8253ef985f24eb60d4"
+  },
+  {
+    "sku": "chest",
+    "model": "gladiator_chest",
+    "icon": "assets/items-v199/chest.webp",
+    "triangles": 3305,
+    "drawCalls": 1,
+    "bytes": 14822,
+    "geometrySha256": "8ff775a5d25cb62887c6733fe9f1ee3ed10b245dbc44b4cc1918f01894ad94d5",
+    "sha256": "44aff557ea0238cadd729988f47db2c2782e7f2800e5f1f4026553cff168c12e"
+  },
+  {
+    "sku": "chest-plate",
+    "model": "chest_plate",
+    "icon": "assets/items-v199/chest-plate.webp",
+    "triangles": 260,
+    "drawCalls": 1,
+    "bytes": 26902,
+    "geometrySha256": "b7cc89c1ea8dbaeba577f0a29a1ea92083347cefb2f13994139006c2957e0dbf",
+    "sha256": "64a59dc3fbf4f40bdfe948bc7121de1aa2ef9b61d81872b8b60c57b1635f8c2c"
+  },
+  {
+    "sku": "gloves",
+    "model": "armor_shoulder",
+    "icon": "assets/items-v199/gloves.webp",
+    "triangles": 4228,
+    "drawCalls": 1,
+    "bytes": 13312,
+    "geometrySha256": "cb596c2c64def845b70c95911363dfe9213d35c85b2dae45301c710571cd4f23",
+    "sha256": "654bb552a3e1dffdd992982b15d72cbba7d807e2d381a4e8642dac485ca734a9"
+  },
+  {
+    "sku": "shoulder-armor",
+    "model": "shoulder_armor",
+    "icon": "assets/items-v199/shoulder-armor.webp",
+    "triangles": 1896,
+    "drawCalls": 2,
+    "bytes": 11712,
+    "geometrySha256": "3e60883268c492f092dfa4f04fca494774bc04c53073fb0a3db737ffcc6d5b57",
+    "sha256": "7a76e06cb93b1c410c5dfda18318027ed6b842d4e79a6d7730e1a5c27820188f"
+  },
+  {
+    "sku": "manica",
+    "model": "manica",
+    "icon": "assets/items-v199/manica.webp",
+    "triangles": 432,
+    "drawCalls": 4,
+    "bytes": 13566,
+    "geometrySha256": "109ae67889ce20320637310f6daabc37da21399449c61eb3ec94aea58be2e719",
+    "sha256": "d86c89dfee35a13b2e1064597cd33fc6248cd2fdf592ab34f84d0b32435deaf5"
+  },
+  {
+    "sku": "legs",
+    "model": "starter",
+    "icon": "assets/items-v199/legs.webp",
+    "triangles": 2312,
+    "drawCalls": 4,
+    "bytes": 18040,
+    "geometrySha256": "97d4215f17381067269a9ba288e6a7f26da2a29cc3f9ddb36e8f4314eb0ccd8a",
+    "sha256": "806649b6e0821062f72a53839178a5e820354ab90c315d8356f7ae6ee515a06d"
+  },
+  {
+    "sku": "heavy_mace",
+    "model": "heavy_mace",
+    "icon": "assets/items-v199/heavy_mace.webp",
+    "triangles": 3126,
+    "drawCalls": 4,
+    "bytes": 7484,
+    "geometrySha256": "87d8aa7a7dcee606aca7d5a8717cc2086d919a224cfc7705a5b6faa851a2ede4",
+    "sha256": "4d5a3f0010b994f8e0801273f263efd409c3e02ae8e785ba952ddb09c0c16d55"
+  },
+  {
+    "sku": "warhammer",
+    "model": "warhammer",
+    "icon": "assets/items-v199/warhammer.webp",
+    "triangles": 5332,
+    "drawCalls": 4,
+    "bytes": 10142,
+    "geometrySha256": "565fc852fe1e91a8eecc56d5387193f020648ecf158f13c7cc3d74ff85b09e6e",
+    "sha256": "f2535cbdd70231d5c48ba8a4c00b4915624daa8e88425d903f5155b996879258"
+  },
+  {
+    "sku": "bow",
+    "model": "bow",
+    "icon": "assets/items-v199/bow.webp",
+    "triangles": 432,
+    "drawCalls": 3,
+    "bytes": 8628,
+    "geometrySha256": "cbc76300af40473543fff4f0236046631bb8f328d8b5e2d05f74fccd89618622",
+    "sha256": "6416f5a3b2ed0019df6a2859f0f1b6e02e8d150960e41b4aa2d9e2711ed8560f"
+  }
+]
