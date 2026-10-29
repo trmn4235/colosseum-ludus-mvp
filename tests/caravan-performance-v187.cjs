@@ -39,7 +39,8 @@ const server=http.createServer((req,res)=>{
   assert.deepEqual(errors,[]);assert.equal(metrics.fighters,11);assert.equal(metrics.replayExact,true);assert.equal(metrics.pausedSteps,0);
   assert.ok(metrics.color.triangles<800000,JSON.stringify(metrics));assert.ok(metrics.shadow.triangles<1100000,JSON.stringify(metrics));assert.ok(metrics.shadow.calls<330);
   assert.ok(metrics.pixelRatio<=1.25);assert.ok(metrics.fullBodies<=3);for(const c of metrics.clock)assert.ok(Math.abs(c.seconds-2)<1/30+.0001,JSON.stringify(c));
-  assert.ok(!requests.some(url=>/gladiator_chest.*\.glb/.test(url)),'Retired armour must not download');
+  assert.ok(!requests.some(url=>/\/assets\/equipment\/gladiator_chest-.*\.glb/.test(url)),'The original 50,880-triangle chest must not download');
+  assert.ok(requests.some(url=>url.endsWith('/assets/equipment-v199/gladiator_chest.glb')),'The distinct optimized chest must load');
   if(process.env.LUDUS_RENDER_SCALE_TEST==='1'){await require('./caravan-pacing-v188.cjs')(page);await require('./render-scale-browser-v188.cjs')(page,'caravan');}
   console.log(JSON.stringify({metrics,errors}));
  }finally{await browser.close();server.close();}

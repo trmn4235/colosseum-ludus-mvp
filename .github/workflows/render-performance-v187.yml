@@ -2,9 +2,9 @@ name: Full scene performance budgets
 on:
   push:
     branches: [main]
-    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', 'tests/render-scale-v188.test.cjs', 'tests/render-scale-browser-v188.cjs', 'tests/caravan-pacing-v188.cjs', '.github/workflows/render-performance-v187.yml']
+    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/equipment-v199/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', 'tests/render-scale-v188.test.cjs', 'tests/render-scale-browser-v188.cjs', 'tests/caravan-pacing-v188.cjs', '.github/workflows/render-performance-v187.yml']
   pull_request:
-    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', 'tests/render-scale-v188.test.cjs', 'tests/render-scale-browser-v188.cjs', 'tests/caravan-pacing-v188.cjs', '.github/workflows/render-performance-v187.yml']
+    paths: ['arena*', 'caravan-*', 'circus-*', 'naval-*', 'ludus.html', 'savas.html', 'multiplayer*', 'assets/equipment/**', 'assets/equipment-v199/**', 'assets/naval/**', 'tests/*performance*', 'tests/*budget*', 'tests/render-runtime-v187.cjs', 'tests/render-scale-v188.test.cjs', 'tests/render-scale-browser-v188.cjs', 'tests/caravan-pacing-v188.cjs', '.github/workflows/render-performance-v187.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-      - name: Exact animation poses, retired armour and elapsed time
+      - name: Exact animation poses, bounded armour and elapsed time
         run: node tests/render-runtime-v187.cjs
       - name: Existing pose scheduling and body detail regressions
         run: node --test tests/arena-timing-v94.test.cjs tests/naval-performance-v106.test.cjs tests/adaptive-quality-v96.test.cjs tests/render-scale-v188.test.cjs

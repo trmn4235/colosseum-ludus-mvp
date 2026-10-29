@@ -32,8 +32,10 @@ async function main(){
   }
   assert.ok(worst<1e-9,page+': pose changed '+worst);
   assert.ok(cached<ordinary*.65,page+': transform budget regressed '+cached+'/'+ordinary);
-  assert.equal(a.chestModel,'chest_plate');let triangles=0;a.gear.chest.group.traverse(o=>{if(o.isMesh)triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;});
-  assert.ok(triangles<=500,'Retired chest reintroduced');
+  assert.equal(a.chestModel,'gladiator_chest');let triangles=0;a.gear.chest.group.traverse(o=>{if(o.isMesh)triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;});
+  assert.equal(triangles,3305,'Restored chest must use the optimized V199 geometry');
+  assert.ok(fs.statSync(path.join(__dirname,'../assets/equipment-v199/gladiator_chest.glb')).size<70000,'Restored chest transfer budget');
+  assert.equal(c.LUDUS_ARMOUR_DATA.gladiator_chest,'assets/equipment-v199/gladiator_chest.glb');
   rows.push({page,frames:324,ordinary,cached,reduction:Math.round((1-cached/ordinary)*100)+'%',maxPoseError:worst,chestTriangles:triangles});
  }
  // Host timing must preserve real elapsed time at 10/15/30/60/120 Hz.
