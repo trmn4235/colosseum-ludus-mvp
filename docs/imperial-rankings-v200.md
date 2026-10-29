@@ -1,6 +1,11 @@
 # V200 — İmparatorluk Sıralaması
 
-Entry points: the trophy button in Ludus, Rome and the clan hall. The independent
+V201 entry points: the named rankings card below the Rome map; the **Harita /
+Sıralamalar** shortcuts below the Ludus account bar; and **Sıralamalar** at the
+bottom of the clan hall sidebar. These replace the unlabelled account-toolbar
+trophy buttons. The Rome map resizes within its own row, keeping all four travel
+cards visible. The shortcuts make no data requests and load no image assets.
+The independent
 `siralamalar.html` page loads no 3D engine or large background assets. It uses the
 existing thirty clan emblems, white marble, burgundy and gold; the table is paged
 to fit the viewport without horizontal or vertical scrolling. Portrait is also
