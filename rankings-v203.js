@@ -44,6 +44,7 @@
   const identity=power()||s.guild==='fighters'&&s.scope==='guilds'?'Gladyatör / Sahibi · Hanedan':s.scope==='guilds'?'Hanedan':'Oyuncu · Hanedan';
   const measures=power()?[['all','Genel'],['gladiator','Stat'],['attack','Atak'],['defense','Defans'],['mobility','Hız']]:type==='circus'?[['wins','Şampiyonluk']]:[...(type!=='caravan'?[['score','Puan']]:[]),['wins','Galibiyet'],['losses','Mağlubiyet'],...(combat()?[['kd','K/D'],['kda','K/D/A']]:[])];
   $('rankHead').replaceChildren(el('span','','Sıra'),el('span','',identity),...measures.map(([key,label])=>el('span',key===(power()?s.power:s.sort)?'selected':'',label)));
+  for(const b of document.querySelectorAll('.tabs button'))b.classList.toggle('active',b.getAttribute('aria-pressed')==='true');
  }
  function state(heading,message,action){
   $('rankState').hidden=false;$('rankRows').replaceChildren();$('rankState').replaceChildren(crest({emblem:2},'rank-state-crest'),el('strong','',heading),el('p','',message));if(action)$('rankState').append(action);

@@ -7,6 +7,8 @@ const fixture=()=>{
  const stats=(i,offset=0)=>({matches:100+i,wins:60-i,losses:30+i,kills:i===3?null:75+i*3,deaths:i===0?0:12+i,assists:i===3?null:30+i,points:offset-i*15,rating:1500+offset-i*15});
  const people=names.map((name,i)=>({id:ids[i],owner_id:ids[i],name,subtitle:i===7?'Çok Uzun İsimli İmparatorluk Gladyatör Okulu':name+' Ludus',clan_id:clans[i%3].id,clan:clans[i%3].name,emblem:i%3+1,emblem_color:'#b89957',background:'#651c2b',mine:i===1,class:null,
   gladiator:{id:ids[i],name:['Maximus','Spartacus','Vitus'][i%3]+' '+(i+1),class:'murmillo'},stats:{power:92.2125-i*.675,gladiator:89.25-i*.6,equipment:92.8-i*.7,attack:95-i,defense:91-i*.5,mobility:92.4-i*.6,roster_count:5,colosseum:stats(i,385),naval:stats(i,600),circus:stats(i),caravan:stats(i),caravan_raid:stats(i),caravan_defense:stats(i)}}));
+ Object.assign(people[0].stats,{gladiator:98.5,attack:119.25,defense:100.5,mobility:90.25});
+ people.forEach(r=>{r.stats.power=Math.round((r.stats.gladiator+r.stats.attack+r.stats.defense+r.stats.mobility)*25)/100;});
  window.rankFixture={requests:[],people,clans,delay:0,error:false,guildMatches:20,defenseMatches:10,authListeners:[]};
  function response(a){const f=window.rankFixture;let rows;
   if(a.p_scope==='players')rows=f.people.map(r=>({...r}));
@@ -34,7 +36,16 @@ async function run(){
    await page.route('**/assets/runtime/supabase-*.js',route=>route.fulfill({contentType:'text/javascript',body:'('+fixture.toString()+')();'}));
    await page.goto('http://127.0.0.1:'+server.address().port+'/siralamalar.html');
    const ready=()=>page.waitForFunction(()=>document.querySelector('#rankTable').getAttribute('aria-busy')==='false'&&window.rankFixture?.requests.length>0);
-   await ready();
+   await ready();await page.evaluate(()=>document.fonts.ready);
+   const theme=await page.evaluate(()=>{
+    const css=e=>getComputedStyle(e),token=name=>{const e=document.createElement('span');e.style.color='var('+name+')';document.body.append(e);const v=css(e).color;e.remove();return v;};
+    return {links:[...document.querySelectorAll('link[rel=stylesheet]')].map(e=>e.getAttribute('href').split('?')[0]),
+     titleFont:css(document.querySelector('.rank-brand h1')).fontFamily,title:css(document.querySelector('.rank-brand h1')).color,
+     gold:token('--ui-gold-light'),wine:token('--ui-burgundy'),white:token('--ui-white'),
+     selected:css(document.querySelector('#rankCategories .active')).backgroundColor,paper:css(document.querySelector('.rank-sheet')).backgroundColor};
+   });
+   for(const f of ['game-art-v136.css','roman-ui-v56.css','roman-theme-v68.css'])assert.ok(theme.links.includes(f),'shared theme '+f);
+   assert.ok(theme.titleFont.includes('Cinzel'),'shared Roman heading');assert.equal(theme.title,theme.gold,'gold title on burgundy header');assert.equal(theme.selected,theme.wine,'shared selected tab');assert.equal(theme.paper,theme.white,'shared white paper');
    async function layout(label){const result=await page.evaluate(()=>{
     const els=[...document.querySelectorAll('.rank-header,.rank-sheet,.rank-navigation,.rank-categories,.rank-categories button,.rank-tools,.rank-context,.rank-table,.rank-footer,.rank-row,.rank-value,dialog[open]')];
     return {body:document.documentElement.scrollHeight<=innerHeight+1,overflow:els.filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<-.5||r.right>innerWidth+.5||r.top<-.5||r.bottom>innerHeight+.5||e.scrollHeight>e.clientHeight+2||(e.classList.contains('rank-value')||e.matches('.rank-categories button'))&&e.scrollWidth>e.clientWidth+2)}).map(e=>({tag:e.className||e.id,text:e.matches('.rank-categories button')?e.textContent:null,w:e.clientWidth,sw:e.scrollWidth,h:e.clientHeight,sh:e.scrollHeight})),rows:document.querySelectorAll('.rank-row').length};

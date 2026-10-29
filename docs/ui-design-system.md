@@ -55,3 +55,14 @@ bu değişkenlerden alır; ekrana özel kahverengi/krem palet tanımlanmaz.
   taşlar ve sağlık/enerji/takım göstergelerinin anlamlı renkleri korunur.
 - Yükseklik, sayfalama, kaydırma ve mevcut yönlendirme davranışları korunur.
 - Test kapsamı ve sınırlamalar: `docs/roman-theme-v68/README.md`.
+
+## Sıralamalar: V204
+
+- `siralamalar.html`, diğer oyun sayfaları gibi `roman-ui-v56.css`,
+  `roman-theme-v68.css` ve `game-art-v136.css` dosyalarını yükler.
+- Sayfa `data-roman-screen="rankings"` ve `data-art-direction="136"`
+  işaretlerini taşır; klan ve pazarla aynı bordo başlığı ve Cinzel yazısını kullanır.
+- Beyaz içerik, ortak sekme/düğme/sayfalama stilleri ve detay pencereleri
+  aynı tema değişkenlerine bağlıdır. Sıralama CSS’i ayrı renk paleti tanımlamaz.
+- Güç ve başarılar, oyuncu/hanedan geçişi ve bütün puan hesapları korunur.
+  Liste ekran yüksekliğine göre sayfalanır; dikey kaydırma gerektirmez.

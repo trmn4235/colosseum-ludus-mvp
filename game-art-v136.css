@@ -22,11 +22,13 @@ body[data-art-direction] :is(.primary,.action,.quest-action,#dailyBonus,#enter,.
 body[data-art-direction] :is(.primary,.action,.quest-action,#dailyBonus,#enter,.supply-primary,.exercise-primary,.fq-action,.mc-send,#friendSend,#saveCombatControls,#imperialJoin,.clan-vault-transfer,.owner-save,#levelClaimAll,#forumBuy,#forumPublish):active:enabled{box-shadow:inset 0 2px 5px #200a1060!important}
 /* Active page chrome. No extra inset on either side of the landscape canvas. */
 body[data-art-direction]:is([data-roman-screen=gorevler],[data-roman-screen=savas],[data-roman-screen=gelistirmeler],[data-roman-screen=pazar])>header,
-body[data-art-direction][data-roman-screen=clan] #clanStage>header{
+body[data-art-direction][data-roman-screen=clan] #clanStage>header,
+body[data-art-direction][data-roman-screen=rankings] .rank-header{
  background:linear-gradient(100deg,#32121c,#601d2d 45%,#37131d)!important;border-bottom:1px solid #b29559!important;box-shadow:0 2px 6px #27131b23!important;color:#f0d9a5!important;
 }
 body[data-art-direction]:is([data-roman-screen=gorevler],[data-roman-screen=pazar],[data-roman-screen=gelistirmeler])>header :is(.market-title,.title,strong),
-body[data-art-direction][data-roman-screen=clan] .brand strong{font-family:var(--art-heading)!important;letter-spacing:.06em!important}
+body[data-art-direction][data-roman-screen=clan] .brand strong,
+body[data-art-direction][data-roman-screen=rankings] .rank-brand h1{font-family:var(--art-heading)!important;letter-spacing:.06em!important}
 /* All player dialogs retain the same white content surface and precise brass rim. */
 body[data-art-direction] :is(.supply-frame,#orders>.exercise-panel,.food-frame,.imperial-paper,.clan-vault-frame,.owner-sheet,.ludus-view-settings,#ludusMessages,.friends-paper,.fq-shell,.combat-values-shell,.pouch,.inspect-paper,.stable-frame,#notice>div,#appInstallHelp>div,#forumDialogs){
  border:1px solid #bda879!important;border-radius:6px!important;background-color:#fff!important;box-shadow:0 18px 65px #160b144d,inset 0 0 0 3px #fff,inset 0 0 0 4px #ded5c4!important;color:var(--art-ink)!important;

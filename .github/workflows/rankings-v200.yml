@@ -2,9 +2,9 @@ name: Imperial rankings
 on:
   push:
     branches: [main]
-    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', '*rank*v203*', 'supabase/migrations/*imperial_rankings*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
+    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', '*rank*v203*', '*rank*v204*', 'roman-ui-v56.css', 'roman-theme-v68.css', 'game-art-v136.css', 'supabase/migrations/*imperial_rankings*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
   pull_request:
-    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', '*rank*v203*', 'supabase/migrations/*imperial_rankings*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
+    paths: ['siralamalar.html', '*rank*v200*', '*rank*v201*', '*rank*v203*', '*rank*v204*', 'roman-ui-v56.css', 'roman-theme-v68.css', 'game-art-v136.css', 'supabase/migrations/*imperial_rankings*', 'supabase/functions/caravan-combat-v126/career-combat-v162.js', 'tests/rankings*', '.github/workflows/rankings-v200.yml']
   workflow_dispatch:
 permissions:
   contents: read
