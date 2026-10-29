@@ -1,5 +1,7 @@
 # V202 — approved Ludus header
 
+Superseded by V205 at the user's request: the live Ludus page again uses the pre-V202 burgundy menu. The V202 script, stylesheet and images remain only for compatibility with cached pages. See `docs/ludus-hud-v205.md`.
+
 The reference is the single white-marble bar with natural-material icons, level at the left, then gold / diamond / sapphire / emerald / ruby, caravans, gladiators, map / rankings, friends / messages / settings. The final requested scale is **90%**. The level badge uses the approved olive-branch frame, a burgundy center, and a separate centered HTML number; no `Sv.` prefix or baked-in number.
 
 `ludus-hud-v202.css` joins the existing `game-art-v136` cascade layer so that the older important theme rules cannot override the approved bar. Its custom properties use a versioned prefix to avoid the old caravan HUD variables. On small landscape screens, spacing and icons compress before the entire bar receives the requested 90% scale. Safe-area insets and the existing portrait gate remain in effect.
