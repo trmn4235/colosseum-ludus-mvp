@@ -1,0 +1,30 @@
+name: Ludus marble HUD
+on:
+  push:
+    branches: [main]
+    paths: ['ludus.html', 'ludus-hud-v202.*', 'assets/hud-v202/**', 'tests/hud-v202*', '.github/workflows/ludus-hud-v202.yml']
+  pull_request:
+    paths: ['ludus.html', 'ludus-hud-v202.*', 'assets/hud-v202/**', 'tests/hud-v202*', '.github/workflows/ludus-hud-v202.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hud:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock playwright@1.56.1
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Chromium layout and live HUD states
+        run: node tests/hud-v202.cjs
+      - name: WebKit layout and live HUD states
+        run: LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/hud-webkit-v202 node tests/hud-v202.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ludus-hud-screens
+          path: /tmp/hud*-v202/*.png

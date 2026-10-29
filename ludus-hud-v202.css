@@ -1,0 +1,67 @@
+@layer game-art-v136 {
+/* One continuous marble rail, with natural-material icons and a separate live level number. */
+body[data-art-direction][data-roman-screen=ludus] #ludusHud{
+ --hud202-icon:clamp(24px,3.3vw,42px);--hud202-height:clamp(38px,8.5dvh,56px);--hud202-gap:clamp(4px,.7vw,12px);
+ position:fixed!important;z-index:10!important;top:max(10px,env(safe-area-inset-top))!important;
+ left:max(4.5vw,calc(env(safe-area-inset-left) + 6px))!important;right:max(4.5vw,calc(env(safe-area-inset-right) + 6px))!important;
+ transform:scale(.9)!important;transform-origin:50% 0!important;width:auto!important;max-width:1440px!important;height:var(--hud202-height)!important;min-height:0!important;
+ display:flex!important;align-items:center!important;gap:var(--hud202-gap)!important;margin-inline:auto!important;
+ padding:0 clamp(6px,.65vw,10px) 0 0!important;box-sizing:border-box!important;border:1px solid #ac824c!important;border-radius:5px 9px 9px 5px!important;
+ background:linear-gradient(0deg,#e7dfd1aa,#ffffffcc 28%,#fffefaee 72%,#ece5daaa),url('assets/circus-v143/honed-marble.webp') center/420px 140px!important;
+ box-shadow:inset 0 0 0 2px #fff9ec,inset 0 -4px 5px #a58b5b24,0 2px 5px #170d1355!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#681b2b!important;isolation:isolate;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary{
+ position:static!important;display:flex!important;align-items:center!important;justify-content:space-around!important;
+ flex:1 1 auto!important;min-width:0!important;max-width:none!important;gap:var(--hud202-gap)!important;
+ margin:0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;overflow:visible!important;transform:none!important;
+ font:600 clamp(11px,1.65vw,22px)/1.05 Georgia,'Times New Roman',serif!important;color:#681b2b!important;text-shadow:0 1px #fff!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-icon{display:block!important;object-fit:contain;flex:none;max-width:none;width:var(--hud202-icon)!important;height:var(--hud202-icon)!important;pointer-events:none;filter:drop-shadow(0 1px 1px #32151825)}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary .money{
+ display:flex!important;flex:0 1 auto;align-items:center;gap:clamp(2px,.4vw,7px);min-width:0;max-width:none!important;overflow:visible!important;white-space:nowrap;
+}
+#ludusHud .hud-gem{display:block;flex:none}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary svg{display:block!important;width:var(--hud202-icon)!important;height:var(--hud202-icon)!important;filter:drop-shadow(0 1px 1px #32151822)!important}
+#ludusHud .hud-value{font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-level{
+ position:relative;flex:none;display:grid!important;place-items:center;text-decoration:none;width:calc(var(--hud202-height) + 13px);height:calc(var(--hud202-height) + 13px);margin-left:-3px;
+ background:none!important;border:0!important;padding:0!important;box-shadow:none!important;isolation:isolate;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-level .hud-icon{position:absolute;width:100%!important;height:100%!important;inset:0;z-index:-1;filter:drop-shadow(0 2px 2px #26101c55)}
+#ludusHud .hud-level-number{display:grid;place-items:center;width:100%;height:100%;padding:0 0 1px;box-sizing:border-box;color:#fff0c7;font:600 clamp(18px,3dvh,27px)/1 Georgia,serif;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #24000d}
+#ludusHud .hud-crew,#ludusHud .hud-navigation{display:flex;align-items:center;gap:clamp(2px,.4vw,7px);flex:none}
+#ludusHud .hud-crew,#ludusHud .hud-navigation,#ludusHud .tools{border-left:1px solid #b99a66!important;padding-left:var(--hud202-gap)!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .tools{position:static!important;display:flex!important;align-items:center;gap:clamp(3px,.55vw,9px)!important;flex:none!important;margin:0!important;padding:0 0 0 var(--hud202-gap)!important;background:none!important;border-radius:0!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{
+ position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:clamp(2px,.4vw,6px)!important;
+ flex:none!important;width:auto!important;min-width:32px!important;height:var(--hud202-height)!important;min-height:32px!important;
+ margin:0!important;padding:0 2px!important;border:0!important;border-radius:3px!important;background:none!important;box-shadow:none!important;
+ color:#681b2b!important;text-shadow:none!important;text-decoration:none!important;font:600 clamp(11px,1.65vw,21px)/1 Georgia,serif!important;
+ touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #caravanHud .hud-icon{width:calc(var(--hud202-icon) * 1.55)!important;filter:drop-shadow(0 1px 1px #32151825)!important}
+#ludusHud .hud-count{display:block;white-space:nowrap;font-variant-numeric:tabular-nums}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action:hover{background:#a0804012!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action:active{background:#651c2b16!important}
+#ludusHud :is(a,button):focus-visible{outline:2px solid #70243b!important;outline-offset:2px}
+#ludusHud #accountLink::after{content:none!important;display:none!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([hidden],#beginnerOpen){display:none!important}
+#ludusHud #messageUnread{position:absolute!important;top:-1px!important;right:-2px!important;min-width:15px;max-width:32px;height:15px!important;padding:0 3px!important;box-sizing:border-box;border:1px solid #f5ddb1;border-radius:12px;background:#7b1529!important;color:#fff9e8!important;font:10px/13px Georgia,serif!important;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 2px #21000b55}
+@media(max-width:760px){
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud{--hud202-icon:25px;--hud202-gap:4px;--hud202-height:38px;left:max(5px,env(safe-area-inset-left))!important;right:max(5px,env(safe-area-inset-right))!important;padding-right:4px!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary{font-size:11px!important;gap:4px!important}
+ #ludusHud .hud-crew,#ludusHud .hud-navigation{gap:1px}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{font-size:11px!important;padding-inline:1px!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud .tools{gap:2px!important}
+}
+@media(max-width:610px){
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud{--hud202-icon:21px;--hud202-gap:3px}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary{font-size:10px!important;gap:3px!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{font-size:10px!important;min-width:30px!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud #caravanHud .hud-icon{width:30px!important}
+ #ludusHud .hud-level{width:45px!important;height:45px!important}
+}
+
+}
