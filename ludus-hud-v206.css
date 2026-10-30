@@ -69,7 +69,7 @@ body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([hidden],#beginn
  body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(.hud-crew,.hud-navigation,.tools){gap:1px!important}
 }
 @media(max-width:610px){
- body[data-art-direction][data-roman-screen=ludus] #ludusHud{--hud206-original-icon:21px;--hud206-level-original:45px;--hud206-gap:3px;left:max(6px,calc(env(safe-area-inset-left) + 4px))!important;right:max(6px,calc(env(safe-area-inset-right) + 4px))!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud{--hud206-original-icon:21px;--hud206-level-original:45px;--hud206-gap:1.5px;left:max(6px,calc(env(safe-area-inset-left) + 4px))!important;right:max(6px,calc(env(safe-area-inset-right) + 4px))!important}
  body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary{font-size:10px!important}
  body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{min-width:32px!important;padding-inline:0!important;font-size:10px!important;gap:2px!important}
 }
