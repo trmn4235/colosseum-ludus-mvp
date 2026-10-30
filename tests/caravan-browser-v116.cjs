@@ -63,7 +63,7 @@ const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHe
   const mapHit=await page.evaluate(()=>{const v=new THREE.Vector3(2,2.7,-3.87).project(LudusPreview.camera);return{x:(v.x+1)*innerWidth/2,y:(1-v.y)*innerHeight/2};});await page.mouse.click(mapHit.x,mapHit.y);await page.waitForSelector('#supplyModal:not([hidden])');assert.equal(await page.locator('#supplyModal').getAttribute('data-view'),'map');await page.evaluate(()=>LudusPreview.supplySystem.close());
   assert.equal(await page.locator('#caravanHud .caravan-hud-count').textContent(),'0/1');
   assert.equal(await page.locator('#accountSummary .money').count(),5);
-  assert.equal(await page.locator('#caravanHud').evaluate(e=>e.nextElementSibling.id),'gladiatorHud');
+  assert.equal(await page.locator('#gladiatorHud').evaluate(e=>e.nextElementSibling.id),'caravanHud');
   assert.equal(await page.locator('#accountSummary').evaluate(e=>e.textContent.includes('Test Ludus')),false);
   assert.equal(await page.locator('#caravanHud img').count(),1);assert.equal(await page.locator('#caravanHud svg').count(),0);
   assert.ok(await page.evaluate(()=>['store','stable','dining'].every(k=>LudusDoorIcons.svg(k).includes('stroke="currentColor"')&&!LudusDoorIcons.svg(k).includes('<img'))));
