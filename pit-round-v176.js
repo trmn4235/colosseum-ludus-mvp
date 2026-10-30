@@ -1,4 +1,4 @@
-/* Şan Avlusu: ten entrants, either a four-person rolling fight or five pairs. */
+/* Aventinus Arenası: ten entrants, either a four-person rolling fight or five pairs. */
 var PitRound=(()=>{
  'use strict';
  function install(combat,ticket,arena,loadout){

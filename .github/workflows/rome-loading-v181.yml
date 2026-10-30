@@ -1,8 +1,11 @@
 name: Rome map and photographic loading
 on:
+  pull_request:
+    branches: [main]
+    paths: ['rome-*', 'roma.html', 'ludus.html', 'san-avlusu.html', 'circus-maximus.html', 'savas.html', 'arena.html', 'caravan-field.html', 'index.html', 'multiplayer.html', 'assets/rome-v181/**', 'assets/rome-v212/**', 'assets/loading-v181/**', 'scripts/build-loading-art-v*.cjs', 'tests/loading-art-v181.cjs', 'tests/rome-travel-v148.cjs', '.github/workflows/rome-loading-v181.yml']
   push:
     branches: [main]
-    paths: ['rome-*', 'roma.html', 'ludus.html', 'san-avlusu.html', 'circus-maximus.html', 'savas.html', 'arena.html', 'caravan-field.html', 'index.html', 'multiplayer.html', 'assets/rome-v181/**', 'assets/loading-v181/**', 'scripts/build-loading-art-v*.cjs', 'tests/loading-art-v181.cjs', 'tests/rome-travel-v148.cjs', '.github/workflows/rome-loading-v181.yml']
+    paths: ['rome-*', 'roma.html', 'ludus.html', 'san-avlusu.html', 'circus-maximus.html', 'savas.html', 'arena.html', 'caravan-field.html', 'index.html', 'multiplayer.html', 'assets/rome-v181/**', 'assets/rome-v212/**', 'assets/loading-v181/**', 'scripts/build-loading-art-v*.cjs', 'tests/loading-art-v181.cjs', 'tests/rome-travel-v148.cjs', '.github/workflows/rome-loading-v181.yml']
   workflow_dispatch:
 permissions:
   contents: read
