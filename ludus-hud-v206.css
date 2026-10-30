@@ -1,0 +1,76 @@
+@layer game-art-v136 {
+/* Every item owns its natural width. No shrinking boxes with overflowing text. */
+body[data-art-direction][data-roman-screen=ludus] #ludusHud{
+ --hud206-original-icon:clamp(24px,3.3vw,42px);
+ --hud206-icon:calc(var(--hud206-original-icon) * .75);
+ --hud206-height:clamp(44px,9dvh,58px);--hud206-gap:clamp(4px,.65vw,10px);
+ --hud206-level-original:calc(clamp(38px,8.5dvh,56px) + 13px);
+ position:fixed!important;z-index:15!important;top:max(9px,env(safe-area-inset-top))!important;
+ left:max(10px,calc(env(safe-area-inset-left) + 6px))!important;right:max(10px,calc(env(safe-area-inset-right) + 6px))!important;
+ display:flex!important;flex-flow:row nowrap!important;align-items:center!important;justify-content:flex-end!important;
+ width:auto!important;max-width:1440px!important;min-width:0!important;height:var(--hud206-height)!important;min-height:0!important;
+ gap:var(--hud206-gap)!important;margin:0 auto!important;padding:0!important;box-sizing:border-box!important;transform:none!important;
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#fff1cd!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary{
+ position:static!important;display:flex!important;flex:0 0 auto!important;align-items:center!important;gap:var(--hud206-gap)!important;
+ width:auto!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;
+ border:0!important;background:none!important;box-shadow:none!important;transform:none!important;overflow:visible!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ color:#fff1cd!important;font:600 clamp(11px,1.5vw,20px)/1.1 Georgia,serif!important;text-shadow:0 1px 2px #210b13,0 0 4px #210b13!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary .money{
+ display:flex!important;align-items:center!important;flex:0 0 auto!important;gap:clamp(2px,.35vw,5px)!important;
+ min-width:0!important;max-width:none!important;overflow:visible!important;white-space:nowrap!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-icon,
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary svg{
+ display:block!important;flex:none!important;width:var(--hud206-icon)!important;height:var(--hud206-icon)!important;
+ max-width:none!important;object-fit:contain!important;pointer-events:none;filter:drop-shadow(0 1px 1px #210b1399)!important;
+}
+#ludusHud .hud-gem{display:block;flex:none}
+#ludusHud :is(.hud-value,.hud-count){display:block;white-space:nowrap;font-variant-numeric:tabular-nums}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(.hud-crew,.hud-navigation,.tools){
+ position:static!important;display:flex!important;align-items:center!important;flex:0 0 auto!important;gap:3px!important;
+ margin:0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{
+ position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;
+ gap:3px!important;width:auto!important;min-width:36px!important;height:var(--hud206-height)!important;min-height:36px!important;
+ margin:0!important;padding:0 3px!important;border:0!important;border-radius:4px!important;background:transparent!important;
+ box-shadow:none!important;filter:none!important;text-decoration:none!important;color:#fff1cd!important;
+ font:600 clamp(11px,1.5vw,20px)/1 Georgia,serif!important;text-shadow:0 1px 2px #210b13,0 0 4px #210b13!important;
+ cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #caravanHud .hud-icon{width:calc(var(--hud206-icon) * 1.55)!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-level{
+ position:relative!important;display:block!important;flex:0 0 auto!important;align-self:center!important;
+ width:calc(var(--hud206-level-original) * .75)!important;height:calc(var(--hud206-level-original) * .75)!important;
+ margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;text-decoration:none!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-level :is(.hud-icon,.hud-level-type){
+ position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;pointer-events:none;
+}
+#ludusHud .hud-level-number{font-family:Georgia,serif;font-weight:600;fill:#fff0c7;filter:drop-shadow(0 1px 1px #24000d)}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action:hover{background:#fff1cd14!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(a,button):focus-visible{outline:2px solid #f0d19b!important;outline-offset:1px}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([hidden],#beginnerOpen){display:none!important}
+#ludusHud #accountLink::after{content:none!important;display:none!important}
+#ludusHud :is(#messageUnread,#friendCount){
+ position:absolute!important;top:0!important;right:0!important;min-width:14px!important;max-width:28px!important;height:14px!important;
+ padding:0 3px!important;box-sizing:border-box!important;border:1px solid #d9bd83!important;border-radius:9px!important;
+ background:#77192d!important;color:#fff8e7!important;font:10px/12px Georgia,serif!important;overflow:hidden;text-overflow:ellipsis;
+}
+@media(max-width:760px){
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud{--hud206-original-icon:25px;--hud206-level-original:51px;--hud206-gap:4px;--hud206-height:44px}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary{font-size:11px!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{min-width:32px!important;padding-inline:1px!important;font-size:11px!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(.hud-crew,.hud-navigation,.tools){gap:1px!important}
+}
+@media(max-width:610px){
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud{--hud206-original-icon:21px;--hud206-level-original:45px;--hud206-gap:3px;left:max(6px,calc(env(safe-area-inset-left) + 4px))!important;right:max(6px,calc(env(safe-area-inset-right) + 4px))!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountSummary{font-size:10px!important}
+ body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{min-width:32px!important;padding-inline:0!important;font-size:10px!important;gap:2px!important}
+}
+}
