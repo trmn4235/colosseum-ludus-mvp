@@ -2,9 +2,9 @@ name: Ludus marble HUD
 on:
   push:
     branches: [main]
-    paths: ['ludus.html', 'game-art-v136.css', 'roman-theme-v68.css', 'caravan-collection-v116.css', 'ludus-hud-v209.*', 'assets/hud-v202/**', 'assets/hud-v207/**', 'tests/hud-v209*', '.github/workflows/ludus-hud-v202.yml']
+    paths: ['ludus.html', 'game-art-v136.css', 'roman-theme-v68.css', 'caravan-collection-v116.css', 'ludus-hud-v210.*', 'assets/hud-v202/**', 'assets/hud-v207/**', 'tests/hud-v210*', '.github/workflows/ludus-hud-v202.yml']
   pull_request:
-    paths: ['ludus.html', 'game-art-v136.css', 'roman-theme-v68.css', 'caravan-collection-v116.css', 'ludus-hud-v209.*', 'assets/hud-v202/**', 'assets/hud-v207/**', 'tests/hud-v209*', '.github/workflows/ludus-hud-v202.yml']
+    paths: ['ludus.html', 'game-art-v136.css', 'roman-theme-v68.css', 'caravan-collection-v116.css', 'ludus-hud-v210.*', 'assets/hud-v202/**', 'assets/hud-v207/**', 'tests/hud-v210*', '.github/workflows/ludus-hud-v202.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,11 +20,11 @@ jobs:
       - run: npm install --no-save --no-package-lock playwright@1.56.1
       - run: npx playwright install --with-deps chromium webkit
       - name: Chromium layout and live HUD states
-        run: node tests/hud-v209.cjs
+        run: node tests/hud-v210.cjs
       - name: WebKit layout and live HUD states
-        run: LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/hud-webkit-v209 node tests/hud-v209.cjs
+        run: LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/hud-webkit-v210 node tests/hud-v210.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ludus-hud-screens
-          path: /tmp/hud*-v209/*.png
+          path: /tmp/hud*-v210/*.png
