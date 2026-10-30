@@ -1,0 +1,9 @@
+# V209 — compact HUD and grouped counters
+
+The frame retains V208's full horizontal width and symmetric 6px decorative margins. Overall height and the center/wing frame paths are 80% of V208. Artwork and type are 88% of their former size, leaving the additional eight percentage points of height reduction to marble padding. The badge remains centered; map and trophy remain mirrored and the gold end ornaments are retained.
+
+Gladiator and caravan icon/count pairs each use a six-unit gap. The helmet starts eight units after the right divider, while settings ends eight units before the safe right boundary. Friends, messages and settings form a right-aligned group with equal 24-unit clearances. The two crew groups share the remaining space evenly. Resource values remain beside their icons, with equal clearances and the existing long-balance fitting behavior.
+
+The initial training-state response was previously rejected if it arrived more than one second behind the client clock. Failed loads also disabled automatic retries because the refresh condition required a successful prior load. Responses are now ordered by their server timestamp, independent of network delay. Authenticated refreshes recover after ten seconds on failure, retain the last confirmed state, and continue the existing one-minute refresh after success. Seven available gladiators render as 7/7; mission, training, rest, injury, market and clan reservations remain excluded. No live account balances or database records are changed.
+
+Verification covers seven landscape sizes, six balance states, 47px/62px symmetric notch simulations, paired and social clearances, full-width bounds, centered badge, 20% height reduction, 12% artwork reduction, text overlap, touch targets, live counters and navigation. The production refresh functions are also exercised against slow, failed, malformed and out-of-order responses. Chromium and WebKit run in the existing HUD CI workflow.
