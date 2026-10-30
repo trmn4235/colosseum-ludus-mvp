@@ -24,7 +24,7 @@ body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(#accountSummary,
 body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-indicator{
  position:absolute!important;top:50%!important;bottom:auto!important;right:auto!important;transform:translateY(-50%)!important;
  display:flex!important;align-items:center!important;justify-content:flex-start!important;flex:none!important;
- gap:var(--indicator-gap,0px)!important;width:max-content!important;max-width:none!important;min-width:0!important;
+ gap:var(--indicator-gap,0px)!important;width:var(--hud207-unit-width,max-content)!important;max-width:none!important;min-width:0!important;
  height:var(--hud207-icon)!important;min-height:0!important;margin:0!important;padding:0!important;
  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;filter:none!important;
  overflow:visible!important;white-space:nowrap!important;color:#651b28!important;text-shadow:none!important;
@@ -41,7 +41,7 @@ body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-art{
  object-fit:fill!important;border:0!important;margin:0!important;padding:0!important;filter:none!important;pointer-events:none;
 }
 body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(.hud-value,.hud-count){
- display:block!important;position:relative!important;flex:0 0 auto!important;padding:0!important;margin:0!important;border:0!important;
+ display:block!important;position:relative!important;flex:0 0 var(--hud207-value-width,auto)!important;width:var(--hud207-value-width,max-content)!important;padding:0!important;margin:0!important;border:0!important;
  white-space:nowrap!important;letter-spacing:0!important;font:400 var(--hud207-number)/1 Georgia,'Times New Roman',serif!important;
  font-variant-numeric:tabular-nums!important;color:#651b28!important;text-align:left!important;text-shadow:none!important;
 }

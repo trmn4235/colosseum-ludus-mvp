@@ -85,23 +85,32 @@
    const outer=ornaments[0].getBoundingClientRect().width,dividerHalf=leftDivider.getBoundingClientRect().width/2;
    function distribute(indices,start,end){
     const pieces=indices.filter(i=>!units[i].hidden).map(i=>{const number=units[i].querySelector('.hud-value,.hud-count');return{i,number};});
+    // Lock each text run to its rendered advance: WebKit rounds flex intrinsic
+    // widths differently when a gap changes, otherwise the end clearance drifts.
+    function sizeNumbers(){for(const p of pieces)if(p.number){
+     const range=document.createRange();range.selectNodeContents(p.number);
+     p.number.style.setProperty('--hud207-value-width',range.getBoundingClientRect().width+'px');
+    }}
+    sizeNumbers();
     const measureWidth=()=>pieces.reduce((sum,p)=>sum+widths[p.i]+(p.number?p.number.getBoundingClientRect().width:0),0);
     const count=pieces.length+pieces.filter(p=>p.number).length;
     // Long live balances use a shorter compact label before they can eat the approved clearances.
     let gap=(end-start-measureWidth())/(count+1);
     if(indices[0]===0&&gap<5*s){
      for(const p of pieces){const item=money[p.i];if(item.n>=10000)item.value.textContent=short.format(item.n).replace(/\s/g,'');}
+     sizeNumbers();
      gap=(end-start-measureWidth())/(count+1);
      if(gap<5*s){
       const textWidth=pieces.reduce((sum,p)=>sum+p.number.getBoundingClientRect().width,0);
       const available=end-start-pieces.reduce((sum,p)=>sum+widths[p.i],0)-(count+1)*5*s;
       const fontSize=parseFloat(getComputedStyle(pieces[0].number).fontSize);
       wallet.style.setProperty('--hud207-wallet-number',(fontSize*Math.min(1,available/textWidth)*.995)+'px');
+      sizeNumbers();
       gap=(end-start-measureWidth())/(count+1);
      }
     }
     let x=start+gap;
-    for(const p of pieces){units[p.i].style.setProperty('--indicator-gap',gap+'px');units[p.i].style.setProperty('--hit-x',Math.max(0,Math.min(9*s,gap/2-1))+'px');place(p.i,x);x+=widths[p.i]+(p.number?gap+p.number.getBoundingClientRect().width:0)+gap;}
+    for(const p of pieces){const width=widths[p.i]+(p.number?gap+p.number.getBoundingClientRect().width:0);units[p.i].style.setProperty('--hud207-unit-width',width+'px');units[p.i].style.setProperty('--indicator-gap',gap+'px');units[p.i].style.setProperty('--hit-x',Math.max(0,Math.min(9*s,gap/2-1))+'px');place(p.i,x);x+=width+gap;}
     return gap;
    }
    menu.dataset.leftGap=String(distribute([0,1,2,3,4],outer,dividerX-dividerHalf));
