@@ -29,7 +29,7 @@ var ArenaBattleResult=(()=>{
  function show(doc,combat){
   const survival=!!combat.survival;const win=combat.result==='win',solo=combat.mode==='solo20',player=combat.fighters[0];
   doc.getElementById('result').dataset.outcome=win?'win':'loss';
-  doc.getElementById('resultMode').textContent=combat.mode==='pit'?'ŞAN AVLUSU · BİRE BİR':survival?'SURVIVAL':solo?'SOLO 20':'4 × 5 TAKIM SAVAŞI';
+  doc.getElementById('resultMode').textContent=combat.mode==='pit'?'AVENTINUS ARENASI · BİRE BİR':survival?'SURVIVAL':solo?'SOLO 20':'4 × 5 TAKIM SAVAŞI';
   doc.getElementById('resultTitle').textContent=survival?'STAGE '+combat.survival.stage:win?'ZAFER':'MAĞLUBİYET';
   doc.getElementById('resultDescription').textContent=combat.mode==='pit'?'Şan düellosu · Ekipmanın korunur':survival?'Tek hedef sendin · Mücadelen sona erdi':solo?'Yirmi gladyatör · Son kalan kazanır':'Dört takım · Beşer gladyatör';
   doc.getElementById('resultGladiator').textContent=player.name;
@@ -37,7 +37,7 @@ var ArenaBattleResult=(()=>{
   doc.getElementById('resultRankLabel').textContent=combat.mode==='pit'?'DÜELLO SONUCU':survival?'TAMAMLANAN STAGE':solo?'SOLO 20 DERECESİ':'TAKIM SONUCU';
   if(combat.pitRound){
    const pairs=combat.pitRound.mode==='2x5';
-   doc.getElementById('resultMode').textContent='ŞAN AVLUSU · '+combat.pitRound.mode;
+   doc.getElementById('resultMode').textContent='AVENTINUS ARENASI · '+combat.pitRound.mode;
    doc.getElementById('resultDescription').textContent=pairs?'Beş takım · İkişer gladyatör':'On gladyatör · Sırayla katılım';
    doc.getElementById('resultGladiator').textContent=combat.fighters.filter(f=>f.team===0).map(f=>f.name).join(' · ');
    doc.getElementById('resultRank').textContent=pairs?(win?'Takım zaferi':'Takım mağlubiyeti'):(win?'Son kalan savaşçı':'Savaşçın elendi');
