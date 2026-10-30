@@ -63,7 +63,7 @@ async function run(){
    assert(Math.abs(c.mapGap-12*s)<.04,label+' approved center clearance');
    for(const gap of [c.leftGaps,c.rightGaps]){
     assert(Math.min(...gap)>=4.95*s,label+' visible clearance '+JSON.stringify(gap));
-    assert(Math.max(...gap)-Math.min(...gap)<.08,label+' equal piece gaps including boundaries '+JSON.stringify(gap));
+    assert(Math.max(...gap)-Math.min(...gap)<.08,label+' equal piece gaps including boundaries '+JSON.stringify({gap,icons:c.icons}));
    }
    for(const i of c.icons){const size=(i.key==='level'?79.2:['map','rankings'].includes(i.key)?41.4:27)*s;
     assert(Math.abs(i.width-size)<.04&&Math.abs(i.height-size)<.04,label+' approved icon size '+i.key);}

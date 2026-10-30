@@ -82,11 +82,10 @@
    const widths=units.map(n=>n.querySelector('.hud-art-clip').getBoundingClientRect().width),place=(i,x)=>{units[i].style.left=x+'px';};
    const levelLeft=c-widths[6]/2,centerGap=12*s;place(6,levelLeft);place(5,levelLeft-centerGap-widths[5]);place(7,c+widths[6]/2+centerGap);
    const dividerX=levelLeft-centerGap-widths[5]-10*s;leftDivider.style.left=dividerX+'px';rightDivider.style.left=(w-dividerX)+'px';
-   const outer=ornaments[0].getBoundingClientRect().width,dividerHalf=leftDivider.getBoundingClientRect().width/2;
+   const origin=menu.getBoundingClientRect().left;
    function distribute(indices,start,end){
     const pieces=indices.filter(i=>!units[i].hidden).map(i=>{const number=units[i].querySelector('.hud-value,.hud-count');return{i,number};});
-    // Lock each text run to its rendered advance: WebKit rounds flex intrinsic
-    // widths differently when a gap changes, otherwise the end clearance drifts.
+    // Lock each text run to its rendered advance before distributing the pieces.
     function sizeNumbers(){for(const p of pieces)if(p.number){
      const range=document.createRange();range.selectNodeContents(p.number);
      p.number.style.setProperty('--hud207-value-width',range.getBoundingClientRect().width+'px');
@@ -113,8 +112,9 @@
     for(const p of pieces){const width=widths[p.i]+(p.number?gap+p.number.getBoundingClientRect().width:0);units[p.i].style.setProperty('--hud207-unit-width',width+'px');units[p.i].style.setProperty('--indicator-gap',gap+'px');units[p.i].style.setProperty('--hit-x',Math.max(0,Math.min(9*s,gap/2-1))+'px');place(p.i,x);x+=width+gap;}
     return gap;
    }
-   menu.dataset.leftGap=String(distribute([0,1,2,3,4],outer,dividerX-dividerHalf));
-   menu.dataset.rightGap=String(distribute([8,9,10,11,12],w-dividerX+dividerHalf,w-outer));
+   // Measure transformed boundary artwork itself, including browser subpixels.
+   menu.dataset.leftGap=String(distribute([0,1,2,3,4],ornaments[0].getBoundingClientRect().right-origin,leftDivider.getBoundingClientRect().left-origin));
+   menu.dataset.rightGap=String(distribute([8,9,10,11,12],rightDivider.getBoundingClientRect().right-origin,ornaments[1].getBoundingClientRect().left-origin));
   }
   const resize=new ResizeObserver(schedule);resize.observe(menu);
   const visibility=new MutationObserver(schedule);for(const n of units)visibility.observe(n,{attributes:true,attributeFilter:['hidden']});
