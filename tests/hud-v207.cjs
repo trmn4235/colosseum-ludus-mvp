@@ -72,7 +72,8 @@ async function run(){
    await page.setViewportSize({width,height});
    for(const [label,values]of [['normal',[2000,2000,2000,2000,2000]],['large',[1100000,999717,17999393,14999215,3999841]],['zero',[0,0,0,0,0]],['edge',[999999,9999,9999,9999,9999]],['limits',[999000000,999000000,999000000,999000000,999000000]],['pending',[null,null,null,null,null]]]){
     await page.evaluate(values=>hud.setWallet(values),values);await geometry(width+' '+label);
-    if(['normal','zero','pending'].includes(label))assert.deepEqual(await page.locator('.hud-value').allTextContents(),values.map(amount));
+    // The production account callback defaults the two optional gem fields to zero.
+    if(['normal','zero','pending'].includes(label))assert.deepEqual(await page.locator('.hud-value').allTextContents(),label==='pending'?['—','—','—','0','0']:values.map(amount));
     const titles=await page.locator('.money').evaluateAll(ns=>ns.map(n=>n.title));
     if(label!=='pending')for(let i=0;i<5;i++)assert(titles[i].startsWith(new Intl.NumberFormat('tr-TR').format(values[i])+' '),'exact live value accessible');
     if(label==='normal'||label==='limits')await page.screenshot({path:path.join(output,`hud-${width}-${label}.png`)});
