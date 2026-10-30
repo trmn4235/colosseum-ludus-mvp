@@ -1,0 +1,71 @@
+@layer game-art-v136 {
+/* Approved V207 geometry. Equal safe-area insets keep the whole rail centered on iPhone. */
+body[data-art-direction][data-roman-screen=ludus] #ludusHud{
+ --hud207-edge:max(6px,env(safe-area-inset-left,0px),env(safe-area-inset-right,0px));
+ --hud207-icon:2.63671875cqw;--hud207-number:1.6171875cqw;
+ position:fixed!important;z-index:15!important;top:max(6px,env(safe-area-inset-top,0px))!important;
+ left:var(--hud207-edge)!important;right:var(--hud207-edge)!important;
+ width:calc(100% - var(--hud207-edge) * 2)!important;max-width:none!important;min-width:0!important;
+ height:calc((100vw - var(--hud207-edge) * 2) * .1125)!important;min-height:0!important;
+ display:block!important;container-type:inline-size;isolation:isolate;box-sizing:border-box!important;
+ margin:0!important;padding:0!important;transform:none!important;gap:0!important;
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#651b28!important;
+ font-family:Georgia,'Times New Roman',serif!important;text-shadow:none!important;pointer-events:none;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud *{box-sizing:border-box}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-frame{position:absolute;inset:0;width:100%!important;height:100%!important;overflow:visible;filter:drop-shadow(0 2px 3px #542c1422);pointer-events:none}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-track{position:absolute;inset:0;padding:0;margin:0}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(#accountSummary,.hud-navigation,.hud-crew,.tools){
+ display:contents!important;position:static!important;margin:0!important;padding:0!important;border:0!important;
+ background:none!important;box-shadow:none!important;transform:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ color:inherit!important;font:inherit!important;text-shadow:none!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-indicator{
+ position:absolute!important;top:50%!important;bottom:auto!important;right:auto!important;transform:translateY(-50%)!important;
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;flex:none!important;
+ gap:var(--indicator-gap,0px)!important;width:max-content!important;max-width:none!important;min-width:0!important;
+ height:var(--hud207-icon)!important;min-height:0!important;margin:0!important;padding:0!important;
+ border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;filter:none!important;
+ overflow:visible!important;white-space:nowrap!important;color:#651b28!important;text-shadow:none!important;
+ font:400 var(--hud207-number)/1 Georgia,'Times New Roman',serif!important;text-decoration:none!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([data-key=map],[data-key=rankings]){--hud207-icon:4.04296875cqw}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud [data-key=level]{--hud207-icon:7.734375cqw}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-art-clip{
+ position:relative!important;display:block!important;flex:0 0 var(--hud207-icon)!important;
+ width:var(--hud207-icon)!important;height:var(--hud207-icon)!important;overflow:hidden!important;pointer-events:none;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-art{
+ position:absolute!important;display:block!important;max-width:none!important;max-height:none!important;
+ object-fit:fill!important;border:0!important;margin:0!important;padding:0!important;filter:none!important;pointer-events:none;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(.hud-value,.hud-count){
+ display:block!important;position:relative!important;flex:0 0 auto!important;padding:0!important;margin:0!important;border:0!important;
+ white-space:nowrap!important;letter-spacing:0!important;font:400 var(--hud207-number)/1 Georgia,'Times New Roman',serif!important;
+ font-variant-numeric:tabular-nums!important;color:#651b28!important;text-align:left!important;text-shadow:none!important;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-value{font-size:var(--hud207-wallet-number,var(--hud207-number))!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-level-type{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;overflow:visible;pointer-events:none}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-level-number{font-family:Georgia,serif;font-weight:600;fill:#fff3d4;filter:none}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(#messageUnread,#friendCount){
+ display:grid;place-items:center;position:absolute!important;right:0!important;top:-.9765625cqw!important;
+ width:2.05078125cqw!important;min-width:0!important;max-width:none!important;height:2.05078125cqw!important;
+ margin:0!important;padding:0!important;border:.12cqw solid #bd984a!important;border-radius:50%!important;
+ background:#791b2e!important;color:#fff4d6!important;font:400 1.3671875cqw/1 Georgia,serif!important;text-shadow:none!important;z-index:2;pointer-events:none;
+}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-divider{position:absolute;top:50%;transform:translate(-50%,-50%);width:.15cqw;height:5.1cqw;background:linear-gradient(90deg,#9b6d2b,#f5d88b,#9b6d2b);pointer-events:none}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-divider::before,
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-divider::after{content:'';position:absolute;left:50%;width:.55cqw;height:.55cqw;transform:translateX(-50%) rotate(45deg);background:linear-gradient(135deg,#ffe7a0,#9b6a26);border:.05cqw solid #ad7c2b}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-divider::before{top:-.2cqw}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-divider::after{bottom:-.2cqw}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-flourish{position:absolute;top:50%;width:4.1cqw;height:4.3cqw;transform:translateY(-50%);filter:drop-shadow(0 1px 1px #71451b55);overflow:hidden;pointer-events:none}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-flourish .hud-art-clip{position:absolute!important;inset:0;width:100%!important;height:100%!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .flourish-left{left:0}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .flourish-right{right:0;transform:translateY(-50%) scaleX(-1)}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action{pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-action::before{content:'';position:absolute;left:calc(-1 * var(--hit-x,0px));right:calc(-1 * var(--hit-x,0px));top:50%;height:max(44px,100%);transform:translateY(-50%);background:transparent}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(a,button):focus-visible{outline:2px solid #651b28!important;outline-offset:3px}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountLink::after{content:none!important;display:none!important}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([hidden],#beginnerOpen,#explore){display:none!important}
+}
