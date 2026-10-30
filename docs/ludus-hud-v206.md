@@ -1,6 +1,6 @@
 # V206 — transparent, compact Ludus HUD
 
-The user's October 30 reference restores the one-row order: gold, diamond, sapphire, emerald, ruby, caravans, gladiators, map, rankings, friends, messages, settings, then the level at the far right. The existing transparent photographic icon assets in `assets/hud-v202/` match the supplied artwork and are reused; no generated replacement, new image transfer, or opaque marble rail is introduced.
+The user's corrected October 30 reference restores the one-row order: level at the far left, gold, diamond, sapphire, emerald, ruby, caravans, gladiators, map, rankings, friends, messages, settings. The existing transparent photographic icon assets in `assets/hud-v202/` match the supplied artwork and are reused; no generated replacement, new image transfer, or opaque marble rail is introduced.
 
 `ludus-hud-v206.css` sizes icon artwork at 75% of the previous reference sizes. Button hit areas are kept larger than their images. Wallet groups never shrink below their content width, counters cannot wrap, the menu respects horizontal safe areas, and breakpoint-specific gaps keep the landscape row in bounds. All backgrounds are transparent. Long balances use Turkish compact notation; accessible labels retain exact values.
 

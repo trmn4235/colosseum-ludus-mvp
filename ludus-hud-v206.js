@@ -1,4 +1,4 @@
-/* V206: transparent compact HUD, with the live level at the far right. */
+/* V206: transparent compact HUD, with the live level at the far left. */
 (function(root){
  'use strict';
  const families=['gold','diamond','sapphire','emerald','ruby'];
@@ -51,7 +51,7 @@
   for(const [id,name]of [['friendsOpen','friends'],['messagesOpen','messages'],['accountLink','settings']]){
    const b=document.getElementById(id);b.querySelectorAll('svg').forEach(n=>n.remove());b.prepend(icon(name));b.classList.add('hud-action');b.type='button';
   }
-  menu.replaceChildren(wallet,crew,nav,tools,level);
+  menu.replaceChildren(level,wallet,crew,nav,tools);
   function setOne(i,value){const {b,value:node}=money[i],n=integer(value),text=amount(n,families[i]);if(node.textContent!==text)node.textContent=text;const title=n===null?labels[i]+' yükleniyor':full.format(n)+' '+labels[i];if(b.title!==title)named(b,title);}
   function setCount(node,textNode,free,total,label){
    const f=integer(free),t=integer(total),safe=f===null||t===null?null:Math.min(f,t),text=(safe??'—')+'/'+(t??'—');

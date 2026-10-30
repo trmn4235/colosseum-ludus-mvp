@@ -27,7 +27,7 @@ async function run(){
   await page.goto('http://hud.test/ludus.html');await page.evaluate(()=>hudReady);await page.evaluate(()=>document.fonts.ready);
   await page.locator('#ludusHud img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
   assert.equal(await page.locator('#ludusWorldNav').count(),0);assert.equal(await page.locator('#beginnerOpen').isVisible(),false);
-  const expected=['gold','diamond','sapphire','emerald','ruby','caravanHud','gladiatorHud','ludusMap','imperialRankings','friendsOpen','messagesOpen','accountLink','ludusLevelBadge'];
+  const expected=['ludusLevelBadge','gold','diamond','sapphire','emerald','ruby','caravanHud','gladiatorHud','ludusMap','imperialRankings','friendsOpen','messagesOpen','accountLink'];
   for(const [width,height]of [[1440,800],[932,430],[874,402],[844,390],[760,360],[667,375],[568,320]]){
    await page.setViewportSize({width,height});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
    for(const [label,values]of [['normal',[984125,2000,2000,2000,2000]],['large',[1100000,999717,17999393,14999215,3999841]],['zero',[0,0,0,0,0]],['edge',[999999,9999,9999,9999,9999]]]){
