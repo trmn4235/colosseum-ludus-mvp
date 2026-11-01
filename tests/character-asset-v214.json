@@ -1,0 +1,28 @@
+{
+  "source": "gladiator-mobile-v213.glb",
+  "output": "gladiator-mobile-v214.glb",
+  "beforeBytes": 6622264,
+  "afterBytes": 6195852,
+  "beforeVisibleTriangles": 55228,
+  "afterVisibleTriangles": 46938,
+  "meshes": [
+    {
+      "name": "loin_geo_Gladiator_MAT_0",
+      "beforeTriangles": 14720,
+      "afterTriangles": 12000,
+      "beforeVertices": 8398,
+      "afterVertices": 6953,
+      "lockedVertices": 658,
+      "relativeError": 0.0017236521234735847
+    },
+    {
+      "name": "shoes_geo_Gladiator_MAT_0",
+      "beforeTriangles": 18832,
+      "afterTriangles": 13262,
+      "beforeVertices": 11734,
+      "afterVertices": 8561,
+      "lockedVertices": 496,
+      "relativeError": 0.001989324577152729
+    }
+  ]
+}

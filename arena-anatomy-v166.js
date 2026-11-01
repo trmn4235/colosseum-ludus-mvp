@@ -80,7 +80,7 @@ var ArenaAnatomy=(()=>{
   root.updateMatrixWorld(true);bones.RightHand.userData.anatomy166=true;
   for(const side of ['Left','Right'])bones[side+'Arm'].userData.anatomyRestPosition=bones[side+'Arm'].position.clone();
  }
- function grip(m,left,strike,reach,holdOffset=strike.pole?-.16:((left?m.offhandAnchor:m.weaponAnchor).children[0]?.userData.asset==='roman_spatha.glb'?-.065:0),settled=false){
+ function grip(m,left,strike,reach,holdOffset=strike.pole?-.16:((left?m.offhandAnchor:m.weaponAnchor).children[0]?.userData.asset==='roman_spatha.glb'?-.065:0),settled=0){
   const T=THREE,side=left?'Left':'Right',hand=m.bones[side+'Hand'],lower=m.bones[side+'ForeArm'],upper=m.bones[side+'Arm'];
   const states=m.grip166||(m.grip166={}),state=states[side]||(states[side]={x:new T.Vector3(-1,0,0).applyQuaternion(m.root.quaternion),v:Array.from({length:20},()=>new T.Vector3()),q:Array.from({length:6},()=>new T.Quaternion()),basis:new T.Matrix4()});
   const v=state.v,qs=state.q;
@@ -119,12 +119,17 @@ var ArenaAnatomy=(()=>{
   hand.quaternion.copy(lower.getWorldQuaternion(qs[5]).invert().multiply(handQ));hand.updateWorldMatrix(false,true);
   // A small shoulder-girdle reach handles short-blade poses at the arm limit.
   // Reset each frame; never stretch the elbow/forearm or move the contact segment.
-  if(!settled){
+  if(settled<3){
    next.set(0,.075,.025).applyQuaternion(handQ).add(wrist).sub(g);
    if(next.lengthSq()>.004**2){
-    next.multiplyScalar(-Math.min(1,.025/next.length())).add(shoulder);
-    upper.position.copy(upper.parent.worldToLocal(next));upper.updateWorldMatrix(false,true);
-    return grip(m,left,strike,reach,holdOffset,true);
+    // Re-solve after the shoulder moves: wrist orientation can change the palm offset.
+    // Bound the total displacement from rest, rather than each correction separately.
+    offset.copy(upper.userData.anatomyRestPosition);upper.parent.localToWorld(offset);
+    next.negate().add(shoulder).sub(offset).clampLength(0,.025).add(offset);
+    if(next.distanceToSquared(shoulder)>1e-10){
+     upper.position.copy(upper.parent.worldToLocal(next));upper.updateWorldMatrix(false,true);
+     return grip(m,left,strike,reach,holdOffset,settled+1);
+    }
    }
   }
   state.x.copy(x);state.holdOffset=holdOffset;state.target=g;state.active=true;

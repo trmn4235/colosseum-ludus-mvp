@@ -46,6 +46,8 @@ var ArenaAuthoredMotion=(()=>{
   const [name,phase,weight]=choice,c=LUDUS_AUTHORED_MOTION.clips[name];if(!c)return false;
   const at=clamp(phase)*(c.frames-1),a=Math.floor(at),b=Math.min(a+1,c.frames-1),t=at-a,s=math(),q=s.q,v=s.v,entry=smooth((m.authored163?.age||1)/.085),mirror=f.action==='netcast'||!!f.attackLeft&&['attack','recoil','stagger','spearcast','hook'].includes(f.action);
   const sample=(arr,out)=>out.fromArray(arr[a]).lerp(v[4].fromArray(arr[b]),t);
+  // Moving guards own the upper body; locomotion keeps the hips and foot contacts.
+  const movingGuard=f.action==='idle'&&['guard','block','guardHit'].includes(name)&&m.locomotionWeight>.005;
   const hips=sample(c.hips,v[0]),scale=m.hipRest.y;
   if(f.action==='evade'){
    m.body.position.y=f.evadeKind==='duck'||f.evadeKind==='jump'?ArenaAuthoredCombat.evadeOffset(f):hips.y*scale*weight;
@@ -58,6 +60,7 @@ var ArenaAuthoredMotion=(()=>{
   }
   m.root.updateMatrixWorld(true);const rootQ=m.root.getWorldQuaternion(q[0]);
   for(const [source,frames] of Object.entries(c.rotations)){
+   if(movingGuard&&(source==='Hips'||/^(Left|Right)(UpLeg|Leg|Foot|ToeBase)/.test(source)))continue;
    const name=mirror?source.replace(/^Left/,'Temp').replace(/^Right/,'Left').replace(/^Temp/,'Right'):source,bone=m.bones[name],rest=m.rest.get(name);if(!bone||!rest)continue;
    q[1].fromArray(frames[a]).slerp(q[2].fromArray(frames[b]),t);if(mirror){q[1].y=-q[1].y;q[1].z=-q[1].z;}
    q[3].copy(rootQ).multiply(q[1]).multiply(rest.p).multiply(rest.q);
@@ -66,6 +69,7 @@ var ArenaAuthoredMotion=(()=>{
    bone.quaternion.slerp(q[4],weight);bone.updateWorldMatrix(false,true);
   }
   for(const part of ['UpLeg','Leg','Foot','Arm','ForeArm'])for(const side of ['Left','Right']){
+   if(movingGuard&&['UpLeg','Leg','Foot'].includes(part))continue;
    const key=side+part,source=(mirror?(side==='Left'?'Right':'Left'):side)+part,frames=c.directions[source],bone=m.bones[key],end=m.bones[side+ends[part]];if(!frames||!bone||!end)continue;
    sample(frames,v[0]).normalize();if(mirror)v[0].x=-v[0].x;v[0].applyQuaternion(rootQ);
    v[1].copy(end.getWorldPosition(v[2])).sub(bone.getWorldPosition(v[3])).normalize();
