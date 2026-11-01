@@ -27,7 +27,7 @@ test('every original suite is configured and called, and no reusable suite self-
   const workflows = path.resolve(__dirname, '../.github/workflows');
   const actual = fs.readdirSync(workflows).filter(f => f.endsWith('.yml') && f !== 'main-merge.yml').sort();
   assert.deepEqual(config.suites.map(s => s.workflow).sort(), actual);
-  assert.equal(actual.length, 23);
+  assert.equal(actual.length, 24);
   const master = fs.readFileSync(path.join(workflows, 'main-merge.yml'), 'utf8');
   assert.match(master, /name: Main merge gate/);
   assert.match(master, /if: \$\{\{ always\(\) \}\}/);
@@ -225,5 +225,15 @@ test('production workflow couples a same-revision artifact and successful gate w
     const child = fs.readFileSync(path.resolve(__dirname, '../.github/workflows', suite.workflow), 'utf8');
     const push = child.match(/^  push:\n(?:^    .*\n)*/m)?.[0] || '';
     assert.ok(!/branches: \[[^\]]*\bmain\b/.test(push), `${suite.id} must not duplicate main CI`);
+  }
+});
+
+// A broken backup must block publication just like the existing game suites.
+test('current-model assets and loader changes require the model delivery suite', () => {
+  for (const filename of ['gladiator-mobile-v217.glb', 'arena.html', 'ludus.html', 'savas.html', 'multiplayer.html', 'caravan-assets-v126.js', 'circus-war-view-v186.js', 'tests/model-delivery-v222.test.cjs', 'tools/verify-model-mirrors-v222.py']) {
+    const selected = selectSuites(config, [file(filename)], 'main');
+    assert.ok(selected.includes('model_delivery'), filename);
+    const needs = validNeeds(selected); needs.model_delivery.result = 'failure';
+    assert.throws(() => checkGate(config, selected, needs), /model_delivery: expected success/);
   }
 });

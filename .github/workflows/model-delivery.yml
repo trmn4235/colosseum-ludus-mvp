@@ -1,0 +1,19 @@
+name: Model delivery
+on:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  model-delivery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Download failures, corruption, cache and every active loader
+        run: node --test tests/model-delivery-v222.test.cjs
+      - name: Verify production mirror bytes and browser access
+        run: python3 tools/verify-model-mirrors-v222.py
