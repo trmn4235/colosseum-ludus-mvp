@@ -28,12 +28,29 @@
  document.addEventListener('visibilitychange',syncHold);
  landscape.addEventListener?.('change',syncHold);
  window.addEventListener('pageshow',syncHold);
+ function prepareArtwork(){
+  // One deadline covers both transfer and decoding; late results cannot restart the intro.
+  return new Promise(resolve=>{
+   let settled=false,decoding=false;
+   function cleanup(){clearTimeout(timer);artwork.removeEventListener('load',loaded);artwork.removeEventListener('error',failed);}
+   function done(ready){if(settled)return;settled=true;cleanup();resolve(ready);}
+   function failed(){done(false);}
+   function loaded(){
+    if(settled||decoding)return;
+    if(!artwork.naturalWidth){failed();return;}
+    decoding=true;artwork.removeEventListener('load',loaded);artwork.removeEventListener('error',failed);
+    try{
+     if(typeof artwork.decode!=='function'){done(true);return;}
+     Promise.resolve(artwork.decode()).then(()=>done(true),failed);
+    }catch{failed();}
+   }
+   const timer=setTimeout(failed,8000);
+   if(artwork.complete)loaded();
+   else{artwork.addEventListener('load',loaded);artwork.addEventListener('error',failed);}
+  });
+ }
  async function start(){
-  try{
-   if(!artwork.complete)await new Promise((resolve,reject)=>{artwork.addEventListener('load',resolve,{once:true});artwork.addEventListener('error',reject,{once:true});});
-   if(!artwork.naturalWidth)throw Error('Artwork unavailable');
-   await artwork.decode();
-  }catch{
+  if(!await prepareArtwork()){
    artwork.hidden=true;document.getElementById('artworkFallback').hidden=false;
   }
   // Two animation frames ensure the image has painted before the hold begins.
