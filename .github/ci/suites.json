@@ -554,6 +554,22 @@
         "supabase/migrations/*stable*",
         ".github/workflows/stable.yml"
       ]
+    },
+    {
+      "id": "model_delivery",
+      "workflow": "model-delivery.yml",
+      "name": "Verified model delivery",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "*.html",
+        "*.js",
+        "*.glb",
+        "tests/model-delivery-*",
+        "tools/verify-model-mirrors-*",
+        ".github/workflows/model-delivery.yml"
+      ]
     }
   ]
 }

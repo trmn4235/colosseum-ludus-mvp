@@ -10,7 +10,8 @@ and documentation changes. Its planner validates the PR head and base before
 and after paginating the changed-file list. Renames match both filenames;
 over 3000 changed files run all suites rather than trusting a truncated list.
 
-`.github/ci/suites.json` retains the previous 23 workflows' branch/path filters.
+`.github/ci/suites.json` retains the previous 23 workflows' branch/path filters and adds a 24th
+model-delivery suite for active model files, loaders and verification tests.
 Relevant suites run through `workflow_call`; their non-main push and manual
 triggers still work. Main pushes are handled only by the shared workflow, so
 they do not duplicate the reusable suites. CI policy/workflow changes run all suites. Documentation
@@ -28,7 +29,7 @@ and regression test. Keep each suite's actual assertions intact.
 
 ## Gated Pages releases
 
-Main pushes and manual runs on `main` select all 23 suites. Every job checks out
+Main pushes and manual runs on `main` select all 24 suites. Every job checks out
 `github.sha`; the Pages build preserves the existing official Jekyll build and
 uploads only `_site`. The merge gate also requires that build to succeed.
 

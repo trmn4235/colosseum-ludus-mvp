@@ -4,7 +4,7 @@ var CircusWarView=(()=>{
  const colors=[0x762638,0x254b72,0x3b634b,0xb28a35];
  const trackCamera=CircusRace.trackCamera;
  async function create(T,race,scene){
-  const res=await fetch('gladiator-mobile-v217.glb',{signal:AbortSignal.timeout(45000)});if(!res.ok)throw Error('Gladyatör görseli yüklenemedi. Tekrar dene.');const gltf=await new T.GLTFLoader().parseAsync(await res.arrayBuffer(),'');
+  const data=await LudusModelDelivery.load('gladiator-mobile-v217.glb');const gltf=await new T.GLTFLoader().parseAsync(data,'');
   gltf.scene.traverse(o=>{if(o.isMesh){const a=gltf.parser.associations.get(o),name=a?.meshes!==undefined?gltf.parser.json.meshes[a.meshes]?.name:'';o.userData.sourcePart=name;if(/^(weapon|shield|helmet)_geo/.test(name||'')){o.visible=false;o.userData.replaceGear=true;}}});
   const extras=new T.Group();extras.name='Ciritler ve kırbaçlar';scene.add(extras);extras.visible=false;
   const line=new T.Line(new T.BufferGeometry().setFromPoints(Array.from({length:73},()=>new T.Vector3())),new T.LineBasicMaterial({color:0xe6c766,transparent:true,opacity:.4,depthWrite:false}));line.frustumCulled=false;extras.add(line);
