@@ -38,3 +38,5 @@ Fiziksel iPhone testi bu otomatik denetimlere dahil değildir. Bağımsız parma
 - Mevcut 448 sınıf hareketi, 245 kalkan senaryosu, 44 ağ durum kontrolü ve gerçek ağ yaşam döngüleri geçti. V217 varlık bütünlüğü denetimi başarılı; model ve uzak detay dosyaları değişmedi.
 
 Görsel kontrol, mevcut fırlatma animasyonunun alçak gövde eğimini ve bağımsız parmak/başparmak iskeleti bulunmamasından kaynaklanan yakın plan sınırlarını da gösterir. V218'in düzeltmesi elde tutma/bırakma zamanlamasıdır; yeni fırlatma animasyonu veya eksiksiz el anatomisi iddiası değildir.
+
+İlk GitHub çalıştırmasında V218 iş akışındaki tarayıcı imaj kimliğinde tek karakterlik yazım hatası ve eski zamanlama testinin sanal ortamında eksik `ArenaAnatomy` yüklemesi bulundu. İmaj, çalışan V217 tanımıyla eşitlendi; zamanlama testi gerçek ortak modülü yükler. Test koşulları gevşetilmedi. Zamanlama, uzak detay, uyarlanabilir kalite ve çizim ölçeği kontrolleri birlikte yeniden çalıştırılıp geçti.
