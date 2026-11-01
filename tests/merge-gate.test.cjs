@@ -3,11 +3,11 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const {glob, validateConfig, selectSuites, checkGate, planFromApi} = require('../.github/ci/merge-gate.cjs');
+const {glob, validateConfig, selectSuites, checkGate, planFromApi, planForEvent, authorizeDeployment} = require('../.github/ci/merge-gate.cjs');
 const config = require('../.github/ci/suites.json');
 const ids = config.suites.map(s => s.id);
 const file = (filename, extra = {}) => ({filename, status: 'modified', ...extra});
-const validNeeds = selected => Object.fromEntries([['plan', {result: 'success'}], ...ids.map(id => [id, {result: selected.includes(id) ? 'success' : 'skipped'}])]);
+const validNeeds = selected => Object.fromEntries([['plan', {result: 'success'}], ['build_pages', {result: 'success'}], ...ids.map(id => [id, {result: selected.includes(id) ? 'success' : 'skipped'}])]);
 const head = 'a'.repeat(40), base = 'b'.repeat(40), repository = 'owner/repo';
 const event = {number: 7, repository: {full_name: repository}, pull_request: {head: {sha: head}, base: {sha: base, ref: 'main'}}};
 const pr = (changed_files, extra = {}) => ({number: 7, state: 'open', head: {sha: head}, base: {sha: base, ref: 'main', repo: {full_name: repository}}, changed_files, ...extra});
@@ -31,10 +31,11 @@ test('every original suite is configured and called, and no reusable suite self-
   const master = fs.readFileSync(path.join(workflows, 'main-merge.yml'), 'utf8');
   assert.match(master, /name: Main merge gate/);
   assert.match(master, /if: \$\{\{ always\(\) \}\}/);
-  assert.ok(!/\n    (?:branches|paths|paths-ignore):/.test(master));
+  const prTrigger = master.split('  pull_request:\n')[1].split('  push:\n')[0];
+  assert.ok(!/\n    (?:branches|paths|paths-ignore):/.test(prTrigger));
   assert.ok(!master.includes('draft'));
   const needs = master.match(/    needs: \[([^\]]+)\]/)[1].split(', ');
-  assert.deepEqual(needs.sort(), ['plan', ...ids].sort());
+  assert.deepEqual(needs.sort(), ['plan', 'build_pages', ...ids].sort());
   const calls = [...master.matchAll(/uses: \.\/.github\/workflows\/(.+\.yml)/g)].map(m => m[1]).sort();
   assert.deepEqual(calls, actual);
   for (const suite of config.suites) {
@@ -136,4 +137,93 @@ test('invalid configuration fails closed', () => {
   const unsupported = copy(); unsupported.suites[0].paths = ['!ignore'];
   assert.throws(() => selectSuites(unsupported, [], 'main'), /Unsupported/);
   assert.throws(() => checkGate({version: 1, suites: []}, [], {}), /configuration/);
+});
+
+const mainContext = (extra = {}) => ({eventName: 'push', event: {repository: {full_name: repository}, ref: 'refs/heads/main', after: head, deleted: false}, repository, ref: 'refs/heads/main', sha: head, ...extra});
+
+test('main pushes and manual main runs always select all suites, even for docs-only releases', async () => {
+  for (const eventName of ['push', 'workflow_dispatch']) {
+    const calls = [];
+    assert.deepEqual(await planForEvent(config, mainContext({eventName}), async endpoint => {
+      calls.push(endpoint); return {commit: {sha: head}};
+    }), ids);
+    assert.deepEqual(calls, [`/repos/${repository}/branches/main`]);
+  }
+});
+
+test('PR planning retains path selection and cannot request deployment', async () => {
+  const context = {...mainContext(), eventName: 'pull_request', event, ref: 'refs/pull/7/merge'};
+  const selected = await planForEvent(config, context, async endpoint => endpoint.includes('/files?') ? [file('README.md')] : pr(1));
+  assert.deepEqual(selected, []);
+  assert.throws(() => authorizeDeployment(context, head, 'success', 'success'), /Unauthorized/);
+});
+
+test('non-main, wrong-event, deleted, mismatched or malformed release contexts fail before API use', async () => {
+  const bad = [
+    mainContext({ref: 'refs/heads/feature'}),
+    mainContext({ref: 'refs/tags/main'}),
+    mainContext({eventName: 'pull_request_target'}),
+    mainContext({eventName: 'workflow_run'}),
+    mainContext({event: {...mainContext().event, deleted: true}}),
+    mainContext({event: {...mainContext().event, after: base}}),
+    mainContext({event: {...mainContext().event, repository: {full_name: 'other/repo'}}}),
+    mainContext({sha: 'bad'}),
+    mainContext({eventName: 'workflow_dispatch', ref: 'refs/heads/feature'})
+  ];
+  for (const context of bad) {
+    await assert.rejects(planForEvent(config, context, async () => assert.fail('Unauthorized context must not query GitHub')));
+    assert.throws(() => authorizeDeployment(context, head, 'success', 'success'));
+  }
+});
+
+test('stale main runs and unknown current revisions cannot publish over a newer release', async () => {
+  for (const current of [base, undefined, null]) {
+    await assert.rejects(planForEvent(config, mainContext(), async () => ({commit: {sha: current}})), /Stale/);
+    assert.throws(() => authorizeDeployment(mainContext(), current, 'success', 'success'), /Stale/);
+  }
+  assert.ok(authorizeDeployment(mainContext(), head, 'success', 'success'));
+  assert.ok(authorizeDeployment(mainContext({eventName: 'workflow_dispatch'}), head, 'success', 'success'));
+  await assert.rejects(planForEvent(config, mainContext(), async () => {throw Error('API unavailable');}), /unavailable/);
+});
+
+test('failed, cancelled, missing or skipped artifact builds block both merge and deployment', () => {
+  for (const result of ['failure', 'cancelled', 'skipped', 'neutral', undefined]) {
+    const needs = validNeeds(ids); needs.build_pages.result = result;
+    assert.throws(() => checkGate(config, ids, needs), /artifact build/);
+    assert.throws(() => authorizeDeployment(mainContext(), head, 'success', result), /successful tests and artifact/);
+    assert.throws(() => authorizeDeployment(mainContext(), head, result, 'success'), /successful tests and artifact/);
+  }
+  const needs = validNeeds(ids); delete needs.build_pages;
+  assert.throws(() => checkGate(config, ids, needs), /artifact build/);
+});
+
+test('production workflow couples a same-revision artifact and successful gate without PR deploy credentials', () => {
+  const master = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/main-merge.yml'), 'utf8');
+  const job = id => master.match(new RegExp(`^  ${id}:\\n([\\s\\S]*?)(?=^  [a-z_][a-z0-9_]*:|$(?![\\s\\S]))`, 'm'))?.[1];
+  const build = job('build_pages'), deploy = job('deploy_pages'), gate = job('gate');
+  assert.ok(build && deploy && gate, 'build, gate, and deployment jobs exist');
+  assert.match(build, /needs: plan/);
+  assert.match(build, /pages: read/);
+  assert.ok(!build.includes('pages: write') && !build.includes('id-token: write'));
+  assert.match(build, /enablement: false/);
+  assert.match(build, /actions\/jekyll-build-pages@[a-f0-9]{40}/);
+  assert.match(build, /destination: \.\/_site/);
+  assert.match(build, /path: \.\/_site/);
+  assert.match(build, /build_revision: \$\{\{ github.sha \}\}/);
+  assert.match(gate, /needs: \[plan, build_pages,/);
+  assert.match(deploy, /needs: \[gate, build_pages\]/);
+  assert.match(deploy, /github.event_name != 'pull_request'.*github.ref == 'refs\/heads\/main'.*needs.gate.result == 'success'.*needs.build_pages.result == 'success'/);
+  assert.match(deploy, /pages: write/); assert.match(deploy, /id-token: write/);
+  assert.match(deploy, /environment:\n      name: github-pages/);
+  assert.ok(deploy.indexOf('authorize-deploy') < deploy.indexOf('actions/deploy-pages@'));
+  assert.match(deploy, /ref: \$\{\{ github.sha \}\}/);
+  assert.equal((master.match(/pages: write/g) || []).length, 1);
+  assert.equal((master.match(/id-token: write/g) || []).length, 1);
+  assert.match(master, /cancel-in-progress: \$\{\{ github.event_name == 'pull_request' \}\}/);
+  assert.match(master, /group: main-checks-\$\{\{ github.event.pull_request.number \|\| github.ref \}\}/);
+  for (const suite of config.suites) {
+    const child = fs.readFileSync(path.resolve(__dirname, '../.github/workflows', suite.workflow), 'utf8');
+    const push = child.match(/^  push:\n(?:^    .*\n)*/m)?.[0] || '';
+    assert.ok(!/branches: \[[^\]]*\bmain\b/.test(push), `${suite.id} must not duplicate main CI`);
+  }
 });

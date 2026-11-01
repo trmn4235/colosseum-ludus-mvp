@@ -1,7 +1,7 @@
 name: Finger surface normals V216
 on:
   push:
-    branches: [main, codex/character-normals-v216]
+    branches: [codex/character-normals-v216]
     paths: ['arena-anatomy-v166.js', 'arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-battle-v126.js', 'pit-visit-v172.js', 'tests/character-*-v216.cjs', 'tests/arena-browser-v96.cjs', '.github/workflows/character-v216.yml']
   workflow_call:
 permissions:

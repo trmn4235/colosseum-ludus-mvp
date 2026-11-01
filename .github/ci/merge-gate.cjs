@@ -62,8 +62,9 @@ function checkGate(config, selected, needs) {
   const ids = config.suites.map(s => s.id);
   if (!Array.isArray(selected) || selected.some(id => typeof id !== 'string' || !ids.includes(id)) || new Set(selected).size !== selected.length) throw new Error('Invalid or missing suite plan');
   if (!needs || needs.plan?.result !== 'success') throw new Error('Suite planning did not succeed');
+  if (needs.build_pages?.result !== 'success') throw new Error('Pages artifact build did not succeed');
   const keys = Object.keys(needs).sort();
-  if (JSON.stringify(keys) !== JSON.stringify(['plan', ...ids].sort())) throw new Error('Gate dependencies do not cover exactly the configured suites');
+  if (JSON.stringify(keys) !== JSON.stringify(['plan', 'build_pages', ...ids].sort())) throw new Error('Gate dependencies do not cover exactly the configured suites');
   for (const id of ids) {
     const expected = selected.includes(id) ? 'success' : 'skipped';
     if (needs[id]?.result !== expected) throw new Error(`${id}: expected ${expected}, got ${needs[id]?.result ?? 'missing'}`);
@@ -106,27 +107,62 @@ async function planFromApi(config, event, repository, get) {
   return selectSuites(config, files, before.base.ref, all);
 }
 
+// Manual runs and pushes may publish only the current main revision. PRs never
+// receive deployment credentials, and an old run cannot roll back a newer main.
+function validateMainContext({eventName, event, repository, ref, sha}) {
+  if (!['push', 'workflow_dispatch'].includes(eventName) || ref !== 'refs/heads/main') throw new Error('Unauthorized deployment event or branch');
+  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository) || event?.repository?.full_name !== repository) throw new Error('Invalid deployment repository');
+  if (!/^[a-f0-9]{40}$/.test(sha)) throw new Error('Invalid deployment SHA');
+  if (eventName === 'push' && (event.ref !== ref || event.after !== sha || event.deleted !== false)) throw new Error('Push revision does not match this run');
+}
+
+async function planForEvent(config, context, get) {
+  if (context.eventName === 'pull_request') return planFromApi(config, context.event, context.repository, get);
+  validateMainContext(context);
+  const current = await get(`/repos/${context.repository}/branches/main`);
+  if (current.commit?.sha !== context.sha) throw new Error('Stale main revision; refusing to test for deployment');
+  validateConfig(config);
+  return config.suites.map(s => s.id);
+}
+
+function authorizeDeployment(context, currentSha, gateResult, buildResult) {
+  validateMainContext(context);
+  if (gateResult !== 'success' || buildResult !== 'success') throw new Error('Deployment requires successful tests and artifact build');
+  if (currentSha !== context.sha) throw new Error('Stale main revision; refusing to overwrite the newer release');
+  return true;
+}
+
 async function main() {
   const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'suites.json'), 'utf8'));
   if (process.argv[2] === 'gate') {
     checkGate(config, JSON.parse(process.env.MERGE_SELECTED), JSON.parse(process.env.MERGE_NEEDS));
-    console.log('All planned suites succeeded; every other suite was deliberately skipped.');
-  } else if (process.argv[2] === 'plan') {
-    if (!process.env.GH_TOKEN || !process.env.GITHUB_OUTPUT) throw new Error('Missing CI credentials or output path');
-    const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
-    const get = async endpoint => {
-      const response = await fetch(`https://api.github.com${endpoint}`, {
-        headers: {Authorization: `Bearer ${process.env.GH_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'},
-        signal: AbortSignal.timeout(30000)
-      });
-      if (!response.ok) throw new Error(`GitHub API read failed (${response.status})`);
-      return response.json();
-    };
-    const selected = await planFromApi(config, event, process.env.GITHUB_REPOSITORY, get);
+    console.log('All planned suites and the Pages artifact build succeeded; every other suite was deliberately skipped.');
+    return;
+  }
+  if (!['plan', 'authorize-deploy'].includes(process.argv[2])) throw new Error('Usage: merge-gate.cjs plan|gate|authorize-deploy');
+  if (!process.env.GH_TOKEN) throw new Error('Missing CI credentials');
+  const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+  const context = {eventName: process.env.GITHUB_EVENT_NAME, event, repository: process.env.GITHUB_REPOSITORY, ref: process.env.GITHUB_REF, sha: process.env.GITHUB_SHA};
+  const get = async endpoint => {
+    const response = await fetch(`https://api.github.com${endpoint}`, {
+      headers: {Authorization: `Bearer ${process.env.GH_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'},
+      signal: AbortSignal.timeout(30000)
+    });
+    if (!response.ok) throw new Error(`GitHub API read failed (${response.status})`);
+    return response.json();
+  };
+  if (process.argv[2] === 'plan') {
+    if (!process.env.GITHUB_OUTPUT) throw new Error('Missing CI output path');
+    const selected = await planForEvent(config, context, get);
     fs.appendFileSync(process.env.GITHUB_OUTPUT, `selected=${JSON.stringify(selected)}\n`);
     console.log(`Required suites (${selected.length}): ${selected.join(', ') || 'none; CI policy tests passed'}`);
-  } else throw new Error('Usage: merge-gate.cjs plan|gate');
+  } else {
+    validateMainContext(context);
+    const current = await get(`/repos/${context.repository}/branches/main`);
+    authorizeDeployment(context, current.commit?.sha, process.env.PAGES_GATE_RESULT, process.env.PAGES_BUILD_RESULT);
+    console.log(`Deployment authorized for tested current main ${context.sha}.`);
+  }
 }
 
-module.exports = {glob, validateConfig, changedPaths, selectSuites, checkGate, validateRevision, planFromApi};
+module.exports = {glob, validateConfig, changedPaths, selectSuites, checkGate, validateRevision, planFromApi, validateMainContext, planForEvent, authorizeDeployment};
 if (require.main === module) main().catch(error => { console.error(error.message); process.exitCode = 1; });

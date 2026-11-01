@@ -1,7 +1,7 @@
 name: Character motion V213
 on:
   push:
-    branches: [main, codex/character-motion-v213]
+    branches: [codex/character-motion-v213]
     paths: ['arena-locomotion-v91.js', 'arena-anatomy-v166.js', 'arena-authored-motion-v163.js', 'gladiator-mobile-v213.glb', 'tests/character-*-v213.cjs', 'tests/arena-browser-v96.cjs', '.github/workflows/character-v213.yml']
   workflow_call:
 permissions:

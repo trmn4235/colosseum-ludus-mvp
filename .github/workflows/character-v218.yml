@@ -1,7 +1,7 @@
 name: Throw release V218
 on:
   push:
-    branches: [main, codex/character-throw-v218]
+    branches: [codex/character-throw-v218]
     paths: ['arena-anatomy-v166.js', 'arena.html', 'savas.html', 'multiplayer.html', 'caravan-battle-v126.js', 'caravan-core-v126.js', 'caravan-rig-v126.js', 'pit-visit-v172.js', 'tests/character-*-v218.cjs', 'tests/arena-browser-v96.cjs', '.github/workflows/character-v218.yml']
   workflow_call:
 permissions:
