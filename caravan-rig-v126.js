@@ -493,9 +493,9 @@ var ImportedGladiator=(function(){
    status('Gladyatör yükleniyor…');const helmetReady=Promise.all([LudusHelmets.load(),LudusArmour.load()]);
    const equipmentReady=typeof ImportedEquipment!=='undefined'?ImportedEquipment.load(text=>{const el=document.getElementById?.('equipmentLoad');if(el)el.textContent=text;}):Promise.resolve();equipmentReady.catch(()=>{});
    let data;
-   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile-v213.glb',status,'Gladyatör');
+   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile-v214.glb',status,'Gladyatör');
    else{
-   const r=await fetch(new URL('gladiator-mobile-v213.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
+   const r=await fetch(new URL('gladiator-mobile-v214.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
    if(!r.ok)throw new Error('Gladyatör dosyası yüklenemedi (HTTP '+r.status+'). R2 dosyasını ve erişim ayarlarını kontrol et.');
    data=await r.arrayBuffer();
    }
@@ -603,8 +603,8 @@ var ImportedGladiator=(function(){
   for(const [name,bone] of m.boneEntries){const r=m.rest.get(name),p=poses[name]||zeroPose;Q.setFromEuler(E.set(...p));P.copy(r.p).invert().multiply(Q).multiply(r.p).multiply(r.q);bone.quaternion.slerp(P,blend);}
   m.body.position.y+=(drop+(fallen?0:animation?animation.bob:Math.abs(w)*.012)-m.body.position.y)*blend;m.body.position.z+=((fallen?fallen.shift:fullBody?.shift||0)-m.body.position.z)*blend;m.body.rotation.x+=((fallen?fallen.rotation:lean)-m.body.rotation.x)*blend;m.body.rotation.z+=((fallen?.roll||0)-m.body.rotation.z)*blend;if(fallen){m.body.position.y=fallen.lift;m.body.position.z=fallen.shift;m.body.quaternion.identity();if(fallen.state?.captured&&fallen.entry<1)m.body.quaternion.copy(fallen.state.rotation).slerp(ik.identity,fallen.entry);m.root.position.set(fallen.x,0,fallen.z);m.root.rotation.y=fallen.heading;}m.root.updateMatrixWorld(true);GroundFall.apply(m,fallen);GroundFall.ground(m,fallen);
   if(typeof ArenaLocomotion!=='undefined')ArenaLocomotion.apply(f,m,dt,alignBone,time);
-  if(typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
-  if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.apply(f,m,time);
+  const authored=typeof ArenaAuthoredMotion!=='undefined'&&ArenaAuthoredMotion.apply(f,m,time);
+  if(!authored&&typeof QuaterniusMotion!=='undefined')QuaterniusMotion.apply(f,m,time,alignBone);
    m.poleStep=m.authoredStep||fullBody?.step||null;if(planting&&!fallen)plantFeet(m);
   if(strike&&f.hp>0&&!fallen){const left=strike.left??f.attackLeft,anchor=left?m.offhandAnchor:m.weaponAnchor,hand=m.bones.RightHand.userData.anatomy166?ArenaAnatomy.grip(m,left,strike,reach):reach(m,left,strike.grip);
    // The weapon follows the same swept segment as hit detection. IK keeps its grip by the hand.
