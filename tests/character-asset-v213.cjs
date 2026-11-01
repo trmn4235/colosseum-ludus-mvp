@@ -10,7 +10,7 @@ async function main(){
   else{const m=await sharp(b).metadata();assert.equal(m.format,'webp');assert.ok(m.width>=512&&m.height>=512);textures.push({view:i,width:m.width,height:m.height,bytes:b.length});}
  }
  assert.ok(after.bytes.length<before.bytes.length*.6,'at least 40% smaller');
- for(const file of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js','circus-war-view-v186.js'])assert.ok(fs.readFileSync(path.join(root,file),'utf8').includes("'gladiator-mobile-v214.glb'"),file+' uses fresh asset URL');
+ for(const file of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js','circus-war-view-v186.js'])assert.ok(fs.readFileSync(path.join(root,file),'utf8').includes("'gladiator-mobile-v217.glb'"),file+' uses fresh asset URL');
  console.log(JSON.stringify({beforeBytes:before.bytes.length,afterBytes:after.bytes.length,reductionPercent:100*(1-after.bytes.length/before.bytes.length),geometrySkinAnimationByteIdentical:true,textures},null,2));
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

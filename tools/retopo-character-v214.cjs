@@ -58,4 +58,4 @@ async function main(){
  fs.writeFileSync(path.join(root,'tests/character-asset-v214.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
 }
 if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});
-module.exports={read,accessor,values};
+module.exports={read,accessor,values,bounds,pack};

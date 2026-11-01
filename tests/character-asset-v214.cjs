@@ -19,5 +19,5 @@ for(let i=0;i<a.accessors.length;i++)if(!changed.has(i))assert.deepEqual(accesso
 for(let i=0;i<a.images.length;i++){const av=a.bufferViews[a.images[i].bufferView],bv=b.bufferViews[b.images[i].bufferView];assert.deepEqual(after.binary.subarray(bv.byteOffset,bv.byteOffset+bv.byteLength),before.binary.subarray(av.byteOffset,av.byteOffset+av.byteLength),'texture '+i);}
 const visible=j=>j.meshes.filter(m=>!/^(helmet|shield|weapon)_geo/.test(m.name)).reduce((s,m)=>s+j.accessors[m.primitives[0].indices].count/3,0);
 assert.ok(visible(b)<visible(a)*.86);assert.ok(after.bytes.length<before.bytes.length*.95);
-for(const file of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js','circus-war-view-v186.js'])assert.ok(fs.readFileSync(root+'/'+file,'utf8').includes("'gladiator-mobile-v214.glb'"),file+' fresh model URL');
+for(const file of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js','circus-war-view-v186.js'])assert.ok(fs.readFileSync(root+'/'+file,'utf8').includes("'gladiator-mobile-v217.glb'"),file+' fresh model URL');
 console.log(JSON.stringify({beforeBytes:before.bytes.length,afterBytes:after.bytes.length,beforeVisibleTriangles:visible(a),afterVisibleTriangles:visible(b),texturesIdentical:true,skinAnimationBodyEyesIdentical:true,meshes:rows},null,2));

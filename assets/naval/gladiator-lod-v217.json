@@ -1,0 +1,22 @@
+{
+  "source": "gladiator-mobile-v217.glb",
+  "sourceBytes": 5912072,
+  "sourceSha256": "dae87e6a1d059f8e2e6beafc58184d495631aad7c280eb41536e8b67b14713ab",
+  "vertices": 24454,
+  "sourceTriangles": 41638,
+  "output": "assets/naval/gladiator-lod-v217.bin",
+  "bytes": 305984,
+  "sha256": "96aa0690464bb22f93a63652cf0f70e9efa6059530ef1849ad2a08d2ab7e7dd3",
+  "levels": [
+    {
+      "targetTriangles": 18000,
+      "triangles": 18000,
+      "relativeError": 0.0010638897074386477
+    },
+    {
+      "targetTriangles": 7500,
+      "triangles": 7497,
+      "relativeError": 0.0027110138908028603
+    }
+  ]
+}
