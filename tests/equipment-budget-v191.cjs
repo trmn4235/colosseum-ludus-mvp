@@ -38,6 +38,14 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
 });
 test('every entry point and dynamic loader invalidates changed cached scripts',()=>{
  for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(root+'/'+page,'utf8'),/equipment-catalog-v167\.js\?v=revision198/);
- assert.match(fs.readFileSync(root+'/caravan-field.html','utf8'),/caravan-battle-v126\.js\?v=revision214/);
- assert.match(fs.readFileSync(root+'/san-avlusu.html','utf8'),/pit-visit-v172\.js\?v=revision214/);
+ const {assertCacheRevision}=require('./cache-url.cjs');
+ for(const [page,file]of [['caravan-field.html','caravan-battle-v126.js'],['san-avlusu.html','pit-visit-v172.js']]){
+  const html=fs.readFileSync(root+'/'+page,'utf8'),url=[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)].map(m=>m[1]).find(src=>src.split('?')[0]===file);
+  assertCacheRevision(url,file,214,page);
+ }
+});
+test('cache checks accept later revisions while rejecting stale or missing script keys',()=>{
+ const {assertCacheRevision}=require('./cache-url.cjs'),file='caravan-battle-v126.js';
+ for(const revision of [214,218,219])assertCacheRevision(file+'?v=revision'+revision,file,214);
+ for(const url of [undefined,file,file+'?v=revision213',file+'?v=revision218-old',file+'?v=revision218&v=revision213','other.js?v=revision218'])assert.throws(()=>assertCacheRevision(url,file,214));
 });

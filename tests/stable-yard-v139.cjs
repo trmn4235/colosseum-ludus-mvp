@@ -29,9 +29,9 @@ try{await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html',{wai
  await page.evaluate(()=>{const p=LudusPreview;p.player.yaw=0;p.player.pitch=.14;});await render();
  await page.keyboard.press('KeyE');await page.locator('.stable-modal:not([hidden])').waitFor();await page.getByRole('button',{name:'Ahır panelini kapat'}).click();
  for(const [width,height]of [[1536,706],[874,402],[667,375],[568,320]]){
-  await page.setViewportSize({width,height});await render();
+  await page.setViewportSize({width,height});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await render();
   const b=await page.locator('#stableGroomAction').boundingBox();assert.ok(b&&b.width>=44&&b.height>=44&&b.x>=0&&b.y>=0&&b.x+b.width<=width&&b.y+b.height<=height,'groom action fits '+width);
-  const head=await page.evaluate(()=>{const p=LudusPreview,v=p.stableRoom.groom.position.clone();v.y+=p.stableRoom.groom.userData.height+.2;v.project(p.camera);return{x:(v.x+1)*innerWidth/2,y:(1-v.y)*innerHeight/2};});assert.ok(Math.abs(b.x+b.width/2-head.x)<3&&Math.abs(b.y+b.height/2-head.y)<3,'action stays attached to groom at '+width);
+  const head=await page.evaluate(()=>{const p=LudusPreview,v=p.stableRoom.groom.position.clone();v.y+=p.stableRoom.groom.userData.height+.2;v.project(p.camera);return{x:(v.x+1)*innerWidth/2,y:(1-v.y)*innerHeight/2};});const halfWidth=Math.max(24,b.width/2+2),halfHeight=Math.max(26,b.height/2+2);assert.ok(Math.abs(b.x+b.width/2-Math.max(halfWidth,Math.min(width-halfWidth,head.x)))<3&&Math.abs(b.y+b.height/2-Math.max(halfHeight,Math.min(height-halfHeight,head.y)))<3,'action follows the groom within screen edges at '+width);
   await page.screenshot({path:out+'/yard-'+width+'.png'});
  }
  await page.evaluate(()=>{const p=LudusPreview;p.player.x=0;p.player.z=-35;});await render();
