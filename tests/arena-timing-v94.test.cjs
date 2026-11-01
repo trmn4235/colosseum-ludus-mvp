@@ -8,6 +8,7 @@ function fixture(distance=10,id=1){
  const fighter={id,x:distance,z:0,angle:0,hp:100,action:'idle',move:1};
  const poses=[];
  const context=vm.createContext({naval:null,NavalPerformance:{...require('../naval-performance-v106.js'),character(){},shadow(){return true;}},combat:{fighters:[{x:0,z:0}]},GamePerformance:{characterShadows(){}},ImportedGladiator:{animate(f,m,t,dt){poses.push({t,dt,action:f.action});m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;}}});
+ vm.runInContext(fs.readFileSync(path.join(root,'arena-anatomy-v166.js'),'utf8'),context);
  vm.runInContext(animation,context);return{model,fighter,poses,animate:context.animateCharacter};
 }
 for(const [label,intervals] of Object.entries({'60 Hz':[1/60],'60.24 Hz':[.0166],'30.03 Hz':[.0333],'30 Hz':[1/30],'120 Hz':[1/120],'uneven frames':[.010,.018,.024,.013,.019]})){

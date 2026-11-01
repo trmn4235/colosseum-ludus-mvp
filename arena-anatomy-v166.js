@@ -189,6 +189,17 @@ var ArenaAnatomy=(()=>{
    const state=m.grip166[left?'Left':'Right'];state.carryQuaternion.copy(anchor.quaternion);state.carryKind=kind;state.hasCarryQuaternion=true;
   }
  }
+ // Inventory leaves the hand at throw start. Display it until the actual
+ // projectile launches, including when the display timer is interpolated.
+ // These helpers never write to the fighter or to the combat projectile.
+ function pendingThrow(f,projectiles){
+  if(f.hp<=0||f.action!=='spearcast')return null;
+  for(const shot of projectiles||[])if(shot.owner===f.id&&!shot.launched)return shot.kind;
+  return null;
+ }
+ function throwPose(f,kind,left=f.attackLeft){
+  return kind&&f.hp>0&&f.action==='spearcast'?{...f,[left?'offhand':'weapon']:kind}:f;
+ }
  function begin(m){
   for(const state of Object.values(m.grip166||{}))state.active=false;
   for(const side of ['Left','Right']){const arm=m.bones[side+'Arm'];if(arm?.userData.anatomyRestPosition)arm.position.copy(arm.userData.anatomyRestPosition);}
@@ -205,5 +216,5 @@ var ArenaAnatomy=(()=>{
   }
  }
  const mathGrip={},gripAngles={pole:[.70,.82,.72],shield:[.76,.86,.76],blade:[.84,.98,.84]};
- return {prepare,grip,carry,begin,closeGrip};
+ return {prepare,grip,carry,pendingThrow,throwPose,begin,closeGrip};
 })();
