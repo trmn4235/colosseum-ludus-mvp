@@ -1,13 +1,16 @@
-name: Main merge checks
+name: Main checks and gated Pages
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: read
   pull-requests: read
 concurrency:
-  group: main-merge-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  group: main-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   plan:
     name: Plan required suites
@@ -26,7 +29,7 @@ jobs:
       - name: Verify planner and gate behavior
         run: node --test tests/merge-gate.test.cjs
       - id: plan
-        name: Plan against the exact current PR revision
+        name: Plan against the exact current revision
         env:
           GH_TOKEN: ${{ github.token }}
         run: node .github/ci/merge-gate.cjs plan
@@ -122,10 +125,43 @@ jobs:
     needs: plan
     if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'stable') }}
     uses: ./.github/workflows/stable.yml
+  build_pages:
+    name: Build Pages artifact
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Read Pages metadata without changing its settings
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          enablement: false
+      - name: Preserve the existing GitHub Pages Jekyll build
+        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1
+        with:
+          source: ./
+          destination: ./_site
+          build_revision: ${{ github.sha }}
+      - name: Verify game entry pages survived the build
+        run: |
+          for page in index arena ludus savas multiplayer circus-maximus san-avlusu caravan-field roma siralamalar; do
+            test -s "_site/$page.html"
+            cmp "$page.html" "_site/$page.html"
+          done
+      - name: Upload only the built site from this run
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ./_site
   gate:
     name: Main merge gate
     if: ${{ always() }}
-    needs: [plan, arena_realism, art_direction, beginner_guide, caravan_collection, caravan_field, character_v213, character_v214, character_v215, character_v216, character_v217, character_v218, circus_war_v182, combat_upgrades_layout, combat_values, equipment_v168, first_quests, ludus_hud_v202, naval_regression, pit_v174, rankings_v200, render_performance_v187, rome_loading_v181, stable]
+    needs: [plan, build_pages, arena_realism, art_direction, beginner_guide, caravan_collection, caravan_field, character_v213, character_v214, character_v215, character_v216, character_v217, character_v218, circus_war_v182, combat_upgrades_layout, combat_values, equipment_v168, first_quests, ludus_hud_v202, naval_regression, pit_v174, rankings_v200, render_performance_v187, rome_loading_v181, stable]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -141,3 +177,33 @@ jobs:
           MERGE_NEEDS: ${{ toJSON(needs) }}
           MERGE_SELECTED: ${{ needs.plan.outputs.selected }}
         run: node .github/ci/merge-gate.cjs gate
+  deploy_pages:
+    name: Deploy tested main to Pages
+    needs: [gate, build_pages]
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.gate.result == 'success' && needs.build_pages.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Reject stale or unauthorized deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_GATE_RESULT: ${{ needs.gate.result }}
+          PAGES_BUILD_RESULT: ${{ needs.build_pages.result }}
+        run: node .github/ci/merge-gate.cjs authorize-deploy
+      - name: Deploy the artifact produced by this tested revision
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

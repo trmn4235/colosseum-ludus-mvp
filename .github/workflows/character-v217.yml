@@ -1,7 +1,7 @@
 name: Clothing geometry V217
 on:
   push:
-    branches: [main, codex/character-clothing-v217]
+    branches: [codex/character-clothing-v217]
     paths: ['gladiator-mobile-v217.glb', 'assets/naval/gladiator-lod-v217.*', 'arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-rig-v126.js', 'circus-war-view-v186.js', 'naval-performance-v106.js', 'tests/character-*-v217.*', 'tests/arena-browser-v96.cjs', 'tools/*-v217.cjs', '.github/workflows/character-v217.yml']
   workflow_call:
 permissions:

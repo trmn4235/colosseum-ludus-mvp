@@ -1,8 +1,5 @@
 name: Circus war chariots
 on:
-  push:
-    branches: [main]
-    paths: ['circus-*', 'tests/circus-war-*', 'tests/circus-combat-*', 'tests/circus-driving-v183.cjs', 'tests/circus-dialogue-v152.cjs', 'tests/circus-driving-v158.cjs', '.github/workflows/circus-war-v182.yml']
   workflow_call:
   workflow_dispatch:
 permissions:
