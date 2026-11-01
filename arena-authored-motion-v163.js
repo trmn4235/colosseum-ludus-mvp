@@ -35,7 +35,7 @@ var ArenaAuthoredMotion=(()=>{
   if(m.headHeight163===undefined){m.root.updateMatrixWorld(true);m.headHeight163=m.root.worldToLocal(m.bones.Head.getWorldPosition(math().v[0])).y;}
   const choice=choose(f,time),key=choice?f.action+':'+choice[0]:null;
   if(m.authored163?.key!==key||f.timer+.001<(m.authored163?.timer||0)&&f.action!=='idle'){
-   m.authored163={key,exit:!!f.pitWeapon&&!choice&&!!m.authored163?.key,age:0,timer:f.timer,...(f.pitWeapon?{body:m.body.position.clone(),anchors:[m.weaponAnchor,m.offhandAnchor].map(a=>({position:a.position.clone(),quaternion:a.quaternion.clone()}))}:{}),entry:Object.fromEntries(m.boneEntries.map(([n,b])=>[n,b.quaternion.clone()]))};
+   m.authored163={key,exit:!!f.pitWeapon&&!choice&&!!m.authored163?.key,age:0,timer:f.timer,body:m.body.position.clone(),...(f.pitWeapon?{anchors:[m.weaponAnchor,m.offhandAnchor].map(a=>({position:a.position.clone(),quaternion:a.quaternion.clone()}))}:{}),entry:Object.fromEntries(m.boneEntries.map(([n,b])=>[n,b.quaternion.clone()]))};
   }
   if(m.authored163){m.authored163.age+=Math.max(0,dt);m.authored163.timer=f.timer;}
  }
@@ -51,8 +51,10 @@ var ArenaAuthoredMotion=(()=>{
    m.body.position.y=f.evadeKind==='duck'||f.evadeKind==='jump'?ArenaAuthoredCombat.evadeOffset(f):hips.y*scale*weight;
    m.body.position.z=0;m.body.rotation.set(0,0,0);
   }else if(['attack','recoil','stagger','netcast','spearcast','bash','hook'].includes(f.action)){
+   // Preserve contact-height calibration; blend from the preceding moving pose.
    const height=f.pitWeapon?Math.max(-.10,Math.min(.10,(hips.y-c.hips[0][1])*scale*.35)):hips.y*scale;
-   m.body.position.y=height*weight*entry;m.body.position.z=Math.max(-.16,Math.min(.18,hips.z*scale))*weight*entry;m.body.rotation.set(0,0,0);
+   const previous=m.authored163?.body;
+   m.body.position.y=(previous?.y||0)*(1-entry)+height*weight*entry;m.body.position.z=(previous?.z||0)*(1-entry)+Math.max(-.16,Math.min(.18,hips.z*scale))*weight*entry;m.body.rotation.set(0,0,0);
   }
   m.root.updateMatrixWorld(true);const rootQ=m.root.getWorldQuaternion(q[0]);
   for(const [source,frames] of Object.entries(c.rotations)){

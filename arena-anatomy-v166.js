@@ -147,5 +147,17 @@ var ArenaAnatomy=(()=>{
   for(const state of Object.values(m.grip166||{}))state.active=false;
   for(const side of ['Left','Right']){const arm=m.bones[side+'Arm'];if(arm?.userData.anatomyRestPosition)arm.position.copy(arm.userData.anatomyRestPosition);}
  }
- return {prepare,grip,carry,begin};
+ function closeGrip(f,m){
+  if(!m.bones.RightHand.userData.anatomy166)return;
+  // The existing shared finger chain must accommodate the handle thickness.
+  // Independent finger/thumb skinning is deliberately a separate model step.
+  const q=mathGrip.q||(mathGrip.q=new THREE.Quaternion()),axis=mathGrip.axis||(mathGrip.axis=new THREE.Vector3(1,0,0));
+  for(const side of ['Left','Right']){
+   const kind=side==='Right'?f.weapon:f.offhand||(f.shield?'shield':f.leftGear);if(!kind)continue;
+   const pole=['spear','trident','trident_gladiator','halberd'].includes(kind),angles=pole?gripAngles.pole:kind==='shield'?gripAngles.shield:gripAngles.blade;
+   for(let i=1;i<=3;i++){const bone=m.bones[side+'HandIndex'+i],rest=m.rest.get(side+'HandIndex'+i);if(bone&&rest)bone.quaternion.copy(rest.q).multiply(q.setFromAxisAngle(axis,angles[i-1]));}
+  }
+ }
+ const mathGrip={},gripAngles={pole:[.70,.82,.72],shield:[.76,.86,.76],blade:[.84,.98,.84]};
+ return {prepare,grip,carry,begin,closeGrip};
 })();
