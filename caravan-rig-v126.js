@@ -444,7 +444,8 @@ var ClassEquipment=(function(){
  function sync(m,f){
   // Plain battle clothing fills empty NPC armour slots visually; it creates no loot or stats.
   const visualWeapon=f.pitBow?null:f.pitWeapon||f.weapon,uniform=f.navalUniform,helmetVisible=f.helmet!==false||!!uniform?.helmet,chestVisible=!!f.chest||!!uniform?.chest,greavesVisible=f.greaves!==false||!!uniform?.greaves,shouldersVisible=f.shoulders!==false||!!uniform?.shoulders;
-  const revisionV84=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0),flagsV84=(f.shield?1:0)|(helmetVisible?2:0)|(chestVisible?4:0)|(greavesVisible?8:0)|(shouldersVisible?16:0)|(f.netBusy?32:0)|(f.hp>0?64:0)|(uniform&&!f.helmet?128:0)|(uniform&&!f.chest?256:0)|(uniform&&!f.shoulders?512:0)|(uniform&&!f.greaves?1024:0),s=m.gearStateV84;
+  const netReleased=!!f.netBusy&&(f.action!=='netcast'||f.timer>=.3);
+  const revisionV84=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(globalThis.LudusEquipmentCatalog?.revision||0),flagsV84=(f.shield?1:0)|(helmetVisible?2:0)|(chestVisible?4:0)|(greavesVisible?8:0)|(shouldersVisible?16:0)|(netReleased?32:0)|(f.hp>0?64:0)|(uniform&&!f.helmet?128:0)|(uniform&&!f.chest?256:0)|(uniform&&!f.shoulders?512:0)|(uniform&&!f.greaves?1024:0),s=m.gearStateV84;
   if(s&&m.equippedWeapon===visualWeapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===visualWeapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
   m.gearStateV84={revision:revisionV84,weapon:visualWeapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
 
@@ -452,7 +453,7 @@ var ClassEquipment=(function(){
   setWeapon(m,visualWeapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
-  m.gear.left.group.visible=!!f.leftGear&&!(f.leftGear==='net'&&f.netBusy);
+  m.gear.left.group.visible=!!f.leftGear&&!(f.leftGear==='net'&&netReleased);
   if(m.shieldStyle!==f.shieldStyle){m.shieldStyle=f.shieldStyle;replacePart(m.gear.shield,shield(f.shieldStyle||'secutor'));}
   const helmetStyle=LudusHelmets.model(f.helmetModel||f.helmetColor||f.helmetStyle,m.type),helmetUniform=!!uniform?.helmet&&!f.helmet;if(m.helmetStyle!==helmetStyle||m.helmetUniform!==helmetUniform){m.helmetStyle=helmetStyle;m.helmetUniform=helmetUniform;const part=LudusHelmets.get(helmetStyle);replacePart(m.gear.helmet,helmetUniform?navalUniformPart(part):part);LudusHelmets.fit(m.gear.helmet,m);}
   const chestModel=LudusArmour.model('chest',f.chestModel),chestUniform=!!uniform?.chest&&!f.chest;if(m.chestModel!==chestModel||m.chestUniform!==chestUniform){m.chestModel=chestModel;m.chestUniform=chestUniform;const part=LudusArmour.get('chest',chestModel);replacePart(m.gear.chest,chestUniform?navalUniformPart(part):part);m.gear.chest.group.position.set(-.025,-.09,chestModel==='chest_plate'?.17:.04);}
@@ -486,7 +487,7 @@ Runtime adaptation: scale, heading and procedural combat poses. */
 var ImportedGladiator=(function(){
  const T=THREE;let template=null;
  const E=new T.Euler(),Q=new T.Quaternion(),P=new T.Quaternion();
- const zeroPose=[0,0,0],ik={bone:Array.from({length:3},()=>new T.Vector3()),boneQ:Array.from({length:3},()=>new T.Quaternion()),reach:Array.from({length:9},()=>new T.Vector3()),reachQ:new T.Quaternion(),feet:Array.from({length:8},()=>new T.Vector3()),feetQ:Array.from({length:3},()=>new T.Quaternion()),strikeQ:Array.from({length:3},()=>new T.Quaternion()),strikeV:Array.from({length:2},()=>new T.Vector3()),identity:new T.Quaternion(),fingerAxis:new T.Vector3(0,0,1)};
+ const zeroPose=[0,0,0],ik={bone:Array.from({length:3},()=>new T.Vector3()),boneQ:Array.from({length:3},()=>new T.Quaternion()),reach:Array.from({length:9},()=>new T.Vector3()),reachQ:new T.Quaternion(),feet:Array.from({length:8},()=>new T.Vector3()),feetQ:Array.from({length:3},()=>new T.Quaternion()),strikeQ:Array.from({length:3},()=>new T.Quaternion()),strikeV:Array.from({length:2},()=>new T.Vector3()),identity:new T.Quaternion(),shieldV:Array.from({length:3},()=>new T.Vector3()),shieldQ:new T.Quaternion(),fingerAxis:new T.Vector3(0,0,1)};
  async function load(status){
   const abort=new AbortController(),timeout=setTimeout(()=>abort.abort(),120000);
   try{
@@ -616,12 +617,15 @@ var ImportedGladiator=(function(){
    }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=-(strike.choke||0);}
    const previous=ArenaMotion.sample(f,Math.max(0,f.timer-.035)),attr=m.trail.geometry.attributes.position;[previous.grip,previous.tip,strike.grip,strike.tip].forEach((v,i)=>attr.setXYZ(i,v.x,v.y,v.z));attr.needsUpdate=true;
   }
-  // Guard follows the hand but keeps the shield face between fighter and opponent.
+  // Guard keeps the collision plane fixed; the palm follows its rotated handle.
+  const shieldCollisionGuard=f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time,shieldGuarding=shieldCollisionGuard||f.action==='bash'||f.action==='attack'&&!f.attackLeft;
   if(f.shield&&m.gear.shield){
-   const guarding=f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time||f.action==='bash'||f.action==='attack'&&!f.attackLeft;
-   if(guarding){const push=f.action==='bash'?Math.sin(Math.PI*Math.min(1,f.timer/Math.max(.01,f.duration)))*.14:0;
-    const gp=typeof ArenaMotion!=='undefined'?ArenaMotion.guardPoint(f):{x:.26,y:1.42,z:.29},response=ArenaMotion.shieldResponse(f);const desired=m.root.localToWorld(ik.strikeV[0].set(gp.x,gp.y,gp.z+push));if(m.bones.RightHand.userData.anatomy166)ArenaAnatomy.grip(m,true,{grip:{x:gp.x,y:gp.y+.12,z:gp.z+push+.025},dir:{x:0,y:1,z:0}},reach,0);else reach(m,true,{x:gp.x,y:gp.y,z:gp.z+push});
-    const anchor=m.gear.shield.anchor;anchor.quaternion.copy(anchor.parent.getWorldQuaternion(Q).invert().multiply(m.root.getWorldQuaternion(P))).multiply(ik.strikeQ[0].setFromEuler(E.set(response.pitch,response.yaw,response.roll)));anchor.position.copy(anchor.parent.worldToLocal(desired));
+   if(shieldGuarding){const push=f.action==='bash'?Math.sin(Math.PI*Math.min(1,f.timer/Math.max(.01,f.duration)))*.14:0;
+    const gp=typeof ArenaMotion!=='undefined'?ArenaMotion.guardPoint(f):{x:.26,y:1.42,z:.29},response=ArenaMotion.shieldResponse(f),slot=m.gear.shield,rotation=ik.shieldQ.setFromEuler(E.set(response.pitch,response.yaw,response.roll));
+    const desired=m.root.localToWorld(ik.strikeV[0].set(gp.x,gp.y,gp.z+push));
+    slot.group.updateMatrix();const target=ik.shieldV[0].set(0,0,-.075).applyMatrix4(slot.group.matrix).applyQuaternion(rotation),dir=ik.shieldV[1].set(0,1,0).applyQuaternion(slot.group.quaternion).applyQuaternion(rotation);target.x+=gp.x;target.y+=gp.y;target.z+=gp.z+push;
+    if(m.bones.RightHand.userData.anatomy166)ArenaAnatomy.grip(m,true,{grip:{x:target.x,y:target.y,z:target.z},dir:{x:dir.x,y:dir.y,z:dir.z}},reach,0);else reach(m,true,{x:gp.x,y:gp.y,z:gp.z+push});
+    const anchor=slot.anchor;anchor.quaternion.copy(anchor.parent.getWorldQuaternion(Q).invert().multiply(m.root.getWorldQuaternion(P))).multiply(rotation);anchor.position.copy(anchor.parent.worldToLocal(desired));
    }else{m.gear.shield.anchor.position.set(0,0,0);const rest=m.rest.get('LeftHand');m.gear.shield.anchor.quaternion.copy(rest.p).multiply(rest.q).invert();}
   }
   if(f.blocking&&!f.shield&&f.guardRegion){const gp=ArenaMotion.guardPoint(f);reach(m,!f.weapon,{x:gp.x,y:gp.y,z:gp.z});}
@@ -638,6 +642,12 @@ var ImportedGladiator=(function(){
   for(const anchor of [m.weaponAnchor,m.offhandAnchor,m.gear.shield?.group])if(anchor){if(gripping){if(!anchor.userData.ropeStowed){anchor.userData.ropeStowed=true;anchor.userData.ropeWasVisible=anchor.visible;}anchor.visible=false;}else if(anchor.userData.ropeStowed){anchor.visible=anchor.userData.ropeWasVisible;delete anchor.userData.ropeStowed;delete anchor.userData.ropeWasVisible;}}
   if(gripping){reach(m,true,{x:-.07,y:2.24,z:.13});reach(m,false,{x:.07,y:2.24,z:.13});}
   if(typeof ArenaMotionStability!=='undefined')ArenaMotionStability.wrists(f,m);
+  if(f.shield&&m.gear.shield&&!shieldCollisionGuard&&f.hp>0&&!fallen&&!(f.navJump?.kind==='rope'&&!f.navJump.released)&&m.bones.RightHand.userData.anatomy166){
+   // Outside an active block, the shield follows the reached palm, never stretching the arm.
+   const hand=m.bones.LeftHand,slot=m.gear.shield,palm=hand.localToWorld(ik.shieldV[0].set(0,.075,.025).divideScalar(hand.getWorldScale(ik.shieldV[2]).x)),handle=slot.group.localToWorld(ik.shieldV[1].set(0,0,-.075));
+   slot.anchor.getWorldPosition(ik.shieldV[2]).add(palm).sub(handle);slot.anchor.position.copy(hand.worldToLocal(ik.shieldV[2]));
+   if(m.grip166?.Left?.active)m.grip166.Left.target.copy(palm);
+  }
   const flashed=f.flash>0;if(m.emissiveFlashed!==flashed){m.emissiveFlashed=flashed;for(const material of m.materials)material.emissive?.setHex(flashed?0x29100a:0);}m.root.updateMatrixWorld(true);GroundFall.finish(m,fallen);
   if(f.navHeight){m.root.position.y+=f.navHeight;m.root.updateMatrixWorld(true);}m.shadow.visible=!f.navJump?.airborne;
   }finally{ArenaRuntime.endPose();}

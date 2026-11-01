@@ -148,7 +148,7 @@ body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#eb
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
 </style><style>.upgrade-level{display:block;position:static!important;flex:none;color:#f4d68f;font:700 13px/16px Arial,sans-serif;min-height:16px;white-space:nowrap}.slot,.item{gap:2px!important}.slot .icon,.item .icon{flex-shrink:1;min-height:0}.slot small,.item>span:last-child{line-height:1.1;overflow:hidden}.slot .icon{height:clamp(22px,6.5vh,48px)!important}.item .icon{height:clamp(22px,7vh,54px)!important}</style><script src="arena-fall-motion-v39.js?v=revision39"></script><script src="arena-ground-fall-v39.js?v=revision115"></script><script src="arena-roll-motion-v72.js?v=revision72"></script><script src="arena-roll-v72.js?v=revision84"></script><link rel="stylesheet" href="gladiator-exercise-v46.css?v=46"><script src="gladiator-exercise-v46.js?v=revision199"></script><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision68"><link rel="stylesheet" href="arena-art-v69.css?v=revision69"><link rel="stylesheet" href="arena-entrance-v70.css?v=revision70"><link rel="stylesheet" href="arena-title-v71.css?v=revision71"><link rel="preload" as="image" href="assets/arena-entrance-v70.webp"><link rel="preload" as="image" href="assets/arena-modes-v69.webp"><link rel="preload" as="image" href="assets/multiplayer-poster-v69.webp"><script src="arena-locomotion-data-v91.js?v=revision91"></script><script src="arena-locomotion-v91.js?v=revision213"></script><link rel="stylesheet" href="arena-tabs-v82.css?v=revision89"><link rel="stylesheet" href="survival-v83.css?v=revision83">
 <link rel="stylesheet" href="arena-cards-v93.css?v=revision93"><script src="survival-v83.js?v=revision83"></script><script src="ludus-client-v84.js?v=revision84"></script><link rel="stylesheet" href="naval-v97.css?v=revision106"><script src="naval-route-v97.js?v=revision106"></script><script src="item-visuals-v199.js?v=revision199"></script><script src="ludus-production-v119.js?v=revision199"></script><script src="equipment-groups-v168.js?v=revision199"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
-<script src="ludus-manica-v119.js?v=revision197"></script><script src="arena-anatomy-v166.js?v=revision214"></script>
+<script src="ludus-manica-v119.js?v=revision197"></script><script src="arena-anatomy-v166.js?v=revision215"></script>
 <script src="arena-equipment-fit-v164.js?v=revision196"></script><script src="arena-motion-stability-v165.js?v=revision166"></script><link rel="stylesheet" href="game-panels-v123.css?v=revision123"><link rel="stylesheet" href="participant-career-v162.css?v=revision162"><script src="participant-career-v162.js?v=revision162"></script><script src="combat-curves-v163.js?v=revision163"></script><script src="combat-motion-v163.js?v=revision198"></script><script src="arena-authored-data-v163.js?v=revision163"></script><script src="arena-authored-motion-v163.js?v=revision214"></script><script src="equipment-catalog-v167.js?v=revision198"></script></head><body data-art-direction="136" data-roman-screen="savas"><header class="top"><button id="back">‹ Geri dön</button><nav class="arena-tabs" role="tablist" aria-label="Arena türü"><button type="button" role="tab" id="tab-single" data-arena-tab="single" aria-controls="panel-single"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 23V11c0-7 12-7 12 0v12M8 12h16M12 15v7m8-7v7M13 5V2h6v3M10 23h12"/></svg><span>Singleplayer</span></button><button type="button" role="tab" id="tab-multi" data-arena-tab="multi" aria-controls="panel-multi"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 6l10-3 10 3v10c0 7-10 11-10 11S6 23 6 16Z"/><path d="M11 11l10 10m0-10L11 21"/></svg><span>Multiplayer</span></button><button type="button" role="tab" id="tab-clan" data-arena-tab="clan" aria-controls="panel-clan"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 19h24l-5 7H9Zm12-16v16M17 4l9 12h-9M13 7l-7 9h7M2 28q4-3 8 0t8 0t8 0"/></svg><span>KlanWar</span></button></nav></header><main class="page"><section id="activeBattle" class="status" hidden><span>Devam eden savaşın var. Ekipmanların bu savaşta kilitli.</span> <button id="resumeBattle" class="action">Devam et</button> <button id="abandonBattle" class="retry">Çekil · ekipmanı kaybet</button></section><div id="status" class="status" role="status"></div><section id="modePage"><div class="heading"><h1>Savaşını seç</h1><p>Arenada tek hedef: ayakta kalmak.</p></div><div class="modes arena-panel arena-card-grid" data-arena-panel="single" id="panel-single" role="tabpanel" aria-labelledby="tab-single">
 <button class="mode arena-choice " data-mode="4x5" aria-label="Takımlı Arena: dört takım, her takımda beş gladyatör">
 <span class="arena-choice-art art-teams"></span>
@@ -1135,7 +1135,8 @@ var ClassEquipment=(function(){
  function replacePart(slot,template){const old=slot.group,group=template.clone(true);group.position.copy(old.position);group.rotation.copy(old.rotation);slot.anchor.remove(old);slot.anchor.add(group);slot.group=group;}
  function teamHelmet(style,team=0){return LudusHelmets.get(style);}
  function sync(m,f){
-  const revisionV84=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(typeof LudusEquipmentCatalog!=='undefined'?LudusEquipmentCatalog.revision:0),flagsV84=(f.shield?1:0)|(f.helmet!==false?2:0)|(f.chest?4:0)|(f.greaves!==false?8:0)|(f.shoulders!==false?16:0)|(f.netBusy?32:0)|(f.hp>0?64:0),s=m.gearStateV84;
+  const netReleased=!!f.netBusy&&(f.action!=='netcast'||f.timer>=.3);
+  const revisionV84=(typeof ImportedEquipment!=='undefined'?ImportedEquipment.loaded:0)+(typeof LudusEquipmentCatalog!=='undefined'?LudusEquipmentCatalog.revision:0),flagsV84=(f.shield?1:0)|(f.helmet!==false?2:0)|(f.chest?4:0)|(f.greaves!==false?8:0)|(f.shoulders!==false?16:0)|(netReleased?32:0)|(f.hp>0?64:0),s=m.gearStateV84;
   if(s&&m.equippedWeapon===f.weapon&&m.assetRevision===revisionV84&&s.revision===revisionV84&&s.weapon===f.weapon&&s.offhand===f.offhand&&s.leftGear===f.leftGear&&s.shieldStyle===f.shieldStyle&&s.helmetModel===f.helmetModel&&s.helmetColor===f.helmetColor&&s.helmetStyle===f.helmetStyle&&s.chestModel===f.chestModel&&s.shoulderModel===f.shoulderModel&&s.team===f.team&&s.flags===flagsV84)return;
   m.gearStateV84={revision:revisionV84,weapon:f.weapon,offhand:f.offhand,leftGear:f.leftGear,shieldStyle:f.shieldStyle,helmetModel:f.helmetModel,helmetColor:f.helmetColor,helmetStyle:f.helmetStyle,chestModel:f.chestModel,shoulderModel:f.shoulderModel,team:f.team,flags:flagsV84};m.gearRevisionV84=(m.gearRevisionV84||0)+1;
 
@@ -1143,7 +1144,7 @@ var ClassEquipment=(function(){
   setWeapon(m,f.weapon);
   if(m.offhandKind!==f.offhand){m.offhandKind=f.offhand;replaceWeapon(m.offhandAnchor,f.offhand);}
   if(m.leftKind!==f.leftGear){m.leftKind=f.leftGear;replacePart(m.gear.left,f.leftGear?parts(f.leftGear==='net'?'retiarius':'scissor').left:new T.Group());}
-  m.gear.left.group.visible=!!f.leftGear&&!(f.leftGear==='net'&&f.netBusy);
+  m.gear.left.group.visible=!!f.leftGear&&!(f.leftGear==='net'&&netReleased);
   if(m.shieldStyle!==f.shieldStyle){m.shieldStyle=f.shieldStyle;replacePart(m.gear.shield,shield(f.shieldStyle||'secutor'));}
   const helmetStyle=LudusHelmets.model(f.helmetModel||f.helmetColor||f.helmetStyle,m.type);if(m.helmetStyle!==helmetStyle){m.helmetStyle=helmetStyle;replacePart(m.gear.helmet,LudusHelmets.get(helmetStyle));LudusHelmets.fit(m.gear.helmet,m);}
   const chestModel=LudusArmour.model('chest',f.chestModel);if(m.chestModel!==chestModel){m.chestModel=chestModel;replacePart(m.gear.chest,LudusArmour.get('chest',chestModel));m.gear.chest.group.position.set(-.025,-.09,chestModel==='chest_plate'?.17:.04);}
@@ -1176,7 +1177,7 @@ Runtime adaptation: scale, heading and procedural combat poses. */
 var ImportedGladiator=(function(){
  const T=THREE;let template=null;
  const E=new T.Euler(),Q=new T.Quaternion(),P=new T.Quaternion();
- const zeroPose=[0,0,0],ik={bone:Array.from({length:3},()=>new T.Vector3()),boneQ:Array.from({length:3},()=>new T.Quaternion()),reach:Array.from({length:9},()=>new T.Vector3()),reachQ:new T.Quaternion(),feet:Array.from({length:8},()=>new T.Vector3()),feetQ:Array.from({length:3},()=>new T.Quaternion()),strikeQ:Array.from({length:3},()=>new T.Quaternion()),strikeV:Array.from({length:2},()=>new T.Vector3()),identity:new T.Quaternion(),fingerAxis:new T.Vector3(0,0,1)};
+ const zeroPose=[0,0,0],ik={bone:Array.from({length:3},()=>new T.Vector3()),boneQ:Array.from({length:3},()=>new T.Quaternion()),reach:Array.from({length:9},()=>new T.Vector3()),reachQ:new T.Quaternion(),feet:Array.from({length:8},()=>new T.Vector3()),feetQ:Array.from({length:3},()=>new T.Quaternion()),strikeQ:Array.from({length:3},()=>new T.Quaternion()),strikeV:Array.from({length:2},()=>new T.Vector3()),identity:new T.Quaternion(),shieldV:Array.from({length:3},()=>new T.Vector3()),shieldQ:new T.Quaternion(),fingerAxis:new T.Vector3(0,0,1)};
  async function load(status){
   const abort=new AbortController(),timeout=setTimeout(()=>abort.abort(),120000);
   try{
@@ -1305,12 +1306,15 @@ var ImportedGladiator=(function(){
    }else anchor.quaternion.copy(anchor.parent.getWorldQuaternion(ik.strikeQ[0]).invert().multiply(m.root.getWorldQuaternion(ik.strikeQ[1])).multiply(ik.strikeQ[2].setFromUnitVectors(ik.strikeV[0].set(0,1,0),ik.strikeV[1].set(strike.dir.x,strike.dir.y,strike.dir.z))));for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=-(strike.choke||0);}
    const previous=ArenaMotion.sample(f,Math.max(0,f.timer-.035)),attr=m.trail.geometry.attributes.position;[previous.grip,previous.tip,strike.grip,strike.tip].forEach((v,i)=>attr.setXYZ(i,v.x,v.y,v.z));attr.needsUpdate=true;
   }
-  // Guard follows the hand but keeps the shield face between fighter and opponent.
+  // Guard keeps the collision plane fixed; the palm follows its rotated handle.
+  const shieldCollisionGuard=f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time,shieldGuarding=shieldCollisionGuard||f.action==='bash'||f.action==='attack'&&!f.attackLeft;
   if(f.shield&&m.gear.shield){
-   const guarding=f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time||f.action==='bash'||f.action==='attack'&&!f.attackLeft;
-   if(guarding){const push=f.action==='bash'?Math.sin(Math.PI*Math.min(1,f.timer/Math.max(.01,f.duration)))*.14:0;
-    const gp=ArenaMotion.guardPoint(f),response=ArenaMotion.shieldResponse(f),desired=m.root.localToWorld(ik.strikeV[0].set(gp.x,gp.y,gp.z+push));if(m.bones.RightHand.userData.anatomy166)ArenaAnatomy.grip(m,true,{grip:{x:gp.x,y:gp.y+.12,z:gp.z+push+.025},dir:{x:0,y:1,z:0}},reach,0);else reach(m,true,{x:gp.x,y:gp.y,z:gp.z+push});
-    const anchor=m.gear.shield.anchor;anchor.quaternion.copy(anchor.parent.getWorldQuaternion(Q).invert().multiply(m.root.getWorldQuaternion(P))).multiply(ik.strikeQ[0].setFromEuler(E.set(response.pitch,response.yaw,response.roll)));anchor.position.copy(anchor.parent.worldToLocal(desired));
+   if(shieldGuarding){const push=f.action==='bash'?Math.sin(Math.PI*Math.min(1,f.timer/Math.max(.01,f.duration)))*.14:0;
+    const gp=typeof ArenaMotion!=='undefined'?ArenaMotion.guardPoint(f):{x:.26,y:1.42,z:.29},response=ArenaMotion.shieldResponse(f),slot=m.gear.shield,rotation=ik.shieldQ.setFromEuler(E.set(response.pitch,response.yaw,response.roll));
+    const desired=m.root.localToWorld(ik.strikeV[0].set(gp.x,gp.y,gp.z+push));
+    slot.group.updateMatrix();const target=ik.shieldV[0].set(0,0,-.075).applyMatrix4(slot.group.matrix).applyQuaternion(rotation),dir=ik.shieldV[1].set(0,1,0).applyQuaternion(slot.group.quaternion).applyQuaternion(rotation);target.x+=gp.x;target.y+=gp.y;target.z+=gp.z+push;
+    if(m.bones.RightHand.userData.anatomy166)ArenaAnatomy.grip(m,true,{grip:{x:target.x,y:target.y,z:target.z},dir:{x:dir.x,y:dir.y,z:dir.z}},reach,0);else reach(m,true,{x:gp.x,y:gp.y,z:gp.z+push});
+    const anchor=slot.anchor;anchor.quaternion.copy(anchor.parent.getWorldQuaternion(Q).invert().multiply(m.root.getWorldQuaternion(P))).multiply(rotation);anchor.position.copy(anchor.parent.worldToLocal(desired));
    }else{m.gear.shield.anchor.position.set(0,0,0);const rest=m.rest.get('LeftHand');m.gear.shield.anchor.quaternion.copy(rest.p).multiply(rest.q).invert();}
   }
   ArenaAnatomy.carry(f,m,reach,strike);
@@ -1322,6 +1326,12 @@ var ImportedGladiator=(function(){
   ArenaAnatomy.closeGrip(f,m);
   ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);ArenaRoll.apply(f,m);if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.finish(f,m);
   if(typeof ArenaMotionStability!=='undefined')ArenaMotionStability.wrists(f,m);
+  if(f.shield&&m.gear.shield&&!shieldCollisionGuard&&f.hp>0&&!fallen&&!(f.navJump?.kind==='rope'&&!f.navJump.released)&&m.bones.RightHand.userData.anatomy166){
+   // Outside an active block, the shield follows the reached palm, never stretching the arm.
+   const hand=m.bones.LeftHand,slot=m.gear.shield,palm=hand.localToWorld(ik.shieldV[0].set(0,.075,.025).divideScalar(hand.getWorldScale(ik.shieldV[2]).x)),handle=slot.group.localToWorld(ik.shieldV[1].set(0,0,-.075));
+   slot.anchor.getWorldPosition(ik.shieldV[2]).add(palm).sub(handle);slot.anchor.position.copy(hand.worldToLocal(ik.shieldV[2]));
+   if(m.grip166?.Left?.active)m.grip166.Left.target.copy(palm);
+  }
   const flashed=f.flash>0;if(m.emissiveFlashed!==flashed){m.emissiveFlashed=flashed;for(const material of m.materials)material.emissive?.setHex(flashed?0x29100a:0);}m.root.updateMatrixWorld(true);GroundFall.finish(m,fallen);
   }finally{ArenaRuntime.endPose();}
  }
