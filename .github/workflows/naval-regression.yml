@@ -1,16 +1,6 @@
 name: Naval regression
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'arena*'
-      - 'naval-*'
-      - 'assets/naval/*'
-      - 'savas.html'
-      - 'tests/naval-*'
-      - 'tests/polearm-*'
-      - 'tests/combat-visual-*'
-      - '.github/workflows/naval-regression.yml'
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read

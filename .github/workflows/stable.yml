@@ -3,8 +3,7 @@ on:
   push:
     branches: [main, codex/stable-realism-v161]
     paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'assets/stable-v160/**', 'assets/stable-v161/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
-  pull_request:
-    paths: ['ludus-stable-*', 'ludus.html', 'ludus-door-icons-v41.js', 'assets/stable-v129/**', 'assets/stable-v130/**', 'assets/stable-v131/**', 'assets/stable-v160/**', 'assets/stable-v161/**', 'tests/stable-*.cjs', 'supabase/migrations/*stable*', '.github/workflows/stable.yml']
+  workflow_call:
 permissions:
   contents: read
 jobs:

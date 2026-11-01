@@ -2,9 +2,7 @@ name: Beginner guide regression
 on:
   push:
     branches: [codex/beginner-guide-v109]
-  pull_request:
-    branches: [main]
-    paths: ['ludus-onboarding-*', 'tests/onboarding-*', 'ludus.html', 'gladiator-exercise-v46.js', 'imperial-missions-v31.js']
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read
