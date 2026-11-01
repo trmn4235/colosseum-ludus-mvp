@@ -493,9 +493,9 @@ var ImportedGladiator=(function(){
    status('Gladyatör yükleniyor…');const helmetReady=Promise.all([LudusHelmets.load(),LudusArmour.load()]);
    const equipmentReady=typeof ImportedEquipment!=='undefined'?ImportedEquipment.load(text=>{const el=document.getElementById?.('equipmentLoad');if(el)el.textContent=text;}):Promise.resolve();equipmentReady.catch(()=>{});
    let data;
-   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile.glb',status,'Gladyatör');
+   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile-v213.glb',status,'Gladyatör');
    else{
-   const r=await fetch(new URL('gladiator-mobile.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
+   const r=await fetch(new URL('gladiator-mobile-v213.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
    if(!r.ok)throw new Error('Gladyatör dosyası yüklenemedi (HTTP '+r.status+'). R2 dosyasını ve erişim ayarlarını kontrol et.');
    data=await r.arrayBuffer();
    }
@@ -632,6 +632,7 @@ var ImportedGladiator=(function(){
    const bone=m.bones[side+'HandIndex'+index],rest=m.rest.get(side+'HandIndex'+index);if(!bone||!rest)continue;
    Q.setFromAxisAngle(m.bones.RightHand.userData.anatomy166?ik.strikeV[0].set(1,0,0):ik.fingerAxis,m.bones.RightHand.userData.anatomy166?(index===1?.8:.9):(side==='Left'?1:-1)*.48);bone.quaternion.copy(rest.q).multiply(Q);
   }
+  ArenaAnatomy.closeGrip(f,m);
   ClassEquipment.animateFlex(m,f);GroundFall.equipment(m,fallen);ArenaRoll.apply(f,m);if(typeof ArenaAuthoredMotion!=='undefined')ArenaAuthoredMotion.finish(f,m);
   const gripping=f.navJump?.kind==='rope'&&!f.navJump.released&&f.hp>0&&!fallen;
   for(const anchor of [m.weaponAnchor,m.offhandAnchor,m.gear.shield?.group])if(anchor){if(gripping){if(!anchor.userData.ropeStowed){anchor.userData.ropeStowed=true;anchor.userData.ropeWasVisible=anchor.visible;}anchor.visible=false;}else if(anchor.userData.ropeStowed){anchor.visible=anchor.userData.ropeWasVisible;delete anchor.userData.ropeStowed;delete anchor.userData.ropeWasVisible;}}

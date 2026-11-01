@@ -20,5 +20,13 @@ test('every rig uses the budgeted files without falling back to a heavier helmet
  for(const file of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js']){const s=fs.readFileSync(file,'utf8'),data=JSON.parse(s.match(/var LUDUS_HELMET_DATA=(\{[^;]+\});/)[1]);for(const row of report.helmets.filter(h=>!h.id.endsWith('_helmet')))assert.equal(data[row.id],row.file,file+' '+row.id);}
  for(const row of report.helmets.filter(h=>h.id.endsWith('_helmet'))){const file=require('node:path').normalize('assets/equipment-v167/'+c.LudusEquipmentCatalog.entry(row.id).file);assert.equal(file,row.file);}
  for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','san-avlusu.html','equipment-preview-v167.html'])assert.match(fs.readFileSync(page,'utf8'),/equipment-catalog-v167\.js\?v=revision198/);
- assert.match(fs.readFileSync('caravan-battle-v126.js','utf8'),/revision199/);assert.match(fs.readFileSync('pit-visit-v172.js','utf8'),/s.src=file\+'\?v='\+\('revision199'\)/);
+ const loaders=[
+  ['caravan-battle-v126.js',/await script\(([^;]+)\);CaravanLoading/],
+  ['pit-visit-v172.js',/s\.src=([^;]+);/]
+ ];
+ for(const [loader,pattern]of loaders){
+  const expression=fs.readFileSync(loader,'utf8').match(pattern)?.[1];assert.ok(expression,loader+' script URL expression');
+  for(const file of ['equipment-catalog-v167.js','ludus-manica-v119.js'])assert.equal(vm.runInNewContext(expression,{file}),file+'?v=revision199',loader+' retains budgeted equipment URLs');
+  for(const file of ['arena-locomotion-v91.js','arena-authored-motion-v163.js','arena-anatomy-v166.js','caravan-rig-v126.js'])assert.equal(vm.runInNewContext(expression,{file}),file+'?v=revision213',loader+' invalidates updated character URLs');
+ }
 });
