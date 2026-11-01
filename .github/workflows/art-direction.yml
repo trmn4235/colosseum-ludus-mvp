@@ -1,8 +1,6 @@
 name: Roman art direction
 on:
-  pull_request:
-    branches: [main]
-    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'imperial-missions-v31.js', 'tests/art-*', 'tests/*.test.cjs', 'ludus-room-actions-*', 'tests/loading-transitions-*.cjs', 'tests/stable-yard-*.cjs', 'tests/messages-v108.cjs', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read

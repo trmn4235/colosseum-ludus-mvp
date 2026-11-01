@@ -16,12 +16,23 @@ module.exports=async({page,fit,out})=>{
    await panel.open();await page.waitForSelector(panel.root+':visible');
    await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
    await fit(panel.frame);
-   const wineArea=await page.locator(panel.frame).evaluate(root=>{const r=root.getBoundingClientRect();return Math.max(0,...[root,...root.querySelectorAll('*')].filter(e=>e.getClientRects().length).map(e=>{const c=getComputedStyle(e).backgroundColor.match(/[\d.]+/g)?.map(Number)||[0,0,0,0],b=e.getBoundingClientRect();return(c[3]??1)>.5&&c[0]>c[1]*1.5&&c[0]>c[2]*1.2?b.width*b.height/(r.width*r.height):0}));});assert.ok(wineArea<.15,panel.name+' uses burgundy as an accent, not a large surface');
-   assert.equal(await page.locator(panel.heading).first().evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(255, 255, 255)',panel.name+' light heading');
-   assert.match(await page.locator(panel.root+' h1,'+panel.root+' h2').first().evaluate(e=>getComputedStyle(e).fontFamily),/Cinzel/,panel.name+' shared Roman title face');
+   // The guide replaces its children after async refresh and debounced resize.
+   // Query and measure the current nodes in one browser task; a locator handle
+   // can otherwise be detached between resolution and getComputedStyle().
+   const presentation=await page.evaluate(({rootSelector,frameSelector,headingSelector})=>{
+    const modal=document.querySelector(rootSelector),root=modal?.matches(frameSelector)?modal:modal?.querySelector(frameSelector),heading=modal?.querySelector(headingSelector),title=modal?.querySelector('h1,h2');
+    if(!root?.isConnected||!heading?.isConnected||!title?.isConnected)throw Error('Panel presentation nodes are missing');
+    const r=root.getBoundingClientRect();
+    const wineArea=Math.max(0,...[root,...root.querySelectorAll('*')].filter(e=>e.getClientRects().length).map(e=>{const c=getComputedStyle(e).backgroundColor.match(/[\d.]+/g)?.map(Number)||[0,0,0,0],b=e.getBoundingClientRect();return(c[3]??1)>.5&&c[0]>c[1]*1.5&&c[0]>c[2]*1.2?b.width*b.height/(r.width*r.height):0}));
+    return{wineArea,headingColor:getComputedStyle(heading).backgroundColor,titleFont:getComputedStyle(title).fontFamily};
+   },{rootSelector:panel.root,frameSelector:panel.frame,headingSelector:panel.heading});
+   assert.ok(presentation.wineArea<.15,panel.name+' uses burgundy as an accent, not a large surface');
+   assert.equal(presentation.headingColor,'rgb(255, 255, 255)',panel.name+' light heading');
+   assert.match(presentation.titleFont,/Cinzel/,panel.name+' shared Roman title face');
    if(width===1536||width===844)await page.screenshot({path:out+'/modern-'+panel.name+'-'+width+'.png'});
    await panel.close();await page.waitForSelector(panel.root+':visible',{state:'hidden'});await page.waitForFunction(()=>!LudusPreview.paused);
   }
  }
  console.log('V123 shared panels PASS: settings, guide, training, missions, pantry, clan vault and messages use common light headers and Roman titles at 5 screen sizes.');
 };
+

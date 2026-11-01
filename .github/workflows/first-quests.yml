@@ -2,9 +2,7 @@ name: First quests regression
 on:
   push:
     branches: [codex/first-quests-v111]
-  pull_request:
-    branches: [main]
-    paths: ['ludus-first-quests-*', 'ludus-quest-events-*', 'tests/first-quests-*', 'supabase/migrations/*first_quests*', 'ludus.html', 'ludus-settings-v29.js']
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read

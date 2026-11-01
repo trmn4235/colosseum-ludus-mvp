@@ -3,9 +3,7 @@ on:
   push:
     branches: [main, codex/character-guard-v214]
     paths: ['arena.html', 'savas.html', 'multiplayer.html', 'caravan-rig-v126.js', 'arena-authored-motion-v163.js', 'arena-anatomy-v166.js', 'gladiator-mobile-v214.glb', 'tests/character-*-v214.*', 'tests/arena-browser-v96.cjs', 'tools/retopo-character-v214.cjs', '.github/workflows/character-v214.yml']
-  pull_request:
-    branches: [main]
-    paths: ['arena.html', 'savas.html', 'multiplayer.html', 'caravan-rig-v126.js', 'arena-authored-motion-v163.js', 'arena-anatomy-v166.js', 'gladiator-mobile-v214.glb', 'tests/character-*-v214.*', 'tests/arena-browser-v96.cjs', 'tools/retopo-character-v214.cjs', '.github/workflows/character-v214.yml']
+  workflow_call:
 permissions:
   contents: read
 jobs:

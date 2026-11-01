@@ -1,0 +1,559 @@
+{
+  "version": 1,
+  "suites": [
+    {
+      "id": "arena_realism",
+      "workflow": "arena-realism.yml",
+      "name": "Arena combat realism",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena-runtime-v96.js",
+        "tests/render-scale-browser-v188.cjs",
+        "arena*",
+        "combat-*",
+        "tests/combat-motion-*",
+        "tests/combat-flow-*",
+        "tests/motion-stability-*",
+        "tests/anatomy-*",
+        "tests/armour-grip-*",
+        "tests/equipment-stability-*",
+        "ludus.html",
+        "caravan-rig-*",
+        "tests/arena-timing-*",
+        ".github/workflows/arena-realism.yml",
+        "supabase/migrations/*combat_motion*",
+        "savas.html",
+        "multiplayer*",
+        "combat-inspector-*",
+        "tests/arena-realism-*",
+        "tests/arena-stability-*",
+        "supabase/migrations/*arena_combat_realism*"
+      ]
+    },
+    {
+      "id": "art_direction",
+      "workflow": "art-direction.yml",
+      "name": "Roman art direction",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "game-art-*",
+        "assets/art-v136/**",
+        "*.html",
+        "game-panels-v123.css",
+        "imperial-missions-v31.js",
+        "tests/art-*",
+        "tests/*.test.cjs",
+        "ludus-room-actions-*",
+        "tests/loading-transitions-*.cjs",
+        "tests/stable-yard-*.cjs",
+        "tests/messages-v108.cjs",
+        "tests/login-intro-v40.cjs",
+        ".github/workflows/art-direction.yml"
+      ]
+    },
+    {
+      "id": "beginner_guide",
+      "workflow": "beginner-guide.yml",
+      "name": "Beginner guide regression",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "ludus-onboarding-*",
+        "tests/onboarding-*",
+        "ludus.html",
+        "gladiator-exercise-v46.js",
+        "imperial-missions-v31.js"
+      ]
+    },
+    {
+      "id": "caravan_collection",
+      "workflow": "caravan-collection.yml",
+      "name": "Caravan collection regression",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena-runtime-v96.js",
+        "tests/render-scale-browser-v188.cjs",
+        "ludus*",
+        "caravan-collection-v116.css",
+        "assets/caravan-v116/**",
+        "assets/caravan-v117/**",
+        "assets/caravan-v122/**",
+        "assets/caravan-v123/**",
+        "assets/caravan-v124/**",
+        "game-panels-v123.css",
+        "tests/game-panels-v123.cjs",
+        "tests/caravan-*",
+        "tests/production-*",
+        "production-items-v118.css",
+        "rome-supply-v120.css",
+        "assets/supply-v120/**",
+        "assets/items-v118/**",
+        "assets/items-v119/**",
+        "supabase/migrations/*production_items*",
+        "supabase/migrations/*caravan_collection*",
+        "supabase/migrations/*market_history*",
+        "supabase/migrations/*caravan_loadout*"
+      ]
+    },
+    {
+      "id": "caravan_field",
+      "workflow": "caravan-field.yml",
+      "name": "Caravan forest field",
+      "branches": [
+        "**"
+      ],
+      "paths": [
+        "caravan-*",
+        "assets/caravan-field-v125/**",
+        "assets/caravan-v128/**",
+        "assets/caravan-v138/**",
+        "tests/caravan-*.cjs",
+        "supabase/functions/caravan-combat-v126/**",
+        "supabase/migrations/*caravan_combat*",
+        "supabase/migrations/*caravan_arena*",
+        "supabase/migrations/*caravan_messages*",
+        ".github/workflows/caravan-field.yml"
+      ]
+    },
+    {
+      "id": "character_v213",
+      "workflow": "character-v213.yml",
+      "name": "Character motion V213",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena-locomotion-v91.js",
+        "arena-anatomy-v166.js",
+        "arena-authored-motion-v163.js",
+        "gladiator-mobile-v213.glb",
+        "tests/character-*-v213.cjs",
+        "tests/arena-browser-v96.cjs",
+        ".github/workflows/character-v213.yml"
+      ]
+    },
+    {
+      "id": "character_v214",
+      "workflow": "character-v214.yml",
+      "name": "Character guard and retopo V214",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena.html",
+        "savas.html",
+        "multiplayer.html",
+        "caravan-rig-v126.js",
+        "arena-authored-motion-v163.js",
+        "arena-anatomy-v166.js",
+        "gladiator-mobile-v214.glb",
+        "tests/character-*-v214.*",
+        "tests/arena-browser-v96.cjs",
+        "tools/retopo-character-v214.cjs",
+        ".github/workflows/character-v214.yml"
+      ]
+    },
+    {
+      "id": "character_v215",
+      "workflow": "character-v215.yml",
+      "name": "Seven-class contacts and detail V215",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena.html",
+        "savas.html",
+        "multiplayer.html",
+        "ludus.html",
+        "caravan-rig-v126.js",
+        "arena-anatomy-v166.js",
+        "naval-performance-v106.js",
+        "assets/naval/gladiator-lod-v215.*",
+        "tests/character-*-v215.cjs",
+        "tests/arena-browser-v96.cjs",
+        "tests/naval-performance-v106.test.cjs",
+        "tools/bake-character-lod-v215.cjs",
+        ".github/workflows/character-v215.yml"
+      ]
+    },
+    {
+      "id": "character_v216",
+      "workflow": "character-v216.yml",
+      "name": "Finger surface normals V216",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena-anatomy-v166.js",
+        "arena.html",
+        "savas.html",
+        "multiplayer.html",
+        "ludus.html",
+        "caravan-battle-v126.js",
+        "pit-visit-v172.js",
+        "tests/character-*-v216.cjs",
+        "tests/arena-browser-v96.cjs",
+        ".github/workflows/character-v216.yml"
+      ]
+    },
+    {
+      "id": "character_v217",
+      "workflow": "character-v217.yml",
+      "name": "Clothing geometry V217",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "gladiator-mobile-v217.glb",
+        "assets/naval/gladiator-lod-v217.*",
+        "arena.html",
+        "savas.html",
+        "multiplayer.html",
+        "ludus.html",
+        "caravan-rig-v126.js",
+        "circus-war-view-v186.js",
+        "naval-performance-v106.js",
+        "tests/character-*-v217.*",
+        "tests/arena-browser-v96.cjs",
+        "tools/*-v217.cjs",
+        ".github/workflows/character-v217.yml"
+      ]
+    },
+    {
+      "id": "character_v218",
+      "workflow": "character-v218.yml",
+      "name": "Throw release V218",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena-anatomy-v166.js",
+        "arena.html",
+        "savas.html",
+        "multiplayer.html",
+        "caravan-battle-v126.js",
+        "caravan-core-v126.js",
+        "caravan-rig-v126.js",
+        "pit-visit-v172.js",
+        "tests/character-*-v218.cjs",
+        "tests/arena-browser-v96.cjs",
+        ".github/workflows/character-v218.yml"
+      ]
+    },
+    {
+      "id": "circus_war_v182",
+      "workflow": "circus-war-v182.yml",
+      "name": "Circus war chariots",
+      "branches": [
+        "**"
+      ],
+      "paths": [
+        "circus-*",
+        "tests/circus-war-*",
+        "tests/circus-combat-*",
+        "tests/circus-driving-v183.cjs",
+        "tests/circus-dialogue-v152.cjs",
+        "tests/circus-driving-v158.cjs",
+        ".github/workflows/circus-war-v182.yml"
+      ]
+    },
+    {
+      "id": "combat_upgrades_layout",
+      "workflow": "combat-upgrades-layout.yml",
+      "name": "Combat and upgrades layout",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "ludus-combat-values-*",
+        "upgrades-layout-*",
+        "gelistirmeler.html",
+        "ludus-workshop-art-*",
+        "assets/workshop-*/*",
+        "tests/combat-values-*",
+        "tests/upgrades-layout-*"
+      ]
+    },
+    {
+      "id": "combat_values",
+      "workflow": "combat-values.yml",
+      "name": "Combat values regression",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "ludus-combat-values-*",
+        "tests/combat-values-*",
+        "supabase/migrations/*combat_values*",
+        "ludus.html",
+        "gladiator-exercise-v46.js"
+      ]
+    },
+    {
+      "id": "equipment_v168",
+      "workflow": "equipment-v168.yml",
+      "name": "Equipment categories and shield breaking",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "item-visuals-v199.js",
+        "assets/equipment-v199/**",
+        "assets/items-v199/**",
+        "scripts/*v199*",
+        "tests/item-identity-v199.cjs",
+        "tests/item-identity-browser-v199.cjs",
+        "tests/item-picker-v199.cjs",
+        "assets/equipment-v198/**",
+        "assets/items-v198/**",
+        "scripts/*shields-v198*",
+        "tests/shields-*",
+        "supabase/migrations/*selected_shields*",
+        "assets/equipment-v197/**",
+        "assets/items-v197/**",
+        "scripts/*arm*-v197*",
+        "assets/equipment-v196/**",
+        "assets/items-v196/**",
+        "scripts/*armour-v196*",
+        "tests/arm-equipment*",
+        "supabase/migrations/*arm_equipment*",
+        "ludus-manica-v119.js",
+        "arena-equipment-fit-v164.js",
+        "assets/equipment-v195/**",
+        "scripts/pack-helmet-budget-v195.mjs",
+        "tests/helmet-budget-v195.cjs",
+        "tests/helmet-budget-browser-v195.cjs",
+        "assets/items-v194/**",
+        "tests/helmet-identity-*",
+        "scripts/render-helmet-icons-v194.cjs",
+        "supabase/migrations/*helmet_identity*",
+        "assets/equipment-v193/**",
+        "assets/items-v193/**",
+        "tests/halberd-*",
+        "supabase/migrations/*halberd*",
+        "assets/equipment-v191/**",
+        "assets/pit-v191/**",
+        "scripts/pack-equipment-v191.mjs",
+        "tests/equipment-budget-v191.cjs",
+        "tests/cache-url.cjs",
+        "tests/equipment-render-v191.cjs",
+        "tests/fixtures/greave-v190.js",
+        "san-avlusu.html",
+        "pit-visit-v172.js",
+        "assets/equipment-v190/**",
+        "tests/classic-equipment*",
+        "scripts/pack-classic-equipment-v190.mjs",
+        "assets/equipment-v189/**",
+        "assets/items-v189/**",
+        "supabase/migrations/*lightweight_helmets*",
+        "pit-*",
+        "san-avlusu.html",
+        "tests/pit-*",
+        "supabase/migrations/*pit*",
+        "rome-*",
+        "tests/loading-recovery-*",
+        "tests/account-loading-*",
+        "equipment-*",
+        "assets/items-v168/**",
+        "assets/items-v169/**",
+        "ludus.html",
+        "ludus-production-v119.js",
+        "tests/helmet-*",
+        "supabase/migrations/*sylvain_helmet*",
+        "ludus-supply-v85.js",
+        "market-v56.js",
+        "forum-market-v66.js",
+        "arena.html",
+        "savas.html",
+        "multiplayer.html",
+        "caravan-*",
+        "tests/equipment-*",
+        "supabase/migrations/*equipment_groups*",
+        ".github/workflows/equipment-v168.yml"
+      ]
+    },
+    {
+      "id": "first_quests",
+      "workflow": "first-quests.yml",
+      "name": "First quests regression",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "ludus-first-quests-*",
+        "ludus-quest-events-*",
+        "tests/first-quests-*",
+        "supabase/migrations/*first_quests*",
+        "ludus.html",
+        "ludus-settings-v29.js"
+      ]
+    },
+    {
+      "id": "ludus_hud_v202",
+      "workflow": "ludus-hud-v202.yml",
+      "name": "Ludus marble HUD",
+      "branches": [
+        "**"
+      ],
+      "paths": [
+        "ludus.html",
+        "game-art-v136.css",
+        "roman-theme-v68.css",
+        "caravan-collection-v116.css",
+        "ludus-hud-v211.*",
+        "assets/hud-v202/**",
+        "assets/hud-v207/**",
+        "tests/hud-v211*",
+        ".github/workflows/ludus-hud-v202.yml"
+      ]
+    },
+    {
+      "id": "naval_regression",
+      "workflow": "naval-regression.yml",
+      "name": "Naval regression",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "arena*",
+        "naval-*",
+        "assets/naval/*",
+        "savas.html",
+        "tests/naval-*",
+        "tests/polearm-*",
+        "tests/combat-visual-*",
+        ".github/workflows/naval-regression.yml"
+      ]
+    },
+    {
+      "id": "pit_v174",
+      "workflow": "pit-v174.yml",
+      "name": "Pit courtyard and exhibition",
+      "branches": [
+        "**"
+      ],
+      "paths": [
+        "equipment-catalog-v167.js",
+        "assets/pit-v192/**",
+        "scripts/*pit-axe*",
+        "pit-*",
+        "san-avlusu.html",
+        "assets/pit-v174/**",
+        "assets/pit-v175/**",
+        "assets/pit-v176/**",
+        "assets/pit-v177/**",
+        "assets/pit-v178/**",
+        "combat-pointer-v177.js",
+        "arena.html",
+        "arena-results-v83.js",
+        "supabase/migrations/*pit*",
+        "tests/pit-*",
+        ".github/workflows/pit-v174.yml"
+      ]
+    },
+    {
+      "id": "rankings_v200",
+      "workflow": "rankings-v200.yml",
+      "name": "Imperial rankings",
+      "branches": [
+        "**"
+      ],
+      "paths": [
+        "siralamalar.html",
+        "*rank*v200*",
+        "*rank*v201*",
+        "*rank*v203*",
+        "*rank*v204*",
+        "roman-ui-v56.css",
+        "roman-theme-v68.css",
+        "game-art-v136.css",
+        "supabase/migrations/*imperial_rankings*",
+        "supabase/functions/caravan-combat-v126/career-combat-v162.js",
+        "tests/rankings*",
+        ".github/workflows/rankings-v200.yml"
+      ]
+    },
+    {
+      "id": "render_performance_v187",
+      "workflow": "render-performance-v187.yml",
+      "name": "Full scene performance budgets",
+      "branches": [
+        "**"
+      ],
+      "paths": [
+        "arena*",
+        "caravan-*",
+        "circus-*",
+        "naval-*",
+        "ludus.html",
+        "savas.html",
+        "multiplayer*",
+        "assets/equipment/**",
+        "assets/equipment-v199/**",
+        "assets/naval/**",
+        "tests/*performance*",
+        "tests/*budget*",
+        "tests/render-runtime-v187.cjs",
+        "tests/render-scale-v188.test.cjs",
+        "tests/render-scale-browser-v188.cjs",
+        "tests/caravan-pacing-v188.cjs",
+        ".github/workflows/render-performance-v187.yml"
+      ]
+    },
+    {
+      "id": "rome_loading_v181",
+      "workflow": "rome-loading-v181.yml",
+      "name": "Rome map and photographic loading",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "rome-*",
+        "roma.html",
+        "ludus.html",
+        "san-avlusu.html",
+        "circus-maximus.html",
+        "savas.html",
+        "arena.html",
+        "caravan-field.html",
+        "index.html",
+        "multiplayer.html",
+        "assets/rome-v181/**",
+        "assets/rome-v212/**",
+        "assets/loading-v181/**",
+        "scripts/build-loading-art-v*.cjs",
+        "tests/loading-art-v181.cjs",
+        "tests/rome-travel-v148.cjs",
+        ".github/workflows/rome-loading-v181.yml"
+      ]
+    },
+    {
+      "id": "stable",
+      "workflow": "stable.yml",
+      "name": "Stable husbandry and trade",
+      "branches": [
+        "**"
+      ],
+      "paths": [
+        "ludus-stable-*",
+        "ludus.html",
+        "ludus-door-icons-v41.js",
+        "assets/stable-v129/**",
+        "assets/stable-v130/**",
+        "assets/stable-v131/**",
+        "assets/stable-v160/**",
+        "assets/stable-v161/**",
+        "tests/stable-*.cjs",
+        "supabase/migrations/*stable*",
+        ".github/workflows/stable.yml"
+      ]
+    }
+  ]
+}

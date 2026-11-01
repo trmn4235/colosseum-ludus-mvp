@@ -1,0 +1,143 @@
+name: Main merge checks
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+permissions:
+  contents: read
+  pull-requests: read
+concurrency:
+  group: main-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  plan:
+    name: Plan required suites
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      selected: ${{ steps.plan.outputs.selected }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify planner and gate behavior
+        run: node --test tests/merge-gate.test.cjs
+      - id: plan
+        name: Plan against the exact current PR revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node .github/ci/merge-gate.cjs plan
+  arena_realism:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'arena_realism') }}
+    uses: ./.github/workflows/arena-realism.yml
+  art_direction:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'art_direction') }}
+    uses: ./.github/workflows/art-direction.yml
+  beginner_guide:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'beginner_guide') }}
+    uses: ./.github/workflows/beginner-guide.yml
+  caravan_collection:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'caravan_collection') }}
+    uses: ./.github/workflows/caravan-collection.yml
+  caravan_field:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'caravan_field') }}
+    uses: ./.github/workflows/caravan-field.yml
+  character_v213:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'character_v213') }}
+    uses: ./.github/workflows/character-v213.yml
+  character_v214:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'character_v214') }}
+    uses: ./.github/workflows/character-v214.yml
+  character_v215:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'character_v215') }}
+    uses: ./.github/workflows/character-v215.yml
+  character_v216:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'character_v216') }}
+    uses: ./.github/workflows/character-v216.yml
+  character_v217:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'character_v217') }}
+    uses: ./.github/workflows/character-v217.yml
+  character_v218:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'character_v218') }}
+    uses: ./.github/workflows/character-v218.yml
+  circus_war_v182:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'circus_war_v182') }}
+    uses: ./.github/workflows/circus-war-v182.yml
+  combat_upgrades_layout:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'combat_upgrades_layout') }}
+    uses: ./.github/workflows/combat-upgrades-layout.yml
+  combat_values:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'combat_values') }}
+    uses: ./.github/workflows/combat-values.yml
+  equipment_v168:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'equipment_v168') }}
+    uses: ./.github/workflows/equipment-v168.yml
+  first_quests:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'first_quests') }}
+    uses: ./.github/workflows/first-quests.yml
+  ludus_hud_v202:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'ludus_hud_v202') }}
+    uses: ./.github/workflows/ludus-hud-v202.yml
+  naval_regression:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'naval_regression') }}
+    uses: ./.github/workflows/naval-regression.yml
+  pit_v174:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'pit_v174') }}
+    uses: ./.github/workflows/pit-v174.yml
+  rankings_v200:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'rankings_v200') }}
+    uses: ./.github/workflows/rankings-v200.yml
+  render_performance_v187:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'render_performance_v187') }}
+    uses: ./.github/workflows/render-performance-v187.yml
+  rome_loading_v181:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'rome_loading_v181') }}
+    uses: ./.github/workflows/rome-loading-v181.yml
+  stable:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'stable') }}
+    uses: ./.github/workflows/stable.yml
+  gate:
+    name: Main merge gate
+    if: ${{ always() }}
+    needs: [plan, arena_realism, art_direction, beginner_guide, caravan_collection, caravan_field, character_v213, character_v214, character_v215, character_v216, character_v217, character_v218, circus_war_v182, combat_upgrades_layout, combat_values, equipment_v168, first_quests, ludus_hud_v202, naval_regression, pit_v174, rankings_v200, render_performance_v187, rome_loading_v181, stable]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Require every planned suite to succeed
+        env:
+          MERGE_NEEDS: ${{ toJSON(needs) }}
+          MERGE_SELECTED: ${{ needs.plan.outputs.selected }}
+        run: node .github/ci/merge-gate.cjs gate

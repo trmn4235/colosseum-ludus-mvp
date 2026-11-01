@@ -2,9 +2,7 @@ name: Combat and upgrades layout
 on:
   push:
     branches: [codex/combat-upgrades-layout-v112]
-  pull_request:
-    branches: [main]
-    paths: ['ludus-combat-values-*', 'upgrades-layout-*', 'gelistirmeler.html', 'ludus-workshop-art-*', 'assets/workshop-*/*', 'tests/combat-values-*', 'tests/upgrades-layout-*']
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read

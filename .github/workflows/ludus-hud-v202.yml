@@ -3,8 +3,7 @@ on:
   push:
     branches: [main]
     paths: ['ludus.html', 'game-art-v136.css', 'roman-theme-v68.css', 'caravan-collection-v116.css', 'ludus-hud-v211.*', 'assets/hud-v202/**', 'assets/hud-v207/**', 'tests/hud-v211*', '.github/workflows/ludus-hud-v202.yml']
-  pull_request:
-    paths: ['ludus.html', 'game-art-v136.css', 'roman-theme-v68.css', 'caravan-collection-v116.css', 'ludus-hud-v211.*', 'assets/hud-v202/**', 'assets/hud-v207/**', 'tests/hud-v211*', '.github/workflows/ludus-hud-v202.yml']
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read
