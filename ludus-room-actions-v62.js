@@ -9,7 +9,7 @@ var LudusRoomActions=(()=>{
   if(button.hidden)return;
   const p=point.clone().project(ctx.camera),r=(typeof GamePerformance!=='undefined'?GamePerformance.rect(ctx.canvas):ctx.canvas.getBoundingClientRect());
   button.hidden=p.z< -1||p.z>1||Math.abs(p.x)>1||Math.abs(p.y)>1;
-  if(!button.hidden){button.style.left=Math.max(24,Math.min(innerWidth-24,r.left+(p.x+1)*r.width/2))+'px';button.style.top=Math.max(26,Math.min(innerHeight-26,r.top+(1-p.y)*r.height/2))+'px';}
+  if(!button.hidden){const halfWidth=Math.max(24,button.offsetWidth/2+2),halfHeight=Math.max(26,button.offsetHeight/2+2);button.style.left=Math.max(halfWidth,Math.min(innerWidth-halfWidth,r.left+(p.x+1)*r.width/2))+'px';button.style.top=Math.max(halfHeight,Math.min(innerHeight-halfHeight,r.top+(1-p.y)*r.height/2))+'px';}
  }
  function create(ctx){
   const {T,enhance,pouch,exit}=ctx;decorate(enhance,'hammer','Ekipman geliştir');decorate(pouch,'chest','Taş envanterini aç');decorate(exit,'exit','Avluya dön');

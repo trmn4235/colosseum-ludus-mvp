@@ -13,10 +13,11 @@ test('camera preference survives reload and handles unavailable or invalid stora
  assert.equal(ctx.LudusViewSettings.load(),'far');value='invalid';assert.equal(ctx.LudusViewSettings.load(),'medium');ctx.localStorage.getItem=()=>{throw Error('disabled');};assert.equal(ctx.LudusViewSettings.load(),'medium');assert.equal(ctx.LudusViewSettings.presets.medium.distance,3.6);
 });
 test('settings resume input synchronously and the late close event does not clear new movement',()=>{
- const handlers={},select={value:''},form={addEventListener:(name,fn)=>handlers['form:'+name]=fn},dialog={setAttribute(){},querySelectorAll:()=>[],querySelector:s=>s==='select'?select:s==='form'?form:{},addEventListener:(name,fn)=>handlers[name]=fn,showModal(){}};
- let paused=false,closes=0,stored='medium';const keys=new Set();const ctx=vm.createContext({document:{createElement:()=>dialog,body:{append(){}}},localStorage:{getItem:()=>stored,setItem:(_,v)=>stored=v}});vm.runInContext(fs.readFileSync(path.join(root,'ludus-settings-v29.js'),'utf8'),ctx);
+ const handlers={},select={value:''},controls={value:'',replaceChildren(){},append(){},closest:()=>null},form={addEventListener:(name,fn)=>handlers['form:'+name]=fn},dialog={setAttribute(){},querySelectorAll:()=>[],querySelector:s=>s==='#cameraPreset'?select:s==='#combatControlPreset'?controls:s==='form'?form:{},addEventListener:(name,fn)=>handlers[name]=fn,showModal(){}};
+ let paused=false,closes=0;const storage=new Map([['ludus-camera-distance','medium']]),keys=new Set();const ctx=vm.createContext({addEventListener(){},document:{createElement:tag=>tag==='dialog'?dialog:{},body:{append(){}}},localStorage:{getItem:key=>storage.get(key),setItem:(key,value)=>storage.set(key,value)}});
+ for(const file of ['combat-control-settings-v44.js','ludus-settings-v29.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),ctx);
  let distance=3.6;const settings=ctx.LudusViewSettings.create({onOpen:()=>paused=true,onChange:p=>distance=p.distance,onClose:()=>{paused=false;keys.clear();closes++;}});
- settings.open();assert.equal(paused,true);select.value='far';select.onchange();assert.equal(stored,'far');assert.equal(distance,5);
+ settings.open();assert.equal(paused,true);select.value='far';select.onchange();assert.equal(storage.get('ludus-camera-distance'),'far');assert.equal(storage.get('ludus-combat-controls'),'classic');assert.equal(distance,5);
  handlers['form:submit']();assert.equal(paused,false);keys.add('KeyW');handlers.close();assert.ok(keys.has('KeyW'));assert.equal(closes,1);
  settings.open();handlers.close();assert.equal(paused,false);assert.equal(closes,2);
 });

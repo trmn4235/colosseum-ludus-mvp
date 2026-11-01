@@ -2,7 +2,7 @@ name: Roman art direction
 on:
   pull_request:
     branches: [main]
-    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'imperial-missions-v31.js', 'tests/art-*', 'tests/loading-transitions-*.cjs', 'tests/stable-yard-*.cjs', 'tests/messages-v108.cjs', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
+    paths: ['game-art-*', 'assets/art-v136/**', '*.html', 'game-panels-v123.css', 'imperial-missions-v31.js', 'tests/art-*', 'tests/*.test.cjs', 'ludus-room-actions-*', 'tests/loading-transitions-*.cjs', 'tests/stable-yard-*.cjs', 'tests/messages-v108.cjs', 'tests/login-intro-v40.cjs', '.github/workflows/art-direction.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,11 +21,14 @@ jobs:
         run: |
           npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
           npx playwright install --with-deps chromium
+      - name: Unit regressions
+        run: node --test tests/*.test.cjs
       - name: Check shipped art, font and every active entry page
         run: node tests/art-assets-v136.cjs
       - name: Full-screen loaders and continuous caravan settlement
         run: node tests/loading-transitions-v140.cjs
-      - name: Generate isolated room fixtures
+      - id: fixtures
+        name: Generate isolated room fixtures
         run: |
           LUDUS_MARKET_HISTORY_TEST=1 node tests/production-v119.cjs
           node tests/caravan-collection-v116.cjs
@@ -33,16 +36,22 @@ jobs:
       - name: Six page sizes, level summary, clan views and expanded pause guide
         run: node tests/art-pages-v136.cjs
       - name: Open-air stable, groom interaction and room restoration
+        if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: node tests/stable-yard-v139.cjs
       - name: Courtyard and all room tabs including active horse duel
+        if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: node tests/art-rooms-v136.cjs
       - name: Character tabs, mission details, empty states and friend requests
+        if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: node tests/art-details-v137.cjs
       - name: Message contents, long-text paging and safe retry
+        if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: node tests/messages-v108.cjs
       - name: Login, registration and cinematic recovery
+        if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: node tests/login-intro-v40.cjs
       - name: Arena cards and marketplace selection
+        if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: |
           node tests/arena-tabs-v81.cjs
           node tests/forum-market-layout-v67.cjs

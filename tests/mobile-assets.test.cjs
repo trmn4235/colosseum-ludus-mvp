@@ -6,6 +6,8 @@ const crypto = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const manifest = JSON.parse(fs.readFileSync(path.join(root,'assets/mobile-asset-manifest.json')));
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
+const optimized=[...require('../assets/equipment-v195/build-report.json').helmets,require('../assets/equipment-v199/build-report.json')];
+const activeAssets={...manifest,...Object.fromEntries(optimized.map(asset=>[asset.file,asset]))};
 
 test('extracted GLBs and WebP textures retain the original bytes and valid containers', () => {
  for (const [file,info] of Object.entries(manifest)) {
@@ -26,7 +28,11 @@ test('all four pages use common external equipment and external PBR maps', () =>
   const source=fs.readFileSync(path.join(root,page),'utf8');
   const urls=['LUDUS_HELMET_DATA','LUDUS_ARMOUR_DATA'].flatMap(name=>Object.values(JSON.parse(source.match(new RegExp('var '+name+'=(\\{[^\\n]+\\});'))[1])));
   if(previous)assert.deepEqual(urls,previous);previous=urls;
-  urls.forEach(file=>assert.ok(manifest[file],page+': '+file));
+  for(const file of urls){
+   const info=activeAssets[file];assert.ok(info,page+': '+file);
+   const bytes=fs.readFileSync(path.join(root,file));
+   assert.equal(bytes.length,info.bytes,file+' bytes');assert.equal(sha(bytes),info.sha256,file+' hash');
+  }
   const pbr=JSON.parse(source.match(/var ROMAN_PBR_ASSETS=(\{[^\n]+\});/)[1]);
   for(const file of Object.values(pbr))assert.ok(manifest[file],page+': '+file);
   assert.ok(!source.includes('atob(LUDUS_HELMET_DATA'),page);

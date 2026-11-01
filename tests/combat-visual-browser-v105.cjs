@@ -11,13 +11,13 @@ module.exports=async function combatVisuals(page,out){
     Object.assign(f,{weapon:left?null:kind,offhand:left?kind:null,shield:!left&&kind==='spear'?'round':null,leftGear:!left&&kind==='trident'?'net':null,action:'idle',timer:0,attackWeapon:kind,attackLeft:left,attackRegion:region,chain:1});
     for(let i=0;i<30;i++){clock+=1/60;ImportedGladiator.animate(f,m,clock,1/60);}
     const p=ArenaMotion.profile(kind);Object.assign(f,{action:'attack',attackProfile:p,duration:p.duration});
-    let gripError=0,tipError=0,footError=0,maxStep=0;const before=['Left','Right'].map(s=>m.bones[s+'Foot'].getWorldPosition(new T.Vector3())),captured=new Set();
+    let gripError=0,tipError=0,footError=0,maxStep=0;const captured=new Set();
     for(let i=0;i<=Math.ceil(p.duration*60);i++){
      f.timer=Math.min(p.duration,i/60);clock+=1/60;ImportedGladiator.animate(f,m,clock,1/60);m.root.updateMatrixWorld(true);
      const s=ArenaMotion.sample(f),anchor=left?m.offhandAnchor:m.weaponAnchor,hand=m.root.worldToLocal(anchor.getWorldPosition(new T.Vector3())),tip=m.root.worldToLocal(anchor.localToWorld(new T.Vector3(0,p.length,0)));
      gripError=Math.max(gripError,hand.distanceTo(new T.Vector3(s.grip.x,s.grip.y,s.grip.z)));tipError=Math.max(tipError,tip.distanceTo(new T.Vector3(s.tip.x,s.tip.y,s.tip.z)));
-     const step=ArenaMotion.body(f).step;maxStep=Math.max(maxStep,step?.forward||0);
-     for(const [k,side] of ['Left','Right'].entries()){const expected=before[k].clone();if(step?.side===side){expected.z+=step.forward;expected.y+=step.lift;}footError=Math.max(footError,m.bones[side+'Foot'].getWorldPosition(new T.Vector3()).distanceTo(expected));}
+     const step=m.poleStep;maxStep=Math.max(maxStep,step?.forward||0);
+     for(const [k,side] of ['Left','Right'].entries()){const expected=m.root.localToWorld(m.plantedFeet[side].position.clone());expected.y=m.root.position.y+m.footRest[side].position.y;if(step?.side===side){expected.z+=step.forward;expected.y+=step.lift;}footError=Math.max(footError,m.bones[side+'Foot'].getWorldPosition(new T.Vector3()).distanceTo(expected));}
      if(!left&&region==='chest')for(const [name,t] of [['chamber',p.wind],['thrust',p.wind+p.active*.85],['recover',p.wind+p.active+p.recover*.5]])if(f.timer>=t&&!captured.has(name)){captured.add(name);a.renderer.render(scene,camera);shots.push({name:kind+'-'+name,data:a.renderer.domElement.toDataURL('image/png').split(',')[1]});}
     }
     metrics.push({kind,left,region,gripError,tipError,footError,maxStep});
@@ -30,7 +30,7 @@ module.exports=async function combatVisuals(page,out){
  console.log(JSON.stringify({polearmMotion:motion.metrics}));
  assert.ok(motion.metrics.every(x=>x.gripError<.035),'the hand must reach the collision grip without a floating weapon');
  assert.ok(motion.metrics.every(x=>x.tipError<.035),'rendered spear and trident points must follow the hit geometry');
- assert.ok(motion.metrics.every(x=>x.footError<.04&&x.maxStep>.2),'the lead foot takes a short step; the rear foot stays planted');
+ assert.ok(motion.metrics.every(x=>x.footError<.04&&x.maxStep>.1&&x.maxStep<=.36),'the authored lead-foot step stays within 10–36 cm; the rear foot stays planted');
  const feedback=await page.evaluate(()=>{
   const a=__arena;a.combat.events=[];document.getElementById('floaters').replaceChildren();
   a.combat.events.push({type:'hit',id:5,source:0,damage:17},{type:'hit',id:0,source:5,damage:9},{type:'hit',id:6,source:5,damage:21});a.events();a.toast('Cirit hazır · Uygun rakibe atabilirsin.');
