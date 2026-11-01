@@ -13,7 +13,7 @@ var NavalPerformance=(()=>{
   try{const response=await fetch(new URL(name,document.baseURI),{signal:controller.signal});if(!response.ok)throw Error('HTTP '+response.status);return await response.arrayBuffer();}finally{clearTimeout(timer);}
  }
  function load(fetchAsset=fetchDetail){
-  return pending||(pending=fetchAsset('assets/naval/gladiator-lod-v106.bin').then(buffer=>{data=decode(buffer);}).catch(error=>{
+  return pending||(pending=fetchAsset('assets/naval/gladiator-lod-v215.bin').then(buffer=>{data=decode(buffer);}).catch(error=>{
    // The original body remains usable if an old/offline cache lacks this optional asset.
    console.warn('Naval detail fallback:',error.message);
   }));

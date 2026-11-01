@@ -1,0 +1,57 @@
+name: Seven-class contacts and detail V215
+on:
+  push:
+    branches: [main, codex/character-classes-v215]
+    paths: ['arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-rig-v126.js', 'arena-anatomy-v166.js', 'naval-performance-v106.js', 'assets/naval/gladiator-lod-v215.*', 'tests/character-*-v215.cjs', 'tests/arena-browser-v96.cjs', 'tests/naval-performance-v106.test.cjs', 'tools/bake-character-lod-v215.cjs', '.github/workflows/character-v215.yml']
+  pull_request:
+    branches: [main]
+    paths: ['arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-rig-v126.js', 'arena-anatomy-v166.js', 'naval-performance-v106.js', 'assets/naval/gladiator-lod-v215.*', 'tests/character-*-v215.cjs', 'tests/arena-browser-v96.cjs', 'tests/naval-performance-v106.test.cjs', 'tools/bake-character-lod-v215.cjs', '.github/workflows/character-v215.yml']
+permissions:
+  contents: read
+jobs:
+  character:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Seven classes, attachments and existing model integrity
+        run: |
+          node tests/character-classes-v215.cjs
+          node tests/character-grip-v215.cjs
+          node tests/character-actions-v215.cjs
+          node tests/character-asset-v214.cjs
+          node tests/character-guard-v214.cjs
+          node tests/character-pose-v214.cjs
+          node tests/naval-performance-v106.test.cjs
+  render:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, webkit]
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --user 1001 --shm-size=1g
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock playwright@1.64.1
+      - name: Real model, contacts and seven-class views
+        env:
+          LUDUS_V215_TEST: '1'
+          LUDUS_V215_ONLY: '1'
+          LUDUS_TEST_ENGINE: ${{ matrix.engine }}
+          LUDUS_TEST_OUTPUT: /tmp/v215
+        run: node tests/arena-browser-v96.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: character-v215-${{ matrix.engine }}
+          path: /tmp/v215
+          if-no-files-found: ignore

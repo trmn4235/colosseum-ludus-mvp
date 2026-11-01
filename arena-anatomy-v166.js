@@ -80,23 +80,26 @@ var ArenaAnatomy=(()=>{
   root.updateMatrixWorld(true);bones.RightHand.userData.anatomy166=true;
   for(const side of ['Left','Right'])bones[side+'Arm'].userData.anatomyRestPosition=bones[side+'Arm'].position.clone();
  }
+ function gripState(m,left){
+  const T=THREE,side=left?'Left':'Right',states=m.grip166||(m.grip166={});
+  return states[side]||(states[side]={x:new T.Vector3(-1,0,0).applyQuaternion(m.root.quaternion),v:Array.from({length:20},()=>new T.Vector3()),q:Array.from({length:6},()=>new T.Quaternion()),basis:new T.Matrix4(),carryQuaternion:new T.Quaternion(),hasCarryQuaternion:false});
+ }
  function grip(m,left,strike,reach,holdOffset=strike.pole?-.16:((left?m.offhandAnchor:m.weaponAnchor).children[0]?.userData.asset==='roman_spatha.glb'?-.065:0),settled=0){
-  const T=THREE,side=left?'Left':'Right',hand=m.bones[side+'Hand'],lower=m.bones[side+'ForeArm'],upper=m.bones[side+'Arm'];
-  const states=m.grip166||(m.grip166={}),state=states[side]||(states[side]={x:new T.Vector3(-1,0,0).applyQuaternion(m.root.quaternion),v:Array.from({length:20},()=>new T.Vector3()),q:Array.from({length:6},()=>new T.Quaternion()),basis:new T.Matrix4()});
+  const side=left?'Left':'Right',hand=m.bones[side+'Hand'],lower=m.bones[side+'ForeArm'],upper=m.bones[side+'Arm'],state=gripState(m,left);
   const v=state.v,qs=state.q;
   const rootQ=m.root.getWorldQuaternion(qs[0]),collision=m.root.localToWorld(v[0].set(strike.grip.x,strike.grip.y,strike.grip.z));
   const dir=v[1].set(strike.dir.x,strike.dir.y,strike.dir.z).normalize().applyQuaternion(rootQ),g=v[2].copy(collision).addScaledVector(dir,holdOffset);
   const shoulder=upper.getWorldPosition(v[3]),oldElbow=lower.getWorldPosition(v[4]),oldWrist=hand.getWorldPosition(v[5]);
   const a=shoulder.distanceTo(oldElbow),b=oldElbow.distanceTo(oldWrist),target=v[6].copy(g),wrist=v[7],elbow=v[8],line=v[9],perp=v[10];
   const pole=v[11].set(left?.8:-.8,-.65,-.12).applyQuaternion(rootQ);
-  const axis=v[12],x=v[13],z=v[14],palm=v[15],offset=v[16],next=v[17],q=qs[1],bend=qs[2],handQ=qs[3],identity=qs[4],basis=state.basis,plane=v[18],best=v[19];let bestError=Infinity;
+  const axis=v[12],x=v[13],z=v[14],palm=v[15],offset=v[16],next=v[17],q=qs[1],bend=qs[2],handQ=qs[3],identity=qs[4],basis=state.basis,plane=v[18],best=v[19];let bestError=Infinity,shaftSign;
   line.copy(g).sub(shoulder).normalize();pole.addScaledVector(line,-pole.dot(line));
   if(pole.lengthSq()<.04)pole.set(0,-1,0).applyQuaternion(rootQ).addScaledVector(line,-pole.dot(line));
   plane.crossVectors(line,pole).normalize();
   function orientation(){
    axis.copy(wrist).sub(elbow).normalize();x.copy(dir).addScaledVector(axis,-dir.dot(axis));
    if(x.lengthSq()<.02)x.copy(state.x).addScaledVector(axis,-state.x.dot(axis));
-   x.normalize();if(x.dot(state.x)<0)x.negate();z.crossVectors(x,axis).normalize();
+   x.normalize();shaftSign??=x.dot(state.x)<0?-1:1;x.multiplyScalar(shaftSign);z.crossVectors(x,axis).normalize();
    q.setFromRotationMatrix(basis.makeBasis(x,axis,z));
    palm.copy(axis).addScaledVector(dir,-axis.dot(dir));if(palm.lengthSq()<.001)palm.copy(axis);palm.normalize();
    bend.setFromUnitVectors(axis,palm);const angle=2*Math.acos(Math.min(1,Math.abs(bend.w)));
@@ -104,7 +107,8 @@ var ArenaAnatomy=(()=>{
    handQ.copy(bend).multiply(q);
   }
   // Damped geometric solve: iterations do not update the scene graph. Keep the
-  // equivalent shaft-axis sign nearest the previous grip to avoid pronation flips.
+  // equivalent shaft-axis sign nearest the previous grip once for this solve.
+  // Re-selecting it inside the iterations can flip the palm offset and oscillate.
   for(let i=0;i<28;i++){
    line.copy(target).sub(shoulder);const distance=Math.max(Math.abs(a-b)+.002,Math.min(a+b-.002,line.length()));line.normalize();
    perp.crossVectors(plane,line).normalize();
@@ -132,20 +136,46 @@ var ArenaAnatomy=(()=>{
     }
    }
   }
-  state.x.copy(x);state.holdOffset=holdOffset;state.target=g;state.active=true;
+  state.x.copy(x);state.holdOffset=holdOffset;state.target=g;state.active=true;state.followsHand=false;
   return collision;
  }
  function carry(f,m,reach,active){
-  if(!m.bones.RightHand.userData.anatomy166||f.hp<=0||f.action!=='idle'||f.navJump||f.archer)return;
+  if(!m.bones.RightHand.userData.anatomy166||f.hp<=0||f.navJump||f.archer)return;
+  // The Scissor is a forearm sleeve. Its open end points back along the arm,
+  // with the crescent beyond the knuckles, in the repaired hand's local frame.
+  const leftAnchor=m.gear.left?.anchor;
+  if(leftAnchor?.userData.scissorGrip215&&f.leftGear!=='scissor'){
+   leftAnchor.position.copy(leftAnchor.userData.leftRest215.position);leftAnchor.quaternion.copy(leftAnchor.userData.leftRest215.quaternion);leftAnchor.userData.scissorGrip215=false;
+  }
+  if(f.leftGear==='scissor'&&m.gear.left){
+   const hand=m.bones.LeftHand,anchor=m.gear.left.anchor,state=gripState(m,true),v=state.v;
+   if(!anchor.userData.leftRest215)anchor.userData.leftRest215={position:anchor.position.clone(),quaternion:anchor.quaternion.clone()};anchor.userData.scissorGrip215=true;
+   hand.quaternion.identity();hand.updateWorldMatrix(false,true);
+   anchor.position.set(0,0,0);anchor.quaternion.setFromAxisAngle(v[0].set(0,0,1),Math.PI);anchor.updateWorldMatrix(false,true);
+   state.target=anchor.localToWorld(v[2].set(0,-.075,.025));state.active=true;state.followsHand=true;state.holdOffset=0;
+  }
   for(const left of [false,true]){
-   const kind=left?f.offhand:f.weapon;if(!kind||active&&!!active.left===left)continue;
+   const kind=left?f.offhand:f.weapon;if(!kind||active&&!!(active.left??f.attackLeft)===left)continue;
    const anchor=left?m.offhandAnchor:m.weaponAnchor;
+   if(f.action!=='idle'){
+    // During another hand's action, the clip owns this arm. Keep its weapon
+    // seated in the palm instead of resetting the handle to the wrist origin.
+    const state=gripState(m,left),{v}=state;
+    const bone=m.bones[(left?'Left':'Right')+'Hand'];bone.quaternion.identity();bone.updateWorldMatrix(false,true);
+    anchor.quaternion.copy(state.hasCarryQuaternion&&state.carryKind===kind?state.carryQuaternion:state.q[0].setFromAxisAngle(v[0].set(0,0,1),-Math.PI/2));
+    const pole=['spear','trident','trident_gladiator','halberd'].includes(kind),offset=pole?-.16:anchor.children[0]?.userData.asset==='roman_spatha.glb'?-.065:0;
+    anchor.position.copy(v[0].set(0,.075,.025)).addScaledVector(v[1].set(0,1,0).applyQuaternion(anchor.quaternion),-offset).divideScalar(bone.getWorldScale(v[3]).x);
+    for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=0;}
+    anchor.updateWorldMatrix(false,true);state.target=bone.localToWorld(v[2].set(0,.075,.025).divideScalar(bone.getWorldScale(v[3]).x));state.active=true;state.followsHand=true;state.holdOffset=offset;
+    continue;
+   }
    const strike=(['spear','trident','trident_gladiator','halberd'].includes(kind))?(typeof ArenaMotion.poleGuard==='function'?ArenaMotion.poleGuard(f,left):{grip:{x:left?.34:-.34,y:1.27,z:.25},dir:{x:0,y:.18,z:.98366661},pole:true}):{grip:{x:left?.34:-.34,y:1.23,z:.20},dir:{x:left?.15:-.15,y:.96,z:.2364}};if(!strike)continue;
    if(!strike.pole&&anchor.children[0]?.userData.asset==='roman_spatha.glb')for(const axis of ['x','y','z'])strike.grip[axis]+=strike.dir[axis]*.065;
    const point=grip(m,left,strike,reach);anchor.position.copy(anchor.parent.worldToLocal(point));
    const {v,q}=m.grip166[left?'Left':'Right'];
    anchor.quaternion.copy(anchor.parent.getWorldQuaternion(q[0]).invert().multiply(m.root.getWorldQuaternion(q[1])).multiply(q[2].setFromUnitVectors(v[0].set(0,1,0),v[1].set(strike.dir.x,strike.dir.y,strike.dir.z).normalize())));
    for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=-(strike.choke||0);}
+   const state=m.grip166[left?'Left':'Right'];state.carryQuaternion.copy(anchor.quaternion);state.carryKind=kind;state.hasCarryQuaternion=true;
   }
  }
  function begin(m){

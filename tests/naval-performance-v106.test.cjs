@@ -1,9 +1,9 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const P=require('../naval-performance-v106.js'),{rigRuntime}=require('./performance-v84.cjs');
-const bytes=fs.readFileSync(require.resolve('../assets/naval/gladiator-lod-v106.bin'));
+const bytes=fs.readFileSync(require.resolve('../assets/naval/gladiator-lod-v215.bin'));
 const buffer=()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
 test('baked detail data is bounded, smaller, and rejects corrupt indices',()=>{
- const d=P.decode(buffer());assert.equal(d.indices/3,55228);assert.ok(d.levels[0].length/3<=18000);assert.ok(d.levels[1].length/3<=7500);
+ const d=P.decode(buffer());assert.equal(d.indices/3,46938);assert.equal(d.vertices,27512);assert.ok(d.levels[0].length/3<=18000);assert.ok(d.levels[1].length/3<=7500);
  const broken=buffer();new Uint32Array(broken)[5]=d.vertices;assert.throws(()=>P.decode(broken),/index/);
  assert.throws(()=>P.decode(buffer().slice(0,40)),/data/);
 });
@@ -24,11 +24,13 @@ test('distant pose work is staggered while keeping the full update cadence',()=>
  assert.ok(counts.every(n=>n===200));assert.ok(Math.max(...loads)<=8,'avoid all 19 far skeletons updating together');assert.equal(P.interval(10),1/30);assert.equal(P.interval(30,true),1/30);
 });
 test('real rig LODs share skin data, preserve animation and restore full geometry nearby',async()=>{
- const c=await rigRuntime();c.console=console;vm.runInContext(fs.readFileSync(require.resolve('../naval-performance-v106.js'),'utf8'),c);await c.NavalPerformance.load(async()=>buffer());
+ const c=await rigRuntime();c.console=console;vm.runInContext(fs.readFileSync(require.resolve('../naval-performance-v106.js'),'utf8'),c);await c.NavalPerformance.load(async name=>{assert.equal(name,'assets/naval/gladiator-lod-v215.bin','fresh topology uses a new cache URL');return buffer();});
  const a=c.ImportedGladiator.create(1),b=c.ImportedGladiator.create(2),p=c.ImportedGladiator.create(0);
  let original;a.visual.traverse(o=>{if(o.isSkinnedMesh)original=o.geometry;});
  c.NavalPerformance.character(a,{id:1},30);c.NavalPerformance.character(b,{id:2},30);c.NavalPerformance.character(p,{id:0},30);
+ assert.equal(a.navalBodies.length,1,'baked LOD must match the active GLB, without silent full-detail fallback');assert.equal(b.navalBodies.length,1);
  const far=a.navalBodies[0].mesh.geometry;assert.equal(far,b.navalBodies[0].mesh.geometry,'one shared distant body');assert.equal(p.navalBodies,undefined,'player always keeps original detail');
+ assert.ok(far.index.count/3<=7500,'distant body keeps the established triangle budget');
  for(const [name,attribute] of Object.entries(original.attributes))assert.equal(far.attributes[name],attribute,name+' is shared exactly');
  const fighter=new c.ArenaCombat(()=>.999).reset('normal','secutor').fighters[0];fighter.id=1;
  for(const action of ['idle','attack','dodge']){fighter.action=action;fighter.duration=.8;fighter.attackProfile=c.ArenaMotion.profile('gladius');fighter.attackKind='light';fighter.timer=.2;c.ImportedGladiator.animate(fighter,a,1,1/60);for(const [,bone]of a.boneEntries)assert.ok(bone.matrixWorld.elements.every(Number.isFinite));}
