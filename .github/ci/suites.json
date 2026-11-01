@@ -51,7 +51,8 @@
         "tests/loading-transitions-*.cjs",
         "tests/stable-yard-*.cjs",
         "tests/messages-v108.cjs",
-        "tests/login-intro-v40.cjs",
+        "login-intro-*",
+        "tests/login-intro-*",
         ".github/workflows/art-direction.yml"
       ]
     },

@@ -18,7 +18,7 @@ jobs:
       - name: Install isolated browser and database tools
         run: |
           npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
       - name: Unit regressions
         run: node --test tests/*.test.cjs
       - name: Check shipped art, font and every active entry page
@@ -48,6 +48,10 @@ jobs:
       - name: Login, registration and cinematic recovery
         if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: node tests/login-intro-v40.cjs
+      - name: Stalled entry artwork recovery in Chromium and WebKit
+        run: |
+          node tests/login-intro-recovery-v223.cjs
+          LUDUS_WEBKIT_TEST=1 node tests/login-intro-recovery-v223.cjs
       - name: Arena cards and marketplace selection
         if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: |
