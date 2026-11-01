@@ -268,7 +268,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-</script><script src="owner-three-r160.js?v=revision26"></script><script src="arena-runtime-v96.js?v=revision188"></script><script src="naval-performance-v106.js?v=revision215"></script><script>/* Previz-Lowpoly Colosseum with concept textures, Neberkenezer, CC BY 4.0.
+</script><script src="owner-three-r160.js?v=revision26"></script><script src="arena-runtime-v96.js?v=revision188"></script><script src="naval-performance-v106.js?v=revision217"></script><script>/* Previz-Lowpoly Colosseum with concept textures, Neberkenezer, CC BY 4.0.
  * Source: https://sketchfab.com/3d-models/previz-lowpoly-colosseum-with-concept-textures-c1c2391478a34ba9a4c5f254c662fb30
  * Changes: scale 0.01, static geometry batching, simplified material lighting.
  */
@@ -1344,9 +1344,9 @@ var ImportedGladiator=(function(){
    status('Gladyatör yükleniyor…');const helmetReady=Promise.all([LudusHelmets.load(),LudusArmour.load()]);
    const equipmentReady=typeof ImportedEquipment!=='undefined'?ImportedEquipment.load(text=>{const el=document.getElementById?.('equipmentLoad');if(el)el.textContent=text;}):Promise.resolve();equipmentReady.catch(()=>{});
    let data;
-   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile-v214.glb',status,'Gladyatör');
+   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile-v217.glb',status,'Gladyatör');
    else{
-   const r=await fetch(new URL('gladiator-mobile-v214.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
+   const r=await fetch(new URL('gladiator-mobile-v217.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
    if(!r.ok)throw new Error('Gladyatör dosyası yüklenemedi (HTTP '+r.status+'). R2 dosyasını ve erişim ayarlarını kontrol et.');
    data=await r.arrayBuffer();
    }

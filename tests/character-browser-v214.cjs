@@ -11,7 +11,7 @@ module.exports=async(page,out)=>{
   const T=THREE,renderer=__arena.renderer,scene=new T.Scene(),camera=new T.PerspectiveCamera(34,.8,.01,30),shots=[];
   renderer.setPixelRatio(1);renderer.setSize(800,1000,false);scene.background=new T.Color('#e9e6de');scene.add(new T.HemisphereLight(0xffffff,0x766c60,2.5));const sun=new T.DirectionalLight(0xfff3e5,3);sun.position.set(-3,5,4);scene.add(sun);
   for(const version of [213,214]){
-   const rig=new Function(source.replaceAll('gladiator-mobile-v214.glb','gladiator-mobile-v'+version+'.glb')+';return ImportedGladiator;')();await rig.load(()=>{});
+   const rig=new Function(source.replace(/gladiator-mobile-v\d+\.glb/g,'gladiator-mobile-v'+version+'.glb')+';return ImportedGladiator;')();await rig.load(()=>{});
    for(const pose of ['idle','guard-back','guard-side','attack','spear','trident']){
     const m=rig.create(214,'murmillo'),f=new ArenaCombat(()=>.999).reset('normal','murmillo').fighters[0],weapon=['spear','trident'].includes(pose)?pose:'gladius';scene.add(m.root);
     Object.assign(f,{x:0,z:0,angle:0,hp:100,action:pose==='attack'?'attack':'idle',move:pose.startsWith('guard-')?1:0,weapon,offhand:null,shield:true,shieldStyle:'murmillo',chest:true,chestModel:'chest_plate',helmet:true,motionVersion:163,blocking:pose.startsWith('guard-'),reaction:0,guardFlash:0,attackLeft:false,attackWeapon:weapon,attackKind:'light',attackRegion:'chest',attackProfile:ArenaMotion.profile(weapon),timer:0});f.duration=f.attackProfile.duration;

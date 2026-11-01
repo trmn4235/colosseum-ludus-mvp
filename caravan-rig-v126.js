@@ -494,9 +494,9 @@ var ImportedGladiator=(function(){
    status('Gladyatör yükleniyor…');const helmetReady=Promise.all([LudusHelmets.load(),LudusArmour.load()]);
    const equipmentReady=typeof ImportedEquipment!=='undefined'?ImportedEquipment.load(text=>{const el=document.getElementById?.('equipmentLoad');if(el)el.textContent=text;}):Promise.resolve();equipmentReady.catch(()=>{});
    let data;
-   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile-v214.glb',status,'Gladyatör');
+   if(typeof ArenaAssetLoad==='function')data=await ArenaAssetLoad('gladiator-mobile-v217.glb',status,'Gladyatör');
    else{
-   const r=await fetch(new URL('gladiator-mobile-v214.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
+   const r=await fetch(new URL('gladiator-mobile-v217.glb',typeof ARENA_ASSET_BASE==='string'?ARENA_ASSET_BASE:document.baseURI),{signal:abort.signal});
    if(!r.ok)throw new Error('Gladyatör dosyası yüklenemedi (HTTP '+r.status+'). R2 dosyasını ve erişim ayarlarını kontrol et.');
    data=await r.arrayBuffer();
    }
