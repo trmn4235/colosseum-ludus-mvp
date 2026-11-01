@@ -1,0 +1,55 @@
+name: Finger surface normals V216
+on:
+  push:
+    branches: [main, codex/character-normals-v216]
+    paths: ['arena-anatomy-v166.js', 'arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-battle-v126.js', 'pit-visit-v172.js', 'tests/character-*-v216.cjs', 'tests/arena-browser-v96.cjs', '.github/workflows/character-v216.yml']
+  pull_request:
+    branches: [main]
+    paths: ['arena-anatomy-v166.js', 'arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-battle-v126.js', 'pit-visit-v172.js', 'tests/character-*-v216.cjs', 'tests/arena-browser-v96.cjs', '.github/workflows/character-v216.yml']
+permissions:
+  contents: read
+jobs:
+  character:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Five runtimes, seven classes, unchanged model
+        run: |
+          node tests/character-normals-v216.cjs
+          node tests/character-asset-v214.cjs
+          node tests/character-classes-v215.cjs
+          node tests/character-grip-v215.cjs
+          node tests/character-actions-v215.cjs
+  render:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, webkit]
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --user 1001 --shm-size=1g
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock playwright@1.64.1
+      - name: Textured characters and hand closeups
+        env:
+          LUDUS_V216_TEST: '1'
+          LUDUS_V216_ONLY: '1'
+          LUDUS_TEST_ENGINE: ${{ matrix.engine }}
+          LUDUS_TEST_OUTPUT: /tmp/v216
+        run: node tests/arena-browser-v96.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: character-v216-${{ matrix.engine }}
+          path: /tmp/v216
+          if-no-files-found: ignore

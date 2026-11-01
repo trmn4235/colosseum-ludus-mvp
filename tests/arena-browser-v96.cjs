@@ -40,6 +40,7 @@ async function main(){
  }
  if(process.env.LUDUS_V214_TEST==='1'){await require('./character-browser-v214.cjs')(page,out);if(process.env.LUDUS_V214_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  if(process.env.LUDUS_V215_TEST==='1'){await require('./character-browser-v215.cjs')(page,out);if(process.env.LUDUS_V215_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
+ if(process.env.LUDUS_V216_TEST==='1'){await require('./character-browser-v216.cjs')(page,out);if(process.env.LUDUS_V216_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  if(process.env.LUDUS_PERFORMANCE_TEST==='1')await require('./arena-budget-v187.cjs')(page);
  if(process.env.LUDUS_RENDER_SCALE_TEST==='1')await require('./render-scale-browser-v188.cjs')(page,'arena');
  if(process.env.LUDUS_FIT_TEST==='1'){await require('./armour-grip-browser-v166.cjs')(page,out);if(process.env.LUDUS_FIT_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}

@@ -13,8 +13,11 @@ var ArenaAnatomy=(()=>{
   if(!body)return;
   // Save the rest surface before moving joints; the two hands have different,
   // incomplete source weights (the right fingers were all rigidly on Hand).
-  const cached=skins.get(body.geometry);let skin=cached?.geometry,restVertices;
-  if(!skin){restVertices=[];for(let i=0;i<body.geometry.attributes.position.count;i++)restVertices.push(body.getVertexPosition(i,new T.Vector3()).applyMatrix4(body.matrixWorld));}
+  const cached=skins.get(body.geometry);let skin=cached?.geometry,restVertices,sourceMatrices;
+  if(!skin){
+   sourceMatrices=body.skeleton.bones.map((b,i)=>b.matrixWorld.clone().multiply(body.skeleton.boneInverses[i]));
+   restVertices=[];for(let i=0;i<body.geometry.attributes.position.count;i++)restVertices.push(body.getVertexPosition(i,new T.Vector3()).applyMatrix4(body.matrixWorld));
+  }
   const center=cached?.center??restVertices.reduce((bounds,p)=>[Math.min(bounds[0],p.x),Math.max(bounds[1],p.x)],[Infinity,-Infinity]).reduce((a,b)=>(a+b)/2);
   for(const side of ['Left','Right'])for(const part of ['Arm','ForeArm','Hand','HandIndex1','HandIndex2','HandIndex3','HandIndex4']){
    const b=bones[side+part];if(!b)continue;
@@ -55,7 +58,7 @@ var ArenaAnatomy=(()=>{
    }
    // Reassign only the finger area; the thumb and wrist keep the hand influence.
    // Store positions in the new inverse-bind spaces so reweighting is rest-neutral.
-   const blend=new T.Matrix4(),inv=new T.Matrix4(),normal=new T.Matrix3(),n=new T.Vector3();
+   const blend=new T.Matrix4(),inv=new T.Matrix4(),sourceBlend=new T.Matrix4(),bindInverse=body.bindMatrix.clone().invert(),normal=new T.Matrix3(),n=new T.Vector3();
    for(let i=0;i<restVertices.length;i++){
     const p=restVertices[i],side=p.x>center?'Left':'Right',h=bones[side+'Hand'],hp=positions.get(h);
     if(p.y>hp.y-.075||p.y<hp.y-.23||Math.abs(p.x-hp.x)>.12)continue;
@@ -71,8 +74,16 @@ var ArenaAnatomy=(()=>{
     }
     ids.setW(i,0);weights.setW(i,0);
     inv.copy(blend).invert();v.copy(p).applyMatrix4(inv);skin.attributes.position.setXYZ(i,v.x,v.y,v.z);
-    // These vertices originally had an identity skin deformation in source space.
-    normal.getNormalMatrix(inv.clone().multiply(body.matrixWorld));n.fromBufferAttribute(skin.attributes.normal,i).applyNormalMatrix(normal);skin.attributes.normal.setXYZ(i,n.x,n.y,n.z);
+    // Preserve the original skin's normal direction, including its source rotation.
+    // THREE skins normals with the weighted bone matrix, not its inverse transpose.
+    // Rebase that direction into the new skin space once, alongside the positions.
+    sourceBlend.elements.fill(0);
+    for(let k=0;k<4;k++){
+     const mat=sourceMatrices[sourceIds[C[k]](i)],weight=sourceWeights[C[k]](i);
+     for(let j=0;j<16;j++)sourceBlend.elements[j]+=mat.elements[j]*weight;
+    }
+    normal.setFromMatrix4(inv.premultiply(bindInverse).multiply(sourceBlend).multiply(body.bindMatrix));
+    n.fromBufferAttribute(skin.attributes.normal,i).applyMatrix3(normal).normalize();skin.attributes.normal.setXYZ(i,n.x,n.y,n.z);
    }
    skins.set(body.geometry,{geometry:skin,center});
   }
