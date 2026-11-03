@@ -29,9 +29,37 @@ and regression test. Keep each suite's actual assertions intact.
 
 ## Gated Pages releases
 
-Main pushes and manual runs on `main` select all 24 suites. Every job checks out
-`github.sha`; the Pages build preserves the existing official Jekyll build and
-uploads only `_site`. The merge gate also requires that build to succeed.
+V225 removes duplicate validation after an unchanged PR is merged. The workflow
+records the actual `github.sha` checkout in its run title. A main push may reuse
+the latest successful same-repository PR run only when:
+
+- The previous main revision has a successful main workflow run.
+- Exactly one associated merged PR targets main at that previous revision.
+- The PR head tree, tested merge tree and current main tree are identical.
+- The tested merge has precisely the expected base and PR-head parents.
+- The run belongs to the expected workflow, event, repository, branch and head.
+
+The gate independently verifies the same run again. Missing, changed, failed or
+unverifiable evidence cannot authorize reuse. Discovery failures fall back to
+normal tests. Older runs without the checkout SHA in their title cannot be reused.
+
+Without reusable validation, a normal main push selects suites from all changed
+paths since its successfully validated previous main revision. Renames include
+both paths. Unknown/failed baselines, force pushes, divergent history and
+comparisons reaching GitHub's 300-file cap select all suites. API failures during
+required baseline/diff validation fail closed. CI policy changes select every
+suite unless that exact tree already passed them in the reusable PR run.
+Manual main runs always perform all 24 suites.
+
+The equipment suite runs its unchanged 43 commands across eight isolated matrix
+jobs (core, identity, shields, armour, helmets, halberd, renders and recovery).
+The core group keeps production-state generation and all eight consumers together;
+no group relies on another runner’s temporary files. Every group must pass; fail-fast is disabled so all failures remain visible.
+
+Every job checks out `github.sha`; the Pages build preserves the existing official
+Jekyll build and uploads only `_site`. Even when PR validation is reused, main
+builds its own artifact and the gate requires that build to succeed. PR artifacts
+are never deployed.
 
 `deploy_pages` requires both `gate` and `build_pages` to succeed. It runs only
 for main pushes or manual main runs, in the existing `github-pages` environment.
@@ -49,7 +77,8 @@ Initial cutover order:
 2. Change Settings → Pages → Source to GitHub Actions; keep the existing site,
    domain, HTTPS setting and `github-pages` environment unchanged.
 3. Merge through the existing main ruleset. The main workflow tests the exact
-   merge revision again, then publishes only if all tests and the build pass.
+   merge revision or verifies exact-tree PR validation, then publishes only if
+   validation and its own build pass.
 4. Verify the deployment run's commit and live URL. If a test fails, the current
    published site remains intact; fix the failure without weakening the gate.
 

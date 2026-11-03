@@ -6,6 +6,11 @@ permissions:
   contents: read
 jobs:
   equipment:
+    name: Equipment / ${{ matrix.group }}
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [core, identity, shields, armour, helmets, halberd, renders, recovery]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
@@ -17,7 +22,9 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1 sharp@0.34.3
-      - run: |
+      - name: core checks
+        if: matrix.group == 'core'
+        run: |
           node --test tests/item-identity-v199.cjs tests/shields-v198.cjs tests/arm-equipment-fit-v197.cjs tests/arm-equipment-v196.cjs tests/helmet-budget-v195.cjs tests/helmet-identity-v194.cjs tests/halberd-v193.cjs tests/equipment-budget-v191.cjs tests/classic-equipment-v190.cjs tests/helmets-v189.cjs tests/helmet-v169.cjs tests/equipment-groups-v168.cjs tests/equipment-catalog-v167.cjs tests/equipment-arena-v30.test.cjs tests/forum-market-v66.test.cjs
           node tests/equipment-sql-v168.cjs
           node tests/halberd-sql-v193.cjs
@@ -30,41 +37,54 @@ jobs:
           node tests/pit-sql-v172.cjs
           node tests/pit-sql-v173.cjs
           LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs
-      - name: Exact item identity and chest appearance
+          node tests/shields-browser-v198.cjs
+          LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shields-v198-webkit node tests/shields-browser-v198.cjs
+          node tests/arm-equipment-courtyard-v197.cjs
+          LUDUS_WEBKIT_TEST=1 node tests/arm-equipment-courtyard-v197.cjs
+          node tests/arm-equipment-production-browser-v196.cjs
+          node tests/helmet-production-browser-v169.cjs
+          node tests/halberd-production-browser-v193.cjs
+          node tests/equipment-production-browser-v168.cjs
+      - name: identity checks
+        if: matrix.group == 'identity'
         run: |
           node tests/item-identity-browser-v199.cjs
           node tests/item-picker-v199.cjs
-      - name: Selected shield models in Chromium and WebKit
+      - name: shields checks
+        if: matrix.group == 'shields'
         run: |
           node scripts/render-shields-v198.cjs
           LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shield-renders-webkit node scripts/render-shields-v198.cjs
-      - name: Selected shield equipment and production on touch screens
-        timeout-minutes: 5
+      - name: armour checks
+        if: matrix.group == 'armour'
         run: |
-          node tests/shields-browser-v198.cjs
-          LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shields-v198-webkit node tests/shields-browser-v198.cjs
-      - run: |
-          node tests/arm-equipment-courtyard-v197.cjs
-          LUDUS_WEBKIT_TEST=1 node tests/arm-equipment-courtyard-v197.cjs
           node scripts/render-armour-v196.cjs
           LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/armour-v196-webkit node scripts/render-armour-v196.cjs
-          node tests/arm-equipment-production-browser-v196.cjs
+      - name: helmets checks
+        if: matrix.group == 'helmets'
+        run: |
           node tests/helmet-budget-browser-v195.cjs
           LUDUS_WEBKIT_TEST=1 node tests/helmet-budget-browser-v195.cjs
           node tests/helmet-identity-browser-v194.cjs
           LUDUS_WEBKIT_TEST=1 node tests/helmet-identity-browser-v194.cjs
-          node tests/halberd-production-browser-v193.cjs
+      - name: halberd checks
+        if: matrix.group == 'halberd'
+        run: |
           node tests/halberd-browser-v193.cjs
           LUDUS_WEBKIT_TEST=1 node tests/halberd-browser-v193.cjs
+      - name: renders checks
+        if: matrix.group == 'renders'
+        run: |
           node tests/equipment-browser-v168.cjs
-          node tests/equipment-production-browser-v168.cjs
-          node tests/helmet-production-browser-v169.cjs
           node tests/helmets-render-v189.cjs
           LUDUS_WEBKIT_TEST=1 node tests/helmets-render-v189.cjs
           node tests/equipment-render-v191.cjs
           LUDUS_WEBKIT_TEST=1 node tests/equipment-render-v191.cjs
           node tests/classic-equipment-render-v190.cjs
           LUDUS_WEBKIT_TEST=1 node tests/classic-equipment-render-v190.cjs
+      - name: recovery checks
+        if: matrix.group == 'recovery'
+        run: |
           node tests/loading-recovery-v171.cjs
           node tests/rome-travel-v148.cjs
           node tests/pit-browser-v172.cjs
