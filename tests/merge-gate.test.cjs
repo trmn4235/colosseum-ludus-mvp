@@ -336,6 +336,9 @@ test('production workflow couples a same-revision artifact and successful gate w
   assert.match(build, /build_revision: \$\{\{ github.sha \}\}/);
   assert.match(gate, /needs: \[plan, build_pages,/);
   assert.match(deploy, /needs: \[gate, build_pages\]/);
+  // Reused and path-filtered suites are deliberately skipped upstream. Override
+  // Actions' implicit success() while retaining explicit successful gate/build.
+  assert.match(deploy, /if: \$\{\{ always\(\) && github.event_name/);
   assert.match(deploy, /github.event_name != 'pull_request'.*github.ref == 'refs\/heads\/main'.*needs.gate.result == 'success'.*needs.build_pages.result == 'success'/);
   assert.match(deploy, /pages: write/); assert.match(deploy, /id-token: write/);
   assert.match(deploy, /environment:\n      name: github-pages/);

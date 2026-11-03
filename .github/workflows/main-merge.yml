@@ -189,7 +189,7 @@ jobs:
   deploy_pages:
     name: Deploy tested main to Pages
     needs: [gate, build_pages]
-    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.gate.result == 'success' && needs.build_pages.result == 'success' }}
+    if: ${{ always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.gate.result == 'success' && needs.build_pages.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     permissions:
