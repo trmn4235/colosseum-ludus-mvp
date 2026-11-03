@@ -53,7 +53,8 @@ Manual main runs always perform all 24 suites.
 
 The equipment suite runs its unchanged 43 commands across eight isolated matrix
 jobs (core, identity, shields, armour, helmets, halberd, renders and recovery).
-Every group must pass; fail-fast is disabled so all failures remain visible.
+The core group keeps production-state generation and all eight consumers together;
+no group relies on another runner’s temporary files. Every group must pass; fail-fast is disabled so all failures remain visible.
 
 Every job checks out `github.sha`; the Pages build preserves the existing official
 Jekyll build and uploads only `_site`. Even when PR validation is reused, main

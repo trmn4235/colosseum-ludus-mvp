@@ -245,6 +245,26 @@ test('workflow records actual checkout SHA and passes reuse proof to the gate', 
   assert.match(master, /MERGE_REUSED_RUN: \$\{\{ needs.plan.outputs.reused_run \}\}/);
 });
 
+test('equipment matrix keeps production-state consumers with their producer', () => {
+  const workflow = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/equipment-v168.yml'), 'utf8');
+  const groups = [...workflow.matchAll(/      - name: (\w+) checks\n        if: matrix.group == '\w+'\n        run: \|\n([\s\S]*?)(?=      - name:|$)/g)];
+  assert.equal(groups.length, 8);
+  let consumers = 0;
+  for (const [, group, commands] of groups) {
+    for (const match of commands.matchAll(/node (tests\/[^\s]+\.cjs)/g)) {
+      const source = fs.readFileSync(path.resolve(__dirname, '..', match[1]), 'utf8');
+      const readsState = /readFileSync\('\/tmp\/production-state-v119.json'/.test(source);
+      const importsFixture = source.includes("__dirname+'/production-browser-v119.cjs'");
+      if (readsState || importsFixture) {
+        consumers++;
+        assert.equal(group, 'core', match[1]);
+        assert.ok(commands.indexOf('LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs') < match.index, match[1]);
+      }
+    }
+  }
+  assert.equal(consumers, 8);
+});
+
 test('manual runs and main pushes without a validated baseline select all suites', async () => {
   for (const eventName of ['push', 'workflow_dispatch']) {
     const calls = [];
