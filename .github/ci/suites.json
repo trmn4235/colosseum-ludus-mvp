@@ -178,6 +178,7 @@
         "naval-performance-v106.js",
         "assets/naval/gladiator-lod-v215.*",
         "tests/character-*-v215.cjs",
+        "tests/preparation-*-v224.cjs",
         "tests/arena-browser-v96.cjs",
         "tests/naval-performance-v106.test.cjs",
         "tools/bake-character-lod-v215.cjs",
