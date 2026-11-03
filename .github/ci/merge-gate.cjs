@@ -122,7 +122,86 @@ async function planForEvent(config, context, get) {
   const current = await get(`/repos/${context.repository}/branches/main`);
   if (current.commit?.sha !== context.sha) throw new Error('Stale main revision; refusing to test for deployment');
   validateConfig(config);
+  // A previous successful main run is the baseline for incremental checks.
+  // Unknown baselines, force pushes and truncated comparisons retain full CI.
+  if (await hasValidatedBaseline(context, get)) {
+    const comparison = await get(`/repos/${context.repository}/compare/${context.event.before}...${context.sha}?per_page=1`);
+    if (comparison.status === 'ahead' && comparison.merge_base_commit?.sha === context.event.before &&
+        Array.isArray(comparison.files) && comparison.files.length < 300) {
+      return selectSuites(config, comparison.files, 'main');
+    }
+  }
   return config.suites.map(s => s.id);
+}
+
+const workflowPath = '.github/workflows/main-merge.yml';
+const isSha = value => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
+
+function successfulRun(run, context, eventName, sha) {
+  return Number.isSafeInteger(run?.id) && run.id > 0 && run.event === eventName &&
+    run.path === workflowPath && run.head_sha === sha && run.status === 'completed' &&
+    run.conclusion === 'success' && run.repository?.full_name === context.repository &&
+    run.head_repository?.full_name === context.repository;
+}
+
+async function hasValidatedBaseline(context, get) {
+  if (context.eventName !== 'push' || context.event.forced === true || !isSha(context.event.before) || /^0+$/.test(context.event.before)) return false;
+  const result = await get(`/repos/${context.repository}/actions/workflows/main-merge.yml/runs?event=push&head_sha=${context.event.before}&per_page=1`);
+  const run = result.workflow_runs?.[0];
+  return successfulRun(run, context, 'push', context.event.before) && run.head_branch === 'main';
+}
+
+// The run title records github.sha (the actual PR merge checkout), not merely
+// the PR head. Both that merge tree AND the PR head tree must equal current main.
+// No artifact or execution output from a PR is used for production publishing.
+async function findReusableRun(context, get, expectedId) {
+  validateMainContext(context);
+  if (!await hasValidatedBaseline(context, get)) return null;
+  const root = `/repos/${context.repository}`;
+  const prs = await get(`${root}/commits/${context.sha}/pulls?per_page=100`);
+  if (!Array.isArray(prs)) throw new Error('Invalid associated PR response');
+  const candidates = prs.filter(pr => pr.merged_at && pr.state === 'closed' && pr.merge_commit_sha === context.sha &&
+    pr.base?.ref === 'main' && pr.base.sha === context.event.before && pr.base.repo?.full_name === context.repository &&
+    pr.head?.repo?.full_name === context.repository && isSha(pr.head.sha));
+  if (candidates.length !== 1) return null;
+  const pr = candidates[0];
+  const [main, source, workflow] = await Promise.all([
+    get(`${root}/git/commits/${context.sha}`), get(`${root}/git/commits/${pr.head.sha}`),
+    get(`${root}/actions/workflows/main-merge.yml`)
+  ]);
+  if (!isSha(main.tree?.sha) || main.tree.sha !== source.tree?.sha || workflow.path !== workflowPath || !Number.isSafeInteger(workflow.id)) return null;
+  const result = await get(`${root}/actions/workflows/main-merge.yml/runs?event=pull_request&head_sha=${pr.head.sha}&per_page=1`);
+  const run = result.workflow_runs?.[0];
+  if (!successfulRun(run, context, 'pull_request', pr.head.sha) || run.workflow_id !== workflow.id ||
+      run.head_branch !== pr.head.ref || (expectedId !== undefined && run.id !== expectedId)) return null;
+  const match = /^Main checks: ([a-f0-9]{40})$/.exec(run.display_title || '');
+  if (!match) return null;
+  const tested = await get(`${root}/git/commits/${match[1]}`);
+  if (tested.tree?.sha !== main.tree.sha || tested.parents?.length !== 2 ||
+      tested.parents[0]?.sha !== context.event.before || tested.parents[1]?.sha !== pr.head.sha) return null;
+  return run.id;
+}
+
+async function planExecution(config, context, get) {
+  const selected = await planForEvent(config, context, get);
+  let reusedRun = null;
+  if (context.eventName === 'push') {
+    // Optional reuse discovery may fail without blocking a normal test run.
+    try { reusedRun = await findReusableRun(context, get); }
+    catch (error) { console.warn(`Running planned suites; reuse unavailable: ${error.message}`); }
+  }
+  return {selected: reusedRun ? [] : selected, reusedRun};
+}
+
+async function verifyExecution(config, context, selected, needs, reusedRun, get) {
+  checkGate(config, selected, needs);
+  if (reusedRun !== null) {
+    if (!Number.isSafeInteger(reusedRun) || reusedRun < 1 || selected.length ||
+        await findReusableRun(context, get, reusedRun) !== reusedRun) throw new Error('Reusable validation could not be verified');
+    const current = await get(`/repos/${context.repository}/branches/main`);
+    if (current.commit?.sha !== context.sha) throw new Error('Stale main revision');
+  }
+  return true;
 }
 
 function authorizeDeployment(context, currentSha, gateResult, buildResult) {
@@ -134,16 +213,17 @@ function authorizeDeployment(context, currentSha, gateResult, buildResult) {
 
 async function main() {
   const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'suites.json'), 'utf8'));
-  if (process.argv[2] === 'gate') {
+  if (process.argv[2] === 'gate' && !process.env.MERGE_REUSED_RUN) {
     checkGate(config, JSON.parse(process.env.MERGE_SELECTED), JSON.parse(process.env.MERGE_NEEDS));
     console.log('All planned suites and the Pages artifact build succeeded; every other suite was deliberately skipped.');
     return;
   }
-  if (!['plan', 'authorize-deploy'].includes(process.argv[2])) throw new Error('Usage: merge-gate.cjs plan|gate|authorize-deploy');
+  if (!['plan', 'gate', 'authorize-deploy'].includes(process.argv[2])) throw new Error('Usage: merge-gate.cjs plan|gate|authorize-deploy');
   if (!process.env.GH_TOKEN) throw new Error('Missing CI credentials');
   const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
   const context = {eventName: process.env.GITHUB_EVENT_NAME, event, repository: process.env.GITHUB_REPOSITORY, ref: process.env.GITHUB_REF, sha: process.env.GITHUB_SHA};
-  const get = async endpoint => {
+  const cache = new Map();
+  const read = async endpoint => {
     const response = await fetch(`https://api.github.com${endpoint}`, {
       headers: {Authorization: `Bearer ${process.env.GH_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'},
       signal: AbortSignal.timeout(30000)
@@ -151,11 +231,20 @@ async function main() {
     if (!response.ok) throw new Error(`GitHub API read failed (${response.status})`);
     return response.json();
   };
+  const get = endpoint => {
+    if (context.eventName === 'pull_request') return read(endpoint);
+    if (!cache.has(endpoint)) cache.set(endpoint, read(endpoint));
+    return cache.get(endpoint);
+  };
   if (process.argv[2] === 'plan') {
     if (!process.env.GITHUB_OUTPUT) throw new Error('Missing CI output path');
-    const selected = await planForEvent(config, context, get);
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `selected=${JSON.stringify(selected)}\n`);
+    const {selected, reusedRun} = await planExecution(config, context, get);
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `selected=${JSON.stringify(selected)}\nreused_run=${reusedRun || ''}\n`);
     console.log(`Required suites (${selected.length}): ${selected.join(', ') || 'none; CI policy tests passed'}`);
+    if (reusedRun) console.log(`Reusing successful PR run ${reusedRun}: tested merge tree equals current main.`);
+  } else if (process.argv[2] === 'gate') {
+    await verifyExecution(config, context, JSON.parse(process.env.MERGE_SELECTED), JSON.parse(process.env.MERGE_NEEDS), Number(process.env.MERGE_REUSED_RUN), get);
+    console.log(`Verified PR run ${process.env.MERGE_REUSED_RUN} and the new Pages build for this exact main tree.`);
   } else {
     validateMainContext(context);
     const current = await get(`/repos/${context.repository}/branches/main`);
@@ -164,5 +253,5 @@ async function main() {
   }
 }
 
-module.exports = {glob, validateConfig, changedPaths, selectSuites, checkGate, validateRevision, planFromApi, validateMainContext, planForEvent, authorizeDeployment};
+module.exports = {glob, validateConfig, changedPaths, selectSuites, checkGate, validateRevision, planFromApi, validateMainContext, planForEvent, planExecution, findReusableRun, verifyExecution, authorizeDeployment};
 if (require.main === module) main().catch(error => { console.error(error.message); process.exitCode = 1; });

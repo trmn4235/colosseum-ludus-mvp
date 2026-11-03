@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const {glob, validateConfig, selectSuites, checkGate, planFromApi, planForEvent, authorizeDeployment} = require('../.github/ci/merge-gate.cjs');
+const {glob, validateConfig, selectSuites, checkGate, planFromApi, planForEvent, planExecution, findReusableRun, verifyExecution, authorizeDeployment} = require('../.github/ci/merge-gate.cjs');
 const config = require('../.github/ci/suites.json');
 const ids = config.suites.map(s => s.id);
 const file = (filename, extra = {}) => ({filename, status: 'modified', ...extra});
@@ -141,7 +141,111 @@ test('invalid configuration fails closed', () => {
 
 const mainContext = (extra = {}) => ({eventName: 'push', event: {repository: {full_name: repository}, ref: 'refs/heads/main', after: head, deleted: false}, repository, ref: 'refs/heads/main', sha: head, ...extra});
 
-test('main pushes and manual main runs always select all suites, even for docs-only releases', async () => {
+function releaseFixture(files = [file('arena.html')]) {
+  const context = mainContext(); context.event.before = base;
+  const root = `/repos/${repository}`, source = 'c'.repeat(40), merge = 'd'.repeat(40), tree = 'e'.repeat(40);
+  const run = {id: 101, event: 'pull_request', path: '.github/workflows/main-merge.yml', head_sha: source,
+    status: 'completed', conclusion: 'success', repository: {full_name: repository}, head_repository: {full_name: repository},
+    head_branch: 'feature', workflow_id: 55, display_title: `Main checks: ${merge}`};
+  const previous = {...run, id: 100, event: 'push', head_branch: 'main', head_sha: base};
+  const merged = {number: 7, state: 'closed', merged_at: '2026-11-03T12:00:00Z', merge_commit_sha: head,
+    base: {sha: base, ref: 'main', repo: {full_name: repository}}, head: {sha: source, ref: 'feature', repo: {full_name: repository}}};
+  const data = {
+    [`${root}/branches/main`]: {commit: {sha: head}},
+    [`${root}/actions/workflows/main-merge.yml/runs?event=push&head_sha=${base}&per_page=1`]: {workflow_runs: [previous]},
+    [`${root}/compare/${base}...${head}?per_page=1`]: {status: 'ahead', merge_base_commit: {sha: base}, files},
+    [`${root}/commits/${head}/pulls?per_page=100`]: [merged],
+    [`${root}/git/commits/${head}`]: {tree: {sha: tree}},
+    [`${root}/git/commits/${source}`]: {tree: {sha: tree}},
+    [`${root}/git/commits/${merge}`]: {tree: {sha: tree}, parents: [{sha: base}, {sha: source}]},
+    [`${root}/actions/workflows/main-merge.yml`]: {id: 55, path: '.github/workflows/main-merge.yml'},
+    [`${root}/actions/workflows/main-merge.yml/runs?event=pull_request&head_sha=${source}&per_page=1`]: {workflow_runs: [run]}
+  };
+  const get = async endpoint => {assert.ok(Object.hasOwn(data, endpoint), endpoint); return structuredClone(data[endpoint]);};
+  return {context, data, get, run, previous, merged, root, source, merge};
+}
+
+test('validated main baseline permits path selection including renames and documentation', async () => {
+  for (const files of [[file('README.md')], [file('arena.html')], [file('docs/old.md', {status: 'renamed', previous_filename: 'arena.html'})]]) {
+    const f = releaseFixture(files);
+    assert.deepEqual(await planForEvent(config, f.context, f.get), selectSuites(config, files, 'main'));
+  }
+});
+
+test('unknown or failed baseline, force push, divergent history and capped diff run all suites', async () => {
+  const mutations = [
+    f => {f.previous.conclusion = 'failure';}, f => {f.previous.status = 'in_progress';},
+    f => {f.previous.head_branch = 'feature';}, f => {f.previous.repository = {full_name: 'other/repo'};},
+    f => {f.context.event.forced = true;}, f => {f.context.event.before = '0'.repeat(40);},
+    f => {f.data[`${f.root}/compare/${base}...${head}?per_page=1`].status = 'diverged';},
+    f => {f.data[`${f.root}/compare/${base}...${head}?per_page=1`].merge_base_commit.sha = head;},
+    f => {f.data[`${f.root}/compare/${base}...${head}?per_page=1`].files = Array.from({length: 300}, (_, i) => file(`docs/${i}.md`));},
+    f => {delete f.data[`${f.root}/compare/${base}...${head}?per_page=1`].files;}
+  ];
+  for (const mutate of mutations) {
+    const f = releaseFixture([file('README.md')]); mutate(f);
+    assert.deepEqual(await planForEvent(config, f.context, f.get), ids);
+  }
+});
+
+test('exact tested PR merge tree is reused and independently reverified by the gate', async () => {
+  const f = releaseFixture();
+  assert.deepEqual(await planExecution(config, f.context, f.get), {selected: [], reusedRun: 101});
+  assert.ok(await verifyExecution(config, f.context, [], validNeeds([]), 101, f.get));
+  f.run.conclusion = 'failure';
+  await assert.rejects(verifyExecution(config, f.context, [], validNeeds([]), 101, f.get), /could not be verified/);
+});
+
+test('reuse rejects wrong code, base, source, checkout, workflow, event, status and provenance', async () => {
+  const mutations = [
+    f => {f.previous.conclusion = 'failure';},
+    f => {f.merged.head.repo.full_name = 'fork/repo';}, f => {f.merged.base.sha = head;},
+    f => {f.merged.base.ref = 'release';}, f => {f.merged.merge_commit_sha = base;},
+    f => {f.merged.merged_at = null;},
+    f => {f.data[`${f.root}/git/commits/${head}`].tree.sha = base;},
+    f => {f.data[`${f.root}/git/commits/${f.merge}`].tree.sha = base;},
+    f => {f.data[`${f.root}/git/commits/${f.merge}`].parents[0].sha = head;},
+    f => {f.data[`${f.root}/git/commits/${f.merge}`].parents[1].sha = base;},
+    f => {f.run.event = 'workflow_dispatch';}, f => {f.run.head_sha = head;},
+    f => {f.run.head_repository.full_name = 'fork/repo';}, f => {f.run.path = '.github/workflows/fake.yml';},
+    f => {f.run.workflow_id = 56;}, f => {f.run.head_branch = 'wrong';},
+    f => {f.run.display_title = 'Arbitrary PR title';}, f => {f.run.status = 'in_progress';},
+    f => {f.run.conclusion = 'cancelled';}, f => {f.run.conclusion = 'failure';},
+    f => {f.context.event.forced = true;}
+  ];
+  for (const mutate of mutations) {
+    const f = releaseFixture(); mutate(f);
+    assert.equal(await findReusableRun(f.context, f.get), null, mutate.toString());
+  }
+});
+
+test('reuse uncertainty falls back to tests; manual runs always perform full validation', async () => {
+  const f = releaseFixture();
+  const get = endpoint => endpoint.includes('/pulls?') ? Promise.reject(Error('Unavailable')) : f.get(endpoint);
+  assert.deepEqual(await planExecution(config, f.context, get), {selected: selectSuites(config, [file('arena.html')], 'main'), reusedRun: null});
+  f.context.eventName = 'workflow_dispatch';
+  assert.deepEqual(await planExecution(config, f.context, f.get), {selected: ids, reusedRun: null});
+});
+
+test('reuse never excuses a failed build, changed run, stale main or inconsistent plan', async () => {
+  const f = releaseFixture();
+  for (const reused of [0, -1, 999, '101']) await assert.rejects(verifyExecution(config, f.context, [], validNeeds([]), reused, f.get));
+  await assert.rejects(verifyExecution(config, f.context, ids, validNeeds(ids), 101, f.get));
+  const needs = validNeeds([]); needs.build_pages.result = 'failure';
+  await assert.rejects(verifyExecution(config, f.context, [], needs, 101, f.get), /artifact/);
+  f.data[`${f.root}/branches/main`].commit.sha = base;
+  await assert.rejects(verifyExecution(config, f.context, [], validNeeds([]), 101, f.get), /Stale/);
+});
+
+test('workflow records actual checkout SHA and passes reuse proof to the gate', () => {
+  const master = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/main-merge.yml'), 'utf8');
+  assert.match(master, /run-name: 'Main checks: \$\{\{ github.sha \}\}'/);
+  assert.match(master, /actions: read/);
+  assert.match(master, /reused_run: \$\{\{ steps.plan.outputs.reused_run \}\}/);
+  assert.match(master, /MERGE_REUSED_RUN: \$\{\{ needs.plan.outputs.reused_run \}\}/);
+});
+
+test('manual runs and main pushes without a validated baseline select all suites', async () => {
   for (const eventName of ['push', 'workflow_dispatch']) {
     const calls = [];
     assert.deepEqual(await planForEvent(config, mainContext({eventName}), async endpoint => {
