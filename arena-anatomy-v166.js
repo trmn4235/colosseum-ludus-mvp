@@ -216,5 +216,54 @@ var ArenaAnatomy=(()=>{
   }
  }
  const mathGrip={},gripAngles={pole:[.70,.82,.72],shield:[.76,.86,.76],blade:[.84,.98,.84]};
- return {prepare,grip,carry,pendingThrow,throwPose,begin,closeGrip};
+ // Equipment previews use one relaxed stance, independent of class and combat
+ // pole-idle clips. The flag belongs only to the preview's disposable fighter.
+ function presentation(f,m,reach){
+  if(!f.presentation224||f.action!=='idle'||f.hp<=0)return false;
+  begin(m);
+  for(const [name,bone]of m.boneEntries)bone.quaternion.copy(m.rest.get(name).q);
+  m.body.position.set(0,0,0);m.body.rotation.set(0,0,0);
+  m.root.updateMatrixWorld(true);
+  for(const left of [false,true]){
+   const kind=left?f.offhand:f.weapon;if(!kind)continue;
+   const anchor=left?m.offhandAnchor:m.weaponAnchor,pole=['spear','trident','trident_gladiator','halberd'].includes(kind);
+   const dir=kind==='mace'?{x:left?.35:-.35,y:-Math.sqrt(1-.35*.35),z:0}:{x:left?.08:-.08,y:Math.sqrt(1-.08*.08),z:0};
+   const strike={grip:{x:left?.34:-.34,y:kind==='mace'?1.18:pole?.60:1.23,z:.20},dir,pole};
+   // Hold upright polearms higher along the shaft so their heads fit the
+   // existing preview camera while the hand remains near waist height.
+   const point=grip(m,left,strike,reach,pole?.60:undefined),{v,q}=gripState(m,left);
+   anchor.position.copy(anchor.parent.worldToLocal(point));
+   anchor.quaternion.copy(anchor.parent.getWorldQuaternion(q[0]).invert().multiply(m.root.getWorldQuaternion(q[1])).multiply(q[2].setFromUnitVectors(v[0].set(0,1,0),v[1].set(dir.x,dir.y,dir.z))));
+   for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=0;}
+  }
+  if(f.shield&&m.gear.shield){
+   const slot=m.gear.shield,{v,q}=gripState(m,true);
+   // The shield's vertical axis is fixed in the character frame. Solve the
+   // hand to its actual handle, then seat the handle on the solved palm.
+   const center=v[0].set(.34,.87,.23);
+   slot.group.updateMatrix();
+   const target=v[1].set(0,0,-.075).applyMatrix4(slot.group.matrix).add(center);
+   grip(m,true,{grip:{x:target.x,y:target.y,z:target.z},dir:{x:0,y:1,z:0}},reach,0);
+   slot.anchor.quaternion.copy(slot.anchor.parent.getWorldQuaternion(q[0]).invert().multiply(m.root.getWorldQuaternion(q[1])));
+   slot.anchor.position.copy(slot.anchor.parent.worldToLocal(m.root.localToWorld(center.set(.34,.87,.23))));
+  }
+  // Preserve class-specific net / Scissor attachments and their grip handling.
+  if(f.leftGear&&!f.shield&&!f.offhand)carry({...f,weapon:null},m,reach,null);
+  closeGrip(f,m);m.root.updateMatrixWorld(true);
+  return true;
+ }
+ function hangingFlail(g){
+  const chain=g.getObjectByName('flexible-chain'),head=g.getObjectByName('flail-head');if(!chain||!head)return;
+  const T=THREE,s=g.userData.hanging224||(g.userData.hanging224={origin:new T.Vector3(),down:new T.Vector3(),a:new T.Vector3(),b:new T.Vector3(),axis:new T.Vector3(0,1,0),twist:new T.Quaternion()});
+  g.updateWorldMatrix(true,false);
+  s.origin.set(0,.43,0);g.localToWorld(s.origin);
+  s.down.copy(s.origin);s.down.y-=.55;g.worldToLocal(s.down);g.worldToLocal(s.origin);
+  chain.children.forEach((link,i)=>{
+   s.a.copy(s.origin).lerp(s.down,i/chain.children.length);s.b.copy(s.origin).lerp(s.down,(i+1)/chain.children.length);
+   link.position.copy(s.a).add(s.b).multiplyScalar(.5);
+   link.quaternion.setFromUnitVectors(s.axis,s.b.sub(s.a).normalize()).multiply(s.twist.setFromAxisAngle(s.axis,i%2?Math.PI/2:0));
+  });
+  head.position.copy(s.down);
+ }
+ return {prepare,grip,carry,pendingThrow,throwPose,begin,closeGrip,presentation,hangingFlail};
 })();

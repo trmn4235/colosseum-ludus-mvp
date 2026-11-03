@@ -2,7 +2,7 @@ name: Seven-class contacts and detail V215
 on:
   push:
     branches: [codex/character-classes-v215]
-    paths: ['arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-rig-v126.js', 'arena-anatomy-v166.js', 'naval-performance-v106.js', 'assets/naval/gladiator-lod-v215.*', 'tests/character-*-v215.cjs', 'tests/arena-browser-v96.cjs', 'tests/naval-performance-v106.test.cjs', 'tools/bake-character-lod-v215.cjs', '.github/workflows/character-v215.yml']
+    paths: ['arena.html', 'savas.html', 'multiplayer.html', 'ludus.html', 'caravan-rig-v126.js', 'arena-anatomy-v166.js', 'naval-performance-v106.js', 'assets/naval/gladiator-lod-v215.*', 'tests/character-*-v215.cjs', 'tests/preparation-*-v224.cjs', 'tests/arena-browser-v96.cjs', 'tests/naval-performance-v106.test.cjs', 'tools/bake-character-lod-v215.cjs', '.github/workflows/character-v215.yml']
   workflow_call:
 permissions:
   contents: read
@@ -17,6 +17,7 @@ jobs:
           node-version: '22'
       - name: Seven classes, attachments and existing model integrity
         run: |
+          node tests/preparation-pose-v224.cjs
           node tests/character-classes-v215.cjs
           node tests/character-grip-v215.cjs
           node tests/character-actions-v215.cjs
@@ -39,7 +40,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - run: npm install --no-save --no-package-lock playwright@1.64.1
+      - run: npm install --no-save --no-package-lock playwright@1.64.1 sharp@0.34.3
       - name: Real model, contacts and seven-class views
         env:
           LUDUS_V215_TEST: '1'
@@ -47,6 +48,11 @@ jobs:
           LUDUS_TEST_ENGINE: ${{ matrix.engine }}
           LUDUS_TEST_OUTPUT: /tmp/v215
         run: node tests/arena-browser-v96.cjs
+      - name: Preparation stance and hanging flail V224
+        env:
+          LUDUS_TEST_ENGINE: ${{ matrix.engine }}
+          LUDUS_TEST_OUTPUT: /tmp/v215/preparation-v224
+        run: node tests/preparation-browser-v224.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
