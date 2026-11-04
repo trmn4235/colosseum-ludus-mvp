@@ -8,7 +8,7 @@ module.exports=function(root){
  const levels=source.match(/const levelProgress=LudusLevels\.create[^\n]+/)?.[0];
  assert(wallet&&init&&caravans&&levels,'production HUD rendering functions must be present');
  let html=source.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi,(tag,attrs,body)=>
-  /ludus-hud-v211|rankings-entry-v200|ludus-settings-v29|combat-control-settings-v44|ludus-level-v37|ludus-door-icons-v41|ludus-first-quests-v111/.test(attrs)||/var LudusGems=/.test(body)||/id="gameViewport"/.test(attrs)?tag:'');
+  /ludus-hud-v(?:211|226)|rankings-entry-v200|ludus-settings-v29|combat-control-settings-v44|ludus-level-v37|ludus-door-icons-v41|ludus-first-quests-v111/.test(attrs)||/var LudusGems=/.test(body)||/id="gameViewport"/.test(attrs)?tag:'');
  const fixture=`
  const $=id=>document.getElementById(id);
  window.hudClicks={};const hit=key=>hudClicks[key]=(hudClicks[key]||0)+1;
@@ -17,6 +17,7 @@ module.exports=function(root){
  const rooms=[{kind:'store'}],roster=Array.from({length:7},(_,i)=>({record:{id:'fighter-'+i,status:'available'}}));
  const trainingNow=()=>Date.now(),trainingPhase=g=>g.record.status==='available'?'available':'mission';
  const leaveRoom=()=>{activeRoom=null;},toggleExplore=()=>{exploring=!exploring;},enterRoom=r=>{activeRoom=r;};
+ const paused=false,workerPanel={open:()=>hit('workers')};
  const supplySystem={open:view=>hit('caravans')},showGladiator=g=>hit('gladiators');
  ${init}
  const accountReady=Promise.resolve();
