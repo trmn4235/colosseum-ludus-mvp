@@ -8,7 +8,7 @@ module.exports=function(root){
  const levels=source.match(/const levelProgress=LudusLevels\.create[^\n]+/)?.[0];
  assert(wallet&&init&&caravans&&levels,'production HUD rendering functions must be present');
  let html=source.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi,(tag,attrs,body)=>
-  /ludus-hud-v211|rankings-entry-v200|ludus-settings-v29|combat-control-settings-v44|ludus-level-v37|ludus-door-icons-v41|ludus-first-quests-v111/.test(attrs)||/var LudusGems=/.test(body)||/id="gameViewport"/.test(attrs)?tag:'');
+  /ludus-hud-v(?:211|226)|rankings-entry-v200|ludus-settings-v29|combat-control-settings-v44|ludus-level-v37|ludus-door-icons-v41|ludus-first-quests-v111/.test(attrs)||/var LudusGems=/.test(body)||/id="gameViewport"/.test(attrs)?tag:'');
  const fixture=`
  const $=id=>document.getElementById(id);
  window.hudClicks={};const hit=key=>hudClicks[key]=(hudClicks[key]||0)+1;
@@ -17,6 +17,7 @@ module.exports=function(root){
  const rooms=[{kind:'store'}],roster=Array.from({length:7},(_,i)=>({record:{id:'fighter-'+i,status:'available'}}));
  const trainingNow=()=>Date.now(),trainingPhase=g=>g.record.status==='available'?'available':'mission';
  const leaveRoom=()=>{activeRoom=null;},toggleExplore=()=>{exploring=!exploring;},enterRoom=r=>{activeRoom=r;};
+ const paused=false,workerPanel={open:()=>hit('workers')};
  const supplySystem={open:view=>hit('caravans')},showGladiator=g=>hit('gladiators');
  ${init}
  const accountReady=Promise.resolve();
@@ -30,7 +31,7 @@ module.exports=function(root){
  for(const id of ['messagesOpen','accountLink'])$(id).hidden=false;
  $('messageUnread').hidden=false;$('messageUnread').textContent='43';
  updateGladiatorHud();$('loading').hidden=true;$('residentStatus').hidden=true;
- window.hud={setGold:ludusHud.setGold,setRoster:(rows,loaded=true,now=Date.now())=>ludusHud.setRoster(rows,loaded,now),async setWallet(values){setWallet(values);await levelProgress.refresh();updateCaravanHud({free_caravans:6,caravans:6});},async setLevel(level){hudData.level=level;await levelProgress.refresh();},setCaravans:updateCaravanHud,async setBook(count){hudData.count=count;await guide.start();}};
+ window.hud={setGold:ludusHud.setGold,setRoster:(rows,loaded=true,now=Date.now())=>ludusHud.setRoster(rows,loaded,now),setWorkers:ludusHud.setWorkers,async setWallet(values){setWallet(values);await levelProgress.refresh();ludusHud.setWorkers(Array.from({length:8},(_,i)=>({id:String(i)})));updateCaravanHud({free_caravans:6,caravans:6});},async setLevel(level){hudData.level=level;await levelProgress.refresh();},setCaravans:updateCaravanHud,async setBook(count){hudData.count=count;await guide.start();}};
  window.hudReady=(async()=>{await hud.setWallet(hudData.values);await guide.start();})();
  document.body.style.backgroundImage='var(--loading-photo-ludus)';document.body.style.backgroundSize='cover';document.body.style.backgroundPosition='center';
  `;

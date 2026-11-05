@@ -9,16 +9,21 @@ permissions:
 jobs:
   pit:
     runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --user 1001 --shm-size=1g
+    defaults:
+      run:
+        shell: bash
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - run: npm install --no-save --no-package-lock playwright@1.56.1 @electric-sql/pglite@0.5.11
+      - run: npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.11
       - run: node tests/pit-model-v172.cjs && node tests/pit-exhibition-v174.cjs
       - run: node tests/pit-round-v176.cjs && node --test tests/pit-axe-v192.cjs
-      - run: npx playwright install --with-deps --only-shell chromium
       - run: node tests/pit-people-v175.cjs && node tests/pit-gallery-v175.cjs
       - run: node tests/pit-browser-v172.cjs && node tests/pit-combat-browser-v172.cjs
       - run: node tests/pit-controls-v177.cjs && node tests/pit-archery-v178.cjs && node tests/pit-camera-v180.cjs
