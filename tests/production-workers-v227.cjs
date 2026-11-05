@@ -9,9 +9,16 @@ module.exports=async({db,q,A,B,call,migration,randomUUID})=>{
  await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval '2 hours',ends_at=clock_timestamp()-interval '1 second' where owner_id=$1",[A]);
  await q('update ludus_accounts set gold=1000000 where user_id=$1',[A]);
  await q('update ludus_supply_private.stock set quantity=0 where owner_id=$1',[A]);
- await auth();await call();
- const city=async()=>(await q('select ludus_caravan_city(1)s'))[0].s;
- const key=async(sku,n)=>'1:'+sku+':'+(await city()).epoch+':'+n;
+ await auth();const cities=(await call()).cities;
+ // Quotes rotate every 15 minutes, and earlier suites consume shared stock.
+ // Buy from an actual stocked city instead of assuming city 1 has every load.
+ const key=async(sku,n)=>{
+  for(const city of cities){
+   const quote=(await q('select ludus_caravan_city($1)s',[city.id]))[0].s;
+   if(quote.goods.some(g=>g.sku===sku&&g.stock>=n))return [city.id,sku,quote.epoch,n].join(':');
+  }
+  throw new Error('No city has '+n+' '+sku+' available for the worker test');
+ };
  const oldRequest=randomUUID(),oldKey=await key('iron_ore',1),old=(await call('buy',oldKey,oldRequest)).result.job_id;
  await admin();for(const n of ['workers_profile_v226','workers_auth_v226','workers_eight_v226','workers_professions_v227'])await db.exec(migration(n));await auth();
  const roster=async()=>(await q('select ludus_workers_roster_v226()s'))[0].s;
@@ -31,7 +38,7 @@ module.exports=async({db,q,A,B,call,migration,randomUUID})=>{
  await rejects(()=>depart({request,route,workers:[ids[1]]}),/başka bir işçi seferinde/);
  const gold=s.gold;await rejects(()=>depart(),/zaten seferde/);assert.equal((await call()).gold,gold,'rejected reservation does not charge gold');
  await rejects(()=>depart({workers:[ids[1],ids[1]]}),/farklı bir işçi/);
- await rejects(()=>depart({sku:'fish'}),/yalnızca ekipman/);
+ await rejects(()=>depart({route:route.replace(':iron_ore:',':fish:')}),/yalnızca ekipman/);
  await identity(B);const foreign=(await roster()).workers[0].id;assert.ok((await roster()).workers.every(w=>!ids.includes(w.id)));await identity(A);
  await rejects(()=>depart({workers:[foreign]}),/senin Ludusuna/);
  r=await deliver(job);assert.equal(skill(r,ids[0]).xp,60);assert.equal(skill(r,ids[0]).level,2);assert.equal(skill(r,ids[0]).delivered,60);assert.equal(r.workers[0].job_id,null);
