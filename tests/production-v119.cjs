@@ -144,6 +144,7 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  if(process.env.LUDUS_CARAVAN_RAIDS_TEST)await require('./production-raids-v124.cjs')({db,q,A,B,call,stock,migration,randomUUID});
  if(process.env.LUDUS_CARAVAN_COMBAT_TEST)await require('./production-combat-v126.cjs')({db,q,A,B,call,stock,migration,randomUUID});
  if(process.env.LUDUS_CARAVAN_COMBAT_TEST)await require('./production-workers-v227.cjs')({db,q,A,B,call,stock,migration,randomUUID});
+ if(process.env.LUDUS_CARAVAN_COMBAT_TEST)await require('./production-workers-v229.cjs')({db,q,A,B,call,stock,migration,randomUUID});
  fs.writeFileSync('/tmp/production-state-v119.json',JSON.stringify(await call()));
 
  await db.exec('reset role;set role anon');await assert.rejects(()=>call(),/permission denied/);
