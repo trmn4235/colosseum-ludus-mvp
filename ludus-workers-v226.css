@@ -22,3 +22,24 @@
 .workers-jobs{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:7px;flex:1;min-height:0}.workers-job{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:0;padding:8px 12px;background:#fff;border:1px solid #e1d2b4;border-radius:4px}.workers-job-main,.workers-job-meta{display:flex;flex-direction:column;min-width:0;gap:4px}.workers-job-main strong{font:17px Georgia,serif;color:#61202b}.workers-job small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#827360;font-size:11px}.workers-job-meta{text-align:right;color:#77432f;font-size:11px;white-space:nowrap}
 @media(max-height:500px){.workers-modal .workers-head{padding:5px 10px;gap:8px;grid-template-columns:minmax(100px,130px) minmax(0,1fr) 30px}.workers-brand small{display:none}.workers-brand h1{font-size:19px}.workers-tab{min-height:27px;font-size:10px}.workers-close{width:30px;height:28px}.workers-body{padding:7px 11px;gap:5px}.workers-grid{gap:7px}.worker-card{gap:3px;padding:5px}.worker-card strong{font-size:15px}.worker-card small{font-size:9px}.workers-portrait{width:min(100%,145px,calc((100dvh - 137px)*.66))}.worker-large{width:min(100%,155px,calc((100dvh - 112px)*.7))}.workers-footer{min-height:20px;padding:2px 11px}.workers-page-button{height:23px}.worker-detail{grid-template-columns:minmax(125px,175px) minmax(0,1fr);gap:10px}.worker-identity{gap:4px}.worker-profile{gap:5px;padding:7px 10px}.worker-profile-title{font-size:18px}.worker-skill{min-height:36px;gap:2px}.worker-skill strong{font-size:15px}.worker-profile-note{font-size:10px}.worker-name-line input{height:26px}.workers-job{padding:5px 9px}.workers-job-main strong{font-size:15px}.workers-jobs{gap:4px}.workers-empty h2{font-size:18px}.workers-empty p{font-size:11px}}
 @media(max-width:600px){.workers-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}.workers-modal .workers-head{grid-template-columns:minmax(80px,105px) minmax(0,1fr) 28px;gap:5px}.workers-tab{font-size:9px}.worker-skills{grid-template-columns:repeat(3,minmax(0,1fr))}.worker-skill{min-height:30px}.worker-skill span{font-size:9px}}
+
+/* V227: nine material professions and individual caravan selection. */
+.worker-skills{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));flex:1;min-height:0;gap:6px}
+.worker-skill{align-items:stretch;min-width:0;min-height:0;padding:7px;gap:4px}
+.worker-skill-heading{display:flex;justify-content:space-between;align-items:center;gap:5px;min-width:0}
+.worker-skill-heading span{text-align:left;line-height:1.15;font-size:11px}.worker-skill-heading strong{font:13px Arial,sans-serif;white-space:nowrap}
+.worker-skill progress{width:100%;height:5px;border:0;border-radius:3px;accent-color:#91602e;background:#e9dfcb}
+.worker-skill progress::-webkit-progress-bar{background:#e9dfcb;border-radius:3px}.worker-skill progress::-webkit-progress-value{background:#91602e;border-radius:3px}
+.worker-skill-xp,.worker-skill-total{font-size:10px;line-height:1.15;color:#806d56}.worker-skill-total{color:#64222d}
+.worker-job-crew{color:#64222d!important}
+.supply-worker-picker{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow:hidden}
+.supply-worker-picker .workers-grid{gap:7px}.supply-worker-picker .worker-card{padding:5px;gap:3px;min-height:0;letter-spacing:0;color:#591823;background:#fffaf1;border:1px solid #ccb381;box-shadow:none}
+.supply-worker-picker .worker-card[aria-pressed=true]{outline:2px solid #89562b;outline-offset:-2px;background:#f8eddb}
+.supply-worker-picker .worker-card:disabled{opacity:.45}.supply-worker-picker .worker-card strong{font:15px Georgia,serif;flex:none}
+.supply-worker-picker .worker-card .workers-portrait{width:min(95px,calc((100dvh - 290px)*.4));min-width:24px}
+.supply-worker-picker .worker-card small,.worker-choice{font:10px Arial,sans-serif}.worker-choice{color:#742c38}
+.supply-worker-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+.supply-worker-actions small{font-size:10px}.supply-worker-actions .supply-primary{min-height:29px;padding:5px 12px}
+.supply-location-bar .supply-worker-open,.caravan-city-heading .supply-worker-open{font-size:10px;white-space:nowrap;padding:5px 8px;min-height:27px}
+@media(max-height:500px){.worker-skill{padding:5px;gap:3px}.worker-skill-heading span{font-size:10px}.worker-skill-heading strong{font-size:11px}.worker-skill-xp,.worker-skill-total{font-size:9px}.worker-skills{gap:4px}}
+@media(max-width:600px) and (min-height:501px){.worker-detail{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:8px}.worker-identity{flex-direction:row;justify-content:center;gap:12px}.worker-identity .worker-large{width:78px}.worker-name-form{max-width:220px}.worker-profile{padding:9px}.worker-skills{gap:5px}.worker-skill-heading{flex-wrap:wrap}}
