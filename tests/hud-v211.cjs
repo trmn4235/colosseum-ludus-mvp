@@ -120,8 +120,8 @@ async function run(){
   }
   await page.evaluate(()=>hud.setLevel(50));await page.evaluate(()=>hud.setGold(1100000));await settle();
   assert((await page.locator('.money[data-currency=gold]').getAttribute('aria-label')).startsWith('1.100.000 '));
-  await page.evaluate(()=>{hud.setCaravans({free_caravans:12,caravans:12});hud.setRoster(Array.from({length:12},(_,i)=>({id:String(i),status:'available'})));});await geometry('two-digit crew counters');
-  await page.evaluate(()=>hud.setCaravans({free_caravans:2,caravans:6}));assert.equal(await page.locator('#caravanHud .hud-count').textContent(),'2/6');
+  await page.evaluate(()=>{hud.setWorkers(Array.from({length:12},(_,i)=>({id:String(i)})));hud.setRoster(Array.from({length:12},(_,i)=>({id:String(i),status:'available'})));});await geometry('two-digit crew counters');
+  await page.evaluate(()=>{hud.setWorkers(Array.from({length:8},(_,i)=>({id:String(i)})));hud.setCaravans({free_caravans:2,caravans:6});});assert.equal(await page.locator('#caravanHud .hud-count').textContent(),'8','caravan changes must not overwrite the worker roster count');
   await page.evaluate(()=>hud.setRoster(Array.from({length:7},(_,i)=>({id:String(i),status:'available'}))));assert.equal(await page.locator('#gladiatorHud .hud-count').textContent(),'7/7');
   await page.evaluate(()=>hud.setRoster([{id:'1'},{id:'2',status:'locked'}]));assert.equal(await page.locator('#gladiatorHud .hud-count').textContent(),'1/2');
   await page.evaluate(()=>hud.setRoster([{id:'1'}],false));assert.equal(await page.locator('#gladiatorHud .hud-count').textContent(),'—/1');await geometry('updated counters');

@@ -1282,7 +1282,7 @@ const stoneWallet=await accountClient.from('ludus_stones').select('family,quanti
 })();
 accountReady.catch(error=>{$('loading').hidden=false;$('loading').textContent=error.message;window.RomeTravel?.fail(error.message);$('residentStatus').hidden=true;});
 let workersPreviousPause=false;
-const workerPanel=LudusWorkersV226.create({client:accountClient,ready:accountReady,onOpen(){workersPreviousPause=paused;clear();paused=true;},onClose(){clear();paused=workersPreviousPause;}});
+const workerPanel=LudusWorkersV226.create({client:accountClient,ready:accountReady,onRoster:rows=>ludusHud.setWorkers(rows),onOpen(){workersPreviousPause=paused;clear();paused=true;},onClose(){clear();paused=workersPreviousPause;}});
 let messagesPreviousPause=false;
 const messageInbox=LudusMessages.create({client:accountClient,getUser:()=>playerAccount?.user_id,
  onOpen(){messagesPreviousPause=paused;clear();paused=true;},onClose(){clear();paused=messagesPreviousPause;beginnerGuide?.resume('messages');},
@@ -1403,7 +1403,6 @@ let foodPause=false;const foodSystem=LudusFood.create({...worldActionContext,T,c
 let clanVaultPause=false;
 clanVault=LudusClanVault.create({client:accountClient,ready:accountReady,props:roomProps,player,camera,canvas,inRoom:()=>activeRoom?.kind==="clan",blocked:()=>paused,setCollider:c=>{roomColliders.splice(0,roomColliders.length,...roomColliders.filter(x=>x.kind!=="clan-chest"),c);if(!allowed(player.x,player.z)){player.x=0;player.z=2.6;}},onOpen:()=>{clanVaultPause=paused;clear();paused=true;},onClose:()=>{clear();paused=clanVaultPause;},onTransfer:data=>{const counts={};for(const s of data.inventory_stones||[])counts[s.family]=(counts[s.family]||0)+s.quantity;const values=[data.wallet?.gold||0,counts.diamond||0,counts.sapphire||0,counts.emerald||0,counts.ruby||0];ludusHud.setWallet(values);}});
 function updateCaravanHud(data){
- ludusHud.setCaravans(data);
  for(const row of data?.gladiators||[]){const g=roster.find(g=>g.record?.id===row.id);if(g)g.record={...g.record,...row};}
  updateGladiatorHud();
 }

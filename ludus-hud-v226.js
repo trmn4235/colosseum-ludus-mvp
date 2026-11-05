@@ -57,7 +57,7 @@
   const crew=el('div','hud-crew');crew.setAttribute('role','group');crew.setAttribute('aria-label','Boş ve toplam birimler');
   const button=(id,key,label,action)=>{const b=named(el('button','hud-action hud-indicator'),label);b.id=id;b.dataset.key=key;b.type='button';b.onclick=action;b.append(art(key));return b;};
   const fighters=button('gladiatorHud','gladiator','Gladyatör bilgileri yükleniyor',ctx.openGladiators),caravan=button('caravanHud','worker','İşçi bilgileri yükleniyor',ctx.openWorkers);
-  const fighterCount=el('span','hud-count'),caravanCount=el('span','hud-count caravan-hud-count');fighterCount.textContent=caravanCount.textContent='—/—';
+  const fighterCount=el('span','hud-count'),caravanCount=el('span','hud-count caravan-hud-count');fighterCount.textContent='—/—';caravanCount.textContent='—';
   fighters.append(fighterCount);caravan.append(caravanCount);crew.append(fighters,caravan);units.push(fighters,caravan);
   tools.setAttribute('role','group');tools.setAttribute('aria-label','Sosyal ve ayarlar');
   for(const [id,key]of [['friendsOpen','friends'],['messagesOpen','messages'],['accountLink','settings']]){
@@ -132,7 +132,7 @@
   return {
    setWallet:values=>values.forEach((v,i)=>{if(i<money.length)setOne(i,v);}),setGold:value=>setOne(0,value),
    setLevel:data=>{const n=integer(data?.level);centerLevel(n??'—');named(level,n===null?'Ludus seviyesi yükleniyor':'Ludus seviyesi '+n+' · '+(ctx.levelDescription?.(data)||'Seviye ödüllerini aç'));},
-   setCaravans:data=>setCount(caravan,caravanCount,data?.free_caravans??data?.free_workers,data?.caravans??data?.workers,'işçi'),
+   setWorkers:rows=>{const count=Array.isArray(rows)?rows.length:null;caravanCount.textContent=count===null?'—':String(count);named(caravan,count===null?'İşçi bilgileri yükleniyor':count+' işçi · İşçilerimi aç');caravan.dataset.total=count??'';schedule();},
    setRoster:(roster,loaded,now)=>{const counts=rosterCounts(roster,loaded,now);setCount(fighters,fighterCount,counts.free,counts.total,'gladyatör');fighters.disabled=!counts.total;},
    destroy:()=>{resize.disconnect();visibility.disconnect();cancelAnimationFrame(scheduled);}
   };

@@ -31,7 +31,7 @@ module.exports=function(root){
  for(const id of ['messagesOpen','accountLink'])$(id).hidden=false;
  $('messageUnread').hidden=false;$('messageUnread').textContent='43';
  updateGladiatorHud();$('loading').hidden=true;$('residentStatus').hidden=true;
- window.hud={setGold:ludusHud.setGold,setRoster:(rows,loaded=true,now=Date.now())=>ludusHud.setRoster(rows,loaded,now),async setWallet(values){setWallet(values);await levelProgress.refresh();updateCaravanHud({free_caravans:6,caravans:6});},async setLevel(level){hudData.level=level;await levelProgress.refresh();},setCaravans:updateCaravanHud,async setBook(count){hudData.count=count;await guide.start();}};
+ window.hud={setGold:ludusHud.setGold,setRoster:(rows,loaded=true,now=Date.now())=>ludusHud.setRoster(rows,loaded,now),setWorkers:ludusHud.setWorkers,async setWallet(values){setWallet(values);await levelProgress.refresh();ludusHud.setWorkers(Array.from({length:8},(_,i)=>({id:String(i)})));updateCaravanHud({free_caravans:6,caravans:6});},async setLevel(level){hudData.level=level;await levelProgress.refresh();},setCaravans:updateCaravanHud,async setBook(count){hudData.count=count;await guide.start();}};
  window.hudReady=(async()=>{await hud.setWallet(hudData.values);await guide.start();})();
  document.body.style.backgroundImage='var(--loading-photo-ludus)';document.body.style.backgroundSize='cover';document.body.style.backgroundPosition='center';
  `;
