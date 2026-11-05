@@ -1,4 +1,4 @@
-/* V226: worker entry; 10% lower frame and 3% smaller icons; V210 equal pair/group spacing retained. */
+/* V228: worker with a pick and work apron; approved HUD geometry retained. */
 (function(root){
  'use strict';
  const families=['gold','diamond','sapphire','emerald','ruby'],labels=['Altın','Elmas','Safir','Zümrüt','Yakut'];
@@ -25,7 +25,7 @@
   function art(name){
    const clip=el('span','hud-art-clip');clip.setAttribute('aria-hidden','true');
    const img=el('img','hud-art hud-icon--'+name),gem=families.slice(1).includes(name);
-   img.src=name==='worker'?'assets/hud-v226/workers.svg':gem?'assets/hud-v207/'+name+'.svg':name==='palmette'?'assets/hud-v207/palmette.webp':'assets/hud-v202/'+name+'.webp';
+   img.src=name==='worker'?'assets/hud-v226/workers.svg?v=revision228':gem?'assets/hud-v207/'+name+'.svg':name==='palmette'?'assets/hud-v207/palmette.webp':'assets/hud-v202/'+name+'.webp';
    img.alt='';img.draggable=false;const [iw,ih,x,y,r,b]=crops[name]||[48,48,0,0,48,48];
    img.width=iw;img.height=ih;img.style.width=(100*iw/(r-x))+'%';img.style.height=(100*ih/(b-y))+'%';
    img.style.left=(-100*x/(r-x))+'%';img.style.top=(-100*y/(b-y))+'%';clip.append(img);return clip;
