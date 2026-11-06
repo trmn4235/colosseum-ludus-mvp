@@ -6,7 +6,7 @@
  const link=make('link');link.rel='stylesheet';link.href='caravan-battle-v127.css?v=revision180';document.head.append(link);document.body.classList.add('caravan-battle');
  const overlay=make('section','cb-overlay'),card=make('div','cb-card'),title=make('h2','',defense?'Kervan savunması hazırlanıyor':'Av ekibi hazırlanıyor'),copy=make('p','','Orman yolu ve gladyatörler yükleniyor…');card.append(title,copy);overlay.append(card);overlay.hidden=true;document.body.append(overlay);
  let motionTimeline;
- let movementControl,client,owner,ticket,state,field,sim,touchControls,controlSettings,dropBatch,models=[],paused=true,saving=false,saved=false,settlementStarted=false,abandon=false,storeKey,lastSave=0,accumulator=0,cameraYaw=Math.PI,cameraPitch=.52,pointer=null,toastUntil=0,presentation=null,firstDeathSeen=false;
+ let movementControl,client,owner,ticket,state,field,sim,touchControls,controlSettings,dropBatch,models=[],paused=true,saving=false,saved=false,settlementStarted=false,abandon=false,storeKey,lastSave=0,accumulator=0,cameraYaw=defense?0:Math.PI,cameraPitch=.52,pointer=null,toastUntil=0,presentation=null,firstDeathSeen=false;
  const keys=new Set(),stick={x:0,y:0,id:null},held=new Set(),buttons={},bars=[],arrowMeshes=[];
  const keyFlags={KeyJ:1,KeyK:2,ShiftLeft:2};let queued=0,selectedRegion='chest',guardRegion=null;
  function action(text,fn,cls=''){const b=make('button',cls,text);b.type='button';b.onclick=fn;return b;}
@@ -76,7 +76,7 @@
    else if(f.hp>0&&f.action!=='knocked'&&f.action!=='dodge'){m.root.position.set(pose.x,pose.navHeight||0,pose.z);m.root.rotation.y=pose.angle;}
    GamePerformance.characterShadows(m,f.hp>0&&NavalPerformance.shadow(f.id));
    if(f.caravanHood&&m.gear.helmet){if(!m.caravanHood){m.caravanHood=m.gear.helmet.group.clone(false);m.caravanHood.add(LudusCaravanOutfit.get(THREE).clone(true));m.gear.helmet.group.parent.add(m.caravanHood);m.shadowRevisionV84=-1;}m.caravanHood.position.copy(m.gear.helmet.group.position);m.caravanHood.quaternion.copy(m.gear.helmet.group.quaternion);m.caravanHood.scale.copy(m.gear.helmet.group.scale);m.caravanHood.visible=true;m.gear.helmet.group.visible=false;}
-   if(f.archer){if(!m.caravanBow){m.caravanBow=bow();m.offhandAnchor.add(m.caravanBow);m.shadowRevisionV84=-1;}m.caravanBow.visible=f.hp>0;m.offhandAnchor.visible=f.hp>0;if(due&&f.motionVersion!==163&&f.bowDrawUntil>c.time){m.bones.LeftArm.rotateZ(-.55);m.bones.RightForeArm.rotateY(-.5);}}
+   if(f.archer&&(!f.worker||f.gearBase?.armed)){if(!m.caravanBow){m.caravanBow=bow();m.offhandAnchor.add(m.caravanBow);m.shadowRevisionV84=-1;}m.caravanBow.visible=f.hp>0;m.offhandAnchor.visible=f.hp>0;if(due&&f.motionVersion!==163&&f.bowDrawUntil>c.time){m.bones.LeftArm.rotateZ(-.55);m.bones.RightForeArm.rotateY(-.5);}}
    if(m.teamMark)m.teamMark.visible=f.hp>0;if(f.hp>0&&f.move>.2&&c.time>(m.nextDust||0)){field.footDust?.(f.x,f.z,f.action==='dodge'?1.5:1);m.nextDust=c.time+.32;}
    if(updateHud&&bars[f.id]){bars[f.id].hp.value=Math.max(0,f.hp/f.maxHp*100);bars[f.id].row.dataset.dead=String(f.hp<=0);}
   }
