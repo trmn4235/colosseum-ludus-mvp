@@ -4,7 +4,8 @@ window.CaravanLoading=(()=>{
  const weights=raid?{forest:65,scripts:10,account:5,actors:12,driver:3,ready:5}:{forest:95,ready:5};
  const values={},box=document.getElementById('loading'),bar=document.getElementById('loadProgress'),detail=document.getElementById('loadDetail'),percent=document.getElementById('loadPercent');
  let failed=false;
- if(!raid)box.querySelector('strong').textContent=new URLSearchParams(location.search).get('mode')==='defense'?'Kervan Savunması':'Orman Geçidi';
+ if(new URLSearchParams(location.search).has('defense'))box.querySelector('strong').textContent='Kervan Savunması';
+ else if(!raid)box.querySelector('strong').textContent=new URLSearchParams(location.search).get('mode')==='defense'?'Kervan Savunması':'Orman Geçidi';
  function set(stage,value,label){
   if(failed)return;values[stage]=Math.max(values[stage]||0,Math.min(1,value));
   const progress=Math.floor(Object.entries(weights).reduce((n,[key,w])=>n+w*(values[key]||0),0));

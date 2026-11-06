@@ -15,7 +15,7 @@ function caravanChecks(){
   const f=fighter(1,left),p={...fighter(0),action:'idle',weapon:'gladius'},fighters=[p,f],shot={owner:1,kind:left?'sica':'spear',launched:false,age:.2},shots=[shot],models=[model(),model()],calls=[];
   const c={fighters,projectiles:shots,arrows:[],time:1,finished:false,lockedTarget:null,enemy:()=>false,alive:()=>1};
   const elements=new Map(),element=id=>{if(!elements.has(id))elements.set(id,{style:{},setAttribute:noop});return elements.get(id);};
-  const context=vm.createContext({state:{combat:c},accumulator:0,sim:{STEP:1/30},motionTimeline:{read:live=>({...live,timer:.24})},hudClock:0,hudState:'',paused:false,models,bars:[],arrowMeshes:[],
+  const context=vm.createContext({defense:false,state:{combat:c},accumulator:0,sim:{STEP:1/30},motionTimeline:{read:live=>({...live,timer:.24})},hudClock:0,hudState:'',paused:false,models,bars:[],arrowMeshes:[],
    field:{camera:{position:{lerp:noop},lookAt:noop},height:()=>0,startleHorses:noop},GamePerformance:{beginVisibility:noop,characterVisibility:noop,characterShadows:noop},
    NavalPerformance:{beginFrame:noop,focus:()=>false,character:noop,interval:()=>.1,phase:()=>0,shadow:()=>false},ArenaRuntime:{settleCorpse:noop},
    ImportedGladiator:{animate:(pose,m,time,dt)=>{calls.push({pose,m,time,dt});m.renderedWeapon=pose.weapon;m.renderedOffhand=pose.offhand;}},

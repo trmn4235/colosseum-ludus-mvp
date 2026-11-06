@@ -97,7 +97,7 @@
   if(saving||saved)return;settlementStarted=true;paused=true;clear();checkpoint();saving=true;
   const won=!abandon&&state.combat.result==='win',art='assets/caravan-v124/'+(won?'success':'failure')+'.webp';
   if(!defense&&won&&window.CaravanVictory?.pending()){CaravanLoading.hide();overlay.hidden=true;}
-  else show('Baskın sona erdi','Savaş kaydı doğrulanıyor…',[],art);
+  else show(defense?'Savunma sona erdi':'Baskın sona erdi','Savaş kaydı doğrulanıyor…',[],art);
   try{
    const response=await client.functions.invoke(defense?'caravan-defense-v230':'caravan-combat-v126',{body:{raid,commands:state.commands,steps:state.steps,abandon}});
    if(response.error){let detail;try{detail=await response.error.context?.json();}catch{}throw Error(detail?.error||response.error.message);}
@@ -119,9 +119,9 @@
   motionTimeline=ArenaMotionStability.createTimeline();
   client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
   const user=await client.auth.getUser();if(user.error||!user.data.user||user.data.user.is_anonymous)throw Error('Kervan avına girmek için hesabına giriş yap.');owner=user.data.user.id;storeKey=(defense?'caravan-defense-v230:':'caravan-combat-v126:')+owner+':'+raid;
-  const status=await api('state');CaravanLoading.set('account',1,'Av ekibi doğrulandı');ticket=(defense?status.encounters:[status.active,...status.history]).find(j=>j?.id===raid);if(!ticket)throw Error('Bu hesaba ait baskın bulunamadı.');if(ticket.status==='resolved'){show('Baskın tamamlandı','Bu savaşın sonucu daha önce kaydedilmiş.',[returnLink()]);return;}
+  const status=await api('state');CaravanLoading.set('account',1,defense?'Savunma ekibi doğrulandı':'Av ekibi doğrulandı');ticket=(defense?status.encounters:[status.active,...status.history]).find(j=>j?.id===raid);if(!ticket)throw Error('Bu hesaba ait baskın bulunamadı.');if(ticket.status==='resolved'){show(defense?'Savunma tamamlandı':'Baskın tamamlandı','Bu savaşın sonucu daha önce kaydedilmiş.',[returnLink()]);return;}
   await Promise.all([ImportedGladiator.load(text=>CaravanLoading.set('actors',text==='Gladyatör hazır'?1:.1,text)),NavalPerformance.load(),CaravanPresentation.loadDriver(),new Promise((resolve,reject)=>{const begin=Date.now(),timer=setInterval(()=>{if(window.CaravanField?.ready){clearInterval(timer);resolve();}else if(Date.now()-begin>70000){clearInterval(timer);reject(Error('Orman sahnesi yüklenemedi.'));}},80);})]);
-  const entered=await api('enter');ticket=entered.result;if(ticket.status==='resolved'){show('Baskın tamamlandı','Sonuç baskın bilgilerinde kayıtlı.',[returnLink()]);return;}
+  const entered=await api('enter');ticket=entered.result;if(ticket.status==='resolved'){show(defense?'Savunma tamamlandı':'Baskın tamamlandı','Sonuç baskın bilgilerinde kayıtlı.',[returnLink()]);return;}
   field=window.CaravanField;sim=defense?CaravanDefenseV230:ticket.encounter.rules===168?CaravanSimulationV168:ticket.encounter.rules===163?CaravanSimulationV163:ticket.encounter.rules===127?CaravanSimulationV127:CaravanSimulation;state=sim.create(ticket);
   const previous=JSON.parse(localStorage.getItem(storeKey)||'null');if(previous?.owner===owner&&previous.raid===raid&&previous.seed===ticket.encounter.seed){state=sim.replay(ticket,previous.commands,previous.steps);abandon=!!previous.abandon;}
   for(const f of state.combat.fighters){const m=ImportedGladiator.create(f.id,f.type,f.archer?CaravanPresentation.driver:undefined);m.root.traverse(o=>{if(o.isMesh){o.castShadow=true;}});models.push(m);field.scene.add(m.root);}
