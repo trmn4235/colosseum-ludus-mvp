@@ -252,6 +252,18 @@ var ArenaAnatomy=(()=>{
   closeGrip(f,m);m.root.updateMatrixWorld(true);
   return true;
  }
+ function restingFlail(f,m,reach){
+  if(f.action!=='idle'||f.hp<=0||f.trainingPose||f.move>.025)return;
+  for(const left of [false,true]){
+   if((left?f.offhand:f.weapon)!=='mace')continue;
+   const anchor=left?m.offhandAnchor:m.weaponAnchor,dir={x:left?.35:-.35,y:-Math.sqrt(1-.35*.35),z:0};
+   const strike={grip:{x:left?.4:-.4,y:1.16,z:.22},dir};
+   const point=grip(m,left,strike,reach),{v,q}=gripState(m,left);
+   anchor.position.copy(anchor.parent.worldToLocal(point));
+   anchor.quaternion.copy(anchor.parent.getWorldQuaternion(q[0]).invert().multiply(m.root.getWorldQuaternion(q[1])).multiply(q[2].setFromUnitVectors(v[0].set(0,1,0),v[1].set(dir.x,dir.y,dir.z))));
+   for(const g of anchor.children){g.rotation.set(0,0,0);g.position.y=0;}
+  }
+ }
  function hangingFlail(g){
   const chain=g.getObjectByName('flexible-chain'),head=g.getObjectByName('flail-head');if(!chain||!head)return;
   const T=THREE,s=g.userData.hanging224||(g.userData.hanging224={origin:new T.Vector3(),down:new T.Vector3(),a:new T.Vector3(),b:new T.Vector3(),axis:new T.Vector3(0,1,0),twist:new T.Quaternion()});
@@ -265,5 +277,5 @@ var ArenaAnatomy=(()=>{
   });
   head.position.copy(s.down);
  }
- return {prepare,grip,carry,pendingThrow,throwPose,begin,closeGrip,presentation,hangingFlail};
+ return {prepare,grip,carry,pendingThrow,throwPose,begin,closeGrip,presentation,restingFlail,hangingFlail};
 })();

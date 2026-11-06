@@ -42,7 +42,8 @@ test('every active model has the same immutable mirror and exact shipped hash in
   for(const match of calls)assert.ok(expected[match[1]],file+': register and verify the new model mirror');
  }
  for(const file of ['caravan-battle-v126.js','pit-visit-v172.js'])assert.match(read(file),/file==='caravan-assets-v126\.js'\?'revision222'/,file);
- assert.match(read('caravan-field.html'),/caravan-battle-v126\.js\?v=revision222/);
+ const caravanRevision=read('caravan-field.html').match(/caravan-battle-v126\.js\?v=revision(\d+)/)?.[1];
+ assert.ok(Number(caravanRevision)>=222,'Caravan cache version must include the verified model loader');
  assert.match(read('san-avlusu.html'),/pit-visit-v172\.js\?v=revision222/);
  assert.match(read('index.html'),/ludus\.html\?v=revision222/);
  const circus=read('circus-maximus.html'),helper=circus.indexOf('model-delivery-v222.js?v=revision222'),view=circus.indexOf('circus-war-view-v186.js?v=revision222');

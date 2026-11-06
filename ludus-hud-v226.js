@@ -132,7 +132,8 @@
   return {
    setWallet:values=>values.forEach((v,i)=>{if(i<money.length)setOne(i,v);}),setGold:value=>setOne(0,value),
    setLevel:data=>{const n=integer(data?.level);centerLevel(n??'—');named(level,n===null?'Ludus seviyesi yükleniyor':'Ludus seviyesi '+n+' · '+(ctx.levelDescription?.(data)||'Seviye ödüllerini aç'));},
-   setWorkers:rows=>{const count=Array.isArray(rows)?rows.length:null;caravanCount.textContent=count===null?'—':String(count);named(caravan,count===null?'İşçi bilgileri yükleniyor':count+' işçi · İşçilerimi aç');caravan.dataset.total=count??'';schedule();},
+   setDefense:count=>{caravan.classList.toggle('worker-rescue-ready',count>0);caravan.dataset.attacks=String(count);named(caravan,count>0?count+' kervan saldırı altında · Kurtarmaya katıl':caravanCount.textContent+' işçi · İşçilerimi aç');},
+   setWorkers:rows=>{const count=Array.isArray(rows)?rows.length:null;caravanCount.textContent=count===null?'—':String(count);named(caravan,Number(caravan.dataset.attacks)>0?caravan.dataset.attacks+' kervan saldırı altında · Kurtarmaya katıl':count===null?'İşçi bilgileri yükleniyor':count+' işçi · İşçilerimi aç');caravan.dataset.total=count??'';schedule();},
    setRoster:(roster,loaded,now)=>{const counts=rosterCounts(roster,loaded,now);setCount(fighters,fighterCount,counts.free,counts.total,'gladyatör');fighters.disabled=!counts.total;},
    destroy:()=>{resize.disconnect();visibility.disconnect();cancelAnimationFrame(scheduled);}
   };
