@@ -59,7 +59,24 @@ jobs:
 
       - name: Immediate raids, escort reservations, equal cargo and cooldown
         run: LUDUS_CARAVAN_COMBAT_TEST=1 node tests/production-v119.cjs
+      - name: Worker defense replay, ammunition and archery damage
+        run: node tests/caravan-defense-v230.cjs
+      - name: Worker keyboard, rescue cards and green HUD in Chromium
+        run: node tests/workers-browser-v230.cjs
+      - name: Worker keyboard, rescue cards and green HUD in WebKit
+        run: LUDUS_WEBKIT_TEST=1 node tests/workers-browser-v230.cjs
+      - name: Actual courtyard flail and playable caravan defense
+        run: node tests/caravan-defense-browser-v230.cjs
       - name: Raid flow, reconnect and report layouts in Chromium
         run: node tests/production-browser-v124.cjs
       - name: Raid flow and all six landscape sizes in Safari
         run: LUDUS_WEBKIT_TEST=1 node tests/production-browser-v124.cjs
+      - name: Save worker and defense browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workers-defense-v230
+          path: |
+            /tmp/workers-v230
+            /tmp/production-v120/worker-checkout-*.png
+          retention-days: 7

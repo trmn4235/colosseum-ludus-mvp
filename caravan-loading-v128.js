@@ -1,6 +1,6 @@
 /* Progress advances only when a real preparation stage completes. */
 window.CaravanLoading=(()=>{
- const raid=new URLSearchParams(location.search).has('raid');
+ const raid=new URLSearchParams(location.search).has('raid')||new URLSearchParams(location.search).has('defense');
  const weights=raid?{forest:65,scripts:10,account:5,actors:12,driver:3,ready:5}:{forest:95,ready:5};
  const values={},box=document.getElementById('loading'),bar=document.getElementById('loadProgress'),detail=document.getElementById('loadDetail'),percent=document.getElementById('loadPercent');
  let failed=false;

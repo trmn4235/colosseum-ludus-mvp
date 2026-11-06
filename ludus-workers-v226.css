@@ -58,3 +58,28 @@
 
 @media(max-height:360px){.worker-detail{grid-template-columns:125px minmax(0,1fr);gap:8px}.worker-profile{padding:5px 7px;gap:3px}.worker-skills{gap:3px}.worker-skill{padding:2px;gap:1px}.worker-skill-heading span,.worker-skill-heading strong{font-size:9px;line-height:1.1}.worker-skill-xp,.worker-skill-total{font-size:8px;line-height:1.1}.worker-skill progress{height:3px}.worker-archery{padding:3px 5px;gap:1px 5px}.worker-archery small{font-size:8px;line-height:1.15}}
 @media(max-height:360px){.supply-worker-picker .worker-card{display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:repeat(3,auto);align-content:center;gap:1px 3px}.supply-worker-picker .worker-card .workers-portrait{grid-column:1;grid-row:1/4;width:28px;min-width:0}.supply-worker-picker .worker-card strong,.supply-worker-picker .worker-card small{grid-column:2;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis}.supply-worker-picker .worker-card strong{font-size:11px}.supply-worker-picker .worker-card small{font-size:8px}}
+
+/* V230: isolated name editor stays inside the iOS visual viewport. */
+.workers-name-cancel{display:none}
+.workers-renaming .workers-head,.workers-renaming .workers-footer,.workers-renaming .worker-profile,.workers-renaming .worker-identity>.workers-portrait,.workers-renaming .worker-identity>.worker-task{visibility:hidden}
+.workers-renaming .worker-name-form{position:fixed;z-index:2;top:calc(var(--worker-edit-top,0px) + 6px);left:50%;transform:translateX(-50%);width:min(520px,calc(100% - 32px));max-width:none;margin:0;padding:9px 12px;gap:5px;background:#fffdf8;border:1px solid #b38b43;border-radius:6px;box-shadow:0 5px 30px #0005;grid-template-columns:1fr auto}
+.workers-renaming .worker-name-form label{font-size:12px;align-self:center}
+.workers-renaming .worker-name-line{grid-column:1/-1;grid-row:2}
+.workers-renaming .worker-name-line input{height:36px;font:16px/1.2 Arial,sans-serif}
+.workers-renaming .workers-save{min-height:36px;min-width:70px;font-size:13px}
+.workers-renaming .workers-name-cancel{display:block;grid-column:2;grid-row:1;border:0;background:transparent;color:#64222d;font-size:12px;padding:2px 5px}
+/* All eight cards use the available row height, including archery. */
+.supply-modal .supply-worker-picker .worker-card{display:grid;grid-template-columns:minmax(28px,28%) minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,auto));align-content:center;align-items:center;justify-items:stretch;gap:4px 8px;padding:8px;overflow:hidden;min-width:0;min-height:0}
+.supply-modal .supply-worker-picker .worker-card .workers-portrait{grid-column:1;grid-row:1/4;width:100%;max-width:68px;min-width:0;justify-self:center}
+.supply-modal .supply-worker-picker .worker-card strong,.supply-modal .supply-worker-picker .worker-card small{grid-column:2;min-width:0;max-width:100%;margin:0;line-height:1.2;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.supply-modal .supply-worker-picker .worker-card strong{font-size:14px}
+.supply-modal .supply-worker-picker .worker-card small{font-size:10px}
+@media(max-height:420px){.supply-modal .supply-worker-picker .worker-card{padding:5px;gap:3px 5px}.supply-modal .supply-worker-picker .worker-card strong{font-size:12px}.supply-modal .supply-worker-picker .worker-card small{font-size:9px}.supply-worker-picker{gap:5px}}
+@media(max-width:600px){.supply-modal .supply-worker-picker .worker-card{grid-template-columns:25px minmax(0,1fr);gap:2px 3px;padding:4px}.supply-modal .supply-worker-picker .worker-card strong{font-size:10px}.supply-modal .supply-worker-picker .worker-card small{font-size:8px}}
+
+#caravanHud.worker-rescue-ready .hud-count{color:#16712e!important;font-weight:bold!important;text-shadow:0 0 8px #73dc6c55}
+#caravanHud.worker-rescue-ready .hud-art-clip{filter:drop-shadow(0 0 4px #2a9b43)}
+.worker-defenses{display:grid;gap:8px;grid-auto-rows:minmax(0,1fr);flex:1;min-height:0}
+.worker-defense{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid #83a875;border-radius:5px;background:#f4faef;min-height:0}
+.worker-defense-main,.worker-defense-controls{display:flex;flex-direction:column;gap:6px;min-width:0}.worker-defense-main strong{color:#226e36;font:19px Georgia,serif}.worker-defense-main small{font:12px/1.3 Arial,sans-serif}.worker-defense-controls{max-width:45%}.worker-defense-controls select{max-width:100%;height:32px;border:1px solid #b38b43;border-radius:3px;background:white;color:#591823}.worker-defense-controls button{min-height:32px}.worker-defense-note{margin:0;font:11px/1.3 Arial,sans-serif;color:#716452;flex:none}.worker-defense-error{color:#921d31;font-size:11px}
+@media(max-height:420px){.worker-defense{padding:7px;gap:8px}.worker-defense-main strong{font-size:15px}.worker-defense-main small,.worker-defense-note{font-size:10px}.worker-defense-main,.worker-defense-controls{gap:3px}}

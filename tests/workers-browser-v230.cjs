@@ -1,0 +1,28 @@
+// Account fixtures; production styles, worker panel and HUD. Never calls a live account.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const {chromium,webkit}=require('playwright'),root=path.resolve(__dirname,'..'),kind=process.env.LUDUS_WEBKIT_TEST?'webkit':'chromium',out='/tmp/workers-v230/'+kind;
+const owner='00000000-0000-4000-8000-000000000109';
+const source=fs.readFileSync(path.join(root,'ludus.html'),'utf8');
+const styles=[...source.slice(0,source.indexOf('</head>')).matchAll(/<style[^>]*>[\s\S]*?<\/style>|<link[^>]*rel="stylesheet"[^>]*>/g)].map(m=>m[0]).join('');
+const update=`from:()=>{let row={},id;const b={update:v=>(row=v,b),eq:(k,v)=>(k==='id'&&(id=v),b),select:()=>b,single:async()=>{const w=__workerRoster.workers.find(w=>w.id===id);w.name=row.name;return{data:{id,name:w.name}};}};return b;},`;
+let profile=require('./workers-fixture-v229.cjs')().replace('</head>',styles+'</head>').replace('const client={rpc:','const client={'+update+'rpc:');
+const snapshot=JSON.parse(fs.readFileSync('/tmp/defense-state-v230.json','utf8'));snapshot.user_id=owner;snapshot.result.owner_id=owner;snapshot.gladiators=snapshot.result.team;
+const setup=`window.__defense=${JSON.stringify(snapshot)};__defense.server_now=new Date().toISOString();__defense.encounters=Array.from({length:6},(_,i)=>({...__defense.encounters[0],id:'00000000-0000-4000-8000-00000000030'+i,status:'ready',deadline:new Date(Date.now()+1800000).toISOString(),escort_team:[]}));`;
+const defense=profile.replace('<script src="/ludus-workers-v226.js">','<script src="/ludus-caravan-defense-v230.js"></script><script src="/ludus-workers-v226.js">').replace('const client={',setup+'const client={').replace('__calls++;','__calls++;if(name===\'ludus_caravan_defense_v230\')return{data:__defense};');
+(async()=>{
+ fs.mkdirSync(out,{recursive:true});const browser=await(kind==='webkit'?webkit:chromium).launch({headless:true,...(kind==='chromium'?{args:['--no-sandbox','--disable-dev-shm-usage']}:{} )});
+ const context=await browser.newContext({viewport:{width:874,height:402}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await context.route('**/*',route=>{const url=new URL(route.request().url()),file=path.resolve(root,'.'+url.pathname);if(url.hostname!=='workers.test'||!file.startsWith(root+path.sep))return route.abort();try{return route.fulfill({body:url.pathname==='/profile'?profile:url.pathname==='/defense'?defense:url.pathname==='/hud'?require('./hud-v211-fixture.cjs')(root):fs.readFileSync(file),contentType:['/profile','/defense','/hud'].includes(url.pathname)?'text/html; charset=utf-8':({'.js':'text/javascript','.css':'text/css','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml'})[path.extname(file)]||'application/octet-stream'});}catch{return route.fulfill({status:404});}});
+ const fit=async sel=>{for(const e of await page.locator(sel).all()){const r=await e.evaluate(n=>{const b=n.getBoundingClientRect();return{x:b.x,y:b.y,r:b.right,b:b.bottom,h:n.scrollHeight-n.clientHeight,w:n.scrollWidth-n.clientWidth};});assert.ok(r.x>=-1&&r.y>=-1&&r.r<=page.viewportSize().width+1&&r.b<=page.viewportSize().height+1&&r.h<3&&r.w<3,sel+' '+JSON.stringify(r));}};
+ try{
+  await page.goto('http://workers.test/profile');await page.locator('.worker-card').first().click();
+  await page.locator('#workerNameV226').click();await page.setViewportSize({width:874,height:140});await page.locator('#workerNameV226').fill('Alexis');await fit('.worker-name-form');await fit('#workerNameV226');await fit('.workers-save');await page.screenshot({path:out+'/name-keyboard.png'});
+  await page.getByRole('button',{name:'Kaydet',exact:true}).click();await page.setViewportSize({width:874,height:402});assert.equal(await page.locator('#workerNameV226').inputValue(),'Alexis');assert.match(await page.locator('.workers-status').innerText(),/kaydedildi/);
+  await page.locator('#workerNameV226').fill('İptal');await page.getByRole('button',{name:'Vazgeç',exact:true}).click();assert.equal(await page.locator('#workerNameV226').inputValue(),'Alexis');
+  await page.goto('http://workers.test/defense');await page.getByRole('button',{name:/^Seferler/}).click();await page.waitForSelector('.worker-defense');
+  for(const [width,height]of [[874,402],[667,375],[568,320]]){await page.setViewportSize({width,height});assert.equal(await page.locator('.worker-defense').count(),2);await fit('.worker-defense');await fit('.worker-defense-main');await fit('.worker-defense-controls');await fit('.worker-defense-note');await page.screenshot({path:out+'/defenses-'+width+'.png'});}
+  await page.getByRole('button',{name:'Sonraki saldırılar',exact:true}).click();assert.match(await page.locator('.workers-pager').innerText(),/2 \/ 3/);
+  await page.goto('http://workers.test/hud');await page.evaluate(()=>hudReady);await page.evaluate(()=>hud.setDefense(1));assert.equal(await page.locator('#caravanHud.worker-rescue-ready .hud-count').innerText(),'8');assert.match(await page.locator('#caravanHud').getAttribute('title'),/saldırı/);await page.screenshot({path:out+'/green-worker-count.png'});await page.evaluate(()=>hud.setDefense(0));assert.equal(await page.locator('#caravanHud.worker-rescue-ready').count(),0);
+  assert.deepEqual(errors,[]);console.log('V230 '+kind+' PASS: keyboard-sized viewport, save/cancel, paged rescue cards, green HUD count.');
+ }catch(e){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});throw e;}finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
