@@ -39,7 +39,7 @@ module.exports=async({db,q,migration,randomUUID,A})=>{
  assert.equal((await q('select auth.uid() u'))[0].u,A,'human identity restored');
  // Let the purchased cargo return, then provide fixture raw resources and
  // exercise the real recursive processing, recipe debit and equipment path.
- await q("update ludus_supply_private.jobs set ends_at=clock_timestamp()-interval '1 second' where owner_id=$1",[bot]);
+ await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval '2 hours',ends_at=clock_timestamp()-interval '1 second' where owner_id=$1",[bot]);
  await q("update ludus_supply_private.stock set quantity=100 where owner_id=$1 and sku in('iron_ore','copper_ore','tin_ore','wood','flax','hide','wool','resin')",[bot]);
  for(let n=0;n<30;n++)await q('select ludus_bot_private.production_tick_v238(1)');
  log=(await q('select last_action,last_error from ludus_bot_private.production_log_v238 where slot=1'))[0];assert.equal(log.last_error,null);
