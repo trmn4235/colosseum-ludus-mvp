@@ -30,6 +30,16 @@ alter table ludus_ranked_party_private.rooms_v244 enable row level security;
 alter table ludus_ranked_party_private.members_v244 enable row level security;
 alter table ludus_ranked_party_private.invites_v244 enable row level security;
 revoke all on ludus_ranked_party_private.rooms_v244,ludus_ranked_party_private.members_v244,ludus_ranked_party_private.invites_v244 from public,anon,authenticated;
+-- Realtime can read only the current recipient's invitation, never another user's.
+grant select on ludus_ranked_party_private.invites_v244 to authenticated;
+create policy ranked_invite_recipient_v244 on ludus_ranked_party_private.invites_v244
+ for select to authenticated using(target_id=(select auth.uid()) and not coalesce((select (auth.jwt()->>'is_anonymous')::boolean),false));
+do $$begin
+ if exists(select 1 from pg_publication where pubname='supabase_realtime' and not puballtables)
+  and not exists(select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='ludus_ranked_party_private' and tablename='invites_v244') then
+  alter publication supabase_realtime add table ludus_ranked_party_private.invites_v244;
+ end if;
+end$$;
 
 create function ludus_ranked_party_private.handle_v244(p_action text,p_peer uuid,p_gladiator uuid,p_invite uuid)
 returns jsonb language plpgsql security definer set search_path='' as $$
@@ -113,7 +123,7 @@ begin
  join public.ludus_accounts a on a.user_id=x.leader_id where v.target_id=u and v.state='pending' and v.expires_at>now_at;
  if p_action='inbox' then return jsonb_build_object('invites',inbox);end if;
  select jsonb_build_object('id',x.id,'leader',x.leader_id,'members',coalesce((
-  select jsonb_agg(jsonb_build_object('user_id',m.user_id,'ludus',a.ludus_name,'gladiator',g.name,'class',g.class,
+  select jsonb_agg(jsonb_build_object('user_id',m.user_id,'ludus',a.ludus_name,'gladiator_id',g.id,'gladiator',g.name,'class',g.class,
    'leader',m.user_id=x.leader_id) order by (m.user_id=x.leader_id) desc,m.joined_at,m.user_id)
   from ludus_ranked_party_private.members_v244 m join public.ludus_accounts a on a.user_id=m.user_id
   join public.ludus_gladiators g on g.id=m.gladiator_id where m.room_id=x.id),'[]'::jsonb)) into party

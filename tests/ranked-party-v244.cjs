@@ -31,10 +31,11 @@ const {PGlite}=require('@electric-sql/pglite');
  assert.deepEqual(s.candidates.map(x=>x.type),['friend','friend','friend','clan','clan']);
  await assert.rejects(()=>api('invite',users[6]),/arkadaşını veya klan üyesini/);
  for(let n=1;n<=4;n++)await api('invite',users[n]);
+ assert.equal((await q('select count(*)::int n from ludus_ranked_party_private.invites_v244'))[0].n,0,'sender cannot read recipient rows');
  await assert.rejects(()=>api('invite',users[5]),/boş davet yeri/);
  await user(7);await assert.rejects(()=>api('accept',null,null,randomUUID()),/Davet bulunamadı/);
  for(let n=1;n<=4;n++){
-  await user(n);const inbox=await api('inbox');assert.equal(inbox.invites.length,1);
+  await user(n);assert.equal((await q('select count(*)::int n from ludus_ranked_party_private.invites_v244'))[0].n,1,'recipient sees only their invitation');const inbox=await api('inbox');assert.equal(inbox.invites.length,1);
   s=await api('accept',null,fighters[n],inbox.invites[0].id);assert.equal(s.party.members.length,n+1);
  }
  await user(1);await assert.rejects(()=>api('invite',users[5]),/takım lideri/);
