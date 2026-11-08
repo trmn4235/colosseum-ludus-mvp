@@ -19,8 +19,8 @@ const mock=`globalThis.supabase={createClient(){
   assert.equal(await page.locator('#candidateList .candidate').count(),1);assert.match(await page.locator('#candidateList').innerText(),/arkadas/);
   await page.getByRole('button',{name:'Davet Et'}).click();assert.match(await page.locator('#candidateList').innerText(),/Gönderildi/);
   await page.getByRole('button',{name:'Klan',exact:true}).click();assert.match(await page.locator('#candidateList').innerText(),/klanli/);
-  const boxes=await page.locator('.paper,.team-scene,.ranked-header').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return{x:b.x,y:b.y,right:b.right,bottom:b.bottom,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight}}));
-  for(const b of boxes){assert.ok(b.x>=-1&&b.y>=-1&&b.right<=width+1&&b.bottom<=height+1,'panel must fit viewport');assert.ok(b.scrollHeight<=b.clientHeight+1,'panel must not vertically overflow');}
+  const boxes=await page.locator('.paper,.team-scene,.ranked-header').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return{element:e.className,x:b.x,y:b.y,right:b.right,bottom:b.bottom,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight}}));
+  for(const b of boxes){assert.ok(b.x>=-1&&b.y>=-1&&b.right<=width+1&&b.bottom<=height+1,`panel must fit ${width}x${height}: ${JSON.stringify(b)}`);assert.ok(b.scrollHeight<=b.clientHeight+1,`panel overflow ${width}x${height}: ${JSON.stringify(b)}`);}
  }
  await browser.close();console.log('V244 UI PASS: five slots, friend/clan tabs, invitation action and landscape layouts.');
 })().catch(e=>{console.error(e);process.exit(1)});
