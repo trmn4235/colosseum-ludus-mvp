@@ -103,7 +103,7 @@
    if(response.error){let detail;try{detail=await response.error.context?.json();}catch{}throw Error(detail?.error||response.error.message);}
    if(response.data?.error)throw Error(response.data.error);const result=response.data?.result;if(result?.id!==raid||result.status!=='resolved')throw Error('Sonuç doğrulanamadı.');
    saved=true;localStorage.removeItem(storeKey);
-   if(defense){show(result.success?'Kervan kurtarıldı':'Savunma başarısız',result.success?'Yükün tamamı korundu. İşçiler kervanla geri dönüyor.':'Yükün yarısı kayboldu. İşçiler kalan yükle geri dönüyor.',[returnLink()],art);return;}
+   if(defense){const report=(result.owner_ludus?' Kervan: '+result.owner_ludus+'.':'')+(result.defender_ludus?' Savunan: '+result.defender_ludus+(result.team?.[0]?.name?' · '+result.team[0].name:'')+'.':'')+(result.glory_units?' Klan şanı: +0,10.':'');show(result.success?'Kervan kurtarıldı':'Savunma başarısız',(result.success?'Yükün tamamı korundu. İşçiler kervanla geri dönüyor.':'Yükün yarısı kayboldu. İşçiler kalan yükle geri dönüyor.')+report,[returnLink()],art);return;}
    if(result.success===true){
     if(window.CaravanVictory?.show(result))overlay.hidden=true;
     else show('Kervan baskını başarılı','Ganimetin '+(result.delivered_at?'depomuza taşındı.':'güvende; depoda yer açılınca taşınacak.')+' Yeni baskın 1 saat sonra.',[returnLink()],'assets/caravan-v124/success.webp');

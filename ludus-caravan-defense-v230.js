@@ -10,14 +10,15 @@
    const rows=active();if(!rows.length)return false;page=Math.min(page,Math.ceil(rows.length/2)-1);
    const list=el('div','worker-defenses');
    for(const d of rows.slice(page*2,page*2+2)){
-    const card=el('article','worker-defense'),main=el('div','worker-defense-main'),choices=d.escort_team?.length?d.escort_team:state.gladiators.filter(g=>g.ready);
-    main.append(el('strong','','Kervan saldırı altında'),el('small','',d.workers.map(w=>w.name).join(' · ')),el('small','',d.encounter.guards+' haydut · Kurtarma süresi: '+Math.max(1,Math.ceil((Date.parse(d.deadline)-Date.now()-offset)/60000))+' dk'));
+    const ally=d.owner_id!==owner,otherDefender=d.status==='fighting'&&(d.defender_id||d.owner_id)!==owner;
+    const card=el('article','worker-defense'),main=el('div','worker-defense-main'),choices=ally?state.gladiators.filter(g=>g.ready):(d.escort_team?.length?d.escort_team:state.gladiators.filter(g=>g.ready));
+    main.append(el('strong','',ally?(d.owner_ludus||'Klan arkadaşı')+' kervanı saldırı altında':'Kervan saldırı altında'),el('small','',d.workers.map(w=>w.name).join(' · ')),el('small','',d.encounter.guards+' haydut · Kurtarma süresi: '+Math.max(1,Math.ceil((Date.parse(d.deadline)-Date.now()-offset)/60000))+' dk'));
     const controls=el('div','worker-defense-controls'),select=el('select');select.setAttribute('aria-label','Savunmaya katılacak gladyatör');
     for(const g of choices){const option=el('option','',g.name+' · '+(g.class||''));option.value=g.id;select.append(option);}
-    const button=el('button','workers-save',d.status==='fighting'?'Savunmaya devam et':'Savunmaya katıl');button.type='button';button.disabled=entering||(d.status!=='fighting'&&!choices.length);
+    const button=el('button','workers-save',otherDefender?'Başka bir Ludus savunuyor':d.status==='fighting'?'Savunmaya devam et':'Savunmaya katıl');button.type='button';button.disabled=entering||otherDefender||(d.status!=='fighting'&&!choices.length);
     const error=el('small','worker-defense-error');error.setAttribute('role','status');
-    button.onclick=async()=>{if(entering)return;entering=true;button.disabled=true;error.textContent='';try{const r=await ctx.client.rpc('ludus_caravan_defense_v230',{p_action:'enter',p_id:d.id,p_gladiator:select.value||null});if(r.error)throw r.error;if(r.data?.user_id!==owner||r.data.result?.id!==d.id)throw Error('Savunma doğrulanamadı.');if(r.data.result.status==='resolved'){await refresh();return;}root.location.href='caravan-field.html?defense='+encodeURIComponent(d.id)+'&mode=defense&v=revision230';}catch(e){error.textContent=e.message||'Bağlantını kontrol edip tekrar dene.';}finally{entering=false;button.disabled=false;}};
-    if(d.status!=='fighting'&&choices.length)controls.append(select);if(d.status!=='fighting'&&!choices.length)controls.append(el('small','','Hazır gladyatör gerekli. İşçiler otomatik savunacak.'));
+    button.onclick=async()=>{if(entering)return;entering=true;button.disabled=true;error.textContent='';try{const r=await ctx.client.rpc('ludus_caravan_defense_v230',{p_action:'enter',p_id:d.id,p_gladiator:select.value||null});if(r.error)throw r.error;if(r.data?.user_id!==owner||r.data.result?.id!==d.id)throw Error('Savunma doğrulanamadı.');if(r.data.result.status==='resolved'){await refresh();return;}root.location.href='caravan-field.html?defense='+encodeURIComponent(d.id)+'&mode=defense&v=revision231';}catch(e){error.textContent=e.message||'Bağlantını kontrol edip tekrar dene.';}finally{entering=false;button.disabled=false;}};
+    if(d.status!=='fighting'&&choices.length)controls.append(select);if(d.status!=='fighting'&&!choices.length)controls.append(el('small','','Savunmaya katılmak için hazır gladyatör gerekli.'));
     controls.append(button,error);card.append(main,controls);list.append(card);
    }
    container.append(list,el('p','worker-defense-note','Zaferde yükün tamamı korunur. Yenilgide yükün yarısı kaybolur; işçiler geri döner. Katılmazsan yaylı işçiler ve refakatçiler otomatik savunur.'));
@@ -26,7 +27,7 @@
   }
   const timer=root.setInterval(()=>{if(Date.now()-last>=15000)refresh();},1000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});root.addEventListener('ludus-supply-change',refresh);
-  refresh();return{active,render,refresh,get history(){return state.encounters.filter(d=>d.status==='resolved');},destroy:()=>root.clearInterval(timer)};
+  refresh();return{active,render,refresh,get history(){return state.encounters.filter(d=>d.status==='resolved');},get clan(){return state.clan||null;},destroy:()=>root.clearInterval(timer)};
  }
  root.LudusCaravanDefenseV230={create};
 })(globalThis);

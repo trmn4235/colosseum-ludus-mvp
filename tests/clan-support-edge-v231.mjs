@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+const owner='00000000-0000-4000-8000-000000000001',helper='00000000-0000-4000-8000-000000000002',other='00000000-0000-4000-8000-000000000003',raid='00000000-0000-4000-8000-000000000004';
+let handler,actor=helper,defender=helper,complete=true,calls=[];
+globalThis.Deno={env:{get:k=>({SUPABASE_URL:'https://fixture.invalid',SUPABASE_ANON_KEY:'public-key',SUPABASE_SERVICE_ROLE_KEY:'service-key'}[k])},serve:fn=>{handler=fn}};
+globalThis.fetch=async (url,options)=>{
+ const body=options.body?JSON.parse(options.body):null;calls.push({url,body,headers:options.headers});
+ let value;if(url.endsWith('/auth/v1/user'))value={id:actor,is_anonymous:false};
+ else if(url.endsWith('/rpc/ludus_caravan_defense_v230'))value={user_id:actor,encounters:[{id:raid,owner_id:owner,defender_id:defender,status:'fighting',battle_started_at:new Date().toISOString(),workers:[]}]};
+ else if(url.endsWith('/rpc/ludus_caravan_defense_verified_v231'))value={id:raid,status:'resolved'};
+ else throw Error('Unexpected request '+url);
+ return new Response(JSON.stringify(value),{status:200,headers:{'Content-Type':'application/json'}});
+};
+await import('../supabase/functions/caravan-defense-v230/index.ts');
+globalThis.CaravanDefenseV230.replay=()=>({steps:30,combat:{finished:complete,result:'win',fighters:[]}});
+const send=async abandon=>handler(new Request('https://fixture.invalid/defense',{method:'POST',headers:{Authorization:'Bearer test-token','Content-Type':'application/json'},body:JSON.stringify({raid,commands:[],steps:30,abandon})}));
+let response=await send(false);assert.equal(response.status,200);let service=calls.find(x=>x.url.endsWith('_v231'));assert.equal(service.body.p_owner,owner);assert.equal(service.body.p_actor,helper);assert.equal(service.body.p_completed,true);assert.equal(service.body.p_won,true);assert.equal(service.body.p_seconds,1);
+calls=[];defender=other;response=await send(false);assert.equal(response.status,400);assert.match((await response.json()).error,/başka bir Ludus/);assert.equal(calls.filter(x=>x.url.endsWith('_v231')).length,0);
+calls=[];defender=helper;complete=false;response=await send(false);assert.equal(response.status,400);assert.equal(calls.filter(x=>x.url.endsWith('_v231')).length,0);
+calls=[];response=await send(true);assert.equal(response.status,200);service=calls.find(x=>x.url.endsWith('_v231'));assert.equal(service.body.p_completed,false);assert.equal(service.body.p_won,false);
+console.log('V231 edge PASS: helper identity, owner routing, completion and withdrawal.');

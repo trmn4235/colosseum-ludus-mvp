@@ -1,0 +1,17 @@
+.sidebar .nav{min-height:50px;padding-top:8px;padding-bottom:8px}
+.sidebar .sideCrest{height:95px;margin-bottom:8px}
+.sidebar .sideCrest svg{width:65px;height:65px}
+.powerGrid{display:block}
+.powerGrid>div{height:100%;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.powerGrid .powerPanel{display:flex;flex-direction:column;min-width:0}
+.powerGrid .powerHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.powerGrid .powerHeading h2{border:0;margin:0;padding:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.powerTotal{font:600 18px Arial,sans-serif;color:#6a2734;white-space:nowrap}
+.powerRows{display:grid;gap:7px;align-content:start;min-height:0}
+.powerRow{display:flex;align-items:center;gap:12px;min-height:57px;width:100%;padding:8px 12px;border:1px solid #e0d5bd;border-radius:5px;background:#fff9;text-align:left;color:#382b28}
+.powerClan.selected{border-color:#b69351;background:#f5e9cf}
+.powerRank{width:26px;flex:none;text-align:center;color:#a27e3d;font:600 16px Arial,sans-serif}
+.powerIdentity{flex:1;min-width:0}.powerIdentity strong,.powerIdentity small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.powerIdentity strong{font-size:18px;font-weight:normal}.powerIdentity small,.powerNumbers small{font:12px Arial,sans-serif;color:#817664;margin-top:4px}
+.powerRow b{font:600 18px Arial,sans-serif;color:#6a2734;white-space:nowrap}.powerNumbers{text-align:right}.powerNumbers small{display:block}
+.powerPager{display:flex;align-items:center;justify-content:center;gap:13px;margin-top:auto;padding-top:8px;font:14px Arial,sans-serif;color:#897449}.powerPager button{width:38px;height:30px;border:1px solid #c8b48a;border-radius:4px;background:#faf4e6;color:#755534;font-size:20px}
+.powerNote{margin:8px 0 0;color:#817664;font:12px/1.35 Arial,sans-serif}.powerError{color:#9b3940;font:12px Arial,sans-serif}.powerLoading{display:flex;align-items:center;justify-content:center;gap:16px;grid-column:1/-1;font:18px Arial,sans-serif;color:#817664}

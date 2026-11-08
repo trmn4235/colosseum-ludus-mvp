@@ -36,9 +36,31 @@
    const skills=elt('div','worker-skills');for(const skill of w.skills||[]){const level=Number(skill.level),xp=Number(skill.xp),base=thresholds[level-1]||0,next=thresholds[level],box=elt('div','worker-skill');box.dataset.profession=skill.sku;const heading=elt('div','worker-skill-heading');heading.append(elt('span','',skill.name),elt('strong','','Sv. '+level));const progress=elt('progress');progress.max=next?next-base:1;progress.value=next?Math.max(0,xp-base):1;progress.setAttribute('aria-label',skill.name+' gelişimi');box.append(heading,progress,elt('small','worker-skill-xp',next?fmt(xp-base)+' / '+fmt(next-base)+' EXP':'Kervan eğitimi tamamlandı'),elt('small','worker-skill-total','Toplam getirilen: '+fmt(skill.delivered)));skills.append(box);}
    if(!w.skills?.length)details.append(elt('p','worker-profile-note','Meslek bilgileri alınamadı. Sayfayı yeniden açarak tekrar deneyebilirsin.'));else details.append(skills);
    shell.append(side,details);body.append(shell);}
-  function drawJobs(history){if(!history&&defense?.render(body))return;const rows=history?(supply?.deliveries||[]):(supply?.jobs||[]);if(!supply){empty('Sefer bilgileri alınamadı','Bağlantını kontrol edip yeniden dene.');return;}if(!rows.length){empty(history?'Henüz teslimat yok':'Devam eden sefer yok',history?'Tamamlanan kervan teslimatların burada görünür.':'Kervan odasından başlattığın seferler burada görünür.');return;}const size=3,nav=pager(rows.length,size),list=elt('div','workers-jobs');for(const j of rows.slice(page*size,page*size+size)){const row=elt('article','workers-job');const left=elt('div','workers-job-main');left.append(elt('strong','',destination(j)),elt('small','',cargoText(j.cargo)));const crew=assignments.filter(a=>a.job_id===j.id);if(crew.length)left.append(elt('small','worker-job-crew',crew.map(a=>a.name+(history?' · +'+fmt(a.xp_awarded)+' EXP':'')).join(' / ')));const right=elt('div','workers-job-meta');right.append(elt('strong','',history?'Teslim edildi':'Yolda'),elt('small','',time(history?(j.claimed_at||j.ends_at):j.ends_at)));row.append(left,right);list.append(row);}body.append(list,nav);}
+  function drawJobs(history){
+   if(!history&&defense?.render(body))return;
+   if(!supply&&!(history&&defense?.history?.length)){empty('Sefer bilgileri alınamadı','Bağlantını kontrol edip yeniden dene.');return;}
+   const records=history?[...(supply?.deliveries||[]).map(j=>({kind:'delivery',date:j.claimed_at||j.ends_at,data:j})),...(defense?.history||[]).map(d=>({kind:'defense',date:d.resolved_at,data:d}))].sort((a,b)=>Date.parse(b.date||0)-Date.parse(a.date||0)):(supply?.jobs||[]).map(j=>({kind:'trip',date:j.ends_at,data:j}));
+   if(!records.length){empty(history?'Henüz sefer veya savunma kaydı yok':'Devam eden sefer yok',history?'Tamamlanan seferler ve savunmalar burada görünür.':'Kervan odasından başlattığın seferler burada görünür.');return;}
+   const size=3,nav=pager(records.length,size),list=elt('div','workers-jobs');
+   for(const record of records.slice(page*size,page*size+size)){
+    const j=record.data,row=elt('article','workers-job'),left=elt('div','workers-job-main'),right=elt('div','workers-job-meta');
+    if(record.kind==='defense'){
+     left.append(elt('strong','','Kervan savunması · '+(j.owner_ludus||'Ludus')),
+      elt('small','',j.defender_ludus?'Savunan: '+j.defender_ludus+(j.team?.[0]?.name?' · '+j.team[0].name:''):'Savunan: Otomatik savunma'));
+     if(j.glory_units)left.append(elt('small','worker-job-crew','Klan şanı: +0,10'));
+     right.append(elt('strong','',j.success?'Başarılı':'Başarısız'),elt('small','',time(record.date)));
+    }else{
+     left.append(elt('strong','',destination(j)),elt('small','',cargoText(j.cargo)));const crew=assignments.filter(a=>a.job_id===j.id);
+     if(crew.length)left.append(elt('small','worker-job-crew',crew.map(a=>a.name+(history?' · +'+fmt(a.xp_awarded)+' EXP':'')).join(' / ')));
+     right.append(elt('strong','',history?'Teslim edildi':'Yolda'),elt('small','',time(record.date)));
+    }
+    row.append(left,right);list.append(row);
+   }
+   body.append(list,nav);
+  }
   function render(){if(!opened)return;drawTabs();body.replaceChildren();footer.replaceChildren();if(loading){empty('İşçi kayıtları yükleniyor','Lütfen bekle.');}else if(tab==='workers'){if(selected)drawProfile();else drawRoster();}else if(tab==='trips')drawJobs(false);else if(tab==='history')drawJobs(true);else empty('Klan çalışması bulunmuyor','İşçiler için klan çalışmaları başladığında burada gösterilecek.');
-   status.textContent=problem||(loading?'':tab==='workers'?fmt(workers.length)+' işçi':supply?((supply.free_caravans??supply.free_workers??'—')+' / '+(supply.caravans??supply.workers??'—')+' kervan müsait'):'');footer.append(status);if(problem&&problem!=='İsim kaydedildi.'){const retry=button('Yeniden dene',refresh,'workers-retry');footer.append(retry);}}
+   const glory=n=>Number(n||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
+   status.textContent=problem||(loading?'':tab==='history'&&defense?.clan?'Klan savunma şanı: '+glory(defense.clan.defense_glory)+' · Katkım: '+glory(defense.clan.my_defense_glory):tab==='workers'?fmt(workers.length)+' işçi':supply?((supply.free_caravans??supply.free_workers??'—')+' / '+(supply.caravans??supply.workers??'—')+' kervan müsait'):'');footer.append(status);if(problem&&problem!=='İsim kaydedildi.'){const retry=button('Yeniden dene',refresh,'workers-retry');footer.append(retry);}}
   async function refresh({quiet=false}={}){if(quiet&&loading)return;const request=++serial;loading=true;lastRefresh=Date.now();problem='';if(!quiet)render();try{const account=await ctx.ready;owner=account.user_id;const results=await Promise.allSettled([ctx.client.rpc('ludus_workers_roster_v226'),ctx.client.rpc('ludus_supply')]);if(request!==serial)return;
    const profiles=results[0];if(profiles.status==='fulfilled'&&!profiles.value.error&&profiles.value.data?.user_id===owner&&Array.isArray(profiles.value.data.workers)){workers=profiles.value.data.workers;assignments=profiles.value.data.assignments||[];thresholds=profiles.value.data.level_thresholds||[0,60,180,360,600];archeryStep=profiles.value.data.archery_xp_per_level||100;archeryCap=profiles.value.data.archery_max_level||20;archeryReward=profiles.value.data.archery_xp_per_trip||10;ctx.onRoster?.(workers);}else{workers=[];ctx.onRoster?.(null);problem='İşçi kayıtları alınamadı. Yeniden deneyebilirsin.';}
    const trips=results[1];if(trips.status==='fulfilled'&&!trips.value.error&&trips.value.data?.user_id===owner)supply=trips.value.data;else supply=null;const serverNow=profiles.value?.data?.server_now||supply?.server_now;if(Number.isFinite(Date.parse(serverNow)))offset=Date.parse(serverNow)-Date.now();
