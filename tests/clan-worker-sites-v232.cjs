@@ -1,0 +1,62 @@
+// Exercises production SQL with real clan/team, caravan and weekly transactions.
+const assert=require('node:assert/strict');
+module.exports=async({db,q,A,B,roster,route,migration,randomUUID})=>{
+ const admin=()=>db.exec('reset role'),auth=()=>db.exec('set role authenticated');
+ const identify=async id=>{await admin();await q("select set_config('request.jwt.claim.sub',$1,false)",[id]);await auth();};
+ const reject=async(fn,re)=>{await q('savepoint expected_v232');try{await assert.rejects(fn,re);}finally{await db.exec('rollback to savepoint expected_v232;release savepoint expected_v232');}};
+ await admin();await db.exec('alter table public.ludus_clans add column leader_id uuid;create table public.ludus_imperial_admins(user_id uuid primary key);');
+ const clan=(await q('select clan_id from public.ludus_clan_members where user_id=$1',[A]))[0].clan_id;
+ await q('update public.ludus_clans set leader_id=$1 where id=$2',[A,clan]);await q('insert into public.ludus_imperial_admins values($1)',[A]);
+ await db.exec(migration('clan_worker_sites_v232'));
+ await identify(A);const work=async(action='state',payload={},id=null)=>(await q('select ludus_clan_work_v232($1,$2,$3) s',[action,JSON.stringify(payload),id]))[0].s;
+ const aRoster=await roster(),a=aRoster.workers[1].id,traveling=aRoster.workers[0].id;assert.ok(aRoster.workers[0].job_id,'prior caravan remains active');await identify(B);const b=(await roster()).workers[1].id;
+ await admin();await q("insert into ludus_worker_private.skills_v227(worker_id,sku,xp) values($1,'iron_ore',600),($2,'iron_ore',599) on conflict(worker_id,sku) do update set xp=excluded.xp",[a,b]);
+ await q('update ludus_worker_private.clan_work_config_v232 set enabled=true');
+ await identify(B);await reject(()=>work('start',{sku:'iron_ore',workers:[b]},randomUUID()),/lideri/);
+ await reject(()=>work('configure',{base_quantity:200}),/yetkisi/);
+ await identify(A);await reject(()=>work('start',{sku:'iron_ore',workers:[a,b]},randomUUID()),/en az 5/);
+ await admin();await q("insert into ludus_worker_private.skills_v227(worker_id,sku,xp) values($1,'iron_ore',600) on conflict(worker_id,sku) do update set xp=600",[traveling]);await identify(A);await reject(()=>work('start',{sku:'iron_ore',workers:[traveling]},randomUUID()),/başka bir görevde/);
+ const otherClan=randomUUID();await admin();await q('insert into public.ludus_clans(id,name,leader_id) values($1,$2,$3)',[otherClan,'Diğer',B]);await q('update public.ludus_clan_members set clan_id=$1 where user_id=$2',[otherClan,B]);await identify(A);await reject(()=>work('start',{sku:'iron_ore',workers:[b]},randomUUID()),/bu klanın üyelerine/);await admin();await q('update public.ludus_clan_members set clan_id=$1 where user_id=$2',[clan,B]);
+ await admin();await q("update ludus_worker_private.skills_v227 set xp=600 where worker_id=$1 and sku='iron_ore'",[b]);
+ // Eight additional Luduses verify every one of the ten exact award amounts.
+ const extras=[];
+ for(let i=0;i<8;i++){
+  const owner=randomUUID(),worker=randomUUID();extras.push({owner,worker});
+  await q('insert into public.ludus_accounts(user_id,ludus_name) values($1,$2)',[owner,'Ludus '+i]);
+  await q('insert into public.ludus_clan_members(user_id,clan_id) values($1,$2)',[owner,clan]);
+  await q('insert into public.ludus_workers_v226(id,owner_id,slot,name,portrait) values($1,$2,1,$3,0)',[worker,owner,'İşçi '+i]);
+  await q("insert into ludus_worker_private.skills_v227(worker_id,sku,xp) values($1,'iron_ore',600)",[worker]);
+ }
+ await identify(A);
+ const request=randomUUID(),payload={sku:'iron_ore',workers:[a,b,...extras.map(x=>x.worker)]};
+ let state=await work('start',payload,request);const job=state.jobs[0].id;assert.equal(state.jobs[0].worker_count,10);assert.equal(state.jobs[0].quantity,10);
+ assert.equal((await work('start',payload,request)).jobs.filter(x=>x.id===job).length,1,'request replay creates one team');
+ await reject(()=>work('start',{...payload,sku:'wood'},request),/farklı/);
+ assert.equal((await roster()).workers.find(w=>w.id===a).job.kind,'clan','roster marks a clan worker busy');
+ const key=await route();await reject(()=>q("select ludus_worker_caravan_depart_v227('buy',$1,1,$2,array[$3]::uuid[],0,0,'{}'::uuid[])",[key,randomUUID(),a]),/klan çalışmasında/);
+ await reject(()=>work('start',{sku:'iron_ore',workers:[a]},randomUUID()),/başka bir görevde/);
+ await identify(B);state=await work();assert.equal(state.clan_id,clan);assert.equal(state.jobs[0].participants.length,10);
+ await reject(()=>q('select * from ludus_worker_private.clan_work_people_v232'),/permission denied/);
+ const outsider=randomUUID();await admin();await q('insert into public.ludus_accounts(user_id,ludus_name) values($1,$2)',[outsider,'Dış Ludus']);await identify(outsider);
+ state=await work();assert.equal(state.clan_id,null);assert.equal(state.workers,undefined,'outsiders cannot inspect another clan');
+ await admin();await q("update ludus_worker_private.clan_work_jobs_v232 set started_at='2026-11-08 20:00:00+00',ends_at='2026-11-08 20:58:50+00' where id=$1",[job]);
+ await q("select ludus_worker_private.clan_tick_v232('2026-11-08 20:58:49+00')");
+ assert.equal((await q('select count(*)::int n from ludus_worker_private.clan_material_stock_v232'))[0].n,0,'nothing earned before finish');
+ await q("select ludus_worker_private.clan_tick_v232('2026-11-08 20:58:59+00')");
+ assert.equal(Number((await q("select quantity from ludus_worker_private.clan_material_stock_v232 where clan_id=$1 and sku='iron_ore'",[clan]))[0].quantity),10);
+ assert.equal((await q("select xp from ludus_worker_private.skills_v227 where worker_id=$1 and sku='iron_ore'",[a]))[0].xp,620);
+ assert.equal((await q('select count(*)::int n from ludus_worker_private.clan_work_rewards_v232'))[0].n,0,'no award before Sunday 23:59 Istanbul');
+ await q("select ludus_worker_private.clan_tick_v232('2026-11-08 20:59:00+00')");
+ await q("select ludus_worker_private.clan_tick_v232('2026-11-08 21:01:00+00')");
+ const rewards=await q('select rank,glory_hundredths,quantity from ludus_worker_private.clan_work_rewards_v232 where clan_id=$1 order by rank',[clan]);
+ assert.deepEqual(rewards.map(x=>x.glory_hundredths),[50,46,42,38,36,32,28,24,22,18]);
+ assert.ok(rewards.every(x=>Number(x.quantity)===1));
+ assert.equal(Number((await q("select quantity from ludus_worker_private.clan_material_stock_v232 where clan_id=$1 and sku='iron_ore'",[clan]))[0].quantity),10,'settlement is idempotent');
+ assert.equal((await q("select xp from ludus_worker_private.skills_v227 where worker_id=$1 and sku='iron_ore'",[a]))[0].xp,620,'worker EXP is idempotent');
+ assert.equal((await q("select count(*)::int n from ludus_message_private.notifications_v108 where event_key like 'clan-work:%'"))[0].n,10);
+ await identify(A);state=await work();assert.equal(state.rewards.length,10);assert.equal(state.worker_ranking.length,10);assert.equal(Number(state.clan_glory),3.46,'weekly rewards and V231 defense glory are both counted');
+ assert.equal((await roster()).workers.find(w=>w.id===a).job_id,null,'completed worker is released');
+ await reject(()=>q("select ludus_worker_private.clan_tick_v232('2027-01-01')"),/permission denied/);
+ await admin();
+ console.log('V232 SQL PASS: clan membership and leader permissions, level 5, cross-task reservation, worker and Ludus production, exact Istanbul weekly rewards, notices and replay protection.');
+};
