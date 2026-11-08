@@ -42,7 +42,7 @@ revoke all on function ludus_bot_private.production_need_v238(uuid,text,integer,
 create function ludus_bot_private.production_tick_v238(p_slot integer) returns void
 language plpgsql security definer set search_path='' as $$
 declare b ludus_bot_private.members_v233;cfg ludus_bot_private.settings_v233;goal ludus_bot_private.gear_goals_v238;
- state jsonb;step jsonb;receipt jsonb;item uuid;stone integer;city integer;qty integer;epoch bigint;offer jsonb;price numeric;budget bigint;
+ supply_state jsonb;step jsonb;receipt jsonb;item uuid;stone integer;city integer;qty integer;epoch bigint;offer jsonb;price numeric;budget bigint;
  original_sub text:=coalesce(current_setting('request.jwt.claim.sub',true),''); action_text text;
 begin
  if not pg_try_advisory_xact_lock(238000,p_slot) then return;end if;
@@ -51,7 +51,7 @@ begin
  if not found or b.user_id is null or not b.enabled or not cfg.ready or not cfg.enabled then return;end if;
  perform set_config('request.jwt.claim.sub',b.user_id::text,true);
  -- Initializes stock and settles normally completed caravans, without minting.
- state:=public.ludus_supply('state',null,null,null);
+ supply_state:=public.ludus_supply('state',null,null,null);
  if exists(select 1 from ludus_private.level_rewards where owner_id=b.user_id and claimed_at is null) then
   perform public.ludus_progress('claim',null);
  end if;
@@ -133,7 +133,7 @@ begin
      where gladiator_id=goal.gladiator_id and equipment_slot=goal.equipment_slot;
    end if;
    action_text:='Üretildi: '||(step->>'sku');
-  elsif step->>'action'='buy' and (state->>'free_caravans')::integer>0 then
+  elsif step->>'action'='buy' and (supply_state->>'free_caravans')::integer>0 then
    epoch:=floor(extract(epoch from clock_timestamp())/900)::bigint;
    select c.id,o.quote into city,offer from ludus_supply_private.cities_v116 c
     cross join lateral(select ludus_supply_private.offer_v116(c.id,step->>'sku',epoch) quote)o

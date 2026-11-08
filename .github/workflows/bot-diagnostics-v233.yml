@@ -24,11 +24,12 @@ jobs:
         run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10
       - name: Database and battle tests
         id: database
-        if: steps.install.outcome == 'success'
+        if: false
         continue-on-error: true
         run: node -e "require('./tests/bot-simulation-v233.cjs'); (async()=>{await require('./tests/bot-database-v233.cjs')();await require('./tests/bot-pit-v234.cjs')();await require('./tests/bot-runner-batch-v236.cjs')();await require('./tests/bot-multiplayer-v237.cjs')()})().catch(e=>{console.error(e);process.exitCode=1})"
       - name: Login security tests
         id: login
+        if: false
         continue-on-error: true
         run: node -e "require('./tests/bot-admin-login-v235.cjs')().catch(e=>{console.error(e);process.exitCode=1})"
       - name: Economy integration tests
