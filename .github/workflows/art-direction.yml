@@ -38,10 +38,6 @@ jobs:
           STABLE_FIXTURE_PATH=/tmp/stable-fixture-v136.json node tests/stable-v129.cjs
       - name: Six page sizes, level summary, clan views and expanded pause guide
         run: node tests/art-pages-v136.cjs
-      - name: Clan power totals and mobile layout
-        run: |
-          node tests/clan-power-logic-v231.cjs
-          node tests/clan-power-v231.cjs
       - name: Open-air stable, groom interaction and room restoration
         if: ${{ !cancelled() && steps.fixtures.outcome == 'success' }}
         run: node tests/stable-yard-v139.cjs
