@@ -22,7 +22,8 @@ try{
  const owner=randomUUID(),clan=randomUUID();await q("insert into public.ludus_accounts(user_id,username,ludus_name) values($1,'owner','Dominus')",[owner]);await q('insert into public.ludus_imperial_admins values($1)',[owner]);await q("insert into public.ludus_clans(id,name,leader_id) values($1,'Roma',$2)",[clan,owner]);await q('insert into public.ludus_clan_members(user_id,clan_id) values($1,$2)',[owner,clan]);
  const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations'),migration=name=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x=>x.endsWith('_'+name+'.sql'))),'utf8'),parts=migration('bot_fleet_v233').split('-- Production scheduling:');await db.exec(parts[0]);
  await db.exec(migration('bot_fleet_assign_v233_fix'));await db.exec(migration('bot_aventinus_v234'));await db.exec(migration('bot_admin_dashboard_v235'));
- await db.exec(`create table ludus_bot_private.online_rooms_v237(match_id uuid primary key,bot_users uuid[]);
+ await db.exec(`create schema if not exists ludus_supply_private;
+ create table ludus_bot_private.online_rooms_v237(match_id uuid primary key,bot_users uuid[]);
  create table ludus_bot_private.production_log_v238(slot smallint primary key,last_action text,last_error text);
  create table if not exists ludus_supply_private.jobs(id uuid primary key default gen_random_uuid(),owner_id uuid,ends_at timestamptz,cargo jsonb,claimed_at timestamptz);`);
  await db.exec(migration('bot_admin_production_v243'));
