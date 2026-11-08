@@ -6,7 +6,7 @@ const fixture=()=>{
  const names=['Aurelius','Tırman','Valerius','Cassius','Lucius','Octavia','Cornelius','Livia','Flavius','Aelia','Marcellus','Titus','Gaius','Iulia','Sergius','Antonia','Publius','Decimus','Severus','Marcus','Quintus','Claudia','Drusus','Vespasianus'];
  const stats=(i,offset=0)=>({matches:100+i,wins:60-i,losses:30+i,kills:i===3?null:75+i*3,deaths:i===0?0:12+i,assists:i===3?null:30+i,points:offset-i*15,rating:1500+offset-i*15});
  const people=names.map((name,i)=>({id:ids[i],owner_id:ids[i],name,subtitle:i===7?'Çok Uzun İsimli İmparatorluk Gladyatör Okulu':name+' Ludus',clan_id:clans[i%3].id,clan:clans[i%3].name,emblem:i%3+1,emblem_color:'#b89957',background:'#651c2b',mine:i===1,class:null,
-  gladiator:{id:ids[i],name:['Maximus','Spartacus','Vitus'][i%3]+' '+(i+1),class:'murmillo'},stats:{power:92.2125-i*.675,gladiator:89.25-i*.6,equipment:92.8-i*.7,attack:95-i,defense:91-i*.5,mobility:92.4-i*.6,roster_count:5,colosseum:stats(i,385),naval:stats(i,600),circus:stats(i),caravan:stats(i),caravan_raid:stats(i),caravan_defense:stats(i)}}));
+  gladiator:{id:ids[i],name:['Maximus','Spartacus','Vitus'][i%3]+' '+(i+1),class:'murmillo'},stats:{power:92.2125-i*.675,gladiator:89.25-i*.6,equipment:92.8-i*.7,attack:95-i,defense:91-i*.5,mobility:92.4-i*.6,roster_count:5,ranked:stats(i,125),colosseum:stats(i,385),naval:stats(i,600),circus:stats(i),caravan:stats(i),caravan_raid:stats(i),caravan_defense:stats(i)}}));
  Object.assign(people[0].stats,{gladiator:98.5,attack:119.25,defense:100.5,mobility:90.25});
  people.forEach(r=>{r.stats.power=Math.round((r.stats.gladiator+r.stats.attack+r.stats.defense+r.stats.mobility)*25)/100;});
  window.rankFixture={requests:[],people,clans,delay:0,error:false,guildMatches:20,defenseMatches:10,authListeners:[]};
@@ -15,7 +15,7 @@ const fixture=()=>{
   else if(a.p_scope==='clans')rows=clans.map((c,i)=>({...c,owner_id:null,clan_id:c.id,clan:c.name,subtitle:'Hanedan',emblem:i+1,emblem_color:'#b89957',background:'#651c2b',mine:i===1,stats:{guild:{...stats(i),points:1600-i*40}}}));
   else rows=f.guildMatches?f.people.map((r,i)=>({...r,id:ids[i],name:['Maximus','Spartacus','Vitus'][i%3]+' '+(i+1),subtitle:r.name,class:'murmillo',stats:{gladiator:90-i,guild:{...stats(i),points:1750-i*15}}})):[];
   for(const r of rows){const c=a.p_category,group=a.p_group,m=c==='caravan'&&group!=='all'?'caravan_'+group:c;r.metrics=r.stats[m]||{};
-   r.score=c==='power'?r.stats[group==='all'?'power':group]:a.p_sort==='wins'||['circus','caravan'].includes(c)?r.metrics.wins||0:['colosseum','naval'].includes(c)?r.metrics.rating:r.metrics.points||0;
+   r.score=c==='power'?r.stats[group==='all'?'power':group]:a.p_sort==='wins'||['circus','caravan'].includes(c)?r.metrics.wins||0:['ranked','colosseum','naval'].includes(c)?r.metrics.rating:r.metrics.points||0;
   }
   if(a.p_clan)rows=rows.filter(r=>r.clan_id===a.p_clan);rows.sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));rows.forEach((r,i)=>r.rank=i+1);const own=rows.find(r=>r.mine)||null;
   if(a.p_query)rows=rows.filter(r=>(r.name+' '+r.subtitle).toLocaleLowerCase('tr-TR').includes(a.p_query.toLocaleLowerCase('tr-TR')));
@@ -23,7 +23,7 @@ const fixture=()=>{
   return {version:203,rows,total,page,page_size:a.p_page_size,own,my_clan:clans[1].id,clans,server_now:new Date().toISOString(),guild_matches:f.guildMatches,defense_matches:f.defenseMatches};
  }
  window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:{id:ids[1]}}}),onAuthStateChange:fn=>{window.rankFixture.authListeners.push(fn);return{data:{subscription:{unsubscribe(){}}}};}},rpc:(name,a)=>{
-  if(name!=='ludus_rankings_v203')throw Error('Wrong reader');window.rankFixture.requests.push(a);const delay=window.rankFixture.delay,result=response(a),error=window.rankFixture.error;
+  if(name==='ludus_ranked_board_v248')a={p_scope:'players',p_category:'ranked',p_group:'all',p_sort:'score',...a};else if(name!=='ludus_rankings_v203')throw Error('Wrong reader');window.rankFixture.requests.push(a);const delay=window.rankFixture.delay,result=response(a),error=window.rankFixture.error;
   const p=new Promise(resolve=>setTimeout(()=>resolve(error?{error:{message:'offline'}}:{data:result}),delay));p.abortSignal=()=>p;return p;
  }})};
 };
@@ -58,8 +58,9 @@ async function run(){
    }
    await page.locator('.rank-row').first().click();await layout('power detail');assert.ok((await page.locator('#rankDetail').innerText()).includes('GENEL GÜÇ'));await page.locator('#rankDetail button[aria-label="Kapat"]').click();
    await page.click('[data-section="achievements"]');await ready();
-   for(const c of ['colosseum','naval','circus','caravan']){
+   for(const c of ['ranked','colosseum','naval','circus','caravan']){
     await page.click('[data-category="'+c+'"]');await ready();await layout(c);
+    if(c==='ranked'){assert.equal(await page.locator('#rankSort').isDisabled(),true);assert.match(await page.locator('#rankNotice').textContent(),/1500.*\+10.*−5/);}
     if(c==='caravan')for(const g of ['raid','defense','all']){await page.click('[data-group="'+g+'"]');await ready();assert.equal(await page.evaluate(()=>rankFixture.requests.at(-1).p_group),g);await layout('caravan '+g);}
     if(c!=='circus')for(const m of ['wins','losses','kd','kda'])assert.equal(await page.locator('.rank-row').first().locator('[data-metric="'+m+'"]').isVisible(),true);
     if(c==='circus')assert.ok((await page.locator('#rankHead').innerText()).includes('ŞAMPİYONLUK')||(await page.locator('#rankHead').textContent()).includes('Şampiyonluk'));

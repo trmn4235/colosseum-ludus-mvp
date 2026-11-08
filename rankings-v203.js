@@ -7,7 +7,7 @@
  function ratios(m){const partial=m.kills==null||m.deaths==null,partialA=partial||m.assists==null;
   return {kd:ratio(partial?m.kd_kills:m.kills,partial?m.kd_deaths:m.deaths),kda:ratio(partialA?(m.kda_kills==null?null:m.kda_kills+m.kda_assists):m.kills+m.assists,partialA?m.kda_deaths:m.deaths),partial,partialA};}
  const powers=[['all','Genel güç','Genel güç'],['gladiator','Gladyatör statı','Gladyatör istatistikleri'],['attack','İtem atak','İtem atak'],['defense','İtem defans','İtem defans'],['mobility','İtem hız','İtem hız']];
- const achievements=[['colosseum','Colosseum','Colosseum'],['naval','Deniz savaşları','Deniz savaşları'],['caravan','Kervan','Kervan savaşları'],['circus','Circus Maximus','Circus Maximus']];
+ const achievements=[['ranked','Ranked','Ranked 5v5'],['colosseum','Colosseum','Colosseum'],['naval','Deniz savaşları','Deniz savaşları'],['caravan','Kervan','Kervan savaşları'],['circus','Circus Maximus','Circus Maximus']];
  const guilds=[['clans','Hanedan sıralaması','Hanedan savaşları'],['fighters','Savaş gladyatörleri','Savaş gladyatörleri']];
  const groups=[['all','Tümü'],['raid','Baskın'],['defense','Savunma']];
  const classes=new Set(['murmillo','thraex','hoplomachus','hoplo','secutor','retiarius','provocator','scissor']);
@@ -15,7 +15,7 @@
  let client,user=null,data=null,seq=0,controller=null,searchTimer,resizeTimer,ready=false,helpPage=0,focusReturn=null;
  const power=()=>s.scope==='players'&&s.section==='power';
  const category=()=>s.scope==='guilds'?'guild':power()?'power':s.category;
- const combat=()=>s.scope==='guilds'?s.guild==='fighters':!power()&&['colosseum','naval','caravan'].includes(s.category);
+ const combat=()=>s.scope==='guilds'?s.guild==='fighters':!power()&&['ranked','colosseum','naval','caravan'].includes(s.category);
  const options=()=>s.scope==='guilds'?guilds:power()?powers:achievements;
  const active=()=>s.scope==='guilds'?s.guild:power()?s.power:s.category;
  const title=()=>options().find(r=>r[0]===active())?.[2]||'';
@@ -36,7 +36,7 @@
   $('rankGroups').replaceChildren();if(category()==='caravan')for(const [id,label]of groups){
    const b=button(label,()=>{s.group=id;s.page=0;controls();load();});b.dataset.group=id;b.setAttribute('aria-pressed',String(s.group===id));$('rankGroups').append(b);
   }
-  const sortable=!power()&&!['circus','caravan'].includes(category());$('rankSort').closest('label').hidden=!sortable;$('rankSort').disabled=!sortable;
+  const sortable=!power()&&!['ranked','circus','caravan'].includes(category());$('rankSort').closest('label').hidden=!sortable;$('rankSort').disabled=!sortable;
   $('rankSort').value=s.sort;$('rankSort').options[1].textContent='Galibiyete göre';
   $('rankClan').disabled=s.scope==='guilds'&&s.guild==='clans';
   const type=power()?'power':category()==='circus'?'circus':category()==='caravan'?'caravan':combat()?'combat':'clan';
@@ -81,7 +81,7 @@
   $('rankTable').setAttribute('aria-busy','false');$('rankRefresh').disabled=false;$('rankCount').textContent=data.total+' '+(s.scope==='players'?'oyuncu':s.guild==='clans'?'hanedan':'gladyatör');
   $('rankState').hidden=true;$('rankRows').replaceChildren(...data.rows.map(rowView));$('rankRows').style.setProperty('--rows',s.size);
   if(!data.rows.length)state('Kayıt bulunamadı',s.query?'Bu isimle eşleşen kayıt yok. Aramayı değiştirebilirsin.':s.scope==='guilds'&&s.guild==='fighters'?'Hanedan savaşlarına katılan gladyatörler, ilk sonuç kaydedildiğinde burada sıralanacak.':'Seçtiğin filtrede henüz bir kayıt bulunmuyor.');
-  const notice=power()?(s.power==='all'?'Dört puan · Her biri %25':'Seçili ölçütte en güçlü gladyatör'):category()==='guild'?(!data.guild_matches?'Hanedan savaşları henüz açılmadı.':'Savaş sonucu ve rakip gücüne göre'):category()==='caravan'?(s.group==='defense'&&!data.defense_matches?'Henüz kaydedilmiş savunma savaşı yok.':'Baskın ve savunma · Galibiyete göre'):category()==='circus'?'Katıldığın yarışlardaki şampiyonluklar':'1500 başlangıç · Galibiyet +20 / Mağlubiyet −5';
+  const notice=power()?(s.power==='all'?'Dört puan · Her biri %25':'Seçili ölçütte en güçlü gladyatör'):category()==='guild'?(!data.guild_matches?'Hanedan savaşları henüz açılmadı.':'Savaş sonucu ve rakip gücüne göre'):category()==='caravan'?(s.group==='defense'&&!data.defense_matches?'Henüz kaydedilmiş savunma savaşı yok.':'Baskın ve savunma · Galibiyete göre'):category()==='circus'?'Katıldığın yarışlardaki şampiyonluklar':category()==='ranked'?'1500 başlangıç · Galibiyet +10 / Mağlubiyet −5':category()==='colosseum'?'Çevrimiçi +10 · Diğer Colosseum +20 / −5':'1500 başlangıç · Galibiyet +20 / Mağlubiyet −5';
   $('rankNotice').textContent=notice;$('rankNotice').title=notice;
   $('rankPage').textContent=(data.page+1)+' / '+Math.max(1,Math.ceil(data.total/s.size));$('rankPrev').disabled=data.page===0;$('rankNext').disabled=(data.page+1)*s.size>=data.total;s.page=data.page;
   const own=$('rankOwn');own.replaceChildren();own.disabled=!data.own;
@@ -98,7 +98,7 @@
   $('rankPrev').disabled=$('rankNext').disabled=$('rankOwn').disabled=true;state('Kayıtlar getiriliyor…','');$('rankNotice').textContent='';$('rankCount').textContent='';
   const activeController=controller,timer=setTimeout(()=>activeController.abort(),12000);
   try{
-   let request=client.rpc('ludus_rankings_v203',{p_scope:s.scope==='players'?'players':s.guild,p_category:category(),p_group:power()?s.power:category()==='caravan'?s.group:'all',p_sort:s.sort,p_clan:s.scope==='guilds'&&s.guild==='clans'?null:s.clan||null,p_query:s.query,p_page:s.page,p_page_size:s.size,p_target:null});
+   let request=category()==='ranked'?client.rpc('ludus_ranked_board_v248',{p_clan:s.clan||null,p_query:s.query,p_page:s.page,p_page_size:s.size}):client.rpc('ludus_rankings_v203',{p_scope:s.scope==='players'?'players':s.guild,p_category:category(),p_group:power()?s.power:category()==='caravan'?s.group:'all',p_sort:s.sort,p_clan:s.scope==='guilds'&&s.guild==='clans'?null:s.clan||null,p_query:s.query,p_page:s.page,p_page_size:s.size,p_target:null});
    if(request.abortSignal)request=request.abortSignal(activeController.signal);
    const result=await request;if(current!==seq||who!==user)return;
    if(result.error)throw result.error;
@@ -130,7 +130,7 @@
  const help=[
   ['En güçlü gladyatör','Genel güç = (gladyatör statı + item atak + item defans + item hız) / 4. Her bileşenin ağırlığı %25’tir. Tüm değerler aynı gladyatör ve kuşandığı eşyalardan gelir.','Her oyuncu, seçili ölçütte en güçlü gladyatörüyle bir kez sıralanır. Genel güçte en yüksek toplamı; diğer sekmelerde en yüksek stat, atak, defans veya hız puanını taşıyan gladyatör gösterilir.','Tablodaki dört bileşen bu gladyatöre aittir. İsimle arama ve hanedan filtresiyle karşılaştırabilir, satıra dokunarak ayrıntıları görebilirsin.'],
   ['İtem puanları','Atak: ana el ve diğer el. Defans: miğfer ve göğüs. Hız: kolluk ve bacaklık. Her grup iki yuvanın ortalamasıdır; boş yuva 0 sayılır. Yalnız kuşanılmış eşyalar hesaba girer.','Her eşyanın altı doğal statı, + seviyesi, Safir yüzdeleri ve dört Zümrüt özelliği birlikte hesaplanır. Yakutla elde edilen geliştirme, eşyanın mevcut + seviyesine dahildir.','%100 referansı: türün temel statları, +15, altı %100 Safir ve dört %100 Zümrüt. +15 üzeri puanı artırır. Eksik eski stat kaydı “—” olur; tahmin edilmez.'],
-  ['Başarılar ve puanlar','Colosseum ve deniz savaşlarının puanları ayrıdır; ikisi de 1500’den başlar. Galibiyet +20, mağlubiyet −5 puandır. Colosseum kayıtlarına 4×5, 20 kişilik ve çevrimiçi arena sonuçları dahildir; küçük arena ve hayatta kalma dahil değildir.','Colosseum ve denizde puana veya galibiyete göre sıralayabilirsin. Kervanda baskın, savunma ve toplam sonuçlar galibiyete göre sıralanır. Bir savaşa kaç gladyatör katılırsa katılsın sonuç bir kez sayılır.','Circus Maximus katıldığın yarışlardaki şampiyonlukları sayar. Hanedan savaşlarında rakip gücüne göre puan değişir; sadece savaşa katılan gladyatörler puan kazanır.'],
+  ['Başarılar ve puanlar','Ranked 5v5 herkes için 1500 puandan başlar; galibiyet +10, mağlubiyet −5 puandır. Yalnızca Ranked 5v5 sonuçları bu sıralamaya girer.','Colosseum geçmişinde çevrimiçi zafer +10, diğer Colosseum ve deniz zaferleri +20, mağlubiyetler −5 puandır. Kervanda baskın, savunma ve toplam sonuçlar galibiyete göre sıralanır.','Circus Maximus katıldığın yarışlardaki şampiyonlukları sayar. Hanedan savaşlarında rakip gücüne göre puan değişir; sadece savaşa katılan gladyatörler puan kazanır.'],
   ['K/D, K/D/A ve eşitlik','K/D = öldürme / ölüm. K/D/A = (öldürme + asist) / ölüm. Bu oranlar sıralamayı ve eşit puandaki dereceyi etkilemez. Asgari maç şartı yoktur.','Sıfır ölümle katkı varsa ∞ görünür. Eksik kayıt “—”, yalnız kayıtlı bölümden hesaplanan oran “*” ile belirtilir. Ayrıntıda istatistiklerin kayıt kapsamını görebilirsin.','Eşit puanlar aynı dereceyi paylaşır. İsim araması seçili sıralamadaki gerçek dereceyi korur. Henüz doğrulanmış hanedan savaşı veya kervan savunması yoksa bu durum tabloda belirtilir.']
  ];
  function helpRender(){const d=$('rankHelp'),text=help[helpPage];d.replaceChildren(dialogHead(d,text[0],'SIRALAMA REHBERİ','rankHelpTitle'));const copy=el('div','rank-help-copy');text.slice(1).forEach(t=>copy.append(el('p','',t)));d.append(copy);const footer=el('div','rank-dialog-foot');footer.append(button('‹ Önceki',()=>{helpPage=Math.max(0,helpPage-1);helpRender();}),el('span','',(helpPage+1)+' / '+help.length),button('Sonraki ›',()=>{helpPage=Math.min(help.length-1,helpPage+1);helpRender();}));footer.firstChild.disabled=helpPage===0;footer.lastChild.disabled=helpPage===help.length-1;d.append(footer);}

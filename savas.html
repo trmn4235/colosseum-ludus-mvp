@@ -172,10 +172,10 @@ body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;b
 <span class="arena-choice-art art-online"></span>
 <span class="arena-choice-copy"><span class="arena-kicker">ÇEVRİMİÇİ ARENA</span><strong class="arena-card-title">Multiplayer</strong><span class="arena-description">Gerçek rakiplerle arenaya çık.</span><span class="arena-detail">Beta · <b>Ekipmanın korunur.</b></span></span>
 <span class="arena-card-status is-live">ŞİMDİ OYNA</span></button>
-<article class="arena-choice ranked-card" data-ranked="team" aria-label="Ranked Arena, beş kişilik takım, yakında">
+<a class="arena-choice ranked-card" data-ranked="team" href="ranked-team-v244.html" aria-label="Ranked Arena takım hazırlığını aç">
 <span class="arena-choice-art "><img src="assets/arena-v93/ranked-team.webp" width="1254" height="1254" alt="Farklı sınıflardan beş gladyatör arenada yan yana." decoding="async"></span>
-<span class="arena-choice-copy"><span class="arena-kicker">RANKED · 5 KİŞİLİK TAKIM</span><strong class="arena-card-title">Ranked Arena</strong><span class="arena-description">Tek gir veya 1–4 arkadaşınla.</span><span class="arena-detail">Başlangıç <b>1500</b> puan</span><span class="ranked-points"><span>Galibiyet <b>+20</b></span><span class="ranked-loss">Mağlubiyet <b>−5</b></span></span></span>
-<span class="arena-card-status ranked-soon">YAKINDA</span></article>
+<span class="arena-choice-copy"><span class="arena-kicker">RANKED · 5 KİŞİLİK TAKIM</span><strong class="arena-card-title">Ranked Arena</strong><span class="arena-description">Tek gir veya 1–4 arkadaşınla.</span><span class="arena-detail">Başlangıç <b>1500</b> puan</span><span class="ranked-points"><span>Galibiyet <b>+10</b></span><span class="ranked-loss">Mağlubiyet <b>−5</b></span></span></span>
+<span class="arena-card-status ranked-soon">TAKIMI HAZIRLA</span></a>
 <article class="arena-choice ranked-card" data-ranked="ten" aria-label="Ranked 10’a 10 Arena, yakında">
 <span class="arena-choice-art "><img src="assets/arena-v93/ranked-ten.webp" width="1254" height="1254" alt="Bordo ve mavi iki gladyatör takımı arenada karşı karşıya." decoding="async"></span>
 <span class="arena-choice-copy"><span class="arena-kicker">RANKED · TAKIM SAVAŞI</span><strong class="arena-card-title">10’a 10 Arena</strong><span class="arena-description">Her takımda 10 gladyatör.</span><span class="arena-detail">Toplam <b>20</b> gladyatör</span><span class="ranked-points"><span>Galibiyet <b>+10</b></span><span class="ranked-loss">Mağlubiyet <b>−10</b></span></span></span>
@@ -1774,4 +1774,4 @@ var LudusInspect=(function(){
  async function heartbeat(){if(!owner||document.hidden)return;if(open){call();return;}try{await client.rpc('ludus_social',{p_action:'ping'});}catch{}}
  client.auth.getUser().then(r=>{if(r.data.user&&!r.data.user.is_anonymous){owner=r.data.user.id;heartbeat();}}).catch(()=>{});setInterval(heartbeat,20000);document.addEventListener('visibilitychange',heartbeat);window.addEventListener('resize',()=>{if(open)render();});render();
 })();
-</script><script src="arena-tabs-v81.js?v=revision92"></script></body></html>
+</script><script src="arena-tabs-v81.js?v=revision248"></script></body></html>

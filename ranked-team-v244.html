@@ -5,7 +5,7 @@
  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
  <meta name="theme-color" content="#46141d">
  <title>Ranked Arena · Takım Hazırlığı</title>
- <link rel="stylesheet" href="ranked-team-v244.css?v=246">
+ <link rel="stylesheet" href="ranked-team-v244.css?v=248">
 </head>
 <body>
  <main class="ranked-page">
@@ -31,12 +31,12 @@
    <aside class="paper ready-panel" aria-labelledby="ready-title">
     <header><small>ARENAYA HAZIRLAN</small><h2 id="ready-title">Maç Hazırlığı</h2></header>
     <div class="crossed" aria-hidden="true">⚔</div>
-    <div class="stats"><div><span>Başlangıç puanı</span><strong>1500</strong></div><div><span>Başlangıç kademesi</span><strong>Gümüş V</strong></div><div><span>Takım</span><strong id="teamCount">0 / 5</strong></div><div><span>Galibiyet / Mağlubiyet</span><strong>+10 / −5</strong></div></div>
+    <div class="stats"><div><span>Ranked puanın</span><strong id="rankedRating">1500</strong></div><div><span>Başlangıç kademesi</span><strong>Gümüş V</strong></div><div><span>Takım</span><strong id="teamCount">0 / 5</strong></div><div><span>Galibiyet / Mağlubiyet</span><strong>+10 / −5</strong></div></div>
     <button id="openLoadout" type="button" class="secondary">GLADYATÖR &amp; EŞYA</button>
     <div id="incoming" class="incoming" hidden></div>
     <button id="createTeam" type="button" class="primary">TAKIM KUR</button>
     <button id="leaveTeam" type="button" class="secondary" hidden>Takımdan ayrıl</button>
-    <button type="button" class="primary match" disabled>MAÇA GİR · YAKINDA</button>
+    <button id="startMatch" type="button" class="primary match" disabled>MAÇI BAŞLAT</button>
     <p id="status" class="status" role="status">Takım bilgileri yükleniyor…</p>
    </aside>
   </div>
@@ -64,6 +64,6 @@
  <script src="ludus-client-v84.js?v=revision84"></script>
  <script src="item-visuals-v199.js?v=199"></script>
  <script src="ludus-production-v119.js?v=119"></script>
- <script src="ranked-team-v244.js?v=246"></script>
+ <script src="ranked-team-v244.js?v=248"></script>
 </body>
 </html>
