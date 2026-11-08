@@ -1,0 +1,63 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{randomUUID}=require('node:crypto');
+const {database,core}=require('./combat-stats-v73.cjs');
+const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations');
+const migration=name=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(f=>f.endsWith('_'+name+'.sql'))),'utf8');
+module.exports=async()=>{const db=await database(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;try{
+ await db.exec(migration('survival_v83'));await require('./combat-motion-sql-v163.cjs').install(db);
+ await db.exec("create table if not exists public.ludus_shop_catalog(sku text primary key,name text,kind text,model text,price integer,category text);create table ludus_supply_private.production_recipes_v118(sku text primary key,name text,kind text,model text,ingredients jsonb,output_type text,output_quantity int,sort_order int);create table ludus_supply_private.recipes(sku text primary key,ingredients jsonb);");
+ for(const name of ['equipment_groups_v168','pit_arena_v172','pit_four_fighters_v173','pit_ten_fighters_v176','pit_bow_v178','pit_axe_v192'])await db.exec(migration(name));
+ await db.exec(`create table auth.users(id uuid primary key,raw_user_meta_data jsonb,email_confirmed_at timestamptz);
+ create table public.ludus_imperial_admins(user_id uuid primary key);
+ create table public.ludus_clans(id uuid primary key default gen_random_uuid(),name text,emblem integer,background text,emblem_color text,leader_id uuid);
+ create table public.ludus_clan_members(user_id uuid primary key,clan_id uuid,vault_access boolean default false);
+ create table public.ludus_stones(owner_id uuid,family text,stone_id integer,quantity integer);
+ create or replace function ludus_private.item_v10(text) returns jsonb language sql immutable as $$select case when $1='weapon' then '{"physical_power":7,"armor_penetration":3,"critical_damage":5,"critical_rate":3,"block_power":5,"block_rate":3}'::jsonb else '{}'::jsonb end$$;
+ alter table public.ludus_accounts add column sapphires integer default 0,add column rubies integer default 0;
+ alter table public.ludus_items add column market_listing_id uuid;
+ create function public.ludus_buy_basic(text,uuid)returns jsonb language sql as $$select '{}'::jsonb$$;
+ create function public.ludus_upgrade_item_v10(uuid,text,integer,uuid)returns jsonb language sql as $$select '{}'::jsonb$$;`);
+ await db.exec(migration('bot_fleet_v233').split('-- Production scheduling:')[0]);
+ await db.exec(migration('bot_aventinus_v234'));
+ await db.exec(migration('bot_multiplayer_v237'));
+ const owner=randomUUID(),human=randomUUID(),other=randomUUID(),bots=[];
+ for(const [u,g,name] of [[owner,human,'Player'],...[1,2,3,4].map(i=>[randomUUID(),randomUUID(),'Bot '+i])]){
+  await q('insert into public.ludus_accounts(user_id,username,ludus_name) values($1,$2,$3)',[u,'player_'+name.replaceAll(' ','_'),name]);
+  await q("insert into public.ludus_gladiators(id,owner_id,name,class,base_stats,stat_version) values($1,$2,$3,'secutor',$4,46)",[g,u,name,core]);
+  await q("insert into public.ludus_items(owner_id,kind,model,equipped_by,equipped_slot) values($1,'weapon','gladius',$2,'main_hand')",[u,g]);
+  if(u!==owner)bots.push({u,g});
+ }
+ await q("insert into public.ludus_accounts(user_id,username,ludus_name)values($1,'other','Other')",[other]);
+ for(let i=0;i<bots.length;i++)await q('update ludus_bot_private.members_v233 set user_id=$1 where slot=$2',[bots[i].u,i+1]);
+ await q('update ludus_bot_private.settings_v233 set owner_id=$1,ready=true,enabled=true where id',[owner]);
+ await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);await db.exec('set role authenticated');
+ let room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;
+ assert.equal(room.venue,'colosseum');assert.equal(room.players.length,4,'owner gets three real bot opponents');
+ assert.equal(room.players.filter(p=>p.bot_v237===true&&p.name.endsWith('(Bot)')).length,3);
+ assert.equal((await q('select auth.uid() u'))[0].u,owner,'user identity restored');
+ await assert.rejects(()=>q('select ludus_bot_private.online_assist_v237($1,$2)',[room.id,owner]),/permission denied/);
+ await db.exec('reset role');await q("update public.ludus_matches set starts_at=clock_timestamp()-interval '1 second' where id=$1",[room.id]);
+ await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;assert.equal(room.status,'playing');
+ await db.exec('reset role');await q("update ludus_bot_private.online_rooms_v237 set last_tick=clock_timestamp()-interval '1 second' where match_id=$1",[room.id]);
+ await q(`update public.ludus_matches set players=(select jsonb_agg(case when p->>'bot_v237'='true' then p||jsonb_build_object('tick_at',clock_timestamp()-interval '1 second') else p end order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1`,[room.id]);
+ const before=(await q('select players from public.ludus_matches where id=$1',[room.id]))[0].players;
+ await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;
+ const moved=room.players.filter(p=>p.bot_v237).some(p=>{const old=before.find(x=>x.owner===p.owner);return p.x!==old.x||p.z!==old.z;});
+ assert.ok(moved,'bot sends actual movement through multiplayer combat');assert.equal((await q('select auth.uid() u'))[0].u,owner);
+ await db.exec('reset role');assert.equal((await q('select last_error from ludus_bot_private.online_rooms_v237 where match_id=$1',[room.id]))[0].last_error,null);
+ // Start close together and let server-timed attacks resolve normally.
+ await q(`update public.ludus_matches set players=(select jsonb_agg(p||jsonb_build_object('x',case when p->>'bot_v237'='true' then .8 else 0 end,'z',0,'tick_at',clock_timestamp()-interval '1 second') order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1`,[room.id]);
+ let damage=false,swings=0;
+ for(let n=0;n<8&&!damage;n++){
+  await q("update ludus_bot_private.online_rooms_v237 set last_tick=clock_timestamp()-interval '1 second' where match_id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  swings+=room.players.filter(p=>p.bot_v237&&p.serial>0).length;
+  damage=room.players.some(p=>Number(p.hp)<Number(p.maxHp));
+  if(!damage)await new Promise(resolve=>setTimeout(resolve,450));
+ }
+ assert.ok(swings>0&&damage,'bots actually attack and land server-resolved hits');
+ await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);await q('update ludus_bot_private.settings_v233 set enabled=false where id');
+ await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
+ await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;
+ assert.equal(room.players.length,1,'paused fleet never joins');
+ console.log('V237 multiplayer bots PASS: real lobby, real combat movement, owner isolation, identity restore and pause.');
+}finally{await db.close();}};
