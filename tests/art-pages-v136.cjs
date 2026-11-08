@@ -58,4 +58,6 @@ const pages=[
   assert.deepEqual(errors,[],entry.file+' JavaScript errors');await page.close();
  }
  console.log(JSON.stringify({pages:pages.length,views:reports.length,clanTabs:5,reports,out}));await browser.close();
+ require('node:child_process').execFileSync(process.execPath,[path.join(root,'tests/clan-power-logic-v231.cjs')],{stdio:'inherit'});
+ require('node:child_process').execFileSync(process.execPath,[path.join(root,'tests/clan-power-v231.cjs')],{stdio:'inherit'});
 })().catch(e=>{console.error(e);process.exit(1)});
