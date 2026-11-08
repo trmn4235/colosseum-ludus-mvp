@@ -81,6 +81,18 @@ module.exports=async({rewards=false,leave=false}={})=>{const db=await database()
   assert.equal(Number((await q('select gold from public.ludus_accounts where user_id=$1',[botWinner]))[0].gold),beforeGold+100);
   assert.equal((await q("select count(*)::int n from public.ludus_stones where owner_id=$1 and family='sapphire'",[botWinner]))[0].n,1);
   assert.equal((await q('select auth.uid() u'))[0].u,owner,'bot reward restores the human identity');
+  // A short/forfeited result cannot become eligible by waiting and polling.
+  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;await db.exec('reset role');
+  await q("update public.ludus_matches set starts_at=clock_timestamp()-interval '1 second' where id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  await q(`update public.ludus_matches set players=(select jsonb_agg(p||jsonb_build_object('hp',case when p->>'owner'=$2 then (p->>'maxHp')::numeric else 0 end,'left',p->>'owner'<>$2,'projectile',null,'strike_at',null) order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1`,[room.id,owner]);
+  const oldGold=Number((await q('select gold from public.ludus_accounts where user_id=$1',[owner]))[0].gold);
+  await db.exec('set role authenticated');result=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  assert.equal(result.status,'finished');assert.equal(result.bot_reward,null);
+  await q("update public.ludus_matches set starts_at=clock_timestamp()-interval '30 seconds' where id=$1",[room.id]);
+  await db.exec('set role authenticated');result=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  assert.equal(result.bot_reward,null);assert.equal(Number((await q('select gold from public.ludus_accounts where user_id=$1',[owner]))[0].gold),oldGold);
   console.log('V239 multiplayer rewards PASS: human and bot wins, actual account credit, stones, XP and replay protection.');
  }else await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);
  if(leave){

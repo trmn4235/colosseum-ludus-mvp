@@ -36,7 +36,7 @@ jobs:
         id: production
         if: steps.install.outcome == 'success'
         continue-on-error: true
-        run: LUDUS_CARAVAN_COMBAT_TEST=1 node tests/production-v119.cjs
+        run: node -e "require('./tests/bot-multiplayer-v237.cjs')({rewards:true,leave:true}).catch(e=>{console.error(e);process.exitCode=1})"
       - name: Report outcomes
         if: always()
         run: |
