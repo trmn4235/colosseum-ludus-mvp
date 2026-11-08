@@ -28,10 +28,12 @@ Deno.serve(async req=>{
   if(!ticket)throw Error('Bu hesaba ait baskın bulunamadı.');
   if(ticket.status==='resolved')return reply({result:ticket,replayed:true});
   if(!ticket.battle_started_at)throw Error('Önce savaşa giriş yap.');
+  if((ticket.defender_id||ticket.owner_id)!==user.id)throw Error('Bu savunmayı başka bir Ludus üstlendi.');
   const sim=(globalThis as any).CaravanDefenseV230.replay(ticket,body.commands,body.steps);
   if(!sim.combat.finished&&body.abandon!==true)throw Error('Savaş henüz bitmedi.');
-  const result=await request('/rest/v1/rpc/ludus_caravan_defense_verified_v230','Bearer '+service,service,{
-   p_owner:user.id,p_id:ticket.id,p_won:body.abandon!==true&&sim.combat.result==='win',p_seconds:sim.steps/30,
+  const result=await request('/rest/v1/rpc/ludus_caravan_defense_verified_v231','Bearer '+service,service,{
+   p_owner:ticket.owner_id,p_actor:user.id,p_id:ticket.id,p_won:body.abandon!==true&&sim.combat.result==='win',p_seconds:sim.steps/30,
+   p_completed:body.abandon!==true&&sim.combat.finished,
    p_arrows_used:ticket.workers.reduce((n:number,w:any)=>n+(w.armed?w.arrows:0),0)-sim.combat.fighters.filter((f:any)=>f.worker).reduce((n:number,f:any)=>n+f.arrowsLeft,0)
   });
   return reply({result});

@@ -56,6 +56,7 @@ module.exports=async({db,q,A,B,call,migration,randomUUID})=>{
  await reject(()=>q('select * from ludus_worker_private.defenses_v230'),/permission denied/);
  await q("select set_config('request.jwt.claim.sub',$1,false)",[B]);assert.ok((await api()).encounters.every(x=>x.owner_id===B));await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
  await q("select set_config('request.jwt.claims','{\"is_anonymous\":true}',false)");await reject(()=>api(),/giriş yap/);await q("select set_config('request.jwt.claims','{}',false)");
+ await require('./clan-caravan-support-v231.cjs')({db,q,A,B,api,depart,roster,migration,randomUUID});
  await admin();await db.exec('rollback');await auth();
  console.log('V230 SQL PASS: exact 2/5 attacks, no replay reroll, frozen workers, owner isolation, gladiator locking, re-entry, delivery/claim blocking, verified win/loss once and automatic timeout.');
 };

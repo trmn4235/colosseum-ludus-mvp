@@ -100,7 +100,7 @@ var LudusMessages=(function(){
   function renderDetail(){
    const n=fullMessage||selectedNote;detail.replaceChildren();if(!n){empty(detail,'Bir sistem bildirimini seçerek ayrıntısını görebilirsin.','mission');return;}
    const heading=el('h4',null,fullMessage?'Mesaj':n.title),time=el('time','mc-detail-time',date(n.created_at)),body=el('p','mc-detail-body'),pages=pager('Metin sayfası',()=>{textPage--;showText();},()=>{textPage++;showText();});
-   const action=button(fullMessage?'Sohbete dön':({missions:'Görevlere git',training:'Gladyatörlere git',market:'Pazara git',upgrades:'Geliştirmelere git',levels:'Ödüllere git',supply:'Depoya git',guild:'Guild sohbetini aç'}[n.target]||'Aç'),'mc-detail-action',()=>{
+   const action=button(fullMessage?'Sohbete dön':({missions:'Görevlere git',training:'Gladyatörlere git',market:'Pazara git',upgrades:'Geliştirmelere git',levels:'Ödüllere git',supply:'Depoya git',guild:'Guild sohbetini aç',workers:'Savunmaya git'}[n.target]||'Aç'),'mc-detail-action',()=>{
     if(fullMessage){fullMessage=null;renderThread();}else if(n.target==='guild')changeChannel('guild');else{pendingNavigation=n.target;dialog.close();}
    });detail.append(heading,time,body,pages.root,action);
    function showText(){textPage=Math.max(0,Math.min(textPage,textPages.length-1));body.textContent=textPages[textPage]||'';setPager(pages,textPage,textPages.length,1);}
