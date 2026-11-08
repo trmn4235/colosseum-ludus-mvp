@@ -27,7 +27,7 @@ create function ludus_bot_private.name_v233(p_slot integer) returns text languag
  select 'Ludus '||(array['Aquila','Varro','Felix','Drusus','Cassius','Titus','Lucius','Cato','Brutus','Aulus',
   'Flavius','Decimus','Gaius','Quintus','Severus','Nero','Octavius','Rufus','Maximus','Silvanus',
   'Antonius','Marcellus','Tiberius','Valerius','Fabius','Cornelius','Florus','Aurelius','Crispus','Sextus',
-  'Scaurus','Paullus','Lentulus','Celsus','Rutilus','Agrippa','Cicero','Sulla','Vespasianus'])[p_slot];
+  'Scaurus','Paullus','Lentulus','Celsus','Rutilus','Agrippa','Cicero','Sulla','Vespasianus'])[p_slot]||' (Bot)';
 $$;
 create function ludus_bot_private.group_v233(p_slot integer) returns integer language sql immutable set search_path='' as $$
  select case when p_slot<=9 then 0 else (p_slot-10)/10+1 end;
@@ -173,10 +173,11 @@ begin
   end if;
   select coalesce(jsonb_object_agg(i.equipped_slot,i.id),'{}'::jsonb) into slot_map from public.ludus_items i
    where i.owner_id=b.user_id and i.equipped_by=g.id and i.equipped_slot is not null and i.locked_battle_id is null
-    and i.clan_vault_id is null and i.clan_roster_id is null and i.market_listing_id is null;
+    and i.clan_vault_id is null and i.clan_roster_id is null and i.market_listing_id is null
+    and (i.equipped_slot<>'main_hand' or i.model in('gladius','sica','spear','trident','whip','heavy_mace','warhammer','halberd','trident_gladiator'));
   if not(slot_map ? 'main_hand') then
    select i.id into weapon_id from public.ludus_items i where i.owner_id=b.user_id and i.equipped_by is null and i.kind='weapon'
-    and i.model in('gladius','sica','spear','trident','mace','whip','heavy_mace','warhammer','halberd','trident_gladiator')
+    and i.model in('gladius','sica','spear','trident','whip','heavy_mace','warhammer','halberd','trident_gladiator')
     and i.locked_battle_id is null and i.clan_vault_id is null and i.clan_roster_id is null and i.market_listing_id is null
     order by i.enhancement desc,i.created_at,i.id limit 1;
    if weapon_id is null and (select gold>=100 from public.ludus_accounts where user_id=b.user_id) then

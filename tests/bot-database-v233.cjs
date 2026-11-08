@@ -16,7 +16,7 @@ try{
  await db.exec(`create schema net;create schema cron;create table net.v233_posts(url text);
  create function net.http_post(url text,headers jsonb,body jsonb,timeout_milliseconds integer) returns bigint language plpgsql as $$begin insert into net.v233_posts values(url);return 1;end$$;
  create function cron.schedule(text,text,text) returns bigint language sql as $$select 1::bigint$$;`);
- await db.exec(parts[1].replace('create extension if not exists pg_net;',''));
+ await db.exec(parts[1].slice(parts[1].indexOf('\n')+1).replace('create extension if not exists pg_net;',''));
  await db.exec('set role authenticated');await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);let state=(await q('select ludus_bot_admin_v233() s'))[0].s;assert.equal(state.created,0);assert.equal(state.total,39);
  await assert.rejects(()=>q('select ludus_bot_context_v233()'),/permission denied/);await assert.rejects(()=>q('select * from ludus_bot_private.settings_v233'),/permission denied/);
  await db.exec('reset role;set role service_role');await q("select ludus_bot_install_v233($1,'https://test.supabase.co/functions/v1/bot-runner-v233',false)",[owner]);
