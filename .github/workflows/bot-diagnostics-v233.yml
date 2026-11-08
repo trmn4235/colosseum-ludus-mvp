@@ -1,0 +1,40 @@
+name: Bot admin diagnostics - inspect each result
+on:
+  push:
+    branches: [codex/bot-diagnostics-v233]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --user 1001 --shm-size=1g
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install isolated diagnostic tools
+        id: install
+        continue-on-error: true
+        run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10
+      - name: Database and battle tests
+        id: database
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: node -e "require('./tests/bot-simulation-v233.cjs'); (async()=>{await require('./tests/bot-database-v233.cjs')();await require('./tests/bot-pit-v234.cjs')();await require('./tests/bot-runner-batch-v236.cjs')()})().catch(e=>{console.error(e);process.exitCode=1})"
+      - name: Login security tests
+        id: login
+        continue-on-error: true
+        run: node -e "require('./tests/bot-admin-login-v235.cjs')().catch(e=>{console.error(e);process.exitCode=1})"
+      - name: Report outcomes
+        if: always()
+        run: |
+          echo 'Diagnostic only; inspect each outcome.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Install: ${{ steps.install.outcome }}' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Database: ${{ steps.database.outcome }}' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Login: ${{ steps.login.outcome }}' >> "$GITHUB_STEP_SUMMARY"
