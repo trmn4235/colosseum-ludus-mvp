@@ -125,4 +125,19 @@ begin
  pos:=position(needle in source);if pos=0 then raise exception 'Unexpected multiplayer function; bot assist was not installed.';end if;
  source:=overlay(source placing injection||needle from pos for length(needle));execute source;
 end;$patch$;
+
+-- The background battle runner must not select a fighter already in an
+-- active multiplayer room, even if their other gladiator becomes available.
+do $patch$
+declare source text;needle text:='and x.clan_roster_id is null and not exists(select 1 from public.ludus_battles';pos integer;
+ replacement text:=$replace$and x.clan_roster_id is null and not exists(select 1 from public.ludus_matches live_room
+  where live_room.status in('waiting','playing') and live_room.updated_at>clock_timestamp()-interval '30 seconds'
+   and live_room.players @>jsonb_build_array(jsonb_build_object('gladiator',jsonb_build_object('id',x.id))))
+  and not exists(select 1 from public.ludus_battles$replace$;
+begin
+ select pg_get_functiondef('public.ludus_bot_claim_v233()'::regprocedure) into source;
+ if position('live_room' in source)>0 then raise exception 'Bot multiplayer guard is already installed.';end if;
+ pos:=position(needle in source);if pos=0 then raise exception 'Unexpected bot runner function; guard was not installed.';end if;
+ source:=overlay(source placing replacement from pos for length(needle));execute source;
+end;$patch$;
 notify pgrst,'reload schema';

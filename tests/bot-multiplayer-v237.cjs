@@ -17,6 +17,7 @@ module.exports=async()=>{const db=await database(),q=async(sql,args=[])=>(await 
  create function public.ludus_buy_basic(text,uuid)returns jsonb language sql as $$select '{}'::jsonb$$;
  create function public.ludus_upgrade_item_v10(uuid,text,integer,uuid)returns jsonb language sql as $$select '{}'::jsonb$$;`);
  await db.exec(migration('bot_fleet_v233').split('-- Production scheduling:')[0]);
+ await db.exec(migration('bot_aventinus_v234'));
  await db.exec(migration('bot_multiplayer_v237'));
  const owner=randomUUID(),human=randomUUID(),other=randomUUID(),bots=[];
  for(const [u,g,name] of [[owner,human,'Player'],...[1,2,3,4].map(i=>[randomUUID(),randomUUID(),'Bot '+i])]){
@@ -43,6 +44,17 @@ module.exports=async()=>{const db=await database(),q=async(sql,args=[])=>(await 
  const moved=room.players.filter(p=>p.bot_v237).some(p=>{const old=before.find(x=>x.owner===p.owner);return p.x!==old.x||p.z!==old.z;});
  assert.ok(moved,'bot sends actual movement through multiplayer combat');assert.equal((await q('select auth.uid() u'))[0].u,owner);
  await db.exec('reset role');assert.equal((await q('select last_error from ludus_bot_private.online_rooms_v237 where match_id=$1',[room.id]))[0].last_error,null);
+ // Start close together and let server-timed attacks resolve normally.
+ await q(`update public.ludus_matches set players=(select jsonb_agg(p||jsonb_build_object('x',case when p->>'bot_v237'='true' then .8 else 0 end,'z',0,'tick_at',clock_timestamp()-interval '1 second') order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1`,[room.id]);
+ let damage=false,swings=0;
+ for(let n=0;n<8&&!damage;n++){
+  await q("update ludus_bot_private.online_rooms_v237 set last_tick=clock_timestamp()-interval '1 second' where match_id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  swings+=room.players.filter(p=>p.bot_v237&&p.serial>0).length;
+  damage=room.players.some(p=>Number(p.hp)<Number(p.maxHp));
+  if(!damage)await new Promise(resolve=>setTimeout(resolve,450));
+ }
+ assert.ok(swings>0&&damage,'bots actually attack and land server-resolved hits');
  await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);await q('update ludus_bot_private.settings_v233 set enabled=false where id');
  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;
