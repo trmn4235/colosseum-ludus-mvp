@@ -66,4 +66,4 @@ async function run(){const db=await fixture();try{
  await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub','',false)");await assert.rejects(db.query('select ludus_rankings_v203()'));
  console.log('PASS V203: same-gladiator four-component power, best representative per measure, equipped-only groups, missing stats, independent 1500 ratings, Colosseum backfill/venues, wins/losses, KDA-independent ties, caravan defense, championships, legacy compatibility and permissions.');
  }finally{await db.close();}}
-run().catch(e=>{console.error(e);process.exitCode=1;});
+run().then(()=>require('node:child_process').execFileSync(process.execPath,[path.join(__dirname,'rankings-v247.cjs')],{stdio:'inherit'})).catch(e=>{console.error(e);process.exitCode=1;});
