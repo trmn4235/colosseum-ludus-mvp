@@ -1,4 +1,10 @@
 (()=>{
+ const ranked=document.querySelector('[data-ranked="team"]');
+ if(ranked){
+  const link=document.createElement('a');link.className=ranked.className;link.dataset.ranked='team';link.href='ranked-team-v244.html';link.setAttribute('aria-label','Ranked Arena takım hazırlığını aç');
+  while(ranked.firstChild)link.append(ranked.firstChild);
+  const win=link.querySelector('.ranked-points span b'),status=link.querySelector('.ranked-soon');if(win)win.textContent='+10';if(status)status.textContent='TAKIMI HAZIRLA';ranked.replaceWith(link);
+ }
  const tabs=[...document.querySelectorAll('[data-arena-tab]')],panels=[...document.querySelectorAll('[data-arena-panel]')];
  function select(name){for(const b of tabs){const active=b.dataset.arenaTab===name;b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;}for(const p of panels)p.hidden=p.dataset.arenaPanel!==name;document.querySelector('#modePage h1').textContent=name==='clan'?'KLAN SAVAŞLARI':name==='multi'?'MULTIPLAYER':'SAVAŞINI SEÇ';document.querySelector('#modePage .heading p').textContent=name==='clan'?'KUMDA VE SUDA · KLANINLA ZAFERE':name==='multi'?'TAKIMINI KUR · ARENADA İZ BIRAK':'ARENADA TEK HEDEF: AYAKTA KALMAK.';}
  function activate(name){if(document.querySelector('#modePage').hidden){document.querySelector('#back').click();if(document.querySelector('#modePage').hidden)return;}select(name);}
