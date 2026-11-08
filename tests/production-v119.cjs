@@ -147,7 +147,8 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  if(process.env.LUDUS_CARAVAN_COMBAT_TEST)await require('./production-workers-v229.cjs')({db,q,A,B,call,stock,migration,randomUUID});
  if(process.env.LUDUS_CARAVAN_COMBAT_TEST)await require('./production-workers-v230.cjs')({db,q,A,B,call,stock,migration,randomUUID});
  fs.writeFileSync('/tmp/production-state-v119.json',JSON.stringify(await call()));
+ if(process.env.LUDUS_CARAVAN_COMBAT_TEST||process.env.LUDUS_BOT_PRODUCTION_TEST)await require('./bot-production-v238.cjs')({db,q,A,B,call,stock,migration,randomUUID,batch:true});
 
  await db.exec('reset role;set role anon');await assert.rejects(()=>call(),/permission denied/);
- await db.close();if(process.env.LUDUS_CARAVAN_COMBAT_TEST){require('./bot-simulation-v233.cjs');await require('./bot-database-v233.cjs')();await require('./bot-pit-v234.cjs')();await require('./bot-admin-login-v235.cjs')();await require('./bot-runner-batch-v236.cjs')();await require('./bot-multiplayer-v237.cjs')();}console.log('V198 PASS: all registered recipes'+' and exact debits, 6 ingots, separate manica, inactive assembly parts, integer inputs, one steel Gladius, raw-to-item chain, 50 arrows only, replay, ownership, rollback, capacity, legacy cargo and currency preserved.');
+ await db.close();if(process.env.LUDUS_CARAVAN_COMBAT_TEST){require('./bot-simulation-v233.cjs');await require('./bot-database-v233.cjs')();await require('./bot-pit-v234.cjs')();await require('./bot-admin-login-v235.cjs')();await require('./bot-runner-batch-v236.cjs')();await require('./bot-multiplayer-v237.cjs')({rewards:true,leave:true});}console.log('V198 PASS: all registered recipes'+' and exact debits, 6 ingots, separate manica, inactive assembly parts, integer inputs, one steel Gladius, raw-to-item chain, 50 arrows only, replay, ownership, rollback, capacity, legacy cargo and currency preserved.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

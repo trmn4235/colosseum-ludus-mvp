@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {database,core}=require('./combat-stats-v73.cjs');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations');
 const migration=name=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(f=>f.endsWith('_'+name+'.sql'))),'utf8');
-module.exports=async()=>{const db=await database(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;try{
+module.exports=async({rewards=false,leave=false}={})=>{const db=await database(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;try{
  await db.exec(migration('survival_v83'));await require('./combat-motion-sql-v163.cjs').install(db);
  await db.exec("create table if not exists public.ludus_shop_catalog(sku text primary key,name text,kind text,model text,price integer,category text);create table ludus_supply_private.production_recipes_v118(sku text primary key,name text,kind text,model text,ingredients jsonb,output_type text,output_quantity int,sort_order int);create table ludus_supply_private.recipes(sku text primary key,ingredients jsonb);");
  for(const name of ['equipment_groups_v168','pit_arena_v172','pit_four_fighters_v173','pit_ten_fighters_v176','pit_bow_v178','pit_axe_v192'])await db.exec(migration(name));
@@ -55,7 +55,64 @@ module.exports=async()=>{const db=await database(),q=async(sql,args=[])=>(await 
   if(!damage)await new Promise(resolve=>setTimeout(resolve,450));
  }
  assert.ok(swings>0&&damage,'bots actually attack and land server-resolved hits');
- await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);await q('update ludus_bot_private.settings_v233 set enabled=false where id');
+ if(rewards){
+  await db.exec(`create table ludus_bot_private.test_xp(owner_id uuid,source_key text,amount integer,primary key(owner_id,source_key));
+   create function ludus_private.level_grant(u uuid,k text,s text,n integer,t timestamptz) returns integer language plpgsql as $$begin if auth.uid() is distinct from u then raise exception 'Hesabına giriş yap.';end if;insert into ludus_bot_private.test_xp values(u,s,n);return n;end$$;
+   create or replace function ludus_private.win_stone_v10(u uuid)returns jsonb language plpgsql as $$begin insert into public.ludus_stones values(u,'sapphire',1,1);return '{"family":"sapphire","id":1,"quantity":1}'::jsonb;end$$;`);
+  await db.exec(migration('bot_multiplayer_rewards_v239'));
+  await db.exec(migration('bot_multiplayer_reward_identity_v240'));
+  const decide=async(winner)=>{
+   await q(`update public.ludus_matches set starts_at=clock_timestamp()-interval '30 seconds',players=(select jsonb_agg(p||jsonb_build_object('hp',case when p->>'owner'=$2 then (p->>'maxHp')::numeric else 0 end,'left',false,'strike_at',null,'projectile',null,'pull_from',null) order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1`,[room.id,winner]);
+   await db.exec('set role authenticated');const result=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');return result;
+  };
+  const gold=Number((await q('select gold from public.ludus_accounts where user_id=$1',[owner]))[0].gold);
+  let result=await decide(owner);assert.equal(result.status,'finished');assert.equal(result.bot_match,true);
+  assert.equal(result.bot_reward.gold,100);assert.equal(result.bot_reward.diamonds,1);assert.equal(result.bot_reward.ludus_exp,100);
+  assert.equal(Number((await q('select gold from public.ludus_accounts where user_id=$1',[owner]))[0].gold),gold+100);
+  await db.exec('set role authenticated');await q("select public.ludus_match('state',$1)",[room.id]);await db.exec('reset role');
+  assert.equal(Number((await q('select gold from public.ludus_accounts where user_id=$1',[owner]))[0].gold),gold+100,'reward never repeats');
+  assert.equal((await q('select count(*)::int n from ludus_bot_private.test_xp where owner_id=$1',[owner]))[0].n,1);
+  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;await db.exec('reset role');
+  assert.equal(room.players.length,4);await q("update public.ludus_matches set starts_at=clock_timestamp()-interval '1 second' where id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  const botWinner=room.players.find(p=>p.bot_v237).owner,beforeGold=Number((await q('select gold from public.ludus_accounts where user_id=$1',[botWinner]))[0].gold);
+  result=await decide(botWinner);assert.equal(result.status,'finished');assert.equal(result.bot_reward,null,'another player cannot read the winner receipt');
+  assert.equal(Number((await q('select gold from public.ludus_accounts where user_id=$1',[botWinner]))[0].gold),beforeGold+100);
+  assert.equal((await q("select count(*)::int n from public.ludus_stones where owner_id=$1 and family='sapphire'",[botWinner]))[0].n,1);
+  assert.equal((await q('select auth.uid() u'))[0].u,owner,'bot reward restores the human identity');
+  // A short/forfeited result cannot become eligible by waiting and polling.
+  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;await db.exec('reset role');
+  await q("update public.ludus_matches set starts_at=clock_timestamp()-interval '1 second' where id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  await q(`update public.ludus_matches set players=(select jsonb_agg(p||jsonb_build_object('hp',case when p->>'owner'=$2 then (p->>'maxHp')::numeric else 0 end,'left',p->>'owner'<>$2,'projectile',null,'strike_at',null) order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1`,[room.id,owner]);
+  const oldGold=Number((await q('select gold from public.ludus_accounts where user_id=$1',[owner]))[0].gold);
+  await db.exec('set role authenticated');result=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  assert.equal(result.status,'finished');assert.equal(result.bot_reward,null);
+  await q("update public.ludus_matches set starts_at=clock_timestamp()-interval '30 seconds' where id=$1",[room.id]);
+  await db.exec('set role authenticated');result=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');
+  assert.equal(result.bot_reward,null);assert.equal(Number((await q('select gold from public.ludus_accounts where user_id=$1',[owner]))[0].gold),oldGold);
+  console.log('V239 multiplayer rewards PASS: human and bot wins, actual account credit, stones, XP and replay protection.');
+ }else await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);
+ if(leave){
+  await db.exec(migration('bot_multiplayer_leave_v241'));
+  const friend=randomUUID();await q("insert into public.ludus_gladiators(id,owner_id,name,class,base_stats,stat_version) values($1,$2,'Friend','secutor',$3,46)",[friend,other,core]);
+  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'pit',pit_weapon:'pit_stone_mace'}]))[0].r;
+  assert.equal(room.players.length,3,'Aventinus briefly reserves a friend slot');
+  await q("select set_config('request.jwt.claim.sub',$1,false)",[other]);const joined=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[friend,{venue:'pit',pit_weapon:'pit_stone_mace'}]))[0].r;
+  assert.equal(joined.id,room.id);assert.equal(joined.players.length,4,'real friend joins the same room');
+  await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);room=(await q("select public.ludus_match('leave',$1) r",[room.id]))[0].r;
+  assert.equal(room.status,'waiting');assert.equal(room.players.length,1);assert.equal(room.players[0].owner,other,'owner departure removes only their bots');
+  await db.exec('reset role');await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'pit',pit_weapon:'pit_stone_mace'}]))[0].r;
+  assert.equal(room.players.length,3);await db.exec('reset role');await q("update public.ludus_matches set starts_at=clock_timestamp()+interval '2 seconds' where id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;assert.equal(room.players.length,4,'last bot joins before the countdown ends');
+  room=(await q("select public.ludus_match('leave',$1) r",[room.id]))[0].r;assert.equal(room.status,'finished');assert.equal(room.players.length,0);
+  await db.exec('reset role');console.log('V241 multiplayer leave PASS: friend slot, timely bot fill and owner departure.');
+ }
+ await q('update ludus_bot_private.settings_v233 set enabled=false where id');
  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;
  assert.equal(room.players.length,1,'paused fleet never joins');
