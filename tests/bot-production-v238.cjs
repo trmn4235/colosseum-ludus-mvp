@@ -1,6 +1,6 @@
 // Uses the real market, delivery and production APIs from production-v119.
 const assert=require('node:assert/strict');
-module.exports=async({db,q,migration,randomUUID,A})=>{
+module.exports=async({db,q,migration,randomUUID,A,batch=false})=>{
  await db.exec(`reset role;
  create schema ludus_bot_private;
  create table ludus_bot_private.settings_v233(id boolean primary key,owner_id uuid,ready boolean,enabled boolean);
@@ -29,12 +29,14 @@ module.exports=async({db,q,migration,randomUUID,A})=>{
  await q('insert into ludus_bot_private.settings_v233 values(true,$1,true,true)',[A]);
  await q('insert into ludus_bot_private.members_v233 values(1,$1,true)',[bot]);
  await db.exec(migration('bot_production_v238'));
+ if(batch)await db.exec(migration('bot_production_batch_v242'));
  await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
  await q('select ludus_bot_private.production_tick_v238(1)');
  let log=(await q('select last_action,last_error from ludus_bot_private.production_log_v238 where slot=1'))[0];
  assert.equal(log.last_error,null);assert.match(log.last_action,/Kervan malzeme aldı/);
  assert.equal((await q('select count(*)::integer n from ludus_bot_private.gear_goals_v238 where slot=1'))[0].n,6);
  assert.equal((await q('select count(*)::integer n from ludus_supply_private.jobs where owner_id=$1 and claimed_at is null',[bot]))[0].n,1);
+ if(batch)assert.ok((await q("select (cargo->>'wood')::integer n from ludus_supply_private.jobs where owner_id=$1 and claimed_at is null",[bot]))[0].n>=15,'a useful material batch fills the caravan');
  const gold=Number((await q('select gold from public.ludus_accounts where user_id=$1',[bot]))[0].gold);assert.ok(gold<500&&gold>=100);
  assert.equal((await q('select auth.uid() u'))[0].u,A,'human identity restored');
  // Let the purchased cargo return, then provide fixture raw resources and
