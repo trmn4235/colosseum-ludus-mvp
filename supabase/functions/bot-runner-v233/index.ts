@@ -51,13 +51,25 @@ Deno.serve(async req=>{
   if(request.probe===true)return response({ok:true,ready:context.ready,enabled:context.enabled});
   if(context.setup_requested&&!context.ready){try{return response(await provision(context));}catch(e){await rpc('ludus_bot_setup_error_v233',{p_error:e instanceof Error?e.message:'Kurulum başarısız.'});throw e;}}
   if(!context.ready||!context.enabled)return response({idle:true});
-  lease=await rpc('ludus_bot_claim_v233');if(!lease?.lease)return response(lease);
-  const engine=(globalThis as any).LudusBotSimulationV233;
-  const state=lease.state?await decompress(lease.state):engine.create(lease.ticket,Number(lease.seed));
-  const next=engine.advance(state,400);
-  const result=next.finished?{won:next.result==='win',stats:next.stats}:next.abandoned?{won:false,stats:{game_mode:next.mode,seconds:600,alive:false,exit_slots:{},abandoned:true}}:null;
-  await rpc('ludus_bot_save_v233',{p_slot:lease.slot,p_lease:lease.lease,p_battle:lease.battle,p_steps:next.steps,p_state:result?null:await compress(next),p_result:result});
-  return response({slot:lease.slot,steps:next.steps,finished:!!result});
+  // Each saved chunk releases its lease before the next claim. This advances
+  // four different due bots per invocation without increasing scheduled calls.
+  const engine=(globalThis as any).LudusBotSimulationV233,deadline=Date.now()+16000;
+  let processed=0,settled=0;
+  for(let i=0;i<4;i++){
+   if(i&&Date.now()>=deadline)break;
+   lease=await rpc('ludus_bot_claim_v233');
+   if(!lease?.lease){
+    if(lease?.finished)settled++;
+    if(lease?.idle||lease?.fault)break;
+    lease=null;continue;
+   }
+   const state=lease.state?await decompress(lease.state):engine.create(lease.ticket,Number(lease.seed));
+   const next=engine.advance(state,400);
+   const result=next.finished?{won:next.result==='win',stats:next.stats}:next.abandoned?{won:false,stats:{game_mode:next.mode,seconds:600,alive:false,exit_slots:{},abandoned:true}}:null;
+   await rpc('ludus_bot_save_v233',{p_slot:lease.slot,p_lease:lease.lease,p_battle:lease.battle,p_steps:next.steps,p_state:result?null:await compress(next),p_result:result});
+   processed++;lease=null;
+  }
+  return response({processed,settled});
  }catch(e){
   if(lease?.lease)try{await rpc('ludus_bot_fault_v233',{p_slot:lease.slot,p_lease:lease.lease,p_error:e instanceof Error?e.message:'Bot görevi başarısız.'});}catch{}
   return response({error:e instanceof Error?e.message:'Bot işlemi başarısız.'},400);
