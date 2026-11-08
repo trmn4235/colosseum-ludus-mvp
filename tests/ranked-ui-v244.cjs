@@ -16,12 +16,12 @@ const mock=`globalThis.supabase={createClient(){
 }};`;
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH||undefined,args:['--no-sandbox']});const page=await browser.newPage();
- await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='http://ranked.test')return route.abort();
+ await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='https://ranked.test')return route.abort();
   if(u.pathname.endsWith('/assets/runtime/supabase-59d39487c358.js'))return route.fulfill({body:mock,contentType:'application/javascript'});
   const file=path.join(root,u.pathname);if(!fs.existsSync(file))return route.fulfill({status:404});const ext=path.extname(file),type={'.html':'text/html','.js':'application/javascript','.css':'text/css','.webp':'image/webp'}[ext]||'application/octet-stream';return route.fulfill({body:fs.readFileSync(file),contentType:type});
  });
  for(const [width,height] of [[844,390],[667,375],[568,320]]){
-  await page.setViewportSize({width,height});await page.goto('http://ranked.test/ranked-team-v244.html');
+  await page.setViewportSize({width,height});await page.goto('https://ranked.test/ranked-team-v244.html');
   await page.getByText('Aurelius',{exact:true}).first().waitFor();
   assert.equal(await page.locator('.slot').count(),5);assert.equal(await page.locator('.empty-slot').count(),4);
   assert.equal(await page.locator('#teamCount').innerText(),'1 / 5');assert.equal(await page.locator('.match').isEnabled(),false);
