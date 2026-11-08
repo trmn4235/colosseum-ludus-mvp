@@ -2,7 +2,7 @@
  'use strict';
  const $=id=>document.getElementById(id);
  const client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
- const state={data:null,filter:'friend',page:0,busy:false,user:null,stopped:false,channel:null,timer:null,preferredInvite:new URLSearchParams(location.search).get('invite')};
+ const state={data:null,filter:'friend',page:0,busy:false,user:null,stopped:false,timer:null,preferredInvite:new URLSearchParams(location.search).get('invite')};
  function notice(message){$('status').textContent=message||'';}
  function element(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
  function button(text,cls,click){const b=element('button',cls,text);b.type='button';b.addEventListener('click',click);return b;}
@@ -62,11 +62,11 @@
  $('createTeam').onclick=()=>act('create',{p_gladiator:selectedFighter()},'Takım kuruldu.');$('leaveTeam').onclick=()=>act('leave',{},'Takımdan ayrıldın.');
  $('fighterSelect').onchange=()=>{if(state.data?.party)act('select',{p_gladiator:selectedFighter()},'Gladyatörün seçildi.');};
  window.addEventListener('resize',render);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
- window.addEventListener('pagehide',()=>{state.stopped=true;clearTimeout(state.timer);if(state.channel)client.removeChannel(state.channel);});
+ window.addEventListener('pagehide',()=>{state.stopped=true;clearTimeout(state.timer);});
  render();
  (async()=>{try{
   const auth=await client.auth.getUser();if(auth.error||!auth.data.user||auth.data.user.is_anonymous){notice('Takım kurmak için oyuna giriş yap.');return;}
   state.user=auth.data.user.id;await refresh();if(!state.data)return;notice('Arkadaşlarını veya klan üyelerini davet edebilirsin.');
-  state.channel=client.channel('ranked-party-'+state.user).on('postgres_changes',{event:'*',schema:'ludus_ranked_party_private',table:'invites_v244',filter:'target_id=eq.'+state.user},()=>refresh()).subscribe();schedule();
+  schedule();
  }catch(e){notice(e.message||'Takım ekranı açılamadı.');}})();
 })();

@@ -30,16 +30,6 @@ alter table ludus_ranked_party_private.rooms_v244 enable row level security;
 alter table ludus_ranked_party_private.members_v244 enable row level security;
 alter table ludus_ranked_party_private.invites_v244 enable row level security;
 revoke all on ludus_ranked_party_private.rooms_v244,ludus_ranked_party_private.members_v244,ludus_ranked_party_private.invites_v244 from public,anon,authenticated;
--- Realtime can read only the current recipient's invitation, never another user's.
-grant select on ludus_ranked_party_private.invites_v244 to authenticated;
-create policy ranked_invite_recipient_v244 on ludus_ranked_party_private.invites_v244
- for select to authenticated using(target_id=(select auth.uid()) and not coalesce((select (auth.jwt()->>'is_anonymous')::boolean),false));
-do $$begin
- if exists(select 1 from pg_publication where pubname='supabase_realtime' and not puballtables)
-  and not exists(select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='ludus_ranked_party_private' and tablename='invites_v244') then
-  alter publication supabase_realtime add table ludus_ranked_party_private.invites_v244;
- end if;
-end$$;
 
 create function ludus_ranked_party_private.handle_v244(p_action text,p_peer uuid,p_gladiator uuid,p_invite uuid)
 returns jsonb language plpgsql security definer set search_path='' as $$
