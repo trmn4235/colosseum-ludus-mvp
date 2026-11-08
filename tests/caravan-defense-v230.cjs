@@ -17,3 +17,4 @@ const battle=S.create(ticket);while(!battle.combat.finished){S.step(battle,[0,0,
 assert.throws(()=>S.replay(ticket,battle.commands,battle.steps+1));assert.throws(()=>S.replay(ticket,[[0,0,0,999999,0,0]],1));
 for(const f of ['caravan-core-v126.js','combat-curves-v163.js','combat-motion-v163.js','caravan-defense-simulation-v230.js'])assert.equal(fs.readFileSync(f,'utf8'),fs.readFileSync('supabase/functions/caravan-defense-v230/'+f,'utf8'),'server/client '+f);
 console.log('V230 simulation PASS: allied workers, level-based arrow hits, no friendly fire, finite ammunition, deterministic battle replay and identical server rules.');
+require('node:child_process').execFileSync(process.execPath,['--experimental-strip-types',require('node:path').join(__dirname,'clan-support-edge-v231.mjs')],{stdio:'inherit'});

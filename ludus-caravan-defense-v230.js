@@ -27,7 +27,7 @@
   }
   const timer=root.setInterval(()=>{if(Date.now()-last>=15000)refresh();},1000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});root.addEventListener('ludus-supply-change',refresh);
-  refresh();return{active,render,refresh,get history(){return state.encounters.filter(d=>d.status==='resolved');},destroy:()=>root.clearInterval(timer)};
+  refresh();return{active,render,refresh,get history(){return state.encounters.filter(d=>d.status==='resolved');},get clan(){return state.clan||null;},destroy:()=>root.clearInterval(timer)};
  }
  root.LudusCaravanDefenseV230={create};
 })(globalThis);
