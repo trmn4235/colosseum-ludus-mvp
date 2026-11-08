@@ -36,7 +36,7 @@ jobs:
         id: production
         if: steps.install.outcome == 'success'
         continue-on-error: true
-        run: node -e "require('./tests/bot-multiplayer-v237.cjs')({rewards:true}).catch(e=>{console.error(e);process.exitCode=1})"
+        run: node -e "require('./tests/bot-multiplayer-v237.cjs')({rewards:true,leave:true}).catch(e=>{console.error(e);process.exitCode=1})"
       - name: Report outcomes
         if: always()
         run: |

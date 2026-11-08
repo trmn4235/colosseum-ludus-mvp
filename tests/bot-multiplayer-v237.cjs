@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {database,core}=require('./combat-stats-v73.cjs');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations');
 const migration=name=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(f=>f.endsWith('_'+name+'.sql'))),'utf8');
-module.exports=async({rewards=false}={})=>{const db=await database(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;try{
+module.exports=async({rewards=false,leave=false}={})=>{const db=await database(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;try{
  await db.exec(migration('survival_v83'));await require('./combat-motion-sql-v163.cjs').install(db);
  await db.exec("create table if not exists public.ludus_shop_catalog(sku text primary key,name text,kind text,model text,price integer,category text);create table ludus_supply_private.production_recipes_v118(sku text primary key,name text,kind text,model text,ingredients jsonb,output_type text,output_quantity int,sort_order int);create table ludus_supply_private.recipes(sku text primary key,ingredients jsonb);");
  for(const name of ['equipment_groups_v168','pit_arena_v172','pit_four_fighters_v173','pit_ten_fighters_v176','pit_bow_v178','pit_axe_v192'])await db.exec(migration(name));
@@ -83,6 +83,23 @@ module.exports=async({rewards=false}={})=>{const db=await database(),q=async(sql
   assert.equal((await q('select auth.uid() u'))[0].u,owner,'bot reward restores the human identity');
   console.log('V239 multiplayer rewards PASS: human and bot wins, actual account credit, stones, XP and replay protection.');
  }else await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);
+ if(leave){
+  await db.exec(migration('bot_multiplayer_leave_v241'));
+  const friend=randomUUID();await q("insert into public.ludus_gladiators(id,owner_id,name,class,base_stats,stat_version) values($1,$2,'Friend','secutor',$3,46)",[friend,other,core]);
+  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'pit',pit_weapon:'pit_stone_mace'}]))[0].r;
+  assert.equal(room.players.length,3,'Aventinus briefly reserves a friend slot');
+  await q("select set_config('request.jwt.claim.sub',$1,false)",[other]);const joined=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[friend,{venue:'pit',pit_weapon:'pit_stone_mace'}]))[0].r;
+  assert.equal(joined.id,room.id);assert.equal(joined.players.length,4,'real friend joins the same room');
+  await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);room=(await q("select public.ludus_match('leave',$1) r",[room.id]))[0].r;
+  assert.equal(room.status,'waiting');assert.equal(room.players.length,1);assert.equal(room.players[0].owner,other,'owner departure removes only their bots');
+  await db.exec('reset role');await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'pit',pit_weapon:'pit_stone_mace'}]))[0].r;
+  assert.equal(room.players.length,3);await db.exec('reset role');await q("update public.ludus_matches set starts_at=clock_timestamp()+interval '2 seconds' where id=$1",[room.id]);
+  await db.exec('set role authenticated');room=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;assert.equal(room.players.length,4,'last bot joins before the countdown ends');
+  room=(await q("select public.ludus_match('leave',$1) r",[room.id]))[0].r;assert.equal(room.status,'finished');assert.equal(room.players.length,0);
+  await db.exec('reset role');console.log('V241 multiplayer leave PASS: friend slot, timely bot fill and owner departure.');
+ }
  await q('update ludus_bot_private.settings_v233 set enabled=false where id');
  await q("update public.ludus_gladiators set status='available',injured_until=null,training_ends_at=null,fatigue_value=0 where id=$1",[human]);
  await db.exec('set role authenticated');room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;
