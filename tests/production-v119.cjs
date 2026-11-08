@@ -149,5 +149,5 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  fs.writeFileSync('/tmp/production-state-v119.json',JSON.stringify(await call()));
 
  await db.exec('reset role;set role anon');await assert.rejects(()=>call(),/permission denied/);
- await db.close();console.log('V198 PASS: all registered recipes'+' and exact debits, 6 ingots, separate manica, inactive assembly parts, integer inputs, one steel Gladius, raw-to-item chain, 50 arrows only, replay, ownership, rollback, capacity, legacy cargo and currency preserved.');
+ await db.close();if(process.env.LUDUS_CARAVAN_COMBAT_TEST){require('./bot-simulation-v233.cjs');await require('./bot-database-v233.cjs')();}console.log('V198 PASS: all registered recipes'+' and exact debits, 6 ingots, separate manica, inactive assembly parts, integer inputs, one steel Gladius, raw-to-item chain, 50 arrows only, replay, ownership, rollback, capacity, legacy cargo and currency preserved.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
