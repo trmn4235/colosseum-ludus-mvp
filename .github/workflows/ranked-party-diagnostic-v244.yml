@@ -26,6 +26,7 @@ jobs:
         run: node tests/arena-tabs-v81.cjs
       - name: Prepare real caravan defense fixture
         run: |
+          node tests/caravan-collection-v116.cjs
           LUDUS_CARAVAN_COMBAT_TEST=1 node tests/production-v119.cjs
           node tests/caravan-defense-v230.cjs
       - name: Test actual caravan defense pages
