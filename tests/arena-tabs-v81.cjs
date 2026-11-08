@@ -14,7 +14,9 @@ if(tab==='clan'){assert.equal(await panel.locator('.clan-card').count(),4);asser
 if(tab==='multi'){
  assert.equal(await panel.locator('.ranked-card').count(),2,'two ranked announcements');
  assert.equal(await panel.locator('[data-mode]').count(),1,'only the beta can open preparation');
- assert.deepEqual(await panel.locator('.ranked-soon').allTextContents(),['YAKINDA','YAKINDA']);
+ assert.deepEqual(await panel.locator('.ranked-soon').allTextContents(),['TAKIMI HAZIRLA','YAKINDA']);
+ assert.equal(await panel.locator('[data-ranked="team"]').getAttribute('href'),'ranked-team-v244.html');
+ assert.match(await panel.locator('[data-ranked="team"]').innerText(),/Galibiyet\s*\+10/);
  await panel.locator('img').evaluateAll(async imgs=>Promise.all(imgs.map(i=>i.decode())));
  const geometry=await panel.locator('.ranked-card').evaluateAll(cards=>cards.map(card=>{
   const art=card.querySelector('.arena-choice-art').getBoundingClientRect(),img=card.querySelector('img');
@@ -23,4 +25,4 @@ if(tab==='multi'){
  geometry.forEach(g=>{assert.ok(g.height>55,'art is visible');assert.ok(g.width/g.height>=g.ratio-.02,'keep every gladiator across the image width');assert.equal(g.overflow,false,'ranked copy fits');});
 }
 await page.screenshot({path:out+'/'+tab+'-'+width+'.png'});views++;}}
-await page.evaluate(()=>{document.querySelector('#modePage').hidden=true;document.querySelector('#setupPage').hidden=false;window.backClicks=0;document.querySelector('#back').onclick=()=>{window.backClicks++;document.querySelector('#modePage').hidden=false;document.querySelector('#setupPage').hidden=true;};});await page.locator('[data-arena-tab="multi"]').click();assert.equal(await page.evaluate(()=>window.backClicks),1);assert.equal(await page.locator('#panel-multi').isVisible(),true);await browser.close();console.log(JSON.stringify({views,out}));})().catch(e=>{console.error(e);process.exit(1)});
+await page.evaluate(()=>{document.querySelector('#modePage').hidden=true;document.querySelector('#setupPage').hidden=false;window.backClicks=0;document.querySelector('#back').onclick=()=>{window.backClicks++;document.querySelector('#modePage').hidden=false;document.querySelector('#setupPage').hidden=true;};});await page.locator('[data-arena-tab="multi"]').click();assert.equal(await page.evaluate(()=>window.backClicks),1);assert.equal(await page.locator('#panel-multi').isVisible(),true);await browser.close();for(const test of ['ranked-party-v244.cjs','ranked-loader-v244.cjs','ranked-notice-v244.cjs','ranked-ui-v244.cjs'])require('node:child_process').execFileSync(process.execPath,['tests/'+test],{stdio:'inherit'});console.log(JSON.stringify({views,out}));})().catch(e=>{console.error(e);process.exit(1)});

@@ -15,6 +15,8 @@ body[data-roman-screen="savas"] #modePage .arena-choice{
   background:#591823!important;color:#f5dc9d;box-shadow:0 5px 18px #0007!important;text-align:center;
 }
 body[data-roman-screen="savas"] #modePage .arena-choice::before{content:none!important}
+body[data-roman-screen="savas"] #modePage a.arena-choice{text-decoration:none}
+body[data-roman-screen="savas"] #modePage a.arena-choice:focus-visible{outline:3px solid #ffe2a1!important;outline-offset:3px}
 body[data-roman-screen="savas"] #modePage button.arena-choice:hover{transform:translateY(-2px);border-color:#f2cf82!important}
 body[data-roman-screen="savas"] #modePage button.arena-choice:focus-visible{outline:3px solid #ffe2a1!important;outline-offset:3px}
 .arena-choice-art{position:relative;display:block;flex:0 0 59%;height:59%;min-height:0;width:100%;overflow:hidden;background:#4c201b;background-repeat:no-repeat}

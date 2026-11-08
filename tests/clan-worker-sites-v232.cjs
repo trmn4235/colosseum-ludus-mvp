@@ -54,7 +54,11 @@ module.exports=async({db,q,A,B,roster,route,migration,randomUUID})=>{
  assert.equal(Number((await q("select quantity from ludus_worker_private.clan_material_stock_v232 where clan_id=$1 and sku='iron_ore'",[clan]))[0].quantity),10,'settlement is idempotent');
  assert.equal((await q("select xp from ludus_worker_private.skills_v227 where worker_id=$1 and sku='iron_ore'",[a]))[0].xp,620,'worker EXP is idempotent');
  assert.equal((await q("select count(*)::int n from ludus_message_private.notifications_v108 where event_key like 'clan-work:%'"))[0].n,10);
- await identify(A);state=await work();assert.equal(state.rewards.length,10);assert.equal(state.worker_ranking.length,10);assert.equal(Number(state.clan_glory),3.46,'weekly rewards and V231 defense glory are both counted');
+ await identify(A);state=await work();assert.equal(state.rewards.length,10);
+ const completed=Date.parse('2026-11-08T20:58:50Z'),currentEnd=Date.parse(state.week_end);
+ const currentWeekContainsJob=completed>=currentEnd-7*24*60*60*1000&&completed<currentEnd;
+ assert.equal(state.worker_ranking.length,currentWeekContainsJob?10:0,'current ranking uses the active Istanbul week');
+ assert.equal(Number(state.clan_glory),3.46,'weekly rewards and V231 defense glory are both counted');
  assert.equal((await roster()).workers.find(w=>w.id===a).job_id,null,'completed worker is released');
  await reject(()=>q("select ludus_worker_private.clan_tick_v232('2027-01-01')"),/permission denied/);
  await admin();

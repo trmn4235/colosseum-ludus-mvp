@@ -23,3 +23,11 @@ var LudusClient=(()=>{
  return {create};
 })();
 if(typeof module!=='undefined')module.exports=LudusClient;
+// All signed-in game pages share the ranked invitation indicator.
+if(typeof document!=='undefined'&&!/\/ranked-team-v244\.html$/.test(location.pathname)){
+ const installRankedInvites=()=>{
+  if(!globalThis.supabase||document.querySelector('script[data-ranked-invites]'))return;
+  const script=document.createElement('script');script.src='ranked-invites-v244.js?v=244';script.dataset.rankedInvites='244';document.body.append(script);
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installRankedInvites,{once:true});else installRankedInvites();
+}
