@@ -23,4 +23,4 @@ const mock=`globalThis.supabase={createClient(){
   for(const b of boxes){assert.ok(b.x>=-1&&b.y>=-1&&b.right<=width+1&&b.bottom<=height+1,'panel must fit viewport');assert.ok(b.scrollHeight<=b.clientHeight+1,'panel must not vertically overflow');}
  }
  await browser.close();console.log('V244 UI PASS: five slots, friend/clan tabs, invitation action and landscape layouts.');
-})().catch(e=>{console.error(e);process.exitCode=1});
+})().catch(e=>{console.error(e);process.exit(1)});
