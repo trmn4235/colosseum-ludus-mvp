@@ -57,9 +57,10 @@ module.exports=async({rewards=false}={})=>{const db=await database(),q=async(sql
  assert.ok(swings>0&&damage,'bots actually attack and land server-resolved hits');
  if(rewards){
   await db.exec(`create table ludus_bot_private.test_xp(owner_id uuid,source_key text,amount integer,primary key(owner_id,source_key));
-   create function ludus_private.level_grant(u uuid,k text,s text,n integer,t timestamptz) returns integer language plpgsql as $$begin insert into ludus_bot_private.test_xp values(u,s,n);return n;end$$;
+   create function ludus_private.level_grant(u uuid,k text,s text,n integer,t timestamptz) returns integer language plpgsql as $$begin if auth.uid() is distinct from u then raise exception 'Hesabına giriş yap.';end if;insert into ludus_bot_private.test_xp values(u,s,n);return n;end$$;
    create or replace function ludus_private.win_stone_v10(u uuid)returns jsonb language plpgsql as $$begin insert into public.ludus_stones values(u,'sapphire',1,1);return '{"family":"sapphire","id":1,"quantity":1}'::jsonb;end$$;`);
   await db.exec(migration('bot_multiplayer_rewards_v239'));
+  await db.exec(migration('bot_multiplayer_reward_identity_v240'));
   const decide=async(winner)=>{
    await q(`update public.ludus_matches set starts_at=clock_timestamp()-interval '30 seconds',players=(select jsonb_agg(p||jsonb_build_object('hp',case when p->>'owner'=$2 then (p->>'maxHp')::numeric else 0 end,'left',false,'strike_at',null,'projectile',null,'pull_from',null) order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1`,[room.id,winner]);
    await db.exec('set role authenticated');const result=(await q("select public.ludus_match('state',$1) r",[room.id]))[0].r;await db.exec('reset role');return result;
@@ -79,6 +80,7 @@ module.exports=async({rewards=false}={})=>{const db=await database(),q=async(sql
   result=await decide(botWinner);assert.equal(result.status,'finished');assert.equal(result.bot_reward,null,'another player cannot read the winner receipt');
   assert.equal(Number((await q('select gold from public.ludus_accounts where user_id=$1',[botWinner]))[0].gold),beforeGold+100);
   assert.equal((await q("select count(*)::int n from public.ludus_stones where owner_id=$1 and family='sapphire'",[botWinner]))[0].n,1);
+  assert.equal((await q('select auth.uid() u'))[0].u,owner,'bot reward restores the human identity');
   console.log('V239 multiplayer rewards PASS: human and bot wins, actual account credit, stones, XP and replay protection.');
  }else await q("update public.ludus_matches set status='finished' where id=$1",[room.id]);
  await q('update ludus_bot_private.settings_v233 set enabled=false where id');
