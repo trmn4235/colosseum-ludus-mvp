@@ -8,7 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     continue-on-error: true
-    timeout-minutes: 6
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -16,5 +16,9 @@ jobs:
           node-version: '22'
       - name: Test party and authorization
         run: |
-          npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10
+          npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1
           node tests/ranked-party-v244.cjs
+      - name: Test ranked preparation screen
+        run: |
+          npx playwright install --only-shell chromium
+          node tests/ranked-ui-v244.cjs
