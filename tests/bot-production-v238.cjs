@@ -9,6 +9,7 @@ module.exports=async({db,q,migration,randomUUID,A})=>{
  alter table public.ludus_items add column if not exists stat_version integer default 10;
  alter table public.ludus_items add column if not exists natural_stats jsonb default '{}'::jsonb;
  alter table public.ludus_items add column if not exists natural_percentages jsonb default '{}'::jsonb;
+ alter table public.ludus_items add column if not exists created_at timestamptz default clock_timestamp();
  alter table public.ludus_stone_catalog add column if not exists effect_key text;
  create function public.ludus_equip_item(g uuid,s text,i uuid) returns jsonb language plpgsql as $$begin
   update public.ludus_items set equipped_by=null,equipped_slot=null where owner_id=auth.uid() and equipped_by=g and equipped_slot=s;
