@@ -141,7 +141,10 @@ begin
  select * into c from ludus_bot_private.settings_v233 where id;
  if not c.ready or not c.enabled then return jsonb_build_object('idle',true);end if;
  select * into b from ludus_bot_private.members_v233 where enabled and user_id is not null and next_run_at<=clock_timestamp()
-  and (lease is null or lease_until<clock_timestamp()) order by next_run_at,slot for update skip locked limit 1;
+  and (lease is null or lease_until<clock_timestamp())
+  order by case when battle_id is not null and exists(select 1 from public.ludus_battles q
+    where q.id=battle_id and q.started_at<clock_timestamp()-interval '50 minutes') then 0 else 1 end,
+   next_run_at,slot for update skip locked limit 1;
  if not found then return jsonb_build_object('idle',true);end if;
  begin
  perform set_config('request.jwt.claim.sub',b.user_id::text,true);
@@ -260,12 +263,16 @@ grant execute on function public.ludus_bot_setup_error_v233(text) to service_rol
 -- Production scheduling: test runners without pg_net omit this section.
 create extension if not exists pg_net;
 create function ludus_bot_private.schedule_v233() returns void language plpgsql security definer set search_path='' as $$
-declare c ludus_bot_private.settings_v233;
+declare c ludus_bot_private.settings_v233; i integer;
 begin
  select * into c from ludus_bot_private.settings_v233 where id;
  if c.endpoint is null or not(c.setup_requested or (c.ready and c.enabled)) then return;end if;
- perform net.http_post(url:=c.endpoint,headers:=jsonb_build_object('Content-Type','application/json','X-Bot-Scheduler',c.scheduler_secret::text),
-  body:='{}'::jsonb,timeout_milliseconds:=25000);
+ -- Setup uses one request; after setup two independent bounded tasks a minute
+ -- keep resumable battles inside the normal two-hour settlement window.
+ for i in 1..case when c.ready then 2 else 1 end loop
+  perform net.http_post(url:=c.endpoint,headers:=jsonb_build_object('Content-Type','application/json','X-Bot-Scheduler',c.scheduler_secret::text),
+   body:='{}'::jsonb,timeout_milliseconds:=25000);
+ end loop;
 end;$$;
 revoke all on function ludus_bot_private.schedule_v233() from public,anon,authenticated;
 do $$ begin
