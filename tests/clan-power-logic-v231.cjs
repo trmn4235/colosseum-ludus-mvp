@@ -1,0 +1,21 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..');
+const source=fs.readFileSync(path.join(root,'clan-power-v231.js'),'utf8');
+const context={console,Number,Map,Math,String};context.globalThis=context;vm.runInNewContext(source,context);
+const clans=Array.from({length:6},(_,i)=>({id:'c'+i,name:i===0?'Legio <script>':'Klan '+i}));
+const players=Array.from({length:26},(_,i)=>({id:'u'+i,name:'user'+i,subtitle:'Ludus '+i,clan_id:i<21?'c0':'c'+(i-20),stats:{power:i===20?null:50+i},gladiator:{name:'Gladyatör '+i}}));
+let calls=[],fail=false;
+const client={rpc:async(name,args)=>{calls.push(args.p_page);if(fail)return{error:{message:'Bağlantı hatası'}};return{data:{page:args.p_page,total:players.length,rows:players.slice(args.p_page*20,(args.p_page+1)*20),clans}}}};
+let events={};const target={isConnected:true,innerHTML:'',querySelector(selector){if(selector==='[data-power-refresh]'&&this.innerHTML.includes('data-power-refresh'))return{addEventListener(_,fn){events.refresh=fn}};return null},querySelectorAll(selector){const attr=selector==='[data-power-clan]'?'data-power-clan':'data-power-page';let regex=new RegExp('<button[^>]*'+attr+'="([^"]+)"[^>]*>','g'),matches=[...this.innerHTML.matchAll(regex)];return matches.map(match=>{let delta=match[0].match(/data-delta="([^"]+)"/);return{dataset:attr==='data-power-clan'?{powerClan:match[1]}:{powerPage:match[1],delta:delta?.[1]},addEventListener(_,fn){events[attr+':'+match[1]+':'+(delta?.[1]||'')]=fn}}})}};
+(async()=>{
+ const view=context.LudusClanPowerV231.create(client);
+ const result=view.aggregate(clans,players);assert.equal(result[0].id,'c0');assert.equal(result[0].total,1190);assert.equal(result[0].known,20);assert.equal(result[0].members.length,21);assert.equal(result[0].members.at(-1).power,null);
+ view.mount(target,'c0');await new Promise(resolve=>setImmediate(resolve));
+ assert.deepEqual(calls,[0,1]);assert.match(target.innerHTML,/1\.190 puan/);assert.match(target.innerHTML,/1 hesaplanamadı/);assert.match(target.innerHTML,/Legio &lt;script&gt;/);assert.doesNotMatch(target.innerHTML,/<script>/);
+ assert.ok(events['data-power-page:member:1']);events['data-power-page:member:1']();assert.match(target.innerHTML,/Ludus 14/);
+ assert.ok(events['data-power-page:clan:1']);events['data-power-page:clan:1']();assert.ok(events['data-power-clan:c1:']);events['data-power-clan:c1:']();assert.match(target.innerHTML,/Ludus 21/);
+ fail=true;await view.refresh();assert.match(target.innerHTML,/Bağlantı hatası/);fail=false;await view.refresh();assert.doesNotMatch(target.innerHTML,/Bağlantı hatası/);
+ const html=fs.readFileSync(path.join(root,'klan.html'),'utf8');assert.match(html,/clan-power-v231\.js/);assert.match(html,/clan-power-v231\.css/);assert.match(html,/power:showPower/);
+ for(const m of html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi))new vm.Script(m[1]);
+ console.log('V231 PASS: page aggregation, missing scores, escaping, pagination, retry, and inline script syntax.');
+})().catch(e=>{console.error(e);process.exit(1)});
