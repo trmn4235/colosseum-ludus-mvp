@@ -3,6 +3,7 @@
  'use strict';
  if(!globalThis.LudusClient||!globalThis.supabase)return;
  const client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
+ if(typeof client?.auth?.getUser!=='function'||typeof client?.rpc!=='function')return;
  let user=null,busy=false,seq=0;
  const box=document.createElement('aside');box.hidden=true;box.setAttribute('role','status');box.setAttribute('aria-live','polite');
  Object.assign(box.style,{position:'fixed',zIndex:'2147483000',right:'max(10px, env(safe-area-inset-right))',top:'max(10px, env(safe-area-inset-top))',width:'min(310px, 70vw)',padding:'10px 12px',background:'#fff8e9',border:'3px double #ae8a51',boxShadow:'0 5px 20px #0009',color:'#4a1e26',font:'14px Georgia, serif'});
@@ -18,7 +19,7 @@
   refresh();
  }
  client.auth.getUser().then(r=>setUser(r.data.user&&!r.data.user.is_anonymous?r.data.user.id:null)).catch(()=>{});
- client.auth.onAuthStateChange((_event,session)=>setTimeout(()=>setUser(session?.user&&!session.user.is_anonymous?session.user.id:null),0));
+ client.auth.onAuthStateChange?.((_event,session)=>setTimeout(()=>setUser(session?.user&&!session.user.is_anonymous?session.user.id:null),0));
  const timer=setInterval(refresh,5000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
  addEventListener('pagehide',()=>{clearInterval(timer);},{once:true});
 })();
