@@ -7,12 +7,15 @@ try{
  create table public.ludus_clans(id uuid primary key default gen_random_uuid(),name text,emblem integer,background text,emblem_color text,leader_id uuid);
  create table public.ludus_clan_members(user_id uuid primary key,clan_id uuid,vault_access boolean default false);
  create table public.ludus_stones(owner_id uuid,family text,stone_id integer,quantity integer);
+ create schema ludus_pit_private;create table ludus_pit_private.rules(id boolean primary key,gate_enabled boolean,entry_fame integer);
+ create table ludus_pit_private.fame(gladiator_id uuid primary key,points integer);insert into ludus_pit_private.rules values(true,false,30);
  alter table public.ludus_accounts add column sapphires integer default 0,add column rubies integer default 0;
  alter table public.ludus_items add column market_listing_id uuid;
  create function public.ludus_buy_basic(text,uuid)returns jsonb language sql as $$select '{}'::jsonb$$;
  create function public.ludus_upgrade_item_v10(uuid,text,integer,uuid)returns jsonb language sql as $$select '{}'::jsonb$$;`);
  const owner=randomUUID(),clan=randomUUID();await q("insert into public.ludus_accounts(user_id,username,ludus_name) values($1,'owner','Dominus')",[owner]);await q('insert into public.ludus_imperial_admins values($1)',[owner]);await q("insert into public.ludus_clans(id,name,leader_id) values($1,'Roma',$2)",[clan,owner]);await q('insert into public.ludus_clan_members(user_id,clan_id) values($1,$2)',[owner,clan]);
- const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations'),parts=fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x=>x.endsWith('_bot_fleet_v233.sql'))),'utf8').split('-- Production scheduling:');await db.exec(parts[0]);
+ const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations'),migration=name=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x=>x.endsWith('_'+name+'.sql'))),'utf8'),parts=migration('bot_fleet_v233').split('-- Production scheduling:');await db.exec(parts[0]);
+ await db.exec(migration('bot_fleet_assign_v233_fix'));await db.exec(migration('bot_aventinus_v234'));
  await db.exec(`create schema net;create schema cron;create table net.v233_posts(url text);
  create function net.http_post(url text,headers jsonb,body jsonb,timeout_milliseconds integer) returns bigint language plpgsql as $$begin insert into net.v233_posts values(url);return 1;end$$;
  create function cron.schedule(text,text,text) returns bigint language sql as $$select 1::bigint$$;`);
