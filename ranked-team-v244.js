@@ -2,7 +2,7 @@
  'use strict';
  const $=id=>document.getElementById(id);
  const client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
- const state={data:null,filter:'friend',page:0,busy:false,user:null,stopped:false,timer:null,preferredInvite:new URLSearchParams(location.search).get('invite'),loadoutBusy:false,supply:null,items:[],gearPage:0,recipePage:0,loadoutTab:'gear',pendingCraft:null};
+ const state={data:null,filter:'friend',page:0,busy:false,user:null,stopped:false,timer:null,redirecting:false,preferredInvite:new URLSearchParams(location.search).get('invite'),loadoutBusy:false,supply:null,items:[],gearPage:0,recipePage:0,loadoutTab:'gear',pendingCraft:null};
  function notice(message){$('status').textContent=message||'';}
  function element(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
  function button(text,cls,click){const b=element('button',cls,text);b.type='button';b.addEventListener('click',click);return b;}
@@ -52,6 +52,14 @@
  function render(){renderCandidates();renderSlots();renderFighters();renderInvites();const party=state.data?.party;
   $('createTeam').hidden=!!party;$('createTeam').disabled=state.busy||!(state.data?.gladiators||[]).length;
   $('leaveTeam').hidden=!party;$('leaveTeam').disabled=state.busy;$('leaveTeam').textContent=isLeader()?'Takımı kapat':'Takımdan ayrıl';
+  $('rankedRating').textContent=String(state.data?.ranked_rating??1500);
+  const queue=party?.queue,status=queue?.status||'idle',members=memberList(),start=$('startMatch');
+  start.disabled=state.busy||!party||!isLeader()||status==='matched'||(status!=='waiting'&&(!members.length||members.some(m=>!m.ready)));
+  start.textContent=status==='matched'?'MAÇ BULUNDU':status==='waiting'?(isLeader()?'EŞLEŞMEYİ İPTAL ET':'EŞLEŞME ARANIYOR'):(isLeader()?'MAÇI BAŞLAT':'LİDER BEKLENİYOR');
+  if(status==='matched'&&queue?.match_id&&!state.redirecting){
+   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(queue.match_id)){notice('Maç kimliği doğrulanamadı.');return;}
+   try{sessionStorage.setItem('ludus-ranked-room',queue.match_id);state.redirecting=true;location.href='multiplayer.html?venue=ranked';}catch{notice('Maça geçmek için tarayıcı depolamasını aç.');}
+  }
  }
  function loadoutMessage(message){$('loadoutStatus').textContent=message||'';}
  function pendingKey(){return 'ludus-ranked-craft-v245:'+state.user;}
@@ -107,6 +115,7 @@
  $('friendsTab').onclick=()=>{state.filter='friend';state.page=0;renderCandidates();};$('clanTab').onclick=()=>{state.filter='clan';state.page=0;renderCandidates();};
  $('previous').onclick=()=>{state.page--;renderCandidates();};$('next').onclick=()=>{state.page++;renderCandidates();};
  $('createTeam').onclick=()=>act('create',{p_gladiator:selectedFighter()},'Takım kuruldu.');$('leaveTeam').onclick=()=>act('leave',{},'Takımdan ayrıldın.');
+ $('startMatch').onclick=()=>{const waiting=state.data?.party?.queue?.status==='waiting';act(waiting?'cancel_queue':'start',{},waiting?'Eşleşme iptal edildi.':'Eşleşme aranıyor…');};
  $('fighterSelect').onchange=async()=>{state.gearPage=0;if(state.data?.party)await act('select',{p_gladiator:selectedFighter()},'Gladyatörün seçildi; yeniden hazır verebilirsin.');renderLoadout();};
  $('openLoadout').onclick=()=>{$('loadoutDialog').hidden=false;renderLoadout();loadoutRefresh();};$('closeLoadout').onclick=()=>{$('loadoutDialog').hidden=true;$('openLoadout').focus();};
  $('gearTab').onclick=()=>{state.loadoutTab='gear';renderLoadout();};$('craftTab').onclick=()=>{state.loadoutTab='craft';renderLoadout();};

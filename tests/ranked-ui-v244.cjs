@@ -1,7 +1,7 @@
 const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'..');
 const mock=`globalThis.supabase={createClient(){
- const data={user_id:'me',party:{id:'room',leader:'me',members:[{user_id:'me',gladiator_id:'g1',gladiator:'Aurelius',ludus:'Ludus Tırman',class:'murmillo',leader:true}]},invites:[],candidates:[{id:'f1',username:'arkadas',ludus:'Ludus Roma',type:'friend',invited:false},{id:'c1',username:'klanli',ludus:'Ludus Kartal',type:'clan',invited:false}],gladiators:[{id:'g1',name:'Aurelius',class:'murmillo'}]};
+ const data={user_id:'me',ranked_rating:1500,party:{id:'room',leader:'me',queue:{status:'idle'},members:[{user_id:'me',gladiator_id:'g1',gladiator:'Aurelius',ludus:'Ludus Tırman',class:'murmillo',leader:true}]},invites:[],candidates:[{id:'f1',username:'arkadas',ludus:'Ludus Roma',type:'friend',invited:false},{id:'c1',username:'klanli',ludus:'Ludus Kartal',type:'clan',invited:false}],gladiators:[{id:'g1',name:'Aurelius',class:'murmillo'}]};
  globalThis.mockRankedParty=data.party;
  const auth={getUser:async()=>({data:{user:{id:'me',is_anonymous:false}}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})};
  const supply={user_id:'me',recipes:[{sku:'gladius',name:'Gladius',output_type:'equipment',ingredients:{wood:1}}],resources:[{sku:'wood',name:'Odun',quantity:2}]};
@@ -12,12 +12,14 @@ const mock=`globalThis.supabase={createClient(){
   if(p.p_action==='invite')data.candidates.find(x=>x.id===p.p_peer).invited=true;
   if(p.p_action==='remove')data.party.members=data.party.members.filter(m=>m.user_id!==p.p_peer);
   if(p.p_action==='ready')data.party.members[0].ready=true;if(p.p_action==='unready'||p.p_action==='select')data.party.members[0].ready=false;
+  if(p.p_action==='start')data.party.queue={status:'waiting'};if(p.p_action==='cancel_queue')data.party.queue={status:'idle'};
   return {data:structuredClone(data),error:null}},from(){return{select(){return this},eq(){return this},order(){return Promise.resolve({data:structuredClone(items),error:null})}}},channel(){return{on(){return this},subscribe(){return this}}},removeChannel(){}};
 }};`;
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH||undefined,args:['--no-sandbox']});const page=await browser.newPage();
  await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='https://ranked.test')return route.abort();
   if(u.pathname.endsWith('/assets/runtime/supabase-59d39487c358.js'))return route.fulfill({body:mock,contentType:'application/javascript'});
+  if(u.pathname==='/multiplayer.html')return route.fulfill({body:'<!doctype html><title>Ranked match</title>',contentType:'text/html'});
   const file=path.join(root,u.pathname);if(!fs.existsSync(file))return route.fulfill({status:404});const ext=path.extname(file),type={'.html':'text/html','.js':'application/javascript','.css':'text/css','.webp':'image/webp'}[ext]||'application/octet-stream';return route.fulfill({body:fs.readFileSync(file),contentType:type});
  });
  for(const [width,height] of [[844,390],[667,375],[568,320]]){
@@ -26,6 +28,8 @@ const mock=`globalThis.supabase={createClient(){
   assert.equal(await page.locator('.slot').count(),5);assert.equal(await page.locator('.empty-slot').count(),4);
   assert.equal(await page.locator('#teamCount').innerText(),'1 / 5');assert.equal(await page.locator('.match').isEnabled(),false);
   await page.getByRole('button',{name:'Hazır olduğunu bildir'}).click();assert.equal(await page.locator('.slot-ready.own').innerText(),'HAZIR');
+  assert.equal(await page.locator('#startMatch').isEnabled(),true);await page.locator('#startMatch').click();assert.match(await page.locator('#startMatch').innerText(),/İPTAL/);
+  await page.locator('#startMatch').click();assert.match(await page.locator('#startMatch').innerText(),/BAŞLAT/);
   await page.getByRole('button',{name:'Hazır durumunu kaldır'}).click();assert.equal(await page.locator('.slot-ready.own').innerText(),'READY');
   assert.equal(await page.locator('#candidateList .candidate').count(),1);assert.match(await page.locator('#candidateList').innerText(),/arkadas/);
   await page.getByRole('button',{name:'Davet Et'}).click();assert.match(await page.locator('#candidateList').innerText(),/Gönderildi/);
@@ -46,6 +50,8 @@ const mock=`globalThis.supabase={createClient(){
   await page.getByRole('button',{name:'Paneli kapat'}).click();
   const boxes=await page.locator('.paper,.team-scene,.ranked-header').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return{element:e.className,x:b.x,y:b.y,right:b.right,bottom:b.bottom,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight}}));
   for(const b of boxes){assert.ok(b.x>=-1&&b.y>=-1&&b.right<=width+1&&b.bottom<=height+1,`panel must fit ${width}x${height}: ${JSON.stringify(b)}`);assert.ok(b.scrollHeight<=b.clientHeight+1,`panel overflow ${width}x${height}: ${JSON.stringify(b)}`);}
+  await page.evaluate(()=>{mockRankedParty.queue={status:'matched',match_id:'00000000-0000-4000-8000-000000000123'};document.dispatchEvent(new Event('visibilitychange'));});
+  await page.waitForURL('**/multiplayer.html?venue=ranked');assert.equal(await page.evaluate(()=>sessionStorage.getItem('ludus-ranked-room')),'00000000-0000-4000-8000-000000000123');
  }
  await browser.close();console.log('V244 UI PASS: five slots, friend/clan tabs, invitation action and landscape layouts.');
 })().catch(e=>{console.error(e);process.exit(1)});

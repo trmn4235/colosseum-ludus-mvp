@@ -1,13 +1,9 @@
-# Ranked Arena: V246 continuation
+# Ranked Arena: V248
 
-V246 adds preparation only. **The ranked match, matchmaking, leader start, and ranked rating settlement are not implemented.** The match button deliberately remains disabled.
+V248 implements a separate 5v5 ranked queue for solo players and parties of up to five. A party stays together; every member must be online and READY, and only the leader can start or cancel matchmaking. Ten real players are required. The queue does not silently substitute bots.
 
-The existing V244 party supports one leader and up to four invited friends or clan members. V246 adds a readiness confirmation for each member, equipment and crafting controls backed by the existing inventory/production APIs, leader removal, and presence renewal while the preparation page or invitation indicator is visible. Readiness is verified against the selected gladiator and equipped items on the server; equipping through the panel explicitly clears it first.
+The server verifies selected gladiators and equipped items when READY, again during matchmaking, and before play starts. Changes or disconnections can cancel a search; a match with missing connections is cancelled without rating changes. Within a match, allies cannot be targeted or hit by projectiles. When a team wins, each player starts at 1500 and receives +10 for a win or −5 for a loss, settled once on the server. Ranked has its own leaderboard, separate from the historical combined Colosseum board.
 
-The user requires 5v5 ranked play for a solo player or a party of up to five, a 1500 starting rating, +10 for a win and −5 for a loss. Only the party leader may start, after every current member confirms READY. Party members must stay together during matchmaking. Preserve the existing no-scroll landscape layout.
+The V246 equipment/crafting panel and V247 correction for online +10/−5 scoring remain in place. Single-player Colosseum and naval scoring retain their separate existing rules.
 
-Do not connect the existing `ludus_match` directly to ranked parties: it currently targets every other player, resolves projectiles without team exclusion, and ends the match when at most one fighter survives. A ranked match needs team-aware targeting and projectiles, a team winner, validated matchmaking and reconnection, and server-authoritative, once-only rating settlement. Existing other game modes and economy must remain unaffected.
-
-The V247 migration corrects legacy multiplayer wins from +20 to +10, preserves −5 losses, updates the existing online records, and makes the combined V203 board use the stored point totals. The existing Colosseum board also includes single-player results. Do not treat that combined score as a standalone 5v5 ranked rating: the requested ranked system starts at 1500 and uses +10/−5 for actual ranked matches.
-
-Local checks: `tests/ranked-party-v244.cjs`, `tests/ranked-loader-v244.cjs`, and `tests/ranked-notice-v244.cjs` pass. The UI logic has also been exercised with a mocked DOM. The Playwright browser test and a real iPhone check have not been run successfully in this workspace.
+Automated SQL integration tests exercise two complete parties, start permissions, READY changes, team targeting, disconnection, result idempotence, and the separate leaderboard. Browser tests use mocked accounts. Ten independent live users, actual phone performance, and real network conditions still require device verification.
