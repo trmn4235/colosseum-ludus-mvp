@@ -1,5 +1,8 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium,webkit}=require('playwright');const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/arena-tabs-v81';fs.mkdirSync(out,{recursive:true});
+const arenaHtml=fs.readFileSync(path.join(root,'savas.html'),'utf8'),rankedCard=arenaHtml.match(/<a\b[^>]*data-ranked="team"[\s\S]*?<\/a>/)?.[0];
+assert.ok(rankedCard&&rankedCard.includes('href="ranked-team-v244.html"'),'ranked entry remains available before scripts load');
+assert.match(rankedCard,/Galibiyet\s*<b>\+10<\/b>/);assert.doesNotMatch(rankedCard,/YAKINDA|\+20/);assert.match(arenaHtml,/arena-tabs-v81\.js\?v=revision248/);
 (async()=>{const browser=await(process.env.LUDUS_TEST_ENGINE==='webkit'?webkit.launch({headless:true}):chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox']}));const page=await browser.newPage();
 await page.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin!=='http://art.test')return r.abort();const f=path.join(root,u.pathname);if(!fs.existsSync(f))return r.fulfill({status:404});let body=fs.readFileSync(f);if(f.endsWith('.html'))body=Buffer.from(body.toString().replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,m=>m.includes('src="arena-tabs-v81.js')?m:''));return r.fulfill({body,contentType:f.endsWith('.html')?'text/html':f.endsWith('.css')?'text/css':f.endsWith('.js')?'application/javascript':f.endsWith('.svg')?'image/svg+xml':'image/webp'});});
 await page.goto('http://art.test/savas.html');let views=0;
