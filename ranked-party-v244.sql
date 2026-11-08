@@ -35,7 +35,7 @@ create function ludus_ranked_party_private.handle_v244(p_action text,p_peer uuid
 returns jsonb language plpgsql security definer set search_path='' as $$
 declare
  u uuid:=auth.uid(); r ludus_ranked_party_private.rooms_v244; i ludus_ranked_party_private.invites_v244;
- g public.ludus_gladiators; mine uuid; allowed boolean; now_at timestamptz:=clock_timestamp();
+ fighter public.ludus_gladiators; mine uuid; allowed boolean; now_at timestamptz:=clock_timestamp();
  party jsonb; inbox jsonb; choices jsonb; roster jsonb;
 begin
  if u is null or coalesce((auth.jwt()->>'is_anonymous')::boolean,false)
@@ -45,12 +45,12 @@ begin
  select room_id into mine from ludus_ranked_party_private.members_v244 where user_id=u;
 
  if p_action='create' and mine is null then
-  select * into g from public.ludus_gladiators where owner_id=u and (p_gladiator is null or id=p_gladiator)
+  select * into fighter from public.ludus_gladiators where owner_id=u and (p_gladiator is null or id=p_gladiator)
    and status='available' and fatigue_value<100 and clan_roster_id is null and (injured_until is null or injured_until<=now_at)
    and (training_ends_at is null or training_ends_at<=now_at) order by overall desc,id limit 1;
   if not found then raise exception 'Hazır bir gladyatör seç.';end if;
   insert into ludus_ranked_party_private.rooms_v244(leader_id) values(u) returning * into r;
-  insert into ludus_ranked_party_private.members_v244(room_id,user_id,gladiator_id) values(r.id,u,g.id);
+  insert into ludus_ranked_party_private.members_v244(room_id,user_id,gladiator_id) values(r.id,u,fighter.id);
   update ludus_ranked_party_private.invites_v244 set state='cancelled' where target_id=u and state='pending';
   mine:=r.id;
  elsif p_action='invite' then
@@ -79,11 +79,11 @@ begin
   else
    if mine is not null then raise exception 'Önce mevcut takımından ayrıl.';end if;
    if (select count(*) from ludus_ranked_party_private.members_v244 where room_id=i.room_id)>=5 then raise exception 'Takım doldu veya kapandı.';end if;
-   select * into g from public.ludus_gladiators where owner_id=u and (p_gladiator is null or id=p_gladiator)
+   select * into fighter from public.ludus_gladiators where owner_id=u and (p_gladiator is null or id=p_gladiator)
     and status='available' and fatigue_value<100 and clan_roster_id is null and (injured_until is null or injured_until<=now_at)
     and (training_ends_at is null or training_ends_at<=now_at) order by overall desc,id limit 1;
    if not found then raise exception 'Hazır bir gladyatör seç.';end if;
-   insert into ludus_ranked_party_private.members_v244(room_id,user_id,gladiator_id) values(i.room_id,u,g.id);
+   insert into ludus_ranked_party_private.members_v244(room_id,user_id,gladiator_id) values(i.room_id,u,fighter.id);
    update ludus_ranked_party_private.invites_v244 set state=case when id=i.id then 'accepted' else 'cancelled' end where target_id=u and state='pending';
    mine:=i.room_id;
   end if;
@@ -101,11 +101,11 @@ begin
   update ludus_ranked_party_private.invites_v244 set state='cancelled' where room_id=mine and target_id=p_peer and state='pending';
  elsif p_action='select' then
   if mine is null then raise exception 'Önce bir takıma katıl.';end if;
-  select * into g from public.ludus_gladiators where id=p_gladiator and owner_id=u and status='available' and fatigue_value<100
+  select * into fighter from public.ludus_gladiators where id=p_gladiator and owner_id=u and status='available' and fatigue_value<100
    and clan_roster_id is null and (injured_until is null or injured_until<=now_at)
    and (training_ends_at is null or training_ends_at<=now_at);
   if not found then raise exception 'Hazır bir gladyatör seç.';end if;
-  update ludus_ranked_party_private.members_v244 set gladiator_id=g.id where room_id=mine and user_id=u;
+  update ludus_ranked_party_private.members_v244 set gladiator_id=fighter.id where room_id=mine and user_id=u;
  end if;
 
  select coalesce(jsonb_agg(jsonb_build_object('id',v.id,'leader',a.ludus_name,'expires_at',v.expires_at) order by v.created_at),'[]'::jsonb) into inbox
