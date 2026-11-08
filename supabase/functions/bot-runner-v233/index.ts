@@ -55,7 +55,7 @@ Deno.serve(async req=>{
   const engine=(globalThis as any).LudusBotSimulationV233;
   const state=lease.state?await decompress(lease.state):engine.create(lease.ticket,Number(lease.seed));
   const next=engine.advance(state,400);
-  const result=next.finished?{won:next.result==='win',stats:next.stats}:next.abandoned?{won:false,stats:{game_mode:'4x5',seconds:600,alive:false,exit_slots:{},abandoned:true}}:null;
+  const result=next.finished?{won:next.result==='win',stats:next.stats}:next.abandoned?{won:false,stats:{game_mode:next.mode,seconds:600,alive:false,exit_slots:{},abandoned:true}}:null;
   await rpc('ludus_bot_save_v233',{p_slot:lease.slot,p_lease:lease.lease,p_battle:lease.battle,p_steps:next.steps,p_state:result?null:await compress(next),p_result:result});
   return response({slot:lease.slot,steps:next.steps,finished:!!result});
  }catch(e){
