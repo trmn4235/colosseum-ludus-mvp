@@ -9,5 +9,8 @@ vm.runInNewContext(fs.readFileSync('ranked-invites-v244.js','utf8'),context);
 setImmediate(()=>{try{
  const box=nodes[0];assert.equal(box.hidden,false);assert.equal(action,'inbox');
  assert.equal(box.children[1].textContent,'Ludus Roma seni takımına davet etti.');box.children[2].onclick();assert.equal(context.location.href,'ranked-team-v244.html?invite=invite-1');
- authCallback('SIGNED_OUT',null);assert.equal(box.hidden,true);console.log('V244 NOTICE PASS: scoped inbox, safe text, explicit navigation and sign-out cleanup.');
+ authCallback('SIGNED_OUT',null);assert.equal(box.hidden,true);
+ const oldClient={...client,auth:{getUser:async()=>({data:{user:null}})}};const legacy={...context,LudusClient:{create:()=>oldClient}};legacy.globalThis=legacy;
+ assert.doesNotThrow(()=>vm.runInNewContext(fs.readFileSync('ranked-invites-v244.js','utf8'),legacy),'older auth clients without a change listener are supported');
+ console.log('V244 NOTICE PASS: scoped inbox, safe text, explicit navigation, sign-out and legacy auth.');
  }catch(e){console.error(e);process.exitCode=1}});
