@@ -5,7 +5,7 @@
  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
  <meta name="theme-color" content="#46141d">
  <title>Ranked Arena · Takım Hazırlığı</title>
- <link rel="stylesheet" href="ranked-team-v244.css?v=244">
+ <link rel="stylesheet" href="ranked-team-v244.css?v=245">
 </head>
 <body>
  <main class="ranked-page">
@@ -32,7 +32,7 @@
     <header><small>ARENAYA HAZIRLAN</small><h2 id="ready-title">Maç Hazırlığı</h2></header>
     <div class="crossed" aria-hidden="true">⚔</div>
     <div class="stats"><div><span>Başlangıç puanı</span><strong>1500</strong></div><div><span>Başlangıç kademesi</span><strong>Gümüş V</strong></div><div><span>Takım</span><strong id="teamCount">0 / 5</strong></div><div><span>Galibiyet / Mağlubiyet</span><strong>+10 / −5</strong></div></div>
-    <label class="fighter-label" for="fighterSelect">Gladyatörün</label><select id="fighterSelect" aria-label="Gladyatörünü seç"></select>
+    <button id="openLoadout" type="button" class="secondary">GLADYATÖR &amp; EŞYA</button>
     <div id="incoming" class="incoming" hidden></div>
     <button id="createTeam" type="button" class="primary">TAKIM KUR</button>
     <button id="leaveTeam" type="button" class="secondary" hidden>Takımdan ayrıl</button>
@@ -41,8 +41,29 @@
    </aside>
   </div>
  </main>
+ <section id="loadoutDialog" class="loadout-dialog" role="dialog" aria-modal="true" aria-labelledby="loadoutTitle" hidden>
+  <div class="loadout-paper">
+   <header class="loadout-heading"><h2 id="loadoutTitle">Savaş Hazırlığı</h2><button id="closeLoadout" class="secondary" type="button" aria-label="Paneli kapat">✕</button></header>
+   <div class="loadout-tabs" role="group" aria-label="Hazırlık sayfaları"><button id="gearTab" class="selected" type="button">Gladyatör &amp; Ekipman</button><button id="craftTab" type="button">Eşya Üretimi</button></div>
+   <div id="gearPane" class="loadout-pane">
+    <label for="fighterSelect">Gladyatörünü seç</label><select id="fighterSelect" aria-label="Gladyatörünü seç"></select>
+    <p class="loadout-hint">Envanterindeki eşyaları gladyatörüne kuşandır.</p>
+    <div id="equipmentList" class="equipment-list"></div>
+    <nav class="loadout-pager"><button id="gearPrev" type="button">‹</button><span id="gearPage">1 / 1</span><button id="gearNext" type="button">›</button></nav>
+   </div>
+   <div id="craftPane" class="loadout-pane" hidden>
+    <p class="loadout-hint">Eşyalar mevcut malzemelerinle üretilir.</p>
+    <div id="recipeDetails" class="recipe-details"></div>
+    <nav class="loadout-pager"><button id="recipePrev" type="button">‹</button><span id="recipePage">1 / 1</span><button id="recipeNext" type="button">›</button></nav>
+    <button id="craftItem" type="button" class="primary">ÜRET</button>
+   </div>
+   <p id="loadoutStatus" class="loadout-status" role="status"></p>
+  </div>
+ </section>
  <script src="assets/runtime/supabase-59d39487c358.js"></script>
  <script src="ludus-client-v84.js?v=revision84"></script>
- <script src="ranked-team-v244.js?v=244"></script>
+ <script src="item-visuals-v199.js?v=199"></script>
+ <script src="ludus-production-v119.js?v=119"></script>
+ <script src="ranked-team-v244.js?v=245"></script>
 </body>
 </html>
