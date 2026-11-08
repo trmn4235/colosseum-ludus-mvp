@@ -1,5 +1,5 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
-const {chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright');
+const {chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES?process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright':'playwright');
 const root=path.resolve(__dirname,'..'),id='00000000-0000-4000-8000-000000000001';
 const clans=Array.from({length:6},(_,i)=>({id:'clan-'+i,name:i===0?'Legio Aurea':'Klan '+i}));
 const players=Array.from({length:26},(_,i)=>({id:'user-'+i,name:'user'+i,subtitle:i===0?'<img src=x onerror=alert(1)>':'Ludus '+i,clan_id:i<21?'clan-0':'clan-'+(i-20),stats:{power:i===20?null:50+i},gladiator:{name:'Gladyatör '+i}}));
@@ -13,7 +13,7 @@ function fixtureClient(clan,clans,players,id){return {
 };}
 const mock=`window.__requests=[];window.__fail=false;window.__client=(${fixtureClient.toString()})(${JSON.stringify(clan)},${JSON.stringify(clans)},${JSON.stringify(players)},${JSON.stringify(id)});`;
 (async()=>{
- const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']});
  const page=await browser.newPage({viewport:{width:844,height:390}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='http://clan.test')return route.abort();const file=path.join(root,decodeURIComponent(u.pathname));if(!fs.existsSync(file)||!fs.statSync(file).isFile())return route.fulfill({status:404});let body=fs.readFileSync(file);
   if(file.endsWith('.html'))body=Buffer.from(body.toString().replace('<head>','<head><script>'+mock+'</script>').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__client'));
