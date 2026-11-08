@@ -14,7 +14,9 @@ if(tab==='clan'){assert.equal(await panel.locator('.clan-card').count(),4);asser
 if(tab==='multi'){
  assert.equal(await panel.locator('.ranked-card').count(),2,'two ranked announcements');
  assert.equal(await panel.locator('[data-mode]').count(),1,'only the beta can open preparation');
- assert.deepEqual(await panel.locator('.ranked-soon').allTextContents(),['YAKINDA','YAKINDA']);
+ assert.deepEqual(await panel.locator('.ranked-soon').allTextContents(),['TAKIMI HAZIRLA','YAKINDA']);
+ assert.equal(await panel.locator('[data-ranked="team"]').getAttribute('href'),'ranked-team-v244.html');
+ assert.match(await panel.locator('[data-ranked="team"]').innerText(),/Galibiyet\s*\+10/);
  await panel.locator('img').evaluateAll(async imgs=>Promise.all(imgs.map(i=>i.decode())));
  const geometry=await panel.locator('.ranked-card').evaluateAll(cards=>cards.map(card=>{
   const art=card.querySelector('.arena-choice-art').getBoundingClientRect(),img=card.querySelector('img');

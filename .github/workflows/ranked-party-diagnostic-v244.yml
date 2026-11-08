@@ -20,7 +20,8 @@ jobs:
           node tests/ranked-party-v244.cjs
           node tests/ranked-loader-v244.cjs
           node tests/ranked-notice-v244.cjs
-      - name: Test ranked preparation screen
+      - name: Test ranked and arena mobile layouts
         run: |
           npx playwright install --only-shell chromium
           node tests/ranked-ui-v244.cjs
+          node tests/arena-tabs-v81.cjs

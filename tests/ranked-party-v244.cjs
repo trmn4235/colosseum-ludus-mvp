@@ -14,7 +14,9 @@ const {PGlite}=require('@electric-sql/pglite');
  create table public.ludus_friends(requester uuid,target uuid,state text);
  create table public.ludus_clan_members(user_id uuid primary key,clan_id uuid);
  create table public.ludus_presence(user_id uuid primary key,last_seen timestamptz);`);
- await db.exec(fs.readFileSync('ranked-party-v244.sql','utf8'));
+ const migration=fs.readdirSync('supabase/migrations').find(x=>x.endsWith('_ranked_party_v244.sql'));
+ if(!migration)throw Error('Ranked team migration not found');
+ await db.exec(fs.readFileSync('supabase/migrations/'+migration,'utf8'));
  const q=async(sql,args=[])=> (await db.query(sql,args)).rows;
  const users=Array.from({length:8},()=>randomUUID()),fighters=users.map(()=>randomUUID()),clan=randomUUID();
  for(let n=0;n<users.length;n++){
