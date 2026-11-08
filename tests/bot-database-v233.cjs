@@ -7,6 +7,12 @@ try{
  create table public.ludus_clans(id uuid primary key default gen_random_uuid(),name text,emblem integer,background text,emblem_color text,leader_id uuid);
  create table public.ludus_clan_members(user_id uuid primary key,clan_id uuid,vault_access boolean default false);
  create table public.ludus_stones(owner_id uuid,family text,stone_id integer,quantity integer);
+ create table public.ludus_progression(owner_id uuid primary key,experience bigint default 0);
+ create table public.ludus_workers_v226(id uuid primary key,owner_id uuid);
+ create schema ludus_worker_private;
+ create function ludus_worker_private.week_end_v232(timestamptz)returns timestamptz language sql as $$select $1+interval '1 day'$$;
+ create table ludus_worker_private.clan_work_jobs_v232(id uuid primary key,clan_id uuid);
+ create table ludus_worker_private.clan_work_people_v232(job_id uuid,owner_id uuid,quantity integer,completed_at timestamptz);
  create schema ludus_pit_private;create table ludus_pit_private.rules(id boolean primary key,gate_enabled boolean,entry_fame integer);
  create table ludus_pit_private.fame(gladiator_id uuid primary key,points integer);insert into ludus_pit_private.rules values(true,false,30);
  alter table public.ludus_accounts add column sapphires integer default 0,add column rubies integer default 0;
@@ -15,12 +21,13 @@ try{
  create function public.ludus_upgrade_item_v10(uuid,text,integer,uuid)returns jsonb language sql as $$select '{}'::jsonb$$;`);
  const owner=randomUUID(),clan=randomUUID();await q("insert into public.ludus_accounts(user_id,username,ludus_name) values($1,'owner','Dominus')",[owner]);await q('insert into public.ludus_imperial_admins values($1)',[owner]);await q("insert into public.ludus_clans(id,name,leader_id) values($1,'Roma',$2)",[clan,owner]);await q('insert into public.ludus_clan_members(user_id,clan_id) values($1,$2)',[owner,clan]);
  const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations'),migration=name=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x=>x.endsWith('_'+name+'.sql'))),'utf8'),parts=migration('bot_fleet_v233').split('-- Production scheduling:');await db.exec(parts[0]);
- await db.exec(migration('bot_fleet_assign_v233_fix'));await db.exec(migration('bot_aventinus_v234'));
+ await db.exec(migration('bot_fleet_assign_v233_fix'));await db.exec(migration('bot_aventinus_v234'));await db.exec(migration('bot_admin_dashboard_v235'));
  await db.exec(`create schema net;create schema cron;create table net.v233_posts(url text);
  create function net.http_post(url text,headers jsonb,body jsonb,timeout_milliseconds integer) returns bigint language plpgsql as $$begin insert into net.v233_posts values(url);return 1;end$$;
  create function cron.schedule(text,text,text) returns bigint language sql as $$select 1::bigint$$;`);
  await db.exec(parts[1].slice(parts[1].indexOf('\n')+1).replace('create extension if not exists pg_net;',''));
  await db.exec('set role authenticated');await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);let state=(await q('select ludus_bot_admin_v233() s'))[0].s;assert.equal(state.created,0);assert.equal(state.total,39);
+ let dashboard=(await q('select ludus_bot_dashboard_v235() s'))[0].s;assert.equal(dashboard.bots.length,39);assert.equal(dashboard.bots[0].worker_count,0);assert.equal(dashboard.bots[0].experience,0);
  await assert.rejects(()=>q('select ludus_bot_context_v233()'),/permission denied/);await assert.rejects(()=>q('select * from ludus_bot_private.settings_v233'),/permission denied/);
  await db.exec('reset role;set role service_role');await q("select ludus_bot_install_v233($1,'https://test.supabase.co/functions/v1/bot-runner-v233',false)",[owner]);
  assert.equal((await q('select ludus_bot_context_v233() s'))[0].s.setup_requested,false,'configuration never starts accounts');
@@ -32,8 +39,10 @@ try{
  await db.exec('reset role');const bots=[];for(let slot=1;slot<=39;slot++){const id=randomUUID();bots.push(id);await q('insert into auth.users values($1,$2,clock_timestamp())',[id,{ludus_bot_nonce:context.nonce,ludus_bot_slot:String(slot)}]);await q('insert into public.ludus_accounts(user_id,username,ludus_name) values($1,$2,$3)',[id,'bot_'+slot,'Ludus '+slot]);await db.exec('set role service_role');await q('select ludus_bot_register_v233($1,$2)',[slot,id]);await db.exec('reset role');}
  await db.exec('set role service_role');const assigned=(await q('select ludus_bot_assign_v233() s'))[0].s;assert.equal(assigned.bots,39);assert.equal((await q('select ludus_bot_assign_v233() s'))[0].s.replayed,true);
  await db.exec('reset role');const groups=await q('select clan_id,count(*)::int n from public.ludus_clan_members group by clan_id order by n');assert.deepEqual(groups.map(x=>x.n),[10,10,10,10]);
+ await db.exec('set role authenticated');await q("select set_config('request.jwt.claim.sub',$1,false)",[bots[1]]);await assert.rejects(()=>q('select ludus_bot_dashboard_v235()'),/Yönetici yetkisi/);await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);await db.exec('reset role');
  await q('select ludus_bot_private.schedule_v233()');assert.equal((await q('select count(*)::int n from net.v233_posts'))[0].n,3,'two independent bounded matches per minute after setup');
  const fighter=randomUUID(),weapon=randomUUID();await q("insert into public.ludus_gladiators(id,owner_id,name,class,base_stats,stat_version)values($1,$2,'Bot','secutor',$3,46)",[fighter,bots[0],core]);await q("insert into public.ludus_items(id,owner_id,kind,model,equipped_by,equipped_slot) values($1,$2,'weapon','gladius',$3,'main_hand')",[weapon,bots[0],fighter]);
+ await q('insert into public.ludus_progression(owner_id,experience) values($1,420)',[bots[0]]);await q("insert into public.ludus_stones(owner_id,family,stone_id,quantity)values($1,'sapphire',1,2)",[bots[0]]);await db.exec('set role authenticated');await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);dashboard=(await q('select ludus_bot_dashboard_v235() s'))[0].s;assert.equal(dashboard.bots[0].experience,420);assert.equal(dashboard.bots[0].stones.sapphire,2);assert.equal(dashboard.bots[0].gladiators[0].weapon.model,'gladius');await db.exec('reset role');
  await db.exec('set role service_role');const claim=(await q('select ludus_bot_claim_v233() s'))[0].s;if(claim.fault){await db.exec('reset role');throw Error(JSON.stringify((await q('select last_error from ludus_bot_private.members_v233 where slot=1'))[0]));}assert.equal(claim.slot,1);assert.ok(claim.ticket.loot.length>0);
  await q('select ludus_bot_save_v233($1,$2,$3,$4,$5,null)',[claim.slot,claim.lease,claim.battle,'compressed-state',400]);await assert.rejects(()=>q('select ludus_bot_save_v233($1,$2,$3,$4,$5,null)',[claim.slot,claim.lease,claim.battle,'compressed-state',400]),/geçersiz/);
  await db.exec('reset role');await q("update ludus_bot_private.members_v233 set next_run_at=clock_timestamp()-interval '1 minute' where slot=1");await db.exec('set role service_role');const next=(await q('select ludus_bot_claim_v233() s'))[0].s;assert.equal(next.state,'compressed-state');assert.equal(next.steps,400);assert.equal(next.ticket,null);
