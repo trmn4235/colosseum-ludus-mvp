@@ -37,6 +37,8 @@ jobs:
         run: node tests/workers-browser-v230.cjs
       - name: Worker keyboard, rescue cards and green HUD in WebKit
         run: LUDUS_WEBKIT_TEST=1 node tests/workers-browser-v230.cjs
+      - name: Original Roma map and licensed source purchases on mobile
+        run: node tests/production-browser-v120.cjs
       - name: Actual courtyard flail and playable caravan defense
         run: node tests/caravan-defense-browser-v230.cjs
       - name: Room geometry, maps, mobile layout and rewards
@@ -50,9 +52,6 @@ jobs:
         run: node tests/production-v119.cjs
       - name: Complete catalog and mobile layouts
         run: node tests/production-browser-v119.cjs
-
-      - name: Original Roma map and all nine source routes on mobile
-        run: node tests/production-browser-v120.cjs
 
       - name: Fifteen-minute prices and honest 24-hour history
         run: LUDUS_MARKET_HISTORY_TEST=1 node tests/production-v119.cjs

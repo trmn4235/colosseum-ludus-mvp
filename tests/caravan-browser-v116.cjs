@@ -77,6 +77,8 @@ const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHe
   for(const [width,height]of [[1366,768],[932,430],[844,390],[768,353],[667,375]]){
    await page.setViewportSize({width,height});
    await page.waitForFunction(()=>Number.parseFloat(document.documentElement.style.getPropertyValue('--game-height'))===innerHeight);
+   // The HUD has its own ResizeObserver + animation-frame layout, after the game viewport updates.
+   await page.waitForFunction(()=>{const hud=document.querySelector('#ludusHud'),frame=hud?.querySelector('.hud-frame');return frame&&Math.abs(frame.viewBox.baseVal.width-hud.getBoundingClientRect().width)<.1;});
    const hud=await page.evaluate(()=>{const rows=[...document.querySelectorAll('#accountSummary .money,.hud-crew>*,.hud-navigation>*,.tools>.hud-action,.hud-level')].filter(e=>e.getClientRects().length).map(e=>{const r=e.getBoundingClientRect();return{id:e.id||e.title,left:r.left,right:r.right,cy:(r.top+r.bottom)/2}});return{rows,gaps:rows.slice(1).map((r,i)=>r.left-rows[i].right)}});
    assert.ok(hud.rows.every(r=>r.left>=0&&r.right<=width),'HUD fits '+width);assert.ok(Math.max(...hud.rows.map(r=>r.cy))-Math.min(...hud.rows.map(r=>r.cy))<1,'HUD aligned');assert.ok(hud.gaps.every(gap=>gap>=-.5),'HUD does not overlap '+JSON.stringify(hud));
    await page.evaluate(()=>{LudusPreview.supplySystem.close();return LudusPreview.supplySystem.open('map');});await page.waitForTimeout(150);assert.equal(await page.locator('[data-destination]').count(),7);await page.waitForSelector('#supplyModal:not([hidden])');await fit('.supply-frame','food '+width);await page.locator('.supply-map-art').evaluate(img=>img.decode());await page.screenshot({path:out+'/food-'+width+'.png'});
