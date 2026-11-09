@@ -143,9 +143,9 @@ var ArenaRuntime = (() => {
     }
     sample(now, current) {
       const dt = this.last === null ? 0 : now - this.last; this.last = now;
-      // Ignore background/loading gaps. Repeated 250–1000 ms frames must still
+      // Ignore background/loading gaps. Repeated 250–5000 ms frames must still
       // lower the load: the old 250 ms cutoff stranded the slowest devices.
-      if (dt <= 0 || dt > 1000) { this.elapsed = 0; this.frames = 0; this.slow = 0; this.fast = 0; return null; }
+      if (dt <= 0 || dt > 5000) { this.elapsed = 0; this.frames = 0; this.slow = 0; this.fast = 0; return null; }
       if (now < this.cooldown) return null;
       this.elapsed += dt; this.frames++; if (dt > 22.5) this.slow++;
       // Low-FPS devices cannot wait for thirty frames to form each sample.

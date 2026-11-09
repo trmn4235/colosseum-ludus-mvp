@@ -2,6 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {rigRuntime}=require('./performance-v84.cjs');
 const Runtime=require('../arena-runtime-v96.js');
+require('./ranked-latency-v252.cjs');
 async function main(){
  const rows=[];
  for(const page of ['arena.html','savas.html','multiplayer.html','caravan-field.html','ludus.html']){

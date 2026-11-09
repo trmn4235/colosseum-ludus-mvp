@@ -58,6 +58,11 @@ const migration=suffix=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x
     create or replace function private.ludus_advance_combat_v36(p jsonb,t timestamptz) returns jsonb language plpgsql as $$
     begin update private.advance_calls set n=n+1;return p;end$$;`);
   }
+  const batchPatch=fs.readdirSync(dir).find(x=>x.endsWith('_ranked_latency_v252.sql'));
+  if(batchPatch&&!process.env.LUDUS_RANKED_PATCH)await db.exec(fs.readFileSync(path.join(dir,batchPatch),'utf8'));
+  if(batchPatch)await db.exec(`create table private.match_write_calls(n int);insert into private.match_write_calls values(0);
+   create function private.count_match_write() returns trigger language plpgsql as $$begin update private.match_write_calls set n=n+1;return new;end$$;
+   create trigger count_match_write after update of players on public.ludus_matches for each row execute function private.count_match_write();`);
   const q=async(s,p=[])=>(await db.query(s,p)).rows,users=Array.from({length:12},()=>randomUUID()),gs=users.map(()=>randomUUID()),clan=randomUUID();
   for(let i=0;i<12;i++){
    await q('insert into ludus_accounts values($1,$2,$3)',[users[i],'user'+i,'Ludus '+i]);
@@ -89,10 +94,20 @@ const migration=suffix=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x
   await db.exec('reset role');await q("update ludus_bot_private.ranked_sessions_v249 set last_tick=now()-interval '1 second' where match_id=$1",[mid]);
   await q("update public.ludus_matches set players=(select jsonb_agg(p||jsonb_build_object('tick_at',now()-interval '1 second') order by ord) from jsonb_array_elements(players) with ordinality x(p,ord)) where id=$1",[mid]);
   const before=(await q('select players from public.ludus_matches where id=$1',[mid]))[0].players;
-  if(performancePatch)await q('update private.advance_calls set n=0');
+  if(performancePatch)await q('update private.advance_calls set n=0');if(batchPatch)await q('update private.match_write_calls set n=0');
   await db.exec('set role authenticated');battle=await match('state',mid);
   assert.ok(battle.players.some(p=>p.bot_v249&&p.hp>0&&(p.x!==before.find(b=>b.owner===p.owner).x||p.z!==before.find(b=>b.owner===p.owner).z)),'bots move through ranked controls');
   await db.exec('reset role');if(performancePatch)assert.equal((await q('select n from private.advance_calls'))[0].n,1,'one shared-world advance per human request, even with nine bots');assert.equal((await q('select last_error from ludus_bot_private.ranked_sessions_v249 where match_id=$1',[mid]))[0].last_error,null,'bot controller has no error');
+  if(batchPatch){
+   assert.equal((await q('select n from private.match_write_calls'))[0].n,2,'nine bots share one write after the human update');
+   assert.equal((await q("select has_function_privilege('authenticated','ludus_ranked_match_private.apply_input_v252(jsonb,integer,jsonb,timestamptz)','execute') allowed"))[0].allowed,false);
+   await db.exec('set role authenticated');
+   const compact=(await q("select public.ludus_ranked_match_v252('step',$1,null,'{}','{\"x\":0,\"z\":0}') r",[mid]))[0].r;
+   assert.equal(compact.delta_version,252);assert.equal(compact.players.length,10);
+   for(const player of compact.players){assert.equal(player.gladiator,undefined);assert.equal(player.combat_stats,undefined);assert.equal(player.items,undefined);assert.equal(typeof player.x,'number');assert.equal(typeof player.hp,'number');assert.equal(typeof player.movement_speed,'number');}
+   const full=(await q("select public.ludus_ranked_match_v252('state',$1) r",[mid]))[0].r;assert.ok(full.players.every(p=>p.gladiator&&p.items),'initial state retains every loadout');
+   await db.exec('reset role');
+  }
   const testAt='2026-11-09T00:00:00.300Z',testBot={owner:users[1],x:0,z:0,stamina:20,items:[{kind:'weapon',model:'gladius',equipped_slot:'main_hand'}]},testEnemy={owner:users[5],x:0,z:1,hp:100,serial:1,items:[]};
   let decision=(await q('select ludus_bot_private.tactics_v249($1,$2,$3) r',[testBot,testEnemy,testAt]))[0].r;assert.ok(decision.z<0&&!decision.attack,'exhausted bots retreat instead of spamming attacks');
   const defenses=await Promise.all(users.slice(1,10).map(owner=>q('select ludus_bot_private.tactics_v249($1,$2,$3) r',[{...testBot,owner,stamina:100,items:[...testBot.items,{kind:'shield',equipped_slot:'off_hand'}]},{...testEnemy,strike_target:owner,swing_at:'2026-11-09T00:00:00.100Z',strike_at:'2026-11-09T00:00:00.500Z'},testAt])));
