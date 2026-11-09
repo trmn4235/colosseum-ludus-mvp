@@ -53,5 +53,6 @@ const mock=`globalThis.supabase={createClient(){
   await page.evaluate(()=>{mockRankedParty.queue={status:'matched',match_id:'00000000-0000-4000-8000-000000000123'};document.dispatchEvent(new Event('visibilitychange'));});
   await page.waitForURL('**/multiplayer.html?venue=ranked&v=252');assert.equal(await page.evaluate(()=>sessionStorage.getItem('ludus-ranked-room')),'00000000-0000-4000-8000-000000000123');
  }
+ await require('./ranked-invites-browser-v254.cjs')(browser,root);
  await browser.close();console.log('V244 UI PASS: five slots, friend/clan tabs, invitation action and landscape layouts.');
 })().catch(e=>{console.error(e);process.exit(1)});

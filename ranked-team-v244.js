@@ -56,7 +56,7 @@
   $('rankedRating').textContent=String(state.data?.ranked_rating??1500);
   const queue=party?.queue,status=queue?.status||'idle',members=memberList(),start=$('startMatch');
   start.disabled=state.busy||!party||!isLeader()||status==='matched'||(status!=='waiting'&&(!members.length||members.some(m=>!m.ready)));
-  start.textContent=status==='matched'?'MAÇ BULUNDU':status==='waiting'?(isLeader()?'EŞLEŞMEYİ İPTAL ET':'EŞLEŞME ARANIYOR'):(isLeader()?'MAÇI BAŞLAT':'LİDER BEKLENİYOR');
+  start.textContent=status==='matched'?'MAÇ BULUNDU':status==='waiting'?(isLeader()?'EŞLEŞMEYİ İPTAL ET':'EŞLEŞME ARANIYOR'):(party?.auto_start?'READY İLE BAŞLA':isLeader()?'MAÇI BAŞLAT':'LİDER BEKLENİYOR');
   if(status==='matched'&&queue?.match_id&&!state.redirecting){
    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(queue.match_id)){notice('Maç kimliği doğrulanamadı.');return;}
    try{sessionStorage.setItem('ludus-ranked-room',queue.match_id);state.redirecting=true;location.href='multiplayer.html?venue=ranked&v=252';}catch{notice('Maça geçmek için tarayıcı depolamasını aç.');}
@@ -126,7 +126,7 @@
  render();
  (async()=>{try{
   const auth=await client.auth.getUser();if(auth.error||!auth.data.user||auth.data.user.is_anonymous){notice('Takım kurmak için oyuna giriş yap.');return;}
-  state.user=auth.data.user.id;try{const p=JSON.parse(localStorage.getItem(pendingKey())||'null');if(p?.owner===state.user&&p.sku&&p.request)state.pendingCraft=p;}catch{}await refresh();if(!state.data)return;notice('Arkadaşlarını veya klan üyelerini davet edebilirsin.');
+  state.user=auth.data.user.id;Promise.resolve(client.rpc('ludus_ranked_invites_v254',{p_action:'pause'})).catch(()=>{});try{const p=JSON.parse(localStorage.getItem(pendingKey())||'null');if(p?.owner===state.user&&p.sku&&p.request)state.pendingCraft=p;}catch{}await refresh();if(!state.data)return;notice('Arkadaşlarını veya klan üyelerini davet edebilirsin.');
   schedule();
  }catch(e){notice(e.message||'Takım ekranı açılamadı.');}})();
 })();
