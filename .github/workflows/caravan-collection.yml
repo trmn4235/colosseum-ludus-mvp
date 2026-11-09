@@ -79,4 +79,5 @@ jobs:
           path: |
             /tmp/workers-v230
             /tmp/production-v120/worker-checkout-*.png
+            /tmp/production-v120/licensed-food-v255.png
           retention-days: 7

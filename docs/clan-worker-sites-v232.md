@@ -1,5 +1,8 @@
 # V232 — İmparatorluk çalışma sahaları
 
+Bu belge V232'nin tarihsel kurallarını anlatır. Güncel lisans, kişisel gelir,
+gıda meslekleri ve kervan dengesi için [V255 kuralları](licensed-collection-v255.md) geçerlidir.
+
 Klanın sahip olmadığı ortak imparatorluk sahalarında dokuz ekipman hammaddesi için ekip kurulabilir. Her işçi ilgili meslekte en az 5. seviyede olmalı, kervanda veya başka bir çalışmada bulunmamalıdır. Mevcut rol sistemiyle ekipleri klan lideri kurar. İşçilerin sahibi Ludus olarak kalır. Bir ekip birden fazla Ludus'tan işçi içerebilir.
 
 Tamamlanan işteki hammadde klanın ayrı hammadde deposuna yazılır; işçi, Ludus ve malzeme başına katkı kaydedilir. Bu depo henüz oyuncu deposuna aktarma ve işleme bağlı değildir. Geçmiş alışveriş kervanları üretime veya sıralamaya eklenmez. Çalışmaların süre, üretim ve EXP miktarı başlangıçta sabitlenir; tekrar istekleri ve zamanlanmış işlem tekrarı aynı üretimi iki kez vermez.
