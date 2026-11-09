@@ -222,7 +222,7 @@ var LudusSupply=(()=>{
   }
   async function inspectCity(id){
    city=Number(id);quote=null;cityLoading=true;marketPage=0;const token=++cityRequest;message('Şehirdeki stoklar inceleniyor…');render();
-   try{const r=await ctx.client.rpc('ludus_caravan_city',{p_city:city});if(token!==cityRequest)return;if(r.error)throw r.error;quote=r.data;for(const good of quote.goods)priceHistory.set(city+':'+good.sku,{good,now:quote.server_now});offset=Date.parse(quote.server_now)-Date.now();marketSku=quote.goods.some(g=>g.sku===marketSku)?marketSku:quote.goods[0]?.sku;message('Fiyat ve stok, alım onaylandığında sabitlenir.');}
+   try{const r=await ctx.client.rpc('ludus_caravan_city',{p_city:city});if(token!==cityRequest)return;if(r.error)throw r.error;quote=r.data;for(const good of quote.goods)priceHistory.set(city+':'+good.sku,{good,now:quote.server_now});offset=Date.parse(quote.server_now)-Date.now();marketSku=quote.goods.some(g=>g.sku===marketSku)?marketSku:quote.goods[0]?.sku;const available=quote.goods.find(g=>g.sku===marketSku)?.stock;marketQuantity=Math.max(1,Math.min(marketQuantity,capacity()*Math.max(1,workers),available>0?available:Infinity));message('Fiyat ve stok, alım onaylandığında sabitlenir.');}
    catch(e){if(token===cityRequest)message(e.message||'Şehir bilgisi alınamadı.',true);}
    finally{if(token===cityRequest){cityLoading=false;render();}}
   }
