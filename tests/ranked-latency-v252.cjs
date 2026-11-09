@@ -1,0 +1,25 @@
+const assert=require('node:assert/strict');
+const motion=require('../multiplayer-motion-v251.js'),{AdaptiveQuality}=require('../arena-runtime-v96.js');
+const original={id:'match',players:[{owner:'a',name:'Roma',class:'murmillo',ranked_team:'a',bot_v249:false,gladiator:{overall:50},items:[{kind:'weapon',model:'gladius'}],combat_stats:{speed:1},hp:100,x:0,z:0,pull_from:'b',projectile:{id:'old'},swing_end:'2099-01-01'}]};
+const packet={id:'match',delta_version:252,players:[{owner:'a',x:1,z:2,hp:90,stamina:80,movement_speed:3.5}]};
+const expanded=motion.expandState(packet,original),player=expanded.players[0];
+assert.equal(player.name,'Roma');assert.equal(player.items,original.players[0].items);assert.equal(player.hp,90);
+for(const effect of ['pull_from','projectile','swing_end'])assert.equal(player[effect],undefined,'expired effects must disappear');
+assert.equal(original.players[0].hp,100,'packets do not mutate the previous state');
+assert.deepEqual(motion.expandState({...packet,players:[{...packet.players[0],gear_serial:1,items:[]}]},original).players[0].items,[],'a thrown weapon stays removed');
+const equipped={...original,players:[{...original.players[0],items:[{kind:'shield',model:'large',equipped_slot:'off_hand',sockets:[{name:'Vita',value:4}]}]}]};
+const changed=motion.expandState({...packet,players:[{...packet.players[0],gear_serial:1,items:[{kind:'shield',model:'large',equipped_slot:'off_hand'}]}]},equipped);
+assert.deepEqual(changed.players[0].items[0].sockets,[{name:'Vita',value:4}],'unchanged equipment retains its stone effects after a throw');
+assert.throws(()=>motion.expandState(packet,{...original,id:'different'}));
+const now=Date.now(),p={x:0,z:0,hp:100,movement_speed:3.5};
+const early=motion.predictedPosition(p,{x:-1,z:0},16,0,now);
+assert.ok(early.x<0,'movement is visible before the network reply');
+const delayed=motion.predictedPosition(p,{x:1,z:1},1500,0,now);
+assert.ok(Math.hypot(delayed.x,delayed.z)<=.420001,'a long outage cannot run the visual fighter away');
+assert.deepEqual(motion.predictedPosition(p,{x:0,z:0},300,0,now),{x:0,z:0});
+for(const lock of [{hp:0},{pull_from:'b'},{swing_end:new Date(now+1000).toISOString()},{stagger_until:new Date(now+1000).toISOString()}])assert.deepEqual(motion.predictedPosition({...p,...lock},{x:1,z:0},100,0,now),{x:0,z:0});
+const edge=motion.predictedPosition({...p,x:10.4},{x:1,z:0},300,0,now);assert.ok(edge.x<=10.5);
+const quality=new AdaptiveQuality(1,.65);quality.reset(-3000);let scale=1;
+for(let i=0;i<10;i++){const next=quality.sample(i*1500,scale);if(next!==null)scale=next;}
+assert.equal(scale,.65,'visible 1.5-second frames must reduce GPU load');
+console.log('PASS V252: compact snapshots, expired effects, thrown equipment, immediate bounded movement and 1.5-second frame recovery.');

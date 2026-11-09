@@ -84,6 +84,7 @@ async function main(){
  assert.deepEqual(errors,[]);
  // Missing critical assets still have a retry path; removing the old intro must not hide errors.
  if(current){const failedContext=await browser.newContext({viewport:{width:844,height:390}});await failedContext.route('https://**',r=>r.abort());const failed=await failedContext.newPage();await failed.route('**/Colosseum.glb',r=>r.fulfill({status:503,body:'unavailable'}));await failed.goto(base+'/arena.html?battle='+battle);await failed.waitForFunction(()=>getComputedStyle(document.querySelector('#fatal')).display!=='none',null,{timeout:20000});assert.equal(await failed.locator('#fatal button').isVisible(),true);await failedContext.close();}
+ if(process.env.LUDUS_PERFORMANCE_TEST==='1')await require('./multiplayer-browser-v252.cjs')(context,base,out);
  fs.writeFileSync(out+'/report.json',JSON.stringify({current,comparison,errors,engine:process.env.LUDUS_TEST_ENGINE||'chromium',note:'Software-rendered browser, deterministic scene. Draw counts are not phone FPS.'},null,2));console.log(JSON.stringify({current,comparison,errors,out}));await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exit(1)});
