@@ -27,7 +27,7 @@ jobs:
         run: node tests/render-runtime-v187.cjs
       - name: Existing pose scheduling and body detail regressions
         run: node --test tests/arena-timing-v94.test.cjs tests/naval-performance-v106.test.cjs tests/adaptive-quality-v96.test.cjs tests/render-scale-v188.test.cjs
-      - run: npm install --no-save --no-package-lock playwright@1.64.1
+      - run: npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
       - name: Twenty gladiators, full shadows and low-FPS clock
         env:
           LUDUS_PERFORMANCE_TEST: '1'
@@ -36,3 +36,17 @@ jobs:
         run: node tests/caravan-performance-v187.cjs
       - name: Eight horses and eight crew, live shadows and clock
         run: node tests/circus-performance-v187.cjs
+      - name: Selected ranked fighters, equipment and party authorization
+        run: |
+          node scripts/build-ranked-runtime-v253.cjs --check
+          node tests/ranked-party-v244.cjs
+          node tests/ranked-bots-v249.cjs
+          node tests/ranked-ui-v244.cjs
+          node tests/ranked-lineup-v253.cjs
+      - name: Save ranked lineup browser evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ranked-lineup-v253
+          path: /tmp/ranked-v253
+          if-no-files-found: ignore

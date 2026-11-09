@@ -5,7 +5,7 @@
  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
  <meta name="theme-color" content="#46141d">
  <title>Ranked Arena · Takım Hazırlığı</title>
- <link rel="stylesheet" href="ranked-team-v244.css?v=248">
+ <link rel="stylesheet" href="ranked-team-v244.css?v=253">
 </head>
 <body>
  <main class="ranked-page">
@@ -25,8 +25,9 @@
     <nav class="pager" aria-label="Davet listesi sayfaları"><button id="previous" type="button" aria-label="Önceki sayfa">‹</button><span id="pageNumber">1 / 1</span><button id="next" type="button" aria-label="Sonraki sayfa">›</button></nav>
    </aside>
    <section class="team-scene" aria-label="Beş kişilik takım">
+    <canvas id="teamModels" aria-label="Takımın seçtiği gladyatörler ve kuşanılmış ekipmanları"></canvas>
     <div id="teamSlots" class="team-slots"></div>
-    <span class="art-caption">Karakter görselleri temsilidir</span>
+    <p id="lineupStatus" class="lineup-status" role="status" hidden></p>
    </section>
    <aside class="paper ready-panel" aria-labelledby="ready-title">
     <header><small>ARENAYA HAZIRLAN</small><h2 id="ready-title">Maç Hazırlığı</h2></header>
@@ -64,6 +65,26 @@
  <script src="ludus-client-v84.js?v=revision84"></script>
  <script src="item-visuals-v199.js?v=199"></script>
  <script src="ludus-production-v119.js?v=119"></script>
- <script src="ranked-team-v244.js?v=252"></script>
+ <script src="owner-three-r160.js?v=revision26"></script>
+ <script src="arena-runtime-v96.js?v=revision252"></script>
+ <script src="gladiator-exercise-v46.js?v=revision199"></script>
+ <script src="arena-fall-motion-v39.js?v=revision39"></script>
+ <script src="arena-ground-fall-v39.js?v=revision115"></script>
+ <script src="arena-roll-motion-v72.js?v=revision72"></script>
+ <script src="arena-roll-v72.js?v=revision84"></script>
+ <script src="arena-locomotion-data-v91.js?v=revision91"></script>
+ <script src="arena-locomotion-v91.js?v=revision213"></script>
+ <script src="ludus-manica-v119.js?v=revision197"></script>
+ <script src="arena-anatomy-v166.js?v=revision224"></script>
+ <script src="arena-equipment-fit-v164.js?v=revision196"></script>
+ <script src="arena-motion-stability-v165.js?v=revision166"></script>
+ <script src="combat-curves-v163.js?v=revision163"></script>
+ <script src="combat-motion-v163.js?v=revision198"></script>
+ <script src="arena-authored-data-v163.js?v=revision163"></script>
+ <script src="arena-authored-motion-v163.js?v=revision214"></script>
+ <script src="equipment-catalog-v167.js?v=revision198"></script>
+ <script src="ranked-gladiator-runtime-v253.js?v=253"></script>
+ <script src="ranked-lineup-v253.js?v=253"></script>
+ <script src="ranked-team-v244.js?v=253"></script>
 </body>
 </html>
