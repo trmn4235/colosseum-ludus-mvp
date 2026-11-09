@@ -12,7 +12,7 @@ module.exports=async({page,fit,out})=>{
   await page.locator('#sourceQuantity').fill('121');assert.ok(await page.locator('[data-buy]').isDisabled());
   await page.locator('#sourceQuantity').fill('120');assert.ok(await page.locator('[data-buy]').isEnabled());
   if(sku==='fish'){
-   for(const [width,height] of [[844,390],[667,375],[568,320]]){await page.setViewportSize({width,height});await fit('.supply-source-detail');await fit('.supply-license-open');await fit('.caravan-purchase');}
+   for(const [width,height] of [[844,390],[667,375],[568,320]]){await page.setViewportSize({width,height});await fit('.supply-source-detail');await fit('.supply-scene');await fit('.supply-license-open');await fit('.caravan-purchase');}
    await page.screenshot({path:out+'/licensed-food-v255.png'});
   }
   await page.locator('[data-buy]').click();assert.ok(await page.locator('[data-worker-confirm]').isDisabled());
