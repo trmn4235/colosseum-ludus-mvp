@@ -51,12 +51,13 @@ module.exports=async(browser,root)=>{
   assert.equal((await state()).calls.filter(c=>c.action==='accept').length,1,'double taps cannot join twice');
   assert.equal(await page.locator('#incoming').isVisible(),false,'KATIL already accepted; there is no second confirmation');
   assert.equal(await page.locator('.slot-ready.ready').count(),4);assert.equal(await page.locator('#startMatch').innerText(),'READY İLE BAŞLA');
+  if(height>width){assert.match(await page.locator('.ranked-page').evaluate(e=>getComputedStyle(e,':before').content),/yatay çevir/);await page.setViewportSize({width:height,height:width});await page.clock.runFor(50);}
   await page.getByRole('button',{name:'Hazır olduğunu bildir'}).click();await page.waitForURL('**/multiplayer.html?venue=ranked&v=252');
   assert.equal((await state()).calls.filter(c=>c.action==='start').length,0,'READY enters without a second start action');
   await page.waitForFunction(()=>JSON.parse(sessionStorage.mockV254).paused);
   let before=(await state()).calls.length;await page.clock.runFor(180000);assert.equal((await state()).calls.length,before,'battle does not poll invitations');assert.equal(await card().isVisible(),false);
   await page.evaluate(()=>{const s=JSON.parse(sessionStorage.mockV254);s.party=null;sessionStorage.mockV254=JSON.stringify(s)});
-  await page.goto('https://incoming.test/browse.html');await page.clock.runFor(179000);assert.equal(await card().isVisible(),false);await page.clock.runFor(1000);await page.waitForFunction(()=>!document.querySelector('#rankedInvite').hidden);
+  await page.setViewportSize({width,height});await page.goto('https://incoming.test/browse.html');await page.clock.runFor(179000);assert.equal(await card().isVisible(),false);await page.clock.runFor(1000);await page.waitForFunction(()=>!document.querySelector('#rankedInvite').hidden);
   assert.match(await card().innerText(),/Roma-7’ten Ranked 5v5/);
   await page.evaluate(()=>changeAuth('SIGNED_OUT',null));await page.clock.runFor(1);assert.equal(await card().isVisible(),false);
   before=(await state()).calls.length;await page.clock.runFor(180000);assert.equal((await state()).calls.length,before,'logout stops incoming requests');
