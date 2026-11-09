@@ -1,0 +1,46 @@
+const assert=require('node:assert/strict');
+module.exports=async({db,q,migration,randomUUID,owners,workers,team,work,roster,supply,identify,admin,reject,routeFor})=>{
+ await identify(owners[0]);
+ const oldRequest=randomUUID(),oldPayload={sku:'iron_ore',workers:team};
+ const oldWork=(await work('start',oldPayload,oldRequest)).jobs.find(j=>j.sku==='iron_ore'&&!j.finished_at);
+ const oldBuyRequest=randomUUID(),oldBuyKey=await routeFor('grain',120);
+ const buy=async(key,request=randomUUID())=>(await q("select public.ludus_worker_caravan_depart_v227('buy',$1,1,$2,array[$3]::uuid[],0,0,'{}'::uuid[]) s",[key,request,workers[0][4]]))[0].s;
+ const oldBuy=await buy(oldBuyKey,oldBuyRequest),oldTrip=oldBuy.jobs.find(j=>j.id===oldBuy.result.job_id);
+ await admin();await db.exec(migration('collection_balance_v256'));
+ const rates=(await q('select ludus_worker_private.license_yield_v255(n) y from generate_series(5,10)n')).map(r=>r.y);
+ assert.deepEqual(rates.map(r=>r.net),[8,12,16,16,20,24]);
+ for(const r of rates){assert.equal(r.gross,r.tax+r.net);assert.equal(r.tax*5,r.gross);}
+ for(const level of [1,4,11])assert.equal((await q('select ludus_worker_private.license_yield_v255($1) y',[level]))[0].y,null);
+ assert.equal((await q("select has_function_privilege('authenticated','ludus_worker_private.license_yield_v255(integer)','execute') allowed"))[0].allowed,false);
+ await identify(owners[0]);
+ let state=await work();assert.deepEqual(state.config.yield_by_level,rates);
+ assert.equal(state.config.duration_minutes,360);assert.equal(state.config.team_limit,5);assert.equal(state.config.tax_percent,20);
+ assert.deepEqual(state.jobs.find(j=>j.id===oldWork.id),oldWork,'in-flight work retains its frozen amount');
+ assert.equal((await work('start',oldPayload,oldRequest)).jobs.find(j=>j.id===oldWork.id).quantity,oldWork.quantity);
+ const legacyReplay=await buy(oldBuyKey,oldBuyRequest);assert.equal(legacyReplay.result.job_id,oldTrip.id);
+ assert.equal(legacyReplay.jobs.find(j=>j.id===oldTrip.id).cargo.grain,120,'existing purchase survives a lower capacity');
+ assert.equal((await supply()).caravan_capacity,10);assert.equal((await supply()).shopping_seconds,10800);
+ await admin();
+ await q("update ludus_worker_private.clan_work_jobs_v232 set started_at=clock_timestamp()-interval '6 hours',ends_at=clock_timestamp()-interval '1 second' where id=$1",[oldWork.id]);
+ await q('select ludus_worker_private.clan_tick_v232(clock_timestamp())');
+ await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval '3 hours',ends_at=clock_timestamp()-interval '1 second' where id=$1",[oldTrip.id]);
+ await identify(owners[0]);await roster();
+ const newWork=(await work('start',{sku:'fish',workers:team},randomUUID())).jobs.find(j=>j.sku==='fish'&&!j.finished_at);
+ for(const p of newWork.participants){const r=rates.find(r=>r.level===p.level);assert.equal(p.quantity,r.net);assert.equal(p.gross_quantity,r.gross);assert.equal(p.tax_quantity,r.tax);}
+ assert.equal(Date.parse(newWork.ends_at)-Date.parse(newWork.started_at),21600000);
+ const beforeFish=Number((await work()).stock.fish),expectedFish=newWork.participants.filter(p=>p.owner_id===owners[0]).reduce((n,p)=>n+p.quantity,0);
+ const tooMuch=await routeFor('grain',11);await reject(()=>buy(tooMuch),/10 birim/);
+ const beforeSkill=(await roster()).workers.find(w=>w.id===workers[0][4]).skills.find(s=>s.sku==='grain');
+ const newBuy=await buy(await routeFor('grain',10)),newTrip=newBuy.jobs.find(j=>j.id===newBuy.result.job_id);
+ assert.equal(newTrip.cargo.grain,10);assert.equal(Date.parse(newTrip.ends_at)-Date.parse(newTrip.started_at),10800000);
+ await admin();
+ await q("update ludus_worker_private.clan_work_jobs_v232 set started_at=clock_timestamp()-interval '6 hours',ends_at=clock_timestamp()-interval '1 second' where id=$1",[newWork.id]);
+ await q('select ludus_worker_private.clan_tick_v232(clock_timestamp())');
+ await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval '3 hours',ends_at=clock_timestamp()-interval '1 second' where id=$1",[newTrip.id]);
+ await identify(owners[0]);await roster();await roster();
+ assert.equal(Number((await work()).stock.fish),beforeFish+expectedFish,'new net output reaches the correct personal food stock once');
+ const afterSkill=(await roster()).workers.find(w=>w.id===workers[0][4]).skills.find(s=>s.sku==='grain');
+ assert.equal(afterSkill.xp,beforeSkill.xp+10);assert.equal(Number(afterSkill.delivered),Number(beforeSkill.delivered)+10);
+ await admin();
+ console.log('V256 SQL PASS: 8–24 net collection, exact 20% tax, 10-unit purchase limit, unchanged durations, personal delivery, EXP and frozen pre-change departures/replays.');
+};

@@ -92,5 +92,6 @@ module.exports=async({db,q,migration,randomUUID})=>{
  await reject(()=>q('select * from ludus_worker_private.state_collections_v255'),/permission denied/);
  await admin();
  console.log('V255 SQL PASS: 16 professions, exact five-worker/six-hour licenses, frozen 20% tax, per-owner stock, pending delivery, clan exit, food training and dining delivery, three-hour/120-unit purchases, legacy preservation, weekly net collection, authorization and replay.');
+ return {db,q,migration,randomUUID,owners,workers,team,work,roster,supply,identify,admin,reject,routeFor};
  async function routeFor(sku,quantity){for(const c of (await supply()).cities){const quote=(await q('select public.ludus_caravan_city($1) s',[c.id]))[0].s;if(quote.goods.some(g=>g.sku===sku&&g.stock>=quantity))return[c.id,sku,quote.epoch,quantity].join(':');}throw Error('No quote for '+sku);}
 };
