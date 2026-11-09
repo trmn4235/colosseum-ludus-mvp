@@ -51,7 +51,7 @@ const mock=`globalThis.supabase={createClient(){
   const boxes=await page.locator('.paper,.team-scene,.ranked-header').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return{element:e.className,x:b.x,y:b.y,right:b.right,bottom:b.bottom,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight}}));
   for(const b of boxes){assert.ok(b.x>=-1&&b.y>=-1&&b.right<=width+1&&b.bottom<=height+1,`panel must fit ${width}x${height}: ${JSON.stringify(b)}`);assert.ok(b.scrollHeight<=b.clientHeight+1,`panel overflow ${width}x${height}: ${JSON.stringify(b)}`);}
   await page.evaluate(()=>{mockRankedParty.queue={status:'matched',match_id:'00000000-0000-4000-8000-000000000123'};document.dispatchEvent(new Event('visibilitychange'));});
-  await page.waitForURL('**/multiplayer.html?venue=ranked');assert.equal(await page.evaluate(()=>sessionStorage.getItem('ludus-ranked-room')),'00000000-0000-4000-8000-000000000123');
+  await page.waitForURL('**/multiplayer.html?venue=ranked&v=251');assert.equal(await page.evaluate(()=>sessionStorage.getItem('ludus-ranked-room')),'00000000-0000-4000-8000-000000000123');
  }
  await browser.close();console.log('V244 UI PASS: five slots, friend/clan tabs, invitation action and landscape layouts.');
 })().catch(e=>{console.error(e);process.exit(1)});

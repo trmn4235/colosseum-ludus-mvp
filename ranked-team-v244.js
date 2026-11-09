@@ -58,7 +58,7 @@
   start.textContent=status==='matched'?'MAÇ BULUNDU':status==='waiting'?(isLeader()?'EŞLEŞMEYİ İPTAL ET':'EŞLEŞME ARANIYOR'):(isLeader()?'MAÇI BAŞLAT':'LİDER BEKLENİYOR');
   if(status==='matched'&&queue?.match_id&&!state.redirecting){
    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(queue.match_id)){notice('Maç kimliği doğrulanamadı.');return;}
-   try{sessionStorage.setItem('ludus-ranked-room',queue.match_id);state.redirecting=true;location.href='multiplayer.html?venue=ranked';}catch{notice('Maça geçmek için tarayıcı depolamasını aç.');}
+   try{sessionStorage.setItem('ludus-ranked-room',queue.match_id);state.redirecting=true;location.href='multiplayer.html?venue=ranked&v=251';}catch{notice('Maça geçmek için tarayıcı depolamasını aç.');}
   }
  }
  function loadoutMessage(message){$('loadoutStatus').textContent=message||'';}
