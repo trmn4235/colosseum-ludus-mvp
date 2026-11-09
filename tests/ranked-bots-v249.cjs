@@ -63,6 +63,7 @@ const migration=suffix=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x
   if(batchPatch)await db.exec(`create table private.match_write_calls(n int);insert into private.match_write_calls values(0);
    create function private.count_match_write() returns trigger language plpgsql as $$begin update private.match_write_calls set n=n+1;return new;end$$;
    create trigger count_match_write after update of players on public.ludus_matches for each row execute function private.count_match_write();`);
+  await db.exec(migration('_ranked_lineup_v253.sql'));
   const q=async(s,p=[])=>(await db.query(s,p)).rows,users=Array.from({length:12},()=>randomUUID()),gs=users.map(()=>randomUUID()),clan=randomUUID();
   for(let i=0;i<12;i++){
    await q('insert into ludus_accounts values($1,$2,$3)',[users[i],'user'+i,'Ludus '+i]);
@@ -76,13 +77,14 @@ const migration=suffix=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x
   await q('insert into ludus_bot_private.settings_v233 values(true,$1,true,true)',[users[0]]);
   await db.exec('set role authenticated');
   const user=async i=>q("select set_config('request.jwt.claim.sub',$1,false)",[users[i]]);
-  const party=async(a,peer=null,g=null,inv=null)=>(await q('select public.ludus_ranked_party_v244($1,$2,$3,$4) r',[a,peer,g,inv]))[0].r;
+  const party=async(a,peer=null,g=null,inv=null)=>(await q('select public.ludus_ranked_party_v253($1,$2,$3,$4) r',[a,peer,g,inv]))[0].r;
   const match=async(a,room,input={})=>(await q("select public.ludus_ranked_match_v248($1,$2,null,'{}'::jsonb,$3::jsonb) r",[a,room,input]))[0].r;
   await user(11);await party('create',null,gs[11]);await party('ready');let nonowner=await party('start');assert.equal(nonowner.party.queue.status,'waiting','other accounts cannot activate the private bot fleet');await party('cancel_queue');await party('leave');
   await user(0);await party('create',null,gs[0]);let state=await party('state');assert.equal(state.candidates.filter(c=>c.type==='clan').length,5);
   await party('invite',users[1]);state=await party('state');assert.equal(state.party.members.length,1,'bot does not accept before the one-second delay');
   await db.exec('reset role');await q("update ludus_ranked_party_private.invites_v244 set created_at=now()-interval '2 seconds' where target_id=$1",[users[1]]);await db.exec('set role authenticated');
   state=await party('state');assert.equal(state.party.members.length,2);assert.equal(state.party.members.find(m=>m.user_id===users[1]).ready,true,'invited bot accepts and is READY');
+  const botVisual=state.party.members.find(m=>m.user_id===users[1]).appearance;assert.equal(botVisual.gladiator.id,gs[1]);assert.equal(botVisual.items[0].model,'gladius');assert.equal(botVisual.items[0].equipped_slot,'main_hand');
   await assert.rejects(()=>party('start'),/READY/);await party('ready');state=await party('start');assert.equal(state.party.queue.status,'matched');assert.equal(state.party.members.length,5);
   const mid=state.party.queue.match_id;await user(11);await assert.rejects(()=>match('state',mid),/erişemezsin/);await user(0);
   let battle=await match('state',mid);assert.equal(battle.players.length,10);assert.equal(battle.players.filter(p=>p.bot_v249).length,9);

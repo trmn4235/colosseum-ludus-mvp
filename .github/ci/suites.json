@@ -506,7 +506,10 @@
         "tests/render-scale-v188.test.cjs",
         "tests/render-scale-browser-v188.cjs",
         "tests/caravan-pacing-v188.cjs",
-        ".github/workflows/render-performance-v187.yml"
+        ".github/workflows/render-performance-v187.yml",
+        "ranked-*",
+        "tests/ranked-*",
+        "scripts/build-ranked-runtime-v253.cjs"
       ]
     },
     {

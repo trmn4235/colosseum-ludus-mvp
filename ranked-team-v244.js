@@ -2,12 +2,13 @@
  'use strict';
  const $=id=>document.getElementById(id);
  const client=LudusClient.create('https://lryeeidutnlpgdesjxje.supabase.co','sb_publishable_5vKWVREHisXbfX55gePMxw_tMyZaeW1');
+ const lineup=RankedLineup.create($('teamModels'),$('lineupStatus'));
  const state={data:null,filter:'friend',page:0,busy:false,user:null,stopped:false,timer:null,redirecting:false,preferredInvite:new URLSearchParams(location.search).get('invite'),loadoutBusy:false,supply:null,items:[],gearPage:0,recipePage:0,loadoutTab:'gear',pendingCraft:null};
  function notice(message){$('status').textContent=message||'';}
  function element(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
  function button(text,cls,click){const b=element('button',cls,text);b.type='button';b.addEventListener('click',click);return b;}
  function selectedFighter(){return $('fighterSelect').value||null;}
- async function rpc(action,extra={}){const args={p_action:action,p_peer:null,p_gladiator:null,p_invite:null,...extra};const r=await client.rpc('ludus_ranked_party_v244',args);if(r.error)throw r.error;return r.data;}
+ async function rpc(action,extra={}){const args={p_action:action,p_peer:null,p_gladiator:null,p_invite:null,...extra};const r=await client.rpc('ludus_ranked_party_v253',args);if(r.error)throw r.error;return r.data;}
  function memberList(){return state.data?.party?.members||[];}
  function isLeader(){return state.data?.party?.leader===state.user;}
  function candidates(){return(state.data?.candidates||[]).filter(x=>x.type===state.filter);}
@@ -25,7 +26,7 @@
   $('friendsTab').setAttribute('aria-pressed',String(state.filter==='friend'));$('clanTab').setAttribute('aria-pressed',String(state.filter==='clan'));
  }
  function renderSlots(){
-  const root=$('teamSlots'),members=memberList();root.replaceChildren();$('teamCount').textContent=members.length+' / 5';
+  const root=$('teamSlots'),members=memberList();lineup.update(members);root.replaceChildren();$('teamCount').textContent=members.length+' / 5';
   for(let n=0;n<5;n++){
    const m=members[n],slot=element('div','slot'+(m?'':' empty-slot')),label=element('div','slot-label');
    label.append(element('strong','',m?.gladiator||'Boş yer'),element('small','',m?.ludus||'Davet bekleniyor'));slot.append(label);
@@ -121,7 +122,7 @@
  $('gearTab').onclick=()=>{state.loadoutTab='gear';renderLoadout();};$('craftTab').onclick=()=>{state.loadoutTab='craft';renderLoadout();};
  $('gearPrev').onclick=()=>{state.gearPage--;renderLoadout();};$('gearNext').onclick=()=>{state.gearPage++;renderLoadout();};$('recipePrev').onclick=()=>{state.recipePage--;renderLoadout();};$('recipeNext').onclick=()=>{state.recipePage++;renderLoadout();};$('craftItem').onclick=craftItem;
  window.addEventListener('resize',render);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
- window.addEventListener('pagehide',()=>{state.stopped=true;clearTimeout(state.timer);});
+ window.addEventListener('pagehide',()=>{state.stopped=true;clearTimeout(state.timer);lineup.dispose();});
  render();
  (async()=>{try{
   const auth=await client.auth.getUser();if(auth.error||!auth.data.user||auth.data.user.is_anonymous){notice('Takım kurmak için oyuna giriş yap.');return;}
