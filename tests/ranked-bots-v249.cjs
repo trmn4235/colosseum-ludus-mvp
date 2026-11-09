@@ -64,6 +64,7 @@ const migration=suffix=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x
    create function private.count_match_write() returns trigger language plpgsql as $$begin update private.match_write_calls set n=n+1;return new;end$$;
    create trigger count_match_write after update of players on public.ludus_matches for each row execute function private.count_match_write();`);
   await db.exec(migration('_ranked_lineup_v253.sql'));
+  await db.exec(migration('_ranked_incoming_v254.sql'));
   const q=async(s,p=[])=>(await db.query(s,p)).rows,users=Array.from({length:12},()=>randomUUID()),gs=users.map(()=>randomUUID()),clan=randomUUID();
   for(let i=0;i<12;i++){
    await q('insert into ludus_accounts values($1,$2,$3)',[users[i],'user'+i,'Ludus '+i]);
@@ -79,6 +80,7 @@ const migration=suffix=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(x
   const user=async i=>q("select set_config('request.jwt.claim.sub',$1,false)",[users[i]]);
   const party=async(a,peer=null,g=null,inv=null)=>(await q('select public.ludus_ranked_party_v253($1,$2,$3,$4) r',[a,peer,g,inv]))[0].r;
   const match=async(a,room,input={})=>(await q("select public.ludus_ranked_match_v248($1,$2,null,'{}'::jsonb,$3::jsonb) r",[a,room,input]))[0].r;
+  await require('./ranked-incoming-v254.cjs')({db,q,users,gs,user,party,match});
   await user(11);await party('create',null,gs[11]);await party('ready');let nonowner=await party('start');assert.equal(nonowner.party.queue.status,'waiting','other accounts cannot activate the private bot fleet');await party('cancel_queue');await party('leave');
   await user(0);await party('create',null,gs[0]);let state=await party('state');assert.equal(state.candidates.filter(c=>c.type==='clan').length,5);
   await party('invite',users[1]);state=await party('state');assert.equal(state.party.members.length,1,'bot does not accept before the one-second delay');
