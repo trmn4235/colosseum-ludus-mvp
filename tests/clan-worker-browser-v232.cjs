@@ -27,7 +27,7 @@ module.exports=async({page,fit,out})=>{
  for(const id of ['worker-4','worker-5'])await touch(page.locator('[data-worker-id="'+id+'"]'));
  assert.ok(await start.isDisabled(),'four is insufficient');await touch(page.locator('[data-worker-id="worker-6"]'));
  assert.ok(await start.isEnabled());assert.ok(await page.locator('[data-worker-id="worker-7"]').isDisabled(),'a sixth worker cannot be added');
- assert.match(await page.locator('.clan-work-estimate').innerText(),/brüt.*devlet.*Luduslara/);
+ assert.match(await page.locator('.clan-work-estimate').innerText(),/115 brüt.*23 devlet.*92 Luduslara/);
  for(const [width,height] of [[874,402],[667,375],[568,320],[390,844]]){await page.setViewportSize({width,height});await fit('.clan-work-shell');await fit('.clan-work-select');await fit('.clan-work-choice');await fit('.clan-work-estimate');await page.screenshot({path:out+'/licensed-team-'+width+'.png'});}
  await touch(start);await page.getByText('5 işçi için 6 saatlik lisans başladı.').waitFor();assert.equal(await page.evaluate(()=>__workActions.filter(x=>x.action==='start').length),1);assert.equal(await page.evaluate(()=>__workActions[0].payload.workers.length),5);
  assert.equal(await page.getByRole('button',{name:'Ayarlar',exact:true}).count(),0,'fixed license rules cannot be changed in this panel');

@@ -1,4 +1,4 @@
-# V255 — Lisanslı maden ve gıda toplama
+# Lisanslı maden ve gıda toplama — V256 miktar dengesi
 
 Klanlar ortak imparatorluk kaynaklarından çalışma lisansı alır. Klan lideri,
 üyelerin kendi işçilerinden **tam 5 kişilik** bir ekip seçer. Bir lisans **6 saat**
@@ -14,12 +14,15 @@ yemekhane stoklarına teslim edilir. Klandan ayrılmak kazanılmış payı kaybe
 
 | Meslek seviyesi | Brüt | Devlet | Sahibine net |
 |---|---:|---:|---:|
-| 5 | 50 | 10 | 40 |
-| 6 | 60 | 12 | 48 |
-| 7 | 70 | 14 | 56 |
-| 8 | 80 | 16 | 64 |
-| 9 | 90 | 18 | 72 |
-| 10 | 100 | 20 | 80 |
+| 5 | 10 | 2 | 8 |
+| 6 | 15 | 3 | 12 |
+| 7 | 20 | 4 | 16 |
+| 8 | 20 | 4 | 16 |
+| 9 | 25 | 5 | 20 |
+| 10 | 30 | 6 | 24 |
+
+V256 miktarları **devlet payı sonrası net 8–24 birimdir**. Ürünler tam sayı ve
+vergi tam %20 olduğundan 7. ve 8. seviyelerin miktarı aynıdır.
 
 Depoda yer yoksa o işçinin teslimatı bekler; diğer sahiplerin teslimatı sürer.
 İşçi çalışma bittiğinde serbest kalır. Yer açıldığında bekleyen ürünler bir kez
@@ -28,7 +31,7 @@ Bu kayıt mevcut pazar arzına kendiliğinden satış eklemez.
 
 ## Alışveriş ve gelişim
 
-Ücretli alışveriş **3 saat git-gel**, kervan başına **120 birim** kapasitedir.
+Ücretli alışveriş **3 saat git-gel**, kervan başına **10 birim** kapasitedir.
 Her kervana bir işçi seçilir. Ödeme güncel kaynak/pazar fiyatıyla yapılır.
 Eski ücretsiz gıda seferi yeni çıkışlar için kapatılmıştır. Gıda kaynağında
 hem alışveriş hem çalışma lisansına geçiş bulunur.
@@ -37,9 +40,9 @@ Alışveriş, teslim edilen birim başına 1 meslek EXP verir ve 600 EXP/5. sevi
 durur. Lisanslı çalışma başına 60 EXP kazanılır; meslekler 2700 EXP/10. seviyeye
 kadar ilerler. Meslekler birbirinden bağımsızdır.
 
-Bu başlangıç dengesinde bir alışveriş işçisi para karşılığında 40 birim/saat
-taşır. Çalışan işçi 6,67–13,33 net birim/saat üretir; beş kişilik ekip 6 saatte
-200–400 net ürün kazanır. Çalışma alışveriş kervanı kontenjanını kullanmaz;
+Bu başlangıç dengesinde bir alışveriş işçisi para karşılığında 3,33 birim/saat
+taşır. Çalışan işçi 1,33–4 net birim/saat üretir; beş kişilik ekip 6 saatte
+40–120 net ürün kazanır. Çalışma alışveriş kervanı kontenjanını kullanmaz;
 beş işçiyi aynı süre boyunca bağlar. Lisans için ayrıca ücret tanımlanmamıştır.
 
 | Gıda | Meslek |
@@ -78,3 +81,7 @@ stokları silinmez veya kişisel hesaplara yeniden dağıtılmaz.
 dolu depo, klan değişikliği, EXP, haftalık sıralama ve tekrar işlem koruması.
 Tarayıcı senaryoları mevcut Chromium/WebKit işçi ve kaynak ekranı testlerine
 bağlıdır. Fiziksel iPhone kontrolü bu testlerin kapsamında değildir.
+
+V256 öncesi başlamış lisans ve alışverişler çıkışta kaydedilen miktarlarını korur.
+`tests/collection-balance-v256.cjs`, yeni miktarları ve önceki seferlerin
+teslimat/tekrar işlem uyumluluğunu gerçek RPC yollarıyla doğrular.
