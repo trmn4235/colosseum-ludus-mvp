@@ -88,3 +88,4 @@ body[data-art-direction][data-roman-screen=ludus] #ludusHud #caravanHud.worker-r
 .worker-skill-pages{flex:none;gap:6px}.worker-skill-pages .workers-page-button{height:20px;min-height:20px;padding:0 6px;line-height:18px}.worker-skill-pages span{font-size:10px}
 
 .worker-skills-paged{grid-template-rows:repeat(2,minmax(0,1fr))}.worker-skills-paged .worker-skill-heading span{min-width:0;overflow-wrap:anywhere}
+.worker-card .worker-task-countdown{max-width:100%;overflow:hidden;text-overflow:ellipsis}
