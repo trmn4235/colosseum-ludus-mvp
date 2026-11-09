@@ -54,7 +54,7 @@ beş işçiyi aynı süre boyunca bağlar. Lisans için ayrıca ücret tanımlan
 
 Mevcut dokuz ekipman hammaddesi mesleği korunur; toplam 16 meslek vardır.
 Şarabın eski verilerle uyumluluk için kullanılan SKU'su `beer` olarak kalır.
-Meslek kartları 9+7, kişisel stok 8+8 olarak sayfalanır; dikey kaydırma gerekmez.
+Meslek kartları 6+6+4, kişisel stok 8+8 olarak sayfalanır; dikey kaydırma gerekmez.
 
 ## Haftalık toplanan
 
