@@ -6,7 +6,7 @@
  if(typeof client?.auth?.getUser!=='function'||typeof client?.rpc!=='function')return;
  const battlePage=/\/(?:ranked-team-v244|arena|multiplayer|caravan-field|circus-maximus)\.html$/.test(location.pathname);
  const blocked=()=>battlePage||!!document.querySelector('[data-duel-active="true"]');
- let user=null,busy=false,joining=false,seq=0,timer=0,expiry=0,stopped=false,paused=false,active=null,dismissed=[],drag=null,header=null;
+ let user=null,busy=false,joining=false,seq=0,authVersion=0,timer=0,expiry=0,stopped=false,paused=false,active=null,dismissed=[],drag=null,header=null;
  const box=document.createElement('aside');box.id='rankedInvite';box.hidden=true;box.tabIndex=0;box.setAttribute('role','status');box.setAttribute('aria-live','polite');box.setAttribute('aria-label','Ranked daveti. Sağa kaydırarak veya Escape ile kapat.');
  Object.assign(box.style,{position:'fixed',zIndex:'2147483000',right:'max(10px, env(safe-area-inset-right))',top:'calc(env(safe-area-inset-top) + 62px)',boxSizing:'border-box',width:'min(360px, calc(100vw - 20px))',padding:'9px 12px',background:'#fff8e9',border:'3px double #ae8a51',borderRadius:'5px',boxShadow:'0 5px 20px #0006',color:'#4a1e26',font:'14px Georgia, serif',touchAction:'pan-y',userSelect:'none'});
  const row=document.createElement('div'),desc=document.createElement('strong'),open=document.createElement('button'),error=document.createElement('p');
@@ -66,8 +66,9 @@
   if(id===user)return;seq++;clearTimeout(timer);hide();user=id;paused=false;joining=false;dismissed=[];
   if(id){try{const saved=JSON.parse(sessionStorage.getItem('ranked-dismissed-v254:'+id)||'[]');if(Array.isArray(saved))dismissed=saved.filter(x=>typeof x==='string').slice(-24);}catch{}if(busy)timer=setTimeout(refresh,250);else refresh();}
  }
- client.auth.getUser().then(r=>setUser(r.data?.user&&!r.data.user.is_anonymous?r.data.user.id:null)).catch(()=>{});
- client.auth.onAuthStateChange?.((_event,session)=>setTimeout(()=>setUser(session?.user&&!session.user.is_anonymous?session.user.id:null),0));
+ const initialAuth=authVersion;
+ client.auth.getUser().then(r=>{if(initialAuth===authVersion)setUser(r.data?.user&&!r.data.user.is_anonymous?r.data.user.id:null);}).catch(()=>{});
+ client.auth.onAuthStateChange?.((_event,session)=>{const version=++authVersion;setTimeout(()=>{if(version===authVersion)setUser(session?.user&&!session.user.is_anonymous?session.user.id:null);},0);});
  const duel=new MutationObserver(()=>{if(blocked()!==paused)refresh();});duel.observe(document.body,{subtree:true,attributes:true,attributeFilter:['data-duel-active']});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(timer);hide();}else refresh();});
  addEventListener('resize',()=>{if(!box.hidden)position();});
