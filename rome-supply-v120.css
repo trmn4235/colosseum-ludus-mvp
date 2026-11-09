@@ -30,6 +30,8 @@
 .supply-modal .supply-source-detail .supply-primary{min-height:40px;font-size:14px;margin:0}
 .supply-source-detail .supply-trip-note{font:11px/1.3 Arial;margin:0}
 .supply-source-message{font:14px/1.4 Georgia;margin:0}
+.supply-modal .supply-scene-licensed{grid-template-rows:minmax(0,1fr) auto auto}
+.supply-modal .supply-scene>.supply-license-open{min-height:32px;padding:6px;border-radius:0;font:12px/1.2 Arial,sans-serif}
 @media(max-height:540px){
  .supply-modal[data-view=map] .supply-overview{gap:5px}
  .supply-modal[data-view=map] .supply-node-icon{width:30px;height:30px}

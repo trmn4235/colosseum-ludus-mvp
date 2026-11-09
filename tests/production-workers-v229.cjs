@@ -13,7 +13,9 @@ module.exports=async({db,q,A,B,call,migration,randomUUID})=>{
  await q("update ludus_supply_private.stock set quantity=case sku when 'bow' then 8 when 'arrow' then 400 else 0 end where owner_id=$1",[A]);await auth();
  const roster=async()=>(await q('select ludus_workers_roster_v226() s'))[0].s;
  const ids=(await roster()).workers.map(w=>w.id),worker=(r,i)=>r.workers.find(w=>w.id===ids[i]);
- const route=async(sku,n)=>{for(const c of cities){const quote=(await q('select ludus_caravan_city($1) s',[c.id]))[0].s;if(quote.goods.some(g=>g.sku===sku&&g.stock>=n))return [c.id,sku,quote.epoch,n].join(':');}throw Error('No stocked city for '+sku);};
+ // A new quote must not cross the live 15-minute epoch while the departure RPC
+ // runs. Explicit replay keys below are preserved, including after expiry.
+ const route=async(sku,n)=>{const remaining=900000-Date.now()%900000;if(remaining<2000)await new Promise(resolve=>setTimeout(resolve,remaining+20));for(const c of cities){const quote=(await q('select ludus_caravan_city($1) s',[c.id]))[0].s;if(quote.goods.some(g=>g.sku===sku&&g.stock>=n))return [c.id,sku,quote.epoch,n].join(':');}throw Error('No stocked city for '+sku);};
  const depart=async({sku='iron_ore',qty=1,workers=[ids[0]],bows=1,arrows=20,request=randomUUID(),key}={})=>(await q("select ludus_worker_caravan_depart_v227('buy',$1,$2,$3,$4::uuid[],$5,$6,'{}'::uuid[]) s",[key||await route(sku,qty),workers.length,request,workers,bows,arrows]))[0].s;
  const deliver=async id=>{await admin();await q("update ludus_supply_private.jobs set started_at=clock_timestamp()-interval '2 hours',ends_at=clock_timestamp()-interval '1 second' where id=$1",[id]);await auth();return roster();};
  const legacy=await depart({workers:[ids[7]]});await admin();await db.exec(migration('worker_tasks_archery_v229'));await auth();

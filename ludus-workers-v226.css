@@ -48,7 +48,7 @@
 .worker-task{display:flex;flex-direction:column;gap:2px;min-height:26px;max-width:100%;flex:none;text-align:center}
 .worker-task-name{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#754b36!important}
 .worker-task-countdown{display:block;white-space:nowrap;font-variant-numeric:tabular-nums;color:#65212d!important}
-.workers-body>.workers-grid .worker-card .workers-portrait{width:min(180px,calc((100dvh - 242px)*.5))}
+.workers-body>.workers-grid .worker-card .workers-portrait{width:min(100%,180px,calc((100dvh - 242px)*.5))}
 .worker-archery{display:grid;grid-template-columns:1fr auto;gap:3px 10px;padding:6px 8px;border:1px solid #d6bd88;background:#fcf5e6;border-radius:3px;flex:none;color:#672434}
 .worker-archery strong{font:14px Georgia,serif}.worker-archery small{font:10px/1.3 Arial,sans-serif;color:#7c6850}.worker-archery progress{grid-column:1/-1;width:100%;height:5px;accent-color:#91602e}.worker-archery-note{grid-column:1/-1}
 .supply-worker-order{margin:0;font-size:11px;color:#6c2632;text-align:center;flex:none}
@@ -85,3 +85,10 @@ body[data-art-direction][data-roman-screen=ludus] #ludusHud #caravanHud.worker-r
 .worker-defense{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid #83a875;border-radius:5px;background:#f4faef;min-height:0}
 .worker-defense-main,.worker-defense-controls{display:flex;flex-direction:column;gap:6px;min-width:0}.worker-defense-main strong{color:#226e36;font:19px Georgia,serif}.worker-defense-main small{font:12px/1.3 Arial,sans-serif;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.worker-defense-controls{max-width:45%}.worker-defense-controls select{max-width:100%;height:32px;border:1px solid #b38b43;border-radius:3px;background:white;color:#591823}.worker-defense-controls button{min-height:32px}.worker-defense-note{margin:0;font:11px/1.3 Arial,sans-serif;color:#716452;flex:none}.worker-defense-error{color:#921d31;font-size:11px}
 @media(max-height:420px){.worker-defense{padding:7px;gap:8px}.worker-defense-main strong{font-size:15px}.worker-defense-main small,.worker-defense-note{font-size:10px}.worker-defense-main,.worker-defense-controls{gap:3px}}
+.worker-skill-pages{flex:none;gap:6px}.worker-skill-pages .workers-page-button{height:20px;min-height:20px;padding:0 6px;font:16px/16px Georgia,serif!important}.worker-skill-pages span{font-size:10px}
+
+.worker-skills-paged{grid-template-rows:repeat(2,minmax(0,1fr))}.worker-skills-paged .worker-skill-heading span{min-width:0;overflow-wrap:anywhere}
+.worker-card .worker-task-countdown{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:480px) and (min-height:501px){.workers-tab{overflow-wrap:anywhere}}
+
+@media(max-height:360px){.worker-profile-title .workers-back{min-height:23px}.worker-skills-paged .worker-skill-total{display:none}}
