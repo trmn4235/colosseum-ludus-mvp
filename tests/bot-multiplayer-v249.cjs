@@ -1,0 +1,1 @@
+require('./bot-multiplayer-v237.cjs')({v249:true,rewards:true,leave:true}).then(()=>console.log('PASS V249: ordinary multiplayer bots use +4–+6 equipment and make tactical server actions.')).catch(e=>{console.error(e);process.exitCode=1;});
