@@ -24,7 +24,7 @@ window.__fixtureClient={
   if(name==='ludus_workers_roster_v226')return{data:window.__workerRoster};
   __rpcCalls.push({name,args});
   if(name==='ludus_supply'||name==='ludus_caravan_depart_v126'||name==='ludus_worker_caravan_depart_v227'){if(args.p_action==='buy'){window.__lastBuy=args;const [,sku,,quantity]=args.p_key.split(':');__supply.free_caravans-=args.p_workers;__supply.busy_caravans+=args.p_workers;__supply.jobs.push({id:'bought-'+__supply.jobs.length,destination:'city-1',workers:args.p_workers,cargo:{[sku]:Number(quantity)},ends_at:new Date(Date.now()+3600000).toISOString()});}return{data:{...__supply,server_now:new Date().toISOString()}};}
-  if(name==='ludus_caravan_city'){const city=__supply.cities.find(c=>c.id===args.p_city);return{data:{city,server_now:new Date().toISOString(),epoch:Math.floor(Date.now()/60000),expires_at:new Date(Date.now()+(window.__quoteTTL??60000)).toISOString(),goods:__supply.resources.filter(r=>r.stage==='raw').map((r,i)=>({sku:r.sku,name:r.name,bar:10-i,stock:300-i*30,unit_price:1.25+i}))}};}
+  if(name==='ludus_caravan_city'){const city=__supply.cities.find(c=>c.id===args.p_city);return{data:{city,server_now:new Date().toISOString(),epoch:Math.floor(Date.now()/60000),expires_at:new Date(Date.now()+(window.__quoteTTL??60000)).toISOString(),goods:__supply.resources.filter(r=>(r.stage==='raw'||(__supply.licensed_work_version>=255&&r.food))).map((r,i)=>({sku:r.sku,name:r.name,bar:10-i%10,stock:__supply.licensed_work_version>=255?300:300-i*30,unit_price:1.25+i}))}};}
   if(name==='ludus_progress')return{data:__progress};
   if(name==='ludus_combat_values')return{data:{...__combatReport,owner_id:__fixtureUser.id,gladiator:__fighters.find(g=>g.id===args.p_gladiator)}};
   const training=()=>({server_now:new Date().toISOString(),gladiators:__fighters});
@@ -93,6 +93,7 @@ if(require.main===module)(async()=>{
   }
   await page.evaluate(()=>window.__quoteTTL=-1000);await page.locator('[data-destination=iron_ore]').click();await page.waitForSelector('[data-buy]');assert.equal(await page.locator('[data-buy]').isDisabled(),true);await page.evaluate(()=>LudusPreview.supplySystem.tick());assert.equal(await page.locator('[data-buy]').count(),0);assert.match(await page.locator('.supply-source-message').textContent(),/Güncel/);await page.locator('.supply-back').click();
   await page.evaluate(async()=>{window.__quoteTTL=60000;__supply.free_caravans=0;__supply.busy_caravans=6;await LudusPreview.supplySystem.refresh();});await page.locator('[data-destination=wool]').click();await page.waitForSelector('[data-buy]');assert.equal(await page.locator('[data-buy]').isDisabled(),true);assert.equal(await page.locator('#sourceCaravans').isDisabled(),true);
+  await require('./licensed-sources-browser-v255.cjs')({page,fit,out});
   await require('./workers-browser-v229.cjs')({browser,root,out});assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);console.log('V120 browser PASS: original 2:1 Roma map, 16 non-overlapping touch markers, 9 source scenes and purchases, food preserved, bronze/steel visible, zoom, capacity and expired-quote checks at 5 landscape sizes.');
  }catch(e){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});console.error({errors,failed});throw e;}finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

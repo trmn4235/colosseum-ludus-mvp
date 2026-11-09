@@ -59,6 +59,7 @@ module.exports=async({db,q,A,B,call,migration,randomUUID})=>{
  await require('./clan-caravan-support-v231.cjs')({db,q,A,B,api,depart,roster,migration,randomUUID});
  // The same transaction checks clan production against an active caravan.
  await require('./clan-worker-sites-v232.cjs')({db,q,A,B,roster,route,migration,randomUUID});
+ await require('./licensed-collection-v255.cjs')({db,q,migration,randomUUID});
  await admin();await db.exec('rollback');await auth();
  console.log('V230 SQL PASS: exact 2/5 attacks, no replay reroll, frozen workers, owner isolation, gladiator locking, re-entry, delivery/claim blocking, verified win/loss once and automatic timeout.');
 };
