@@ -26,6 +26,7 @@ async function rigRuntime(page='arena.html',options={}){
  const locomotion=source.map(s=>s.attrs.match(/\bsrc=["']([^"'?]+)/)?.[1]).filter(name=>/^arena-locomotion(?:-data)?-v\d+\.js$/.test(name||''));
  for(const name of ['arena-fall-motion-v39.js','arena-ground-fall-v39.js','arena-roll-motion-v72.js','arena-roll-v72.js',...locomotion])vm.runInContext(fs.readFileSync(root+'/'+name,'utf8'),context);
  if(page==='ludus.html')vm.runInContext(fs.readFileSync(root+'/training-motion-v50.js','utf8'),context);
+ if(options.skipEquipment){context.LudusHelmets.load=async()=>{};context.LudusArmour.load=async()=>{};context.ImportedEquipment.load=async()=>{};}
  await context.ImportedGladiator.load(()=>{});return context;
 }
 function inspectScripts(){
