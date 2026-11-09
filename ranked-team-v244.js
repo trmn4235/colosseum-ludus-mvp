@@ -107,11 +107,11 @@
  async function refresh(){if(state.stopped||state.busy||document.hidden||!state.user)return;state.busy=true;try{state.data=await rpc('state');render();}catch(e){notice(e.message||'Takım bilgileri alınamadı.');}finally{state.busy=false;render();}}
  async function act(action,args={},success=''){
   if(state.busy||!state.user)return;state.busy=true;render();
-  try{state.data=await rpc(action,args);if(action==='accept'||action==='decline')state.preferredInvite=null;notice(success);}
+  try{state.data=await rpc(action,args);if(action==='accept'||action==='decline')state.preferredInvite=null;if(action==='invite')setTimeout(refresh,1100);notice(success);}
   catch(e){notice(e.message||'İşlem tamamlanamadı. Tekrar dene.');}
   finally{state.busy=false;render();}
  }
- function schedule(){clearTimeout(state.timer);state.timer=setTimeout(async()=>{await refresh();if(!state.stopped)schedule();},state.data?.party?1500:5000);}
+ function schedule(){clearTimeout(state.timer);state.timer=setTimeout(async()=>{await refresh();if(!state.stopped)schedule();},state.data?.party?1000:5000);}
  $('friendsTab').onclick=()=>{state.filter='friend';state.page=0;renderCandidates();};$('clanTab').onclick=()=>{state.filter='clan';state.page=0;renderCandidates();};
  $('previous').onclick=()=>{state.page--;renderCandidates();};$('next').onclick=()=>{state.page++;renderCandidates();};
  $('createTeam').onclick=()=>act('create',{p_gladiator:selectedFighter()},'Takım kuruldu.');$('leaveTeam').onclick=()=>act('leave',{},'Takımdan ayrıldın.');

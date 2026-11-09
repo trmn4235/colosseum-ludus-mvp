@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {database,core}=require('./combat-stats-v73.cjs');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'supabase/migrations');
 const migration=name=>fs.readFileSync(path.join(dir,fs.readdirSync(dir).find(f=>f.endsWith('_'+name+'.sql'))),'utf8');
-module.exports=async({rewards=false,leave=false}={})=>{const db=await database(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;try{
+module.exports=async({rewards=false,leave=false,v249=false}={})=>{const db=await database(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;try{
  await db.exec(migration('survival_v83'));await require('./combat-motion-sql-v163.cjs').install(db);
  await db.exec("create table if not exists public.ludus_shop_catalog(sku text primary key,name text,kind text,model text,price integer,category text);create table ludus_supply_private.production_recipes_v118(sku text primary key,name text,kind text,model text,ingredients jsonb,output_type text,output_quantity int,sort_order int);create table ludus_supply_private.recipes(sku text primary key,ingredients jsonb);");
  for(const name of ['equipment_groups_v168','pit_arena_v172','pit_four_fighters_v173','pit_ten_fighters_v176','pit_bow_v178','pit_axe_v192'])await db.exec(migration(name));
@@ -19,6 +19,11 @@ module.exports=async({rewards=false,leave=false}={})=>{const db=await database()
  await db.exec(migration('bot_fleet_v233').split('-- Production scheduling:')[0]);
  await db.exec(migration('bot_aventinus_v234'));
  await db.exec(migration('bot_multiplayer_v237'));
+ if(v249){
+  await db.exec('create schema ludus_ranked_party_private;create table ludus_ranked_party_private.members_v244(user_id uuid);');
+  const source=migration('ranked_bot_allies_v249'),start=source.indexOf('create function ludus_bot_private.tactics_v249('),end=source.indexOf('create function ludus_bot_private.ranked_tick_v249(',start),patch=source.indexOf('-- Existing owner-operated multiplayer');
+  assert.ok(start>=0&&end>start&&patch>end);await db.exec(source.slice(start,end));await db.exec(source.slice(patch));
+ }
  const owner=randomUUID(),human=randomUUID(),other=randomUUID(),bots=[];
  for(const [u,g,name] of [[owner,human,'Player'],...[1,2,3,4].map(i=>[randomUUID(),randomUUID(),'Bot '+i])]){
   await q('insert into public.ludus_accounts(user_id,username,ludus_name) values($1,$2,$3)',[u,'player_'+name.replaceAll(' ','_'),name]);
@@ -32,6 +37,7 @@ module.exports=async({rewards=false,leave=false}={})=>{const db=await database()
  await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);await db.exec('set role authenticated');
  let room=(await q("select public.ludus_match('join',null,$1,'{}',$2) r",[human,{venue:'colosseum'}]))[0].r;
  assert.equal(room.venue,'colosseum');assert.equal(room.players.length,4,'owner gets three real bot opponents');
+ if(v249)for(const p of room.players.filter(p=>p.bot_v237))assert.ok(p.items.some(i=>i.kind==='weapon'&&i.enhancement>=4&&i.enhancement<=6),'+4 to +6 bot weapon snapshot');
  assert.equal(room.players.filter(p=>p.bot_v237===true&&p.name.endsWith('(Bot)')).length,3);
  assert.equal((await q('select auth.uid() u'))[0].u,owner,'user identity restored');
  await assert.rejects(()=>q('select ludus_bot_private.online_assist_v237($1,$2)',[room.id,owner]),/permission denied/);

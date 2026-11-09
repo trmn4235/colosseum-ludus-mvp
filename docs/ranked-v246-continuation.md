@@ -1,9 +1,11 @@
-# Ranked Arena: V248
+# Ranked Arena: V250
 
-V248 implements a separate 5v5 ranked queue for solo players and parties of up to five. A party stays together; every member must be online and READY, and only the leader can start or cancel matchmaking. Ten real players are required. The queue does not silently substitute bots.
+Ranked uses a separate 5v5 ladder, 1500 starting points, +10 for a win and −5 for a loss. Parties stay together, every real member must be online and READY, and only the leader starts. Other accounts continue to use human matchmaking.
 
-The server verifies selected gladiators and equipped items when READY, again during matchmaking, and before play starts. Changes or disconnections can cancel a search; a match with missing connections is cancelled without rating changes. Within a match, allies cannot be targeted or hit by projectiles. When a team wins, each player starts at 1500 and receives +10 for a win or −5 for a loss, settled once on the server. Ranked has its own leaderboard, separate from the historical combined Colosseum board.
+The owner of the enabled test fleet can invite their clan bots; invitations are accepted after one second and bots become ready. When that owner starts, empty team slots are filled from their clan bots and a five-bot opposing team is created. Real invited teammates still have to confirm READY. Bot actions use the server combat RPC, exclude allies as targets, and consider reach, stamina and visible attacks. The same behavior is used by the existing owner-operated online bots.
 
-The V246 equipment/crafting panel and V247 correction for online +10/−5 scoring remain in place. Single-player Colosseum and naval scoring retain their separate existing rules.
+Online bot weapon snapshots use enhancement +4, +5 or +6. They do not modify or duplicate the bot accounts' real inventory, or charge exercise to their real gladiators. Ranked outcomes, including bot matches, use the user's requested +10/−5 rules. Bot matches are recorded as such in the server's private session table.
 
-Automated SQL integration tests exercise two complete parties, start permissions, READY changes, team targeting, disconnection, result idempotence, and the separate leaderboard. Browser tests use mocked accounts. Ten independent live users, actual phone performance, and real network conditions still require device verification.
+Real players' gladiators and equipment continue to be verified at READY and before play; a match with missing connections is cancelled without scoring. Allies cannot be targeted or hit by projectiles. The V246 equipment and crafting panel remains available.
+
+Automated tests cover bot invitation, READY, full team and opponent creation, weapon snapshots, tactical decisions, damage, authority and once-only points. Real iPhone performance and live player experience still require device verification.
