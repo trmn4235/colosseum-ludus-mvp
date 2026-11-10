@@ -15,12 +15,12 @@ const mock=`window.__requests=[];window.__fail=false;window.__client=(${fixtureC
 (async()=>{
  const browser=await (process.env.LUDUS_WEBKIT_TEST?webkit:chromium).launch({headless:true,...(!process.env.LUDUS_WEBKIT_TEST?{executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']}: {})});
  const out=process.env.LUDUS_TEST_OUTPUT||'/tmp';fs.mkdirSync(out,{recursive:true});
- const page=await browser.newPage({viewport:{width:844,height:390}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='http://clan.test')return route.abort();const file=path.join(root,decodeURIComponent(u.pathname));if(!fs.existsSync(file)||!fs.statSync(file).isFile())return route.fulfill({status:404});let body=fs.readFileSync(file);
+ const page=await browser.newPage({viewport:{width:844,height:390}}),errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error('Clan browser error:',e.message);});
+ await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='https://clan.test')return route.abort();const file=path.join(root,decodeURIComponent(u.pathname));if(!fs.existsSync(file)||!fs.statSync(file).isFile())return route.fulfill({status:404});let body=fs.readFileSync(file);
   if(file.endsWith('.html'))body=Buffer.from(body.toString().replace('<head>','<head><script>'+mock+'</script>').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__client'));
   return route.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'application/octet-stream'});
  });
- await page.goto('http://clan.test/klan.html');await page.locator('.homeBanner').waitFor();await page.locator('[data-view="bots"]').waitFor();
+ await page.goto('https://clan.test/klan.html');await page.locator('.homeBanner').waitFor();await page.locator('[data-view="bots"]').waitFor();
  for(const [width,height]of [[1536,706],[874,402],[844,390],[667,375],[568,320]]){
   await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(new DOMMatrixReadOnly(getComputedStyle(document.getElementById('clanStage')).transform).a-Math.min(innerWidth/1440,innerHeight/760))<.001);
   const layout=await page.evaluate(()=>{const nav=[...document.querySelectorAll('.clan-navigation .nav,.clan-navigation a')];const boxes=nav.map(e=>e.getBoundingClientRect());return {count:nav.length,sameRow:boxes.every(r=>Math.abs(r.top-boxes[0].top)<2),inHeader:boxes.every(r=>r.top>=0&&r.bottom<=document.querySelector('.clan-topbar').getBoundingClientRect().bottom+1),clipped:nav.filter(e=>[...e.querySelectorAll('span')].some(s=>s.scrollWidth>s.clientWidth+1)).map(e=>e.textContent),sidebar:!!document.querySelector('.sidebar'),bodyScroll:document.documentElement.scrollHeight>innerHeight+1};});
