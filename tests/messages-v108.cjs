@@ -1,6 +1,6 @@
 // Browser tests use the real pinned SDK and controlled HTTP responses only.
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),os=require('node:os'),assert=require('node:assert/strict');
-const {chromium}=require('playwright');
+const {chromium,webkit}=require('playwright');
 const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||fs.mkdtempSync(path.join(os.tmpdir(),'messages-v108-'));
 const user='00000000-0000-4000-8000-000000000108',peer='00000000-0000-4000-8000-000000000109';
 const names=['Lucius','Marcus','Varro','Cassia','Titus','Aulus','Drusus'];
@@ -20,7 +20,7 @@ async function settle(page){await page.waitForFunction(()=>!document.querySelect
 async function fit(page){return page.evaluate(()=>{const selectors=['#ludusMessages','.mc-content','.mc-left','.mc-center','.mc-right','.mc-list','.mc-history'];const issues=[];for(const sel of selectors)for(const e of document.querySelectorAll(sel)){if(!e.getClientRects().length)continue;const r=e.getBoundingClientRect();if(r.left<-.5||r.top<-.5||r.right>innerWidth+.5||r.bottom>innerHeight+.5)issues.push(sel+': viewport');if(e.scrollHeight>e.clientHeight+2)issues.push(sel+': vertical overflow '+e.scrollHeight+'/'+e.clientHeight);if(e.scrollWidth>e.clientWidth+2)issues.push(sel+': horizontal overflow');}return issues;});}
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
- const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox','--disable-dev-shm-usage']});
+ fs.mkdirSync(out,{recursive:true});const browser=await (process.env.LUDUS_WEBKIT_TEST?webkit:chromium).launch({headless:true,...(process.env.LUDUS_WEBKIT_TEST?{}:{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH,args:['--no-sandbox','--disable-dev-shm-usage']})});
  const context=await browser.newContext({viewport:{width:1440,height:900}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>console.error('FAILED',r.url(),r.failure()));
  await context.route(/^https:/,async route=>{if(!route.request().url().startsWith('https://message-center.test/rest/v1/rpc/ludus_message_center'))throw Error('Unexpected external request');const q=route.request().postDataJSON(),p=q.p_data;requests.push(q);
   if(q.p_action==='read'){const n=notifications.find(x=>x.event_key===p.event_key);if(n)n.read_at=new Date().toISOString();}
@@ -46,6 +46,14 @@ async function fit(page){return page.evaluate(()=>{const selectors=['#ludusMessa
    }));assert.deepEqual(clipped,[],w+'x'+h+' message contents are readable');
    if(w===568){await page.locator('.mc-read-more').last().click();await page.waitForTimeout(200);let restored='';for(let n=0;n<100;n++){const body=page.locator('.mc-detail-body');assert.ok(await body.evaluate(e=>e.scrollHeight<=e.clientHeight+1),'compact detail page fits');restored+=await body.textContent();const next=page.getByRole('button',{name:'Metin sayfası · sonraki',exact:true});if(await next.isHidden()||await next.isDisabled())break;await next.click();}assert.equal(restored,longText,'complete long message at 568px');await page.screenshot({path:path.join(out,'long-message-568.png')});await page.getByRole('button',{name:'Sohbete dön',exact:true}).click();}
    await page.screenshot({path:path.join(out,`messages-${w}x${h}.png`)});}checks.push('six landscape layouts without overflow');
+  for(const [width,height] of [[1536,706],[932,430],[874,402],[667,375]]){
+   await page.setViewportSize({width,height});await page.waitForTimeout(450);assert.equal(await page.locator('.mc-notes>.mc-note').count(),6,width+' six recent notifications');
+   assert.equal(requests.at(-1).p_data.notification_limit,6);assert.match(await page.locator('.mc-right .mc-pager').textContent(),/1 \/ 3/);
+   const fitNotes=await page.locator('.mc-notes>.mc-note').evaluateAll(notes=>notes.every(n=>{const parent=n.parentElement.getBoundingClientRect(),r=n.getBoundingClientRect(),text=n.querySelector('.mc-row-text'),small=n.querySelector('small');return r.top>=parent.top&&r.bottom<=parent.bottom+1&&n.scrollHeight<=n.clientHeight+1&&text.clientHeight>=parseFloat(getComputedStyle(small).lineHeight)*2;}));assert.ok(fitNotes,width+' six readable previews');
+   await page.screenshot({path:path.join(out,`six-notifications-${width}.png`)});
+  }
+  await page.getByRole('button',{name:'Bildirim sayfası · sonraki',exact:true}).click();await settle(page);assert.equal(requests.at(-1).p_data.notification_offset,6);assert.equal(await page.locator('.mc-notes>.mc-note strong').first().textContent(),titles[6]);
+  await page.getByRole('button',{name:'Bildirim sayfası · önceki',exact:true}).click();await settle(page);assert.equal(await page.locator('.mc-notes>.mc-note strong').first().textContent(),titles[0]);checks.push('six recent notifications and older-page navigation');
   await page.setViewportSize({width:932,height:430});await page.waitForTimeout(400);
   assert.equal(await page.locator('.mc-history img').count(),0);assert.equal(await page.evaluate(()=>window.unsafe),undefined);
   await page.locator('.mc-read-more').last().click();await page.waitForTimeout(200);let collected='',pages=0;while(true){collected+=await page.locator('.mc-detail-body').textContent();pages++;const next=page.getByRole('button',{name:'Metin sayfası · sonraki',exact:true});if(await next.isHidden()||await next.isDisabled())break;await next.click();assert(pages<100);}assert.equal(collected,longText);assert(pages>1);await page.getByRole('button',{name:'Sohbete dön',exact:true}).click();checks.push('literal user text and complete long-message pagination');

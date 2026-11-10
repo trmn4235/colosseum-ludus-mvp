@@ -9,3 +9,14 @@
 .clan-work-pending{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 5px}.clan-work-pending small{grid-column:1/-1;font-size:9px;color:#762839}
 .clan-work-row[type=button]{width:100%;cursor:pointer}.clan-work-estimate{color:#64212c;font-weight:bold}
 @media(max-width:480px) and (min-height:501px){.clan-work-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.clan-work-tab{min-height:32px;white-space:normal;text-overflow:clip}}
+
+/* V258: four products per row, with the product image before its name and amount. */
+.clan-work-stock{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:6px}
+.clan-work-stock-card{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-content:center;align-items:center;gap:3px 6px;padding:6px;min-height:0;border-radius:4px;font-size:11px}
+.clan-work-stock-image{grid-column:1;grid-row:1;width:36px;height:36px;object-fit:contain;border-radius:3px;background:#fff}
+.clan-work-stock-card .clan-work-stock-name{grid-column:2;grid-row:1;white-space:normal;overflow:visible;overflow-wrap:anywhere;line-height:1.2}
+.clan-work-stock-quantity{grid-column:3;grid-row:1;font-size:10px;font-variant-numeric:tabular-nums}
+.clan-work-pending small{grid-column:2/-1;font:9px/1.2 Arial,sans-serif;overflow-wrap:anywhere}
+@media(max-height:420px){.clan-work-stock{gap:4px}.clan-work-stock-card{grid-template-columns:24px minmax(0,1fr) auto;gap:2px 4px;padding:4px;font-size:10px}.clan-work-stock-image{width:24px;height:24px}.clan-work-stock-quantity{font-size:9px}.clan-work-pending small{font-size:8px}}
+@media(max-width:620px){.clan-work-stock-card{grid-template-columns:18px minmax(0,1fr) auto;gap:2px;padding:3px;font-size:9px}.clan-work-stock-image{width:18px;height:18px}.clan-work-stock-quantity{font-size:8px}}
+@media(max-width:480px) and (min-height:501px){.clan-work-stock-card{grid-template-columns:14px minmax(0,1fr) auto;padding:2px;font-size:8px}.clan-work-stock-image{width:14px;height:18px}.clan-work-stock-quantity{font-size:7px}}

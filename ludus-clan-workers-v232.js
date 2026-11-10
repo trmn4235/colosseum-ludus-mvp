@@ -35,7 +35,20 @@
    content.append(listRows(rows,x=>row((labels[x.sku]||x.sku)+' · '+x.worker_count+' işçi',num(x.quantity)+' net',
     (x.finished_at?'Tamamlandı':'Dönüş '+time(x.ends_at))+' · Brüt '+num(x.gross_quantity??x.quantity)+' · Devlet '+num(x.tax_quantity),()=>{selectedJob=x.id;page=0;changed();})),pager(rows.length,4));
   }
-  function drawStock(content){const head=el('div','clan-work-heading');head.append(el('strong','','Kendi depom'),el('span','','Malzeme ve yemekhanedeki stok'));content.append(head);const rows=data.professions||[],grid=el('div','clan-work-stock');for(const p of rows.slice(page*8,page*8+8)){const card=el('div','clan-work-stock-card'),pending=Number(data.pending_delivery?.[p.sku]||0),name=el('span','',labels[p.sku]||p.sku);card.append(name,el('strong','',num(data.stock?.[p.sku])+' birim'));if(pending){card.classList.add('clan-work-pending');card.append(el('small','',num(pending)+' birim teslimat bekliyor'));}grid.append(card);}content.append(grid,pager(rows.length,8));}
+  function drawStock(content){
+   const head=el('div','clan-work-heading');head.append(el('strong','','Kendi depom'),el('span','','Malzeme ve yemekhanedeki stok'));content.append(head);
+   const rows=data.professions||[],size=16,grid=el('div','clan-work-stock');
+   page=Math.max(0,Math.min(page,Math.max(0,Math.ceil(rows.length/size)-1)));
+   for(const p of rows.slice(page*size,(page+1)*size)){
+    const card=el('div','clan-work-stock-card'),pending=Number(data.pending_delivery?.[p.sku]||0),label=labels[p.sku]||p.sku;
+    const picture=el('img','clan-work-stock-image');picture.src=(['wood','grain','apple','fish','meat','egg','beer','olive_oil'].includes(p.sku)?'assets/resource-icons-v95/':'assets/items-v118/')+p.sku+'.webp';picture.alt='';picture.width=40;picture.height=40;picture.decoding='async';
+    const name=el('span','clan-work-stock-name',label);name.title=label;
+    card.append(picture,name,el('strong','clan-work-stock-quantity',num(data.stock?.[p.sku])+' birim'));
+    if(pending){card.classList.add('clan-work-pending');card.append(el('small','',num(pending)+' birim teslimat bekliyor'));}
+    grid.append(card);
+   }
+   content.append(grid);if(rows.length>size)content.append(pager(rows.length,size));
+  }
   function drawRewards(content){const head=el('div','clan-work-heading');head.append(el('strong','','Haftalık şan ödülleri'),el('span','','Klan: '+fame(data.clan_glory)+' · Şanım: '+fame(data.my_glory)));content.append(head);const rows=data.rewards||[];if(!rows.length){content.append(empty('Henüz dağıtılmış ödül yok','Ödüller pazar 23.59’da hesaplanır.'));return;}content.append(listRows(rows,x=>row(x.rank+'. '+x.ludus_name,'+'+fame(x.glory_hundredths/100),time(x.week_end)+' · '+num(x.quantity)+' net birim')),pager(rows.length,4));}
   function yieldFor(level){return data?.config?.yield_by_level?.find(x=>x.level===level);}
   function drawTeam(content){if(!data.is_leader){content.append(empty('Ekip kurma yetkisi','Lisanslı çalışma ekibini klan lideri oluşturur.'));return;}const config=data.config||{},bar=el('div','clan-work-select'),label=el('label','','Lisans ürünü'),select=el('select');select.setAttribute('aria-label','Lisans ürünü');for(const p of data.professions||[]){const o=el('option','',labels[p.sku]||p.sku);o.value=p.sku;select.append(o);}select.value=sku;select.addEventListener('change',()=>{sku=select.value;page=0;setSelection([]);});label.append(select);

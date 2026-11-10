@@ -14,8 +14,24 @@ module.exports=async({page,fit,out})=>{
  assert.match(await page.locator('.clan-work-note').innerText(),/Alışveriş dahil değil/);
  await touch(page.getByRole('button',{name:'Sonraki sayfa'}));assert.match(await page.locator('.clan-work-pages').innerText(),/2 \/ 2/);
  await touch(page.getByRole('button',{name:'İşçi üretimi'}));assert.match(await page.locator('.clan-work-row').first().innerText(),/İşçi/);
- await touch(page.getByRole('button',{name:'Depom',exact:true}));assert.equal(await page.locator('.clan-work-stock-card').count(),8);await fit('.clan-work-stock');
- await touch(page.getByRole('button',{name:'Sonraki sayfa'}));await page.getByText('80 birim teslimat bekliyor').waitFor();await fit('.clan-work-stock-card');
+ await touch(page.getByRole('button',{name:'Depom',exact:true}));
+ assert.equal(await page.locator('.clan-work-stock-card').count(),16);await page.getByText('80 birim teslimat bekliyor').waitFor();
+ for(const [width,height] of [[1536,706],[874,402],[667,375],[568,320],[390,844]]){
+  await page.setViewportSize({width,height});await fit('.clan-work-stock');await fit('.clan-work-stock-card');
+  await page.waitForFunction(()=>[...document.querySelectorAll('.clan-work-stock-image')].every(e=>e.complete&&e.naturalWidth>0));
+  const stock=await page.locator('.clan-work-stock-card').evaluateAll(cards=>{
+   const boxes=cards.map(c=>c.getBoundingClientRect());return {
+    columns:boxes.filter(b=>Math.abs(b.top-boxes[0].top)<1).length,
+    ordered:cards.every(c=>{const [image,name,amount]=[...c.children].slice(0,3).map(e=>e.getBoundingClientRect());return image.right<=name.left+1&&name.right<=amount.left+1;}),
+    namesVisible:cards.every(c=>{const e=c.querySelector('.clan-work-stock-name');return e.scrollHeight<=e.clientHeight+1;}),
+    amounts:cards.map(c=>c.querySelector('.clan-work-stock-quantity').textContent)
+   };
+  });
+  assert.equal(stock.columns,4,width+' four products per row');assert.equal(stock.ordered,true,width+' image, name, amount order');assert.equal(stock.namesVisible,true,width+' names fit');assert.equal(stock.amounts[0],'19 birim');
+  assert.equal(await page.locator('.clan-work-pages').count(),0,'all 16 products fit on one page');
+  await page.screenshot({path:out+'/personal-stock-'+width+'.png'});
+ }
+ await page.setViewportSize({width:568,height:320});
  await touch(page.getByRole('button',{name:'Ödüller'}));assert.match(await page.locator('.clan-work-row').first().innerText(),/0,50/);
  await touch(page.getByRole('button',{name:'Lisanslar',exact:true}));await touch(page.locator('.clan-work-row').first());assert.match(await page.locator('.clan-work-row').first().innerText(),/50 \/ 10 \/ 40/);await fit('.clan-work-heading');await fit('.clan-work-row');
  await touch(page.getByRole('button',{name:'Ekip kur'}));assert.match(await page.locator('.clan-work-note').first().innerText(),/6 saat.*%20/);
