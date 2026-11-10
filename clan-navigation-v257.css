@@ -4,7 +4,7 @@ body[data-roman-screen=clan] #clanStage{grid-template-rows:86px minmax(0,1fr) 36
 #clanStage main{grid-template-columns:minmax(0,1fr)}
 #clanStage .clan-navigation{display:flex;align-items:stretch;align-self:stretch;flex:1;min-width:0;gap:7px;padding:10px 0}
 #clanStage #navigation{display:flex;align-items:stretch;flex:1;min-width:0;gap:5px}
-#clanStage .clan-navigation .nav{position:relative;display:flex;flex:1;min-width:0;min-height:0;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:6px 5px;border:1px solid transparent;border-radius:5px;text-align:center;font:18px/1.1 var(--ui-font);white-space:nowrap;transition:background-color .15s,color .15s}
+#clanStage .clan-navigation .nav{position:relative;display:flex;flex:1 1 auto;min-width:0;min-height:0;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:6px 5px;border:1px solid transparent;border-radius:5px;text-align:center;font:18px/1.1 var(--ui-font);white-space:nowrap;transition:background-color .15s,color .15s}
 #clanStage .clan-navigation .nav svg{width:24px;height:24px}
 #clanStage .clan-navigation .nav span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 body[data-art-direction][data-roman-screen=clan] #clanStage .clan-navigation .nav.active{background:var(--ui-white)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important;box-shadow:inset 0 -3px var(--ui-gold),0 2px 8px #220b1226!important}

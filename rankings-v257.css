@@ -125,7 +125,7 @@
  .rank-context{padding-top:3px}
  .rank-context h2{font-size:11px}
  .rank-context p{font-size:8px;max-height:24px}
- .rank-groups{bottom:2px}
+ .rank-groups{position:static;width:auto;margin-left:auto}
  .rank-groups button{font-size:8px;padding:2px 8px}
  .rank-table{grid-template-rows:0 minmax(0,1fr)}
  .rank-state{inset:0}
