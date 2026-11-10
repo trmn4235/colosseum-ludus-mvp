@@ -102,7 +102,7 @@
 }
 @media(orientation:landscape) and (max-height:360px){
  .rank-app{grid-template-rows:30px minmax(0,1fr) 12px}
- .rank-sheet{grid-template-rows:25px 27px 19px minmax(0,1fr) 25px;margin-block:3px}
+ .rank-sheet{grid-template-rows:25px 27px 19px minmax(0,1fr) 30px;margin-block:3px}
  .rank-categories,.rank-sections button{height:22px}
  .rank-search,.rank-select select{height:23px}
  .rank-context p{font-size:8px}
