@@ -1,0 +1,35 @@
+/* A single horizontal navigation bar replaces the hall title and sidebar. */
+body[data-roman-screen=clan] #clanStage{grid-template-rows:86px minmax(0,1fr) 36px}
+#clanStage .clan-topbar{gap:16px;padding:0 max(24px,calc(env(safe-area-inset-right,0px) / var(--clan-scale,1))) 0 max(24px,calc(env(safe-area-inset-left,0px) / var(--clan-scale,1)));border-bottom-width:1px}
+#clanStage main{grid-template-columns:minmax(0,1fr)}
+#clanStage .clan-navigation{display:flex;align-items:stretch;align-self:stretch;flex:1;min-width:0;gap:7px;padding:10px 0}
+#clanStage #navigation{display:flex;align-items:stretch;flex:1;min-width:0;gap:5px}
+#clanStage .clan-navigation .nav{position:relative;display:flex;flex:1 1 auto;min-width:0;min-height:0;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:6px 5px;border:1px solid transparent;border-radius:5px;text-align:center;font:18px/1.1 var(--ui-font);white-space:nowrap;transition:background-color .15s,color .15s}
+#clanStage .clan-navigation .nav svg{width:24px;height:24px}
+#clanStage .clan-navigation .nav span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+body[data-art-direction][data-roman-screen=clan] #clanStage .clan-navigation .nav.active{background:var(--ui-white)!important;color:var(--ui-burgundy)!important;border-color:var(--ui-gold)!important;box-shadow:inset 0 -3px var(--ui-gold),0 2px 8px #220b1226!important}
+#clanStage .clan-navigation .nav:not(.active):hover{background:#ffffff12}
+#clanStage .clan-navigation .sideBottom{display:flex;align-items:stretch;margin:0;padding:0 0 0 9px;border:0;border-left:1px solid #e4c77b40;opacity:1;letter-spacing:normal;flex:0 0 124px}
+#clanStage .clan-navigation .rank-entry--clan{display:flex;flex:1;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:6px 5px;min-height:0;border:1px solid transparent;border-radius:5px;font:18px/1.1 var(--ui-font);white-space:nowrap}
+#clanStage .clan-navigation .rank-entry-crest{width:24px;height:24px;color:var(--ui-gold-light)}
+#clanStage .clan-navigation .rank-entry-arrow{display:none}
+#clanStage .back,#clanStage .refresh{display:grid;place-items:center;width:42px;height:42px;padding:0;border:1px solid #e4c77b66;border-radius:50%;flex-shrink:0}
+#clanStage .back svg{width:22px;height:22px}
+#clanStage .topWallet{flex:0 0 auto;gap:12px;padding-left:15px;border-left:1px solid #e4c77b40;font:18px var(--ui-font)}
+#clanStage .walletSummary{text-align:right;min-width:104px}
+#clanStage .walletSummary #walletName{display:block;max-width:130px;font:12px var(--ui-font);opacity:.75;margin-bottom:7px}
+#clanStage .walletSummary>div{display:flex;align-items:baseline;justify-content:flex-end;gap:6px}
+#clanStage .walletSummary small{font-size:9px;letter-spacing:1px}
+#clanStage #walletGold{font-size:15px;font-variant-numeric:tabular-nums}
+#clanStage .content{padding:19px max(28px,calc(env(safe-area-inset-right,0px) / var(--clan-scale,1))) 17px max(28px,calc(env(safe-area-inset-left,0px) / var(--clan-scale,1)));gap:15px}
+#clanStage .pageTitle{height:55px}
+#clanStage .pageTitle h1{font-size:32px;margin-bottom:7px}
+#clanStage .pageTitle p{font-size:15px}
+#clanStage .homeGrid{grid-template-columns:280px minmax(0,1fr);grid-template-rows:minmax(0,1fr) 132px;gap:16px}
+#clanStage .homeDetails{gap:16px}
+#clanStage .homeBanner{padding:20px}
+#clanStage .metrics{gap:16px}
+#clanStage .trophies{gap:16px}
+#clanStage .foot{padding:0 28px;font-size:12px;border-top-width:1px}
+#clanStage .foot .seal{font-size:9px;letter-spacing:2px}
+@media(prefers-reduced-motion:reduce){#clanStage .clan-navigation .nav{transition:none}}

@@ -49,7 +49,8 @@
  function state(heading,message,action){
   $('rankState').hidden=false;$('rankRows').replaceChildren();$('rankState').replaceChildren(crest({emblem:2},'rank-state-crest'),el('strong','',heading),el('p','',message));if(action)$('rankState').append(action);
  }
- function pageSize(){const h=$('rankRows').getBoundingClientRect().height,stack=innerWidth<=600&&innerHeight>innerWidth;return Math.max(1,Math.min(12,Math.floor(h/(stack?(power()||combat()?86:62):innerHeight<400?38:innerHeight<600?43:58))));}
+ // Keep page boundaries stable on resize; the ledger adapts to the available height.
+ function pageSize(){return s.scope==='guilds'&&s.guild==='clans'?4:10;}
  function identity(row){
   const e=el('div','rank-identity'),g=power()?row.gladiator:null,name=g?.name||(power()?'Gladyatör yok':row.name),kind=g?.class||row.class;let portrait;
   if(s.scope==='guilds'&&s.guild==='clans')portrait=crest(row);
