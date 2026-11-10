@@ -14,8 +14,24 @@ module.exports=async({page,fit,out})=>{
  assert.match(await page.locator('.clan-work-note').innerText(),/Alışveriş dahil değil/);
  await touch(page.getByRole('button',{name:'Sonraki sayfa'}));assert.match(await page.locator('.clan-work-pages').innerText(),/2 \/ 2/);
  await touch(page.getByRole('button',{name:'İşçi üretimi'}));assert.match(await page.locator('.clan-work-row').first().innerText(),/İşçi/);
- await touch(page.getByRole('button',{name:'Depom',exact:true}));assert.equal(await page.locator('.clan-work-stock-card').count(),8);await fit('.clan-work-stock');
- await touch(page.getByRole('button',{name:'Sonraki sayfa'}));await page.getByText('80 birim teslimat bekliyor').waitFor();await fit('.clan-work-stock-card');
+ await touch(page.getByRole('button',{name:'Depom',exact:true}));
+ assert.equal(await page.locator('.clan-work-stock-card').count(),16);await page.getByText('80 birim teslimat bekliyor').waitFor();
+ for(const [width,height] of [[1536,706],[874,402],[667,375],[568,320],[390,844]]){
+  await page.setViewportSize({width,height});await fit('.clan-work-stock');await fit('.clan-work-stock-card');
+  await page.waitForFunction(()=>[...document.querySelectorAll('.clan-work-stock-image')].every(e=>e.complete&&e.naturalWidth>0));
+  const stock=await page.locator('.clan-work-stock-card').evaluateAll(cards=>{
+   const boxes=cards.map(c=>c.getBoundingClientRect());return {
+    columns:boxes.filter(b=>Math.abs(b.top-boxes[0].top)<1).length,
+    ordered:cards.every(c=>{const [image,name,amount]=[...c.children].slice(0,3).map(e=>e.getBoundingClientRect());return image.right<=name.left+1&&name.right<=amount.left+1;}),
+    namesVisible:cards.every(c=>{const e=c.querySelector('.clan-work-stock-name');return e.scrollHeight<=e.clientHeight+1;}),
+    amounts:cards.map(c=>c.querySelector('.clan-work-stock-quantity').textContent)
+   };
+  });
+  assert.equal(stock.columns,4,width+' four products per row');assert.equal(stock.ordered,true,width+' image, name, amount order');assert.equal(stock.namesVisible,true,width+' names fit');assert.equal(stock.amounts[0],'528 birim');
+  assert.equal(await page.locator('.clan-work-pages').count(),0,'all 16 products fit on one page');
+  await page.screenshot({path:out+'/personal-stock-'+width+'.png'});
+ }
+ await page.setViewportSize({width:568,height:320});
  await touch(page.getByRole('button',{name:'Ödüller'}));assert.match(await page.locator('.clan-work-row').first().innerText(),/0,50/);
  await touch(page.getByRole('button',{name:'Lisanslar',exact:true}));await touch(page.locator('.clan-work-row').first());assert.match(await page.locator('.clan-work-row').first().innerText(),/50 \/ 10 \/ 40/);await fit('.clan-work-heading');await fit('.clan-work-row');
  await touch(page.getByRole('button',{name:'Ekip kur'}));assert.match(await page.locator('.clan-work-note').first().innerText(),/6 saat.*%20/);
@@ -31,7 +47,7 @@ module.exports=async({page,fit,out})=>{
  for(const [width,height] of [[874,402],[667,375],[568,320],[390,844]]){await page.setViewportSize({width,height});await fit('.clan-work-shell');await fit('.clan-work-select');await fit('.clan-work-choice');await fit('.clan-work-estimate');await page.screenshot({path:out+'/licensed-team-'+width+'.png'});}
  await touch(start);await page.getByText('5 işçi için 6 saatlik lisans başladı.').waitFor();assert.equal(await page.evaluate(()=>__workActions.filter(x=>x.action==='start').length),1);assert.equal(await page.evaluate(()=>__workActions[0].payload.workers.length),5);
  assert.equal(await page.getByRole('button',{name:'Ayarlar',exact:true}).count(),0,'fixed license rules cannot be changed in this panel');
- await touch(page.getByRole('button',{name:'İşçilerim',exact:true}));await fit('.worker-card');await fit('.worker-card .workers-portrait');assert.ok(await page.locator('.worker-card').evaluateAll(cards=>cards.every(card=>{const a=card.getBoundingClientRect(),p=card.querySelector('.workers-portrait').getBoundingClientRect();return p.left>=a.left&&p.right<=a.right&&p.top>=a.top&&p.bottom<=a.bottom;})),'portrait stays inside its own card');await page.locator('.worker-card').first().click();
+ await touch(page.getByRole('button',{name:'İşçilerim',exact:true}));await fit('.worker-card');await fit('.worker-card .workers-portrait');assert.ok(await page.locator('.worker-card').evaluateAll(cards=>cards.every(card=>{const a=card.getBoundingClientRect(),p=card.querySelector('.workers-portrait').getBoundingClientRect();return p.left>=a.left&&p.right<=a.right&&p.top>=a.top&&p.bottom<=a.bottom;})),'portrait stays inside its own card');await touch(page.locator('.worker-card').first());await page.locator('.worker-profile').waitFor();
  for(const [width,height] of [[874,402],[568,320],[390,844]]){await page.setViewportSize({width,height});await fit('.worker-profile');await fit('.worker-skills');await fit('.worker-skill-pages');}
  assert.equal(await page.locator('.worker-skill').count(),6);await touch(page.getByRole('button',{name:'Sonraki meslekler'}));assert.equal(await page.locator('.worker-skill').count(),6);assert.equal(await page.locator('[data-profession=fish]').count(),1);await fit('.worker-skills');for(const [width,height] of [[874,402],[568,320],[390,844]]){await page.setViewportSize({width,height});await fit('.worker-skill');await fit('.worker-skill-heading');await page.screenshot({path:out+'/food-professions-'+width+'.png'});}
  await touch(page.getByRole('button',{name:'Sonraki meslekler'}));assert.equal(await page.locator('.worker-skill').count(),4);assert.equal(await page.locator('[data-profession=olive_oil]').count(),1);assert.ok(await page.getByRole('button',{name:'Sonraki meslekler'}).isDisabled());
