@@ -106,22 +106,22 @@ body[data-roman-screen=ludus] .tools [hidden]{display:none!important}
 /* V258: six recent notifications fit in the right-hand column. Full text opens on tap. */
 #ludusMessages .mc-notes{display:grid;grid-template-rows:repeat(6,minmax(0,1fr));gap:5px}
 #ludusMessages .mc-notes>.mc-empty{grid-row:1/-1}
-#ludusMessages .mc-notes .mc-note{max-height:none;min-height:0;padding:5px 7px;gap:6px;font-size:13px}
-#ludusMessages .mc-notes .mc-row-text{gap:2px}
-#ludusMessages .mc-notes .mc-row strong{padding-right:36px;font-size:13px;line-height:1.2}
-#ludusMessages .mc-notes .mc-row small{font-size:11px;line-height:1.25;font-weight:400}
-#ludusMessages .mc-notes .mc-note>.mc-icon{width:25px;height:26px}
-#ludusMessages .mc-notes .mc-note time{position:absolute;top:5px;right:6px;bottom:auto;font-size:9px;line-height:1.2}
+#ludusMessages .mc-note{max-height:none;min-height:0;padding:5px 7px;gap:6px;font-size:13px}
+#ludusMessages .mc-note .mc-row-text{gap:2px}
+#ludusMessages .mc-note strong{padding-right:36px;font-size:13px;line-height:1.2}
+#ludusMessages .mc-note small{font-size:11px;line-height:1.25;font-weight:400}
+#ludusMessages .mc-note>.mc-icon{width:25px;height:26px}
+#ludusMessages .mc-note time{position:absolute;top:5px;right:6px;bottom:auto;font-size:9px;line-height:1.2}
 #ludusMessages .mc-right h3{font-size:20px!important}
 #ludusMessages .mc-right .mc-clear{min-height:32px;font-size:13px;padding:4px}
 @media(min-width:620px) and (max-height:500px){
  #ludusMessages .mc-notes{gap:3px}
- #ludusMessages .mc-notes .mc-note{padding:2px 4px;gap:4px}
- #ludusMessages .mc-notes .mc-row-text{gap:1px}
- #ludusMessages .mc-notes .mc-row strong{padding-right:27px;font-size:10px;line-height:1.1}
- #ludusMessages .mc-notes .mc-row small{font-size:9px;line-height:1.1;-webkit-line-clamp:1}
- #ludusMessages .mc-notes .mc-note>.mc-icon{width:18px;height:20px}
- #ludusMessages .mc-notes .mc-note time{top:3px;right:4px;font-size:8px}
+ #ludusMessages .mc-note{padding:2px 4px;gap:4px}
+ #ludusMessages .mc-note .mc-row-text{gap:1px}
+ #ludusMessages .mc-note strong{padding-right:27px;font-size:10px;line-height:1.1}
+ #ludusMessages .mc-note small{font-size:9px;line-height:1.1;-webkit-line-clamp:1}
+ #ludusMessages .mc-note>.mc-icon{width:18px;height:20px}
+ #ludusMessages .mc-note time{top:3px;right:4px;font-size:8px}
  #ludusMessages .mc-right h3{font-size:14px!important}
  #ludusMessages .mc-right .mc-clear{min-height:27px;font-size:11px;padding:3px}
  #ludusMessages .mc-right .mc-clear .mc-icon{width:17px;height:18px}
