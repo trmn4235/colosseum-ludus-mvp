@@ -1,0 +1,155 @@
+/* V257: ten gladiators or four clans per page, without scrolling. */
+.rank-app{grid-template-rows:48px minmax(0,1fr) 18px}
+.rank-sheet{margin:8px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));padding:0 16px;grid-template-rows:40px 40px 30px minmax(0,1fr) 36px}
+.rank-brand small{font-size:7px;margin-bottom:2px;letter-spacing:2px}
+.rank-brand h1{font-size:18px}
+.rank-scope{padding:2px}
+.rank-scope button{padding:7px 18px;font-size:12px}
+.rank-navigation{gap:10px}
+.rank-sections{padding:0;border:0;background:none;gap:4px}
+.rank-sections button{height:28px;padding:3px 12px;border:1px solid var(--ui-gold)}
+.rank-categories{height:28px;gap:5px}
+.rank-categories button{font-size:12px}
+.rank-search,.rank-select select{height:29px}
+.rank-select>span{display:none}
+.rank-context h2{font-size:14px}
+.rank-context p{font-size:10px}
+.rank-table{grid-template-rows:22px minmax(0,1fr)}
+.rank-state{inset:22px 0 0}
+.rank-columns,.rank-row{gap:8px;padding:0 8px}
+.rank-row{min-height:0;overflow:hidden}
+.rank-avatar{width:28px;height:28px;flex-basis:28px}
+.rank-avatar>svg{width:100%;height:100%}
+.rank-identity{gap:8px;min-height:0}
+.rank-identity strong{font-size:13px}
+.rank-identity small{font-size:9px;margin-top:2px}
+.rank-place{font-size:16px}
+.rank-value strong{font-size:13px}
+.rank-value.selected{padding:2px 0}
+.rank-value.selected strong{font-size:16px}
+.rank-own{gap:9px;font-size:11px}
+.rank-own strong{font-size:14px}
+.rank-pager button{width:28px;height:28px}
+.rank-bottom{font-size:7px}
+.rank-table[data-metrics=clan] .rank-avatar{width:36px;height:36px;flex-basis:36px}
+.rank-table[data-metrics=clan] .rank-identity strong{font-size:16px}
+.rank-table[data-metrics=clan] .rank-value.selected strong{font-size:22px}
+
+@media(orientation:landscape) and (max-height:600px){
+ .rank-app{grid-template-rows:34px minmax(0,1fr) 14px}
+ .rank-header{gap:8px}
+ .rank-brand small{display:none}
+ .rank-brand h1{font-size:14px}
+ .rank-header .icon-button{width:26px;height:26px;flex-basis:26px;font-size:15px}
+ .rank-header .icon-button svg{width:18px;height:18px}
+ .rank-scope button{padding:4px 14px;font-size:11px}
+ .rank-sheet{margin-top:4px;margin-bottom:4px;padding:0 9px;grid-template-rows:28px 30px 22px minmax(0,1fr) 28px}
+ .rank-navigation{gap:8px}
+ .rank-categories,.rank-sections button{height:24px}
+ .rank-sections button{font-size:10px;padding:2px 9px}
+ .rank-categories button{font-size:10px}
+ .rank-tools{gap:8px}
+ .rank-search,.rank-select select{height:25px}
+ .rank-search input,.rank-select select{font-size:11px}
+ .rank-search svg{width:15px;height:15px}
+ .rank-context h2{font-size:12px}
+ .rank-context-title>span,.rank-context p{font-size:9px}
+ .rank-groups{padding:0}
+ .rank-groups button{padding:2px 8px;font-size:9px}
+ .rank-table{grid-template-rows:18px minmax(0,1fr);--columns:22px minmax(150px,1fr) repeat(5,minmax(47px,.32fr))}
+ .rank-table[data-metrics=power]{--columns:22px minmax(150px,1fr) repeat(5,minmax(47px,.32fr))}
+ .rank-columns{font-size:8px;letter-spacing:0}
+ .rank-columns,.rank-row{gap:6px;padding:0 4px}
+ .rank-state{inset:18px 0 0}
+ .rank-avatar{width:19px;height:19px;flex-basis:19px}
+ .rank-identity{gap:6px}
+ .rank-identity>div{display:flex;align-items:baseline;gap:7px;overflow:hidden}
+ .rank-identity strong{font-size:11px;flex:0 1 auto}
+ .rank-identity small{font-size:9px;margin:0;flex:1;overflow:hidden}
+ .rank-owner{max-width:none;flex-shrink:1}
+ .rank-mini-crest{display:none}
+ .rank-place{font-size:12px}
+ .rank-value strong{font-size:11px}
+ .rank-value.selected{padding:0}
+ .rank-table[data-metrics=power] .rank-value.selected strong,.rank-value.selected strong{font-size:12px}
+ .rank-own{font-size:10px;gap:7px}
+ .rank-own strong{font-size:12px}
+ .rank-pager{font-size:10px;gap:8px}
+ .rank-pager button{height:24px;width:28px}
+ .rank-bottom{font-size:6px}
+ .rank-table[data-metrics=clan] .rank-identity>div{display:block}
+ .rank-table[data-metrics=clan] .rank-identity strong{font-size:14px}
+ .rank-table[data-metrics=clan] .rank-identity small{margin-top:3px}
+ .rank-table[data-metrics=clan] .rank-avatar{width:30px;height:30px;flex-basis:30px}
+ .rank-table[data-metrics=clan] .rank-value.selected strong{font-size:18px}
+}
+@media(orientation:landscape) and (max-width:700px){
+ .rank-brand h1{font-size:11px}
+ .rank-scope button{padding:4px 8px;font-size:10px}
+ .rank-sheet{margin-inline:max(6px,env(safe-area-inset-left)) max(6px,env(safe-area-inset-right));padding:0 6px}
+ .rank-navigation{gap:5px}
+ .rank-categories{gap:3px}
+ .rank-categories button{font-size:9px}
+ .rank-sections button{padding-inline:6px;font-size:9px}
+ .rank-table,.rank-table[data-metrics=power]{--columns:18px minmax(135px,1fr) repeat(5,minmax(42px,.3fr))}
+ .rank-columns,.rank-row{gap:4px;padding-inline:2px}
+ .rank-columns{font-size:7px}
+ .rank-identity>div{gap:4px}
+ .rank-identity strong{font-size:10px}
+ .rank-identity small{font-size:8px}
+ .rank-value strong{font-size:10px}
+ .rank-table[data-metrics=power] .rank-value.selected strong,.rank-value.selected strong{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:360px){
+ .rank-app{grid-template-rows:30px minmax(0,1fr) 12px}
+ .rank-sheet{grid-template-rows:25px 27px 19px minmax(0,1fr) 25px;margin-block:3px}
+ .rank-categories,.rank-sections button{height:22px}
+ .rank-search,.rank-select select{height:23px}
+ .rank-context p{font-size:8px}
+ .rank-avatar{width:15px;height:15px;flex-basis:15px}
+ .rank-pager button{height:22px}
+}
+@media(orientation:portrait) and (max-width:600px){
+ .rank-app{grid-template-rows:75px minmax(0,1fr) 16px}
+ .rank-header{padding-top:8px}
+ .rank-brand h1{font-size:14px}
+ .rank-scope{bottom:5px}
+ .rank-scope button{padding:5px 22px}
+ .rank-sheet{margin:5px 6px;padding:0 6px;grid-template-rows:57px 57px 30px minmax(0,1fr) 32px}
+ .rank-navigation{gap:3px;padding-top:3px}
+ .rank-sections button{height:24px;padding:2px 16px}
+ .rank-categories{height:25px;gap:3px}
+ .rank-categories button{font-size:9px}
+ .rank-tools{gap:3px;padding:3px 0}
+ .rank-search,.rank-select select{height:24px}
+ .rank-context{padding-top:3px}
+ .rank-context h2{font-size:11px}
+ .rank-context p{font-size:8px;max-height:24px}
+ .rank-groups{bottom:2px}
+ .rank-groups button{font-size:8px;padding:2px 8px}
+ .rank-table{grid-template-rows:0 minmax(0,1fr)}
+ .rank-state{inset:0}
+ .rank-row{grid-template-columns:18px repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr) minmax(0,1fr);padding:2px 3px;gap:1px 4px}
+ .rank-place{font-size:11px}
+ .rank-avatar{display:none}
+ .rank-identity>div{display:flex;align-items:baseline;gap:5px;min-width:0;overflow:hidden}
+ .rank-identity strong{font-size:11px;flex:0 1 auto}
+ .rank-identity small{font-size:8px;margin:0;overflow:hidden;flex:1}
+ .rank-owner{max-width:none;flex-shrink:1}
+ .rank-value{display:flex;align-items:baseline;justify-content:flex-end;gap:3px;overflow:hidden}
+ .rank-value small{font-size:7px;display:inline;margin:0}
+ .rank-value strong,.rank-value.selected strong{font-size:10px}
+ .rank-value.selected{padding:0}
+ .rank-value-all small,.rank-value-score small{display:none}
+ .rank-own{font-size:9px;gap:5px}
+ .rank-own strong{font-size:11px}
+ .rank-own span{max-width:110px}
+ .rank-pager{gap:4px;font-size:9px}
+ .rank-pager button{height:25px;width:24px}
+ .rank-table[data-metrics=clan] .rank-row{grid-template-columns:18px minmax(72px,1fr) repeat(3,minmax(38px,.4fr))}
+ .rank-table[data-metrics=clan] .rank-identity>div{display:block}
+ .rank-table[data-metrics=clan] .rank-identity strong{font-size:12px}
+ .rank-table[data-metrics=clan] .rank-value{display:block}
+ .rank-table[data-metrics=clan] .rank-value small{display:block;margin-bottom:3px}
+ .rank-table[data-metrics=clan] .rank-value.selected strong{font-size:14px}
+}

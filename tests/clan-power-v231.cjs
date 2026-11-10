@@ -1,5 +1,5 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
-const {chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES?process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright':'playwright');
+const {chromium,webkit}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES?process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright':'playwright');
 const root=path.resolve(__dirname,'..'),id='00000000-0000-4000-8000-000000000001';
 const clans=Array.from({length:6},(_,i)=>({id:'clan-'+i,name:i===0?'Legio Aurea':'Klan '+i}));
 const players=Array.from({length:26},(_,i)=>({id:'user-'+i,name:'user'+i,subtitle:i===0?'<img src=x onerror=alert(1)>':'Ludus '+i,clan_id:i<21?'clan-0':'clan-'+(i-20),stats:{power:i===20?null:50+i},gladiator:{name:'Gladyatör '+i}}));
@@ -13,20 +13,28 @@ function fixtureClient(clan,clans,players,id){window.__botState={user_id:id,read
 };}
 const mock=`window.__requests=[];window.__fail=false;window.__client=(${fixtureClient.toString()})(${JSON.stringify(clan)},${JSON.stringify(clans)},${JSON.stringify(players)},${JSON.stringify(id)});`;
 (async()=>{
- const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']});
+ const browser=await (process.env.LUDUS_WEBKIT_TEST?webkit:chromium).launch({headless:true,...(!process.env.LUDUS_WEBKIT_TEST?{executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']}: {})});
+ const out=process.env.LUDUS_TEST_OUTPUT||'/tmp';fs.mkdirSync(out,{recursive:true});
  const page=await browser.newPage({viewport:{width:844,height:390}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='http://clan.test')return route.abort();const file=path.join(root,decodeURIComponent(u.pathname));if(!fs.existsSync(file)||!fs.statSync(file).isFile())return route.fulfill({status:404});let body=fs.readFileSync(file);
   if(file.endsWith('.html'))body=Buffer.from(body.toString().replace('<head>','<head><script>'+mock+'</script>').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__client'));
   return route.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'application/octet-stream'});
  });
- await page.goto('http://clan.test/klan.html');await page.locator('.homeBanner').waitFor();await page.locator('[data-view="power"]').click();
+ await page.goto('http://clan.test/klan.html');await page.locator('.homeBanner').waitFor();await page.locator('[data-view="bots"]').waitFor();
+ for(const [width,height]of [[1536,706],[874,402],[844,390],[667,375],[568,320]]){
+  await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(new DOMMatrixReadOnly(getComputedStyle(document.getElementById('clanStage')).transform).a-Math.min(innerWidth/1440,innerHeight/760))<.001);
+  const layout=await page.evaluate(()=>{const nav=[...document.querySelectorAll('.clan-navigation .nav,.clan-navigation a')];const boxes=nav.map(e=>e.getBoundingClientRect());return {count:nav.length,sameRow:boxes.every(r=>Math.abs(r.top-boxes[0].top)<2),inHeader:boxes.every(r=>r.top>=0&&r.bottom<=document.querySelector('.clan-topbar').getBoundingClientRect().bottom+1),clipped:nav.filter(e=>[...e.querySelectorAll('span')].some(s=>s.scrollWidth>s.clientWidth+1)).map(e=>e.textContent),sidebar:!!document.querySelector('.sidebar'),bodyScroll:document.documentElement.scrollHeight>innerHeight+1};});
+  assert.deepEqual(layout,{count:9,sameRow:true,inHeader:true,clipped:[],sidebar:false,bodyScroll:false},width+' horizontal clan navigation');
+  await page.screenshot({path:path.join(out,'clan-home-'+width+'x'+height+'.png')});
+ }
+ await page.setViewportSize({width:844,height:390});await page.locator('[data-view="power"]').click();
  await page.getByText('Klan sıralaması').waitFor();assert.equal(await page.evaluate(()=>__requests.length),2,'all ranking pages loaded');
  assert.equal(await page.locator('[data-power-clan="clan-0"]').count(),1);assert.match(await page.locator('.powerTotal').innerText(),/1\.190/);
  assert.match(await page.locator('[data-power-clan="clan-0"]').innerText(),/1 hesaplanamadı/);
  await page.locator('[data-power-page="member"][data-delta="1"]').click();assert.match(await page.locator('.powerRows').nth(1).innerText(),/Ludus 14/);
  await page.locator('[data-power-page="clan"][data-delta="1"]').click();await page.locator('[data-power-clan]').first().click();assert.notEqual(await page.locator('.powerHeading h2').nth(1).innerText(),'Legio Aurea');
  for(const [width,height]of [[844,390],[667,375],[1536,706]]){await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(new DOMMatrixReadOnly(getComputedStyle(document.getElementById('clanStage')).transform).a-Math.min(innerWidth/1440,innerHeight/760))<.001);const boxes=await page.evaluate(()=>{const within=e=>{const r=e.getBoundingClientRect();return r.top>=-1&&r.left>=-1&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1};return {nav:within(document.querySelector('[data-view="manage"]')),screen:within(document.querySelector('#screen')),panels:[...document.querySelectorAll('.powerPanel')].every(within),page:document.documentElement.scrollHeight<=innerHeight+1};});assert.deepEqual(boxes,{nav:true,screen:true,panels:true,page:true},width+' layout');}
- await page.setViewportSize({width:844,height:390});await page.screenshot({path:'/tmp/clan-power-v231.png'});
+ await page.setViewportSize({width:844,height:390});await page.screenshot({path:path.join(out,'clan-power-v231.png')});
  await page.evaluate(()=>{window.__fail=true});await page.locator('[data-power-refresh]').click();await page.getByText('Bağlantı hatası').waitFor();
  await page.evaluate(()=>{window.__fail=false});await page.locator('[data-power-refresh]').click();await page.waitForFunction(()=>!document.querySelector('.powerError'));
  await page.locator('[data-view="bots"]').click();await page.getByRole('heading',{name:'Bot Ludusları',exact:true}).waitFor();assert.equal(await page.locator('.botRow').count(),5);assert.match(await page.locator('.botDetail').innerText(),/Vita/);

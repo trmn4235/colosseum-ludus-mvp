@@ -2,7 +2,7 @@ const {chromium,webkit}=require('playwright'),assert=require('node:assert/strict
 const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp/rankings-v203';fs.mkdirSync(out,{recursive:true});
 const fixture=()=>{
  const ids=Array.from({length:36},(_,i)=>'00000000-0000-4000-8000-'+String(i+1).padStart(12,'0'));
- const clans=[{id:ids[32],name:'Aurelius Hanedanı'},{id:ids[33],name:'Tırman İmparatorluğu'},{id:ids[34],name:'Valeria Muhafızları'}];
+ const clans=[{id:ids[32],name:'Aurelius Hanedanı'},{id:ids[33],name:'Tırman İmparatorluğu'},{id:ids[34],name:'Valeria Muhafızları'},{id:ids[35],name:'Legio Invicta'}];
  const names=['Aurelius','Tırman','Valerius','Cassius','Lucius','Octavia','Cornelius','Livia','Flavius','Aelia','Marcellus','Titus','Gaius','Iulia','Sergius','Antonia','Publius','Decimus','Severus','Marcus','Quintus','Claudia','Drusus','Vespasianus'];
  const stats=(i,offset=0)=>({matches:100+i,wins:60-i,losses:30+i,kills:i===3?null:75+i*3,deaths:i===0?0:12+i,assists:i===3?null:30+i,points:offset-i*15,rating:1500+offset-i*15});
  const people=names.map((name,i)=>({id:ids[i],owner_id:ids[i],name,subtitle:i===7?'Çok Uzun İsimli İmparatorluk Gladyatör Okulu':name+' Ludus',clan_id:clans[i%3].id,clan:clans[i%3].name,emblem:i%3+1,emblem_color:'#b89957',background:'#651c2b',mine:i===1,class:null,
@@ -29,7 +29,7 @@ const fixture=()=>{
 };
 async function run(){
  const server=http.createServer((req,res)=>{const pathname=decodeURIComponent(new URL(req.url,'http://local').pathname),file=path.join(root,pathname);if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}try{const body=fs.readFileSync(file);res.setHeader('Content-Type',file.endsWith('.html')?'text/html':file.endsWith('.css')?'text/css':file.endsWith('.js')?'text/javascript':file.endsWith('.webp')?'image/webp':'application/octet-stream');res.end(body);}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));
- const browser=await(process.env.LUDUS_WEBKIT_TEST?webkit:chromium).launch({headless:true,...(!process.env.LUDUS_WEBKIT_TEST?{args:['--no-sandbox']}: {})});
+ const browser=await(process.env.LUDUS_WEBKIT_TEST?webkit:chromium).launch({headless:true,...(!process.env.LUDUS_WEBKIT_TEST?{executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']}: {})});
  try{
   for(const [width,height]of [[1366,768],[932,430],[844,390],[667,375],[568,320],[393,852],[320,568]]){
    const context=await browser.newContext({viewport:{width,height},hasTouch:true,deviceScaleFactor:1}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -50,7 +50,7 @@ async function run(){
     const els=[...document.querySelectorAll('.rank-header,.rank-sheet,.rank-navigation,.rank-categories,.rank-categories button,.rank-tools,.rank-context,.rank-table,.rank-footer,.rank-row,.rank-value,dialog[open]')];
     return {body:document.documentElement.scrollHeight<=innerHeight+1,overflow:els.filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<-.5||r.right>innerWidth+.5||r.top<-.5||r.bottom>innerHeight+.5||e.scrollHeight>e.clientHeight+2||(e.classList.contains('rank-value')||e.matches('.rank-categories button'))&&e.scrollWidth>e.clientWidth+2)}).map(e=>({tag:e.className||e.id,text:e.matches('.rank-categories button')?e.textContent:null,w:e.clientWidth,sw:e.scrollWidth,h:e.clientHeight,sh:e.scrollHeight})),rows:document.querySelectorAll('.rank-row').length};
    });assert.equal(result.body,true,label+' body');assert.deepEqual(result.overflow,[],width+'×'+height+' '+label);return result;}
-   await layout('general power');await page.screenshot({path:path.join(out,`power-${width}x${height}.png`)});
+   await layout('general power');assert.equal(await page.locator('.rank-row').count(),10,'ten gladiators visible');assert.equal(await page.locator('#rankPage').textContent(),'1 / 3');await page.screenshot({path:path.join(out,`power-${width}x${height}.png`)});
    assert.equal(await page.locator('.rank-row').first().locator('.rank-value').count(),5);
    for(const g of ['gladiator','attack','defense','mobility','all']){
     await page.click('[data-category="'+g+'"]');await ready();assert.equal(await page.evaluate(()=>rankFixture.requests.at(-1).p_group),g);await layout('power '+g);
@@ -73,7 +73,7 @@ async function run(){
    await page.fill('#rankSearch','Valerius');await page.waitForFunction(()=>rankFixture.requests.at(-1).p_query==='Valerius');await ready();assert.equal(await page.locator('.rank-row').count(),1);assert.notEqual(await page.locator('.rank-place').first().textContent(),'1');
    await page.fill('#rankSearch','ZZZNone');await page.waitForFunction(()=>rankFixture.requests.at(-1).p_query==='ZZZNone');await ready();assert.equal(await page.locator('.rank-row').count(),0);await layout('empty');
    await page.fill('#rankSearch','');await page.waitForFunction(()=>rankFixture.requests.at(-1).p_query==='');await ready();await page.click('#rankNext');await ready();assert.equal(await page.evaluate(()=>rankFixture.requests.at(-1).p_page),1);
-   await page.click('[data-scope="guilds"]');await ready();await layout('clans');await page.screenshot({path:path.join(out,`clans-${width}x${height}.png`)});
+   await page.click('[data-scope="guilds"]');await ready();await layout('clans');assert.equal(await page.locator('.rank-row').count(),4,'all four clans visible');assert.equal(await page.locator('#rankPage').textContent(),'1 / 1');assert.equal(await page.locator('#rankNext').isDisabled(),true);await page.screenshot({path:path.join(out,`clans-${width}x${height}.png`)});
    await page.click('[data-category="fighters"]');await ready();await layout('fighters');await page.locator('.rank-row').first().click();await layout('fighter detail');await page.locator('#rankDetail button[aria-label="Kapat"]').click();
    await page.click('#rankRules');for(let i=0;i<4;i++){await layout('help '+i);if(i<3)await page.locator('#rankHelp .rank-dialog-foot button').last().click();}await page.locator('#rankHelp button[aria-label="Kapat"]').click();
    await page.evaluate(()=>{rankFixture.guildMatches=0;});await page.click('#rankRefresh');await ready();assert.equal(await page.locator('.rank-row').count(),0);await layout('no guild wars');
@@ -84,5 +84,5 @@ async function run(){
   }
  }finally{await browser.close();await new Promise(r=>server.close(r));}
 }
-if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;});
+if(require.main===module)run().then(()=>require('node:child_process').execFileSync(process.execPath,[path.join(root,'tests/clan-power-v231.cjs')],{stdio:'inherit',env:{...process.env,LUDUS_TEST_OUTPUT:out}})).catch(e=>{console.error(e);process.exitCode=1;});
 module.exports={fixture};
