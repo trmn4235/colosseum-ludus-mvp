@@ -49,7 +49,7 @@ async function main(){
  // Both fixture players remain connected while the headless renderer loads their models.
  bootHeartbeat=setInterval(()=>serialized(async()=>{await call(db,A,'state');await call(db,B,'state');}).catch(()=>{}),2000);
  const a=await open(A),b=await open(B);clearInterval(bootHeartbeat);
- assert.equal(await a.locator('#duelSpecial small').innerText(),'FIRLAT');
+ assert.equal(await a.locator('#duelSpecial small').innerText(),'SAĞ · FIRLAT');
  for(const [width,height]of [[667,375],[844,390],[1366,768]]){
   await a.setViewportSize({width,height});const box=await a.locator('#duelSpecial').boundingBox();assert.ok(box.x>=0&&box.y>=0&&box.x+box.width<=width&&box.y+box.height<=height);
  }
@@ -59,12 +59,12 @@ async function main(){
  await b.waitForFunction(()=>window.fixtureLastMatch?.players[1].hit_serial===1,null,{timeout:20000});
  const first=await serialized(()=>call(db,A,'state'));assert.equal(first.players[0].items.length,0);assert.equal(first.players[0].throw_serial,1);assert.ok(first.players[1].hp<100);assert.equal(first.players[0].projectile.resolved,true);
  assert.equal(lostSpecialState.players[0].stamina,74);const sent=inputs.slice(n).filter(x=>x.owner===A&&x.special);assert.ok(sent.length>=2);assert.equal(new Set(sent.map(x=>x.special_id)).size,1);
- assert.equal(await a.locator('#duelSpecial').isHidden(),true);await b.waitForFunction(()=>window.fixtureAnimations.Alpha?.weapon===null);
+ assert.equal(await a.locator('#duelSpecial').isDisabled(),true);await b.waitForFunction(()=>window.fixtureAnimations.Alpha?.weapon===null);
  assert.equal(await b.evaluate(()=>window.fixtureSawThrow),true);assert.equal(await b.evaluate(()=>window.fixtureSawFlight),true,JSON.stringify(await b.evaluate(()=>({animations:window.fixtureAnimations,shot:window.fixtureLastMatch?.players[0].projectile,meshes:window.fixtureScene?.children.filter(o=>o.name==='online-projectile').map(o=>({visible:o.visible,position:o.position})),now:Date.now()}))));
  assert.equal(await a.locator('#rivalHp').getAttribute('max'),'100');assert.equal(await a.locator('#rivalHp').evaluate(n=>n.value),await b.locator('#selfHp').evaluate(n=>n.value));
  await a.screenshot({path:path.join(out,'online-projectiles-v76.png')});
  // Reconnect uses room equipment, so a thrown weapon cannot reappear.
- const reconnected=await open(A);await reconnected.waitForFunction(()=>window.fixtureAnimations.Alpha?.weapon===null);assert.equal(await reconnected.locator('#duelSpecial').isHidden(),true);
+ const reconnected=await open(A);await reconnected.waitForFunction(()=>window.fixtureAnimations.Alpha?.weapon===null);assert.equal(await reconnected.locator('#duelSpecial').isDisabled(),true);
  assert.deepEqual(errors,[]);console.log(JSON.stringify({sessions:2,realModels:true,sharedDamage:true,throwAnimation:true,flightMesh:true,lostResponseRetry:true,removedWeapon:true,reconnect:true,viewports:3}));
  await cleanup();
 }

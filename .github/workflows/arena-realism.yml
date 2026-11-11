@@ -20,6 +20,8 @@ jobs:
           node-version: '22'
       - name: Install isolated test tools
         run: npm install --no-save --no-package-lock @electric-sql/pglite@0.5.10 playwright@1.64.1
+      - name: Explicit hand specials and authoritative actions
+        run: node tests/hand-specials-v261.cjs
       - name: Combat behavior and motion
         run: node --test tests/arena-realism-v114.test.cjs tests/combat-feel-v23.test.cjs tests/bot-defense-v72.test.cjs tests/polearm-v105.test.cjs tests/arena-timing-v94.test.cjs
       - name: Authored motion, old/new replays and server evasion
@@ -56,3 +58,12 @@ jobs:
         run: node tests/arena-browser-v96.cjs
       - name: Two online clients and authoritative movement
         run: LUDUS_RENDER_SCALE_TEST=1 node tests/combat-motion-online-v163.cjs
+
+      - name: Two-hand mobile control layout
+        run: node tests/hand-specials-browser-v261.cjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: hand-specials-v261
+          path: /tmp/hand-specials-v261
+          if-no-files-found: ignore

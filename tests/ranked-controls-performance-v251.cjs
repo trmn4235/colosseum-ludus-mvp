@@ -10,6 +10,7 @@ async function main(){
  Object.defineProperties(w.document.getElementById('duelCanvas'),{clientWidth:{value:844},clientHeight:{value:390}});
  w.eval(fs.readFileSync(root+'/owner-three-r160.js','utf8'));
  w.eval(fs.readFileSync(root+'/multiplayer-motion-v251.js','utf8'));
+ w.eval(fs.readFileSync(root+'/combat-specials-v261.js','utf8'));
  const T=w.THREE,owner='human',match='fixture',players=Array.from({length:10},(_,i)=>({owner:i?String(i):owner,bot_v249:i>0,name:'G'+i,class:'murmillo',ranked_team:i<5?'a':'b',ranked_joined:true,gladiator:{},items:[{kind:'weapon',model:'gladius',equipped_slot:'main_hand'}],x:0,z:i<5?-1:6+i,angle:0,hp:100,maxHp:100,stamina:100,maxStamina:100,serial:0,block:false}));
  const room={id:match,status:'playing',players,combat_version:23,controls_version:77};let frames=[],clock=0,lastInput=null;const poseCounts=Array(10).fill(0),models=[],timeouts=[];
  w.requestAnimationFrame=fn=>{frames.push(fn);return frames.length};
@@ -50,6 +51,13 @@ async function main(){
  assert.ok(deltas.filter((n,i)=>i>0&&i%2===0).every(n=>n>0&&n<=21),'visible fighters use the mobile pose budget');
  players[2].serial++;const old=poseCounts[2];frame();assert.equal(poseCounts[2],old+1,'a new visible attack is posed immediately');
  players[1].x=2;frame();assert.ok(models[1].root.position.x>0,'an offscreen fighter still tracks its current position');
+ players[0].items.push({kind:'shield',equipped_slot:'off_hand',model:'large'});players[5].x=0;players[5].z=0;players[0].x=0;players[0].z=-1;
+ w.fixtureStick.change(.01,0);for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(w.document.getElementById('duelHand'),null);
+ assert.match(w.document.getElementById('duelSpecial').textContent,/SAĞ.*İKİ VURUŞ/);
+ assert.match(w.document.getElementById('duelSpecialLeft').textContent,/SOL.*İTTİR/);
+ for(const [id,hand]of [['duelSpecial','main_hand'],['duelSpecialLeft','off_hand']]){lastInput=null;w.document.getElementById(id).click();for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));assert.equal(lastInput.special,true);assert.equal(lastInput.hand,hand);assert.ok(lastInput.special_id);}
+ console.log('PASS V261: actual right/left button events send separate equipped hands; no switch button.');
  console.log('PASS V251: real game loop maps touch left/right/forward/back to four camera headings; mobile self, visible and offscreen animation scheduling, immediate attacks, and position tracking.');
  dom.window.close();
 }
