@@ -22,6 +22,6 @@ module.exports=async({page,fit,out})=>{
   await page.evaluate(async()=>{__supply.free_caravans=__supply.free_workers=6;await LudusPreview.supplySystem.refresh();});await page.locator('.supply-back').click();
  }
  await page.locator('[data-destination=fish]').click();await page.locator('.supply-license-open').click();
- assert.equal(await page.evaluate(()=>__licensedSource),'fish');assert.ok(await page.locator('#supplyModal').isHidden());
+ await page.locator('.workmap-screen[data-work-site=fish]').waitFor();assert.ok(await page.locator('#supplyModal').isVisible());assert.equal(await page.evaluate(()=>__licensedSource),null);
  console.log('V256 source browser PASS: all seven food sources use explicit paid worker checkout, 10-unit capacity, three-hour labels and a working six-hour license entry.');
 };

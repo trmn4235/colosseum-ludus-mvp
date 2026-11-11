@@ -85,3 +85,26 @@ bağlıdır. Fiziksel iPhone kontrolü bu testlerin kapsamında değildir.
 V256 öncesi başlamış lisans ve alışverişler çıkışta kaydedilen miktarlarını korur.
 `tests/collection-balance-v256.cjs`, yeni miktarları ve önceki seferlerin
 teslimat/tekrar işlem uyumluluğunu gerçek RPC yollarıyla doğrular.
+
+## Haritadan ekip çıkarma — V260
+
+Kervan odasının mevcut Roma haritasındaki **Ekip çıkar** sekmesi aynı 16 kaynağı
+kullanır. Kaynak seçiminden sonra lider, klanın işçilerini Ludus adına göre süzüp
+beş kişilik ekip hazırlar. Kartlar meslek seviyesini, tahmini net üretimi ve
+seçilememe nedenini gösterir. Alt toplam, seçilen işçilerin sunucudan gelen
+seviye tablosuyla hesaplanır. Uygun meslek seviyesi henüz yoksa aynı kaynağın
+ücretli alışverişine geçilerek mevcut EXP sistemi kullanılabilir.
+
+Çalışma ekipleri harita üzerinde sayı rozetiyle, listede sunucu saatine göre
+kalan süreyle görünür. Ayrıntıda her işçinin sahibi ve net payı, toplam brüt/vergi
+ve dolu depo nedeniyle bekleyen teslimat gösterilir. Açık ekranda 30 saniyede
+bir mevcut RPC durumu yenilenir. Görevler otomatik tekrarlanmaz.
+
+Gönderim öncesi hesap bazında işlem kimliği ve ekip tarayıcıya kaydedilir.
+Yanıt kaybolursa, sayfa yenilense bile aynı kimlik ve aynı ekip ile doğrulama
+yapılır. Kesin sunucu retleri kaydı temizler; bağlantı belirsizliğinde kayıt
+korunur. Sunucunun mevcut rezervasyon ve tekrar işlem denetimleri yetkilidir.
+Yeni tablo, RPC veya ekonomi değişikliği yoktur.
+
+`tests/workers-map-v260.cjs`, gerçek harita denetleyicisi ve üretim stilleriyle
+Chromium/WebKit üzerinde çalışır; canlı hesaplarda görev oluşturmaz.
