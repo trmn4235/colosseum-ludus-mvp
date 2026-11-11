@@ -131,4 +131,7 @@ body[data-roman-screen=ludus] .tools [hidden]{display:none!important}
 
 /* Explicit preview bounds keep WebKit's flex sizing from pushing the full-text action out. */
 #ludusMessages .mc-bubble p{min-height:1.35em;max-height:2.7em}
-@media(max-height:500px){#ludusMessages .mc-bubble:has(.mc-read-more) p{height:1.35em;max-height:1.35em;flex:0 0 1.35em}}
+@media(max-height:500px){
+ #ludusMessages .mc-bubble:has(.mc-read-more){min-height:calc(1.35em + 54px)}
+ #ludusMessages .mc-bubble:has(.mc-read-more) p{height:1.35em;max-height:1.35em;flex:0 0 1.35em}
+}

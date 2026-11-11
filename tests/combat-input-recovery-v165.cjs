@@ -23,12 +23,17 @@ module.exports=async page=>{
   await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
   await page.waitForFunction(()=>__inputEvents.some(e=>e.type==='pointerup'),null,{timeout:3000});
   assert.equal(await page.evaluate(()=>__arena.combat.fighters[0].action),'attack','Movement and attack accept separate fingers');
+  await page.evaluate(()=>{__inputEvents.length=0;});
   await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{...first,id:4}]});
   await client.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});
+  await page.waitForFunction(()=>__inputEvents.some(e=>e.type==='pointercancel'),null,{timeout:3000});
   await page.evaluate(()=>{__arena.combat.fighters[0].action='idle';});await step(3);assert.equal(await page.evaluate(()=>__arena.combat.fighters[0].move),0,'Cancelled stick input releases movement');
   await ready();await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:3,x:block.x+block.width/2,y:block.y+block.height/2}]});
   await step(3);assert.equal(await page.evaluate(()=>__arena.combat.fighters[0].blocking),true);
-  await client.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});await step(3);
+  await page.evaluate(()=>{__inputEvents.length=0;});
+  await client.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});
+  await page.waitForFunction(()=>__inputEvents.some(e=>e.type==='pointercancel'&&e.target==='block'),null,{timeout:3000});
+  await step(3);
   assert.equal(await page.evaluate(()=>__arena.combat.fighters[0].blocking),false);
   assert.equal(await page.locator('#block').evaluate(e=>e.classList.contains('pressed')),false);
   await client.detach();

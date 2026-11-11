@@ -26,7 +26,7 @@ test('every rig uses the budgeted files without falling back to a heavier helmet
  ];
  for(const [loader,pattern]of loaders){
   const expression=fs.readFileSync(loader,'utf8').match(pattern)?.[1];assert.ok(expression,loader+' script URL expression');
-  for(const file of ['equipment-catalog-v167.js','ludus-manica-v119.js'])assert.equal(vm.runInNewContext(expression,{file}),file+'?v=revision199',loader+' retains budgeted equipment URLs');
+  for(const file of ['equipment-catalog-v167.js','ludus-manica-v119.js'])require('./cache-url.cjs').assertCacheRevision(vm.runInNewContext(expression,{file}),file,199,loader+' retains budgeted equipment URLs');
   for(const file of ['arena-locomotion-v91.js','arena-authored-motion-v163.js','arena-anatomy-v166.js','caravan-rig-v126.js'])require('./cache-url.cjs').assertCacheRevision(vm.runInNewContext(expression,{file}),file,214,loader+' '+file);
  }
 });

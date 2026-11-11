@@ -82,7 +82,7 @@ await page.goto('http://127.0.0.1:'+server.address().port+'/ludus.html?restore='
 await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
 assert.equal(await page.evaluate(()=>LudusPreview.player.z),-18.2,'current floor-plan position survives a return');
 await page.evaluate(id=>{const key='ludus-return-v12:'+id,record=JSON.parse(sessionStorage.getItem(key));record.state.stableLayout=141;record.state.player={x:0,y:0,z:1.6,yaw:0,pitch:.14};sessionStorage.setItem(key,JSON.stringify(record));},frameId);
-await page.reload();await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
+await page.reload({waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.LudusPreview&&document.getElementById('loading').hidden,null,{timeout:90000});
 assert.equal(await page.evaluate(()=>LudusPreview.player.z),-10,'legacy floor-plan position falls back to the new entry');
 assert.deepEqual(errors,[]);
 fs.writeFileSync(out+'/result.json',JSON.stringify({pass:true,state,loadedMaterials,errors},null,2));

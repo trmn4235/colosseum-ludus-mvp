@@ -1,0 +1,39 @@
+name: Equipment fit and six product layout
+on:
+  push:
+    branches: [codex/v259-fit-market]
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --user 1001 --shm-size=1g
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock playwright@1.64.1
+      - name: Render worn Roman helmet and arm protection
+        run: node scripts/capture-equipment-v259.cjs
+      - name: Six products, readable cards and centred clan names in Chromium
+        if: ${{ !cancelled() }}
+        run: node tests/market-layout-v259.cjs
+      - name: Six products and clan names in WebKit
+        if: ${{ !cancelled() }}
+        env:
+          LUDUS_WEBKIT_TEST: '1'
+        run: node tests/market-layout-v259.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: equipment-layout-v259
+          path: /tmp/v259
+          if-no-files-found: error

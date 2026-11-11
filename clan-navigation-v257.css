@@ -54,3 +54,7 @@ body[data-art-direction][data-roman-screen=clan] #clanStage .clan-navigation .na
 #clanStage .memberList:has(>.pagination){gap:2px}
 #clanStage .memberList:has(>.pagination) strong{font-size:18px}
 #clanStage .memberList:has(>.pagination) small{font-size:11px}
+
+/* V259: single-line Ludus names sit at the vertical centre of every member row. */
+#clanStage .memberList .identity{display:flex;flex-direction:column;justify-content:center;align-self:stretch}
+#clanStage .memberList .identity strong{line-height:1.15}
