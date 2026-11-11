@@ -40,7 +40,7 @@
 .workmap-job>div{display:flex;flex-direction:column;gap:4px;min-width:0}.workmap-job small{font-size:12px;color:#786f63}.workmap-job b{font:600 15px/1.2 Arial,sans-serif;white-space:nowrap}
 .workmap-participants{flex:1;min-height:0;display:grid;grid-template-rows:repeat(5,minmax(0,1fr));gap:5px}
 .workmap-person{display:grid;grid-template-columns:minmax(0,2fr) .5fr .6fr minmax(0,1fr);align-items:center;gap:7px;border:1px solid #ded3bf;border-radius:4px;padding:5px 9px;background:#fffdf8;min-height:0;font-size:13px}
-.workmap-person>div{display:flex;flex-direction:column;min-width:0;gap:2px}.workmap-person strong,.workmap-person small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.workmap-person small{font-size:11px;color:#756a60}
+.workmap-person>div{display:flex;flex-direction:column;min-width:0;gap:2px}.workmap-person strong,.workmap-person small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.workmap-person small{font-size:11px;color:#756a60}.workmap-person strong,.workmap-person small{line-height:1.1}
 .workmap-active{position:absolute;right:-4px;top:-4px;background:#386447;color:white;border:1px solid #f9e8b8;border-radius:12px;min-width:19px;padding:2px 4px;font:11px/1 Arial,sans-serif}
 @media(max-height:500px){
  .workmap-screen{gap:4px}.workmap-nav button,.workmap-button{min-height:24px;padding:3px 7px;font-size:11px!important}
@@ -57,5 +57,5 @@
 @media(max-height:360px){
  .workmap-screen{gap:3px}.workmap-art{display:none}.workmap-site{justify-content:center}.workmap-worker strong{font-size:11px}.workmap-worker span,.workmap-worker small{font-size:9px}
  .workmap-slot{padding:2px}.workmap-nav button{min-height:22px}.workmap-title strong{font-size:14px}.workmap-title small{display:none}
- .workmap-info,.workmap-status{font-size:9px}.workmap-job-title{font-size:11px}
+ .workmap-info,.workmap-status{font-size:9px}.workmap-job-title{font-size:11px}.workmap-person{padding:2px 6px;font-size:10px}.workmap-person small{font-size:9px}.workmap-person>div{gap:1px}
 }
