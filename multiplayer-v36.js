@@ -67,8 +67,8 @@ return {load,prepare};
  dodge:'<path d="M19 7a8 8 0 1 0 1 9M19 3v5h-5 M10 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4 M9 12l-3 3 4 3 5-2-2-4z M15 16l2 3"/>'};
  const control=(id,icon,label,aria)=>'<button id="'+id+'" class="mp-action" type="button" aria-label="'+aria+'" title="'+aria+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+icons[icon]+'</svg>'+(label?'<small>'+label+'</small>':'')+'</button>';
  $('duelControls').innerHTML='<div id="duelStick" role="group" aria-label="Hareket çubuğu"><div id="duelKnob"></div><span>HAREKET</span></div><div id="duelActions">'+
- control('duelTarget','target','','Hedef kilidini aç veya kapat')+
  control('duelSpecialLeft','special','SOL EL','Sol el özel hareket')+
+  control('duelTarget','target','','Hedef kilidini aç veya kapat')+
  control('duelSpecial','special','SAĞ EL','Sağ el özel hareket')+
  control('duelBlock','block','BLOK','Kalkanı tut')+
  control('duelAttack','attack','SALDIR','Saldır; kaydırarak vuruş bölgesi seç')+

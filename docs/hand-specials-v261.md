@@ -4,6 +4,8 @@
 
 İki doğrudan kontrol: Sağ el (Q) ve Sol el (R). El değiştirme düğmesi kaldırılır. Her kontrol o slota takılı ekipmanı kullanır. Boş veya uygun olmayan elde özel hareket devre dışıdır. Her elin bekleme süresi 8 saniyedir; vuruş/sersemleme kilitleri ayrıca geçerlidir.
 
+Simetrik yerleşim: üst sıra **Sol el özel — Hedef kilidi — Sağ el özel**, alt sıra **Blok — Saldır — Yuvarlan**. Sağ ve sol özel düğmelerinin boyutu, simgesi ve merkezden uzaklığı eşittir. Bu düzen tek oyunculu ve multiplayer ekranlarında aynıdır.
+
 | Ekipman | Aktif hareket |
 | --- | --- |
 | Ağ | Ağ atma |
