@@ -27,6 +27,7 @@
   function load(){
    if(busy)return Promise.resolve();
    if(loading)return loading;
+   lastLoad=Date.now();
    loading=(async()=>{try{await identify();const r=await ctx.client.rpc('ludus_clan_work_v232');if(r.error)throw r.error;adopt(r.data);problem='';}catch(e){problem=e?.message||'Klan işçileri yüklenemedi.';}finally{loading=null;changed();}})();
    changed();return loading;
   }
