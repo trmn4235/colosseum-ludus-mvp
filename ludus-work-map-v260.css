@@ -70,3 +70,5 @@
  #supplyModal .workmap-primary{background:#681e32!important;color:#fff4db!important;border-color:#ac894c!important}
  #supplyModal .workmap-worker[aria-pressed="true"],#supplyModal .workmap-slot[data-picked-worker]{background:#fff4db!important;color:#591823!important;border-color:#ac894c!important;box-shadow:inset 3px 0 #681e32!important}
 }
+/* Work-site names are single labels, including the bottom map row. */
+#supplyModal[data-view="work"] .supply-node .supply-node-name{max-width:120px;white-space:nowrap}
