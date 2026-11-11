@@ -40,6 +40,10 @@ var LudusManica=(()=>{
   }
   for(const key of ['armUpper','armFore'])m.gear[key].group.visible=visible&&m.gear[key].group.children.length>0;
  }
- function cap(T,id){const template=globalThis.LudusEquipmentCatalog?.get(id),part=template?.getObjectByName('cap');if(!part)return null;if(!caps196.has(template)){const g=new T.Group(),clone=part.clone(true);clone.position.set(-.015,id==='manica_segmented'?.065:.05,id==='manica_segmented'?-.075:-.05);if(id==='manica_segmented')clone.scale.multiplyScalar(1.08);g.add(clone);g.userData.rigidArmour196=true;caps196.set(template,g);}return caps196.get(template);}
+ function cap(T,id){const template=globalThis.LudusEquipmentCatalog?.get(id),part=template?.getObjectByName('cap');if(!part)return null;if(!caps196.has(template)){const g=new T.Group(),clone=part.clone(true);
+  // V259: remove the extra lift and enlargement on the segmented shoulder cap.
+  // It overlaps the upper-arm sleeve at the shoulder instead of floating above it.
+  clone.position.set(id==='manica_segmented'?0:-.015,id==='manica_segmented'?.005:.05,id==='manica_segmented'?-.075:-.05);
+  g.add(clone);g.userData.rigidArmour196=true;caps196.set(template,g);}return caps196.get(template);}
  return{get,imported,mount,sync,cap};
 })();

@@ -167,6 +167,15 @@ var ArenaEquipmentFit = (() => {
   }
   function sync(m) {
     if(m.teamBand)m.teamBand.group.visible=!m.gear.chest.group.visible;
+    // V259: the Roman dome cut into the forehead/crown by up to 15 mm.
+    // Fit the worn shell once; keep the inventory model and shared buffers intact.
+    const helmet=m.gear.helmet.group;
+    if(m.helmetStyle==='roman'&&!helmet.userData.romanFit259){
+      helmet.scale.multiply(new THREE.Vector3(1.15,1.03,1.08));
+      const headScale=m.helmetFit?.scale||[1,1,1];
+      helmet.position.y+=.016*headScale[1];helmet.position.z+=.004*headScale[2];
+      helmet.userData.romanFit259=true;
+    }
     m.gear.helmet.group.traverse(o => { if (o.isMesh) { o.frustumCulled = false; o.material = wornMaterial(o.material); } });
     const data = m.equipmentFit164; if (!data) return;
     const T = THREE;
