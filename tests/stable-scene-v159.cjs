@@ -6,7 +6,8 @@ const uid='00000000-0000-4000-8000-000000000159';
 const horse=(i)=>({id:'horse-'+i,name:'Aquila '+(i+1),sex:i%2?'male':'female',stage:'adult',coat:['dark_brown','black','white','grey','caramel','pinto','light_brown'][i%7],quality:70,feed_bar:90,energy:100,stats:{speed:70,stamina:70,power:70,agility:70,burst:70,temperament:70},genes:{},training:{},nutrition:70,training_history:70,care:80,experience:0,parents:[],sessions:0,matches:0,wins:0,lifetime_hours:0});
 const stable={user_id:uid,gold:1000,level:50,capacity:12,reserved:0,horses:Array.from({length:12},(_,i)=>horse(i)),house:{selected:'horse-0',feed_grade:75,feed_stock:{50:0,75:10,100:0},auto_feed:true},requests:[],studs:[],market:[],rules:{weights:{},pregnancy_seconds:3600},duel:null};
 const fixture=`
-window.__rpcCalls=[];window.__stableState=${JSON.stringify(stable)};
+// render() advances the real scene for each check; avoid a competing software-GPU loop.
+window.__freeze=true;window.__rpcCalls=[];window.__stableState=${JSON.stringify(stable)};
 window.__fixtureClient={
 auth:{getUser:async()=>({data:{user:{id:'${uid}',is_anonymous:false,user_metadata:{}}}}),getSession:async()=>({data:{session:null}}),onAuthStateChange:()=>({})},
 from:name=>{const value=name==='ludus_accounts'?{user_id:'${uid}',ludus_name:'Test Ludus',gold:1000,diamonds:3}:[];const b={select:()=>b,eq:()=>b,order:()=>b,single:async()=>({data:value}),then:(r,j)=>Promise.resolve({data:value}).then(r,j)};return b;},
