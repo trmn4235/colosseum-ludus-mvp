@@ -72,3 +72,6 @@
 }
 /* Work-site names are single labels, including the bottom map row. */
 #supplyModal[data-view="work"] .supply-node .supply-node-name{max-width:120px;white-space:nowrap}
+@media(max-height:360px){
+ #supplyModal[data-view="work"] .supply-node:is([data-destination="wine"],[data-destination="egg"],[data-destination="apple"]){top:calc(88% - 8px)!important}
+}
