@@ -10,7 +10,7 @@ const context={path,fs,__dirname};vm.createContext(context);vm.runInContext(clan
 (async()=>{
  const engine=process.env.LUDUS_WEBKIT_TEST?'webkit':'chromium',browser=await(engine==='webkit'?webkit:chromium).launch({headless:true,...(engine==='chromium'?{executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']}: {})});
  try{
-  const page=await browser.newPage({viewport:{width:874,height:402}}),errors=[],report=[];page.on('pageerror',e=>errors.push(e.message));
+  const page=await browser.newPage({viewport:{width:874,height:402}}),errors=[],report=[],layoutFailures=[];page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!=='https://layout.test')return route.abort();const file=path.join(root,decodeURIComponent(u.pathname));if(!fs.existsSync(file)||!fs.statSync(file).isFile())return route.fulfill({status:404});let body=fs.readFileSync(file);if(file.endsWith('pazar.html'))body=Buffer.from(body.toString().replace('<head>','<head><script>'+mock+'</script>').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__testClient'));if(file.endsWith('market-v56.js'))body=Buffer.from(body.toString().replace(/\(globalThis\.LudusClient\?\.create\|\|supabase\.createClient\)\([^)]*\)/g,'window.__testClient'));if(file.endsWith('klan.html'))body=Buffer.from(body.toString().replace('<head>','<head><script>'+context.bootstrap+'</script>').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__client'));return route.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.webp')?'image/webp':file.endsWith('.svg')?'image/svg+xml':'application/octet-stream'});});
   await page.goto('https://layout.test/pazar.html');await page.locator('.product').first().waitFor();
   for(const [width,height] of [[1536,706],[874,402],[844,390],[667,375],[568,320]]){
@@ -25,7 +25,7 @@ const context={path,fs,__dirname};vm.createContext(context);vm.runInContext(clan
       minArt:Math.min(...cards.map(c=>rect(c.querySelector('.art')).height)),reachable:cards.every(c=>{const e=c.querySelector('.buy'),b=rect(e),hit=document.elementFromPoint(b.x+b.width/2,b.y+b.height/2);return b.bottom<=innerHeight&&b.right<=innerWidth&&(hit===e||e.contains(hit));}),intro:document.body.textContent.includes('Başlangıç ekipmanları')};
     });report.push({width,category,...fit});
     await page.screenshot({path:path.join(out,engine+'-'+width+'-'+Object.keys(categories).find(k=>categories[k]===category)+'.png')});
-    assert.equal(fit.columns,6);assert.equal(fit.bodyOverflow,false);assert.equal(fit.reachable,true,JSON.stringify(report.at(-1)));assert.equal(fit.intro,false);assert.deepEqual(fit.clipped,[],JSON.stringify(report.at(-1)));assert.ok(fit.minArt>=28,JSON.stringify(report.at(-1)));
+    if(fit.columns!==6||fit.bodyOverflow||!fit.reachable||fit.intro||fit.clipped.length||fit.minArt<28)layoutFailures.push(report.at(-1));
    }
   }
   await page.setViewportSize({width:874,height:402});await page.locator('#categories button').filter({hasText:'Silahlar'}).click();
@@ -35,6 +35,6 @@ const context={path,fs,__dirname};vm.createContext(context);vm.runInContext(clan
    await page.setViewportSize({width,height});await page.evaluate(()=>document.fonts.ready);
    const fit=await page.locator('.memberList').evaluate(list=>{const rows=[...list.querySelectorAll(':scope>.row,:scope>.permissionRow')];return{count:rows.length,botHandles:/@bot/i.test(list.textContent),centered:rows.slice(1).every(r=>{const a=r.getBoundingClientRect(),b=r.querySelector('strong').getBoundingClientRect();return Math.abs((a.top+a.bottom-b.top-b.bottom)/2)<1.2}),scroll:list.scrollHeight>list.clientHeight+1};});assert.deepEqual(fit,{count:10,botHandles:false,centered:true,scroll:false});await page.screenshot({path:path.join(out,engine+'-clan-'+view+'-'+width+'.png')});
   }}
-  assert.deepEqual(errors,[]);fs.writeFileSync(out+'/layout-'+engine+'.json',JSON.stringify(report,null,2));console.log(JSON.stringify({engine,views:report.length,clanViews:4,paging:true,inspection:true,errors}));
+  assert.deepEqual(errors,[]);assert.deepEqual(layoutFailures,[]);fs.writeFileSync(out+'/layout-'+engine+'.json',JSON.stringify(report,null,2));console.log(JSON.stringify({engine,views:report.length,clanViews:4,paging:true,inspection:true,errors}));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
