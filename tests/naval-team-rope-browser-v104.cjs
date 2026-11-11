@@ -58,7 +58,7 @@ module.exports=async function exerciseRallyRope(page,out,perspective){
   await page.setViewportSize({width,height});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   await page.evaluate(()=>{__ropeSetup();__arena.naval.ships[1].x=8;__arena.naval.player().navJavelin=true;__arena.view.update(__arena.combat.time+.2);});
   const overlaps=await page.evaluate(()=>{
-   const ids=['navalRally','navalRope','navalJump','navalJavelin','navalHelm','navalBridge','teamScore','stick','attack','block','dodge','special','hand','target'];
+   const ids=['navalRally','navalRope','navalJump','navalJavelin','navalHelm','navalBridge','teamScore','stick','attack','block','dodge','special','specialLeft','target'];
    const visible=id=>{const e=document.getElementById(id),s=getComputedStyle(e);return !e.hidden&&s.display!=='none'&&s.visibility!=='hidden'&&e.getBoundingClientRect().width;},hits=[];
    for(const id of ['navalRally','navalRope']){const a=document.getElementById(id).getBoundingClientRect();if(a.left<0||a.right>innerWidth||a.bottom>innerHeight)hits.push(id+' outside viewport');for(const other of ids){if(id===other||!visible(other))continue;const b=document.getElementById(other).getBoundingClientRect();if(a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top)hits.push(id+'/'+other);}}
    return hits;

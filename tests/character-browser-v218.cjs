@@ -34,7 +34,7 @@ module.exports=async(page,out)=>{
     for(const left of [false,true])for(const distance of [2,12]){
      combat.reset('normal','murmillo');
      const f=combat.fighters[1],target=combat.fighters.find(other=>other.id!==0&&other.team!==f.team);
-     Object.assign(f,{x:distance,z:0,angle:0,hp:100,weapon:'gladius',offhand:'sica',shield:false,leftGear:null,pickupHand:left?'offhand':'weapon',action:'idle',timer:0,move:0,walk:0,reaction:0,guardFlash:0,passiveEvade:0,blocking:false,stunUntil:0,skillReady:[0,0]});
+     Object.assign(f,{x:distance,z:0,angle:0,hp:100,weapon:'spear',offhand:'trident',shield:false,leftGear:null,pickupHand:left?'offhand':'weapon',action:'idle',timer:0,move:0,walk:0,reaction:0,guardFlash:0,passiveEvade:0,blocking:false,stunUntil:0,skillReady:[0,0]});
      quiet(combat,f,target);Object.assign(combat.fighters[0],{x:0,z:0,stunUntil:100});
      check(Math.hypot(f.x-combat.fighters[0].x,f.z-combat.fighters[0].z)===distance,'requested scheduler distance');
      const m=ImportedGladiator.create(f.id,f.type),anchor=left?m.offhandAnchor:m.weaponAnchor,other=left?m.weaponAnchor:m.offhandAnchor;
@@ -77,7 +77,7 @@ module.exports=async(page,out)=>{
    const fill=new T.DirectionalLight(0xe2eaff,.8);fill.position.set(4,2,-3);scene.add(fill);
    for(const type of Object.keys(ArenaClasses)){
     const sim=new ArenaCombat(()=>.999).reset('normal',type),f=sim.fighters[0],target=sim.fighters.find(other=>other.team!==f.team),m=ImportedGladiator.create(218,type);
-    const kind=['gladius','sica','spear','trident','trident_gladiator'].includes(f.weapon)?f.weapon:'gladius';
+    const kind=['spear','trident','trident_gladiator'].includes(f.weapon)?f.weapon:'spear';
     Object.assign(f,{x:0,z:0,angle:0,hp:100,weapon:kind,action:'idle',timer:0,move:0,walk:0,motionVersion:163,blocking:false,absoluteBlockUntil:0,shieldHeldBy:null,reaction:0,guardFlash:0,passiveEvade:0,skillReady:[0,0]});
     quiet(sim,f,target);scene.add(m.root);
     try{

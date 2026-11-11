@@ -1,0 +1,17 @@
+/* Mirrored hand specials flank the target lock, above block / attack / roll. */
+.actions #specialLeft,.actions #special{grid-row:1;width:57px;height:57px;min-width:0;min-height:0;padding:0}
+.actions #specialLeft{grid-column:1}
+.actions #target{grid-column:2;grid-row:1}
+.actions #special{grid-column:3}
+#specialLeft small,#special small{font-size:7px;line-height:1.15;letter-spacing:0;white-space:normal}
+#duelControls{--mp-special:clamp(43px,11dvh,57px)}
+#duelActions{grid-template-rows:var(--mp-special) var(--mp-attack)}
+#duelActions #duelSpecialLeft,#duelActions #duelSpecial{grid-row:1;width:var(--mp-special);height:var(--mp-special)!important}
+#duelActions #duelSpecialLeft{grid-column:1}
+#duelActions #duelTarget{grid-column:2;grid-row:1}
+#duelActions #duelSpecial{grid-column:3}
+#duelSpecialLeft svg,#duelSpecial svg{width:19px!important;height:19px!important}
+#duelSpecialLeft small,#duelSpecial small{font-size:7px!important;letter-spacing:0;white-space:normal;line-height:1.15}
+#specialLeft:disabled,#duelSpecialLeft:disabled,#duelSpecial:disabled{opacity:.45}
+#specialLeft.exhausted{opacity:.5}
+@media(max-height:480px){.actions #specialLeft,.actions #special{width:43px;height:43px}#specialLeft small,#special small{font-size:6px}#specialLeft svg,#special svg{width:16px;height:16px}}
