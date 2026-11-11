@@ -13,7 +13,7 @@
 .workmap-filter{display:flex;align-items:center;gap:5px;font-size:12px;min-width:0;max-width:48%}
 .workmap-filter select{min-width:0;max-width:100%;border:1px solid #c5ad78;border-radius:4px;background:white;color:#422c30;padding:5px;height:30px}
 .workmap-selected{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;flex:none}
-.workmap-slot{border:1px dashed #c4b598;border-radius:4px;padding:5px 4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#f8f5ef;color:#6d6259;font-size:12px!important}
+.workmap-slot{min-height:24px;border:1px dashed #c4b598;border-radius:4px;padding:5px 4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#f8f5ef;color:#6d6259;font-size:12px!important}
 .workmap-slot[data-picked-worker]{border-style:solid;border-color:#a98b4f;background:#f7eacb;color:#5b2030;opacity:1}
 .workmap-main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(130px,.75fr) minmax(0,2fr);gap:10px}
 .workmap-site{display:flex;flex-direction:column;gap:6px;min-width:0;min-height:0;padding:8px;border:1px solid #d6c8a9;border-radius:5px;background:#faf8f2;font-size:13px;overflow:hidden}
@@ -58,4 +58,15 @@
  .workmap-screen{gap:3px}.workmap-art{display:none}.workmap-site{justify-content:center}.workmap-worker strong{font-size:11px}.workmap-worker span,.workmap-worker small{font-size:9px}
  .workmap-slot{padding:2px}.workmap-nav button{min-height:22px}.workmap-title strong{font-size:14px}.workmap-title small{display:none}
  .workmap-info,.workmap-status{font-size:9px}.workmap-job-title{font-size:11px}.workmap-person{padding:2px 6px;font-size:10px}.workmap-person small{font-size:9px}.workmap-person>div{gap:1px}
+}
+
+/* Compact worker rows retain every text line on the smallest landscape phones. */
+@media(max-height:360px){
+ .workmap-slot{min-height:22px;height:22px}
+ .workmap-worker{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-content:center;column-gap:4px;row-gap:1px;padding:2px 5px}
+ .workmap-worker strong{grid-column:1;grid-row:1}.workmap-worker span{grid-column:1;grid-row:2}.workmap-worker small{grid-column:2;grid-row:1/3}
+}
+@layer game-panels-v123{
+ #supplyModal .workmap-primary{background:#681e32!important;color:#fff4db!important;border-color:#ac894c!important}
+ #supplyModal .workmap-worker[aria-pressed="true"],#supplyModal .workmap-slot[data-picked-worker]{background:#fff4db!important;color:#591823!important;border-color:#ac894c!important;box-shadow:inset 3px 0 #681e32!important}
 }
