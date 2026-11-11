@@ -575,6 +575,26 @@
         "tools/verify-model-mirrors-*",
         ".github/workflows/model-delivery.yml"
       ]
+    },
+    {
+      "id": "equipment_layout_v259",
+      "workflow": "equipment-layout-v259.yml",
+      "name": "Equipment fit and six product layout",
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "market-v56.js",
+        "market-layout-v259.css",
+        "pazar.html",
+        "klan.html",
+        "clan-navigation-v257.css",
+        "arena-equipment-fit-v164.js",
+        "ludus-manica-v119.js",
+        "tests/market-layout-v259.cjs",
+        "scripts/capture-equipment-v259.cjs",
+        ".github/workflows/equipment-layout-v259.yml"
+      ]
     }
   ]
 }

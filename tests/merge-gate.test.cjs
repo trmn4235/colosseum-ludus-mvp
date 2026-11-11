@@ -27,7 +27,7 @@ test('every original suite is configured and called, and no reusable suite self-
   const workflows = path.resolve(__dirname, '../.github/workflows');
   const actual = fs.readdirSync(workflows).filter(f => f.endsWith('.yml') && f !== 'main-merge.yml').sort();
   assert.deepEqual(config.suites.map(s => s.workflow).sort(), actual);
-  assert.equal(actual.length, 24);
+  assert.equal(actual.length, 25);
   const master = fs.readFileSync(path.join(workflows, 'main-merge.yml'), 'utf8');
   assert.match(master, /name: Main merge gate/);
   assert.match(master, /if: \$\{\{ always\(\) \}\}/);

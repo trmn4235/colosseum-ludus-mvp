@@ -132,6 +132,10 @@ jobs:
     needs: plan
     if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'model_delivery') }}
     uses: ./.github/workflows/model-delivery.yml
+  equipment_layout_v259:
+    needs: plan
+    if: ${{ contains(fromJSON(needs.plan.outputs.selected), 'equipment_layout_v259') }}
+    uses: ./.github/workflows/equipment-layout-v259.yml
   build_pages:
     name: Build Pages artifact
     needs: plan
@@ -168,7 +172,7 @@ jobs:
   gate:
     name: Main merge gate
     if: ${{ always() }}
-    needs: [plan, build_pages, arena_realism, art_direction, beginner_guide, caravan_collection, caravan_field, character_v213, character_v214, character_v215, character_v216, character_v217, character_v218, circus_war_v182, combat_upgrades_layout, combat_values, equipment_v168, first_quests, ludus_hud_v202, naval_regression, pit_v174, rankings_v200, render_performance_v187, rome_loading_v181, stable, model_delivery]
+    needs: [plan, build_pages, arena_realism, art_direction, beginner_guide, caravan_collection, caravan_field, character_v213, character_v214, character_v215, character_v216, character_v217, character_v218, circus_war_v182, combat_upgrades_layout, combat_values, equipment_v168, first_quests, ludus_hud_v202, naval_regression, pit_v174, rankings_v200, render_performance_v187, rome_loading_v181, stable, model_delivery, equipment_layout_v259]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
