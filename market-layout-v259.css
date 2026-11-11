@@ -1,0 +1,39 @@
+/* Six products per page, with the available screen width devoted to the shop. */
+body[data-roman-screen="pazar"]{--market-edge:clamp(6px,.8vw,14px)}
+body[data-roman-screen="pazar"]>header{margin-inline:var(--market-edge)}
+body[data-roman-screen="pazar"] .market-workspace{width:100%;max-width:none;margin:0;padding-inline:var(--market-edge);grid-template-columns:clamp(54px,5.5vw,80px) minmax(0,1fr);gap:clamp(5px,.7vw,12px)}
+#basicMarket{gap:clamp(5px,1.2dvh,12px);padding:clamp(7px,1.6dvh,16px)}
+#basicMarket h1{font-size:clamp(19px,4.2dvh,31px);line-height:1.15}
+#basicMarket #categories{padding:2px 0 5px;gap:clamp(3px,.5vw,8px);border-bottom:1px solid var(--ui-line)}
+#basicMarket #categories button{min-height:28px;border-radius:4px}
+#basicMarket #equipmentSubcategories{justify-content:flex-start;gap:5px;padding:0}
+#basicMarket #equipmentSubcategories button{min-height:27px}
+#basicMarket #products[data-page-size="6"]{grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(5px,.75vw,12px);align-items:stretch}
+#basicMarket .product{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(45px,1fr) 2.35em 2.5em auto auto;align-items:stretch;gap:clamp(3px,.8dvh,7px);padding:clamp(5px,1.3dvh,12px);font-size:clamp(11px,2.6dvh,17px)}
+#basicMarket .product .art{height:100%;width:100%;min-height:0;border:0!important;border-bottom:1px solid #e8dfcf!important;box-shadow:none;padding:3px;cursor:pointer;border-radius:3px}
+#basicMarket .product h2{display:flex;align-items:center;justify-content:center;white-space:normal;overflow:hidden;overflow-wrap:anywhere;font-size:inherit;line-height:1.15;margin:0}
+#basicMarket .product .basic{display:flex;align-items:center;justify-content:center;font-size:clamp(8px,1.9dvh,12px);line-height:1.25;letter-spacing:.015em}
+#basicMarket .product .price{font-size:clamp(10px,2.45dvh,16px);line-height:1.2;margin:0;padding-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+#basicMarket .product .buy{min-width:0;padding:5px 3px;min-height:30px;font-size:clamp(10px,2.45dvh,16px);line-height:1.15}
+#basicMarket .market-footer{padding-top:4px;border-top:1px solid var(--ui-line)}
+#basicMarket .market-pager{gap:9px;padding:0}
+#basicMarket .market-pager button{width:30px;height:28px;border-radius:4px;background:#fff}
+#basicMarket .inventory-link{font-size:clamp(9px,2.2dvh,14px)}
+#basicMarket #products .market-food{grid-template-rows:minmax(40px,1fr) 2.35em 3.7em auto auto auto!important;row-gap:3px!important}
+#basicMarket #products .market-food>*{grid-column:1;grid-row:auto;text-align:center}
+#basicMarket #products .market-food h2{white-space:normal!important;font-size:inherit!important}
+#basicMarket .market-food .art{cursor:default}
+#basicMarket .market-food .food-detail{font-size:clamp(8px,1.8dvh,11px);line-height:1.2;align-self:center}
+#basicMarket .market-food .price{font-size:clamp(8px,2.05dvh,13px);white-space:normal}
+#basicMarket .market-food .market-quantity{gap:4px;justify-content:center;font-size:clamp(9px,2dvh,12px)}
+#basicMarket .market-food .market-quantity input{width:48px;max-width:65%;min-width:25px;font-size:clamp(10px,2.2dvh,14px);padding:2px 3px}
+#basicMarket #foodMealNote{font-size:clamp(8px,1.8dvh,11px);line-height:1.2;margin:0}
+@media(max-height:360px){
+ #basicMarket{gap:4px;padding:6px}
+ #basicMarket .product{gap:3px;padding:4px;grid-template-rows:minmax(34px,1fr) 2.35em 2.5em auto auto}
+ #basicMarket #categories button,#basicMarket #equipmentSubcategories button{min-height:24px}
+ #basicMarket #products .market-food{grid-template-rows:minmax(30px,1fr) 2.35em 2.5em auto auto auto!important;gap:2px!important}
+ #basicMarket:has(.market-food) .subtitle{display:none}
+ #basicMarket .market-food .food-detail{font-size:8px}
+ #basicMarket #foodMealNote{font-size:8px}
+}
