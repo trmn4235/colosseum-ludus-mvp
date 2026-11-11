@@ -30,9 +30,9 @@ body[data-roman-screen="pazar"] .market-workspace{width:100%;max-width:none;marg
 #basicMarket #foodMealNote{font-size:clamp(8px,1.8dvh,11px);line-height:1.2;margin:0}
 @media(max-height:360px){
  body[data-roman-screen="pazar"]{grid-template-rows:34px minmax(0,1fr)}
- #basicMarket{gap:3px;padding:6px}
+ #basicMarket{gap:2px;padding:5px}
  #basicMarket h1{font-size:17px}
- #basicMarket .product{gap:2px;padding:4px;grid-template-rows:minmax(28px,1fr) auto auto auto auto}
+ #basicMarket .product{gap:2px;padding:3px;grid-template-rows:minmax(28px,1fr) max-content max-content max-content max-content}
  #basicMarket .product h2{min-height:2.3em}
  #basicMarket .product .buy{min-height:26px;padding:3px}
  #basicMarket #categories{padding-bottom:3px}
