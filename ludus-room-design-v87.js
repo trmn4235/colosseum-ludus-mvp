@@ -3,7 +3,7 @@ var LudusRoomDesign=(()=>{
  'use strict';
  const themes={
   office:{name:'Yönetim · Tablinum',tone:0x702d39,ink:'#702d39',pale:0xe4d8bf,motif:'laurel'},
-  clan:{name:'Klan · Zafer salonu',tone:0x512735,ink:'#512735',pale:0xe7ddc9,motif:'shield'},
+  clan:{name:'Klan · Yönetim odası',tone:0xf3f3f1,ink:'#b4985c',pale:0xf6f6f4,motif:'shield'},
   rest:{name:'Dinlenme · Sessiz yatakhane',tone:0x596961,ink:'#596961',pale:0xcec6af,motif:'star'},
   upgrades:{name:'Geliştirmeler · Fabrica',tone:0x484b4a,ink:'#484b4a',pale:0xc9bfa9,motif:'hammer'},
   infirmary:{name:'Revir · Valetudinarium',tone:0x607c74,ink:'#607c74',pale:0xe6dfcc,motif:'leaf'},
@@ -20,6 +20,13 @@ var LudusRoomDesign=(()=>{
   function canvasMat(key,crest=false){
    const bank=crest?crestMats:floorMats;if(bank.has(key))return bank.get(key);
    const theme=themes[key],c=document.createElement('canvas');c.width=c.height=512;const p=c.getContext('2d');
+   if(key==='clan'&&!crest){
+    p.fillStyle='#f5f5f3';p.fillRect(0,0,512,512);
+    p.strokeStyle='#dedfdf';p.lineWidth=1;
+    for(let i=0;i<8;i++){p.beginPath();p.moveTo(i*83-190,0);p.bezierCurveTo(i*83-80,150,i*83-125,325,i*83+120,512);p.stroke();}
+    p.strokeStyle='#b9a06b';p.lineWidth=2;p.strokeRect(18,18,476,476);
+    const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.anisotropy=2;const material=mat(0xffffff,{map:tx});bank.set(key,material);return material;
+   }
    p.fillStyle=crest?'#e7dbc2':'#d6ccb7';p.fillRect(0,0,512,512);
    if(!crest){for(let y=0;y<512;y+=16)for(let x=0;x<512;x+=16){p.fillStyle=['#ded4bf','#d4cab5','#d8cfbb','#cec5b1'][(x/16*3+y/16*7)%4];p.fillRect(x+1,y+1,14,14);}}
    p.strokeStyle=theme.ink;p.lineWidth=crest?5:10;p.strokeRect(18,18,476,476);p.strokeStyle='#b19159';p.lineWidth=3;p.strokeRect(32,32,448,448);
@@ -97,13 +104,31 @@ var LudusRoomDesign=(()=>{
     plant(3.92,.02,1.9,.92);boundsAt('planter',3.92,1.9,.62,.62);wallWindow(-1,-.8);wallWindow(1,.1);
     features.push('archive-scrolls','curule-chair','laurel-relief','visitor-seat','retained-mission-desk');
    }else if(kind==='clan'){
-    for(const x of [-4.38,-1.53,1.53,4.38])column(x,back+.42,4.02);
-    for(const x of [-2.87,2.87]){box(tone,x,2.19,back+.26,2.27,3.70,.07);for(const xx of [-1.12,1.12])box(m.gold,x+xx,2.18,back+.32,.028,3.70,.03);box(m.gold,x,4.08,back+.33,2.24,.04,.04);}
-    for(const side of [-1,1]){const x=side*4.13;bench(x,.10,.65,3.50,.51);box(tone,x,.62,.10,.61,.08,3.36);box(pale,side*4.52,.92,.10,.12,.87,3.6);boundsAt('bench',x,.10,.70,3.55);wallWindow(side,.35);}
-    for(const x of [-1.10,1.10])sconce(x,3.22,back+.36);
-    // The centre is deliberately reserved for the player's banner and imported vault.
-    box(pale,0,.07,-2.50,2.35,.14,1.65);box(m.gold,0,.145,-1.67,2.34,.016,.04);
-    features.push('trophy-alcoves','ceremonial-benches','vault-plinth','retained-player-banner');
+    for(const x of [-4.38,4.38])column(x,back+.42,4.02);
+    for(const side of [-1,1]){wallWindow(side,.35);box(m.red,side*3.89,2.95,back+.34,.35,1.75,.04);box(m.gold,side*3.89,3.85,back+.37,.43,.05,.06);}
+    // Reuse the caravan room's actual artwork, including the same 16 resource markers.
+    const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=1024;
+    const context=canvas.getContext('2d');context.fillStyle='#f5f5f3';context.fillRect(0,0,2048,1024);
+    const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=2;
+    const mapMaterial=new T.MeshBasicMaterial({map:texture,toneMapped:false});
+    const map=put(g.plane,mapMaterial,0,2.58,back+.50,6.8,3.4);
+    map.name='Kervan kaynak haritası';map.userData={source:'assets/supply-v91/rome-panorama.webp',pointCount:16,ready:false};
+    box(pale,0,2.58,back+.43,7.04,3.64,.10);
+    for(const x of [-3.49,3.49])box(m.gold,x,2.58,back+.52,.035,3.64,.04);
+    for(const y of [.78,4.38])box(m.gold,0,y,back+.52,7.04,.035,.04);
+    globalThis.LudusSupply.paintMap(canvas).then(()=>{texture.needsUpdate=true;map.userData.ready=true;}).catch(()=>{
+     const img=new Image();img.onload=()=>{context.drawImage(img,0,0,canvas.width,canvas.height);texture.needsUpdate=true;map.userData.ready=true;};img.src=map.userData.source;
+    });
+    // Management table in front of the map; keep both side approaches and the entrance clear.
+    box(pale,0,1.08,-1.85,3.6,.17,1.25);box(m.gold,0,.99,-1.85,3.62,.025,1.27);
+    for(const x of [-1.35,1.35]){box(pale,x,.50,-1.85,.32,.94,.85);box(m.gold,x,.11,-1.85,.38,.045,.91);box(pale,x,.055,-1.85,.46,.11,.99);}
+    box(pale,.65,1.19,-1.8,.62,.05,.40);box(m.red,.86,1.225,-1.65,.09,.015,.09);
+    roll(-.8,1.23,-1.91,.45);roll(-.57,1.23,-1.91,.45);
+    boundsAt('management-table',0,-1.85,3.64,1.29);
+    // The existing shared-vault model attaches at the same offset as this plinth.
+    box(pale,3.10,.07,-2.40,2.08,.14,1.60);box(m.gold,3.10,.145,-1.60,2.08,.016,.04);
+    boundsAt('vault-plinth',3.10,-2.40,2.08,1.60);
+    features.push('caravan-wall-map','management-table','vault-plinth','open-central-aisle');
    }else if(kind==='rest'){
     // Beds remain padded brown floor mattresses, with a clear central aisle.
     for(const side of [-1,1]){wallWindow(side,center-.9);for(const z of [back+1.85,2.25]){box(m.wood,side*4.55,2.25,z,.34,.10,1.05);for(let i=0;i<3;i++)box(i%2?m.linen:tone,side*4.56,2.36+i*.10,z,.29,.09,.78);}}
@@ -167,3 +192,4 @@ var LudusRoomDesign=(()=>{
  }
  return {create,themes};
 })();
+
