@@ -3,29 +3,57 @@ var LudusRoomDesign=(()=>{
  'use strict';
  const themes={
   office:{name:'Yönetim · Tablinum',tone:0x702d39,ink:'#702d39',pale:0xe4d8bf,motif:'laurel'},
-  clan:{name:'Klan · Yönetim odası',tone:0xf3f3f1,ink:'#b4985c',pale:0xf6f6f4,motif:'shield'},
+  clan:{name:'Klan · Yönetim odası',tone:0x843e30,ink:'#574333',pale:0xb69975,motif:'shield'},
   rest:{name:'Dinlenme · Sessiz yatakhane',tone:0x596961,ink:'#596961',pale:0xcec6af,motif:'star'},
   upgrades:{name:'Geliştirmeler · Fabrica',tone:0x484b4a,ink:'#484b4a',pale:0xc9bfa9,motif:'hammer'},
   infirmary:{name:'Revir · Valetudinarium',tone:0x607c74,ink:'#607c74',pale:0xe6dfcc,motif:'leaf'},
   dining:{name:'Yemekhane · Triclinium',tone:0x98593c,ink:'#98593c',pale:0xe8d9ba,motif:'wheat'}
  };
  function create({T,wood,stone,props,colliders}){
-  const cache=new Map(),floorMats=new Map(),crestMats=new Map();let current=null;
+  const cache=new Map(),floorMats=new Map(),crestMats=new Map(),clanMats=new Map();let current=null;
   const mat=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.9,...extra});
   const m={wood,stone,ivory:mat(0xeee5d1),gold:mat(0xaa8750,{metalness:.62,roughness:.48}),iron:mat(0x545759,{metalness:.5,roughness:.65}),dark:mat(0x302d2a),clay:mat(0xae6948),clayDark:mat(0x7e4b36),paper:mat(0xe2cea4),linen:mat(0xdcd4bd),red:mat(0x753b40),olive:mat(0x536443),herb:mat(0x7b8b5b),water:mat(0x759796,{metalness:.22,roughness:.32}),coal:mat(0x332a26),ember:mat(0xb04f24,{emissive:0xd34912,emissiveIntensity:.48}),light:new T.MeshBasicMaterial({color:0xe3d7b8})};
   const g={box:new T.BoxGeometry(1,1,1),cyl:new T.CylinderGeometry(1,1,1,14),sphere:new T.SphereGeometry(1,12,8),plane:new T.PlaneGeometry(1,1),ring:new T.TorusGeometry(1,.13,6,14),cone:new T.ConeGeometry(1,1,12),leaf:new T.SphereGeometry(1,7,5)};
   g.jar=new T.LatheGeometry([[.07,0],[.14,.04],[.24,.27],[.25,.48],[.18,.65],[.09,.75],[.09,.89],[.13,.92],[.13,.97],[.08,.97]].map(p=>new T.Vector2(...p)),14);
   g.bowl=new T.LatheGeometry([[0,0],[.12,0],[.23,.12],[.27,.22],[.23,.23],[.20,.13],[.10,.045],[0,.045]].map(p=>new T.Vector2(...p)),16);
   const shape=new T.Shape();shape.moveTo(-.5,0);shape.lineTo(.5,0);shape.lineTo(0,.36);shape.closePath();g.pediment=new T.ExtrudeGeometry(shape,{depth:.14,bevelEnabled:false});
+  // Painted once and cached: warm timber and worn frescoes, with no external texture downloads.
+  function clanMat(kind){
+   if(clanMats.has(kind))return clanMats.get(kind);
+   const c=document.createElement('canvas');c.width=c.height=512;const p=c.getContext('2d');
+   if(kind==='timber'){
+    p.fillStyle='#805335';p.fillRect(0,0,512,512);
+    for(let i=0;i<180;i++){const y=i*3;p.strokeStyle=i%3?'#946340':'#64412b';p.globalAlpha=.35;p.lineWidth=i%4===0?2:1;p.beginPath();p.moveTo(0,y);p.bezierCurveTo(160,y+Math.sin(i)*6,350,y+Math.cos(i)*8,512,y+3);p.stroke();}
+    p.globalAlpha=1;p.strokeStyle='#493326';p.lineWidth=2;for(let y=128;y<512;y+=128){p.beginPath();p.moveTo(0,y);p.lineTo(512,y);p.stroke();}
+   }else{
+    p.fillStyle='#914c38';p.fillRect(0,0,512,512);p.fillStyle='#b39061';p.fillRect(28,25,456,462);p.fillStyle='#614d36';p.fillRect(35,32,442,448);p.fillStyle='#77775a';p.fillRect(43,40,426,432);
+    p.strokeStyle='#bc9b69';p.lineWidth=3;p.strokeRect(58,55,396,402);
+    // A faded garden-and-amphora panel, like the painted niches of a Roman house.
+    p.strokeStyle='#454e38';p.lineWidth=6;
+    for(const side of [-1,1]){p.beginPath();p.moveTo(256+side*125,414);p.bezierCurveTo(256+side*145,335,256+side*80,220,256+side*112,120);p.stroke();for(let n=0;n<9;n++){p.save();p.translate(256+side*(110+Math.sin(n)*17),145+n*28);p.rotate(side*(n%2?.7:-.6));p.fillStyle=n%2?'#555d43':'#939365';p.beginPath();p.ellipse(0,0,10,25,0,0,Math.PI*2);p.fill();p.restore();}}
+    p.fillStyle='#b59463';p.beginPath();p.moveTo(231,269);p.bezierCurveTo(238,310,191,322,211,370);p.quadraticCurveTo(256,400,301,370);p.bezierCurveTo(321,322,274,310,281,269);p.closePath();p.fill();p.fillRect(225,261,62,11);p.fillRect(231,391,50,9);
+    p.strokeStyle='#c2a16f';p.lineWidth=9;for(const side of [-1,1]){p.beginPath();p.ellipse(256+side*40,307,20,28,0,0,Math.PI*2);p.stroke();}
+    for(let i=0;i<1100;i++){p.globalAlpha=.04+(i%4)*.025;p.fillStyle=i%2?'#d5b68b':'#47392b';p.fillRect((i*137)%512,(i*227)%512,2+i%8,1+i%5);}p.globalAlpha=1;
+   }
+   const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.anisotropy=2;const material=mat(0xffffff,{map:tx});material.name='clan-'+kind;clanMats.set(kind,material);return material;
+  }
   function canvasMat(key,crest=false){
    const bank=crest?crestMats:floorMats;if(bank.has(key))return bank.get(key);
    const theme=themes[key],c=document.createElement('canvas');c.width=c.height=512;const p=c.getContext('2d');
    if(key==='clan'&&!crest){
-    p.fillStyle='#f5f5f3';p.fillRect(0,0,512,512);
-    p.strokeStyle='#dedfdf';p.lineWidth=1;
-    for(let i=0;i<8;i++){p.beginPath();p.moveTo(i*83-190,0);p.bezierCurveTo(i*83-80,150,i*83-125,325,i*83+120,512);p.stroke();}
-    p.strokeStyle='#b9a06b';p.lineWidth=2;p.strokeRect(18,18,476,476);
-    const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.anisotropy=2;const material=mat(0xffffff,{map:tx});bank.set(key,material);return material;
+    p.fillStyle='#9e896b';p.fillRect(0,0,512,512);
+    for(const [inset,width,color]of [[14,8,'#554b3b'],[26,3,'#c0a781'],[49,5,'#66503b']]){p.strokeStyle=color;p.lineWidth=width;p.strokeRect(inset,inset,512-inset*2,512-inset*2);}
+    p.strokeStyle='#5d4d39';p.lineWidth=4;
+    for(let i=0;i<18;i++){const t=35+i*25;p.strokeRect(t,33,13,11);p.strokeRect(t,468,13,11);p.strokeRect(33,t,11,13);p.strokeRect(468,t,11,13);}
+    for(let row=0;row<3;row++)for(let col=0;col<3;col++){
+     const x=61+col*132,y=61+row*132;p.fillStyle=(row+col)%2?'#a68c69':'#b29a77';p.fillRect(x,y,126,126);p.strokeStyle='#625340';p.lineWidth=3;p.strokeRect(x+3,y+3,120,120);p.strokeStyle='#c3aa82';p.lineWidth=2;p.strokeRect(x+8,y+8,110,110);
+     p.save();p.translate(x+63,y+63);p.strokeStyle='#70543b';p.lineWidth=3;p.beginPath();p.arc(0,0,40,0,Math.PI*2);p.stroke();
+     for(let n=0;n<8;n++){p.save();p.rotate(n*Math.PI/4);p.fillStyle=n%2?'#6a5c43':'#895f42';p.beginPath();p.ellipse(0,-21,6,15,0,0,Math.PI*2);p.fill();p.restore();}p.fillStyle='#554b3b';p.beginPath();p.arc(0,0,7,0,Math.PI*2);p.fill();p.restore();
+    }
+    // Individual tesserae and muted wear make the pattern read as stone mosaic, not a rug.
+    p.strokeStyle='#7c6e57';p.globalAlpha=.36;p.lineWidth=.65;for(let n=0;n<=512;n+=4){p.beginPath();p.moveTo(n,0);p.lineTo(n,512);p.moveTo(0,n);p.lineTo(512,n);p.stroke();}
+    for(let i=0;i<2300;i++){p.globalAlpha=.05+(i%3)*.035;p.fillStyle=i%2?'#dfc69b':'#483d30';p.fillRect((i*137)%512,(i*197)%512,3,3);}p.globalAlpha=1;
+    const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.anisotropy=2;const material=mat(0xffffff,{map:tx});material.name='clan-roman-mosaic';bank.set(key,material);return material;
    }
    p.fillStyle=crest?'#e7dbc2':'#d6ccb7';p.fillRect(0,0,512,512);
    if(!crest){for(let y=0;y<512;y+=16)for(let x=0;x<512;x+=16){p.fillStyle=['#ded4bf','#d4cab5','#d8cfbb','#cec5b1'][(x/16*3+y/16*7)%4];p.fillRect(x+1,y+1,14,14);}}
@@ -47,7 +75,7 @@ var LudusRoomDesign=(()=>{
    p.restore();const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.anisotropy=2;const material=mat(0xffffff,{map:tx});bank.set(key,material);return material;
   }
   function build(kind,depth){
-   const theme=themes[kind],root=new T.Group(),bounds=[],features=[];root.name=theme.name;const back=4.5-depth,center=4.5-depth/2,tone=mat(theme.tone),pale=mat(theme.pale);
+   const theme=themes[kind],root=new T.Group(),bounds=[],features=[];root.name=theme.name;const back=4.5-depth,center=4.5-depth/2,tone=mat(theme.tone),pale=mat(theme.pale),trim=kind==='clan'?pale:m.ivory,timber=kind==='clan'?clanMat('timber'):m.wood;
    function put(geo,material,x,y,z,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0){const o=new T.Mesh(geo,material);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.rotation.set(rx,ry,rz);o.receiveShadow=true;root.add(o);return o;}
    const box=(material,x,y,z,w,h,d)=>put(g.box,material,x,y,z,w,h,d);
    const cyl=(material,x,y,z,r,h)=>put(g.cyl,material,x,y,z,r,h,r);
@@ -75,12 +103,12 @@ var LudusRoomDesign=(()=>{
    // Continuous plaster, a coloured dado, stone trim and ceiling beams unify each room.
    put(g.plane,canvasMat(kind),0,.002,center,9.72,depth-.30,1,-Math.PI/2);
    box(pale,0,2.65,back+.18,9.7,4.65,.05);box(tone,0,.72,back+.22,9.7,1.4,.05);
-   box(m.ivory,0,1.46,back+.27,9.7,.12,.11);box(m.gold,0,1.56,back+.29,9.7,.026,.025);
-   for(const side of [-1,1]){box(pale,side*4.81,2.65,center,.05,4.65,depth-.3);box(tone,side*4.77,.72,center,.05,1.4,depth-.3);box(m.ivory,side*4.73,1.46,center,.10,.12,depth-.3);box(m.gold,side*4.70,1.56,center,.023,.026,depth-.3);box(pale,side*4.73,4.67,center,.22,.23,depth-.3);}
+   box(trim,0,1.46,back+.27,9.7,.12,.11);box(m.gold,0,1.56,back+.29,9.7,.026,.025);
+   for(const side of [-1,1]){box(pale,side*4.81,2.65,center,.05,4.65,depth-.3);box(tone,side*4.77,.72,center,.05,1.4,depth-.3);box(trim,side*4.73,1.46,center,.10,.12,depth-.3);box(m.gold,side*4.70,1.56,center,.023,.026,depth-.3);box(pale,side*4.73,4.67,center,.22,.23,depth-.3);}
    box(pale,0,4.67,back+.32,9.68,.24,.26);box(m.gold,0,4.51,back+.37,9.6,.035,.08);
    // Complete the courtyard-facing wall. Its central opening keeps the exit badge visible.
    for(const side of [-1,1]){
-    box(pale,side*3.06,2.32,4.34,3.60,4.62,.035);box(tone,side*3.08,.72,4.30,3.53,1.40,.035);box(m.ivory,side*3.08,1.46,4.25,3.53,.12,.12);
+    box(pale,side*3.06,2.32,4.34,3.60,4.62,.035);box(tone,side*3.08,.72,4.30,3.53,1.40,.035);box(trim,side*3.08,1.46,4.25,3.53,.12,.12);
     box(pale,side*1.15,1.48,4.23,.24,2.96,.22);box(m.gold,side*1.15,.24,4.095,.26,.05,.035);box(m.gold,side*1.15,2.76,4.095,.26,.045,.035);
    }
    box(pale,0,3.84,4.34,2.55,1.61,.035);box(m.wood,0,1.43,4.34,2.02,2.86,.035);
@@ -90,7 +118,7 @@ var LudusRoomDesign=(()=>{
    }
    box(pale,0,3.05,4.21,2.65,.22,.30);box(m.gold,0,3.19,4.16,2.67,.035,.30);put(g.pediment,pale,0,3.22,4.12,2.55,1.10,1);
    box(pale,0,4.67,4.28,9.67,.24,.22);box(m.gold,0,4.51,4.19,9.60,.035,.055);
-   for(let z=back+1.2;z<3.5;z+=2.7)box(kind==='clan'?pale:m.wood,0,4.79,z,9.6,.18,.20);
+   for(let z=back+1.2;z<3.5;z+=2.7)box(timber,0,4.79,z,9.6,.18,.20);
    for(const side of [-1,1])for(const z of [back+1.05,2.9]){box(pale,side*4.59,2.07,z,.28,4.14,.34);box(m.gold,side*4.56,1.72,z,.32,.045,.37);}
    features.push('mosaic','plaster','dado','cornice','courtyard-door');
    if(kind==='office'){
@@ -105,30 +133,37 @@ var LudusRoomDesign=(()=>{
     features.push('archive-scrolls','curule-chair','laurel-relief','visitor-seat','retained-mission-desk');
    }else if(kind==='clan'){
     for(const x of [-4.38,4.38])column(x,back+.42,4.02);
-    for(const side of [-1,1]){wallWindow(side,.35);box(m.red,side*3.89,2.95,back+.34,.35,1.75,.04);box(m.gold,side*3.89,3.85,back+.37,.43,.05,.06);}
+    for(const side of [-1,1]){
+     wallWindow(side,.35);box(tone,side*3.89,2.95,back+.34,.35,1.75,.04);
+     box(timber,side*4.64,4.39,center,.20,.22,depth-.3);
+     for(const z of [-2.7,2.0])put(g.plane,clanMat('fresco'),side*4.715,2.95,z,1.75,2.50,1,0,-side*Math.PI/2);
+     put(g.plane,clanMat('fresco'),side*3.03,2.98,4.285,2.15,2.50,1,0,Math.PI);
+    }
     // Reuse the caravan room's actual artwork, including the same 16 resource markers.
     const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=1024;
-    const context=canvas.getContext('2d');context.fillStyle='#f5f5f3';context.fillRect(0,0,2048,1024);
+    const context=canvas.getContext('2d');context.fillStyle='#a68b63';context.fillRect(0,0,2048,1024);
     const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=2;
     const mapMaterial=new T.MeshBasicMaterial({map:texture,toneMapped:false});
     const map=put(g.plane,mapMaterial,0,2.58,back+.50,6.8,3.4);
     map.name='Kervan kaynak haritası';map.userData={source:'assets/supply-v91/rome-panorama.webp',pointCount:16,ready:false};
-    box(pale,0,2.58,back+.43,7.04,3.64,.10);
+    box(timber,0,2.58,back+.43,7.04,3.64,.10);
     for(const x of [-3.49,3.49])box(m.gold,x,2.58,back+.52,.035,3.64,.04);
     for(const y of [.78,4.38])box(m.gold,0,y,back+.52,7.04,.035,.04);
     globalThis.LudusSupply.paintMap(canvas).then(()=>{texture.needsUpdate=true;map.userData.ready=true;}).catch(()=>{
      const img=new Image();img.onload=()=>{context.drawImage(img,0,0,canvas.width,canvas.height);texture.needsUpdate=true;map.userData.ready=true;};img.src=map.userData.source;
     });
-    // Management table in front of the map; keep both side approaches and the entrance clear.
-    box(pale,0,1.08,-1.85,3.6,.17,1.25);box(m.gold,0,.99,-1.85,3.62,.025,1.27);
-    for(const x of [-1.35,1.35]){box(pale,x,.50,-1.85,.32,.94,.85);box(m.gold,x,.11,-1.85,.38,.045,.91);box(pale,x,.055,-1.85,.46,.11,.99);}
-    box(pale,.65,1.19,-1.8,.62,.05,.40);box(m.red,.86,1.225,-1.65,.09,.015,.09);
-    roll(-.8,1.23,-1.91,.45);roll(-.57,1.23,-1.91,.45);
-    boundsAt('management-table',0,-1.85,3.64,1.29);
-    // The existing shared-vault model attaches at the same offset as this plinth.
-    box(pale,3.10,.07,-2.40,2.08,.14,1.60);box(m.gold,3.10,.145,-1.60,2.08,.016,.04);
-    boundsAt('vault-plinth',3.10,-2.40,2.08,1.60);
-    features.push('caravan-wall-map','management-table','vault-plinth','open-central-aisle');
+    // Brown timber desk on the right; four black iron legs keep its silhouette light.
+    const black=mat(0x171818,{metalness:.48,roughness:.72});black.name='clan-black-table-legs';
+    box(timber,2.5,1.08,-1.85,2.8,.17,1.25);box(timber,2.5,.94,-1.85,2.61,.14,1.08);
+    for(const x of [1.32,3.68])for(const z of [-2.31,-1.39]){box(black,x,.49,z,.13,.98,.13);box(black,x,.055,z,.22,.11,.22);}
+    for(const x of [1.32,3.68])box(black,x,.26,-1.85,.09,.08,.96);
+    box(m.paper,2.89,1.19,-1.8,.62,.05,.40);box(m.red,3.1,1.225,-1.65,.09,.015,.09);
+    roll(1.7,1.23,-1.91,.45);roll(1.93,1.23,-1.91,.45);
+    boundsAt('management-table',2.5,-1.85,2.84,1.29);
+    // Low earthen stone footing under the wooden shared chest on the left.
+    box(pale,-3.10,.07,-2.40,2.08,.14,1.60);
+    boundsAt('vault-plinth',-3.10,-2.40,2.08,1.60);
+    features.push('caravan-wall-map','management-table','vault-plinth','open-central-aisle','roman-frescoes','brown-timber-table','black-table-legs');
    }else if(kind==='rest'){
     // Beds remain padded brown floor mattresses, with a clear central aisle.
     for(const side of [-1,1]){wallWindow(side,center-.9);for(const z of [back+1.85,2.25]){box(m.wood,side*4.55,2.25,z,.34,.10,1.05);for(let i=0;i<3;i++)box(i%2?m.linen:tone,side*4.56,2.36+i*.10,z,.29,.09,.78);}}
