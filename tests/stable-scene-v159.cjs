@@ -49,7 +49,10 @@ const loadedMaterials=await page.evaluate(()=>{
 assert.ok(loadedMaterials.every(m=>m.colorSpace==='srgb'&&m.heightColorSpace===''&&m.roughnessColorSpace===''),'PBR data maps must not undergo color correction');
 async function render(){await page.evaluate(()=>{const p=LudusPreview;p.followOwner(.05,false);p.camera.updateMatrixWorld(true);p.stableRoom.tick(.04);p.stableSystem.tick();p.roomActions.tick();p.roomScene.updateMatrixWorld(true);p.renderer.render(p.roomScene,p.camera);});}
 async function capture(name){
+ // Viewport resize is delivered asynchronously and clears the drawing buffer.
+ // The normal frame loop is frozen by this fixture, so paint after resize settles.
  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ await render();
  const bytes=await page.screenshot({path:out+'/'+name,timeout:90000}),img=PNG.sync.read(bytes),colors=new Set();
  for(let y=90;y<img.height-20;y+=12)for(let x=20;x<img.width-20;x+=12){const i=(y*img.width+x)*4;colors.add([img.data[i]>>4,img.data[i+1]>>4,img.data[i+2]>>4].join(','));}
  assert.ok(colors.size>16,'the screenshot contains the rendered scene, not an empty cleared canvas: '+name);

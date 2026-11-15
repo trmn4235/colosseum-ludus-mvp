@@ -10,7 +10,8 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
  assert.equal(meshes.length,4);assert.equal(meshes.reduce((n,m)=>n+(m.geometry.index?.count||m.geometry.attributes.position.count)/3,0),r.triangles);assert.ok(Math.abs(size.y-1.8)<.004);assert.ok(Math.abs(b.min.y+.1)<.004);assert.ok(size.z<.5&&size.x<.15);
  for(const cls of Object.keys(c.ArenaClasses)){
   const m=c.ImportedGladiator.create(193,cls),f=new c.ArenaCombat(()=>.999).reset('normal',cls).fighters[0],p=c.ArenaMotion.profile('halberd');
-  assert.equal(p.pole,true);assert.equal(p.length,1.7);
+  // Training uses the blade path directly; arena profiles retain the long-shaft grip flag.
+  assert.equal(p.pole,page!=='ludus.html');assert.equal(p.length,1.7);
   Object.assign(f,{x:0,z:0,angle:0,weapon:'halberd',pitWeapon:null,offhand:null,leftGear:null,shield:false,helmet:false,chest:false,shoulders:false});let weapon;
   for(const action of ['idle','walk','attack','guard','dodge','hurt','down'])for(let i=0;i<18;i++){
    Object.assign(f,{action:['walk','guard'].includes(action)?'idle':action,attackWeapon:'halberd',attackProfile:p,duration:action==='dodge'?.46:p.duration,blocking:action==='guard',move:action==='walk'?1:0,hp:action==='down'?0:100,reaction:action==='hurt'?.2:0,timer:i/30,walk:i/8,deadTime:i/30});

@@ -62,6 +62,14 @@ jobs:
 
       - name: Two-hand mobile control layout
         run: node tests/hand-specials-browser-v261.cjs
+      - name: Halberd cuts on the actual character
+        run: node tests/halberd-render-v264.cjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: halberd-v264
+          path: /tmp/halberd-v264
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
