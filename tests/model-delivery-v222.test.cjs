@@ -46,7 +46,8 @@ test('every active model has the same immutable mirror and exact shipped hash in
  assert.ok(Number(caravanRevision)>=222,'Caravan cache version must include the verified model loader');
  const pitRevision=read('san-avlusu.html').match(/pit-visit-v172\.js\?v=revision(\d+)/)?.[1];
  assert.ok(Number(pitRevision)>=222,'Aventinus cache version must include the verified model loader');
- assert.match(read('index.html'),/ludus\.html\?v=revision222/);
+ const entryRevision=read('index.html').match(/ludus\.html\?v=revision(\d+)/);
+ assert.ok(entryRevision&&Number(entryRevision[1])>=222,'game entry must use V222 or a newer cache revision');
  const circus=read('circus-maximus.html'),helper=circus.indexOf('model-delivery-v222.js?v=revision222'),view=circus.indexOf('circus-war-view-v186.js?v=revision222');
  assert.ok(helper>=0&&view>helper,'Circus loads the verified downloader before its active crew view');
 });
