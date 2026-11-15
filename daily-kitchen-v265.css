@@ -37,7 +37,7 @@ body[data-roman-screen] #foodModal .kitchen-gauge h3{font:700 18px Georgia,serif
 body[data-roman-screen] #foodModal .kitchen-gauge strong{font:600 13px Arial,sans-serif!important;color:#591823!important}
 body[data-roman-screen] #foodModal .kitchen-track{height:10px!important;margin:8px 0!important;border:1px solid #c6b899!important;background:#e3dbcb!important;border-radius:8px!important;overflow:hidden!important}
 body[data-roman-screen] #foodModal .kitchen-track span{display:block!important;height:100%!important;background:linear-gradient(90deg,#a28348,#c5ab6a)!important;border-radius:inherit!important;transition:width .15s!important}
-body[data-roman-screen] #foodModal .kitchen-gauge:last-child .kitchen-track span{background:linear-gradient(90deg,#641c2c,#9d4b56)!important}
+body[data-roman-screen] #foodModal .kitchen-gauge:nth-child(2) .kitchen-track span{background:linear-gradient(90deg,#641c2c,#9d4b56)!important}
 body[data-roman-screen] #foodModal .kitchen-gauge>small{font-size:10px!important;color:#847465!important}
 body[data-roman-screen] #foodModal .kitchen-actions{display:flex!important;gap:10px!important;flex:none!important}
 body[data-roman-screen] #foodModal .kitchen-serve,body[data-roman-screen] #foodModal .kitchen-buy button{flex:1!important;padding:12px!important;background:#591823!important;color:#f8e9c8!important;border:1px solid #b69754!important;border-radius:5px!important;font-weight:600!important}
@@ -170,6 +170,45 @@ body[data-roman-screen] #foodModal .kitchen-shop-back{align-self:flex-start!impo
  body[data-roman-screen] #foodModal .kitchen-slot{padding:2px!important}
  body[data-roman-screen] #foodModal .kitchen-slot h3{margin:0!important;font-size:8px!important}
  body[data-roman-screen] #foodModal .kitchen-slot-edit button{height:18px!important}
+}
+/* V267: show the real regeneration bonus beside the two food meters. */
+body[data-roman-screen] #foodModal .kitchen-gauges{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(118px,.9fr)!important;gap:5px 16px!important;margin:16px 0!important;align-items:center!important}
+body[data-roman-screen] #foodModal .kitchen-gauge{min-width:0!important}
+body[data-roman-screen] #foodModal .kitchen-gauge>small{display:none!important}
+body[data-roman-screen] #foodModal .kitchen-effect{grid-column:3!important;grid-row:1/3!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;min-width:0!important;padding:8px 5px!important;border:1px solid #c5ae77!important;border-radius:5px!important;background:#f0e8d5!important;text-align:center!important;color:#591823!important}
+body[data-roman-screen] #foodModal .kitchen-effect h3{font:600 11px/1.15 Arial,sans-serif!important;margin:0!important;color:#591823!important}
+body[data-roman-screen] #foodModal .kitchen-effect-value{font:700 29px/1 Georgia,serif!important;color:#591823!important}
+body[data-roman-screen] #foodModal .kitchen-effect-status{font:600 10px/1.1 Arial,sans-serif!important;color:#6b5338!important}
+body[data-roman-screen] #foodModal .kitchen-effect-until{font:9px/1.1 Arial,sans-serif!important;color:#847157!important}
+body[data-roman-screen] #foodModal .kitchen-effect[data-preview=false][data-active="12"],body[data-roman-screen] #foodModal .kitchen-effect[data-preview=false][data-active="8"],body[data-roman-screen] #foodModal .kitchen-effect[data-preview=false][data-active="4"]{border-color:#8c9a70!important;background:#edf0e4!important}
+body[data-roman-screen] #foodModal .kitchen-next{grid-column:1/3!important;display:flex!important;flex-wrap:wrap!important;gap:3px 10px!important;align-items:baseline!important;margin:0!important;font:10px/1.25 Arial,sans-serif!important;color:#827365!important}
+body[data-roman-screen] #foodModal .kitchen-active{font-weight:600!important;color:#591823!important;white-space:nowrap!important}
+@media(max-height:570px) and (min-width:540px){
+ body[data-roman-screen] #foodModal .kitchen-gauges{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(98px,.95fr)!important;gap:3px 9px!important;margin:6px 0!important}
+ body[data-roman-screen] #foodModal .kitchen-gauge h3{font-size:13px!important}
+ body[data-roman-screen] #foodModal .kitchen-gauge strong{font-size:10px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect{padding:4px 3px!important;gap:1px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect h3{font-size:9px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect-value{font-size:23px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect-status,body[data-roman-screen] #foodModal .kitchen-effect-until{font-size:8px!important}
+ body[data-roman-screen] #foodModal .kitchen-next{font-size:8px!important;gap:2px 7px!important}
+}
+@media(max-width:700px) and (min-width:540px){
+ body[data-roman-screen] #foodModal .kitchen-gauges{gap:3px 6px!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(92px,1.05fr)!important}
+ body[data-roman-screen] #foodModal .kitchen-gauge-label{gap:2px!important}
+ body[data-roman-screen] #foodModal .kitchen-gauge h3{font-size:11px!important}
+ body[data-roman-screen] #foodModal .kitchen-gauge strong{font-size:8px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect h3{font-size:8px!important}
+ body[data-roman-screen] #foodModal .kitchen-next{font-size:7.5px!important}
+}
+@media(max-width:539px){
+ body[data-roman-screen] #foodModal .kitchen-gauges{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 104px!important;gap:3px 6px!important;margin:7px 0!important}
+ body[data-roman-screen] #foodModal .kitchen-gauge h3{font-size:11px!important}
+ body[data-roman-screen] #foodModal .kitchen-gauge strong{font-size:8px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect{padding:4px!important;gap:1px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect h3{font-size:9px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect-value{font-size:23px!important}
+ body[data-roman-screen] #foodModal .kitchen-effect-status,body[data-roman-screen] #foodModal .kitchen-effect-until,body[data-roman-screen] #foodModal .kitchen-next{font-size:8px!important}
 }
 @media(prefers-reduced-motion:reduce){body[data-roman-screen] #foodModal .kitchen-track span{transition:none!important}}
 

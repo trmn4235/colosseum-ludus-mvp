@@ -7,7 +7,15 @@ var LudusFood=(()=>{
  function menu(crew,ingredients){
   const portions=ingredients.reduce((n,i)=>n+(foodSkus.has(i.sku)?i.quantity:0),0),types=new Set(ingredients.filter(i=>i.quantity>0).map(i=>['bread','meal'].includes(i.sku)?'grain':i.sku)).size;
   const goal=Math.min(5,Math.max(0,crew)),variety=goal?Math.min(100,Math.round(types/goal*1000)/10):0,coverage=crew?Math.min(100,Math.round(portions/crew*1000)/10):0;
-  return {portions,types,variety,coverage,goal,quality:coverage===100?variety:0};
+  const quality=coverage===100?variety:0,stamina_bonus_percent=coverage<100||!crew?0:quality>=100?12:quality>=50?8:4;
+  return {portions,types,variety,coverage,goal,quality,stamina_bonus_percent};
+ }
+ function bonusHint(crew,m){
+  if(!crew)return 'Önce bir gladyatör edin.';
+  if(m.coverage<100)return 'Bonus için '+num(Math.max(0,crew-m.portions))+' porsiyon daha.';
+  if(m.variety<50)return '+%8 için '+num(Math.max(0,Math.ceil(m.goal/2)-m.types))+' çeşit daha.';
+  if(m.variety<100)return '+%12 için '+num(Math.max(0,m.goal-m.types))+' çeşit daha.';
+  return 'En yüksek yemek bonusu.';
  }
  function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
  function button(text,action,cls=''){const b=el('button',cls,text);b.type='button';b.onclick=action;return b;}
@@ -61,8 +69,11 @@ var LudusFood=(()=>{
     else{const item=state.items.find(i=>i.sku===selected.sku);slot.dataset.sku=item.sku;const art=el('div','kitchen-slot-art'),quantity=el('strong','kitchen-slot-quantity',num(selected.quantity));art.append(picture(item),quantity);slot.append(art,el('h3','',item.name));const delivered=given.find(i=>i.sku===item.sku)?.quantity||0,edit=el('div','kitchen-slot-edit'),minus=button('−',()=>change(item.sku,-1)),plus=button('+',()=>change(item.sku,1));minus.dataset.focus='minus-'+item.sku;plus.dataset.focus='plus-'+item.sku;minus.setAttribute('aria-label',item.name+' seçimini azalt');plus.setAttribute('aria-label',item.name+' seçimini artır');minus.disabled=locked||!draft[item.sku];plus.disabled=locked||(draft[item.sku]||0)>=item.quantity||(foodSkus.has(item.sku)?m.portions>=crew:selected.quantity>=crew);edit.append(minus,el('small','',delivered?num(delivered)+' verildi':'Seçildi'),plus);slot.append(edit);}
     slots.append(slot);
    }
-   main.append(slots);const gauges=el('div','kitchen-gauges');gauges.append(gauge('Çeşitlilik',num(Math.min(m.types,m.goal))+' / '+num(m.goal)+' çeşit','Farklı malzemeler çeşitliliği artırır.',m.variety),gauge('Porsiyon',num(m.portions)+' / '+num(crew),crew?num(Math.max(0,crew-m.portions))+' porsiyon eksik':'Henüz gladyatör yok.',m.coverage));main.append(gauges);
-   const actions=el('div','kitchen-actions'),serve=button(busy?'İşleniyor…':given.length?'Bugünün yemeğine ekle':'Bugünün yemeğini ver',()=>prepare('serve'),'kitchen-serve');serve.dataset.focus='serve';serve.disabled=locked||!changed||!crew;const clear=button('Seçimi temizle',()=>{draft={};draftDay=null;draftRevision=null;message('');render();},'kitchen-clear');clear.disabled=locked||!changed;actions.append(serve,clear);main.append(actions,el('p','kitchen-note','Seçilenler bugün kullanılır. Menü 00.00’da yenilenir; envanterdeki erzak saklanır.'));
+   main.append(slots);const gauges=el('div','kitchen-gauges');gauges.append(gauge('Çeşitlilik',num(Math.min(m.types,m.goal))+' / '+num(m.goal)+' çeşit','Farklı malzemeler çeşitliliği artırır.',m.variety),gauge('Porsiyon',num(m.portions)+' / '+num(crew),crew?num(Math.max(0,crew-m.portions))+' porsiyon eksik':'Henüz gladyatör yok.',m.coverage));
+   const active=Math.max(0,Number(state.combat?.active_bonus)||0),preview=changed?m.stamina_bonus_percent:active,effect=el('section','kitchen-effect'),effectTitle=el('h3','','Kondisyon yenilenmesi'),value=el('strong','kitchen-effect-value','+%'+num(preview)),effectStatus=el('span','kitchen-effect-status',pending?.action==='serve'?'Doğrulanıyor':changed?'Yemek verilince':active>0?'Bugün aktif':given.length?'Porsiyon eksik':'Yemek bekliyor');
+   effect.setAttribute('aria-label','Kondisyon katkısı');effect.dataset.preview=String(changed);effect.dataset.active=String(active);value.setAttribute('aria-live','polite');const until=el('small','kitchen-effect-until','00.00’a kadar');until.title='İstanbul saati';effect.append(effectTitle,value,effectStatus,until);
+   const hint=el('p','kitchen-next');hint.append(el('strong','kitchen-active','Aktif: +%'+num(active)),el('span','kitchen-next-hint',bonusHint(crew,m)));gauges.append(effect,hint);main.append(gauges);
+   const actions=el('div','kitchen-actions'),serve=button(busy?'İşleniyor…':given.length?'Bugünün yemeğine ekle':'Bugünün yemeğini ver',()=>prepare('serve'),'kitchen-serve');serve.dataset.focus='serve';serve.disabled=locked||!changed||!crew;const clear=button('Seçimi temizle',()=>{draft={};draftDay=null;draftRevision=null;message('');render();},'kitchen-clear');clear.disabled=locked||!changed;actions.append(serve,clear);main.append(actions);
    if(shopping){renderShop(locked);}
    else{
     const invHead=el('div','kitchen-section-head');invHead.append(el('h2','','Gıda envanteri'),button('Erzak al',()=>{shopping=true;render();},'kitchen-shop-open'));inventory.append(invHead,el('p','kitchen-inventory-hint','Malzemeye dokun, bugünün menüsüne ekle.'));
@@ -98,5 +109,5 @@ var LudusFood=(()=>{
   document.addEventListener('keydown',e=>{if(!opened)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close();}if(e.key==='Tab'){const nodes=[...modal.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(n=>!n.hidden&&n.getClientRects().length);if(e.shiftKey&&document.activeElement===nodes[0]){e.preventDefault();nodes.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===nodes.at(-1)){e.preventDefault();nodes[0]?.focus();}}});modal.addEventListener('pointerdown',e=>e.stopPropagation());ctx.ready.then(()=>refresh()).catch(()=>{});
   return {open,close,enter,leave,tick,refresh,get state(){return state;}};
  }
- return {create,menu};
+ return {create,menu,bonusHint};
 })();
