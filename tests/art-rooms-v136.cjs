@@ -14,7 +14,7 @@ const panels=[
 ['guide',()=>{LudusPreview.leaveRoom();return LudusPreview.beginnerGuide.open();},()=>LudusPreview.beginnerGuide.close(),'.fq-shell'],
 ['training',()=>LudusPreview.showGladiator(LudusPreview.roster[0]),()=>LudusPreview.exercisePanel.close(),'.exercise-panel'],
 ['imperial',()=>LudusPreview.imperial.open(),()=>LudusPreview.imperial.close(),'.imperial-paper'],
-['food',()=>{const p=LudusPreview;p.enterRoom(p.rooms.find(r=>r.kind==='dining'));return p.foodSystem.open();},()=>LudusPreview.foodSystem.close(),'.food-frame'],
+['food',()=>{const p=LudusPreview;p.enterRoom(p.rooms.find(r=>r.kind==='dining'));return p.foodSystem.open();},()=>LudusPreview.foodSystem.close(),'.kitchen-frame'],
 ['vault',()=>LudusPreview.clanVault.open(),()=>LudusPreview.clanVault.close(),'.clan-vault-frame'],
 ['messages',()=>document.getElementById('messagesOpen').click(),()=>document.getElementById('ludusMessages').close(),'#ludusMessages'],
 ['friends',()=>document.getElementById('friendsOpen')?.click(),()=>document.getElementById('friendsClose').click(),'.friends-paper'],

@@ -6,7 +6,7 @@ module.exports=async({page,fit,out})=>{
   {name:'guide',open:()=>page.evaluate(()=>{LudusPreview.leaveRoom();return LudusPreview.beginnerGuide.open();}),close:()=>page.evaluate(()=>LudusPreview.beginnerGuide.close()),root:'#beginnerGuide',frame:'.fq-shell',heading:'.fq-top'},
   {name:'training',open:()=>page.evaluate(()=>LudusPreview.showGladiator(LudusPreview.roster[0])),close:()=>page.evaluate(()=>LudusPreview.exercisePanel.close()),root:'#orders',frame:'.exercise-panel',heading:'.exercise-top'},
   {name:'missions',open:()=>page.evaluate(()=>LudusPreview.imperial.open()),close:()=>page.evaluate(()=>LudusPreview.imperial.close()),root:'.imperial-modal',frame:'.imperial-paper',heading:'.imperial-head'},
-  {name:'pantry',open:()=>page.evaluate(()=>{const p=LudusPreview;p.enterRoom(p.rooms.find(r=>r.kind==='dining'));return p.foodSystem.open();}),close:()=>page.evaluate(()=>LudusPreview.foodSystem.close()),root:'#foodModal',frame:'.food-frame',heading:'.food-top'},
+  {name:'pantry',open:()=>page.evaluate(()=>{const p=LudusPreview;p.enterRoom(p.rooms.find(r=>r.kind==='dining'));return p.foodSystem.open();}),close:()=>page.evaluate(()=>LudusPreview.foodSystem.close()),root:'#foodModal',frame:'.kitchen-frame',heading:'.kitchen-header'},
   {name:'clan-vault',open:()=>page.evaluate(()=>LudusPreview.clanVault.open()),close:()=>page.evaluate(()=>LudusPreview.clanVault.close()),root:'.clan-vault-modal',frame:'.clan-vault-frame',heading:'.clan-vault-top'},
   {name:'messages',open:()=>page.locator('#messagesOpen').click(),close:()=>page.evaluate(()=>document.getElementById('ludusMessages').close()),root:'#ludusMessages',frame:'#ludusMessages',heading:'.mc-head'}
  ];
@@ -26,13 +26,22 @@ module.exports=async({page,fit,out})=>{
     const wineArea=Math.max(0,...[root,...root.querySelectorAll('*')].filter(e=>e.getClientRects().length).map(e=>{const c=getComputedStyle(e).backgroundColor.match(/[\d.]+/g)?.map(Number)||[0,0,0,0],b=e.getBoundingClientRect();return(c[3]??1)>.5&&c[0]>c[1]*1.5&&c[0]>c[2]*1.2?b.width*b.height/(r.width*r.height):0}));
     return{wineArea,headingColor:getComputedStyle(heading).backgroundColor,titleFont:getComputedStyle(title).fontFamily};
    },{rootSelector:panel.root,frameSelector:panel.frame,headingSelector:panel.heading});
-   assert.ok(presentation.wineArea<.15,panel.name+' uses burgundy as an accent, not a large surface');
-   assert.equal(presentation.headingColor,'rgb(255, 255, 255)',panel.name+' light heading');
-   assert.match(presentation.titleFont,/Cinzel/,panel.name+' shared Roman title face');
+   if(panel.name==='pantry'){
+    assert.ok(presentation.wineArea<.25,'daily kitchen keeps its burgundy header within a quarter of the full screen');
+    assert.equal(presentation.headingColor,'rgb(89, 24, 35)','daily kitchen header');
+    assert.match(presentation.titleFont,/Georgia/,'daily kitchen title');
+    assert.equal(await page.getByRole('meter').count(),2,'daily kitchen has variety and portion meters');
+    assert.equal(await page.locator('.kitchen-stock').count(),7,'daily kitchen displays the food inventory');
+    await fit('.kitchen-body');await fit('.kitchen-stock');
+   }else{
+    assert.ok(presentation.wineArea<.15,panel.name+' uses burgundy as an accent, not a large surface');
+    assert.equal(presentation.headingColor,'rgb(255, 255, 255)',panel.name+' light heading');
+    assert.match(presentation.titleFont,/Cinzel/,panel.name+' shared Roman title face');
+   }
    if(width===1536||width===844)await page.screenshot({path:out+'/modern-'+panel.name+'-'+width+'.png'});
    await panel.close();await page.waitForSelector(panel.root+':visible',{state:'hidden'});await page.waitForFunction(()=>!LudusPreview.paused);
   }
  }
- console.log('V123 shared panels PASS: settings, guide, training, missions, pantry, clan vault and messages use common light headers and Roman titles at 5 screen sizes.');
+ console.log('V123 shared panels PASS: settings, guide, training, missions, clan vault and messages retain common light headers; the daily kitchen uses its full-screen inventory and two meters at 5 screen sizes.');
 };
 
