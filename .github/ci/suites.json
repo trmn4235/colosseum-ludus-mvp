@@ -394,7 +394,10 @@
         "tests/first-quests-*",
         "supabase/migrations/*first_quests*",
         "ludus.html",
-        "ludus-settings-v29.js"
+        "ludus-settings-v29.js",
+        "daily-kitchen-*",
+        "tests/daily-kitchen-*",
+        "supabase/migrations/*daily_kitchen*"
       ]
     },
     {

@@ -36,3 +36,16 @@ jobs:
         env:
           LUDUS_COMBAT_VALUES_TEST: '1'
         run: node tests/first-quests-ui-v111.cjs
+      - name: Daily kitchen database and retry regression
+        run: node tests/daily-kitchen-v265.cjs
+      - name: Daily kitchen full Ludus and mobile layouts
+        env:
+          LUDUS_TEST_OUTPUT: /tmp/kitchen-v265
+        run: node tests/daily-kitchen-ui-v265.cjs
+      - name: Upload daily kitchen screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: kitchen-v265
+          path: /tmp/kitchen-v265
+          if-no-files-found: ignore
