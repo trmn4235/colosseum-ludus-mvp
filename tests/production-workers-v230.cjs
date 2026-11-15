@@ -62,6 +62,7 @@ module.exports=async({db,q,A,B,call,migration,randomUUID})=>{
  // Licensed collection and its current V256 quantity balance share the real RPC checks.
  const licensed=await require('./licensed-collection-v255.cjs')({db,q,migration,randomUUID});
  await require('./collection-balance-v256.cjs')(licensed);
+ await require('./clan-caravans-v268.cjs')(licensed);
  await admin();await db.exec('rollback');await auth();
  console.log('V230 SQL PASS: exact 2/5 attacks, no replay reroll, frozen workers, owner isolation, gladiator locking, re-entry, delivery/claim blocking, verified win/loss once and automatic timeout.');
 };

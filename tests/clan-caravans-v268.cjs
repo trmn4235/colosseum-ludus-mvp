@@ -1,0 +1,66 @@
+const assert=require('node:assert/strict');
+module.exports=async env=>{
+ const {db,q,migration,randomUUID,owners,workers,work,roster,identify,admin,reject}=env;
+ await admin();
+ await db.exec('create schema ludus_bot_private;create table ludus_bot_private.members_v233(user_id uuid primary key,enabled boolean not null default true);');
+ const clan=(await q('select clan_id from public.ludus_clan_members where user_id=$1',[owners[0]]))[0].clan_id,bots=[];
+ for(let i=0;i<9;i++){
+  const id=randomUUID();bots.push(id);await q('insert into public.ludus_accounts(user_id,ludus_name) values($1,$2)',[id,'Roman '+i]);
+  await q('insert into public.ludus_clan_members(user_id,clan_id) values($1,$2)',[id,clan]);await q('insert into ludus_bot_private.members_v233(user_id) values($1)',[id]);
+ }
+ const humanName=(await q('select name from public.ludus_workers_v226 where id=$1',[workers[0][0]]))[0].name;
+ await db.exec(migration('clan_caravans_v268'));
+ assert.equal((await q('select count(*)::int n from ludus_worker_private.roman_names_v268'))[0].n,50);
+ assert.deepEqual((await q('select gender,count(*)::int n from ludus_worker_private.roman_names_v268 group by gender order by gender')).map(r=>r.n),[25,25]);
+ assert.equal((await q('select count(*)::int n from public.ludus_workers_v226 where owner_id=any($1::uuid[])',[bots]))[0].n,72);
+ assert.equal((await q('select name from public.ludus_workers_v226 where id=$1',[workers[0][0]]))[0].name,humanName);
+ assert.equal((await q('select count(*)::int n from public.ludus_workers_v226 w join ludus_worker_private.roman_names_v268 n on n.name=w.name where w.owner_id=any($1::uuid[])',[bots]))[0].n,72);
+ const named=await q('select name from public.ludus_workers_v226 where owner_id=$1 order by slot',[bots[0]]);assert.equal(new Set(named.map(w=>w.name)).size,8);
+ await identify(owners[0]);let state=await work();assert.equal(state.rules_version,268);assert.equal(state.config.team_limit,10);
+ assert.ok(state.workers.every(w=>w.owner_id===owners[0]),'only own workers exposed for selection');
+ const idle=state.workers.filter(w=>!w.busy).map(w=>w.id);assert.ok(idle.length>=2);
+ await identify(owners[1]);await reject(()=>work('create',{sku:'iron_ore'},randomUUID()),/lideri/);
+ await identify(owners[0]);await reject(()=>work('start',{sku:'iron_ore',workers:idle},randomUUID()),/Kervan oluştur/);
+ const req=randomUUID(),payload={sku:'iron_ore',workers:[idle[0]]};state=await work('create',payload,req);
+ const first=state.result_job_id;assert.equal(state.jobs.find(j=>j.id===first).worker_count,1);assert.equal(state.jobs.find(j=>j.id===first).status,'forming');
+ assert.equal((await work('create',payload,req)).result_job_id,first,'create retries retain one caravan');
+ await reject(()=>work('create',{sku:'wood'},req),/farklı/);
+ const other=workers[1][0];
+ await reject(()=>work('join',{job_id:first,workers:[other]},randomUUID()),/kendi işçini/);
+ await reject(()=>work('join',{job_id:first,workers:[idle[0]]},randomUUID()),/başka bir görevde/);
+ await identify(owners[2]);await reject(()=>work('join',{job_id:first,workers:[workers[2][0]]},randomUUID()),/Klana üye|bu klana/);
+ await identify(owners[1]);state=await work();const memberIdle=state.workers.find(w=>!w.busy).id,joinReq=randomUUID();
+ state=await work('join',{job_id:first,workers:[memberIdle]},joinReq);assert.ok(state.jobs.find(j=>j.id===first).participants.some(p=>p.worker_id===memberIdle));
+ await reject(()=>work('leave',{job_id:first,worker_id:idle[0]},randomUUID()),/kendi işçini/);
+ await identify(owners[0]);state=await work('create',{sku:'grain',workers:[idle[1]]},randomUUID());const second=state.result_job_id;
+ assert.equal(state.jobs.filter(j=>[first,second].includes(j.id)&&j.status==='forming').length,2,'simultaneous lobbies');
+ await admin();await q("update ludus_worker_private.caravan_lobbies_v268 set created_at=clock_timestamp()-interval '9 seconds' where job_id=any($1::uuid[])",[[first,second]]);
+ await q('select ludus_worker_private.caravan_fill_v268(clock_timestamp())');
+ await identify(owners[0]);state=await work();
+ for(const id of [first,second]){const j=state.jobs.find(j=>j.id===id);assert.equal(j.worker_count,10);assert.equal(j.status,'collecting');assert.equal(Date.parse(j.ends_at)-Date.parse(j.started_at),21600000);assert.equal(j.participants.length,10);assert.ok(j.participants.every(p=>p.gross_quantity===p.quantity+p.tax_quantity&&p.tax_quantity*5===p.gross_quantity));}
+ const ids=state.jobs.filter(j=>[first,second].includes(j.id)).flatMap(j=>j.participants.map(p=>p.worker_id));assert.equal(new Set(ids).size,20,'one worker, one active trip');
+ await reject(()=>work('join',{job_id:first,workers:[idle[2]]},randomUUID()),/yola çıktı/);
+ await identify(owners[1]);assert.equal((await work('join',{job_id:first,workers:[memberIdle]},joinReq)).result_job_id,first,'join retry after launch does not double-add');
+ await admin();await q("update ludus_worker_private.clan_work_jobs_v232 set started_at=clock_timestamp()-interval '3 hours',ends_at=clock_timestamp()+interval '3 hours' where id=$1",[first]);
+ await identify(owners[0]);state=await work();const middle=state.jobs.find(j=>j.id===first);assert.ok(middle.participants.every(p=>p.collected===Math.floor(p.gross_quantity/2)),'visible collection accrues from server time');
+ const rankBefore=state.rankings.workers.reduce((n,w)=>n+Number(w.quantity),0);
+ await admin();const amounts=await q('select owner_id,sum(quantity)::int net from ludus_worker_private.clan_work_people_v232 where job_id=$1 group by owner_id',[first]);
+ const balances=new Map();for(const a of amounts)balances.set(a.owner_id,Number((await q("select quantity from ludus_supply_private.stock where owner_id=$1 and sku='iron_ore'",[a.owner_id]))[0]?.quantity||0));
+ await q("update ludus_worker_private.clan_work_jobs_v232 set started_at=clock_timestamp()-interval '6 hours',ends_at=clock_timestamp()-interval '1 second' where id=$1",[first]);
+ await q('select ludus_worker_private.clan_tick_v232(clock_timestamp())');await q('select ludus_worker_private.clan_tick_v232(clock_timestamp())');
+ for(const a of amounts)assert.equal(Number((await q("select quantity from ludus_supply_private.stock where owner_id=$1 and sku='iron_ore'",[a.owner_id]))[0].quantity),balances.get(a.owner_id)+a.net,'each human/bot receives its own net once');
+ await identify(owners[0]);state=await work();const report=state.jobs.find(j=>j.id===first);assert.equal(report.status,'completed');assert.ok(report.participants.every(p=>p.delivered&&p.collected===p.gross_quantity));
+ const net=report.participants.reduce((n,p)=>n+p.quantity,0);assert.equal(state.rankings.workers.reduce((n,w)=>n+Number(w.quantity),0)-rankBefore,net);
+ assert.equal(state.rankings.workers.reduce((n,w)=>n+Number(w.quantity),0),state.rankings.ludus.reduce((n,w)=>n+Number(w.quantity),0));
+ assert.ok(state.rankings.workers.every((r,i,rows)=>i===0||Number(rows[i-1].quantity)>=Number(r.quantity)));
+ // All-level participation and cancellation release reservations without earnings.
+ state=await work('create',{sku:'wood',workers:[idle[0]]},randomUUID());const cancelId=state.result_job_id;
+ const beforeCancel=state.rankings.workers.reduce((n,w)=>n+Number(w.quantity),0);
+ state=await work('cancel',{job_id:cancelId},randomUUID());assert.ok(!state.jobs.some(j=>j.id===cancelId));assert.ok(!state.workers.find(w=>w.id===idle[0]).busy);
+ assert.equal(state.rankings.workers.reduce((n,w)=>n+Number(w.quantity),0),beforeCancel);
+ await reject(()=>q('select * from ludus_worker_private.caravan_lobbies_v268'),/permission denied/);
+ await reject(()=>q('select ludus_worker_private.caravan_fill_v268(clock_timestamp())'),/permission denied/);
+ await q("select set_config('request.jwt.claims','{\"is_anonymous\":true}',false)");await reject(()=>work(),/giriş yap/);await q("select set_config('request.jwt.claims','{}',false)");
+ await admin();assert.deepEqual(await q('select name from public.ludus_workers_v226 where owner_id=$1 order by slot',[bots[0]]),named,'names are persistent');
+ console.log('V268 SQL PASS: 50 Roman names, persistent bot workers, owner-only contributions, ten seats, timed bot fill, simultaneous caravans, retries, reservations, live collection, personal net/tax receipts, completed-only worker/Ludus rankings and permissions.');
+};
