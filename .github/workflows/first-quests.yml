@@ -28,16 +28,6 @@ jobs:
       - name: Install isolated test tools
         run: |
           npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
-      - name: Server milestones and account isolation
-        run: node tests/first-quests-v111.cjs
-      - name: Combat contribution regression
-        run: node tests/combat-values-v110.cjs
-      - name: Full courtyard, mobile guide and Settings Help
-        env:
-          LUDUS_COMBAT_VALUES_TEST: '1'
-        run: node tests/first-quests-ui-v111.cjs
-      - name: Daily kitchen database and retry regression
-        run: node tests/daily-kitchen-v265.cjs
       - name: Shared caravan owner contributions and mobile layouts
         env:
           LUDUS_TEST_OUTPUT: /tmp/caravans-v268
@@ -52,8 +42,19 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: caravans-v268
+          overwrite: true
           path: /tmp/caravans-v268
           if-no-files-found: ignore
+      - name: Server milestones and account isolation
+        run: node tests/first-quests-v111.cjs
+      - name: Combat contribution regression
+        run: node tests/combat-values-v110.cjs
+      - name: Full courtyard, mobile guide and Settings Help
+        env:
+          LUDUS_COMBAT_VALUES_TEST: '1'
+        run: node tests/first-quests-ui-v111.cjs
+      - name: Daily kitchen database and retry regression
+        run: node tests/daily-kitchen-v265.cjs
       - name: Daily kitchen full Ludus and mobile layouts
         env:
           LUDUS_TEST_OUTPUT: /tmp/kitchen-v265
