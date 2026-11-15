@@ -10,7 +10,7 @@
  function create(ctx){
   let data=null,view='jobs',jobId=null,sku='iron_ore',picked=[],picker=false,page=0,rankKind='workers',period='all',busy=false,polling=false,error='',retry=null,offset=0,lastPoll=0,shell=null;
   const now=()=>Date.now()+offset;
-  function setData(d){data=d;offset=Date.parse(d.server_now)-Date.now();if(!Number.isFinite(offset))offset=0;lastPoll=Date.now();picked=picked.filter(id=>d.workers?.some(w=>w.id===id&&!w.busy));}
+  function setData(d){data=d;if(view==='draft'&&!d.is_leader)view='jobs';offset=Date.parse(d.server_now)-Date.now();if(!Number.isFinite(offset))offset=0;lastPoll=Date.now();picked=picked.filter(id=>d.workers?.some(w=>w.id===id&&!w.busy));}
   function changed(){ctx.onChange?.();}
   function button(text,fn,cls='cv-button'){const b=el('button',cls,text);b.type='button';b.disabled=busy;b.addEventListener('click',fn);return b;}
   function navigate(v){view=v;jobId=null;picker=false;picked=[];page=0;error='';changed();}
@@ -46,8 +46,8 @@
    const gross=people.reduce((n,p)=>n+(p.gross_quantity||0),0),tax=people.reduce((n,p)=>n+(p.tax_quantity||0),0),net=people.reduce((n,p)=>n+(p.quantity||0),0),row=el('div','cv-totals');
    for(const [name,val]of [[liveJob?'Toplanan / Hedef':'Toplanan',liveJob?num(people.reduce((n,p)=>n+collected(liveJob,p,now()),0))+' / '+num(gross):num(gross)],['Devlet payı',num(tax)],['Luduslara net',num(net)]]){const s=el('span');s.append(el('small','',name),el('strong','',val));if(liveJob&&name.startsWith('Toplanan'))s.querySelector('strong').dataset.cvTotal=liveJob.id;row.append(s);}parent.append(row);
   }
-  function table(parent,rows,report=false){const box=el('div','cv-table'),head=el('div','cv-table-row cv-table-head');for(const t of [report?'İşçi · Ludus':'Sıra · '+(rankKind==='workers'?'İşçi':'Ludus'),'Toplanan','Vergi','Net'])head.append(el('span','',t));box.append(head);
-   for(let i=0;i<10;i++){const r=rows[i],line=el('div','cv-table-row');if(r){const name=el('span','cv-table-name');name.append(el('strong','',(report?'':(page*10+i+1)+'. ')+(r.worker_name||r.name)),el('small','',report||rankKind==='workers'?r.ludus_name:(r.trips||0)+' sefer'));if(r.pending)name.append(el('small','cv-pending','Depoda yer bekliyor'));line.append(name,el('span','',num(r.gross_quantity)),el('span','',num(r.tax_quantity)),el('strong','',num(r.quantity)));}else line.classList.add('cv-table-blank');box.append(line);}parent.append(box);}
+  function table(parent,rows,report=false){const box=el('div','cv-table');for(let group=0;group<2;group++){const half=el('div','cv-table-half'),head=el('div','cv-table-row cv-table-head');for(const t of [report?'İşçi · Ludus':'Sıra · '+(rankKind==='workers'?'İşçi':'Ludus'),'Toplanan','Vergi','Net'])head.append(el('span','',t));half.append(head);
+   for(let i=group*5;i<group*5+5;i++){const r=rows[i],line=el('div','cv-table-row');if(r){const name=el('span','cv-table-name');name.append(el('strong','',(report?'':(page*10+i+1)+'. ')+(r.worker_name||r.name)),el('small','',report||rankKind==='workers'?r.ludus_name:(r.trips||0)+' sefer'));if(r.pending)name.append(el('small','cv-pending','Depoda yer bekliyor'));line.append(name,el('span','',num(r.gross_quantity)),el('span','',num(r.tax_quantity)),el('strong','',num(r.quantity)));}else line.classList.add('cv-table-blank');half.append(line);}box.append(half);}parent.append(box);}
   function drawDetail(parent){
    const j=data.jobs?.find(x=>x.id===jobId);if(!j){parent.append(empty('Kervan bulunamadı.'),button('Kervanlara dön',()=>navigate('jobs')));return;}
    const head=el('div','cv-heading');head.append(button('‹',()=>navigate(j.status==='completed'?'reports':'jobs')),el('h2','',places[j.sku]||labels[j.sku]),timer(j));parent.append(head);
@@ -72,7 +72,7 @@
   function tick(){if(!data||!shell?.isConnected)return;for(const n of shell.querySelectorAll('[data-cv-timer]')){const j=data.jobs.find(j=>j.id===n.dataset.cvTimer);if(j)n.textContent=remaining(j);}for(const n of shell.querySelectorAll('[data-cv-collected]')){const j=data.jobs.find(j=>j.id===n.dataset.cvCollected),p=j?.participants.find(p=>p.worker_id===n.dataset.cvWorker);if(p)n.textContent='Toplanan: '+collected(j,p,now());}for(const n of shell.querySelectorAll('[data-cv-total]')){const j=data.jobs.find(j=>j.id===n.dataset.cvTotal);if(j)n.textContent=num(j.participants.reduce((s,p)=>s+collected(j,p,now()),0))+' / '+num(j.participants.reduce((s,p)=>s+p.gross_quantity,0));}
    const waiting=data.jobs?.some(j=>j.status==='forming'),due=data.jobs?.some(j=>j.status==='collecting'&&Date.parse(j.ends_at)<=now());if(Date.now()-lastPoll>=(waiting||due?1000:15000))refresh();
   }
-  return {setData,draw,tick,selectSKU(value){sku=value;view=data?.is_leader?'draft':'jobs';picked=[];jobId=null;picker=false;page=0;},refresh};
+  return {setData,draw,tick,showJobs(){navigate('jobs');},selectSKU(value){sku=value;view=data&&!data.is_leader?'jobs':'draft';picked=[];jobId=null;picker=false;page=0;},refresh};
  }
  root.LudusClanCaravansV268={create,collected};
 })(globalThis);
