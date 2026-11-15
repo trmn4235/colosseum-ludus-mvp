@@ -10,7 +10,7 @@ const quests=[
  ['training','İlk antrenmanlar','Başlangıçtaki iki gladyatörünü birer kez antrenmana gönder.','Bir özellik seçip çalıştır. İki farklı gladyatörün antrenmanı ayrı sayılır.','training'],
  ['training_review','Gelişimini takip et','Bir antrenmanı tamamla ve gelişen özelliği incele.','Antrenman bitince gladyatör detayını açıp çalıştırdığın özelliğe dokun.','training'],
  ['buy_food','Erzak alışverişi','Yemekhaneden en az bir besin satın al.','Besinlerin porsiyon değerlerine bakarak alışveriş yap.','food'],
- ['food_day','Kadronu doyur','Tüm gladyatörlerine en az bir gün yetecek erzak hazırla.','Yemekhanede günlük ihtiyacı karşıla. Öğünler otomatik hazırlanır.','food'],
+ ['food_day','Kadronu doyur','Bugün tüm gladyatörlerine birer porsiyon yemek ver.','Mutfakta envanterden malzeme seç, porsiyon barını doldur ve bugünün yemeğini ver.','food'],
  ['stones','Taşlarını tanı','Elmas, Safir, Zümrüt ve Yakut açıklamalarını incele.','Taş Kesesi’nde dört kategoriyi açıp her birinde bir taşa dokun. Taşa sahip olman gerekmez.','stones'],
  ['enhance','İlk geliştirme','Bir eşyayı kendin en az +2 seviyesine geliştir.','Geliştirmelerde Elmas kullan. Hazır +2 eşya satın almak bu görevi tamamlamaz.','upgrades'],
  ['sapphire','Safirin gücü','Bir ekipmana Safir bas.','Eşyanın doğal özelliğine uygun Safir seçip işlemi tamamla.','upgrades'],
