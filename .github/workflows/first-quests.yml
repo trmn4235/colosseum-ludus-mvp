@@ -38,6 +38,19 @@ jobs:
         run: node tests/first-quests-ui-v111.cjs
       - name: Daily kitchen database and retry regression
         run: node tests/daily-kitchen-v265.cjs
+      - name: Shared caravan owner contributions and mobile layouts
+        run: node tests/clan-caravans-browser-v268.cjs
+      - name: Shared caravans in Safari
+        env:
+          LUDUS_WEBKIT_TEST: '1'
+        run: node tests/clan-caravans-browser-v268.cjs
+      - name: Upload shared caravan screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: caravans-v268
+          path: /tmp/caravans-v268
+          if-no-files-found: ignore
       - name: Daily kitchen full Ludus and mobile layouts
         env:
           LUDUS_TEST_OUTPUT: /tmp/kitchen-v265
