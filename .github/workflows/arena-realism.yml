@@ -30,6 +30,7 @@ jobs:
           node tests/equipment-stability-v164.cjs
           node tests/motion-stability-v165.cjs
           node tests/combat-motion-v163.cjs
+          node tests/combat-motion-halberd-v264.cjs
           node tests/combat-motion-replay-v163.cjs
           node tests/combat-motion-sql-v163.cjs
       - name: Death, accumulated loot and right shoulder camera
