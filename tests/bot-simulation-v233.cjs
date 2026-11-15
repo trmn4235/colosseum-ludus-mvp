@@ -10,6 +10,13 @@ const g={name:'Tester',class:'secutor',stat_version:46,level:1,overall:50,base_s
 const item=(actor,slot,kind,model)=>({actor,slot,token:`${actor}-${slot}`,item:{id:`${actor}-${slot}`,kind,model,stat_version:10,natural_rule_version:2,natural_stats:globalThis.LudusItemSystem.baseStats(kind),natural_percentages:{},enhancement:0,sapphires:[],rubies:[],emeralds:[]}});
 const classes=Object.keys(globalThis.ArenaClasses),loot=[];for(let actor=0;actor<20;actor++){const type=actor?classes[actor%7]:g.class,c=globalThis.ArenaClasses[type];loot.push(item(actor,'main_hand','weapon',c.weapon));if(c.shield)loot.push(item(actor,'off_hand','shield',c.shield));loot.push(item(actor,'helmet','helmet','gold'));}
 const ticket={rule_version:2,mode:'4x5',snapshot:{gladiator:g,items:loot.filter(x=>x.actor===0).map(x=>({...x.item,equipped_slot:x.slot}))},loot};
+// Halberd matches must resume identically after the blade-sweep update.
+const halberdTicket=structuredClone(ticket);
+for(const x of halberdTicket.loot)if(x.actor===0&&x.slot==='main_hand')x.item.model='halberd';
+for(const x of halberdTicket.snapshot.items)if(x.equipped_slot==='main_hand')x.model='halberd';
+const halberdInitial=create(halberdTicket,264),halberdOne=advance(halberdInitial,400);let halberdSplit=halberdInitial;
+for(let i=0;i<8&&!halberdSplit.finished;i++)halberdSplit=advance(JSON.parse(JSON.stringify(halberdSplit)),50);
+assert.equal(halberdOne.steps,halberdSplit.steps);assert.deepEqual(halberdOne.combat,halberdSplit.combat,'Halberd cuts survive save/restore');
 const initial=create(ticket,42),one=advance(initial,400);let many=initial;for(let i=0;i<8&&!many.finished;i++)many=advance(JSON.parse(JSON.stringify(many)),50);
 assert.equal(one.steps,many.steps);assert.equal(one.seed,many.seed);assert.deepEqual(one.combat,many.combat,'pausing and restoring must not change combat');
 assert.ok(one.steps>0);assert.ok(one.combat.nodes.length<25000);
