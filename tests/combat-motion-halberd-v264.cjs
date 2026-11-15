@@ -18,7 +18,7 @@ function runtime(){const c=fixture().context;for(const name of ['combat-curves-v
   assert.ok(hit,JSON.stringify({left,chain,heavy,region}));contacts++;trajectories++;
  }
  for(const kind of ['spear','trident','trident_gladiator'])assert.equal(c.ArenaAuthoredCombat.clipName({weapon:kind,chain:1}),'pole');
- for(const path of ['supabase/functions/caravan-combat-v126/','supabase/functions/caravan-defense-v230/'])assert.equal(fs.readFileSync(path+'combat-motion-v163.js','utf8'),fs.readFileSync('combat-motion-v163.js','utf8'));
+ for(const path of ['supabase/functions/caravan-combat-v126/','supabase/functions/caravan-defense-v230/','supabase/functions/bot-runner-v233/'])assert.equal(fs.readFileSync(path+'combat-motion-v163.js','utf8'),fs.readFileSync('combat-motion-v163.js','utf8'));
  // Training has its own runtime; it must also swing without shortening the shaft.
  const training=vm.createContext({});vm.runInContext(fs.readFileSync('training-motion-v50.js','utf8'),training);const tm=training.ArenaMotion,tp=tm.profile('halberd');assert.equal(tp.pole,false);assert.equal(tp.length,1.7);
  const tf={weapon:'halberd',attackWeapon:'halberd',attackProfile:tp,attackRegion:'chest',chain:1};assert.ok(tm.sample(tf,tp.wind+tp.active).tip.x-tm.sample(tf,tp.wind).tip.x>2);
