@@ -20,7 +20,15 @@ var LudusFood=(()=>{
   const body=el('div','kitchen-body'),main=el('section','kitchen-menu'),inventory=el('aside','kitchen-inventory'),feedback=el('footer','kitchen-feedback'),status=el('p','kitchen-status'),retry=button('Yeniden dene',()=>pending?submit():refresh(),'kitchen-retry');status.setAttribute('role','status');status.setAttribute('aria-live','polite');retry.hidden=true;feedback.append(status,retry);body.append(main,inventory);frame.append(header,body,feedback);modal.append(frame);document.body.append(modal);
   let state=null,owner=null,key=null,pending=null,busy=false,loading=null,opened=false,lastFocus=null,draft={},draftDay=null,draftRevision=null,offset=0,lastRefresh=0,lastAttempt=0,nextTick=0,shopping=false,product='grain',buyQuantity=1;
   function message(text,error=false){status.textContent=text;status.dataset.error=String(error);}
-  function place(){if(point&&globalThis.LudusRoomActions)LudusRoomActions.place(opener,point,ctx,ctx.inRoom()&&!opened,8);else opener.hidden=!ctx.inRoom()||opened||ctx.blocked();}
+  let anchorCheck=0,hudRect=null;
+  function place(){
+   if(point&&globalThis.LudusRoomActions)LudusRoomActions.place(opener,point,ctx,ctx.inRoom()&&!opened,8);else opener.hidden=!ctx.inRoom()||opened||ctx.blocked();
+   if(opener.hidden)return;
+   if(Date.now()>anchorCheck){const hud=document.getElementById('ludusHud');hudRect=hud?.getClientRects().length?hud.getBoundingClientRect():null;anchorCheck=Date.now()+500;}
+   const x=parseFloat(opener.style.left),y=parseFloat(opener.style.top);
+   if(hudRect&&x+24>hudRect.left&&x-24<hudRect.right&&y-26<hudRect.bottom&&y+26>hudRect.top)opener.style.top=Math.min(innerHeight-28,hudRect.bottom+28)+'px';
+  }
+  window.addEventListener('resize',()=>{anchorCheck=0;});
   function ingredients(){const merged=new Map((state?.kitchen?.ingredients||[]).map(i=>[i.sku,i.quantity]));for(const [sku,q]of Object.entries(draft))merged.set(sku,(merged.get(sku)||0)+q);return [...merged].filter(([,q])=>q>0).map(([sku,quantity])=>({sku,quantity}));}
   function adopt(data){
    if(data.user_id!==owner)throw Error('Hesap doğrulanamadı. Sayfayı yenile.');

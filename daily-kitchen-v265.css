@@ -1,4 +1,5 @@
 /* A full-screen daily kitchen. The two meters always sit below the ingredient slots. */
+@layer game-art-v136 {
 .food-cauldron[hidden],body[data-roman-screen] #foodModal[hidden],body[data-roman-screen] #foodModal [hidden]{display:none!important}
 body[data-roman-screen] #foodModal{position:fixed;inset:0;z-index:1300;padding:0;background:#f6f3ed!important;color:#35292b;font:14px/1.35 Arial,sans-serif;overflow:hidden;box-sizing:border-box}
 body[data-roman-screen] #foodModal *{box-sizing:border-box}
@@ -153,4 +154,11 @@ body[data-roman-screen] #foodModal .kitchen-shop-back{align-self:flex-start;marg
  body[data-roman-screen] #foodModal .kitchen-shop-back{margin-bottom:5px;padding:4px}
  body[data-roman-screen] #foodModal .kitchen-wallet{margin:5px 0;font-size:12px}
 }
+@media(max-height:350px) and (min-width:540px){
+ body[data-roman-screen] #foodModal .kitchen-title small,body[data-roman-screen] #foodModal .kitchen-gauge>small,body[data-roman-screen] #foodModal .kitchen-inventory-hint{display:none}
+ body[data-roman-screen] #foodModal .kitchen-header{padding-top:5px;padding-bottom:5px}
+ body[data-roman-screen] #foodModal .kitchen-note,body[data-roman-screen] #foodModal .kitchen-inventory-note{font-size:8px;line-height:1.2;margin-top:4px}
+}
 @media(prefers-reduced-motion:reduce){body[data-roman-screen] #foodModal .kitchen-track span{transition:none}}
+
+}
