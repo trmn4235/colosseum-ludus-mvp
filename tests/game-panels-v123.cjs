@@ -10,8 +10,10 @@ module.exports=async({page,fit,out})=>{
   {name:'clan-vault',open:()=>page.evaluate(()=>LudusPreview.clanVault.open()),close:()=>page.evaluate(()=>LudusPreview.clanVault.close()),root:'.clan-vault-modal',frame:'.clan-vault-frame',heading:'.clan-vault-top'},
   {name:'messages',open:()=>page.locator('#messagesOpen').click(),close:()=>page.evaluate(()=>document.getElementById('ludusMessages').close()),root:'#ludusMessages',frame:'#ludusMessages',heading:'.mc-head'}
  ];
- for(const [width,height]of [[1536,706],[932,430],[844,390],[768,353],[667,375]]){
+ const palettes={white:{header:'rgb(89, 24, 35)',ink:'rgb(234, 210, 148)'},black:{header:'rgb(37, 43, 51)',ink:'rgb(227, 233, 238)'},blue:{header:'rgb(33, 68, 81)',ink:'rgb(238, 221, 182)'}};
+ for(const [width,height,theme]of [[1536,706,'white'],[932,430,'black'],[844,390,'blue'],[768,353,'white'],[667,375,'blue']]){
   await page.setViewportSize({width,height});
+  await page.evaluate(theme=>LudusTheme.set(theme),theme);
   for(const panel of panels){
    await panel.open();await page.waitForSelector(panel.root+':visible');
    await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
@@ -22,26 +24,28 @@ module.exports=async({page,fit,out})=>{
    const presentation=await page.evaluate(({rootSelector,frameSelector,headingSelector})=>{
     const modal=document.querySelector(rootSelector),root=modal?.matches(frameSelector)?modal:modal?.querySelector(frameSelector),heading=modal?.querySelector(headingSelector),title=modal?.querySelector('h1,h2');
     if(!root?.isConnected||!heading?.isConnected||!title?.isConnected)throw Error('Panel presentation nodes are missing');
-    const r=root.getBoundingClientRect();
+    const r=root.getBoundingClientRect(),h=heading.getBoundingClientRect();
     const wineArea=Math.max(0,...[root,...root.querySelectorAll('*')].filter(e=>e.getClientRects().length).map(e=>{const c=getComputedStyle(e).backgroundColor.match(/[\d.]+/g)?.map(Number)||[0,0,0,0],b=e.getBoundingClientRect();return(c[3]??1)>.5&&c[0]>c[1]*1.5&&c[0]>c[2]*1.2?b.width*b.height/(r.width*r.height):0}));
-    return{wineArea,headingColor:getComputedStyle(heading).backgroundColor,titleFont:getComputedStyle(title).fontFamily};
+    return{wineArea,headingArea:h.width*h.height/(r.width*r.height),headingColor:getComputedStyle(heading).backgroundColor,titleColor:getComputedStyle(title).color,titleFont:getComputedStyle(title).fontFamily};
    },{rootSelector:panel.root,frameSelector:panel.frame,headingSelector:panel.heading});
+   assert.equal(presentation.headingColor,palettes[theme].header,panel.name+' uses the selected '+theme+' header');
+   assert.equal(presentation.titleColor,palettes[theme].ink,panel.name+' title stays readable on the selected header');
+   assert.ok(presentation.headingArea<.25,panel.name+' keeps its header within a quarter of the panel');
    if(panel.name==='pantry'){
     assert.ok(presentation.wineArea<.25,'daily kitchen keeps its burgundy header within a quarter of the full screen');
-    assert.equal(presentation.headingColor,'rgb(89, 24, 35)','daily kitchen header');
     assert.match(presentation.titleFont,/Georgia/,'daily kitchen title');
     assert.equal(await page.getByRole('meter').count(),2,'daily kitchen has variety and portion meters');
     assert.equal(await page.locator('.kitchen-stock').count(),7,'daily kitchen displays the food inventory');
     await fit('.kitchen-body');await fit('.kitchen-stock');
    }else{
-    assert.ok(presentation.wineArea<.15,panel.name+' uses burgundy as an accent, not a large surface');
-    assert.equal(presentation.headingColor,'rgb(255, 255, 255)',panel.name+' light heading');
-    assert.match(presentation.titleFont,/Cinzel/,panel.name+' shared Roman title face');
+    assert.ok(presentation.wineArea<=Math.max(.15,presentation.headingArea+.001),panel.name+' limits burgundy to the header and small accents');
+    assert.match(presentation.titleFont,panel.name==='settings'?/Georgia/:/Cinzel/,panel.name+' approved title face');
    }
    if(width===1536||width===844)await page.screenshot({path:out+'/modern-'+panel.name+'-'+width+'.png'});
    await panel.close();await page.waitForSelector(panel.root+':visible',{state:'hidden'});await page.waitForFunction(()=>!LudusPreview.paused);
   }
  }
- console.log('V123 shared panels PASS: settings, guide, training, missions, clan vault and messages retain common light headers; the daily kitchen uses its full-screen inventory and two meters at 5 screen sizes.');
+ await page.evaluate(()=>LudusTheme.set('white'));
+ console.log('V282 shared panels PASS: seven room dialogs use all three approved palettes at five screen sizes; daily kitchen inventory and two meters are preserved.');
 };
 

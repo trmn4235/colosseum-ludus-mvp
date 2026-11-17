@@ -207,6 +207,26 @@ body[data-roman-screen="preview"] .result b{color:var(--theme-title)!important}
  html[data-ui-theme] :is(.inventory-actions,.material-paging) button,html[data-ui-theme] #openCombatInfo,html[data-ui-theme] #openPouch{background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
  html[data-ui-theme=black] :is(.paper,.panel,#basicMarket,.forum-frame,.workers-frame,.level-paper,.ludus-view-settings){background-image:linear-gradient(#34383fe8,#34383fe8),url('assets/circus-v143/honed-marble.webp')!important;background-size:cover!important}
  html[data-ui-theme=white] :is(.paper,.panel,#basicMarket,.forum-frame,.workers-frame,.level-paper,.ludus-view-settings){background-image:linear-gradient(#fffffff2,#fffffff2),url('assets/circus-v143/honed-marble.webp')!important;background-size:cover!important}
+ /* Daily kitchen shares the selected palette without changing its geometry. */
+ html[data-ui-theme] #foodModal,html[data-ui-theme] #foodModal .kitchen-frame{background:var(--theme-canvas)!important;color:var(--theme-text)!important}
+ html[data-ui-theme] #foodModal .kitchen-header{background:var(--theme-header)!important;border-color:var(--theme-border)!important;color:var(--theme-header-ink)!important}
+ html[data-ui-theme] #foodModal .kitchen-header :is(h1,small,span,button){color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot,.kitchen-stock){background:var(--theme-item-tint)!important;color:var(--theme-item-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot,.kitchen-stock) :is(h3,small,strong){color:var(--theme-item-ink)!important}
+ html[data-ui-theme] #foodModal .kitchen-stock strong{background:var(--theme-item-tint)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot[data-empty],.kitchen-slot-edit button){background:var(--theme-canvas)!important;color:var(--theme-title)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot-quantity,.kitchen-serve,.kitchen-buy button){background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-clear,.kitchen-shop-open,.kitchen-shop-back,.kitchen-retry,.kitchen-inventory){border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-clear,.kitchen-shop-open,.kitchen-shop-back,.kitchen-retry,.kitchen-gauge strong,.kitchen-buy-cost,.kitchen-wallet,.kitchen-active){color:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-section-head>span,.kitchen-gauge>small,.kitchen-note,.kitchen-inventory-note,.kitchen-inventory-hint,.kitchen-next,.kitchen-effect-status,.kitchen-effect-until){color:var(--theme-muted)!important}
+ html[data-ui-theme] #foodModal .kitchen-track{background:var(--theme-canvas)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal .kitchen-track span{background:var(--theme-accent)!important}
+ html[data-ui-theme] #foodModal .kitchen-gauge:nth-child(2) .kitchen-track span{background:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal .kitchen-effect{background:var(--theme-selected)!important;border-color:var(--theme-accent)!important;color:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal .kitchen-effect-value{color:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal .kitchen-effect[data-preview=false]:is([data-active="4"],[data-active="8"],[data-active="12"]){background:var(--theme-gem)!important;border-color:var(--theme-gem-text)!important}
+ html[data-ui-theme] #foodModal .kitchen-status:not([data-error=true]){color:var(--theme-gem-text)!important}
+ html[data-ui-theme]:not([data-ui-theme=white]) #foodModal .kitchen-status[data-error=true]{color:#ffc4bd!important}
  /* Compact, visible theme choices in the existing settings dialog. */
  html[data-ui-theme] .ludus-view-settings{padding:12px!important;border-radius:7px!important;box-sizing:border-box!important;max-height:calc(100dvh - 20px)!important}
  html[data-ui-theme] .ludus-view-settings .settings-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:5px 8px!important;border-radius:4px!important}
