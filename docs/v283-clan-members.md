@@ -1,6 +1,6 @@
-# V283 — clan members design preview
+# V283 — clan members update
 
-Status: design preview, based on published V282 (`ee4e1d3c2ebfd48cd523904332b4e0c9a5c847c6`). Not deployed to the live game.
+Based on published V282 (`ee4e1d3c2ebfd48cd523904332b4e0c9a5c847c6`). The user explicitly requested publication of this update together with the previously published themes and clan home.
 
 The members directory displays ten Ludus accounts in two columns of five cards, with the existing horizontal clan navigation. A selected card reveals the account's role, online status, and vault permission. Counts and permissions come from the existing clan response; no combat statistics or other unavailable values are invented.
 
@@ -8,4 +8,4 @@ The leader's invitation search and three-result pagination remain connected to t
 
 Validation: JavaScript syntax and whitespace checks passed. The actual page was inspected in the managed browser using isolated example clan data: 1280×588, 874×402 and 568×320; ten visible cards without panel overflow; selection changes the detail panel; invitation search returns and paginates results; an eleven-member directory reaches its second page; the non-leader view omits invitation controls. All three themes were visually checked. No invitations or account mutations were sent to the game server.
 
-The preview fixture and example data are outside the game source. The screenshot is illustrative and does not represent live account counts. Next: review this members design, then continue with the remaining clan pages.
+The preview fixture and example data are outside the game source. The screenshot is illustrative and does not represent live account counts.
