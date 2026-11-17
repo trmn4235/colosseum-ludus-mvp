@@ -1,0 +1,70 @@
+/* V283: a ten-member directory, sharing the approved clan navigation and themes. */
+#clanStage .content.clan-members-content{grid-template-rows:34px minmax(0,1fr);gap:13px;padding-top:16px}
+#clanStage .clan-members-content .pageTitle h1{font:28px/1.1 Georgia,serif;margin:0}
+#clanStage .memberGrid.member-directory-v283{grid-template-columns:minmax(0,1fr) 360px;gap:18px}
+#clanStage .member-directory-v283 .memberListPanel{padding:20px;gap:16px}
+.member-directory-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;flex:none}
+#clanStage .member-directory-heading h2{font:24px/1.2 Georgia,serif;margin:0;padding:0;border:0}
+.member-directory-heading h2 small{font:14px Arial,sans-serif;margin-left:12px;color:var(--theme-muted)}
+.member-online-total{display:flex;align-items:center;gap:7px;font:14px Arial,sans-serif;white-space:nowrap;color:var(--theme-text)}
+.member-online-total i,.member-presence i{width:6px;height:6px;flex:none;border-radius:50%;background:var(--theme-muted)}
+.member-online-total i,.member-presence.is-online i{background:#78bc9b;box-shadow:0 0 0 4px #78bc9b13}
+#clanStage .member-directory-v283 .memberList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr));grid-auto-rows:auto;gap:10px;align-content:stretch}
+#clanStage .member-directory-v283 .memberList:has(>.pagination){grid-template-rows:repeat(5,minmax(0,1fr)) 30px;gap:8px}
+#clanStage .member-directory-v283 .memberList>.pagination{grid-column:1/-1;grid-row:6;padding:0;margin:0}
+#clanStage .member-directory-v283 .memberList .member-card{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:13px;padding:10px 14px;border-radius:5px;text-align:left;width:100%;overflow:hidden}
+.member-mark{position:relative;display:grid;place-items:center;flex:none;width:48px;height:52px;background:var(--theme-surface);color:var(--theme-title);clip-path:polygon(0 0,100% 0,100% 78%,50% 100%,0 78%);font:26px/1 Georgia,serif}
+.member-mark:before{content:'';position:absolute;inset:5px 5px 10px;border:1px solid var(--theme-border);border-radius:1px;opacity:.45;pointer-events:none}
+.member-mark svg{width:31px;height:31px;position:relative}
+#clanStage .member-directory-v283 .memberList .identity{align-self:auto;gap:7px}
+#clanStage .member-directory-v283 .memberList .identity strong{font:23px/1.15 Georgia,serif}
+#clanStage .member-directory-v283 .memberList .member-role{font:13px/1.2 Arial,sans-serif;margin:0;color:var(--theme-muted);white-space:nowrap}
+.member-card-tail{display:flex;align-items:flex-end;flex-direction:column;gap:12px;min-width:0}
+.member-presence{display:flex;align-items:center;gap:6px;font:12px/1.2 Arial,sans-serif;white-space:nowrap;color:var(--theme-muted)}
+.member-card-arrow{font:21px/1 Arial,sans-serif;color:var(--theme-title);opacity:.4}
+.member-card[aria-pressed=true] .member-card-arrow{opacity:1}
+#clanStage .member-directory-v283 .memberFooter{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0;min-height:26px;color:var(--theme-muted);font:13px Arial,sans-serif}
+.member-footer-link{display:flex;align-items:center;justify-content:space-between;gap:20px;background:none;border:0;padding:5px 0;color:var(--theme-title);font:14px Arial,sans-serif}
+.member-footer-link svg{width:17px;height:17px}
+.member-side-v283{display:flex;flex-direction:column;gap:17px;min-height:0;padding:20px!important}
+.member-detail-eyebrow{display:block;margin-bottom:12px;font:11px Arial,sans-serif;letter-spacing:1.6px;color:var(--theme-muted)}
+.member-detail-identity{display:flex;align-items:center;gap:14px;margin-bottom:17px;min-width:0}
+.member-detail-identity .member-mark{width:48px;height:55px;background:var(--theme-canvas);font-size:24px}
+.member-detail-identity>div{min-width:0}
+#clanStage .member-detail-identity h2{margin:0 0 5px;padding:0;border:0;font:25px/1.15 Georgia,serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.member-detail-identity small{display:block;color:var(--theme-muted);font:12px/1.25 Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.member-facts{display:grid;gap:0;margin:0;font:13px/1.2 Arial,sans-serif}
+.member-facts>div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--theme-border) 28%,transparent)}
+.member-facts dt{color:var(--theme-muted)}
+.member-facts dd{margin:0;color:var(--theme-text);text-align:right}
+.member-invite-v283{display:flex;flex-direction:column;flex:1;min-height:0;border-top:1px solid var(--theme-border);padding-top:17px;gap:11px}
+#clanStage .member-invite-v283 h2{font:22px/1.2 Georgia,serif;margin:0;padding:0;border:0}
+.member-invite-v283 .searchbox{gap:7px;margin:0;flex:none}
+.member-invite-v283 .searchbox input{height:42px;font:15px Arial,sans-serif;padding:8px 11px}
+.member-invite-v283 .searchbox button{font:14px Arial,sans-serif;padding:8px 12px}
+.member-invite-v283 p{font:12px/1.4 Arial,sans-serif;color:var(--theme-muted);margin:0}
+.member-invite-results{display:flex;flex-direction:column;gap:6px;min-height:0;flex:1}
+#clanStage .member-invite-results .row{min-height:0;padding:8px 9px;gap:8px;flex:1;max-height:58px}
+#clanStage .member-invite-results strong{font:17px/1.15 Georgia,serif}
+#clanStage .member-invite-results small{font:11px/1.2 Arial,sans-serif;margin-top:3px}
+.member-invite-results .button{font:12px Arial,sans-serif;padding:7px 9px}
+.member-invite-results .status{font-size:11px;padding:5px 7px}
+.member-invite-results .pagination{padding:0;font-size:12px;gap:10px}
+.member-invite-results .pagination button{height:25px;font-size:18px}
+.member-invite-placeholder{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:11px;min-height:0}
+.member-invite-placeholder svg{width:42px;height:42px;color:var(--theme-title);opacity:.5}
+.member-invite-placeholder p{max-width:240px}
+.member-invite-v283>.member-footer-link{border-top:1px solid var(--theme-border);padding-top:12px;margin-top:auto}
+@layer ludus-theme-v275{
+ html[data-ui-theme] #clanStage .member-directory-v283 .member-card{background:color-mix(in srgb,var(--theme-canvas) 65%,var(--theme-surface))!important;border-color:color-mix(in srgb,var(--theme-border) 42%,transparent)!important;color:var(--theme-text)!important;box-shadow:none!important}
+ html[data-ui-theme] #clanStage .member-directory-v283 .member-card:hover{background:var(--theme-selected)!important}
+ html[data-ui-theme] #clanStage .member-directory-v283 .member-card[aria-pressed=true]{background:var(--theme-selected)!important;border-color:var(--theme-accent)!important;box-shadow:inset 3px 0 var(--theme-accent)!important}
+ html[data-ui-theme] #clanStage .member-directory-v283 .member-role{color:var(--theme-muted)!important}
+ html[data-ui-theme] #clanStage .member-directory-v283 .member-footer-link{background:transparent!important;color:var(--theme-title)!important;box-shadow:none!important}
+}
+@media(max-aspect-ratio:17/10){
+ #clanStage .member-directory-v283 .memberList .member-card{grid-template-columns:43px minmax(0,1fr) auto;gap:9px;padding:9px 10px}
+ #clanStage .member-directory-v283 .memberList .identity strong{font-size:21px}
+ .member-card .member-mark{width:43px;height:52px;font-size:23px}
+ .member-presence{font-size:11px;gap:4px}
+}
