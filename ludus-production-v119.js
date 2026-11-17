@@ -94,6 +94,7 @@
  }
  function nameForItem(item){const sku=skuForItem(item);return recipes.find(r=>r.sku===sku)?.name||resources.find(r=>r.sku===sku)?.name||null;}
  function artwork(item){
+  const exact=visuals?.artwork(item);if(exact)return exact;
   const sku=skuForItem(item),src=photo(sku);if(!src)return null;
   const name=recipes.find(r=>r.sku===sku)?.name||resources.find(r=>r.sku===sku)?.name||'Ekipman';
   return '<svg class="equipment-icon item-photo-v118" style="display:block;width:100%;height:100%;overflow:hidden" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+name+'"><image href="'+src+'" x="4" y="4" width="88" height="88" preserveAspectRatio="xMidYMid meet"/></svg>';

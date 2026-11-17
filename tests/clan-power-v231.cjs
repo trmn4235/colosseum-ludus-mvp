@@ -20,15 +20,15 @@ const mock=`window.__requests=[];window.__fail=false;window.__client=(${fixtureC
   if(file.endsWith('.html'))body=Buffer.from(body.toString().replace('<head>','<head><script>'+mock+'</script>').replaceAll(/LudusClient\.create\([^)]*\)/g,'window.__client'));
   return route.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'application/octet-stream'});
  });
- await page.goto('https://clan.test/klan.html');await page.locator('.homeBanner').waitFor();await page.locator('[data-view="bots"]').waitFor();
+ await page.goto('https://clan.test/klan.html');await page.locator('.clan-identity-v276').waitFor();await page.locator('.clan-navigation [data-view="bots"]').waitFor();
  for(const [width,height]of [[1536,706],[874,402],[844,390],[667,375],[568,320]]){
   await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(new DOMMatrixReadOnly(getComputedStyle(document.getElementById('clanStage')).transform).a-Math.min(innerWidth/1440,innerHeight/760))<.001);
   const layout=await page.evaluate(()=>{const nav=[...document.querySelectorAll('.clan-navigation .nav,.clan-navigation a')];const boxes=nav.map(e=>e.getBoundingClientRect());return {count:nav.length,sameRow:boxes.every(r=>Math.abs(r.top-boxes[0].top)<2),inHeader:boxes.every(r=>r.top>=0&&r.bottom<=document.querySelector('.clan-topbar').getBoundingClientRect().bottom+1),clipped:nav.filter(e=>[...e.querySelectorAll('span')].some(s=>s.scrollWidth>s.clientWidth+1)).map(e=>e.textContent),sidebar:!!document.querySelector('.sidebar'),bodyScroll:document.documentElement.scrollHeight>innerHeight+1};});
-  assert.deepEqual(layout,{count:9,sameRow:true,inHeader:true,clipped:[],sidebar:false,bodyScroll:false},width+' horizontal clan navigation');
+  assert.deepEqual(layout,{count:11,sameRow:true,inHeader:true,clipped:[],sidebar:false,bodyScroll:false},width+' horizontal clan navigation');
   await page.screenshot({path:path.join(out,'clan-home-'+width+'x'+height+'.png')});
  }
  for(const view of ['members','manage']){
-  await page.locator('[data-view="'+view+'"]').click();
+  await page.locator('.clan-navigation [data-view="'+view+'"]').click();
   for(const [width,height]of [[1536,706],[874,402],[844,390],[667,375],[568,320]]){
    await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(new DOMMatrixReadOnly(getComputedStyle(document.getElementById('clanStage')).transform).a-Math.min(innerWidth/1440,innerHeight/760))<.001);
    const layout=await page.evaluate(()=>{
@@ -46,10 +46,10 @@ const mock=`window.__requests=[];window.__fail=false;window.__client=(${fixtureC
  await page.locator('[data-action="permission"][data-id="member-9"]').click();await page.waitForFunction(()=>document.querySelector('[data-action="permission"][data-id="member-9"]')?.textContent==='Yetkiyi kaldır');
  await page.locator('[data-action="ask_transfer"][data-id="member-9"]').click();assert.match(await page.locator('#confirmText').textContent(),/Ludus Maximus-9/);await page.locator('#confirmNo').click();
  await page.locator('[data-action="ask_kick"][data-id="member-9"]').click();assert.match(await page.locator('#confirmText').textContent(),/Ludus Maximus-9/);await page.locator('#confirmNo').click();
- await page.evaluate(()=>{__clanFixture.clan.member_count=__clanFixture.clan.capacity=11;__clanFixture.members.push({...__clanFixture.members[9],user_id:'member-10',name:'Ludus Undecimus-10'});});await page.locator('#refresh').click();await page.locator('[data-action="page"][data-key="permissions"][data-page="1"]').waitFor();
+ await page.evaluate(()=>{__clanFixture.clan.member_count=__clanFixture.clan.capacity=11;__clanFixture.members.push({...__clanFixture.members[9],user_id:'member-10',name:'Ludus Undecimus-10'});});await page.locator('[data-action="permission"][data-id="member-9"]').click();await page.locator('[data-action="page"][data-key="permissions"][data-page="1"]').waitFor();
  assert.equal(await page.locator('.memberList>.permissionRow').count(),10);assert.equal(await page.locator('.memberList').evaluate(e=>e.scrollHeight<=e.clientHeight+1&&[...e.querySelectorAll('.permissionRow')].every(r=>r.scrollHeight<=r.clientHeight+1)),true,'ten rows and pagination remain visible');await page.locator('[data-action="page"][data-key="permissions"][data-page="1"]').click();assert.equal(await page.locator('.memberList>.permissionRow').count(),1);assert.match(await page.locator('.memberList').textContent(),/Ludus Undecimus-10/);
- await page.locator('[data-view="members"]').click();assert.equal(await page.locator('.memberList>.row').count(),10);await page.locator('[data-action="page"][data-key="members"][data-page="1"]').click();assert.equal(await page.locator('.memberList>.row').count(),1);assert.match(await page.locator('.memberList').textContent(),/Ludus Undecimus-10/);
- await page.setViewportSize({width:844,height:390});await page.locator('[data-view="power"]').click();
+ await page.locator('.clan-navigation [data-view="members"]').click();assert.equal(await page.locator('.memberList>.row').count(),10);await page.locator('[data-action="page"][data-key="members"][data-page="1"]').click();assert.equal(await page.locator('.memberList>.row').count(),1);assert.match(await page.locator('.memberList').textContent(),/Ludus Undecimus-10/);
+ await page.setViewportSize({width:844,height:390});await page.locator('.clan-navigation [data-view="power"]').click();
  await page.getByText('Klan sıralaması').waitFor();assert.equal(await page.evaluate(()=>__requests.length),2,'all ranking pages loaded');
  assert.equal(await page.locator('[data-power-clan="clan-0"]').count(),1);assert.match(await page.locator('.powerTotal').innerText(),/1\.190/);
  assert.match(await page.locator('[data-power-clan="clan-0"]').innerText(),/1 hesaplanamadı/);
@@ -59,7 +59,7 @@ const mock=`window.__requests=[];window.__fail=false;window.__client=(${fixtureC
  await page.setViewportSize({width:844,height:390});await page.screenshot({path:path.join(out,'clan-power-v231.png')});
  await page.evaluate(()=>{window.__fail=true});await page.locator('[data-power-refresh]').click();await page.getByText('Bağlantı hatası').waitFor();
  await page.evaluate(()=>{window.__fail=false});await page.locator('[data-power-refresh]').click();await page.waitForFunction(()=>!document.querySelector('.powerError'));
- await page.locator('[data-view="bots"]').click();await page.getByRole('heading',{name:'Bot Ludusları',exact:true}).waitFor();assert.equal(await page.locator('.botRow').count(),5);assert.match(await page.locator('.botDetail').innerText(),/Vita/);
+ await page.locator('.clan-navigation [data-view="bots"]').click();await page.getByRole('heading',{name:'Bot Ludusları',exact:true}).waitFor();assert.equal(await page.locator('.botRow').count(),5);assert.match(await page.locator('.botDetail').innerText(),/Vita/);
  for(const [width,height]of [[844,390],[667,375],[568,320]]){await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(new DOMMatrixReadOnly(getComputedStyle(document.getElementById('clanStage')).transform).a-Math.min(innerWidth/1440,innerHeight/760))<.001);const fit=await page.evaluate(()=>{const boxes=[...document.querySelectorAll('.botPanel,.botDetail,[data-view="bots"]')].map(e=>{const b=e.getBoundingClientRect();return {name:e.className||e.dataset.view,left:b.left,top:b.top,right:b.right,bottom:b.bottom}});return {boxes,height:document.documentElement.scrollHeight,viewport:[innerWidth,innerHeight]};});assert.ok(fit.boxes.every(b=>b.left>=-1&&b.top>=-1&&b.right<=width+1&&b.bottom<=height+1)&&fit.height<=height+1,'bot admin fits '+width+': '+JSON.stringify(fit));}
  await page.setViewportSize({width:844,height:390});await page.locator('[data-bot-toggle]').click();await page.getByRole('button',{name:'Botu çalıştır'}).waitFor();assert.equal(await page.evaluate(()=>__botState.bots[0].enabled),false);
  await page.locator('[data-bot-fleet]').click();await page.getByRole('button',{name:'Tümünü çalıştır'}).waitFor();assert.equal(await page.evaluate(()=>__botState.enabled),false);

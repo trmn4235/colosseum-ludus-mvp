@@ -1,0 +1,282 @@
+/* Loaded first: important paint overrides outrank legacy art layers without changing geometry. */
+@layer ludus-theme-v275;
+html[data-ui-theme]{
+ --theme-canvas:#f7f6f2;--theme-surface:#fff;--theme-text:#30232a;--theme-muted:#74656c;
+ --theme-header:#591823;--theme-header-ink:#ead294;--theme-title:#591823;--theme-border:#b8a27d;--theme-accent:#b38b43;--theme-selected:#f2e9e8;
+ --theme-preview:radial-gradient(ellipse at 48% 40%,#fff,#e4e2d9);--theme-item-tint:#f0f0e8;--theme-item-ink:#344046;--theme-gem:#eef5ef;--theme-gem-text:#285f43;--theme-overlay:#171b23aa;
+ --ui-canvas:var(--theme-canvas);--ui-white:var(--theme-surface);--ui-ink:var(--theme-text);--ui-muted:var(--theme-muted);--ui-burgundy:var(--theme-header);--ui-gold:var(--theme-border);--ui-gold-light:var(--theme-header-ink);--ui-selected:var(--theme-selected);--ui-line:var(--theme-border);
+ --roman-white:var(--theme-surface);--roman-ink:var(--theme-text);--roman-burgundy:var(--theme-header);--roman-gold:var(--theme-border);--item-enhancement-color:var(--theme-item-ink);
+}
+html[data-ui-theme="black"]{
+ --theme-canvas:#1d2025;--theme-surface:#34383f;--theme-text:#e4e9ed;--theme-muted:#bbc5ce;
+ --theme-header:#252b33;--theme-header-ink:#e3e9ee;--theme-title:#dce4ec;--theme-border:#758693;--theme-accent:#bccbd5;--theme-selected:#4c5964;
+ --theme-preview:radial-gradient(ellipse at 48% 40%,#65717b,#3b444e 65%,#29313a);--theme-item-tint:#98a3aa;--theme-item-ink:#172a35;--theme-gem:#293f38;--theme-gem-text:#abe0bf;
+}
+html[data-ui-theme="blue"]{
+ --theme-canvas:#1c303d;--theme-surface:#354e5c;--theme-text:#ecf1ef;--theme-muted:#c1d1d7;
+ --theme-header:#214451;--theme-header-ink:#eeddb6;--theme-title:#ebdbb5;--theme-border:#819b9f;--theme-accent:#d7c495;--theme-selected:#516d78;
+ --theme-preview:radial-gradient(ellipse at 48% 40%,#829898,#4d6872 65%,#2f4857);--theme-item-tint:#b6c5bc;--theme-item-ink:#253a40;--theme-gem:#2b5049;--theme-gem-text:#b4e1bf;
+}
+/* The following paint-only rules share the established semantic surface selectors. */
+@layer ludus-theme-v275{
+body[data-roman-screen] :is(h1,h2,h3){text-shadow:none!important}
+body[data-roman-screen] :is(input:not([type=color]):not([type=range]):not([type=checkbox]),select,textarea){background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(input,textarea)::placeholder{color:var(--ui-muted)!important}
+body[data-roman-screen] :is(.panel,.paper,.product,.quest-card,.daily-bonus,.inspect-paper,.pouch,.friends-paper,.level-paper,.entry-panel,.imperial-paper,.imperial-card,.imperial-daily-card,.imperial-admin-slot,.clan-vault-frame,.clan-vault-panel,.food-frame,.food-card,.food-bonus,.exercise-summary,.exercise-details,.exercise-others,.exercise-picker,.exercise-picker-item,.exercise-roster-card,.ludus-view-settings,#ludusMessages,#roomQuestPanel,#roomUpgradePanel,#roomClanPanel,#appInstallHelp>div){background:var(--ui-white)!important;background-image:none!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:0 3px 14px #5918230a!important}
+body[data-roman-screen] :is(.panel,.paper,.pouch,.friends-paper,.level-paper,.entry-panel,.imperial-paper,.clan-vault-frame,.food-frame,.exercise-summary,.exercise-details,.exercise-others,.exercise-picker) :is(h1,h2,h3){color:var(--theme-title)!important}
+body[data-roman-screen] :is(.muted,.subtitle,.basic,.small,.empty,.details .note,.credits,.friends-empty,.friends-paper small,.imperial-description,.imperial-card p,.imperial-facts,.imperial-total,.imperial-empty,.imperial-admin-slot small,.imperial-daily-card p,.imperial-daily-facts,.exercise-class,.exercise-note,.exercise-meter small,.exercise-bulk-row small,.exercise-picker-name>small,.level-facts dt,.level-next,.level-foot,.food-rule,.food-note,.food-last,.food-wallet,.messages-status,.messages-empty){color:var(--ui-muted)!important}
+body[data-roman-screen] :is(.top,.statusbar,.inspect-head,.pouch-head,.friends-head,.level-head,.imperial-head,.clan-vault-belt,.food-top,.exercise-top,.exercise-roster-heading,.messages-head){background:var(--ui-burgundy)!important;background-image:none!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important;text-shadow:none!important}
+body[data-roman-screen] :is(.top,.statusbar,.inspect-head,.pouch-head,.friends-head,.level-head,.imperial-head,.clan-vault-belt,.food-top,.exercise-top,.exercise-roster-heading,.messages-head) :is(h1,h2,h3,p,small,strong,span,a,label,b){color:var(--ui-gold-light)!important;text-shadow:none!important}
+body[data-roman-screen] :is(.primary,.buy,.quest-action,.start,.button:not(.secondary):not(.danger),.friends-paper button,.imperial-modal button,.food-modal button,.exercise-primary,.exercise-top button,.clan-vault-close,.clan-vault-transfer,.clan-vault-donation button,.clan-vault-retry,.ludus-view-settings button,#ludusMessages button,#dailyBonus,#dailyRefresh,#dailyRetry,#enter,#useGem,#retry,#appInstallHelp button){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;box-shadow:none!important;text-shadow:none!important}
+body[data-roman-screen] :is(.tabs button,.gem-tabs button,.material-tabs button,.market-pager button,.compact-pager button,.pager button,.pagination button,.tab,.button.secondary,.entry-panel .secondary,.exercise-actions button:not(.exercise-primary),.exercise-footer button,.exercise-pagination button,.clan-vault-page button){background:var(--ui-white)!important;color:var(--theme-title)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.tabs button.active,.gem-tabs button.active,.material-tabs button.active,.tab.active,.imperial-category-tabs button[aria-pressed=true],.imperial-admin-tabs button.active,.food-tabs button[aria-pressed=true],.friends-paper nav button.active){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.button.danger,.entry-panel .back,#togglePassword,.exercise-picker-close){background:var(--ui-white)!important;color:var(--theme-title)!important;border-color:var(--ui-line)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.item,.inv,.slot,.socket,.gem-slot,.material-stone,.exercise-item,.clan-vault-slot,.fighter,.itemCard,.rosterSlot,.gladiatorChoice,.emblemButton){background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.item.selected,.item.chosen,.fighter.selected,.exercise-roster-card.active,.exercise-attribute.selected,.exercise-picker-item:hover,.imperial-roster button[aria-pressed=true],.clan-vault-slot[aria-pressed=true],.itemCard.selected,.emblemButton.selected){background:var(--ui-selected)!important;color:var(--theme-title)!important;box-shadow:inset 3px 0 var(--ui-burgundy)!important}
+body[data-roman-screen] :is(.gem-grid,.clan-vault-slots,.clan-vault-treasury,.food-summary>div,.operation .rate-box,.row,.permissionRow,.bannerPreview){background:var(--ui-canvas)!important;color:var(--ui-ink)!important;border-color:var(--ui-line)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.gem-slot.empty-slot,.socket.empty,.socket.empty-socket,.clan-vault-slot[data-empty=true],.rosterSlot.emptySlot){background:var(--ui-canvas)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen] :is(.quantity,.upgrade-level,.clan-vault-quantity,.clan-vault-level){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;text-shadow:none!important}
+body[data-roman-screen] :is(.slot small,.fighter small,.itemCard small,.clan-vault-iteminfo small,.clan-vault-balance small,.clan-vault-wallet-note,.clan-vault-page,.gem-note,#itemMeta,#operationNote,#resetMaterial){color:var(--ui-muted)!important}
+body[data-roman-screen] :is(.exercise-item small,.exercise-item>span,.exercise-attribute,.exercise-attribute strong,.exercise-meter-heading strong,.exercise-overall strong,.clan-vault-iteminfo strong,.clan-vault-balance strong,.price,.stat-title){color:var(--theme-title)!important}
+body[data-roman-screen] :is(.side,.daily-sidebar){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.side,.daily-sidebar) :is(h1,h2,p,small,span,strong,a,button),body[data-roman-screen] #dailyReset{color:var(--ui-gold-light)!important}
+body[data-roman-screen] .side .active{background:var(--ui-white)!important;color:var(--theme-title)!important;border-color:var(--ui-gold)!important;box-shadow:inset 0 -3px var(--ui-gold)!important}
+body[data-roman-screen] .side .active :is(span,small){color:var(--theme-title)!important}
+body[data-roman-screen] :is(#friendsOverlay,.imperial-modal,.clan-vault-modal,.food-modal,#pouchOverlay,#confirmLayer,#appInstallHelp){background:var(--theme-overlay)!important}
+body[data-roman-screen] :is(#landscapeGate,#portrait,#levelOrientation,.mobile-gate){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(#landscapeGate,#portrait,#levelOrientation,.mobile-gate) :is(svg,p,strong){color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(.ludus-view-settings,#ludusMessages)::backdrop{background:var(--theme-overlay)!important}
+body[data-roman-screen] :is(.level-meter,.imperial-progress,.quest-track progress,.exercise-track){background:var(--ui-canvas)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] :is(.level-meter>div,.imperial-progress>div,.exercise-fill){background:var(--ui-burgundy)!important;box-shadow:none!important}
+body[data-roman-screen] .quest-track progress::-webkit-progress-bar{background:var(--ui-canvas)!important}
+body[data-roman-screen] .quest-track progress::-webkit-progress-value{background:var(--ui-burgundy)!important}
+body[data-roman-screen] .quest-track progress::-moz-progress-bar{background:var(--ui-burgundy)!important}
+body[data-roman-screen] .exercise-meter.energy .exercise-fill{background:#357251!important}
+body[data-roman-screen] .exercise-meter.danger .exercise-fill{background:#a52b42!important}
+body[data-roman-screen] .imperial-progress.ready>div{background:#357251!important}
+body[data-roman-screen="index"] .entry-panel :is(label,p,small,#status,#modalMessage,#accountMessage,.join-divider,.panel small,.owner-create-button small){color:var(--ui-muted)!important}
+body[data-roman-screen="index"] .entry-panel .panel{background:transparent!important;box-shadow:none!important}
+body[data-roman-screen="index"] .entry-panel :is(.primary,.owner-create-button) small{color:var(--ui-gold-light)!important}
+body[data-roman-screen="index"] .sound-toggle{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen] .owner-editor{background:var(--theme-overlay)!important;color:var(--ui-ink)!important}
+body[data-roman-screen] .owner-sheet{background:var(--ui-white)!important;border-color:var(--ui-gold)!important;box-shadow:0 3px 14px #59182320!important}
+body[data-roman-screen] .owner-sheet>header,body[data-roman-screen] .owner-sheet>footer{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen] .owner-sheet>header :is(h2,small),body[data-roman-screen] .owner-sheet>footer p{color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(.owner-sheet button,.owner-zoom){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] .owner-custom nav button{background:var(--ui-white)!important;color:var(--theme-title)!important}
+body[data-roman-screen] .owner-custom nav button.active{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] :is(.owner-preview,.owner-field){background:var(--ui-canvas)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen] :is(.owner-field span,.owner-caption,.owner-preview-tools span){color:var(--ui-muted)!important}
+body[data-roman-screen="savas"] :is(.heading h1,.details .class,.details #victories){color:var(--theme-title)!important}
+body[data-roman-screen="savas"] :is(.heading p,.footer,.caption small){color:var(--ui-muted)!important}
+body[data-roman-screen="savas"] :is(.top button,.footer .action,.mode .tag,.mode .caption,.status,.inventory h2,.roster h2,.modelStatus){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;text-shadow:none!important;box-shadow:none!important}
+body[data-roman-screen="savas"] .mode .caption small{color:var(--ui-gold-light)!important}
+body[data-roman-screen="gelistirmeler"] :is(.top,.statusbar,.side){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen="gelistirmeler"] .operation .medallion span{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="gelistirmeler"] .operation .rate-box{color:var(--theme-title)!important}
+body[data-roman-screen="gelistirmeler"] :is(.material-stone img,.gem-slot img){background:var(--ui-white)!important}
+body[data-roman-screen="gorevler"]>header{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="gorevler"]>header button{background:transparent!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="gorevler"] :is(.quest-card p,.quest-progress,.daily-bonus span){color:var(--ui-muted)!important}
+body[data-roman-screen="gorevler"] :is(.quest-reward,.daily-bonus strong){color:var(--theme-title)!important}
+body[data-roman-screen="gorevler"] #dailyMessage{background:var(--ui-white)!important;color:var(--theme-title)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="level"] :is(.level-table th,.level-summary h2){color:var(--theme-title)!important}
+body[data-roman-screen="level"] .level-table tr[data-state=ready]{background:var(--ui-selected)!important}
+body[data-roman-screen="level"] .level-table tr:not([data-state=ready]){color:var(--ui-muted)!important}
+body[data-roman-screen="level"] button{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="level"] button:disabled{background:var(--ui-canvas)!important;color:var(--ui-muted)!important}
+body[data-roman-screen="clan"] #clanStage{background:var(--ui-canvas)!important}
+body[data-roman-screen="clan"] :is(header,.sidebar,.foot){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="clan"] :is(.brand svg,.back,.refresh,.nav),body[data-roman-screen="clan"] .foot #retry{background:transparent!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="clan"] .foot #message{background:transparent!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen="clan"] .nav.active{background:var(--ui-white)!important;color:var(--theme-title)!important;box-shadow:inset 0 -3px var(--ui-gold)!important}
+body[data-roman-screen="clan"] :is(.pageTitle h1,.panel h3,.metric strong,.treasury .amount,.ledgerRow b){color:var(--theme-title)!important}
+body[data-roman-screen="clan"] :is(.field,.row small,.metric label,.metric small,.itemCard small,.ledgerRow small,.permissionRow small,.rosterSlot small,.gladiatorChoice small,.pageTitle .tag,.pagination){color:var(--ui-muted)!important}
+body[data-roman-screen="clan"] :is(.notice,.warDisclaimer){background:var(--ui-canvas)!important;color:var(--ui-muted)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen="clan"] .progress{background:var(--ui-canvas)!important}
+body[data-roman-screen="clan"] .progress i{background:var(--ui-burgundy)!important}
+body[data-roman-screen="clan"] :is(.emblemButton svg,.rosterSlot svg,.gladiatorChoice svg){color:var(--theme-title)!important}
+body[data-roman-screen="ludus"] .ludus-menu{background:transparent!important;box-shadow:none!important}
+body[data-roman-screen="ludus"] .ludus-menu #accountSummary{background:transparent!important;color:var(--ui-gold-light)!important;text-shadow:0 1px 3px #20130eee,0 0 6px #20130ecc!important;box-shadow:none!important}
+body[data-roman-screen="ludus"] .ludus-menu .tools{background:transparent!important}
+body[data-roman-screen="ludus"] .ludus-menu .tools button,body[data-roman-screen="ludus"] .ludus-menu .tools button:hover{background:transparent!important;color:var(--ui-gold-light)!important;box-shadow:none!important}
+body[data-roman-screen="ludus"] :is(#friendCount,#messageUnread,#explore.active){background:var(--ui-white)!important;color:var(--theme-title)!important}
+body[data-roman-screen="ludus"] :is(.worldLabel,.room-world-action,.clan-vault-marker,#interact,#roomExit,#loading,#pendingBattleNotice){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important;text-shadow:none!important}
+body[data-roman-screen="ludus"] #supplyHuntOpen{background:transparent!important;border-color:transparent!important}
+body[data-roman-screen="ludus"] #orders{background:var(--theme-overlay)!important}
+body[data-roman-screen="ludus"] #orders>div:not(.exercise-panel){background:var(--ui-white)!important;color:var(--ui-ink)!important}
+body[data-roman-screen] #orders>.exercise-panel{background:var(--ui-white)!important;color:var(--ui-ink)!important;box-shadow:0 3px 14px #59182320!important}
+body[data-roman-screen] .exercise-panel :is(#ordersText.exercise-status,.exercise-note,.exercise-bulk-stat,.exercise-picker-status,.exercise-picker-empty){color:var(--ui-muted)!important}
+body[data-roman-screen] .exercise-panel .exercise-top h1{color:var(--ui-gold-light)!important}
+body[data-roman-screen] .exercise-roster-heading .exercise-pagination button{background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] .exercise-attribute{background:transparent!important}
+body[data-roman-screen] .exercise-attribute.selected{background:var(--ui-selected)!important}
+body[data-roman-screen] .imperial-paper .imperial-head{background:var(--ui-burgundy)!important}
+body[data-roman-screen] .imperial-paper .imperial-head :is(h1,p){color:var(--ui-gold-light)!important}
+body[data-roman-screen] .imperial-roster button{background:var(--ui-white)!important;color:var(--theme-title)!important}
+body[data-roman-screen] .imperial-roster button[aria-pressed=true]{background:var(--ui-selected)!important;box-shadow:inset 3px 0 var(--ui-burgundy)!important}
+body[data-roman-screen] .imperial-rewards span{background:var(--ui-canvas)!important;color:var(--theme-title)!important;border-color:var(--ui-line)!important}
+body[data-roman-screen] :is(.imperial-state-label,.imperial-party-label,.imperial-timer,.imperial-extra){color:var(--ui-muted)!important}
+body[data-roman-screen] .clan-vault-donation{background:transparent!important;color:var(--ui-ink)!important}
+body[data-roman-screen] :is(.clan-vault-amount,.clan-vault-donation input){background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen] #ludusMessages :is(.message-bubble,.messages-conversations button){background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
+body[data-roman-screen] #ludusMessages :is(.message-bubble.mine,.messages-conversations button[aria-pressed=true]){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen] #ludusMessages .messages-head h2{color:var(--ui-gold-light)!important}
+body[data-roman-screen] .food-top :is(h1,small,.food-close){color:var(--ui-gold-light)!important}
+body[data-roman-screen="arena"] :is(.tool,.action,#attack,#hand,#controlLayout,#toast,#regionHint,#pickup){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="arena"] .action svg{stroke:var(--ui-gold-light)!important}
+body[data-roman-screen="arena"] :is(.action.mode-selected,.action.body-target.selected,.action.pressed){box-shadow:inset 0 0 0 2px var(--ui-gold-light)!important}
+body[data-roman-screen="arena"] .action.counter-ready{box-shadow:0 0 12px var(--ui-gold-light)!important}
+body[data-roman-screen="arena"] .overlay{background:var(--theme-overlay)!important}
+body[data-roman-screen="arena"] .overlay>.intro{background:var(--ui-white)!important;color:var(--ui-ink)!important}
+body[data-roman-screen="arena"] .intro :is(h1,em,.eyebrow){color:var(--theme-title)!important}
+body[data-roman-screen="arena"] .intro :is(p,.features,.fine){color:var(--ui-muted)!important}
+body[data-roman-screen="arena"] :is(.secondary,.choices select){background:var(--ui-white)!important;color:var(--theme-title)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="arena"] :is(#resultStats,#resultStats b){color:var(--theme-title)!important}
+body[data-roman-screen="arena"] :is(#stick,#knob){background:color-mix(in srgb,var(--theme-header) 44%,transparent)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="multiplayer"] :is(.mp-top #mpBack,#duelActions .mp-action,#duelActions #duelAttack,#duelActions #duelTarget,#duelActions #duelHand,#duelRegionHint,#duelResult button,.queue-footer button){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="multiplayer"] :is(#duelStick,#duelKnob){background:color-mix(in srgb,var(--theme-header) 44%,transparent)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="multiplayer"] #duelResult{background:var(--theme-overlay)!important}
+body[data-roman-screen="multiplayer"] #duelResult>section{background:var(--ui-white)!important;color:var(--ui-ink)!important;box-shadow:none!important}
+body[data-roman-screen="multiplayer"] #duelResult h1{color:var(--theme-title)!important}
+body[data-roman-screen="multiplayer"] .mp-rule{color:var(--ui-muted)!important}
+body[data-roman-screen="multiplayer"] :is(#queueRing>div,.queue-centre){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="multiplayer"] :is(#queueSeconds,#queueRing span,#queueCount,#queueNames,#queueMessage,#queueCaption,.queue-label){color:var(--ui-gold-light)!important}
+body[data-roman-screen="multiplayer"] .queue-track{background:var(--ui-selected)!important}
+body[data-roman-screen="multiplayer"] .queue-track i{background:var(--ui-gold)!important}
+body[data-roman-screen="utility"]{background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
+body[data-roman-screen="utility"] :is(main,section){background:var(--ui-white)!important;border-color:var(--ui-gold)!important;box-shadow:none!important}
+body[data-roman-screen="utility"] :is(h1,h2,a){color:var(--theme-title)!important}
+body[data-roman-screen="utility"] :is(button,a.action){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important}
+body[data-roman-screen="preview"] :is(header,footer,.hud,.bar,.badge,#loading,button,.back){background:var(--ui-burgundy)!important;color:var(--ui-gold-light)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="preview"] :is(header,footer) :is(h1,small,p,#measurement){color:var(--ui-gold-light)!important}
+body[data-roman-screen="preview"] .result{background:var(--ui-white)!important;color:var(--ui-ink)!important;border-color:var(--ui-gold)!important}
+body[data-roman-screen="preview"] .result b{color:var(--theme-title)!important}
+}
+@layer ludus-theme-v275{
+ /* Page-like screens and dialogs only; no filters or colors on 3D canvases or model materials. */
+ html[data-ui-theme] body:is([data-roman-screen="savas"],[data-roman-screen="clan"],[data-roman-screen="pazar"],[data-roman-screen="gelistirmeler"],[data-roman-screen="gorevler"],[data-roman-screen="level"],[data-roman-screen="rankings"],[data-roman-screen="utility"]),
+ html[data-ui-theme] body:has(.ranked-page){background:var(--theme-canvas)!important;color:var(--theme-text)!important}
+ html[data-ui-theme] :is(.game-shell,#setupPage,#clanStage,.ranked-page,.workers-body,.exercise-panel,.rank-sections,.loadout-dialog){background:var(--theme-canvas)!important;color:var(--theme-text)!important}
+ html[data-ui-theme] :is(.paper,.panel,.level-paper,.level-summary,.level-table-area,.workers-frame,.worker-card,.worker-profile,.worker-skill,.worker-job,.worker-archery,.worker-defense,.loadout-paper,.recipe-details,.cv-job,.cv-seat,.cv-own,.ludus-view-settings,#fightDialog,.fighter-loadout){background:var(--theme-surface)!important;background-image:none!important;border-color:var(--theme-border)!important;color:var(--theme-text)!important;box-shadow:none!important}
+ html[data-ui-theme] :is(.paper,.panel,.worker-card,.worker-profile,.loadout-paper,.level-summary,.level-table-area) :is(h1,h2,h3,strong,b),
+ html[data-ui-theme] :is(.pageTitle h1,.ranked-header h1,.level-head h1,#modeTitle,.prep-identity h2,#loadoutDetails h3,.prep-stat dd,#fighterInfo dd,.inventory-heading h2){color:var(--theme-title)!important;background:none!important}
+ html[data-ui-theme] :is(.top,.statusbar,.workers-head,.workers-footer,.ranked-header,.cv-table-head,.roster h2,.level-head,.settings-heading){background:var(--theme-header)!important;border-color:var(--theme-border)!important;color:var(--theme-header-ink)!important}
+ html[data-ui-theme] :is(.top,.statusbar,.workers-head,.ranked-header,.level-head,.settings-heading) :is(h1,h2,h3,p,span,small,strong,a){color:var(--theme-header-ink)!important}
+ html[data-ui-theme] :is(.cv-button,.cv-tab,.cv-remove,.workers-tab,.workers-close,.workers-page-button,.workers-back,.workers-retry,.workers-save,.primary,.secondary,.invite-tabs button,.pager button,.loadout-tabs button,.loadout-pager button,#fightStart){background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] :is(.cv-tab,.workers-tab,.cv-own)[aria-pressed="true"],
+ html[data-ui-theme] :is(.invite-tabs .selected,.loadout-tabs .selected,.candidate.selected,.worker-card.selected){background:var(--theme-selected)!important;color:var(--theme-title)!important;border-color:var(--theme-accent)!important}
+ html[data-ui-theme] :is(.worker-name-line input,.workers-renaming input,.cv-route select,.cv-rank-controls select,.ready-panel select,.loadout-pane select,.worker-defense-controls select){background:var(--theme-canvas)!important;color:var(--theme-text)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] :is(.workers-modal,.loadout-dialog)::backdrop{background:var(--theme-overlay)!important}
+ html[data-ui-theme] :is(.theme-note,.workers-status,.worker-card small,.worker-profile small,.cv-note,.lineup-status,.prep-stat dt,#fighterInfo dt,#slotTitle,.prep-total-note,.prep-empty,.footer){color:var(--theme-muted)!important}
+ html[data-ui-theme] .item-image-v271{background:transparent!important}
+ html[data-ui-theme] :is(.art,.inspect-art,.item-picture,.slot,.invGrid .item,.exercise-item,.clan-vault-slot,.weapon-card){background:linear-gradient(#ffffff2b,#0000000d),var(--theme-item-tint) url('assets/circus-v143/honed-marble.webp') center/cover!important;background-blend-mode:normal,multiply!important;color:var(--theme-item-ink)!important;border-color:var(--theme-border)!important;--item-enhancement-color:var(--theme-item-ink)}
+ html[data-ui-theme] #setupPage :is(.slot.active,.invGrid .item.chosen){background:linear-gradient(#ffffff2b,#0000000d),var(--theme-item-tint) url('assets/circus-v143/honed-marble.webp') center/cover!important;background-blend-mode:normal,multiply!important}
+ html[data-ui-theme] :is(.slot.active,.invGrid .item.chosen,.weapon-card:has(input:checked)){outline:2px solid var(--theme-accent)!important;outline-offset:1px;border-color:var(--theme-accent)!important;box-shadow:inset 0 0 0 1px #ffffff33!important}
+ html[data-ui-theme] #setupPage .preview{background:var(--theme-preview)!important;border:1px solid var(--theme-border)!important;box-shadow:inset 0 0 0 1px #ffffff20!important}
+ html[data-ui-theme] #setupPage :is(.prep-profile,.prep-stat,.prep-item-head,.inventory-heading){border-color:var(--theme-border)!important}
+ html[data-ui-theme] #setupPage .prep-socket{background:var(--theme-gem)!important;border-color:var(--theme-border)!important;color:var(--theme-text)!important}
+ html[data-ui-theme] #setupPage :is(.prep-gem-heading h4,.prep-gem-heading>span,.prep-gem-copy>b){color:var(--theme-gem-text)!important}
+ html[data-ui-theme] #setupPage .prep-socket strong{color:var(--theme-text)!important}
+ html[data-ui-theme] #setupPage .prep-socket.empty{background:var(--theme-canvas)!important}
+ html[data-ui-theme] #setupPage .prep-socket.empty :is(strong,span){color:var(--theme-muted)!important}
+ html[data-ui-theme] #setupPage :is(.inspectButton,.career-button,.compact-pager button){background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #setupPage .inventory>a{color:var(--theme-title)!important}
+ html[data-ui-theme] #setupPage .fighter{background:var(--theme-surface)!important;color:var(--theme-text)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #setupPage .fighter.selected{background:var(--theme-selected)!important;outline-color:var(--theme-accent)!important;box-shadow:inset 3px 0 var(--theme-accent)!important}
+ html[data-ui-theme] #setupPage .fighterPortrait{background:var(--theme-preview)!important}
+ html[data-ui-theme] .top .arena-tabs button{color:var(--theme-header-ink)!important;background:transparent!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] .top .arena-tabs button[aria-selected="true"]{background:var(--theme-selected)!important;color:var(--theme-title)!important;box-shadow:inset 0 -2px var(--theme-accent)!important}
+ html[data-ui-theme] #setupPage #enter{background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border:1px solid var(--theme-accent)!important;box-shadow:inset 0 1px #ffffff25!important}
+ html[data-ui-theme] #setupPage .modelStatus{background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ /* Newer page families use the same semantic palette. */
+ html[data-ui-theme] body{--art-ink:var(--theme-text)!important;--art-muted:var(--theme-muted)!important;--art-wine:var(--theme-header)!important;--art-brass:var(--theme-border)!important;--art-line:var(--theme-border)!important;--gp-ink:var(--theme-text)!important;--gp-muted:var(--theme-muted)!important;--gp-wine:var(--theme-header)!important;--gp-gold:var(--theme-border)!important;--gp-line:var(--theme-border)!important;--gp-canvas:var(--theme-canvas)!important;--gp-white:var(--theme-surface)!important;--st-ink:var(--theme-text)!important;--st-muted:var(--theme-muted)!important;--st-wine:var(--theme-header)!important;--st-gold:var(--theme-border)!important}
+ html[data-ui-theme] :is(#basicMarket,#forumMarket,.forum-frame,#forumDialogs,.supply-frame,.supply-summary,.supply-stock-card,.supply-recipe,.supply-job,.stable-frame,.mc-panel,.fq-shell,.fq-list,.fq-detail,.combat-values-shell,.combat-values-panel,.combat-values-detail,.combat-values-stat,.combat-values-highlight,.gem-detail,.result-paper){background:var(--theme-surface)!important;background-image:none!important;color:var(--theme-text)!important;border-color:var(--theme-border)!important;box-shadow:none!important}
+ html[data-ui-theme] body[data-roman-screen] :is(h1,h2,h3),html[data-ui-theme] :is(.cv-heading,.cv-shell,.cv-body,.worker-profile,.worker-card){color:var(--theme-title)!important}
+ html[data-ui-theme] :is(.supply-head,.clan-vault-top,.mc-head,.fq-top,.combat-values-head,.stable-head,.forum-heading,.forum-frame>h2,.forum-table-head,.rank-columns,.loadout-heading),html[data-ui-theme] body[data-roman-screen=pazar]>header{background:var(--theme-header)!important;background-image:none!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important;box-shadow:none!important}
+ html[data-ui-theme] :is(.top,.rank-header,.clan-topbar,.level-head,.workers-head,.supply-head,.exercise-top,.food-top,.imperial-head,.clan-vault-top,.clan-vault-belt,.owner-sheet>header,.settings-heading,.mc-head,.friends-paper>header,.fq-top,.combat-values-head,.pouch-head,.inspect-head,.stable-head,.forum-heading,.loadout-heading,.rank-columns) :is(h1,h2,h3,small,p,span,strong,b),html[data-ui-theme] .forum-frame>h2{color:var(--theme-header-ink)!important}
+ html[data-ui-theme] body[data-roman-screen=pazar]>header :is(span,strong,a){color:var(--theme-header-ink)!important}
+ html[data-ui-theme] :is(#marketSections,.supply-tabs,.imperial-category-tabs,.mc-tabs,.combat-values-tabs,#friendTabs,.fq-tabs,.stable-tabs,.stable-subtabs,.rank-navigation,.rank-tools,.rank-footer,.forum-toolbar,.forum-filter-panel,.forum-list-footer,.forum-mine-body,.forum-buy-area,.forum-create-scroll,.forum-dialog-body,.forum-net,.forum-lock-note,.cv-seat-empty){background:var(--theme-canvas)!important;color:var(--theme-text)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] :is(#marketSections,#categories,#equipmentSubcategories,#forumMarket,.supply-frame,.stable-frame,.mc-panel,.fq-shell,.combat-values-shell,.rank-scope,.loadout-heading) button,html[data-ui-theme] :is(.cv-primary,.supply-primary,.fq-action,.mc-send,#friendSend,#imperialJoin,.owner-save,.food-primary,#levelClaimAll,#forumBuy,#forumPublish){background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important;text-shadow:none!important;box-shadow:none!important}
+ html[data-ui-theme] :is(#marketSections,#categories,#equipmentSubcategories,#forumMarket,.supply-tabs,.stable-tabs,.mc-tabs,.fq-tabs,.combat-values-tabs,.rank-scope) :is(button.active,button[aria-pressed=true],button[aria-selected=true]),html[data-ui-theme] :is(.forum-row.selected,.rank-row.is-own){background:var(--theme-selected)!important;color:var(--theme-title)!important;border-color:var(--theme-accent)!important;box-shadow:inset 0 -2px var(--theme-accent)!important}
+ html[data-ui-theme] :is(.market-footer a,.forum-row,.forum-row strong,.cv-collected,.cv-totals strong,.rank-value strong,.rank-identity strong,.rank-place,.rank-own strong,.clan-vault-heading h1){color:var(--theme-title)!important}
+ html[data-ui-theme] :is(.supply-footer,.food-frame>footer,.imperial-message,.clan-vault-status,.owner-sheet>footer,.friends-paper>footer,.fq-bottom,.mc-status,.stable-footer){background:var(--theme-canvas)!important;color:var(--theme-muted)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] :is(.cv-owner,.cv-empty,.cv-job small,.cv-totals small,.cv-table-name small,.rank-context p,.rank-identity small,.rank-state,.clan-vault-heading p){color:var(--theme-muted)!important}
+ html[data-ui-theme] .daily-sidebar::before{background:linear-gradient(180deg,transparent,var(--theme-header) 70%),url('assets/art-v136/imperial-orders.webp') 77% top/auto 68% no-repeat!important}
+ html[data-ui-theme] .daily-sidebar :is(h1,p,#dailyReset,#dailyDate){color:var(--theme-header-ink)!important}
+ html[data-ui-theme] :is(.inventory-actions,.material-paging) button,html[data-ui-theme] #openCombatInfo,html[data-ui-theme] #openPouch{background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme=black] :is(.paper,.panel,#basicMarket,.forum-frame,.workers-frame,.level-paper,.ludus-view-settings){background-image:linear-gradient(#34383fe8,#34383fe8),url('assets/circus-v143/honed-marble.webp')!important;background-size:cover!important}
+ html[data-ui-theme=white] :is(.paper,.panel,#basicMarket,.forum-frame,.workers-frame,.level-paper,.ludus-view-settings){background-image:linear-gradient(#fffffff2,#fffffff2),url('assets/circus-v143/honed-marble.webp')!important;background-size:cover!important}
+ /* Daily kitchen shares the selected palette without changing its geometry. */
+ html[data-ui-theme] #foodModal,html[data-ui-theme] #foodModal .kitchen-frame{background:var(--theme-canvas)!important;color:var(--theme-text)!important}
+ html[data-ui-theme] #foodModal .kitchen-header{background:var(--theme-header)!important;border-color:var(--theme-border)!important;color:var(--theme-header-ink)!important}
+ html[data-ui-theme] #foodModal .kitchen-header :is(h1,small,span,button){color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot,.kitchen-stock){background:var(--theme-item-tint)!important;color:var(--theme-item-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot,.kitchen-stock) :is(h3,small,strong){color:var(--theme-item-ink)!important}
+ html[data-ui-theme] #foodModal .kitchen-stock strong{background:var(--theme-item-tint)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot[data-empty],.kitchen-slot-edit button){background:var(--theme-canvas)!important;color:var(--theme-title)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-slot-quantity,.kitchen-serve,.kitchen-buy button){background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-clear,.kitchen-shop-open,.kitchen-shop-back,.kitchen-retry,.kitchen-inventory){border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-clear,.kitchen-shop-open,.kitchen-shop-back,.kitchen-retry,.kitchen-gauge strong,.kitchen-buy-cost,.kitchen-wallet,.kitchen-active){color:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal :is(.kitchen-section-head>span,.kitchen-gauge>small,.kitchen-note,.kitchen-inventory-note,.kitchen-inventory-hint,.kitchen-next,.kitchen-effect-status,.kitchen-effect-until){color:var(--theme-muted)!important}
+ html[data-ui-theme] #foodModal .kitchen-track{background:var(--theme-canvas)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] #foodModal .kitchen-track span{background:var(--theme-accent)!important}
+ html[data-ui-theme] #foodModal .kitchen-gauge:nth-child(2) .kitchen-track span{background:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal .kitchen-effect{background:var(--theme-selected)!important;border-color:var(--theme-accent)!important;color:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal .kitchen-effect-value{color:var(--theme-title)!important}
+ html[data-ui-theme] #foodModal .kitchen-effect[data-preview=false]:is([data-active="4"],[data-active="8"],[data-active="12"]){background:var(--theme-gem)!important;border-color:var(--theme-gem-text)!important}
+ html[data-ui-theme] #foodModal .kitchen-status:not([data-error=true]){color:var(--theme-gem-text)!important}
+ html[data-ui-theme]:not([data-ui-theme=white]) #foodModal .kitchen-status[data-error=true]{color:#ffc4bd!important}
+ /* Compact, visible theme choices in the existing settings dialog. */
+ html[data-ui-theme] .ludus-view-settings{padding:12px!important;border-radius:7px!important;box-sizing:border-box!important;max-height:calc(100dvh - 20px)!important}
+ html[data-ui-theme] .ludus-view-settings .settings-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:5px 8px!important;border-radius:4px!important}
+ html[data-ui-theme] .ludus-view-settings h2{font:18px Georgia!important;margin:0!important}
+ html[data-ui-theme] .ludus-view-settings button{font:12px Arial!important;padding:6px 9px!important;border-radius:4px!important;background:var(--theme-header)!important;color:var(--theme-header-ink)!important;border-color:var(--theme-border)!important}
+ html[data-ui-theme] .ludus-view-settings::backdrop{background:var(--theme-overlay)!important}
+ html[data-ui-theme] .ludus-view-settings label{font:12px Arial!important;margin:0!important}
+ html[data-ui-theme] .ludus-view-settings select{font:13px Arial!important;padding:7px!important;border-radius:4px!important;margin-top:3px!important;background:var(--theme-canvas)!important;color:var(--theme-text)!important}
+ html[data-ui-theme] .ludus-view-settings p{font:11px/1.35 Arial!important;margin:2px 0!important;color:var(--theme-muted)!important}
+ html[data-ui-theme] .ludus-view-settings .settings-actions{margin-top:0!important;gap:6px!important}
+ html[data-ui-theme] .ludus-view-settings .settings-help{display:flex!important;gap:6px!important;align-items:center!important}
+ html[data-ui-theme] .theme-picker{margin:0!important;padding:8px!important;border:1px solid var(--theme-border)!important;border-radius:5px!important;min-width:0!important}
+ html[data-ui-theme] .theme-picker legend{font:14px Georgia!important;color:var(--theme-title)!important;padding:0 5px!important}
+ html[data-ui-theme] .theme-choices{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+ html[data-ui-theme] .theme-choice{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:4px!important;padding:5px!important;border:1px solid var(--theme-border)!important;border-radius:4px!important;cursor:pointer!important;color:var(--theme-text)!important;background:var(--theme-canvas)!important}
+ html[data-ui-theme] .theme-choice:has(input:checked){outline:2px solid var(--theme-accent)!important;outline-offset:1px!important;background:var(--theme-selected)!important}
+ html[data-ui-theme] .theme-choice input{position:absolute!important;opacity:0!important;width:1px!important;height:1px!important}
+ html[data-ui-theme] .theme-choice:focus-within{outline:2px solid var(--theme-title)!important;outline-offset:2px!important}
+ html[data-ui-theme] .theme-choice strong{font:600 10px Arial!important;color:var(--theme-text)!important;white-space:nowrap!important}
+ html[data-ui-theme] .theme-choice small{font:8px Arial!important;color:var(--theme-muted)!important;white-space:nowrap!important}
+ html[data-ui-theme] .theme-swatch{height:42px!important;width:100%!important;display:block!important;position:relative!important;border-radius:3px!important;background:linear-gradient(90deg,#fff 48%,#ecebe4 48%)!important;border:1px solid #bca57d!important}
+ html[data-ui-theme] .theme-swatch i{position:absolute!important;inset:0 0 auto!important;height:11px!important;background:#591823!important}
+ html[data-ui-theme] .theme-swatch em{position:absolute!important;right:6px!important;top:17px!important;width:20%!important;height:18px!important;background:#dddcd2!important;border:1px solid #aaa!important}
+ html[data-ui-theme] [data-theme-choice="black"] .theme-swatch{background:linear-gradient(90deg,#34383f 48%,#1d2025 48%)!important;border-color:#758693!important}
+ html[data-ui-theme] [data-theme-choice="black"] .theme-swatch i{background:#252b33!important;border-bottom:1px solid #9eafbd!important}
+ html[data-ui-theme] [data-theme-choice="black"] .theme-swatch em{background:#98a3aa!important}
+ html[data-ui-theme] [data-theme-choice="blue"] .theme-swatch{background:linear-gradient(90deg,#354e5c 48%,#1c303d 48%)!important;border-color:#819b9f!important}
+ html[data-ui-theme] [data-theme-choice="blue"] .theme-swatch i{background:#214451!important;border-bottom:1px solid #d7c495!important}
+ html[data-ui-theme] [data-theme-choice="blue"] .theme-swatch em{background:#b6c5bc!important}
+ html[data-ui-theme] .theme-note{margin-top:7px!important;min-height:28px!important}
+ html[data-ui-theme] .ludus-view-settings form{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
+ @media(orientation:landscape){
+  html[data-ui-theme] .ludus-view-settings{width:min(710px,calc(100vw - 24px))!important}
+  html[data-ui-theme] .ludus-view-settings form{grid-template-columns:1fr 1.15fr!important;gap:6px 12px!important}
+  html[data-ui-theme] .ludus-view-settings .settings-heading{grid-column:1/-1!important}
+  html[data-ui-theme] .theme-picker{grid-column:2!important;grid-row:2/span 5!important;align-self:start!important}
+  html[data-ui-theme] .ludus-view-settings form>label,html[data-ui-theme] .ludus-view-settings form>p,html[data-ui-theme] .ludus-view-settings form>button{grid-column:1!important}
+  html[data-ui-theme] .ludus-view-settings :is(.settings-help,.settings-actions){grid-column:1/-1!important}
+ }
+ @media(max-height:420px) and (orientation:landscape){
+  html[data-ui-theme] .ludus-view-settings{padding:8px!important}
+  html[data-ui-theme] .ludus-view-settings form{gap:3px 10px!important}
+  html[data-ui-theme] .ludus-view-settings .settings-heading{margin-bottom:0!important;padding:3px 8px!important}
+  html[data-ui-theme] .ludus-view-settings .settings-actions{padding-top:4px!important}
+  html[data-ui-theme] .theme-picker{grid-row:2/span 4!important}
+  html[data-ui-theme] .ludus-view-settings #viewModeToggle{grid-row:6!important}
+  html[data-ui-theme] .ludus-view-settings #saveCombatControls{grid-row:7!important}
+  html[data-ui-theme] .ludus-view-settings .settings-help{grid-column:2!important;grid-row:6/span 2!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important}
+  html[data-ui-theme] .theme-swatch{height:32px!important}
+  html[data-ui-theme] .theme-swatch em{top:13px!important;height:12px!important}
+  html[data-ui-theme] .theme-note{font-size:9px!important}
+ }
+}

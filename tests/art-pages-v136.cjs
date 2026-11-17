@@ -23,7 +23,7 @@ function fixtureClient(data,user,wallet){return {
 const fixtureBootstrap=`window.__themeClient=(${fixtureClient.toString()})(${JSON.stringify({daily,clan,level})},${JSON.stringify(user)},${JSON.stringify(wallet)});`;
 const pages=[
  {file:'gorevler.html',ready:'.quest-card'},
- {file:'klan.html',ready:'.homeBanner'},
+ {file:'klan.html',ready:'.clan-identity-v276'},
  {file:'ludus-seviye.html',ready:'#levelRows tr'},
  {file:'savas.html',static:true,prepare:()=>{document.querySelector('#modePage').hidden=true;document.querySelector('#setupPage').hidden=false;}},
  {file:'arena.html',static:true,prepare:()=>{document.querySelector('#pauseMenu').hidden=false;}},
@@ -52,7 +52,7 @@ const pages=[
    const bounds=await page.evaluate(()=>{const issues=[];for(const e of document.querySelectorAll('h1,h2,h3,button')){if(!e.getClientRects().length||e.closest('[hidden]'))continue;const r=e.getBoundingClientRect();if(r.right>innerWidth+1||r.bottom>innerHeight+1||r.left< -1||r.top< -1)issues.push({text:e.textContent.slice(0,45),class:e.className,bounds:[r.x,r.y,r.width,r.height]});}if(document.documentElement.scrollWidth>innerWidth+1||document.documentElement.scrollHeight>innerHeight+1)issues.push({pageScroll:true});return issues;});assert.deepEqual(bounds,[],entry.file+' '+width+' viewport bounds');
    await page.screenshot({path:path.join(out,entry.file.replace('.html','')+'-'+width+'.png')});
    if(entry.file==='arena.html'){await page.locator('.pause-help summary').click();for(const selector of ['#resume','#restart','#menu']){const r=await page.locator(selector).boundingBox();assert.ok(r.y+r.height<=height+1,'pause actions remain visible with the guide open '+width);}await page.screenshot({path:path.join(out,'pause-help-'+width+'.png')});await page.locator('.pause-help summary').click();}
-   if(entry.file==='klan.html'){for(const tab of ['members','roster','vault','trophies','manage']){await page.locator('[data-view="'+tab+'"]').click();await page.screenshot({path:path.join(out,'klan-'+tab+'-'+width+'.png')});}await page.locator('[data-view="home"]').click();}reports.push({page:entry.file,width,height,mode:entry.static?'static markup / CSS':'real renderer / fixture RPC'});
+   if(entry.file==='klan.html'){for(const tab of ['members','roster','vault','trophies','manage']){await page.locator('.clan-navigation [data-view="'+tab+'"]').click();await page.screenshot({path:path.join(out,'klan-'+tab+'-'+width+'.png')});}await page.locator('.clan-navigation [data-view="home"]').click();}reports.push({page:entry.file,width,height,mode:entry.static?'static markup / CSS':'real renderer / fixture RPC'});
   }
 
   assert.deepEqual(errors,[],entry.file+' JavaScript errors');await page.close();

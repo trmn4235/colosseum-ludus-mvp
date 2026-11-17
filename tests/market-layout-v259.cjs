@@ -30,8 +30,8 @@ const context={path,fs,__dirname};vm.createContext(context);vm.runInContext(clan
   }
   await page.setViewportSize({width:874,height:402});await page.locator('#categories button').filter({hasText:'Silahlar'}).click();
   const first=await page.locator('.product h2').allTextContents();await page.locator('#nextProducts').click();const second=await page.locator('.product h2').allTextContents();assert.equal(second.some(n=>first.includes(n)),false,'pages never repeat items');await page.locator('#previousProducts').click();assert.deepEqual(await page.locator('.product h2').allTextContents(),first);await page.locator('.product .art').first().click();await page.locator('#equipmentInspect').waitFor();await page.locator('#inspectClose').click();
-  await page.goto('https://layout.test/klan.html');await page.locator('.homeBanner').waitFor();
-  for(const view of ['members','manage']){await page.locator('[data-view="'+view+'"]').click();for(const [width,height] of [[874,402],[568,320]]){
+  await page.goto('https://layout.test/klan.html');await page.locator('.clan-identity-v276').waitFor();
+  for(const view of ['members','manage']){await page.locator('.clan-navigation [data-view="'+view+'"]').click();for(const [width,height] of [[874,402],[568,320]]){
    await page.setViewportSize({width,height});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));await page.evaluate(()=>document.fonts.ready);
    const fit=await page.locator('.memberList').evaluate(list=>{const rows=[...list.querySelectorAll(':scope>.row,:scope>.permissionRow')];return{count:rows.length,botHandles:/@bot/i.test(list.textContent),centered:rows.slice(1).every(r=>{const a=r.getBoundingClientRect(),b=r.querySelector('strong').getBoundingClientRect();return Math.abs((a.top+a.bottom-b.top-b.bottom)/2)<1.2}),scroll:list.scrollHeight>list.clientHeight+1};});assert.deepEqual(fit,{count:10,botHandles:false,centered:true,scroll:false});await page.screenshot({path:path.join(out,engine+'-clan-'+view+'-'+width+'.png')});
   }}

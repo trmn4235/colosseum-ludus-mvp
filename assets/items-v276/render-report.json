@@ -1,0 +1,50 @@
+[
+  {
+    "sku": "manica",
+    "icon": "assets/items-v276/manica.webp",
+    "bytes": 63986,
+    "sha256": "8d0014db80bd856423b2a32252605afeeaf6c6b62ec63ca41450a184f9753fed",
+    "frame": [
+      15,
+      9,
+      380,
+      503,
+      410,
+      512
+    ],
+    "source": "exec-3a5720eb-fe1a-46c6-bb4f-f2c2788b0bea.png",
+    "generation": "AI-generated realistic transparent equipment illustration; original 3D model unchanged"
+  },
+  {
+    "sku": "legs",
+    "icon": "assets/items-v276/legs.webp",
+    "bytes": 60134,
+    "sha256": "84738df53b06cdf8063d18d65625de47ae83cb0ab0f48e5573a39af76969dacc",
+    "frame": [
+      0,
+      0,
+      368,
+      503,
+      410,
+      512
+    ],
+    "source": "exec-f69b6a14-5fb8-4852-9301-235df8f1d927.png",
+    "generation": "AI-generated realistic transparent equipment illustration; original 3D model unchanged"
+  },
+  {
+    "sku": "chest-plate",
+    "icon": "assets/items-v276/chest-plate.webp",
+    "bytes": 64868,
+    "sha256": "2b21909f3e9c4332aa88771155f1b2fba159b45a12b48ffac38db6e3877003c3",
+    "frame": [
+      0,
+      6,
+      410,
+      495,
+      410,
+      512
+    ],
+    "source": "exec-4d99a293-1bc6-406a-a037-4d512792a064.png",
+    "generation": "AI-generated realistic transparent equipment illustration; original 3D model unchanged"
+  }
+]
