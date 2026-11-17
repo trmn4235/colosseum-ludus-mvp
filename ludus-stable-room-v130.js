@@ -68,7 +68,7 @@ var LudusStableRoom=(()=>{
    const e=animals.get(selected?.id);selection.visible=!!e;if(e)selection.position.set(e.group.position.x,.10,e.group.position.z);
    if(active)invalidateShadows();
   }
-  function loadGroom(){return groomPromise||(groomPromise=new Promise((resolve,reject)=>new T.GLTFLoader().load('assets/caravan-v128/driver.glb',g=>{
+  function loadGroom(){if(globalThis.LudusSpecialPeople)return groomPromise||(groomPromise=globalThis.LudusSpecialPeople.model('groom').then(model=>{groom=model;groom.position.set(environment.groomPosition.x,environment.groomPosition.y,environment.groomPosition.z);groom.rotation.y=.5;groom.name='Seyis';root.add(groom);const shadow=environment.contactShadow(.8,.8);shadow.position.set(environment.groomPosition.x,.01,environment.groomPosition.z);root.add(shadow);invalidateShadows();return groom;}).catch(e=>{groomPromise=null;onError?.('Seyis modeli yüklenemedi. Ahıra yeniden girdiğinde tekrar denenecek.');throw e;}));return groomPromise||(groomPromise=new Promise((resolve,reject)=>new T.GLTFLoader().load('assets/caravan-v128/driver.glb',g=>{
    relaxGroom(T,g.scene);groom=normalizeModel(T,g.scene,ownerHeight());groom.position.set(environment.groomPosition.x,environment.groomPosition.y,environment.groomPosition.z);groom.rotation.y=.5;groom.name='Seyis';groom.userData.pose='relaxed-standing';root.add(groom);
    const shadow=environment.contactShadow(.8,.8);shadow.position.set(environment.groomPosition.x,.01,environment.groomPosition.z);root.add(shadow);resolve(groom);
   },undefined,reject)).catch(e=>{groomPromise=null;onError?.('Seyis modeli yüklenemedi. Ahıra yeniden girdiğinde tekrar denenecek.');throw e;}));}
@@ -99,7 +99,7 @@ var LudusStableRoom=(()=>{
    enter,leave,setHerd(horses){herd=(horses||[]).slice(0,12);sync();},
    select(h){selected=h;if(h&&!herd.some(x=>x.id===h.id))herd=[h];sync();},
    viewFor(id){const i=herd.findIndex(h=>h.id===id),s=slots[i];return s?{...s.view}:null;},
-   tick(dt){if(!active||dt<=0)return;syncDaylight();environment.tick(dt,player);shadowElapsed+=dt;if(shadowElapsed>=.25){invalidateShadows();shadowElapsed=0;}if(groom){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
+   tick(dt){if(!active||dt<=0)return;syncDaylight();environment.tick(dt,player);shadowElapsed+=dt;if(shadowElapsed>=.25){invalidateShadows();shadowElapsed=0;}if(groom&&!groom.userData.staffRole){const h=ownerHeight();if(Math.abs(h-groom.userData.height)>.001){groom.scale.setScalar(h/groom.userData.nativeHeight);groom.userData.height=h;}}
     for(const [id,e]of animals){e.elapsed+=dt;const near=!player||Math.hypot(player.x-e.group.position.x,player.z-e.group.position.z)<15;if(id===selected?.id||near){if(e.elapsed>=1/30){e.mixer.update(Math.min(e.elapsed,.15));e.elapsed=0;}}else if(e.elapsed>=.25){e.mixer.update(e.elapsed);e.elapsed=0;}}
    },
    get root(){return root;},get ready(){return environment?.ready||Promise.resolve();},get horse(){return animals.get(selected?.id)?.group||null;},get horses(){return [...animals.values()].map(e=>e.group);},get groom(){return groom;},get slots(){return slots;}

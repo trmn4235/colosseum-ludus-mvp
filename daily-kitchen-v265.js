@@ -11,7 +11,7 @@ var LudusFood=(()=>{
   return {portions,types,variety,coverage,goal,quality,stamina_bonus_percent};
  }
  function bonusHint(crew,m){
-  if(!crew)return 'Önce bir gladyatör edin.';
+  if(!crew)return 'Yemek verilecek kişi yok.';
   if(m.coverage<100)return 'Bonus için '+num(Math.max(0,crew-m.portions))+' porsiyon daha.';
   if(m.variety<50)return '+%8 için '+num(Math.max(0,Math.ceil(m.goal/2)-m.types))+' çeşit daha.';
   if(m.variety<100)return '+%12 için '+num(Math.max(0,m.goal-m.types))+' çeşit daha.';
@@ -60,8 +60,8 @@ var LudusFood=(()=>{
    if(!state){main.append(el('p','kitchen-empty','Mutfak yükleniyor…'));return;}
    if(!state.kitchen){main.append(el('p','kitchen-empty','Günlük mutfak hazırlanıyor. Biraz sonra yeniden dene.'));return;}
    const locked=busy||!!loading||!!pending,crew=state.crew_count,chosen=ingredients(),m=menu(crew,chosen),given=state.kitchen.ingredients,changed=Object.values(draft).some(q=>q>0);
-   date.textContent=dayLabel(state.today)+' · '+num(crew)+' gladyatör';
-   const head=el('div','kitchen-section-head');head.append(el('h2','','Bugünün malzemeleri'),el('span','',given.length?'Yemek verildi':'Henüz yemek verilmedi'));main.append(head);
+   date.textContent=dayLabel(state.today)+' · '+num(crew)+' kişi';
+   const head=el('div','kitchen-section-head');head.append(el('h2','','Bugünün malzemeleri'),el('span','',given.length?'Yemek verildi':'Henüz yemek verilmedi'));main.append(head);if(state.people){const p=state.people;const people=el('span','kitchen-people',num(p.gladiators)+' gladyatör · '+num(p.workers)+' kervan işçisi · '+num(p.specialists)+' özel çalışan');people.setAttribute('aria-label','Yemek verilen kişiler');date.append(people);}
    const slots=el('div','kitchen-slots');slots.setAttribute('aria-label','Bugünün seçilen malzemeleri');
    for(let k=0;k<Math.max(8,chosen.length);k++){
     const selected=chosen[k],slot=el('article','kitchen-slot');
@@ -69,7 +69,7 @@ var LudusFood=(()=>{
     else{const item=state.items.find(i=>i.sku===selected.sku);slot.dataset.sku=item.sku;const art=el('div','kitchen-slot-art'),quantity=el('strong','kitchen-slot-quantity',num(selected.quantity));art.append(picture(item),quantity);slot.append(art,el('h3','',item.name));const delivered=given.find(i=>i.sku===item.sku)?.quantity||0,edit=el('div','kitchen-slot-edit'),minus=button('−',()=>change(item.sku,-1)),plus=button('+',()=>change(item.sku,1));minus.dataset.focus='minus-'+item.sku;plus.dataset.focus='plus-'+item.sku;minus.setAttribute('aria-label',item.name+' seçimini azalt');plus.setAttribute('aria-label',item.name+' seçimini artır');minus.disabled=locked||!draft[item.sku];plus.disabled=locked||(draft[item.sku]||0)>=item.quantity||(foodSkus.has(item.sku)?m.portions>=crew:selected.quantity>=crew);edit.append(minus,el('small','',delivered?num(delivered)+' verildi':'Seçildi'),plus);slot.append(edit);}
     slots.append(slot);
    }
-   main.append(slots);const gauges=el('div','kitchen-gauges');gauges.append(gauge('Çeşitlilik',num(Math.min(m.types,m.goal))+' / '+num(m.goal)+' çeşit','Farklı malzemeler çeşitliliği artırır.',m.variety),gauge('Porsiyon',num(m.portions)+' / '+num(crew),crew?num(Math.max(0,crew-m.portions))+' porsiyon eksik':'Henüz gladyatör yok.',m.coverage));
+   main.append(slots);const gauges=el('div','kitchen-gauges');gauges.append(gauge('Çeşitlilik',num(Math.min(m.types,m.goal))+' / '+num(m.goal)+' çeşit','Farklı malzemeler çeşitliliği artırır.',m.variety),gauge('Porsiyon',num(m.portions)+' / '+num(crew),crew?num(Math.max(0,crew-m.portions))+' porsiyon eksik':'Yemek verilecek kişi yok.',m.coverage));
    const active=Math.max(0,Number(state.combat?.active_bonus)||0),preview=changed?m.stamina_bonus_percent:active,effect=el('section','kitchen-effect'),effectTitle=el('h3','','Kondisyon yenilenmesi'),value=el('strong','kitchen-effect-value','+%'+num(preview)),effectStatus=el('span','kitchen-effect-status',pending?.action==='serve'?'Doğrulanıyor':changed?'Yemek verilince':active>0?'Bugün aktif':given.length?'Porsiyon eksik':'Yemek bekliyor');
    effect.setAttribute('aria-label','Kondisyon katkısı');effect.dataset.preview=String(changed);effect.dataset.active=String(active);value.setAttribute('aria-live','polite');const until=el('small','kitchen-effect-until','00.00’a kadar');until.title='İstanbul saati';effect.append(effectTitle,value,effectStatus,until);
    const hint=el('p','kitchen-next');hint.append(el('strong','kitchen-active','Aktif: +%'+num(active)),el('span','kitchen-next-hint',bonusHint(crew,m)));gauges.append(effect,hint);main.append(gauges);
