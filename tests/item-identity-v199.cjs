@@ -8,7 +8,7 @@ test('all equipment cards preserve exact identity, aliases and neutral unknowns 
  const rows=Object.values(visuals.records).filter(r=>r.kind!=='supply');assert.equal(rows.length,36);
  for(const file of wrappers){const c=context();vm.runInContext(wrapper(file),c);const api=c.LudusIcons||c.LudusSupplyIcons;
   for(const available of [true,false]){if(!available)c.LudusProduction=undefined;
-   for(const r of rows)for(const model of [r.model,...r.aliases])for(const staleSku of ['sica','heavy_mace']){const item={kind:r.kind,model,sku:staleSku,enhancement:7,emeralds:[{id:2,value:80}]},before=JSON.stringify(item);assert.ok(api.svg(item).includes(r.icon),file+' '+model);assert.equal(JSON.stringify(item),before);}
+   for(const r of rows)for(const model of [r.model,...r.aliases])for(const staleSku of ['sica','heavy_mace']){const item={kind:r.kind,model,sku:staleSku,enhancement:7,emeralds:[{id:2,value:80}]},before=JSON.stringify(item);assert.ok(api.svg(item).includes(r.icon),file+' '+model);assert.ok(api.svg(item).includes('class="item-enhancement-v269"'),file+' '+model+' has separate enhancement header');assert.equal(JSON.stringify(item),before);}
    for(const kind of ['weapon','shield','helmet','chest','gloves','legs'])assert.ok(!api.svg({kind,model:'unknown',sku:'heavy_mace'}).includes('<image'),file+' unknown '+kind);
   }
   c.LudusItemVisuals=undefined;assert.ok(!api.svg({kind:'weapon',model:'unknown'}).includes('<image'));
@@ -21,7 +21,7 @@ test('recipes, enhancements, Sica and Gladius assets remain unchanged',()=>{
 });
 test('22 exact model renders and optimized original chest stay within budgets',()=>{
  assert.equal(report.length,22);assert.equal(new Set(report.map(r=>r.sha256)).size,22);
- for(const r of report){const b=fs.readFileSync(r.icon);assert.equal(b.length,r.bytes);assert.equal(hash(b),r.sha256);assert.ok(b.length<35000);assert.equal(visuals.records[r.sku].icon,r.icon);assert.match(r.geometrySha256,/^[a-f0-9]{64}$/);}
+ for(const r of report){const b=fs.readFileSync(r.icon);assert.equal(b.length,r.bytes);assert.equal(hash(b),r.sha256);assert.ok(b.length<35000);assert.equal(visuals.records[r.sku].icon,['manica','legs','chest-plate'].includes(r.sku)?'assets/items-v276/'+r.sku+'.webp':r.icon);assert.match(r.geometrySha256,/^[a-f0-9]{64}$/);}
  const r=require('../assets/equipment-v199/build-report.json'),b=fs.readFileSync(r.file),d=JSON.parse(b.subarray(20,20+b.readUInt32LE(12)));assert.equal(hash(b),r.sha256);assert.equal(hash(fs.readFileSync(r.source)),r.sourceSha256);assert.equal(r.triangles,3305);assert.ok(r.bytes<70000);assert.equal(r.primitives,1);assert.ok(!d.extensionsRequired?.includes('KHR_mesh_quantization'),'runtime merger requires decoded float positions');
 });
 for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','caravan-rig-v126.js'])test(page+': two distinct chest models, shared fitted resources and unchanged sword selection',async()=>{
@@ -31,7 +31,7 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
  c.ImportedGladiator.dispose(m);
 });
 test('browser entry points load visual identities before production and invalidate changed scripts',()=>{
- for(const f of ['ludus.html','savas.html','multiplayer.html','pazar.html','gelistirmeler.html','klan.html']){const s=read(f);assert.ok(s.includes('item-visuals-v199.js?v=revision199'),f);assert.ok(s.indexOf('item-visuals-v199.js')<s.indexOf('ludus-production-v119.js'));assert.ok(s.includes('ludus-production-v119.js?v=revision199'));}
+ for(const f of ['ludus.html','savas.html','multiplayer.html','pazar.html','gelistirmeler.html','klan.html']){const s=read(f);assert.ok(s.includes('item-visuals-v199.js?v=revision276'),f);assert.ok(s.indexOf('item-visuals-v199.js')<s.indexOf('ludus-production-v119.js'));assert.ok(s.includes('ludus-production-v119.js?v=revision269'));}
  for(const f of ['caravan-battle-v126.js','pit-visit-v172.js'])assert.ok(read(f).includes('revision199'));
  assert.equal((read('san-avlusu.html').match(/assets\/items-v199\/bow.webp/g)||[]).length,2);
 });

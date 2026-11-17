@@ -1,0 +1,191 @@
+/* A compact profile leaves the centre column for the selected build. */
+body[data-roman-screen="savas"] #setupPage .setup{grid-template-columns:1.08fr 1.02fr 1fr;gap:clamp(6px,1vw,14px)}
+#setupPage .preview{container-type:size;border-width:1px;border-radius:7px;background:radial-gradient(ellipse at 50% 38%,#fff,#eeebe3 75%)}
+#setupPage .slotcol{--slot-size:min(clamp(47.6px,6.8vw,80.75px),calc((100cqh - 28px)*4/15));width:var(--slot-size);top:8px;bottom:8px;justify-content:space-between;gap:4px}
+#setupPage .slotcol.left{left:7px}#setupPage .slotcol.right{right:7px}
+#setupPage .slot{position:relative;flex:0 0 auto;width:100%;height:auto;aspect-ratio:4/5;padding:0;overflow:hidden;gap:0!important;border-radius:5px;display:block}
+#setupPage .slot .icon{position:absolute;inset:0;display:block;width:100%;height:100%!important;min-height:0}
+#setupPage .slot>span:first-child{position:absolute;top:2px;left:3px;right:30%;font:clamp(7px,1.4dvh,9px)/1.05 Arial;z-index:1;text-align:left;color:#6b5c5e;pointer-events:none}
+#setupPage .slot small{position:absolute;bottom:0;left:0;width:100%;padding:2px;background:#fffffff0;color:#4e2730!important;font:clamp(7px,1.45dvh,10px)/1.1 Arial;z-index:1}
+#setupPage .slot.active{outline:2px solid #ad8b45;outline-offset:1px}
+#setupPage .details{gap:clamp(4px,1dvh,8px);padding:clamp(6px,1.4dvh,12px)}
+.prep-profile{flex:none;border-bottom:1px solid #d9cdb6;padding-bottom:clamp(3px,.7dvh,6px)}
+.prep-identity{display:flex;align-items:baseline;gap:9px;margin-bottom:3px}
+#setupPage .prep-identity .class{font:clamp(8px,1.7dvh,11px) Arial;letter-spacing:1px}
+#setupPage .prep-identity h2{font:clamp(16px,3.2dvh,23px)/1.05 Georgia;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#setupPage #fighterInfo{font:clamp(8px,1.8dvh,12px)/1.15 Arial;gap:2px 6px}
+#setupPage #fighterInfo dt{color:#796e70}#setupPage #fighterInfo dd{font-variant-numeric:tabular-nums}
+#setupPage #careerSelection{margin-top:2px}
+#setupPage #careerSelection .career-summary{border:0;padding:0;font:clamp(8px,1.6dvh,11px)/1.15 Arial;gap:2px 5px;flex-wrap:nowrap}
+#setupPage #careerSelection .career-summary>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#setupPage #careerSelection .career-button{font-size:clamp(8px,1.6dvh,11px)!important;min-height:20px!important;padding:2px 5px!important}
+#loadoutDetails{min-height:0;flex:1;display:flex;flex-direction:column;gap:clamp(3px,.8dvh,7px);overflow:hidden}
+.prep-item-head{flex:none;min-width:0}.prep-eyebrow{font:clamp(7px,1.6dvh,10px) Arial;letter-spacing:1.1px;color:#99804d}
+#loadoutDetails h3{margin:2px 0 0;font:clamp(14px,2.8dvh,21px)/1.1 Georgia;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prep-stat-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:3px 10px!important;flex:1;min-height:0;margin:0!important}
+.prep-stat{min-width:0;display:flex;align-items:center;justify-content:space-between;gap:4px;border-bottom:1px solid #eee8dd;padding:2px 0}
+.prep-stat dt{font:clamp(8px,1.8dvh,12px)/1.15 Arial;color:#70686b;min-width:0}
+.prep-stat dd{font:600 clamp(11px,2.5dvh,17px)/1.1 Arial;color:#591823;font-variant-numeric:tabular-nums}
+.prep-gem-heading{display:flex;align-items:center;justify-content:space-between;flex:none;margin-top:2px}
+.prep-gem-heading h4{font:clamp(8px,1.8dvh,12px) Arial;letter-spacing:.6px;color:#396751;margin:0}
+.prep-gem-heading>span{font:clamp(8px,1.6dvh,11px) Arial;color:#6d7b70}
+.prep-sockets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;flex:1.2;min-height:0}
+.prep-socket{min-height:0;display:flex;align-items:center;gap:4px;padding:4px;border:1px solid #dae4db;border-radius:4px;background:#f6faf6;overflow:hidden}
+.prep-socket.empty{background:#fafaf8;border:1px dashed #d6d5cb;color:#96988b}
+.prep-gem-art{width:clamp(19px,4.6dvh,32px);flex:none;font:26px Georgia;text-align:center;line-height:1}
+.prep-gem-art svg{width:100%;height:auto;background:transparent!important}
+.prep-gem-copy{min-width:0;flex:1;display:grid;grid-template-columns:1fr auto;gap:1px 3px}
+.prep-gem-copy strong{grid-column:1/-1;font:600 clamp(8px,1.8dvh,12px)/1.1 Arial;white-space:nowrap}
+.prep-gem-copy>span{font:clamp(7px,1.6dvh,10px)/1.1 Arial;min-width:0}
+.prep-gem-copy>b{font:600 clamp(9px,2dvh,13px)/1.15 Arial;color:#285f43}
+.prep-total-note{font:clamp(7px,1.5dvh,10px)/1.1 Arial!important;margin:0!important;color:#8e8380;flex:none}
+.prep-empty{font:clamp(11px,2.4dvh,16px)/1.5 Arial;color:#8a7c78;margin:auto 10px;text-align:center}
+#setupPage .inventory{position:relative;padding:clamp(6px,1.4dvh,12px);gap:clamp(4px,1dvh,8px)}
+#setupPage .inventory-heading{align-items:center;min-height:25px}
+#setupPage .inventory-heading h2{background:none!important;color:#591823!important;padding:0;font:clamp(13px,2.8dvh,21px) Georgia}
+.prep-inventory-actions{display:flex;gap:4px}
+#setupPage .inventory .inspectButton{font:clamp(8px,1.8dvh,12px) Arial;padding:4px 6px}
+#setupPage .inventory>a{position:absolute;bottom:7px;right:10px;font:clamp(8px,1.7dvh,11px) Arial}
+#setupPage #slotTitle{font:clamp(9px,1.9dvh,13px) Arial;color:#8e7c71;margin:0}
+#setupPage .invGrid{container-type:size;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));align-items:center;justify-items:center;gap:6px;flex:1;min-height:0}
+#setupPage .invGrid .item{position:relative;width:min(85%,calc((100cqh - 6px)*.4));height:auto;max-height:100%;aspect-ratio:4/5;min-height:0;padding:0;display:block;border-radius:5px;gap:0!important;overflow:hidden}
+#setupPage .item .icon{position:absolute;inset:0;width:100%;height:100%!important;margin:0}
+#setupPage .prep-item-name{position:absolute;bottom:16%;left:0;right:0;padding:2px 1px;background:#fffffff0;z-index:1;font:clamp(8px,1.8dvh,12px)/1.05 Arial;color:#512932}
+#setupPage .prep-item-summary{position:absolute;bottom:0;left:0;right:0;height:17%;display:flex;justify-content:center;align-items:center;gap:3px;background:#fff;z-index:1;padding:1px;font:clamp(7px,1.4dvh,9px)/1 Arial;color:#847563}
+.prep-gem-dots{display:flex;gap:2px;flex:none}.prep-gem-dots i{display:block;width:4px;height:4px;border:1px solid #a8bba9;transform:rotate(45deg)}.prep-gem-dots i.filled{background:#368359;border-color:#368359}
+#setupPage .inventory>.compact-pager{margin-bottom:18px}
+#setupPage #modeNote{font:clamp(7px,1.5dvh,10px)/1.1 Arial;margin:0}
+@media(max-height:450px){#setupPage .slotcol{top:5px;bottom:5px}#setupPage .prep-stat-grid{gap:2px 7px!important}#setupPage .prep-socket{padding:2px;gap:2px}#setupPage .prep-identity{margin-bottom:1px}.prep-total-note{display:none}#setupPage .inventory>.compact-pager{margin-bottom:13px}#setupPage .inventory>a{bottom:4px}#setupPage .invGrid{gap:4px}.prep-item-summary>span:first-child{max-width:70%;overflow:hidden;text-overflow:ellipsis}}
+@media(orientation:portrait){body[data-roman-screen="savas"] #setupPage .setup{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,.9fr) minmax(0,1.1fr)}#setupPage .preview{grid-row:1;grid-column:1}#setupPage .details{grid-row:1/3;grid-column:2}#setupPage .inventory{grid-row:2;grid-column:1}#setupPage .slotcol{--slot-size:min(clamp(38px,10vw,65px),calc((100cqh - 28px)*4/15))}#setupPage .invGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}#setupPage .prep-stat-grid{grid-template-columns:1fr!important}#setupPage .prep-sockets{grid-template-columns:1fr}#setupPage #fighterInfo{grid-template-columns:1fr auto}#setupPage .prep-identity{display:block}#setupPage #careerSelection .career-summary>span{display:none}#setupPage .inventory-heading{flex-wrap:wrap}#setupPage .prep-item-summary>span:first-child{display:none}}
+/* Explicit content minimums keep stat rows and all sockets distinct on phones. */
+#setupPage .prep-stat-grid{flex:1 0 auto;grid-template-rows:repeat(3,minmax(18px,1fr))}
+#setupPage .prep-stat dt{font-size:clamp(9px,1.8dvh,14px)}
+#setupPage .prep-stat dd{font-size:clamp(12px,2.5dvh,20px)}
+#setupPage .prep-sockets{flex:1.2 0 auto;grid-template-rows:repeat(2,minmax(29px,1fr))}
+@media(max-height:500px) and (orientation:landscape){
+ #setupPage .prep-profile{position:relative;padding-bottom:3px}
+ #setupPage #careerSelection{position:absolute;right:0;top:0;margin:0}
+ #setupPage #careerSelection .career-summary>span{display:none}
+ #setupPage #careerSelection .career-button{min-height:18px!important}
+ #setupPage .prep-identity{padding-right:45px}
+ #setupPage #fighterInfo{font-size:8px;gap:1px 5px}
+ #loadoutDetails{gap:3px}
+ #setupPage .prep-stat-grid{flex:1 0 48px;grid-template-rows:repeat(3,minmax(16px,1fr))}
+ #setupPage .prep-stat{padding:1px 0}
+ #setupPage .prep-stat dt{font-size:8px}
+ #setupPage .prep-stat dd{font-size:11px}
+ #setupPage .prep-sockets{flex:1 0 58px;grid-template-rows:repeat(2,minmax(27px,1fr))}
+ #setupPage .prep-gem-art{font-size:20px}
+ #setupPage .prep-item-head h3{font-size:13px}
+ .prep-eyebrow{font-size:7px}
+}
+
+@media(orientation:portrait){#setupPage .prep-stat-grid{grid-template-rows:repeat(6,minmax(18px,1fr))}#setupPage .prep-sockets{grid-template-rows:repeat(4,minmax(38px,1fr))}}
+@media(max-height:450px) and (orientation:landscape){
+ #loadoutDetails{gap:2px}
+ #setupPage .prep-eyebrow{display:none}
+ #setupPage .prep-item-head h3{margin:0}
+ #setupPage .prep-gem-heading{margin:0}
+}
+@media(max-width:750px) and (orientation:landscape){body[data-roman-screen="savas"] #setupPage .setup{grid-template-columns:.95fr 1.2fr .95fr}}
+
+/* V270: reserve text space; never crop or stretch an equipment photograph. */
+#setupPage .slot .item-photo-v118>image{y:16%;height:68%}
+#setupPage .item .item-photo-v118>image{y:4%;height:69%}
+#setupPage .slot>span:first-child{right:32%;max-height:27%;overflow:hidden}
+#setupPage .prep-item-name{bottom:12%;height:17%;display:flex;align-items:center;justify-content:center;padding:2px 3px;white-space:normal!important;line-height:1.05}
+#setupPage .prep-item-summary{height:12%}
+@media(orientation:portrait){#setupPage .invGrid .item{width:min(85%,calc((100cqh - 12px)*4/15))}}
+@media(max-height:350px) and (orientation:landscape){
+ body[data-roman-screen="savas"]{grid-template-rows:36px minmax(0,1fr)!important}
+ body[data-roman-screen="savas"] .top{min-height:36px}
+ body[data-roman-screen="savas"] .arena-tabs button{padding-top:0;padding-bottom:0}
+ body[data-roman-screen="savas"] .arena-tabs svg{height:21px;width:21px}
+ #setupPage .roster{height:44px!important}
+ #setupPage .footer{height:22px}
+ #setupPage #fighterInfo{grid-template-columns:1fr auto 1fr auto!important}
+ #setupPage .details{padding:4px;gap:2px}
+ #setupPage .prep-identity h2{font-size:14px}
+ #setupPage .prep-sockets{flex:1 0 54px;grid-template-rows:repeat(2,minmax(25px,1fr))}
+ #setupPage .prep-gem-art{width:17px}
+ #setupPage .prep-gem-copy strong{font-size:7px}
+ #setupPage .prep-gem-copy>span{font-size:6px}
+ #setupPage .prep-gem-copy>b{font-size:8px}
+ #setupPage .inventory{padding:4px;gap:3px}
+ #setupPage .inventory-heading{min-height:21px}
+ #setupPage .inventory>.compact-pager{margin-bottom:8px}
+}
+/* The legacy art layer uses important declarations on small phones. */
+@layer game-art-v136{
+ @media(max-height:350px) and (orientation:landscape){
+  #setupPage #fighterInfo{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto!important;font-size:8px!important}
+  #setupPage .details{padding:4px!important}
+ }
+}
+@media(max-height:350px) and (orientation:landscape){
+ #setupPage .prep-stat-grid{flex:1 0 42px;grid-template-rows:repeat(3,minmax(14px,1fr))}
+}
+
+/* V271: independent header, artwork and caption, with no painted badge. */
+body[data-roman-screen="savas"] #setupPage .setup{grid-template-columns:.88fr 1.08fr 1.14fr}
+#setupPage #model,#setupPage #modelFallback{transform:translateX(-4%)}
+#setupPage .slot>span:first-child{right:27px;max-height:none;white-space:nowrap;font-size:8px;line-height:12px;overflow:hidden}
+#setupPage .slot .item-photo-v118{--item-header:14px!important;--item-footer:14px!important}
+#setupPage .item .item-photo-v118{--item-header:14px!important;--item-footer:20px!important}
+#setupPage .item-enhancement-v269{font-size:11px!important;color:#363b40!important}
+#setupPage .slot small{height:13px;padding:1px 2px;background:none;font-size:8px;line-height:11px}
+#setupPage .prep-item-name{bottom:8px;height:13px;padding:0 2px;font-size:9px;line-height:12px;white-space:nowrap!important;display:block;text-overflow:ellipsis;overflow:hidden;background:none}
+#setupPage .prep-item-summary{height:8px;background:none;padding:0 0 2px}
+#setupPage .prep-item-summary>span:first-child{display:none}
+#setupPage .inventory{gap:3px;padding:6px}
+#setupPage .inventory-heading{min-height:20px}
+#setupPage .inventory>.compact-pager{margin-bottom:0}
+#setupPage .inventory>a{bottom:8px;right:8px;font-size:9px}
+#setupPage .prep-profile{position:relative}
+#setupPage .prep-identity{padding-right:45px}
+#setupPage #careerSelection{position:absolute;right:0;top:0;margin:0}
+#setupPage #careerSelection .career-summary>span{display:none}
+#setupPage #fighterInfo{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:2px 8px}
+#setupPage #fighterInfo :is(dt,dd){white-space:nowrap}
+@media(max-width:750px) and (orientation:landscape){body[data-roman-screen="savas"] #setupPage .setup{grid-template-columns:.8fr 1.2fr 1fr}}
+@media(max-height:350px) and (orientation:landscape){
+ #setupPage .details{gap:1px}
+ #setupPage .prep-profile{padding-bottom:1px}
+ #setupPage .prep-stat-grid{flex:1 0 36px;grid-template-rows:repeat(3,minmax(12px,1fr))}
+ #setupPage .prep-sockets{flex:1 0 50px;grid-template-rows:repeat(2,minmax(23px,1fr))}
+ #setupPage .prep-stat dt{font-size:7px}
+ #setupPage .prep-stat dd{font-size:10px}
+ #setupPage .slot>span:first-child{font-size:6px;right:22px}
+ #setupPage .item-enhancement-v269{font-size:9px!important}
+ #setupPage .slot small,#setupPage .prep-item-name{font-size:7px}
+ #setupPage .inventory>a{font-size:7px}
+ #setupPage .roster .fighter{padding:1px 4px}
+ #setupPage .roster .fighter strong{font-size:8px;line-height:8px}
+ #setupPage .roster .fighter small{font-size:6px;line-height:6px;margin:0}
+}
+/* V275: more room for the gladiator, image-only equipment, ten inventory cards. */
+body[data-roman-screen="savas"] #setupPage .setup{grid-template-columns:1.1fr .92fr 1.38fr;gap:clamp(5px,.8vw,10px)}
+#setupPage .slot>span:first-child,#setupPage .slot small,#setupPage .prep-item-name,#setupPage .prep-item-summary{display:none!important}
+#setupPage .slot .item-photo-v118,#setupPage .item .item-photo-v118{--item-header:14px!important;--item-footer:3px!important}
+#setupPage .invGrid{grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:5px}
+#setupPage .invGrid .item{width:min(100%,calc((100cqh - 5px)*.4));aspect-ratio:4/5}
+#setupPage .inventory-heading{border-bottom:1px solid var(--theme-border);padding-bottom:3px;min-height:24px}
+#setupPage .inventory{padding:7px;gap:4px}
+#setupPage #model,#setupPage #modelFallback{transform:translateX(-2%)}
+#setupPage .modelStatus{font:7px/1.2 Arial;max-width:43%;padding:3px}
+@media(max-width:750px) and (orientation:landscape){body[data-roman-screen="savas"] #setupPage .setup{grid-template-columns:1.02fr 1fr 1.38fr;gap:4px}#setupPage .inventory{padding:5px;gap:3px}#setupPage .invGrid{gap:3px}}
+@media(max-height:350px) and (orientation:landscape){#setupPage .inventory-heading{min-height:18px;padding-bottom:2px}#setupPage .slot .item-photo-v118,#setupPage .item .item-photo-v118{--item-header:12px!important}}
+@media(max-width:750px) and (orientation:landscape){
+ #setupPage .prep-gem-copy strong{grid-column:1;overflow:hidden;text-overflow:ellipsis}
+ #setupPage .prep-gem-copy>b{grid-column:2;grid-row:1}
+ #setupPage .prep-gem-copy>span{grid-column:1/-1}
+}
+
+/* V277: career and identity share a real header row; stats start below both. */
+#setupPage .prep-profile{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"identity career" "stats stats";align-items:center;gap:4px 7px}
+#setupPage .prep-identity{grid-area:identity;min-width:0;margin:0;padding:0;gap:6px}
+#setupPage .prep-identity h2{min-width:0}
+#setupPage #careerSelection{grid-area:career;position:static;margin:0;align-self:center}
+#setupPage #careerSelection .career-summary{margin:0;padding:0}
+#setupPage #fighterInfo{grid-area:stats;margin:0;min-width:0}
+@media(max-height:350px) and (orientation:landscape){#setupPage .prep-profile{row-gap:3px}}

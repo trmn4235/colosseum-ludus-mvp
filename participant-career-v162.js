@@ -2,7 +2,7 @@
 ((root)=>{
  'use strict';
  const labels={all:'Tüm modlar','4x5':'Arena · 4×5',solo20:'Arena · Solo 20',naval4x5:'Deniz savaşı',survival:'Survival',multiplayer:'Multiplayer Beta',caravan_raid:'Kervan baskını'};
- const sumKeys=['matches','wins','losses','draws','kills','deaths','damage','damage_taken','kill_matches','death_matches','damage_matches','taken_matches','kd_matches','kd_kills','kd_deaths'];
+ const sumKeys=['matches','wins','losses','draws','kills','deaths','assists','damage','damage_taken','kill_matches','death_matches','assist_matches','damage_matches','taken_matches','kd_matches','kd_kills','kd_deaths','kda_matches','kda_kills','kda_deaths','kda_assists'];
  const fmt=n=>n==null?'—':Number(n).toLocaleString('tr-TR',{maximumFractionDigits:2});
  const average=(n,count)=>count>0&&n!=null?n/count:null;
  function totals(rows=[]){const out={};for(const key of sumKeys){const values=rows.map(r=>r[key]).filter(n=>n!=null);out[key]=values.length?values.reduce((a,b)=>a+Number(b),0):null;}for(const key of ['matches','wins','losses','draws','kill_matches','death_matches','damage_matches','taken_matches','kd_matches'])out[key]??=0;out.best_stage=Math.max(0,...rows.map(r=>Number(r.best_stage)||0));return out;}
@@ -87,7 +87,7 @@
    ensureDialog();previousFocus=document.activeElement;current={kind,record,mode:labels[mode]?mode:'all'};render();if(!dialog.open)dialog.showModal();
    try{await load(true);if(current?.record.id===record.id)render();}catch{if(current?.record.id===record.id){dialog.append(node('p','career-note','Kariyer alınamadı.'),button('Yeniden dene',()=>open(kind,record,mode)));}}
   }
-  const api={mount,open,load,get isOpen(){return !!dialog?.open;}};stores.set(client,api);return api;
+  const api={mount,open,load,summary:(id,mode='all')=>load().then(()=>metrics(rows(id),mode)),get isOpen(){return !!dialog?.open;}};stores.set(client,api);return api;
  }
  root.LudusCareer={create,totals,metrics,kd,average,labels};
  if(typeof module!=='undefined')module.exports=root.LudusCareer;

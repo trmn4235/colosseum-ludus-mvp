@@ -59,5 +59,15 @@ const root=path.resolve(__dirname,'..');
  await db.query("update public.ludus_matches set status='playing' where id=$1",[match]);ps[0].career={...blank,kills:1,damage:100};ps[1].career={...blank,deaths:1,damageTaken:100};
  await db.query("update public.ludus_matches set status='finished',winner=$1,players=$2,updated_at=now() where id=$3",[u,ps,match]);m=(await career()).gladiators[g].find(r=>r.mode==='multiplayer');assert.equal(m.wins,1);assert.equal(m.kills,1);assert.equal(m.deaths,0);
  await db.exec('set role authenticated');assert.ok((await career()).gladiators[g]);await assert.rejects(db.query('select * from ludus_career_private.battles'));await assert.rejects(db.query('select public.ludus_caravan_verified_v162($1,$2,true,15,$3)',[u,raid,stats]));await db.exec('reset role;set role anon');await assert.rejects(db.query('select public.ludus_careers()'));await db.exec('reset role');
- await db.close();console.log('PASS careers SQL: archive survives cleanup, idempotency, mode separation, ownership, partial legacy data, verified raids, race participation, online counters and access controls');
+ // V271: same-match KDA coverage, legacy unknowns and read permissions survive.
+ const kdaPatch=fs.readFileSync(path.join(root,'supabase/career-kda-v271.sql'),'utf8');
+ await db.exec(kdaPatch);await db.exec(kdaPatch);
+ m=(await career()).gladiators[g].find(r=>r.mode==='4x5');assert.equal(m.kda_matches,0);assert.equal(m.assists,null);
+ await db.query('insert into public.ludus_battles values(gen_random_uuid(),$1,$2,$3,false,$4,now())',[u,g,'4x5',{kills:4,assists:2,alive:false,damage:80,damageTaken:30}]);
+ m=(await career()).gladiators[g].find(r=>r.mode==='4x5');
+ assert.equal(m.matches,7);assert.equal(m.wins,3);assert.equal(m.losses,4);assert.equal(m.kd_kills,25);assert.equal(m.kd_deaths,4);
+ assert.equal(m.kda_matches,1);assert.equal(m.assist_matches,1);assert.equal(m.kda_kills,4);assert.equal(m.kda_deaths,1);assert.equal(m.kda_assists,2);
+ assert.ok(!(await career(other)).gladiators[g]);
+ await db.exec('set role anon');await assert.rejects(db.query('select public.ludus_careers()'));await db.exec('reset role');
+ await db.close();console.log('PASS careers SQL: archive, idempotency, ownership, partial telemetry, same-match KDA coverage and access controls');
 })().catch(e=>{console.error(e.message,e.position||"",e.where||"");process.exit(1)});

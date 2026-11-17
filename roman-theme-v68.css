@@ -167,3 +167,7 @@ body[data-roman-screen]:not([data-roman-screen="pazar"]) :is(.topWallet,.balance
 body[data-roman-screen] .topWallet small{font-size:11px}
 body[data-roman-screen] :is(.topWallet,.balance,#dailyWallet) svg{max-width:22px;max-height:22px}
 @media(max-height:420px){body[data-roman-screen] .imperial-paper .imperial-head{padding:4px}body[data-roman-screen="arena"] .overlay>.intro{padding:10px;max-height:92dvh}}
+
+/* V269: upgrade values live in the upper-right corner of the shared item art. */
+body[data-roman-screen] :is(.slot,.item,.clan-vault-slot):has(.item-enhancement-v269) :is(.upgrade-level,.clan-vault-level){display:none!important}
+.item-level-accessible{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important}
