@@ -266,7 +266,7 @@ body[data-roman-screen="preview"] .result b{color:var(--theme-title)!important}
   html[data-ui-theme] .ludus-view-settings form>label,html[data-ui-theme] .ludus-view-settings form>p,html[data-ui-theme] .ludus-view-settings form>button{grid-column:1!important}
   html[data-ui-theme] .ludus-view-settings :is(.settings-help,.settings-actions){grid-column:1/-1!important}
  }
- @media(max-height:350px) and (orientation:landscape){
+ @media(max-height:420px) and (orientation:landscape){
   html[data-ui-theme] .ludus-view-settings{padding:8px!important}
   html[data-ui-theme] .ludus-view-settings form{gap:3px 10px!important}
   html[data-ui-theme] .ludus-view-settings .settings-heading{margin-bottom:0!important;padding:3px 8px!important}
