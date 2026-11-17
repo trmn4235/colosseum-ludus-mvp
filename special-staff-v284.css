@@ -6,6 +6,7 @@
 @media(max-width:690px){.special-staff{padding-left:8px;padding-right:8px}.staff-header h1{display:none}.staff-tab{font-size:9px!important}.staff-body{grid-template-columns:150px minmax(0,1fr)}.staff-section-head>span{font-size:9px}.staff-content h3{font-size:14px}.staff-benefits,.staff-papers{padding:6px 8px}.staff-info{padding:5px 8px}.staff-place{font-size:9px}.staff-counts{font-size:9px}.staff-paper h4{font-size:11px}.staff-paper-effect{font-size:9px}.staff-paper{padding:4px}.staff-collection strong{font-size:13px}}
 
 .kitchen-people{display:block}.staff-groom-profile{margin-bottom:6px;padding:6px 12px;font-size:12px}
+.staff-paper[data-rarity]{border-left:3px solid #7a867a}.staff-paper[data-rarity=rare]{border-left-color:#518fbc}.staff-paper[data-rarity=very_rare]{border-left-color:#aa79c5}.staff-paper[data-rarity=unique]{border-left-color:#c18950}.staff-paper>small{color:var(--theme-text);opacity:.85}.staff-unique-count{white-space:nowrap}
 body[data-roman-screen] #specialStaffModal>.staff-header{display:flex!important;position:static!important;inset:auto!important;width:auto!important;height:auto!important;transform:none!important;pointer-events:auto!important;background:transparent!important;box-shadow:none!important;color:inherit!important}
 body[data-roman-screen] #specialStaffModal .staff-header h1{font-family:Georgia,serif!important;color:var(--theme-title)!important}
 @layer ludus-theme-v275{
