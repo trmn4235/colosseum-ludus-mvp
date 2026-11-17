@@ -1,11 +1,11 @@
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),assert=require('node:assert/strict'),vm=require('node:vm');
-const {chromium}=require('playwright');
+const {chromium,webkit}=require('playwright');
 const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||fs.mkdtempSync(path.join(os.tmpdir(),'staff-v284-'));
 const base=fs.readFileSync(path.join(__dirname,'daily-kitchen-ui-v265.cjs'),'utf8'),sandbox={};
 vm.runInNewContext(base.slice(base.indexOf("const user="),base.indexOf('(async()=>{'))+';this.fixture=mock+foodMock;',sandbox);
 const mock=sandbox.fixture+require('./special-staff-fixture-v284.cjs')();
 (async()=>{
- fs.mkdirSync(out,{recursive:true});const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ fs.mkdirSync(out,{recursive:true});const safari=!!process.env.LUDUS_WEBKIT_TEST,browser=await(safari?webkit:chromium).launch(safari?{headless:true}:{headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try{
  const page=await browser.newPage({viewport:{width:874,height:402}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('http://127.0.0.1:8765/**',r=>{const file=root+new URL(r.request().url()).pathname;if(!fs.existsSync(file))return r.fulfill({status:404});let body=fs.readFileSync(file);if(file.endsWith('ludus.html'))body=Buffer.from(body.toString().replace('const accountClient=LudusClient.create','let accountClient=LudusClient.create').replace('const accountReady=(async()=>{',mock+'\nconst accountReady=(async()=>{accountClient=window.__testClient;'));return r.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'application/octet-stream'});});await page.route('https://**',r=>r.abort());

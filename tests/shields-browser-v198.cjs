@@ -19,18 +19,21 @@ const {server}=new Function('require','__dirname','process',fixture+'\nreturn{se
   assert.equal(await page.evaluate(()=>LudusPreview.roster[0].state.shieldStyle),'shield_viridis');
   async function tap(target){
    await target.waitFor({state:'visible'});assert.equal(await target.isEnabled(),true);
-   // WebKit can expose the panel before its composited hit-test tree is ready.
-   // Keep a real touch below; wait for the same event-receiving target first.
-   await target.click({trial:true});
-   const point=await target.evaluate(e=>{const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;return{x,y,width:r.width,height:r.height,onScreen:x>=0&&y>=0&&x<innerWidth&&y<innerHeight,hit:e.contains(document.elementFromPoint(x,y))};});
+   // Wait for the actual touch target without synthetic mouse movement or scrolling.
+   // The courtyard hides its world actions on the next paused render frame.
+   let point;for(let attempt=0;attempt<50;attempt++){
+    let timer;try{point=await Promise.race([target.evaluate(e=>{const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2,hit=document.elementFromPoint(x,y);return{x,y,width:r.width,height:r.height,onScreen:x>=0&&y>=0&&x<innerWidth&&y<innerHeight,hit:e.contains(hit),obstruction:hit?.tagName+'#'+hit?.id+'.'+hit?.className};}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Shield touch hit-test did not respond within 5 seconds')),5000);})]);}finally{clearTimeout(timer);}
+    if(point.onScreen&&point.hit)break;await page.waitForTimeout(100);
+   }
    assert.ok(point.width>0&&point.height>0&&point.onScreen&&point.hit,'Tap must reach the visible item: '+JSON.stringify(point));
    await page.touchscreen.tap(point.x,point.y);
   }
   for(const row of rows){
+   console.log('V198 shield touch',safari?'WebKit':'Chromium',row.id);
    await page.evaluate(()=>LudusPreview.exercisePanel.open(LudusPreview.roster[0],{slot:'off_hand'}));
    if(!await page.locator('[data-item="'+row.id+'"]').count())await tap(page.getByRole('button',{name:'Sonraki eşya sayfası',exact:true}));
    const choice=page.locator('[data-item="'+row.id+'"]');
-   try{await tap(choice);}catch(error){console.error('Shield picker state',error.message,await page.evaluate(()=>({selected:LudusPreview.roster[0].state.shieldStyle,ordersHidden:document.getElementById('orders').hidden,loadingHidden:document.getElementById('loading').hidden,choices:[...document.querySelectorAll('[data-item]')].map(e=>e.dataset.item),calls:__rpcCalls.filter(r=>r.name==='ludus_equip_item')})),errors);throw error;}
+   try{await tap(choice);}catch(error){console.error('Shield picker failure',row.id,error.message,errors);throw error;}
    await page.waitForFunction(id=>LudusPreview.roster[0].state.shieldStyle===id,row.id);
    const stats=await page.evaluate(async id=>{const v=LudusPreview,g=v.roster[0],m=g.model;await LudusEquipmentCatalog.load(THREE,id);v.exercisePanel.close();v.roster.forEach(r=>{r.body.visible=r===g});Object.assign(g.state,{x:0,z:0,angle:0,action:'idle',blocking:false,hp:100});for(let i=0;i<16;i++)ImportedGladiator.animate(g.state,m,i/60,1/60);v.camera.position.set(1.6,1.65,3.3);v.camera.lookAt(.1,1,0);v.renderer.render(v.scene,v.camera);return{model:m.gear.shield.group.userData.catalogId,visible:m.gear.shield.group.visible,recipe:LudusProduction.skuForItem({kind:'shield',model:id}),icon:LudusProduction.photo(LudusProduction.skuForItem({kind:'shield',model:id})),calls:__rpcCalls.filter(r=>r.name==='ludus_equip_item').length};},row.id);
    assert.equal(stats.model,row.id);assert.equal(stats.visible,true);assert.equal(stats.recipe,row.sku);assert.equal(stats.icon,'assets/items-v198/'+row.sku+'.webp');await page.screenshot({path:path.join(out,row.id+'.png')});
