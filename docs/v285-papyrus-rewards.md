@@ -43,3 +43,15 @@ effects. All effect definitions remain empty. Unconfigured manuscripts say
 “Bonus içeriği hazırlanıyor” / “Henüz okunamaz”; collecting does not increase
 overall. Existing reading remains guarded by configured effects. Unique
 learning and its overall contribution will be specified with that catalogue.
+
+Live schema migration: `20261117222617_special_staff_loot_v285.sql`.
+`tests/special-staff-live-v285.sql` verifies the real start/finish functions,
+existing reward triggers, repeat receipts, multiplayer eligibility and claims,
+owner isolation, anonymous rejection and denial of direct reward grants. All
+synthetic users, matches, rewards and account changes are rolled back. This
+administrative integration check passed against the live schema after migration.
+The catalogue, row security and function grants were also verified directly.
+
+The profile preview explicitly uses UTF-8, matching the game pages. Papyrus
+reward rows retain their full detail height on small phones; 874×402, 568×320
+and 1280×588 report/profile layouts were checked without content overflow.
