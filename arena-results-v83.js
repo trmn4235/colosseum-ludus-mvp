@@ -1,6 +1,7 @@
 /* Match statistics are local combat facts; rewards appear only after the server receipt. */
 var ArenaBattleResult=(()=>{
  'use strict';
+ const rarities={common:'Yaygın',rare:'Nadir',very_rare:'Çok nadir',unique:'Eşsiz'};
  const kinds={weapon:'Silah',shield:'Kalkan',helmet:'Miğfer',chest:'Göğüslük',gloves:'Kolluk',legs:'Bacaklık'};
  const number=value=>Math.max(0,Number(value)||0).toLocaleString('tr-TR',{maximumFractionDigits:0});
  function rewardRows(reward){
@@ -11,6 +12,7 @@ var ArenaBattleResult=(()=>{
   else if(Number(reward.sapphires)>0)rows.push({label:'Safir',value:number(reward.sapphires),icon:'stone'});
   if(reward.kind)rows.push({label:kinds[reward.kind]||'Eşya',value:'1',icon:'equipment'});
   if(reward.extracted?.length)rows.push({label:'Envantere dönen ekipman',value:number(reward.extracted.length),icon:'inventory'});
+  for(const p of reward.papyri||[]){if(!rarities[p.rarity]||!p.title)continue;rows.push({label:String(p.title),value:'1',icon:'papyrus',rarity:p.rarity,detail:rarities[p.rarity]+' · '+String(p.role_title||'Özel çalışan')+(p.rarity==='unique'?' · Sunucuda tek nüsha':''),discovery:p.finder&&p.found_at?'İlk bulan: '+p.finder+' · '+new Date(p.found_at).toLocaleDateString('tr-TR'):''});}
   return rows;
  }
  function statsRows(combat){
@@ -18,12 +20,12 @@ var ArenaBattleResult=(()=>{
   return [['Dövüş süresi',number(combat.time)+' sn'],['Verilen hasar',number(s.damage)],['Alınan hasar',number(s.damageTaken)],['İsabetli darbe',number(s.hits)],['Alt edilen rakip',number(s.kills)],['Blok',number(s.blocks)],['Sıyrılma',number(s.dodges)],['Savuşturma',number(s.parries)]];
  }
  function glyph(kind){
-  const paths={coin:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6"/><path d="M14 7h-3v10m-2-8h6m-6 5h6"/>',exp:'<path d="m12 2 3 6 7 1-5 5 1 8-6-4-6 4 1-8-5-5 7-1Z"/>',diamond:'<path d="m3 7 4-4h10l4 4-9 14ZM3 7h18M7 3l5 18 5-18"/>',stone:'<path d="m12 2 8 5v10l-8 5-8-5V7ZM4 7h16M4 17h16M12 2 8 7v10l4 5 4-5V7Z"/>',equipment:'<path d="m4 20 4-4m-2-2 4 4m-3-3L18 3l3 3-12 11M3 21l3-1-2-2Z"/>',inventory:'<path d="M3 7h18v14H3ZM2 3h20v4H2Zm7 8h6"/>'};
+  const paths={papyrus:'<path d="M6 4h13a2 2 0 0 1 2 2v2h-4V6a2 2 0 0 0-4 0v13a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2h7m-3 0V6a2 2 0 0 1 2-2M9 9h5m-5 4h5"/>',coin:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6"/><path d="M14 7h-3v10m-2-8h6m-6 5h6"/>',exp:'<path d="m12 2 3 6 7 1-5 5 1 8-6-4-6 4 1-8-5-5 7-1Z"/>',diamond:'<path d="m3 7 4-4h10l4 4-9 14ZM3 7h18M7 3l5 18 5-18"/>',stone:'<path d="m12 2 8 5v10l-8 5-8-5V7ZM4 7h16M4 17h16M12 2 8 7v10l4 5 4-5V7Z"/>',equipment:'<path d="m4 20 4-4m-2-2 4 4m-3-3L18 3l3 3-12 11M3 21l3-1-2-2Z"/>',inventory:'<path d="M3 7h18v14H3ZM2 3h20v4H2Zm7 8h6"/>'};
   return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">'+(paths[kind]||paths.stone)+'</svg>';
  }
- function rewards(doc,reward){
-  const list=doc.getElementById('resultRewards');list.replaceChildren();
-  for(const row of rewardRows(reward)){const line=doc.createElement('div'),icon=doc.createElement('i'),label=doc.createElement('span'),value=doc.createElement('b');line.className='result-reward-row';icon.className='result-reward-icon '+row.icon;icon.innerHTML=glyph(row.icon);label.textContent=row.label;value.textContent=row.value;line.append(icon,label,value);list.append(line);}
+ function rewards(doc,reward,target='resultRewards'){
+  const list=doc.getElementById(target);list.replaceChildren();list.classList.toggle('has-papyrus',!!reward.papyri?.length);
+  for(const row of rewardRows(reward)){const line=doc.createElement('div'),icon=doc.createElement('i'),label=doc.createElement('span'),value=doc.createElement('b');line.className='result-reward-row';icon.className='result-reward-icon '+row.icon;icon.innerHTML=glyph(row.icon);label.textContent=row.label;if(row.detail){line.dataset.rarity=row.rarity;const detail=doc.createElement('small');detail.className='result-reward-detail';detail.textContent=row.detail;label.append(detail);line.title=row.discovery||row.detail;}value.textContent=row.value;line.append(icon,label,value);list.append(line);}
   if(!list.childElementCount){const p=doc.createElement('p');p.className='result-empty';p.textContent=reward.survival?'Rekorun kaydedildi. Ekipmanın korunur.':'Bu savaşta ödül kazanılmadı.';list.append(p);}
  }
  function show(doc,combat){

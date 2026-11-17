@@ -2,6 +2,7 @@
    from reading; neither time, battles nor a client-written EXP value level staff. */
 (function(root){
  'use strict';
+ const rarities={common:'Yaygın',rare:'Nadir',very_rare:'Çok nadir',unique:'Eşsiz'};
  const fmt=n=>new Intl.NumberFormat('tr-TR',{maximumFractionDigits:3}).format(Number(n)||0);
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
  function button(text,fn,cls){const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;}
@@ -34,14 +35,14 @@
    for(const r of defs){const b=button(r.title,()=>{if(busy||loading||role===r.id)return;role=r.id;page=0;data=null;message('');render();refresh();},'staff-tab');b.setAttribute('aria-pressed',String(role===r.id));b.disabled=busy;nav.append(b);}
    info.append(el('small','staff-profession',d.profession),el('h2','',s?.name||d.name),el('span','staff-place',d.place));
    const overall=el('div','staff-overall');overall.append(el('span','','Overall'),el('strong','',s?fmt(s.overall):'—'));info.append(overall);
-   const collection=el('div','staff-collection');collection.append(el('span','','Papirüs'),el('strong','',s?fmt(s.collected)+' / '+fmt(s.total):'— / 500'));info.append(collection,meter('Toplanan papirüs',s?.collected||0,s?.total||500));
-   const counts=el('div','staff-counts');counts.append(el('span','',s?fmt(s.read)+' okundu':'— okundu'),el('span','',s?fmt(s.collected-s.read)+' okumayı bekliyor':'— bekliyor'));info.append(counts);
+   const collection=el('div','staff-collection');collection.append(el('span','','Koleksiyon'),el('strong','',s?fmt(s.collected)+' / '+fmt(s.total):'— / 500'));info.append(collection,meter('Toplanan papirüs',s?.collected||0,s?.total||500));
+   const counts=el('div','staff-counts');counts.append(el('span','',s?fmt(s.read)+' okundu':'— okundu'),el('span','',s?fmt(s.collected-s.read)+' bekliyor':'— bekliyor'),el('span','staff-unique-count','Eşsiz '+fmt(s?.unique_collected||0)));info.append(counts);
    const benefits=el('section','staff-benefits');benefits.append(el('h3','','Öğrenilen pasif bonuslar'));
    if(s?.bonuses?.length){const list=el('div','staff-bonus-list');for(const b of s.bonuses){const row=el('div','staff-bonus');row.append(el('span','',b.label),el('strong','','+%'+fmt(b.percent)));list.append(row);}benefits.append(list);}
    else benefits.append(el('p','staff-empty',loading?'Bilgiler yükleniyor…':'Henüz öğrenilen bir pasif bonus yok.'));
    content.append(benefits);
-   const papers=el('section','staff-papers'),papersHead=el('div','staff-section-head');papersHead.append(el('h3','','Papirüsler'),el('span','','Her okuma +0,2 overall'));papers.append(papersHead);
-   if(data?.role===role&&data.papyri?.length){const grid=el('div','staff-paper-grid');for(const p of data.papyri){const card=el('article','staff-paper');card.dataset.lesson=String(p.lesson);card.append(el('small','','PAPİRÜS '+p.lesson),el('h4','',p.title));const effect=el('p','staff-paper-effect');effect.textContent=p.effects.map(e=>e.label+' +%'+fmt(e.percent)).join(' · ');card.append(effect);const b=button(p.read_at?'Öğrenildi':'Papirüsü okut',()=>prepare(p.lesson),'staff-read');b.disabled=busy||loading||!!pending||!!p.read_at||!p.effects.length;card.append(b);grid.append(card);}papers.append(grid);}
+   const papers=el('section','staff-papers'),papersHead=el('div','staff-section-head');papersHead.append(el('h3','','Papirüsler'),el('span','','Standart okuma +0,2 overall'));papers.append(papersHead);
+   if(data?.role===role&&data.papyri?.length){const grid=el('div','staff-paper-grid');for(const p of data.papyri){const card=el('article','staff-paper');card.dataset.lesson=String(p.lesson||p.unique_id);card.dataset.rarity=p.rarity||'common';card.title=(rarities[p.rarity]||'Yaygın')+(p.finder?' · İlk bulan: '+p.finder+' · '+new Date(p.found_at).toLocaleDateString('tr-TR'):'');card.append(el('small','',(rarities[p.rarity]||'Yaygın')+(p.rarity==='unique'?' · Tek nüsha':' · '+p.lesson)),el('h4','',p.title));const effect=el('p','staff-paper-effect');effect.textContent=(rarities[p.rarity]||'Yaygın')+' · '+(p.effects.length?p.effects.map(e=>e.label+' +%'+fmt(e.percent)).join(' · '):(p.finder?'İlk bulan: '+p.finder+' · '+new Date(p.found_at).toLocaleDateString('tr-TR'):'Bonus içeriği hazırlanıyor.'));card.append(effect);const b=button(p.read_at?'Öğrenildi':p.effects.length?'Papirüsü okut':'Henüz okunamaz',()=>prepare(p.lesson),'staff-read');b.disabled=busy||loading||!!pending||!!p.read_at||!p.effects.length;card.append(b);grid.append(card);}papers.append(grid);}
    else papers.append(el('div','staff-papers-empty',loading?'Papirüsler yükleniyor…':'Bu çalışan için henüz papirüsün yok.'));
    const total=data?.role===role?data.paper_count||0:0;if(total>6){const pages=Math.ceil(total/6),pager=el('div','staff-pager'),prev=button('‹',()=>{page--;refresh();}),next=button('›',()=>{page++;refresh();});prev.setAttribute('aria-label','Önceki papirüsler');next.setAttribute('aria-label','Sonraki papirüsler');prev.disabled=busy||loading||page===0;next.disabled=busy||loading||page>=pages-1;pager.append(prev,el('span','',(page+1)+' / '+pages),next);papers.append(pager);}
    content.append(papers);showPerson();

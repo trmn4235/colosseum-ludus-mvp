@@ -26,6 +26,11 @@ jobs:
           LUDUS_WEBKIT_TEST: '1'
           LUDUS_TEST_OUTPUT: /tmp/staff-v284-webkit
         run: node tests/special-staff-ui-v284.cjs
+      - name: Papyrus reward report and profile layouts in Safari
+        env:
+          LUDUS_WEBKIT_TEST: '1'
+          LUDUS_TEST_OUTPUT: /tmp/staff-v284-webkit/loot-v285
+        run: node tests/special-staff-loot-ui-v285.cjs
       - name: Upload Safari staff screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -81,6 +86,10 @@ jobs:
         run: node tests/first-quests-ui-v111.cjs
       - name: Daily kitchen database and retry regression
         run: node tests/daily-kitchen-v265.cjs
+      - name: Papyrus drops, match receipts and unique supply
+        run: node tests/special-staff-loot-v285.cjs
+      - name: Papyrus reward report and profile layouts
+        run: node tests/special-staff-loot-ui-v285.cjs
       - name: Papyrus learning and all-worker kitchen accounting
         run: node tests/special-staff-v284.cjs
       - name: Special staff models, profiles and mobile layouts
