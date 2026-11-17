@@ -20,7 +20,7 @@ const {server}=new Function('require','__dirname','process',fixture+'\nreturn{se
   async function tap(target){
    await target.waitFor({state:'visible'});assert.equal(await target.isEnabled(),true);
    // Wait for the actual touch target without synthetic mouse movement or scrolling.
-   // The courtyard hides its world actions on the next paused render frame.
+   // WebKit can expose layout before its composited hit-test tree catches up.
    let point;for(let attempt=0;attempt<50;attempt++){
     let timer;try{point=await Promise.race([target.evaluate(e=>{const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2,hit=document.elementFromPoint(x,y);return{x,y,width:r.width,height:r.height,onScreen:x>=0&&y>=0&&x<innerWidth&&y<innerHeight,hit:e.contains(hit),obstruction:hit?.tagName+'#'+hit?.id+'.'+hit?.className};}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Shield touch hit-test did not respond within 5 seconds')),5000);})]);}finally{clearTimeout(timer);}
     if(point.onScreen&&point.hit)break;await page.waitForTimeout(100);

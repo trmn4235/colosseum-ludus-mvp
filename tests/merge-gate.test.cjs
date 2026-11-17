@@ -248,7 +248,8 @@ test('workflow records actual checkout SHA and passes reuse proof to the gate', 
 test('equipment matrix keeps production-state consumers with their producer', () => {
   const workflow = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/equipment-v168.yml'), 'utf8');
   const groups = [...workflow.matchAll(/      - name: (\w+) checks\n        if: matrix.group == '\w+'\n        run: \|\n([\s\S]*?)(?=      - name:|$)/g)];
-  assert.equal(groups.length, 8);
+  const matrixGroups = workflow.match(/group: \[([^\]]+)\]/)[1].split(',').map(value => value.trim()).sort();
+  assert.deepEqual(groups.map(([, group]) => group).sort(), matrixGroups);
   let consumers = 0;
   for (const [, group, commands] of groups) {
     for (const match of commands.matchAll(/node (tests\/[^\s]+\.cjs)/g)) {
@@ -257,8 +258,8 @@ test('equipment matrix keeps production-state consumers with their producer', ()
       const importsFixture = source.includes("__dirname+'/production-browser-v119.cjs'");
       if (readsState || importsFixture) {
         consumers++;
-        assert.equal(group, 'core', match[1]);
-        assert.ok(commands.indexOf('LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs') < match.index, match[1]);
+        const producer = commands.indexOf('LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs');
+        assert.ok(producer >= 0 && producer < match.index, group + ': ' + match[1]);
       }
     }
   }

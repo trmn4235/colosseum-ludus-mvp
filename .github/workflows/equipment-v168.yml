@@ -43,9 +43,10 @@ jobs:
           node tests/helmet-production-browser-v169.cjs
           node tests/halberd-production-browser-v193.cjs
           node tests/equipment-production-browser-v168.cjs
-      - name: Shield touch selection in Chromium and WebKit
+      - name: shield_touch checks
         if: matrix.group == 'shield_touch'
         run: |
+          LUDUS_EQUIPMENT_TEST=1 node tests/production-v119.cjs
           node tests/shields-browser-v198.cjs
           LUDUS_WEBKIT_TEST=1 LUDUS_TEST_OUTPUT=/tmp/shields-v198-webkit node tests/shields-browser-v198.cjs
       - name: identity checks
