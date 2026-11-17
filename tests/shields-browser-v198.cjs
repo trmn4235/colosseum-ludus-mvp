@@ -19,6 +19,9 @@ const {server}=new Function('require','__dirname','process',fixture+'\nreturn{se
   assert.equal(await page.evaluate(()=>LudusPreview.roster[0].state.shieldStyle),'shield_viridis');
   async function tap(target){
    await target.waitFor({state:'visible'});assert.equal(await target.isEnabled(),true);
+   // WebKit can expose the panel before its composited hit-test tree is ready.
+   // Keep a real touch below; wait for the same event-receiving target first.
+   await target.click({trial:true});
    const point=await target.evaluate(e=>{const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;return{x,y,width:r.width,height:r.height,onScreen:x>=0&&y>=0&&x<innerWidth&&y<innerHeight,hit:e.contains(document.elementFromPoint(x,y))};});
    assert.ok(point.width>0&&point.height>0&&point.onScreen&&point.hit,'Tap must reach the visible item: '+JSON.stringify(point));
    await page.touchscreen.tap(point.x,point.y);

@@ -397,7 +397,10 @@
         "ludus-settings-v29.js",
         "daily-kitchen-*",
         "tests/daily-kitchen-*",
-        "supabase/migrations/*daily_kitchen*"
+        "supabase/migrations/*daily_kitchen*",
+        "special-staff-*",
+        "tests/special-staff-*",
+        "supabase/migrations/*special_staff*"
       ]
     },
     {

@@ -59,7 +59,7 @@ jobs:
         run: node tests/special-staff-v284.cjs
       - name: Special staff models, profiles and mobile layouts
         env:
-          LUDUS_TEST_OUTPUT: /tmp/staff-v284
+          LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/staff
         run: node tests/special-staff-ui-v284.cjs
       - name: Daily kitchen full Ludus and mobile layouts
         env:

@@ -75,7 +75,7 @@
   function tick(){
    const room=ctx.room();if(room!==lastRoom){for(const e of entries.filter(e=>e.d.room)){e.group.removeFromParent();if(e.d.room===room){ctx.roomScene.add(e.group);ctx.roomColliders.push({kind:'special-staff-'+e.d.id,minX:e.d.x-.38,maxX:e.d.x+.38,minZ:e.d.z-.38,maxZ:e.d.z+.38});}}lastRoom=room;}
    if(!loaded)Promise.resolve(ctx.ready).then(()=>{loaded=true;}).catch(()=>{});
-   for(const e of entries){const visible=loaded&&ctx.exploring()&&e.d.room===room;e.group.visible=visible;if(visible)load(e);root.LudusRoomActions.place(e.button,e.point,ctx,visible&&e.ready,5);}
+   for(const e of entries){if(e.d.room&&e.d.room===room&&!ctx.roomColliders.some(c=>c.kind==='special-staff-'+e.d.id))ctx.roomColliders.push({kind:'special-staff-'+e.d.id,minX:e.d.x-.38,maxX:e.d.x+.38,minZ:e.d.z-.38,maxZ:e.d.z+.38});const visible=loaded&&ctx.exploring()&&e.d.room===room;e.group.visible=visible;if(visible)load(e);root.LudusRoomActions.place(e.button,e.point,ctx,visible&&e.ready,5);}
   }
   return {tick,entries};
  }
