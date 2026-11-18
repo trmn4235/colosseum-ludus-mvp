@@ -30,11 +30,17 @@ async function run(){
   });
   const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   await page.goto('http://hud.test/ludus.html');await page.evaluate(()=>hudReady);await page.evaluate(()=>document.fonts.ready);
+  await page.locator('#specialStaffHud').click();assert.equal(await page.evaluate(()=>hudClicks.staff),1);
+  await page.evaluate(()=>hud.setStaff([{readable:3},{readable:0}]));
+  assert.equal(await page.locator('.hud-staff-unread').innerText(),'3');
+  assert.equal(await page.locator('#specialStaffHud').getAttribute('aria-label'),'Özel çalışanlar · 3 papirüs okunabilir');
+  await page.evaluate(()=>hud.setStaff([{readable:0}]));assert.equal(await page.locator('.hud-staff-unread').isVisible(),false);
+
   await page.locator('#ludusHud img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
   assert.equal(await page.locator('#ludusWorldNav').count(),0);assert.equal(await page.locator('#beginnerOpen').isVisible(),false);
   assert.equal(await page.locator('.hud-divider').count(),2);assert.equal(await page.locator('.hud-flourish').count(),2);
   assert.equal(await page.locator('#hud211-marble image').getAttribute('href'),'assets/hud-v207/cream-marble.webp');
-  const expected=['gold','diamond','sapphire','emerald','ruby','ludusMap','ludusLevelBadge','imperialRankings','gladiatorHud','caravanHud','friendsOpen','messagesOpen','accountLink'];
+  const expected=['gold','diamond','sapphire','emerald','ruby','ludusMap','ludusLevelBadge','specialStaffHud','imperialRankings','gladiatorHud','caravanHud','friendsOpen','messagesOpen','accountLink'];
   async function geometry(label,safeInset=6){
    await settle();
    const c=await page.evaluate(checkFrame=>{
@@ -44,8 +50,8 @@ async function run(){
     const safe=rect(menu.querySelector('.hud-safe-area'));
     const pieces=selectors=>nodes.filter(n=>n.matches(selectors)).flatMap(n=>[...n.querySelectorAll('.hud-art-clip,.hud-value,.hud-count')].map(rect));
     const gaps=(pieces,start,end)=>[pieces[0].left-start,...pieces.slice(1).map((p,i)=>p.left-pieces[i].right),end-pieces.at(-1).right];
-    const left=pieces('.money'),right=pieces('#gladiatorHud,#caravanHud,#friendsOpen,#messagesOpen,#accountLink');
-    const map=rect(document.getElementById('ludusMap')),level=rect(document.getElementById('ludusLevelBadge')),rank=rect(document.getElementById('imperialRankings'));
+    const left=pieces('.money'),right=pieces('#imperialRankings,#gladiatorHud,#caravanHud,#friendsOpen,#messagesOpen,#accountLink');
+    const map=rect(document.getElementById('ludusMap')),level=rect(document.getElementById('ludusLevelBadge')),staff=rect(document.getElementById('specialStaffHud'));
     const textOverflow=[...menu.querySelectorAll('.hud-value,.hud-count')].filter(n=>{const range=document.createRange();range.selectNodeContents(n);const t=range.getBoundingClientRect(),b=n.getBoundingClientRect();return t.left<b.left-.3||t.right>b.right+.3;}).map(n=>n.textContent);
     let frame=null;
     if(checkFrame){
@@ -57,7 +63,7 @@ async function run(){
      icons:nodes.map(n=>({key:n.dataset.key,...rect(n.querySelector('.hud-art-clip'))})),
      leftGaps:gaps(left,Math.max(rect(menu.querySelector('.flourish-left')).right,safe.left),rect(menu.querySelector('.divider-left')).left),
      rightGaps:gaps(right,rect(menu.querySelector('.divider-right')).right,Math.min(rect(menu.querySelector('.flourish-right')).left,safe.right)),
-     center:level.cx-(r.x+r.width/2),mapGap:level.left-map.right,rankGap:rank.left-level.right,
+     center:level.cx-(r.x+r.width/2),mapGap:level.left-map.right,staffGap:staff.left-level.right,
      clipped:boxes.filter(b=>b.left<safe.left-.3||b.right>safe.right+.3),overlap:boxes.slice(1).filter((b,i)=>b.left<boxes[i].right-.3),textOverflow,
      missed:nodes.filter(n=>n.matches('a,button')&&!n.disabled).filter(n=>{const b=n.getBoundingClientRect();return !n.contains(document.elementFromPoint(b.x+b.width/2,b.y+b.height/2));}).map(n=>n.id),
      scroll:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight};
@@ -77,19 +83,19 @@ async function run(){
     for(const wing of c.frame.wings){assert(Math.abs(wing.height-43.2*s)<.1,label+' visibly thinner marble wing');assert(Math.abs((wing.top+wing.bottom)/2-c.height/2)<.1,label+' top/bottom symmetry');}
     assert(Math.abs(c.frame.wings[0].height-c.frame.wings[1].height)<.05,label+' matching left/right wing heights');
    }
-   assert(Math.abs(c.center)<.03&&Math.abs(c.mapGap-c.rankGap)<.04,label+' central mirror symmetry');
+   assert(Math.abs(c.center)<.03&&Math.abs(c.mapGap-c.staffGap)<.04,label+' central mirror symmetry');
    assert(Math.abs(c.mapGap-10.56*s)<.04,label+' approved center clearance');
-   const pairs=[...[1,3,5,7,9].map(i=>c.leftGaps[i]),...[1,3].map(i=>c.rightGaps[i])];
+   const pairs=[...[1,3,5,7,9].map(i=>c.leftGaps[i]),...[2,4].map(i=>c.rightGaps[i])];
    for(const gap of pairs)assert(Math.abs(gap-6*s)<.08,label+' one shared gap for all seven icon/count pairs');
    assert(Math.max(...pairs)-Math.min(...pairs)<.08,label+' resource and crew pair gaps match');
    for(const gaps of [c.leftGaps,c.rightGaps]){
     assert(Math.min(...gaps)>=4.95*s,label+' every visible piece has clearance');
     assert(Math.abs(gaps[0]-8*s)<.08&&Math.abs(gaps.at(-1)-8*s)<.08,label+' first and last groups anchored at matching edges');
    }
-   for(const groupGaps of [[2,4,6,8].map(i=>c.leftGaps[i]),[2,4,5,6].map(i=>c.rightGaps[i])]){
+   for(const groupGaps of [[2,4,6,8].map(i=>c.leftGaps[i]),[1,3,5,6,7].map(i=>c.rightGaps[i])]){
     assert(Math.max(...groupGaps)-Math.min(...groupGaps)<.08,label+' equal clearances between all five whole groups: '+JSON.stringify(groupGaps));
    }
-   for(const i of c.icons){const size=(i.key==='level'?67.60512:['map','rankings'].includes(i.key)?35.33904:23.0472)*s;
+   for(const i of c.icons){const size=(i.key==='level'?67.60512:['map','staff','rankings'].includes(i.key)?35.33904:23.0472)*s;
     assert(Math.abs(i.width-size)<.04&&Math.abs(i.height-size)<.04,label+' approved icon size '+i.key);}
   }
   for(const [width,height]of [[1440,800],[932,430],[874,402],[844,390],[760,360],[667,375],[568,320]]){
@@ -126,7 +132,7 @@ async function run(){
   await page.evaluate(()=>hud.setRoster([{id:'1'},{id:'2',status:'locked'}]));assert.equal(await page.locator('#gladiatorHud .hud-count').textContent(),'1/2');
   await page.evaluate(()=>hud.setRoster([{id:'1'}],false));assert.equal(await page.locator('#gladiatorHud .hud-count').textContent(),'—/1');await geometry('updated counters');
   for(const id of ['caravanHud','gladiatorHud','friendsOpen','messagesOpen'])await page.locator('#'+id).tap();
-  await page.locator('#accountLink').tap();await page.locator('#beginnerHelp').tap();assert.deepEqual(await page.evaluate(()=>hudClicks),{workers:1,gladiators:1,friends:1,messages:1,help:1});
+  await page.locator('#accountLink').tap();await page.locator('#beginnerHelp').tap();assert.deepEqual(await page.evaluate(()=>hudClicks),{staff:1,workers:1,gladiators:1,friends:1,messages:1,help:1});
   assert.equal(new URL(await page.locator('#imperialRankings').getAttribute('href'),'http://hud.test/').pathname,'/siralamalar.html');
   assert.equal(new URL(await page.locator('#ludusMap').getAttribute('href'),'http://hud.test/').pathname,'/roma.html');
   await page.setViewportSize({width:393,height:852});await page.locator('#landscapeGate').waitFor({state:'visible'});assert.equal(await page.locator('#ludusHud').isVisible(),false);

@@ -25,7 +25,7 @@
   function art(name){
    const clip=el('span','hud-art-clip');clip.setAttribute('aria-hidden','true');
    const img=el('img','hud-art hud-icon--'+name),gem=families.slice(1).includes(name);
-   img.src=name==='worker'?'assets/hud-v226/workers.svg?v=revision228':gem?'assets/hud-v207/'+name+'.svg':name==='palmette'?'assets/hud-v207/palmette.webp':'assets/hud-v202/'+name+'.webp';
+   img.src=name==='staff'?'assets/hud-v286/special-staff.webp':name==='worker'?'assets/hud-v226/workers.svg?v=revision228':gem?'assets/hud-v207/'+name+'.svg':name==='palmette'?'assets/hud-v207/palmette.webp':'assets/hud-v202/'+name+'.webp';
    img.alt='';img.draggable=false;const [iw,ih,x,y,r,b]=crops[name]||[48,48,0,0,48,48];
    img.width=iw;img.height=ih;img.style.width=(100*iw/(r-x))+'%';img.style.height=(100*ih/(b-y))+'%';
    img.style.left=(-100*x/(r-x))+'%';img.style.top=(-100*y/(b-y))+'%';clip.append(img);return clip;
@@ -53,9 +53,12 @@
    measure.font='600 '+size+'px Georgia';const m=measure.measureText(text);levelNumber.setAttribute('y',String((93-7)/178*48+(m.actualBoundingBoxAscent-m.actualBoundingBoxDescent)/2));}
   centerLevel('—');
   const rankings=link('imperialRankings','rankings','Sıralamalar','siralamalar.html?v=revision211&from=ludus.html');
-  const nav=el('nav','hud-navigation');nav.setAttribute('aria-label','Dünya ve Ludus seviyesi');nav.append(map,level,rankings);units.push(map,level,rankings);
-  const crew=el('div','hud-crew');crew.setAttribute('role','group');crew.setAttribute('aria-label','Boş ve toplam birimler');
   const button=(id,key,label,action)=>{const b=named(el('button','hud-action hud-indicator'),label);b.id=id;b.dataset.key=key;b.type='button';b.onclick=action;b.append(art(key));return b;};
+  const staff=button('specialStaffHud','staff','Özel çalışanlar',ctx.openSpecialStaff);
+  const unreadStaff=el('span','hud-staff-unread');unreadStaff.hidden=true;unreadStaff.setAttribute('aria-hidden','true');staff.append(unreadStaff);
+  staff.setAttribute('aria-haspopup','dialog');staff.setAttribute('aria-controls','specialStaffModal');
+  const nav=el('nav','hud-navigation');nav.setAttribute('aria-label','Dünya ve Ludus seviyesi');nav.append(map,level,staff,rankings);units.push(map,level,staff,rankings);
+  const crew=el('div','hud-crew');crew.setAttribute('role','group');crew.setAttribute('aria-label','Boş ve toplam birimler');
   const fighters=button('gladiatorHud','gladiator','Gladyatör bilgileri yükleniyor',ctx.openGladiators),caravan=button('caravanHud','worker','İşçi bilgileri yükleniyor',ctx.openWorkers);
   const fighterCount=el('span','hud-count'),caravanCount=el('span','hud-count caravan-hud-count');fighterCount.textContent='—/—';caravanCount.textContent='—';
   fighters.append(fighterCount);caravan.append(caravanCount);crew.append(fighters,caravan);units.push(fighters,caravan);
@@ -121,7 +124,7 @@
    }
    // Measure transformed boundary artwork itself, including browser subpixels.
    menu.dataset.leftGap=String(distribute([0,1,2,3,4],Math.max(ornaments[0].getBoundingClientRect().right,safe.left)-origin,leftDivider.getBoundingClientRect().left-origin));
-   menu.dataset.rightGap=String(distribute([8,9,10,11,12],rightDivider.getBoundingClientRect().right-origin,Math.min(ornaments[1].getBoundingClientRect().left,safe.right)-origin));
+   menu.dataset.rightGap=String(distribute([8,9,10,11,12,13],rightDivider.getBoundingClientRect().right-origin,Math.min(ornaments[1].getBoundingClientRect().left,safe.right)-origin));
   }
   const resize=new ResizeObserver(schedule);resize.observe(menu);resize.observe(safeArea);
   const visibility=new MutationObserver(schedule);for(const n of units)visibility.observe(n,{attributes:true,attributeFilter:['hidden']});
@@ -130,6 +133,11 @@
   function setCount(node,textNode,free,total,label){const f=integer(free),t=integer(total),safe=f===null||t===null?null:Math.min(f,t),text=(safe??'—')+'/'+(t??'—');
    if(textNode.textContent!==text){textNode.textContent=text;schedule();}named(node,safe===null?label+' bilgileri yükleniyor':safe+' boş / '+t+' toplam '+label);node.dataset.free=safe??'';node.dataset.total=t??'';}
   return {
+   setStaff:rows=>{
+    const unread=(rows||[]).reduce((count,person)=>count+(integer(person.readable)||0),0);
+    unreadStaff.hidden=unread===0;unreadStaff.textContent=unread>999?'999+':String(unread);
+    named(staff,unread?'Özel çalışanlar · '+unread+' papirüs okunabilir':'Özel çalışanlar');
+   },
    setWallet:values=>values.forEach((v,i)=>{if(i<money.length)setOne(i,v);}),setGold:value=>setOne(0,value),
    setLevel:data=>{const n=integer(data?.level);centerLevel(n??'—');named(level,n===null?'Ludus seviyesi yükleniyor':'Ludus seviyesi '+n+' · '+(ctx.levelDescription?.(data)||'Seviye ödüllerini aç'));},
    setDefense:count=>{caravan.classList.toggle('worker-rescue-ready',count>0);caravan.dataset.attacks=String(count);named(caravan,count>0?count+' kervan saldırı altında · Kurtarmaya katıl':caravanCount.textContent+' işçi · İşçilerimi aç');},
