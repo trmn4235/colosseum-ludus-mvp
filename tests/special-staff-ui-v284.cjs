@@ -20,10 +20,11 @@ function checkpoint(name){
   for(let attempt=0;attempt<50;attempt++){let timer;try{point=await Promise.race([target.evaluate(e=>{const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2,hit=document.elementFromPoint(x,y);return{x,y,width:r.width,height:r.height,hit:e.contains(hit),onScreen:x>=0&&y>=0&&x<innerWidth&&y<innerHeight,obstruction:hit?.tagName+'#'+hit?.id+'.'+hit?.className};}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Staff touch hit-test did not respond within 5 seconds')),5000);})]);}finally{clearTimeout(timer);}if(point.hit&&point.onScreen&&prior?.x===point.x&&prior?.y===point.y&&prior?.width===point.width&&prior?.height===point.height){stable=true;break;}prior=point;await page.waitForTimeout(100);}
   assert.ok(stable&&point.hit&&point.onScreen&&point.width>0&&point.height>0,'Staff touch target: '+JSON.stringify(point));await page.touchscreen.tap(point.x,point.y);
  }
- async function openViewport(width,height){page=await browser.newPage({viewport:{width,height},hasTouch:true});page.on('pageerror',e=>errors.push(e.message));
+ async function openViewport(width,height){page=await browser.newPage({viewport:{width,height},hasTouch:true});page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;window.__staffContexts=new Set();HTMLCanvasElement.prototype.getContext=function(type,...args){const c=original.call(this,type,...args);if(c&&/webgl/.test(type))__staffContexts.add(c);return c;};});
  await page.route('http://127.0.0.1:8765/**',r=>{const file=root+new URL(r.request().url()).pathname;if(!fs.existsSync(file))return r.fulfill({status:404});let body=fs.readFileSync(file);if(file.endsWith('ludus.html'))body=Buffer.from(body.toString().replace('const accountClient=LudusClient.create','let accountClient=LudusClient.create').replace('const accountReady=(async()=>{',mock+'\nconst accountReady=(async()=>{accountClient=window.__testClient;'));return r.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'application/octet-stream'});});await page.route('https://**',r=>r.abort());
  await page.goto('http://127.0.0.1:8765/ludus.html');await page.waitForFunction(()=>window.LudusPreview?.exploring&&LudusPreview.staffStations.entries.filter(e=>!e.d.room).every(e=>e.ready),null,{timeout:90000});await page.bringToFront();}
  checkpoint('open courtyard');await openViewport(874,402);
+ const worldContexts=await page.evaluate(()=>__staffContexts.size);
  assert.equal(await page.evaluate(()=>LudusPreview.staffStations.entries.filter(e=>e.group.visible).length),2);
  await activate(page.getByRole('button',{name:/^Özel çalışanlar/}));
  await page.locator('#specialStaffModal[data-directory=true]').waitFor();
@@ -40,6 +41,7 @@ function checkpoint(name){
   if(role!=='guard')await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));
  }
  assert.equal(portraits.size,6,'Six distinct rendered staff portraits');
+ assert.equal(await page.evaluate(()=>__staffContexts.size),worldContexts,'Profiles reuse the world context');
  await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});
  assert.equal(await page.locator('.staff-overall strong').innerText(),'0');assert.equal(await page.locator('.staff-collection strong').innerText(),'0 / 500');assert.equal(await page.locator('.staff-paper').count(),0);
  const layoutErrors=[];

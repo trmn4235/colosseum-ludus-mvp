@@ -1272,7 +1272,7 @@ const stoneWallet=await accountClient.from('ludus_stones').select('family,quanti
  return playerAccount;
 })();
 accountReady.catch(error=>{$('loading').hidden=false;$('loading').textContent=error.message;window.RomeTravel?.fail(error.message);$('residentStatus').hidden=true;});
-let specialPause=false;const specialStaff=LudusSpecialStaff.create({T,client:accountClient,ready:accountReady,onState:rows=>ludusHud.setStaff(rows),openVault:(tab,id)=>personalVault.open(tab,id),onOpen(){specialPause=paused;clear();paused=true;},onClose(){clear();paused=specialPause;}});
+let specialPause=false;const specialStaff=LudusSpecialStaff.create({T,renderer,client:accountClient,ready:accountReady,onState:rows=>ludusHud.setStaff(rows),openVault:(tab,id)=>personalVault.open(tab,id),onOpen(){specialPause=paused;clear();paused=true;},onClose(){clear();paused=specialPause;}});
 let personalVaultPause=false;
 const personalVault=LudusPersonalVault.create({...worldActionContext,T,client:accountClient,ready:accountReady,staff:specialStaff,props:roomProps,colliders:roomColliders,inRoom:()=>activeRoom?.kind==='office'&&exploring,invalidate:()=>{renderer.shadowMap.needsUpdate=true;},onOpen(){personalVaultPause=paused;clear();paused=true;},onClose(){clear();paused=personalVaultPause;}});
 accountReady.then(()=>{if(!specialStaff.openFromLink())specialStaff.refresh();}).catch(()=>{});

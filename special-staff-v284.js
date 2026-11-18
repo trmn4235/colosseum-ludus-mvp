@@ -24,19 +24,29 @@
    card.append(el('strong','',person.title),el('span','',person.name),el('small','',person.place),el('span','staff-directory-count','Papirüsler yükleniyor…'));directory.append(card);
   }
   modal.insertBefore(directory,footer);
-  let viewRenderer=null,viewScene=null,viewCamera=null,viewModel=null,viewId=null,viewSerial=0,viewFailed=false;
+  let viewRenderer=null,viewScene=null,viewCamera=null,viewModel=null,viewId=null,viewSerial=0,viewFailed=false,viewTarget=null;
+  const sharedRenderer=!!ctx.renderer;
   function message(text,error=false){status.textContent=text;status.dataset.error=String(error);}
-  function resize(){if(!viewRenderer||!opened)return;const r=portrait.getBoundingClientRect();if(!r.width||!r.height)return;viewRenderer.setSize(r.width,r.height,false);viewCamera.aspect=r.width/r.height;viewCamera.position.set(.05,1.08,Math.max(3.1,1.9/viewCamera.aspect));viewCamera.lookAt(0,1.02,0);viewCamera.updateProjectionMatrix();viewRenderer.render(viewScene,viewCamera);
-   // Transfer this freshly rendered frame immediately. A second composited
-   // WebGL canvas can keep the previous worker's frame in Safari.
-   const source=viewRenderer.domElement;canvas.width=source.width;canvas.height=source.height;canvas.getContext('2d').drawImage(source,0,0);
+  function resize(){if(!viewRenderer||!opened)return;const r=portrait.getBoundingClientRect();if(!r.width||!r.height)return;viewCamera.aspect=r.width/r.height;viewCamera.position.set(.05,1.08,Math.max(3.1,1.9/viewCamera.aspect));viewCamera.lookAt(0,1.02,0);viewCamera.updateProjectionMatrix();
+   if(!sharedRenderer){viewRenderer.setSize(r.width,r.height,false);viewRenderer.render(viewScene,viewCamera);const source=viewRenderer.domElement;canvas.width=source.width;canvas.height=source.height;canvas.getContext('2d').drawImage(source,0,0);return;}
+   // Use the world's context while the full-screen profile pauses the world.
+   // A small render target avoids a second WebGL context and compositor layer.
+   const T=ctx.T||root.THREE,renderer=viewRenderer,ratio=Math.min(root.devicePixelRatio||1,1.5),width=Math.max(1,Math.round(r.width*ratio)),height=Math.max(1,Math.round(r.height*ratio));
+   if(!viewTarget){viewTarget=new T.WebGLRenderTarget(width,height);viewTarget.texture.colorSpace=T.SRGBColorSpace;}else viewTarget.setSize(width,height);
+   const previous={target:renderer.getRenderTarget(),face:renderer.getActiveCubeFace?.()||0,mip:renderer.getActiveMipmapLevel?.()||0,viewport:renderer.getViewport(new T.Vector4()),scissor:renderer.getScissor(new T.Vector4()),scissorTest:renderer.getScissorTest(),clear:renderer.getClearColor(new T.Color()),alpha:renderer.getClearAlpha(),autoClear:renderer.autoClear,toneMapping:renderer.toneMapping,exposure:renderer.toneMappingExposure,shadowEnabled:renderer.shadowMap.enabled};
+   const buffer=new Uint8Array(width*height*4);
+   try{renderer.setRenderTarget(viewTarget);renderer.setViewport(0,0,width,height);renderer.setScissorTest(false);renderer.setClearColor(0x000000,0);renderer.autoClear=true;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=false;renderer.render(viewScene,viewCamera);renderer.readRenderTargetPixels(viewTarget,0,0,width,height,buffer);}
+   finally{renderer.setRenderTarget(previous.target,previous.face,previous.mip);renderer.setViewport(previous.viewport);renderer.setScissor(previous.scissor);renderer.setScissorTest(previous.scissorTest);renderer.setClearColor(previous.clear,previous.alpha);renderer.autoClear=previous.autoClear;renderer.toneMapping=previous.toneMapping;renderer.toneMappingExposure=previous.exposure;renderer.shadowMap.enabled=previous.shadowEnabled;}
+   canvas.width=width;canvas.height=height;const context=canvas.getContext('2d'),pixels=context.createImageData(width,height),stride=width*4;
+   for(let y=0;y<height;y++)pixels.data.set(buffer.subarray((height-1-y)*stride,(height-y)*stride),y*stride);
+   context.putImageData(pixels,0,0);
   }
   async function showPerson(){
    if(viewId===role&&(viewModel||viewFailed)){resize();return;}const id=role,request=++viewSerial;viewId=id;viewFailed=false;artStatus.hidden=false;artStatus.textContent='Karakter hazırlanıyor…';
    try{
     const T=ctx.T||root.THREE;if(!T)throw Error('3D görünüm açılamadı.');
-    if(!viewRenderer){viewRenderer=new T.WebGLRenderer({alpha:true,antialias:false});viewRenderer.setPixelRatio(Math.min(root.devicePixelRatio||1,1.5));viewRenderer.outputColorSpace=T.SRGBColorSpace;viewRenderer.toneMapping=T.ACESFilmicToneMapping;viewScene=new T.Scene();viewScene.add(new T.HemisphereLight(0xfff5e8,0x4a545d,2.3));const sun=new T.DirectionalLight(0xfff3dc,2.7);sun.position.set(-3,5,4);viewScene.add(sun);viewCamera=new T.PerspectiveCamera(36,1,.03,30);}
-    if(viewModel){viewModel.removeFromParent();viewModel=null;viewRenderer.renderLists.dispose();}resize();
+    if(!viewRenderer){viewRenderer=ctx.renderer||new T.WebGLRenderer({alpha:true,antialias:false});if(!sharedRenderer){viewRenderer.setPixelRatio(Math.min(root.devicePixelRatio||1,1.5));viewRenderer.outputColorSpace=T.SRGBColorSpace;viewRenderer.toneMapping=T.ACESFilmicToneMapping;}viewScene=new T.Scene();viewScene.add(new T.HemisphereLight(0xfff5e8,0x4a545d,2.3));const sun=new T.DirectionalLight(0xfff3dc,2.7);sun.position.set(-3,5,4);viewScene.add(sun);viewCamera=new T.PerspectiveCamera(36,1,.03,30);}
+    if(viewModel){viewModel.removeFromParent();viewModel=null;if(!sharedRenderer)viewRenderer.renderLists.dispose();}resize();
     const person=await root.LudusSpecialPeople.model(id);if(request!==viewSerial||!opened)return;
     viewModel=person;person.rotation.y=.15;viewScene.add(person);resize();
     // Present the new canvas before declaring it ready. Safari can otherwise
@@ -48,10 +58,8 @@
   const observer=new ResizeObserver(resize);observer.observe(portrait);
   function releaseView(){
    viewSerial++;viewId=null;viewModel?.removeFromParent();viewModel=null;
-   // Reuse this one context across openings. Losing/recreating it while the
-   // courtyard owns another context can stall Safari on the next worker.
-   // The preview does no drawing while closed; cached models remain reusable.
-   viewRenderer?.renderLists.dispose();delete canvas.dataset.staffRole;
+   viewTarget?.dispose();viewTarget=null;
+   if(!sharedRenderer)viewRenderer?.renderLists.dispose();delete canvas.dataset.staffRole;
   }
   function meter(label,value,max){const track=el('div','staff-track'),fill=el('span');track.setAttribute('role','meter');track.setAttribute('aria-label',label);track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax',String(max));track.setAttribute('aria-valuenow',String(value));fill.style.width=Math.min(100,value/max*100)+'%';track.append(fill);return track;}
   const detail=el('dialog','staff-detail');
