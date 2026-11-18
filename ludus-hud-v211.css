@@ -32,7 +32,7 @@ body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-indicator{
  overflow:visible!important;white-space:nowrap!important;color:#651b28!important;text-shadow:none!important;
  font:400 var(--hud211-number)/1 Georgia,'Times New Roman',serif!important;text-decoration:none!important;
 }
-body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([data-key=map],[data-key=rankings]){--hud211-icon:calc(35.33904 * var(--hud211-unit))}
+body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([data-key=map],[data-key=staff],[data-key=rankings]){--hud211-icon:calc(35.33904 * var(--hud211-unit))}
 body[data-art-direction][data-roman-screen=ludus] #ludusHud [data-key=level]{--hud211-icon:calc(67.60512 * var(--hud211-unit))}
 body[data-art-direction][data-roman-screen=ludus] #ludusHud .hud-art-clip{
  position:relative!important;display:block!important;flex:0 0 var(--hud211-icon)!important;

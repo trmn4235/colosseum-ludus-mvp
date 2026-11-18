@@ -9,6 +9,14 @@
   const e=ticket.encounter,team=ticket.team;
   if(e?.version!==230||e.rules!==230||!Array.isArray(team)||team.length<1||team.length>5||e.guards<2||e.guards>6||!Array.isArray(ticket.workers)||ticket.workers.length<1||ticket.workers.length>6)throw Error('Savaş kaydı geçersiz.');
   const random=seeded(e.seed),combat=new root.ArenaCombat(random);combat.reset('normal',team[0].class,'caravan');combat.allowDrops=true;combat.equipmentVersion=168;combat.motionVersion=163;
+  // Both the browser and the server replay use the owner's departure snapshot.
+  // Apply this after weapon selection so picking up equipment cannot erase it.
+  const attackPercent=Number(e.staff_attack_percent)||0;
+  if(attackPercent>0){
+   const originalDamage=combat.damage.bind(combat),factor=1+attackPercent/100;
+   combat.damage=(attacker,target,base,...rest)=>
+    originalDamage(attacker,target,attacker.team===0?base*factor:base,...rest);
+  }
   const types=Object.keys(root.ArenaClasses),average=team.reduce((n,g)=>n+Number(g.overall||50),0)/team.length;
   const bots=Array.from({length:e.guards},(_,i)=>{const type=types[Math.floor(random()*types.length)],c=root.ArenaClasses[type];return{name:'Haydut '+(i+1),class:type,overall:average,items:[{kind:'weapon',model:c.weapon,equipped_slot:'main_hand'},...(c.shield?[{kind:'shield',model:c.shield,equipped_slot:'off_hand'}]:[]),{kind:'helmet',model:'roman',equipped_slot:'helmet'},{kind:'chest',model:'gladiator_chest',equipped_slot:'chest'},{kind:'legs',model:'starter',equipped_slot:'legs'}]};});
   const workers=ticket.workers.map(w=>({...w,class:'retiarius',overall:50,items:[],archer:true,worker:true}));

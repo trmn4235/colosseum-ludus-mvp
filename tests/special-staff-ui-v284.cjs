@@ -18,7 +18,17 @@ const mock=sandbox.fixture+require('./special-staff-fixture-v284.cjs')();
  await page.goto('http://127.0.0.1:8765/ludus.html');await page.waitForFunction(()=>window.LudusPreview?.exploring&&LudusPreview.staffStations.entries.filter(e=>!e.d.room).every(e=>e.ready),null,{timeout:90000});await page.bringToFront();}
  await openViewport(874,402);
  assert.equal(await page.evaluate(()=>LudusPreview.staffStations.entries.filter(e=>e.group.visible).length),2);
- await page.evaluate(()=>LudusPreview.specialStaff.open('guard'));await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});
+ await activate(page.getByRole('button',{name:'Özel çalışanlar',exact:true}));
+ await page.locator('#specialStaffModal[data-directory=true]').waitFor();
+ assert.equal(await page.locator('.staff-directory-person:visible').count(),6);
+ assert.equal(await page.locator('#ludusLevelBadge').evaluate(n=>n.nextElementSibling.id),'specialStaffHud');
+ for(const [role,name] of [['trainer','Varro'],['cook','Gaius'],['doctor','Aulus'],['smith','Lucius'],['groom','Titus'],['guard','Marcus']]){
+  await activate(page.locator('.staff-directory-person[data-role="'+role+'"]'));
+  await page.waitForFunction(id=>LudusPreview.specialStaff.state?.role===id&&document.querySelector('.staff-art-status').hidden,role,{timeout:90000});
+  assert.equal(await page.locator('.staff-info h2').innerText(),name);
+  if(role!=='guard')await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));
+ }
+ await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});
  assert.equal(await page.locator('.staff-overall strong').innerText(),'0');assert.equal(await page.locator('.staff-collection strong').innerText(),'26 / 500');assert.equal(await page.locator('.staff-paper').count(),6);
  const layoutErrors=[];
  async function checkLayout(width,height){for(const theme of ['blue','black','white']){await page.evaluate(t=>LudusTheme.set(t),theme);await page.waitForTimeout(100);const bad=await page.evaluate(()=>[...document.querySelectorAll('#specialStaffModal,.staff-header,.staff-nav,.staff-body,.staff-identity,.staff-info,.staff-content,.staff-benefits,.staff-papers,.staff-paper,.staff-read')].filter(n=>{const r=n.getBoundingClientRect();return n.scrollWidth>n.clientWidth+2||n.scrollHeight>n.clientHeight+2||r.left<0||r.top<0||r.right>innerWidth+1||r.bottom>innerHeight+1;}).map(n=>n.className));if(bad.length)layoutErrors.push({theme,width,height,bad});}}

@@ -17,6 +17,7 @@ module.exports=function(root){
  const rooms=[{kind:'store'}],roster=Array.from({length:7},(_,i)=>({record:{id:'fighter-'+i,status:'available'}}));
  const trainingNow=()=>Date.now(),trainingPhase=g=>g.record.status==='available'?'available':'mission';
  const leaveRoom=()=>{activeRoom=null;},toggleExplore=()=>{exploring=!exploring;},enterRoom=r=>{activeRoom=r;};
+ const specialStaff={openDirectory:()=>hit('staff')};
  const paused=false,workerPanel={open:()=>hit('workers')};
  const supplySystem={open:view=>hit('caravans')},showGladiator=g=>hit('gladiators');
  ${init}
