@@ -31,12 +31,15 @@ function checkpoint(name){
  await page.screenshot({path:out+'/directory.png'});
  assert.equal(await page.locator('.staff-directory-person:visible').count(),6);
  assert.equal(await page.locator('#ludusLevelBadge').evaluate(n=>n.nextElementSibling.id),'specialStaffHud');
+ const portraits=new Set();
  for(const [role,name] of [['trainer','Varro'],['cook','Gaius'],['doctor','Aulus'],['smith','Lucius'],['groom','Titus'],['guard','Marcus']]){
   checkpoint('directory '+role);await activate(page.locator('.staff-directory-person[data-role="'+role+'"]'));
   await page.waitForFunction(id=>LudusPreview.specialStaff.state?.role===id&&document.querySelector('.staff-art-status').hidden,role,{timeout:90000});
-  assert.equal(await page.locator('.staff-info h2').innerText(),name);assert.equal(await page.locator('.staff-portrait canvas').getAttribute('data-staff-role'),role);await page.screenshot({path:out+'/profile-'+role+'.png'});
+  assert.equal(await page.locator('.staff-info h2').innerText(),name);assert.equal(await page.locator('.staff-portrait canvas').getAttribute('data-staff-role'),role);
+  const pixels=await page.locator('.staff-portrait canvas').evaluate(c=>{const data=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let opaque=0,hash=2166136261;for(let i=0;i<data.length;i++){hash=Math.imul(hash^data[i],16777619);if(i%4===3&&data[i]>128)opaque++;}return {opaque,hash:hash>>>0};});assert(pixels.opaque>100,'Visible portrait for '+role);portraits.add(pixels.hash);await page.screenshot({path:out+'/profile-'+role+'.png'});
   if(role!=='guard')await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));
  }
+ assert.equal(portraits.size,6,'Six distinct rendered staff portraits');
  await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});
  assert.equal(await page.locator('.staff-overall strong').innerText(),'0');assert.equal(await page.locator('.staff-collection strong').innerText(),'0 / 500');assert.equal(await page.locator('.staff-paper').count(),0);
  const layoutErrors=[];

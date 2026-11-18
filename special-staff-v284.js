@@ -26,12 +26,16 @@
   modal.insertBefore(directory,footer);
   let viewRenderer=null,viewScene=null,viewCamera=null,viewModel=null,viewId=null,viewSerial=0,viewFailed=false;
   function message(text,error=false){status.textContent=text;status.dataset.error=String(error);}
-  function resize(){if(!viewRenderer||!opened)return;const r=portrait.getBoundingClientRect();if(!r.width||!r.height)return;viewRenderer.setSize(r.width,r.height,false);viewCamera.aspect=r.width/r.height;viewCamera.position.set(.05,1.08,Math.max(3.1,1.9/viewCamera.aspect));viewCamera.lookAt(0,1.02,0);viewCamera.updateProjectionMatrix();viewRenderer.render(viewScene,viewCamera);}
+  function resize(){if(!viewRenderer||!opened)return;const r=portrait.getBoundingClientRect();if(!r.width||!r.height)return;viewRenderer.setSize(r.width,r.height,false);viewCamera.aspect=r.width/r.height;viewCamera.position.set(.05,1.08,Math.max(3.1,1.9/viewCamera.aspect));viewCamera.lookAt(0,1.02,0);viewCamera.updateProjectionMatrix();viewRenderer.render(viewScene,viewCamera);
+   // Transfer this freshly rendered frame immediately. A second composited
+   // WebGL canvas can keep the previous worker's frame in Safari.
+   const source=viewRenderer.domElement;canvas.width=source.width;canvas.height=source.height;canvas.getContext('2d').drawImage(source,0,0);
+  }
   async function showPerson(){
    if(viewId===role&&(viewModel||viewFailed)){resize();return;}const id=role,request=++viewSerial;viewId=id;viewFailed=false;artStatus.hidden=false;artStatus.textContent='Karakter hazırlanıyor…';
    try{
     const T=ctx.T||root.THREE;if(!T)throw Error('3D görünüm açılamadı.');
-    if(!viewRenderer){viewRenderer=new T.WebGLRenderer({canvas,alpha:true,antialias:false});viewRenderer.setPixelRatio(Math.min(root.devicePixelRatio||1,1.5));viewRenderer.outputColorSpace=T.SRGBColorSpace;viewRenderer.toneMapping=T.ACESFilmicToneMapping;viewScene=new T.Scene();viewScene.add(new T.HemisphereLight(0xfff5e8,0x4a545d,2.3));const sun=new T.DirectionalLight(0xfff3dc,2.7);sun.position.set(-3,5,4);viewScene.add(sun);viewCamera=new T.PerspectiveCamera(36,1,.03,30);}
+    if(!viewRenderer){viewRenderer=new T.WebGLRenderer({alpha:true,antialias:false});viewRenderer.setPixelRatio(Math.min(root.devicePixelRatio||1,1.5));viewRenderer.outputColorSpace=T.SRGBColorSpace;viewRenderer.toneMapping=T.ACESFilmicToneMapping;viewScene=new T.Scene();viewScene.add(new T.HemisphereLight(0xfff5e8,0x4a545d,2.3));const sun=new T.DirectionalLight(0xfff3dc,2.7);sun.position.set(-3,5,4);viewScene.add(sun);viewCamera=new T.PerspectiveCamera(36,1,.03,30);}
     if(viewModel){viewModel.removeFromParent();viewModel=null;viewRenderer.renderLists.dispose();}resize();
     const person=await root.LudusSpecialPeople.model(id);if(request!==viewSerial||!opened)return;
     viewModel=person;person.rotation.y=.15;viewScene.add(person);resize();
