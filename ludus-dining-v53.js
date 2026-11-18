@@ -18,7 +18,7 @@
    prop('table','Mutfak hazırlık tezgâhı',[1.65,.92,.65],-1.72,0,-3.45);block('dining-kitchen',-1.72,-3.45,1.65,.65);prop('bowl','Kazan servis kâsesi',[.36,.16,.36],-1.8,.92,-3.45);
    const rear=prop('shelf','Arka malzeme rafı',[2.8,2.55,.6],2.85,0,-3.94),side=prop('shelf','Sağ köşe malzeme rafı',[2.8,2.55,.6],4.35,0,-1.98,Math.PI/2);block('dining-shelf',2.85,-3.94,2.8,.6);block('dining-shelf',4.35,-1.98,.6,2.8);
    const ray=new T.Raycaster();function shelfY(shelf,x,z,maximum){ray.set(new T.Vector3(x,maximum,z),new T.Vector3(0,-1,0));return ray.intersectObject(shelf,true)[0]?.point.y??0;}
-   for(const x of [1.85,2.50,3.15,3.80])prop('sack','Tahıl çuvalı',[.46,.60,.44],x,shelfY(rear,x,-3.86,.95),-3.86);
+   for(const x of [1.85,2.50,3.15,3.80])prop('sack','Buğday çuvalı',[.46,.60,.44],x,shelfY(rear,x,-3.86,.95),-3.86);
    for(const x of [2.05,3.15])prop('meat','Kemikli but',[.68,.41,.41],x,shelfY(rear,x,-3.87,1.85),-3.87);
    for(const z of [-2.63,-1.33]){
     prop('barrel','Şarap fıçısı',[.56,.62,.52],4.30,shelfY(side,4.30,z,1.85),z,-Math.PI/2);

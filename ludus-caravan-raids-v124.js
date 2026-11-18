@@ -3,7 +3,7 @@ var LudusCaravanRaids=(()=>{
  'use strict';
  const art='assets/caravan-v124/',el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
  const button=(text,fn,cls='')=>{const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;};
- const name=sku=>({grain:'Tahıl',apple:'Elma',meat:'Et',fish:'Balık',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı'}[sku])||globalThis.LudusProduction?.resources.find(r=>r.sku===sku)?.name||globalThis.LudusProduction?.recipes.find(r=>r.sku===sku)?.name||sku;
+ const name=sku=>({grain:'Buğday',apple:'Elma',meat:'Et',fish:'Balık',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı'}[sku])||globalThis.LudusProduction?.resources.find(r=>r.sku===sku)?.name||globalThis.LudusProduction?.recipes.find(r=>r.sku===sku)?.name||sku;
  const photo=(src,alt,cls='')=>{const i=el('img',cls);i.src=src;i.alt=alt;i.draggable=false;i.decoding='async';return i;};
  const date=t=>new Date(t).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
  function create(ctx){

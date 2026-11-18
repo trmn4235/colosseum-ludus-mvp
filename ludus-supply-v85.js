@@ -21,7 +21,7 @@ var LudusSupply=(()=>{
   {id:'flax',name:'Ham keten',at:[10,39],description:'Keten tarlasında hasat edilen saplar, dokuma için ketene işlenir.'},
   {id:'hide',name:'Ham deri',at:[33,39],description:'Avcıların getirdiği ham postlar, deri işleme için hazırlanır.'},
   {id:'wool',name:'Yün',at:[65,39],description:'Çiftlikte kırkılan koyunlardan elde edilen yün dokumada kullanılır.'},
-  {id:'grain',name:'Tahıl',at:[90,39],food:true},
+  {id:'grain',name:'Buğday',at:[90,39],food:true},
   {id:'resin',name:'Reçine',at:[10,63],description:'Çam ağaçlarından toplanan doğal reçine, kalkan ve ekipman üretiminde kullanılır.'},
   {id:'fish',name:'Balık',at:[30,64],food:true},
   {id:'olive_oil',name:'Zeytinlik',at:[61,65],food:true},
@@ -42,7 +42,7 @@ var LudusSupply=(()=>{
    return result;
   })()).catch(e=>{mapArtwork=null;throw e;})).then(result=>{canvas.width=result.width;canvas.height=result.height;canvas.getContext('2d').drawImage(result,0,0);return canvas;});
  }
- const uses={iron:'Silah ve zırh üretimi için demir.',copper:'Basic ekipman üretimi için bakır.',wood:'Silah, kalkan ve ekipman için odun.',hunt:'Günlük mutfakta seçebileceğin et malzemesini envantere getirir.',linen:'Ekipman üretimi için keten.',grain:'Yemekhanenin tahıl stoğunu tamamlar.',apple:'Yemekhanenin meyve stoğunu tamamlar.',fish:'Yemekhaneye balık sağlar.',egg:'Yemekhaneye yumurta sağlar.',wine:'Yemekhane için şarap getirir.',olive_oil:'Günlük mutfakta seçebileceğin zeytinyağını envantere getirir.'};
+ const uses={iron:'Silah ve zırh üretimi için demir.',copper:'Basic ekipman üretimi için bakır.',wood:'Silah, kalkan ve ekipman için odun.',hunt:'Günlük mutfakta seçebileceğin et malzemesini envantere getirir.',linen:'Ekipman üretimi için keten.',grain:'Yemekhanenin buğday stoğunu tamamlar.',apple:'Yemekhanenin meyve stoğunu tamamlar.',fish:'Yemekhaneye balık sağlar.',egg:'Yemekhaneye yumurta sağlar.',wine:'Yemekhane için şarap getirir.',olive_oil:'Günlük mutfakta seçebileceğin zeytinyağını envantere getirir.'};
  function picture(id,alt,cls=''){const img=el('img',cls);img.src=artURL(id);img.alt=alt;img.width=id==='rome-map'?1774:1200;img.height=id==='rome-map'?887:800;img.decoding='async';img.draggable=false;return img;}
  function create(ctx){
   let state=null,owner=null,key=null,pending=null,busy=false,loading=null,opened=false,mode='trade',tab='map',stockCategory='food',stockStage='all',selected=null,workers=1,city=null,quote=null,cityLoading=false,cityRequest=0,marketPage=0,marketSku=null,marketQuantity=60,filter='all',craftSelection=null,page=0,lastFocus=null,offset=0,lastRefresh=0,lastTick=0,artOpen=false,artFocus=null,artReturn='.supply-art-expand',seenDeliveries=new Set();
@@ -65,7 +65,7 @@ var LudusSupply=(()=>{
   const priceHistory=new Map();
   let escortSelection=[],escortPage=0;
   let workerRoster=null,workerSelection=[],workerDeparture=null;
-  const professions={iron_ore:'Demir madenciliği',copper_ore:'Bakır madenciliği',tin_ore:'Kalay madenciliği',lead_ore:'Kurşun madenciliği',wood:'Odunculuk',flax:'Keten yetiştiriciliği',hide:'Dericilik',wool:'Yüncülük',resin:'Reçine toplayıcılığı',grain:'Tahıl yetiştiriciliği',apple:'Elma yetiştiriciliği',fish:'Balıkçılık',meat:'Avcılık',egg:'Yumurta üretimi',beer:'Bağcılık',olive_oil:'Zeytincilik'};
+  const professions={iron_ore:'Demir madenciliği',copper_ore:'Bakır madenciliği',tin_ore:'Kalay madenciliği',lead_ore:'Kurşun madenciliği',wood:'Odunculuk',flax:'Keten yetiştiriciliği',hide:'Dericilik',wool:'Yüncülük',resin:'Reçine toplayıcılığı',grain:'Buğday yetiştiriciliği',apple:'Elma yetiştiriciliği',fish:'Balıkçılık',meat:'Avcılık',egg:'Yumurta üretimi',beer:'Bağcılık',olive_oil:'Zeytincilik'};
   function adoptWorkers(data){workerRoster=data?.user_id===owner&&Array.isArray(data.workers)?data:null;workerSelection=workerSelection.filter(id=>workerRoster?.workers.some(w=>w.id===id&&!w.job_id));}
   function prepareWorkers(n){workerSelection=workerSelection.filter(id=>workerRoster?.workers.some(w=>w.id===id&&!w.job_id)).slice(0,n);}
   function enoughWorkers(n){return !!workerRoster&&workerRoster.workers.filter(w=>!w.job_id).length>=n;}

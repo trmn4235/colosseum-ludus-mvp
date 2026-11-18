@@ -5,7 +5,7 @@ const files=fs.readdirSync(root+'/supabase/migrations');
 const target=files.find(f=>f.endsWith('_production_items_v119.sql'));
 if(!target)throw Error('Create the migration with supabase migration new first.');
 const q=v=>"'"+String(v).replaceAll("'","''")+"'",j=v=>q(JSON.stringify(v))+'::jsonb';
-const foods=[['grain','Tahıl'],['apple','Elma'],['meat','Et'],['fish','Balık'],['egg','Yumurta'],['beer','Şarap'],['olive_oil','Zeytinyağı']];
+const foods=[['grain','Buğday'],['apple','Elma'],['meat','Et'],['fish','Balık'],['egg','Yumurta'],['beer','Şarap'],['olive_oil','Zeytinyağı']];
 const old=fs.readFileSync(root+'/supabase/migrations/'+files.find(f=>f.endsWith('_production_items_v118.sql')),'utf8');
 let api=old.slice(old.indexOf('create or replace function ludus_supply_private.api('),old.lastIndexOf("notify pgrst"));
 api=api.replace('where not r.food on conflict','where not r.food and r.active on conflict');

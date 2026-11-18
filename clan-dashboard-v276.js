@@ -17,7 +17,7 @@
  // Coordinates and resource identities match the existing Roma supply map.
  const locations=[
   ['wood','Odun sahası',10,13],['meat','Av sahası',30,13],['lead_ore','Kurşun ocağı',52,13],['tin_ore','Kalay ocağı',73,13],['copper_ore','Bakır ocağı',91,13],
-  ['flax','Keten tarlası',10,39],['hide','Deri sahası',33,39],['wool','Yün çiftliği',65,39],['grain','Tahıl tarlası',90,39],
+  ['flax','Keten tarlası',10,39],['hide','Deri sahası',33,39],['wool','Yün çiftliği',65,39],['grain','Buğday tarlası',90,39],
   ['resin','Reçine ormanı',10,63],['fish','Balıkçılık',30,64],['olive_oil','Zeytinlik',61,65],['iron_ore','Demir ocağı',90,64],
   ['beer','Üzüm bağı',10,88],['egg','Yumurta çiftliği',48,88],['apple','Elma bahçesi',82,88]
  ].map(([sku,name,x,y])=>Object.freeze({sku,name,x,y}));
