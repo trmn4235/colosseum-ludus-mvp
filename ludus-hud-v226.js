@@ -55,6 +55,7 @@
   const rankings=link('imperialRankings','rankings','Sıralamalar','siralamalar.html?v=revision211&from=ludus.html');
   const button=(id,key,label,action)=>{const b=named(el('button','hud-action hud-indicator'),label);b.id=id;b.dataset.key=key;b.type='button';b.onclick=action;b.append(art(key));return b;};
   const staff=button('specialStaffHud','staff','Özel çalışanlar',ctx.openSpecialStaff);
+  const unreadStaff=el('span','hud-staff-unread');unreadStaff.hidden=true;unreadStaff.setAttribute('aria-hidden','true');staff.append(unreadStaff);
   staff.setAttribute('aria-haspopup','dialog');staff.setAttribute('aria-controls','specialStaffModal');
   const nav=el('nav','hud-navigation');nav.setAttribute('aria-label','Dünya ve Ludus seviyesi');nav.append(map,level,staff,rankings);units.push(map,level,staff,rankings);
   const crew=el('div','hud-crew');crew.setAttribute('role','group');crew.setAttribute('aria-label','Boş ve toplam birimler');
@@ -132,6 +133,11 @@
   function setCount(node,textNode,free,total,label){const f=integer(free),t=integer(total),safe=f===null||t===null?null:Math.min(f,t),text=(safe??'—')+'/'+(t??'—');
    if(textNode.textContent!==text){textNode.textContent=text;schedule();}named(node,safe===null?label+' bilgileri yükleniyor':safe+' boş / '+t+' toplam '+label);node.dataset.free=safe??'';node.dataset.total=t??'';}
   return {
+   setStaff:rows=>{
+    const unread=(rows||[]).reduce((count,person)=>count+(integer(person.readable)||0),0);
+    unreadStaff.hidden=unread===0;unreadStaff.textContent=unread>999?'999+':String(unread);
+    named(staff,unread?'Özel çalışanlar · '+unread+' papirüs okunabilir':'Özel çalışanlar');
+   },
    setWallet:values=>values.forEach((v,i)=>{if(i<money.length)setOne(i,v);}),setGold:value=>setOne(0,value),
    setLevel:data=>{const n=integer(data?.level);centerLevel(n??'—');named(level,n===null?'Ludus seviyesi yükleniyor':'Ludus seviyesi '+n+' · '+(ctx.levelDescription?.(data)||'Seviye ödüllerini aç'));},
    setDefense:count=>{caravan.classList.toggle('worker-rescue-ready',count>0);caravan.dataset.attacks=String(count);named(caravan,count>0?count+' kervan saldırı altında · Kurtarmaya katıl':caravanCount.textContent+' işçi · İşçilerimi aç');},

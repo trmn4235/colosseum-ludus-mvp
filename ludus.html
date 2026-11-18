@@ -1272,7 +1272,8 @@ const stoneWallet=await accountClient.from('ludus_stones').select('family,quanti
  return playerAccount;
 })();
 accountReady.catch(error=>{$('loading').hidden=false;$('loading').textContent=error.message;window.RomeTravel?.fail(error.message);$('residentStatus').hidden=true;});
-let specialPause=false;const specialStaff=LudusSpecialStaff.create({T,client:accountClient,ready:accountReady,onOpen(){specialPause=paused;clear();paused=true;},onClose(){clear();paused=specialPause;}});
+let specialPause=false;const specialStaff=LudusSpecialStaff.create({T,client:accountClient,ready:accountReady,onState:rows=>ludusHud.setStaff(rows),onOpen(){specialPause=paused;clear();paused=true;},onClose(){clear();paused=specialPause;}});
+accountReady.then(()=>{if(!specialStaff.openFromLink())specialStaff.refresh();}).catch(()=>{});
 const staffStations=LudusSpecialStaff.stations({...worldActionContext,T,ready:accountReady,scene,roomScene,colliders,roomColliders,room:()=>activeRoom?.kind||null,exploring:()=>exploring,open:id=>specialStaff.open(id),invalidate:()=>{renderer.shadowMap.needsUpdate=true;}});
 let workersPreviousPause=false;
 const workerPanel=LudusWorkersV226.create({client:accountClient,ready:accountReady,onSpecial:()=>specialStaff.open(),onRoster:rows=>ludusHud.setWorkers(rows),onDefense:count=>ludusHud.setDefense(count),onOpen(){workersPreviousPause=paused;clear();paused=true;},onClose(){clear();paused=workersPreviousPause;}});

@@ -10,6 +10,7 @@ module.exports = async function testLearning(db, migration) {
     create function ludus_worker_private.resolve_defense_v230(uuid,uuid,boolean,boolean) returns void language sql as
       $$update ludus_worker_private.defenses_v230 set success=$3,status='resolved' where id=$2 and owner_id=$1$$;`);
   await db.exec(migration('special_staff_learning_v286'));
+  await db.exec(migration('special_staff_notices_v286'));
   const query = async (sql, args=[]) => (await db.query(sql,args)).rows;
   const a=randomUUID(), b=randomUUID();
   await query('insert into ludus_accounts(user_id) values($1),($2)',[a,b]);
@@ -33,25 +34,26 @@ module.exports = async function testLearning(db, migration) {
   await owner(a);await db.exec('set role authenticated');
   let s=await state();
   assert.deepEqual([guard(s).collected,guard(s).read,guard(s).overall,guard(s).unique_collected,guard(s).unique_read],[3,0,0,1,0]);
-  assert.deepEqual(guard(s).bonuses,[]);
+  assert.deepEqual(guard(s).bonuses,[]);assert.equal(guard(s).readable,4);
+  assert.equal(s.staff.find(r=>r.id==='cook').readable,0,'unconfigured inventory is excluded');
   const discovery=s.papyri.find(p=>p.unique_id);
   assert.equal(discovery.effects[0].percent,.3);assert.ok(discovery.finder&&discovery.found_at);
   await assert.rejects(()=>read(2),/çantanda yok/);
   await assert.rejects(()=>read(1,randomUUID(),'cook'),/açık değil/);
   await assert.rejects(()=>unique(randomUUID(),'trainer'),/çantanda yok/);
   const standardRequest=randomUUID(),uniqueRequest=randomUUID();
-  s=await read(401,standardRequest);assert.equal(guard(s).overall,.2);assert.equal(guard(s).bonuses[0].percent,.03);
+  s=await read(401,standardRequest);assert.equal(guard(s).overall,.2);assert.equal(guard(s).bonuses[0].percent,.03);assert.equal(guard(s).readable,3);
   assert.equal((await read(401,standardRequest)).reading.replayed,true);
   await assert.rejects(()=>unique(standardRequest),/farklı/);
   await assert.rejects(()=>read(401),/zaten okundu/);
   s=await unique(uniqueRequest);
-  assert.equal(guard(s).overall,.2);assert.equal(guard(s).unique_read,1);assert.equal(guard(s).bonuses[0].percent,.33);
+  assert.equal(guard(s).overall,.2);assert.equal(guard(s).unique_read,1);assert.equal(guard(s).bonuses[0].percent,.33);assert.equal(guard(s).readable,2);
   assert.equal((await unique(uniqueRequest)).reading.replayed,true);
   await assert.rejects(()=>read(1,uniqueRequest),/farklı/);
   await assert.rejects(()=>unique(),/zaten okundu/);
   assert.equal(s.papyri.find(p=>p.unique_id).found_at,discovery.found_at);
   await unique(uniqueRequest);await read(1);s=await read(491);
-  assert.equal(guard(s).bonuses[0].percent,.44);assert.equal(guard(s).overall,.6);
+  assert.equal(guard(s).bonuses[0].percent,.44);assert.equal(guard(s).readable,0);assert.equal(guard(s).overall,.6);
   await owner(b);assert.equal(guard(await state()).bonuses.length,0);await assert.rejects(()=>unique(),/çantanda yok/);
   await assert.rejects(()=>query('select * from ludus_staff_private.learned_effects_v286'),/permission denied/);
   await assert.rejects(()=>query('update ludus_staff_private.unique_effects_v286 set percent=100'),/permission denied/);

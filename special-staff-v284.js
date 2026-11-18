@@ -21,7 +21,7 @@
    const card=button('',()=>open(person.id),'staff-directory-person');card.dataset.role=person.id;
    card.style.setProperty('--staff-cloth',person.cloth);
    card.setAttribute('aria-label',person.title+' '+person.name+' profilini aç');
-   card.append(el('strong','',person.title),el('span','',person.name),el('small','',person.place));directory.append(card);
+   card.append(el('strong','',person.title),el('span','',person.name),el('small','',person.place),el('span','staff-directory-count','Papirüsler yükleniyor…'));directory.append(card);
   }
   modal.insertBefore(directory,footer);
   let viewRenderer=null,viewScene=null,viewCamera=null,viewModel=null,viewId=null,viewSerial=0,viewFailed=false;
@@ -53,10 +53,26 @@
    b.disabled=busy||loading||!!pending||!!p.read_at||!p.effects.length;
    return b;
   }
+  function previewOf(p){
+   if(p.read_at)return effectOf(p);
+   const learned=data?.staff?.find(s=>s.id===role)?.bonuses||[];
+   return p.effects.map(effect=>{
+    const before=Number(learned.find(b=>b.key===effect.key)?.percent)||0;
+    return effect.label+' +%'+fmt(before)+' → +%'+fmt(before+Number(effect.percent));
+   }).join(' · ');
+  }
+  function updateDirectory(){
+   for(const card of directory.children){
+    const person=data?.staff?.find(s=>s.id===card.dataset.role),count=card.querySelector('.staff-directory-count');
+    const unread=Number(person?.readable)||0;
+    count.textContent=person?(unread?fmt(unread)+' papirüs okunabilir':fmt(person.collected)+' / '+fmt(person.total)+' papirüs'):'Papirüsler yükleniyor…';
+    card.dataset.readable=String(unread>0);
+   }
+  }
   function showDetail(p){
    const name=el('h2','',p.title);name.id='staffDetailTitle';
    const rarity=el('p','staff-detail-type',rarityOf(p)+(p.unique_id?' · Sunucuda tek nüsha':' · '+p.lesson+' / 500'));
-   const effect=el('p','',effectOf(p)||'Bu papirüsün pasif bonusu henüz belirlenmedi.');
+   const effect=el('p','staff-bonus-preview',previewOf(p)||'Bu papirüsün pasif bonusu henüz belirlenmedi.');
    detail.replaceChildren(name,rarity,effect);
    if(p.finder)detail.append(el('p','',discoveryOf(p)));
    if(p.effects.length)detail.append(el('p','',p.unique_id?'Okunduğunda yalnızca pasif bonus kazandırır.':'Okunduğunda +0,2 overall kazandırır.'));
@@ -70,15 +86,15 @@
    const name=button(p.title,()=>showDetail(p),'staff-paper-title');
    name.setAttribute('aria-label',p.title+' ayrıntıları');heading.append(name);
    const small=el('small','',rarityOf(p)+(p.unique_id?' · Tek nüsha':' · '+p.lesson));
-   card.title=[rarityOf(p),effectOf(p),discoveryOf(p)].filter(Boolean).join(' · ');
-   const effect=el('p','staff-paper-effect',rarityOf(p)+' · '+(effectOf(p)||discoveryOf(p)||'Bonus içeriği hazırlanıyor.'));
+   card.title=[rarityOf(p),previewOf(p),discoveryOf(p)].filter(Boolean).join(' · ');
+   const effect=el('p','staff-paper-effect',rarityOf(p)+' · '+(previewOf(p)||discoveryOf(p)||'Bonus içeriği hazırlanıyor.'));
    card.append(small,heading,effect,readButton(p));return card;
   }
   function render(){
    if(!opened)return;
    modal.dataset.directory=String(inDirectory);
    back.setAttribute('aria-label',fromDirectory&&!inDirectory?'Çalışan listesine dön':'Özel çalışanları kapat');
-   if(inDirectory){modal.setAttribute('aria-busy','false');return;}
+   if(inDirectory){updateDirectory();modal.setAttribute('aria-busy',String(loading));return;}
    const d=defs.find(x=>x.id===role),s=data?.staff?.find(x=>x.id===role);nav.replaceChildren();info.replaceChildren();content.replaceChildren();modal.setAttribute('aria-busy',String(loading||busy));
    for(const r of defs){const b=button(r.title,()=>{if(busy||loading||role===r.id)return;role=r.id;page=0;data=null;message('');render();refresh();},'staff-tab');b.setAttribute('aria-pressed',String(role===r.id));b.disabled=busy;nav.append(b);}
    info.append(el('small','staff-profession',d.profession),el('h2','',s?.name||d.name),el('span','staff-place',d.place));
@@ -106,7 +122,7 @@
        (Number.isInteger(p.lesson)||typeof p.unique_id==='string'))pending=p;
    }catch{}
   }
-  function adopt(result){if(result?.user_id!==owner)throw Error('Çalışan hesabı doğrulanamadı.');data=result;role=result.role;page=result.page;root.dispatchEvent(new CustomEvent('ludus-staff-change',{detail:{staff:data.staff}}));}
+  function adopt(result){if(result?.user_id!==owner)throw Error('Çalışan hesabı doğrulanamadı.');data=result;role=result.role;page=result.page;ctx.onState?.(data.staff);root.dispatchEvent(new CustomEvent('ludus-staff-change',{detail:{staff:data.staff}}));}
   async function refresh(){if(busy||loading)return;const request=++serial;loading=true;retry.hidden=true;render();try{await identify();const r=await ctx.client.rpc('ludus_special_staff',{p_role:role,p_page:page});if(request!==serial)return;if(r.error)throw r.error;adopt(r.data);if(pending){message('Önceki okumanın sonucu bekliyor. Yeniden dene ile kontrol et.');retry.hidden=false;}}
    catch(e){if(request===serial){message(e.message||'Çalışan bilgileri alınamadı.',true);retry.hidden=false;}}
    finally{if(request===serial){loading=false;render();}}
@@ -134,18 +150,26 @@
    if(busy)return;
    const previous=role,returning=opened;
    enterModal();fromDirectory=true;inDirectory=true;serial++;loading=false;viewSerial++;viewId=null;
-   message('');render();
+   message('');render();refresh();
    (returning?directory.querySelector('[data-role="'+previous+'"]'):directory.firstElementChild)?.focus({preventScroll:true});
   }
   function open(id='trainer'){
-   if(!defs.some(d=>d.id===id)||busy||loading)return;
+   if(!defs.some(d=>d.id===id)||busy)return;
+   serial++;loading=false;
    if(!opened)fromDirectory=false;
    enterModal();inDirectory=false;role=id;page=0;data=null;message('');render();back.focus({preventScroll:true});refresh();
+  }
+  function openFromLink(){
+   const url=new URL(root.location.href),id=url.searchParams.get('staff');
+   if(!defs.some(d=>d.id===id))return false;
+   open(id);fromDirectory=true;
+   url.searchParams.delete('staff');root.history.replaceState(null,'',url);
+   return true;
   }
   function goBack(){if(fromDirectory&&!inDirectory)openDirectory();else close();}
   function close(){if(!opened||busy)return;if(detail.open)detail.close();opened=false;serial++;loading=false;viewSerial++;viewId=null;viewModel?.removeFromParent();viewModel=null;viewRenderer?.renderLists.dispose();modal.hidden=true;inDirectory=false;fromDirectory=false;ctx.onClose?.();if(lastFocus?.isConnected)lastFocus.focus({preventScroll:true});}
   modal.addEventListener('pointerdown',e=>e.stopPropagation());modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();goBack();}if(e.key==='Tab'){const list=[...modal.querySelectorAll('button:not(:disabled)')].filter(n=>n.getClientRects().length);if(e.shiftKey&&document.activeElement===list[0]){e.preventDefault();list.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===list.at(-1)){e.preventDefault();list[0]?.focus();}}});
-  return {open,openDirectory,close,refresh,get state(){return data;},get visible(){return opened;}};
+  return {open,openDirectory,openFromLink,close,refresh,get state(){return data;},get visible(){return opened;}};
  }
  function stations(ctx){
   const T=ctx.T,entries=[];let lastRoom=undefined,loaded=false;

@@ -48,3 +48,7 @@
 #duelPapyrusRewards svg{width:100%;height:100%}
 #duelLootStatus{font:12px Arial;margin:6px 0}#duelLootStatus:empty{display:none}
 @media(max-height:360px){.result-reward-detail{font-size:8px;margin-top:1px}#resultRewards.has-papyrus{gap:1px;padding-top:3px}#resultRewards.has-papyrus .result-reward-icon{width:14px;height:14px}#duelLoot{margin:7px 0}#duelPapyrusRewards .result-reward-row{font-size:12px}}
+
+.result-staff-link{display:block;width:fit-content;max-width:100%;margin-top:2px;color:inherit;font:600 11px/1.2 system-ui,sans-serif;text-decoration:underline;text-underline-offset:2px}
+.result-staff-link:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+@media(max-height:360px){.result-staff-link{font-size:9px;margin-top:1px}}

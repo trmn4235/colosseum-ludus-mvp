@@ -14,17 +14,20 @@ module.exports=async function verifyUniqueLearning(page){
         if(args.p_request!==attempts[0].p_request)throw Error('İkinci işlem kimliği oluşturuldu.');
       }
       const state=structuredClone(base),guard=state.staff.find(x=>x.id==='guard');
-      Object.assign(guard,{read:0,overall:0,unique_read:unique.read_at?1:0,bonuses:unique.read_at?unique.effects:[]});
+      Object.assign(guard,{read:0,overall:0,unique_read:unique.read_at?1:0,readable:unique.read_at?0:1,bonuses:unique.read_at?unique.effects:[]});
       state.papyri[0]=unique;return {data:state,error:null};
     };
     window.staffFixtureClient.rpc=rpc;
     await profile.refresh();
   });
+  await page.evaluate(()=>profile.openDirectory());
+  await page.getByText('1 papirüs okunabilir',{exact:true}).waitFor();
+  await page.locator('.staff-directory-person[data-role=guard]').click();
   const card=page.locator('.staff-paper[data-lesson="guard-first"]');
   await card.getByRole('button',{name:'Muhafızın Son Vasiyeti ayrıntıları'}).click();
   const dialog=page.getByRole('dialog',{name:'Muhafızın Son Vasiyeti',exact:true});
   await dialog.waitFor();
-  assert.match(await dialog.innerText(),/Kervan savunması saldırı bonusu \+%0,3/);
+  assert.match(await dialog.innerText(),/Kervan savunması saldırı bonusu \+%0 → \+%0,3/);
   assert.match(await dialog.innerText(),/Ludus Tırman · 18\.11\.2026/);
   assert.ok(await dialog.evaluate(d=>d.scrollWidth<=d.clientWidth+1&&d.scrollHeight<=d.clientHeight+1));
   await dialog.getByRole('button',{name:'Papirüsü okut'}).click();
@@ -40,4 +43,12 @@ module.exports=async function verifyUniqueLearning(page){
   const attempts=await page.evaluate(()=>readAttempts);
   assert.equal(attempts.length,2);assert.equal(attempts[0].p_unique_id,'guard-first');
   assert.equal(attempts[0].p_request,attempts[1].p_request);
+  await page.evaluate(()=>{profile.close();history.replaceState(null,'','?staff=guard&keep=yes');profile.openFromLink();});
+  await page.waitForFunction(()=>profile.state?.role==='guard');
+  assert.equal(await page.evaluate(()=>new URL(location.href).searchParams.get('staff')),null);
+  assert.equal(await page.evaluate(()=>new URL(location.href).searchParams.get('keep')),'yes');
+  await page.getByRole('button',{name:'Çalışan listesine dön'}).click();
+  await page.getByText('500 / 500 papirüs',{exact:true}).first().waitFor();
+  assert.equal(await page.getByText('1 papirüs okunabilir',{exact:true}).count(),0);
+
 };

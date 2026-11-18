@@ -41,10 +41,10 @@ begin
  execute 'set local role authenticated';
  s:=public.ludus_special_staff('guard',0);
  select value into strict profile from jsonb_array_elements(s->'staff') where value->>'id'='guard';
- if (profile->>'collected')::int<>5 or (profile->>'overall')::numeric<>0 or profile->'bonuses'<>'[]' then raise exception 'Receiving granted progress';end if;
+ if (profile->>'collected')::int<>5 or (profile->>'overall')::numeric<>0 or (profile->>'readable')::int<>5 or profile->'bonuses'<>'[]' then raise exception 'Receiving granted progress';end if;
  s:=public.ludus_special_staff_read('guard',401,standard_request);
  select value into strict profile from jsonb_array_elements(s->'staff') where value->>'id'='guard';
- if (profile->>'overall')::numeric<>.2 or (profile#>>'{bonuses,0,percent}')::numeric<>.03 then raise exception 'Standard read';end if;
+ if (profile->>'readable')::int<>4 or (profile->>'overall')::numeric<>.2 or (profile#>>'{bonuses,0,percent}')::numeric<>.03 then raise exception 'Standard read';end if;
  s:=public.ludus_special_staff_read('guard',401,standard_request);
  if s#>>'{reading,replayed}'<>'true' then raise exception 'Standard receipt';end if;
  foreach lesson_id in array array[491,492,493,494] loop perform public.ludus_special_staff_read('guard',lesson_id,gen_random_uuid()); end loop;

@@ -71,3 +71,6 @@ body[data-art-direction][data-roman-screen=ludus] #ludusHud :is(a,button):focus-
 body[data-art-direction][data-roman-screen=ludus] #ludusHud #accountLink::after{content:none!important;display:none!important}
 body[data-art-direction][data-roman-screen=ludus] #ludusHud :is([hidden],#beginnerOpen,#explore){display:none!important}
 }
+
+#ludusHud .hud-staff-unread{position:absolute;right:-4px;top:-3px;z-index:1;min-width:15px;padding:2px 3px;border-radius:9px;background:var(--theme-header,#6a202d);color:var(--theme-header-ink,#fff0ce);border:1px solid var(--theme-border,#c6a568);text-align:center;font:600 clamp(8px,1.2vw,12px)/1 system-ui,sans-serif;pointer-events:none}
+#ludusHud .hud-staff-unread[hidden]{display:none!important}

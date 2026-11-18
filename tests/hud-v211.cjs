@@ -31,6 +31,11 @@ async function run(){
   const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   await page.goto('http://hud.test/ludus.html');await page.evaluate(()=>hudReady);await page.evaluate(()=>document.fonts.ready);
   await page.locator('#specialStaffHud').click();assert.equal(await page.evaluate(()=>hudClicks.staff),1);
+  await page.evaluate(()=>hud.setStaff([{readable:3},{readable:0}]));
+  assert.equal(await page.locator('.hud-staff-unread').innerText(),'3');
+  assert.equal(await page.locator('#specialStaffHud').getAttribute('aria-label'),'Özel çalışanlar · 3 papirüs okunabilir');
+  await page.evaluate(()=>hud.setStaff([{readable:0}]));assert.equal(await page.locator('.hud-staff-unread').isVisible(),false);
+
   await page.locator('#ludusHud img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
   assert.equal(await page.locator('#ludusWorldNav').count(),0);assert.equal(await page.locator('#beginnerOpen').isVisible(),false);
   assert.equal(await page.locator('.hud-divider').count(),2);assert.equal(await page.locator('.hud-flourish').count(),2);

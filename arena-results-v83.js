@@ -2,6 +2,7 @@
 var ArenaBattleResult=(()=>{
  'use strict';
  const rarities={common:'Yaygın',rare:'Nadir',very_rare:'Çok nadir',unique:'Eşsiz'};
+ const staffNames={trainer:'Varro',cook:'Gaius',doctor:'Aulus',smith:'Lucius',guard:'Marcus',groom:'Titus'};
  const kinds={weapon:'Silah',shield:'Kalkan',helmet:'Miğfer',chest:'Göğüslük',gloves:'Kolluk',legs:'Bacaklık'};
  const number=value=>Math.max(0,Number(value)||0).toLocaleString('tr-TR',{maximumFractionDigits:0});
  function rewardRows(reward){
@@ -12,7 +13,7 @@ var ArenaBattleResult=(()=>{
   else if(Number(reward.sapphires)>0)rows.push({label:'Safir',value:number(reward.sapphires),icon:'stone'});
   if(reward.kind)rows.push({label:kinds[reward.kind]||'Eşya',value:'1',icon:'equipment'});
   if(reward.extracted?.length)rows.push({label:'Envantere dönen ekipman',value:number(reward.extracted.length),icon:'inventory'});
-  for(const p of reward.papyri||[]){if(!rarities[p.rarity]||!p.title)continue;rows.push({label:String(p.title),value:'1',icon:'papyrus',rarity:p.rarity,detail:rarities[p.rarity]+' · '+String(p.role_title||'Özel çalışan')+(p.rarity==='unique'?' · Sunucuda tek nüsha':''),discovery:p.finder&&p.found_at?'İlk bulan: '+p.finder+' · '+new Date(p.found_at).toLocaleDateString('tr-TR'):''});}
+  for(const p of reward.papyri||[]){if(!rarities[p.rarity]||!p.title)continue;rows.push({label:String(p.title),value:'1',icon:'papyrus',rarity:p.rarity,staff:Object.hasOwn(staffNames,p.role)?p.role:null,detail:rarities[p.rarity]+' · '+String(p.role_title||'Özel çalışan')+(p.rarity==='unique'?' · Sunucuda tek nüsha':''),discovery:p.finder&&p.found_at?'İlk bulan: '+p.finder+' · '+new Date(p.found_at).toLocaleDateString('tr-TR'):''});}
   return rows;
  }
  function statsRows(combat){
@@ -25,7 +26,14 @@ var ArenaBattleResult=(()=>{
  }
  function rewards(doc,reward,target='resultRewards'){
   const list=doc.getElementById(target);list.replaceChildren();list.classList.toggle('has-papyrus',!!reward.papyri?.length);
-  for(const row of rewardRows(reward)){const line=doc.createElement('div'),icon=doc.createElement('i'),label=doc.createElement('span'),value=doc.createElement('b');line.className='result-reward-row';icon.className='result-reward-icon '+row.icon;icon.innerHTML=glyph(row.icon);label.textContent=row.label;if(row.detail){line.dataset.rarity=row.rarity;const detail=doc.createElement('small');detail.className='result-reward-detail';detail.textContent=row.detail;label.append(detail);line.title=row.discovery||row.detail;}value.textContent=row.value;line.append(icon,label,value);list.append(line);}
+  for(const row of rewardRows(reward)){const line=doc.createElement('div'),icon=doc.createElement('i'),label=doc.createElement('span'),value=doc.createElement('b');line.className='result-reward-row';icon.className='result-reward-icon '+row.icon;icon.innerHTML=glyph(row.icon);label.textContent=row.label;if(row.detail){line.dataset.rarity=row.rarity;const detail=doc.createElement('small');detail.className='result-reward-detail';detail.textContent=row.detail;label.append(detail);line.title=row.discovery||row.detail;
+   if(row.staff){
+    const profile=doc.createElement('a');profile.className='result-staff-link';
+    profile.href='ludus.html?staff='+encodeURIComponent(row.staff)+'&v=revision286';
+    profile.textContent=staffNames[row.staff]+' profiline git ›';
+    label.append(profile);
+   }
+  }value.textContent=row.value;line.append(icon,label,value);list.append(line);}
   if(!list.childElementCount){const p=doc.createElement('p');p.className='result-empty';p.textContent=reward.survival?'Rekorun kaydedildi. Ekipmanın korunur.':'Bu savaşta ödül kazanılmadı.';list.append(p);}
  }
  function show(doc,combat){
