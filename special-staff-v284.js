@@ -49,9 +49,8 @@
     if(viewModel){viewModel.removeFromParent();viewModel=null;if(!sharedRenderer)viewRenderer.renderLists.dispose();}resize();
     const person=await root.LudusSpecialPeople.model(id);if(request!==viewSerial||!opened)return;
     viewModel=person;person.rotation.y=.15;viewScene.add(person);resize();
-    // Present the new canvas before declaring it ready. Safari can otherwise
-    // retain the previous worker's composited portrait after a tab switch.
-    await new Promise(resolve=>requestAnimationFrame(()=>{if(request===viewSerial&&opened)resize();requestAnimationFrame(resolve);}));
+    // Pixels have already been copied synchronously. Do not wait for a display
+    // tick: WebKit can suspend animation callbacks behind a full-screen panel.
     if(request===viewSerial&&opened){canvas.dataset.staffRole=id;artStatus.hidden=true;}
    }catch(e){if(request===viewSerial){viewFailed=true;artStatus.textContent='3D görünüm açılamadı.';}}
   }
