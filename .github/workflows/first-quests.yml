@@ -89,6 +89,8 @@ jobs:
       - name: Papyrus drops, match receipts and unique supply
         run: node tests/special-staff-loot-v285.cjs
       - name: Papyrus reward report and profile layouts
+        env:
+          LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/loot-v285
         run: node tests/special-staff-loot-ui-v285.cjs
       - name: Papyrus learning and all-worker kitchen accounting
         run: node tests/special-staff-v284.cjs

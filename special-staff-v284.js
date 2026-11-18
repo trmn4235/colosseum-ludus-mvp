@@ -65,7 +65,7 @@
    for(const card of directory.children){
     const person=data?.staff?.find(s=>s.id===card.dataset.role),count=card.querySelector('.staff-directory-count');
     const unread=Number(person?.readable)||0;
-    count.textContent=person?(unread?fmt(unread)+' papirüs okunabilir':fmt(person.collected)+' / '+fmt(person.total)+' papirüs'):'Papirüsler yükleniyor…';
+    count.textContent=person?(unread?fmt(unread)+' papirüs okunabilir':fmt(person.read)+' / '+fmt(person.total)+' okundu'):'Papirüsler yükleniyor…';
     card.dataset.readable=String(unread>0);
    }
   }

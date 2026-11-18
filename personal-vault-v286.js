@@ -14,6 +14,7 @@
   const box=el('span','personal-vault-art');
   if(row.type==='equipment'){box.innerHTML=root.LudusSupplyIcons?.svg(row)||'';return box;}
   if(row.type==='stone'&&root.LudusGems){box.innerHTML=root.LudusGems.svg(row.family,row.family==='diamond'?0:row.stone_id);return box;}
+  if(row.type==='papyrus'){box.innerHTML='<svg viewBox="470 520 730 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><image href="assets/art-v136/imperial-orders.webp" width="1200" height="800"/></svg>';return box;}
   const img=el('img');img.alt='';img.decoding='async';
   img.src=row.type==='money'?'assets/hud-v202/coin.webp':row.type==='papyrus'?'assets/art-v136/imperial-orders.webp':root.LudusProduction?.photo(row.sku)||'assets/resource-icons-v95/'+row.sku+'.webp';
   img.onerror=()=>{img.remove();box.append(el('span','personal-vault-art-fallback',nameOf(row)));};box.append(img);return box;
@@ -51,8 +52,8 @@
   async function refresh(){
    const request=++serial;loading=true;retry.hidden=true;render();
    try{owner=(await ctx.ready).user_id;const r=await ctx.client.rpc('ludus_personal_vault',{p_category:category,p_page:page,p_role:role});if(request!==serial)return;if(r.error)throw r.error;if(r.data?.user_id!==owner)throw Error('Kasa hesabı doğrulanamadı.');state=r.data;page=state.page;
-    if(ctx.staff.pendingRead){message('Önceki okuma bekliyor. Sonucu yeniden dene ile kontrol et.');retry.hidden=false;}
-   }catch(e){if(request===serial){state=null;message(e.message||'Kasa alınamadı.',true);retry.hidden=false;}}
+    if(ctx.staff.pendingRead){message('Önceki okuma bekliyor. Sonucu yeniden dene ile kontrol et.');retry.hidden=false;}return true;
+   }catch(e){if(request===serial){state=null;message(e.message||'Kasa alınamadı.',true);retry.hidden=false;}return false;}
    finally{if(request===serial){loading=false;render();}}
   }
   async function open(tab='all',worker=null){
@@ -63,13 +64,13 @@
   function close(){if(modal.hidden||busy)return;if(detail.open)detail.close();serial++;loading=false;modal.hidden=true;ctx.onClose?.();if(previousFocus?.isConnected)previousFocus.focus({preventScroll:true});}
   async function learn(row){
    if(busy||loading)return;busy=true;if(detail.open)detail.close();message('Papirüs okunuyor…');retry.hidden=true;render();
-   try{await ctx.staff.readPaper(row);await refresh();message('Papirüs öğrenildi; çalışanın okunanlar listesine geçti.');}
+   try{await ctx.staff.readPaper(row);const fresh=await refresh();message(fresh?'Papirüs öğrenildi; çalışanın okunanlar listesine geçti.':'Papirüs öğrenildi; kasa yenilenemedi. Yeniden dene.',!fresh);}
    catch(e){message(e.message||'Sonuç alınamadı. Yeniden dene.',true);retry.hidden=false;}
    finally{busy=false;render();}
   }
   async function retryAction(){
    if(busy)return;if(!ctx.staff.pendingRead)return refresh();busy=true;retry.hidden=true;render();
-   try{await ctx.staff.retryRead();await refresh();message('Okuma doğrulandı; papirüs çalışanın arşivinde.');}catch(e){message(e.message||'Okuma doğrulanamadı.',true);retry.hidden=false;}finally{busy=false;render();}
+   try{await ctx.staff.retryRead();const fresh=await refresh();message(fresh?'Okuma doğrulandı; papirüs çalışanın arşivinde.':'Okuma doğrulandı; kasa yenilenemedi. Yeniden dene.',!fresh);}catch(e){message(e.message||'Okuma doğrulanamadı.',true);retry.hidden=false;}finally{busy=false;render();}
   }
   function showDetail(row,reset=true){
    selected=row;if(reset)detailPage=0;detail.replaceChildren();const heading=el('h2','',nameOf(row));heading.id='vaultItemTitle';detail.append(heading);
@@ -81,8 +82,9 @@
     if(row.effects?.length)text.append(el('p','',row.unique_id?'Öğrenildiğinde pasif bonus kazanılır.':'Öğrenildiğinde +0,2 overall kazanılır.'));
    }
    if(row.type==='equipment'){
-    const entries=Object.entries(row.base_stats||{}).map(([k,v])=>[stats[k]||k,fmt(v)]);
-    for(const [field,label]of [['sapphires','Safir'],['emeralds','Zümrüt'],['rubies','Yakut']])for(const s of row[field]||[])entries.push([label+' '+roman(s.id||s.stone_id||s.stone||s),s.percent!=null?'%'+fmt(s.percent):'Takılı']);
+    const natural=row.natural_stats&&Object.keys(row.natural_stats).length?row.natural_stats:row.base_stats;
+    const entries=Object.entries(natural||{}).map(([k,v])=>['Temel '+(stats[k]||k),fmt(v)]);
+    for(const [field,label]of [['sapphires','Safir'],['emeralds','Zümrüt'],['rubies','Yakut']])for(const s of row[field]||[])entries.push([label+' '+roman(s.id||s.stone_id||s.stone||s),(s.value??s.percent)!=null?'%'+fmt(s.value??s.percent):'Takılı']);
     const dl=el('dl','personal-vault-stats');for(const [label,value]of entries.slice(detailPage*4,detailPage*4+4))dl.append(el('dt','',label),el('dd','',value));text.append(dl);
     if(entries.length>4){const controls=el('div','personal-vault-detail-pages'),prev=button('‹',()=>{detailPage--;showDetail(row,false);}),next=button('›',()=>{detailPage++;showDetail(row,false);});prev.setAttribute('aria-label','Önceki eşya özellikleri');next.setAttribute('aria-label','Sonraki eşya özellikleri');prev.disabled=detailPage===0;next.disabled=(detailPage+1)*4>=entries.length;controls.append(prev,el('span','',(detailPage+1)+' / '+Math.ceil(entries.length/4)),next);text.append(controls);}
    }

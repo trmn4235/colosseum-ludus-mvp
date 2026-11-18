@@ -8,6 +8,7 @@ module.exports=async(db,migration)=>{
   create table ludus_food_catalog(sku text primary key,name text,retired boolean);
   create table ludus_food_stock(owner_id uuid,sku text,quantity int);`);
  await db.exec(migration('personal_vault_v286'));
+ await db.exec(migration('personal_vault_api_v286'));
  const q=async(sql,args=[])=>(await db.query(sql,args)).rows,a=randomUUID(),b=randomUUID(),g=randomUUID(),req=randomUUID();
  await q('insert into ludus_accounts(user_id,gold,diamonds)values($1,345678,9),($2,100,2)',[a,b]);
  await q("insert into ludus_gladiators(id,owner_id,name)values($1,$2,'Marcus')",[g,a]);

@@ -33,7 +33,7 @@ module.exports=async function verifyChestLearning(page,screenshot){
  assert.match(await dialog.locator('.vault-bonus-preview').innerText(),/\+%0,12 → \+%0,42/);
  assert.match(await dialog.innerText(),/Ludus Tırman · 18\.11\.2026/);
  assert.ok(await dialog.evaluate(d=>d.scrollWidth<=d.clientWidth+1&&d.scrollHeight<=d.clientHeight+1));
- await dialog.getByRole('button',{name:'Papirüsü okut'}).click();await page.getByText('Bağlantı kesildi.',{exact:true}).waitFor();
+ await dialog.getByRole('button',{name:'Papirüsü okut'}).click();await page.locator('#personalVaultModal').getByText('Bağlantı kesildi.',{exact:true}).waitFor();
  assert.equal(await page.locator('.personal-vault-card[data-key="guard-first"]').count(),1,'no optimistic removal before acknowledgement');
  await page.getByRole('button',{name:'Kasayı kapat'}).click();await page.evaluate(()=>vault.open('papyrus'));
  await page.getByRole('button',{name:'Yeniden dene'}).click();await page.getByText('Okuma doğrulandı; papirüs çalışanın arşivinde.').waitFor();
