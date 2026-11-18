@@ -29,5 +29,5 @@ test('long weapons turn in the art layer while enhancement header remains separa
 test('clan inline scripts parse and preserve the owner-checked caravan endpoint',()=>{
  const s=fs.readFileSync('klan.html','utf8');for(const m of s.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g))if(m[1].trim())new vm.Script(m[1]);
  assert.ok(s.includes("r.data?.user_id!==userId||r.data?.clan_id!==clanId"));
- assert.ok(s.includes('clan-dashboard-v276.js?v=revision281'));
+ assert.ok(s.includes('clan-dashboard-v276.js?v=revision287'));
 });
