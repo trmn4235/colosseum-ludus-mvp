@@ -2,7 +2,7 @@
    aggregate records and are never attributed to an individual without evidence. */
 (function(root){
  'use strict';
- const labels={iron_ore:'Demir cevheri',copper_ore:'Bakır cevheri',tin_ore:'Kalay cevheri',lead_ore:'Kurşun cevheri',wood:'Odun',flax:'Ham keten',wool:'Yün',hide:'Ham deri',resin:'Reçine',grain:'Tahıl',apple:'Elma',fish:'Balık',meat:'Et',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı',fish:'Balık',meat:'Et'};
+ const labels={iron_ore:'Demir cevheri',copper_ore:'Bakır cevheri',tin_ore:'Kalay cevheri',lead_ore:'Kurşun cevheri',wood:'Odun',flax:'Ham keten',wool:'Yün',hide:'Ham deri',resin:'Reçine',grain:'Buğday',apple:'Elma',fish:'Balık',meat:'Et',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı',fish:'Balık',meat:'Et'};
  const fmt=n=>new Intl.NumberFormat('tr-TR').format(Number(n)||0);
  const elt=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
  function create(ctx){

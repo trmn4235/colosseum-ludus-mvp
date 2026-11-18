@@ -1,7 +1,7 @@
 /* One photographic surface for settlement; rewards appear only after verification. */
 (()=>{
  'use strict';
- const names={wood:'odun',flax:'ham keten',hide:'ham deri',wool:'yün',resin:'reçine',iron_ore:'demir cevheri',tin_ore:'kalay cevheri',copper_ore:'bakır cevheri',lead_ore:'kurşun cevheri',apple:'elma',grain:'tahıl',meat:'et',fish:'balık',egg:'yumurta',beer:'şarap',olive_oil:'zeytinyağı'};
+ const names={wood:'odun',flax:'ham keten',hide:'ham deri',wool:'yün',resin:'reçine',iron_ore:'demir cevheri',tin_ore:'kalay cevheri',copper_ore:'bakır cevheri',lead_ore:'kurşun cevheri',apple:'elma',grain:'buğday',meat:'et',fish:'balık',egg:'yumurta',beer:'şarap',olive_oil:'zeytinyağı'};
  // Start fetching and decoding during battle, rather than on the first result frame.
  const image=new Image();
  image.className='caravan-victory-art';image.alt='';image.decoding='async';image.fetchPriority='low';

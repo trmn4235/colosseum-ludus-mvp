@@ -35,7 +35,7 @@ alter table ludus_supply_private.resources add column if not exists stage text n
 update ludus_supply_private.resources set sort_order=sort_order+10000;
 insert into ludus_supply_private.resources(sku,name,food,sort_order,stage)values
 ${c.resources.map((r,i)=>` (${quote(r.sku)},${quote(r.name)},false,${i+1},${quote(r.stage)})`).join(',\n')},
-${[['grain','Tahıl'],['apple','Elma'],['meat','Et'],['fish','Balık'],['egg','Yumurta'],['beer','Şarap'],['olive_oil','Zeytinyağı']].map(([sku,name],i)=>` (${quote(sku)},${quote(name)},true,${101+i},'food')`).join(',\n')}
+${[['grain','Buğday'],['apple','Elma'],['meat','Et'],['fish','Balık'],['egg','Yumurta'],['beer','Şarap'],['olive_oil','Zeytinyağı']].map(([sku,name],i)=>` (${quote(sku)},${quote(name)},true,${101+i},'food')`).join(',\n')}
 on conflict(sku)do update set name=excluded.name,food=excluded.food,sort_order=excluded.sort_order,stage=excluded.stage;
 
 create or replace function ludus_supply_private.valid_ingredients_v118(p jsonb)
