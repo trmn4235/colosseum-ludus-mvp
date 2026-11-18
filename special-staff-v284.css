@@ -39,3 +39,11 @@ body[data-roman-screen] #specialStaffModal .staff-header h1{font-family:Georgia,
 .staff-directory-person[data-readable=true] .staff-directory-count{color:var(--theme-text,#382126);text-decoration:underline;text-underline-offset:3px}
 
 @media(max-height:360px){.staff-detail{padding:10px 13px;font-size:12px}.staff-detail h2{font-size:17px}.staff-detail-actions button{min-height:30px}.staff-detail p{margin:.4em 0}}
+
+.special-staff .staff-collection{width:100%;padding:6px 0;border:0;border-bottom:1px dotted var(--theme-accent,#aa986a);border-radius:0;color:inherit;background:transparent;text-align:left;gap:8px}
+.staff-collection strong{white-space:nowrap}.staff-collection span{font-size:11px}
+.special-staff .staff-unique-count{border:0;background:transparent;color:inherit;font:inherit;padding:0;text-decoration:underline dotted;text-underline-offset:3px}
+.staff-archive-intro{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;flex:1;min-height:0;text-align:center}
+.staff-archive-intro p{margin:0;max-width:38em}.staff-archive-intro button{padding:7px 16px;border:1px solid var(--theme-border,#c7b994);border-radius:4px;background:transparent;color:inherit}
+.staff-learned{font-size:10px;opacity:.7;margin-top:auto}.staff-paper-effect{white-space:nowrap;display:block;text-overflow:ellipsis}
+@media(max-height:500px){.special-staff .staff-collection{padding:3px 0}.staff-archive-intro{gap:7px}.staff-archive-intro button{padding:5px 12px}.staff-archive-intro p{font-size:11px}}

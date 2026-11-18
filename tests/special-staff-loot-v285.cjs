@@ -73,4 +73,5 @@ const root=path.resolve(__dirname,'..'),migration=name=>fs.readFileSync(path.joi
  const rows=require('../arena-results-v83.js').rewardRows({gold:100,papyri:[{rarity:'unique',title:'Eşsiz belge',role_title:'Aşçı',finder:'Ludus',found_at:'2026-11-18T00:00:00Z'}]});assert.equal(rows.length,2);assert.equal(rows[1].icon,'papyrus');assert.match(rows[1].detail,/Eşsiz.*Aşçı.*tek nüsha/);assert.match(rows[1].discovery,/İlk bulan/);
  console.log('PASS V285: exact rarity distribution, 6×500 catalogue, unchanged gold/stone/equipment settlement, server receipt replay/no-drop replay, unconfigured reading blocked, owner isolation, bot/forfeit/time exclusions, ranked winners, global one-copy discovery survives consumption and account deletion.');
  await require('./special-staff-learning-v286.cjs')(db,migration);
+ await require('./personal-vault-v286.cjs')(db,migration);
  }finally{await db.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
