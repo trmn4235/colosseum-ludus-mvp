@@ -44,9 +44,10 @@
   const observer=new ResizeObserver(resize);observer.observe(portrait);
   function releaseView(){
    viewSerial++;viewId=null;viewModel?.removeFromParent();viewModel=null;
-   if(!viewRenderer)return;
-   viewRenderer.dispose();viewRenderer.forceContextLoss();viewRenderer=null;viewScene=null;viewCamera=null;
-   const next=el('canvas');next.setAttribute('aria-label','Çalışanın üç boyutlu görünümü');canvas.replaceWith(next);canvas=next;
+   // Reuse this one context across openings. Losing/recreating it while the
+   // courtyard owns another context can stall Safari on the next worker.
+   // The preview does no drawing while closed; cached models remain reusable.
+   viewRenderer?.renderLists.dispose();delete canvas.dataset.staffRole;
   }
   function meter(label,value,max){const track=el('div','staff-track'),fill=el('span');track.setAttribute('role','meter');track.setAttribute('aria-label',label);track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax',String(max));track.setAttribute('aria-valuenow',String(value));fill.style.width=Math.min(100,value/max*100)+'%';track.append(fill);return track;}
   const detail=el('dialog','staff-detail');

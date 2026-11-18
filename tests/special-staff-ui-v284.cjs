@@ -12,8 +12,9 @@ function checkpoint(name){
 }
 (async()=>{
  fs.mkdirSync(out,{recursive:true});const safari=!!process.env.LUDUS_WEBKIT_TEST,browser=await(safari?webkit:chromium).launch(safari?{headless:true}:{headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ let page;
  try{
- let page;const errors=[];
+ const errors=[];
  async function activate(target){
   if(!safari)return target.click();await page.bringToFront();await target.waitFor({state:'visible'});assert.equal(await target.isEnabled(),true);let point,prior,stable=false;
   for(let attempt=0;attempt<50;attempt++){let timer;try{point=await Promise.race([target.evaluate(e=>{const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2,hit=document.elementFromPoint(x,y);return{x,y,width:r.width,height:r.height,hit:e.contains(hit),onScreen:x>=0&&y>=0&&x<innerWidth&&y<innerHeight,obstruction:hit?.tagName+'#'+hit?.id+'.'+hit?.className};}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Staff touch hit-test did not respond within 5 seconds')),5000);})]);}finally{clearTimeout(timer);}if(point.hit&&point.onScreen&&prior?.x===point.x&&prior?.y===point.y&&prior?.width===point.width&&prior?.height===point.height){stable=true;break;}prior=point;await page.waitForTimeout(100);}
@@ -71,5 +72,5 @@ function checkpoint(name){
  // Open each viewport separately; repeated resizing of the live courtyard can stall software WebGL.
  for(const [width,height]of [[1280,588],[568,320]]){checkpoint('viewport '+width);await page.close();await openViewport(width,height);await page.evaluate(()=>LudusPreview.specialStaff.open('guard'));await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});await checkLayout(width,height);}
  assert.deepEqual(layoutErrors,[]);assert.deepEqual(errors,[]);console.log(JSON.stringify({pass:true,layoutChecks:9,models:6,serverReadRetry:true,percentPrecision:true,kitchenPeople:true,errors}));
- }catch(error){console.error(error);throw error;}finally{checkpoint('close browser');await browser.close();clearTimeout(watchdog);}
+ }catch(error){console.error(error);let timer;try{if(page&&!page.isClosed()){const info=await Promise.race([page.evaluate(()=>({role:window.LudusPreview?.specialStaff?.state?.role,modal:document.querySelector('#specialStaffModal')?.getAttribute('aria-busy'),portrait:document.querySelector('.staff-art-status')?.outerHTML,canvas:document.querySelector('.staff-portrait canvas')?.dataset.staffRole,selected:document.querySelector('.staff-tab[aria-pressed=true]')?.textContent,footer:document.querySelector('.staff-footer')?.textContent})),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('diagnostic timeout')),5000);})]);console.error('Staff failure state',JSON.stringify(info));await page.screenshot({path:out+'/failure.png',timeout:5000});}}catch(e){console.error('Staff failure diagnostics',e.message);}finally{clearTimeout(timer);}throw error;}finally{checkpoint('close browser');await browser.close();clearTimeout(watchdog);}
 })().catch(e=>{console.error(e);process.exitCode=1;});
