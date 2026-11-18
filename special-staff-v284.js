@@ -34,7 +34,11 @@
     if(!viewRenderer){viewRenderer=new T.WebGLRenderer({canvas,alpha:true,antialias:false});viewRenderer.setPixelRatio(Math.min(root.devicePixelRatio||1,1.5));viewRenderer.outputColorSpace=T.SRGBColorSpace;viewRenderer.toneMapping=T.ACESFilmicToneMapping;viewScene=new T.Scene();viewScene.add(new T.HemisphereLight(0xfff5e8,0x4a545d,2.3));const sun=new T.DirectionalLight(0xfff3dc,2.7);sun.position.set(-3,5,4);viewScene.add(sun);viewCamera=new T.PerspectiveCamera(36,1,.03,30);}
     if(viewModel){viewModel.removeFromParent();viewModel=null;viewRenderer.renderLists.dispose();}resize();
     const person=await root.LudusSpecialPeople.model(id);if(request!==viewSerial||!opened)return;
-    viewModel=person;person.rotation.y=.15;viewScene.add(person);artStatus.hidden=true;resize();
+    viewModel=person;person.rotation.y=.15;viewScene.add(person);resize();
+    // Present the new canvas before declaring it ready. Safari can otherwise
+    // retain the previous worker's composited portrait after a tab switch.
+    await new Promise(resolve=>requestAnimationFrame(()=>{if(request===viewSerial&&opened)resize();requestAnimationFrame(resolve);}));
+    if(request===viewSerial&&opened){canvas.dataset.staffRole=id;artStatus.hidden=true;}
    }catch(e){if(request===viewSerial){viewFailed=true;artStatus.textContent='3D görünüm açılamadı.';}}
   }
   const observer=new ResizeObserver(resize);observer.observe(portrait);

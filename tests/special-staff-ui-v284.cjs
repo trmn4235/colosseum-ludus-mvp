@@ -33,7 +33,7 @@ function checkpoint(name){
  for(const [role,name] of [['trainer','Varro'],['cook','Gaius'],['doctor','Aulus'],['smith','Lucius'],['groom','Titus'],['guard','Marcus']]){
   checkpoint('directory '+role);await activate(page.locator('.staff-directory-person[data-role="'+role+'"]'));
   await page.waitForFunction(id=>LudusPreview.specialStaff.state?.role===id&&document.querySelector('.staff-art-status').hidden,role,{timeout:90000});
-  assert.equal(await page.locator('.staff-info h2').innerText(),name);await page.screenshot({path:out+'/profile-'+role+'.png'});
+  assert.equal(await page.locator('.staff-info h2').innerText(),name);assert.equal(await page.locator('.staff-portrait canvas').getAttribute('data-staff-role'),role);await page.screenshot({path:out+'/profile-'+role+'.png'});
   if(role!=='guard')await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));
  }
  await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});
@@ -43,6 +43,8 @@ function checkpoint(name){
  checkpoint('read from personal chest');await checkLayout(874,402);assert.deepEqual(layoutErrors,[]);
  await activate(page.getByRole('button',{name:'Kasadaki papirüsler',exact:true}));
  await page.getByText('26 okunmamış papirüs',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Kasayı kapat'}).waitFor({state:'visible'});
+ const vaultLayout=await page.evaluate(()=>[...document.querySelectorAll('#personalVaultModal,.personal-vault-header,.personal-vault-tabs,.personal-vault-grid,.personal-vault-card,.personal-vault-footer')].filter(e=>{const r=e.getBoundingClientRect();return e.scrollWidth>e.clientWidth+2||e.scrollHeight>e.clientHeight+2||r.left<0||r.top<0||r.right>innerWidth+1||r.bottom>innerHeight+1;}).map(e=>e.className));assert.deepEqual(vaultLayout,[]);
  await page.screenshot({path:out+'/personal-chest.png'});
  await activate(page.locator('.personal-vault-card').first());
  await activate(page.getByRole('button',{name:'Papirüsü okut',exact:true}));
