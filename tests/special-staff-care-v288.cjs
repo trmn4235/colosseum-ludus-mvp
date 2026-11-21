@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
 const Care=require('../special-staff-care-v288.js');
-const seed=fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261121224449_papyrus_catalog_v288.sql'),'utf8');
+const seed=fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261121231322_papyrus_catalog_v288.sql'),'utf8');
 const catalogue=JSON.parse(seed.match(/\$catalog\$([\s\S]*?)\$catalog\$/)[1]).map(r=>({...r,id:r.content_id}));
 const rows=(...ids)=>catalogue.filter(r=>ids.includes(r.id)).map(r=>({...r,content_id:r.id,learned_at:'2026-11-21T00:00:00Z'}));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-10,`${a} != ${b}`);

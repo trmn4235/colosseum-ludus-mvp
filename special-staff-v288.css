@@ -81,7 +81,7 @@
 #specialStaffModal .ss288-paper-name>*{display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
 #specialStaffModal .ss288-paper-name small{font-size:.85em}
 #specialStaffModal .ss288-paper-status{white-space:nowrap;font-size:.85em}
-#specialStaffModal .ss288-paper-symbol{font-size:1.5em;line-height:1;transform:rotate(-55deg);text-align:center}
+#specialStaffModal .ss288-paper-symbol{display:block;width:18px;height:20px}
 #specialStaffModal .ss288-reading{border-left:1px solid var(--theme-border,#c5b179);padding:10px 0 4px 28px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 #specialStaffModal .ss288-reading-top{display:flex;align-items:center;gap:15px;min-height:25px;flex:none}
 #specialStaffModal .ss288-reading-top small{font-size:.72em;letter-spacing:.6px;text-transform:uppercase}
@@ -163,7 +163,7 @@
  #specialStaffModal .ss288-paper-name{font-size:10px;line-height:1.08}
  #specialStaffModal .ss288-paper-name small{font-size:9px}
  #specialStaffModal .ss288-paper-status{font-size:9px}
- #specialStaffModal .ss288-paper-symbol{font-size:16px}
+ #specialStaffModal .ss288-paper-symbol{width:13px;height:16px}
  #specialStaffModal .ss288-reading{padding:3px 0 2px 14px}
  #specialStaffModal .ss288-reading-top{display:none}
  #specialStaffModal .ss288-scroll-icon{font-size:20px}
@@ -265,4 +265,22 @@
  #specialStaffModal .ss288-person-portrait{height:45%;width:65%;max-height:100px}
  #specialStaffModal .ss288-person-text{gap:2px}
  #specialStaffModal .ss288-person-text strong{font-size:15px}
+}
+@media(max-height:360px) and (orientation:landscape){
+ #specialStaffModal .ss288-home{grid-template-rows:46px minmax(0,1fr);gap:6px;padding:5px 0}
+ #specialStaffModal .ss288-summary{padding-bottom:5px}
+ #specialStaffModal .ss288-portrait{width:34px;height:38px}
+ #specialStaffModal .ss288-sidebar>h3{font-size:11px;margin-bottom:3px}
+ #specialStaffModal .ss288-count,#specialStaffModal .ss288-rarity-count{font-size:9px;line-height:1.15;padding:1px 0}
+ #specialStaffModal .ss288-rarity-heading{margin-top:3px;margin-bottom:2px;padding-top:3px}
+ #specialStaffModal .ss288-rarity-heading h3{font-size:9px}
+ #specialStaffModal .ss288-pending-note{font-size:8px;line-height:1.1;margin-top:2px}
+ #specialStaffModal .ss288-legacy-link{font-size:8px;line-height:1.1;padding:1px 0}
+ #specialStaffModal .ss288-benefits{grid-template-rows:20px minmax(0,1fr) 14px;gap:2px}
+ #specialStaffModal .ss288-benefits-heading h3{font-size:11px}
+ #specialStaffModal .ss288-passive{font-size:9px;line-height:1}
+ #specialStaffModal .ss288-passive-label,#specialStaffModal .ss288-passive .ss288-value{font-size:9px;line-height:1}
+ #specialStaffModal .ss288-passive-number{font-size:8px;line-height:1}
+ #specialStaffModal .ss288-info{font-size:10px;line-height:1}
+ #specialStaffModal .ss288-benefits-bottom .ss288-pager button{height:14px;font-size:12px}
 }

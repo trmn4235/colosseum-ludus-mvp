@@ -16,7 +16,7 @@ const root=path.resolve(__dirname,'..'),A='00000000-0000-4000-8000-000000000001'
  const q=async(sql,args=[])=>(await db.query(sql,args)).rows;
  await q('insert into ludus_accounts(user_id)values($1),($2)',[A,B]);await q('insert into ludus_items(id,owner_id)values($1,$2),($3,$2)',[I,A,J]);
  for(const fam of ['ruby','sapphire','emerald'])for(let n=1;n<=5;n++)await q('insert into ludus_stones values($1,$2,$3,10000)',[A,fam,n]);
- await db.exec(fs.readFileSync(root+'/supabase/migrations/20261121230000_smith_effects_v288.sql','utf8'));
+ await db.exec(fs.readFileSync(root+'/supabase/migrations/20261121231323_smith_effects_v288.sql','utf8'));
  await q("select set_config('request.jwt.claim.sub',$1,false)",[A]);
  const preview=async(action='enhance',stone=null,item=I)=>(await q('select public.ludus_smith_preview_v288($1,$2,$3) s',[item,action,stone]))[0].s;
  const upgrade=async(action='enhance',stone=null,item=I,request=randomUUID())=>(await q('select public.ludus_upgrade_item_v10($1,$2,$3,$4) s',[item,action,stone,request]))[0].s;

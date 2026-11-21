@@ -17,7 +17,7 @@ class Node {
  close(){this.open=false;}
  showModal(){this.open=true;}
 }
-const document={body:new Node('body'),activeElement:null,createElement:tag=>new Node(tag),createTextNode:text=>new Node('text',text)};
+const document={body:new Node('body'),activeElement:null,createElement:tag=>new Node(tag),createElementNS:(_namespace,tag)=>new Node(tag),createTextNode:text=>new Node('text',text)};
 const local=new Map(),events=[],calculations=[];
 const context={document,innerHeight:900,innerWidth:1440,Intl,URL,crypto:{randomUUID},structuredClone,
  localStorage:{getItem:key=>local.get(key)||null,setItem:(key,value)=>local.set(key,value),removeItem:key=>local.delete(key)},
@@ -70,6 +70,18 @@ const overall=()=>findClass('ss288-overall')[0].textContent;
  assert.match(findClass('ss288-pending-note')[0].textContent,/2 öğrenilmiş/);
  context.__papyrusSetMode('all');await profile.refresh();assert.equal(overall(),'Overall100 / 100');assert.equal(findClass('ss288-passive').length,25);
  assert.deepEqual(findClass('ss288-passive-column').map(node=>node.children.length),[13,12]);
+ const labels=new Map();
+ for(const role of ['trainer','cook','doctor','smith','guard','groom']){
+  profile.open(role);await settle();assert.equal(findClass('ss288-passive').length,25);
+  for(const row of findClass('ss288-passive'))labels.set(row.dataset.contentId,row.children[1].textContent);
+ }
+ assert.equal(labels.size,150,'Every released effect has a meaningful home label');
+ for(const id of ['chef_008','chef_020','groom_013','groom_025','guard_011','guard_012'])assert.match(labels.get(id),/%25/,'The condition threshold is preserved for '+id);
+ assert.match(labels.get('groom_014'),/%50/);
+ assert.match(labels.get('doctor_004'),/Balmumu Merhemi.*Bir doz/);assert.match(labels.get('doctor_005'),/Defne Merhemi.*Bir doz/);
+ assert.match(labels.get('doctor_007'),/İncir Şurubu.*yorgunluk giderimi/);
+ assert.match(labels.get('doctor_017'),/Kaş yarılması ihtimali/);assert.match(labels.get('doctor_019'),/Derin ön kol kesiği.*sargı koruma/);
+ for(const label of labels.values()){assert(label.length>=12);assert(!/(?:^|\s)[’'](?:in|si|ü)\b/.test(label),'No orphaned percentage suffix: '+label);}
  context.__papyrusSetMode('empty');await profile.refresh();assert.equal(overall(),'Overall0 / 100');assert.equal(findClass('ss288-passive').length,0);
  profile.close();assert.equal(profile.visible,false);assert.equal(profile.openFromLink(),true);await settle();
  assert.equal(profile.state.role,'guard');assert.equal(new URL(context.location.href).searchParams.get('staff'),null);assert.equal(new URL(context.location.href).searchParams.get('keep'),'yes');

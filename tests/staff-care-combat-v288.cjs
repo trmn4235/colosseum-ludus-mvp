@@ -1,7 +1,7 @@
 /* Exercise Chef one-time events in the shipped ArenaCombat, not a mock engine. */
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
-const seed=fs.readFileSync(root+'/supabase/migrations/20261121224449_papyrus_catalog_v288.sql','utf8');
+const seed=fs.readFileSync(root+'/supabase/migrations/20261121231322_papyrus_catalog_v288.sql','utf8');
 const catalog=JSON.parse(seed.match(/\$catalog\$([\s\S]*?)\$catalog\$/)[1]);
 const rows=ids=>catalog.filter(r=>ids.includes(r.content_id)).map(r=>({...r,role:r.role_id,effect:{...r.effect},learned_at:'2026-11-21T00:00:00Z'}));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);

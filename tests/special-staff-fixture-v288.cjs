@@ -1,6 +1,7 @@
 // Test-only server contract. Production catalogue text is read from its migration.
 const fs=require('node:fs'),path=require('node:path');
-const migration=fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261121224449_papyrus_catalog_v288.sql'),'utf8');
+const migrationDirectory=path.join(__dirname,'../supabase/migrations');
+const migration=fs.readFileSync(path.join(migrationDirectory,fs.readdirSync(migrationDirectory).find(name=>name.endsWith('_papyrus_catalog_v288.sql'))),'utf8');
 const catalog=JSON.parse(migration.match(/\$catalog\$([\s\S]*?)\$catalog\$/)[1]);
 function script({user='testUser.id',client='__testClient'}={}){
  return `

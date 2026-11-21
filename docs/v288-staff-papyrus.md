@@ -38,6 +38,17 @@ Aşçının farklı öğrenilmiş bilgilerinden aynı istatistiğe gelen oranlar
 
 Seyisin tamamlanan ahır antrenmanına bağlı üç bilgisi gerçek sunucu hesabında uygulanır. Kesirli ilerleme ve enerji korunur; aynı eğitimin tekrar sorgulanması ikinci katkı sağlamaz. Henüz bulunmayan tedavi malzemesi veya savaş eylemi için yeni bir sonuç varsayılmaz.
 
+| Çalışan | Bağlanan / toplam | Uygulandığı yer |
+|---|---:|---|
+| Demirci | 25 / 25 | Sunucudaki geliştirme, Safir ve Zümrüt işlemleri |
+| Doctore | 23 / 25 | 4×5 ve Solo20; Ranked henüz kapsamda değil |
+| Aşçı | 20 / 25 | 4×5 ve Solo20 |
+| Muhafız | 18 / 25 | Oyuncunun katıldığı kervan savunması ve aynı sunucu tekrarı |
+| Seyis | 3 / 25 | Tamamlanan ahır antrenmanı |
+| Doktor | 0 / 25 | Özel sakatlık ve tedavi malzemesi akışı bekleniyor |
+
+Toplam 89 bilgi mevcut hesaplara bağlıdır. Kalan 61 bilgi katalogda ve öğrenim arşivinde korunur; etkin pasif olarak gösterilmez. Öğrenilen bekleyen bilgi, kendi oyun akışı bağlandığında yeni nüsha gerektirmeden etkinleşebilir.
+
 ## Yayın ve doğrulama
 
 Veritabanı sırası: `papyrus_catalog_v288`, `smith_effects_v288`, `staff_combat_v288`, `staff_care_v288`. Hesaba özel deneme koleksiyonu genel migration içinde uygulanmaz; yayın sonrasında ayrı, tekrar güvenli işlemle verilir.

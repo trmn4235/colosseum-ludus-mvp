@@ -17,6 +17,14 @@
   node.onclick = action;
   return node;
  }
+ function papyrusIcon() {
+  const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  icon.setAttribute('class','ss288-paper-symbol');icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('aria-hidden','true');
+  icon.setAttribute('fill','none');icon.setAttribute('stroke','currentColor');icon.setAttribute('stroke-width','1.4');icon.setAttribute('stroke-linecap','round');icon.setAttribute('stroke-linejoin','round');
+  const outline=document.createElementNS('http://www.w3.org/2000/svg','path');
+  outline.setAttribute('d','M6 3h12a2 2 0 0 1 2 2v3h-4V5a2 2 0 0 1 2-2M6 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M4 17h10v2a2 2 0 0 0 2 2M8 8h5M8 11h5M8 14h5');
+  icon.append(outline);return icon;
+ }
  function valueOf(paper) {
   const effect = paper.effect || paper.effects?.[0] || {};
   const amount = effect.unit === 'fraction' ? Number(effect.value || 0) * 100 : Number(effect.percent ?? effect.value ?? 0);
@@ -37,9 +45,149 @@
   }).filter(Boolean);
  }
  const smithLabels = ['Genel + basma başarısı','+1–+4 hedef geliştirme','+5–+8 hedef geliştirme','+9 ve üzeri hedef geliştirme','Başarılı + basıştan sonraki deneme','+ basma serisinde 3. ve sonrası','+ basma serisinde 5. ve sonrası','Başarısız + basıştan sonraki deneme','İki başarısız + basış sonrası','Safir · Genel kalite şansı','Safir · Seride 3. ve sonrası','Safir · Seride 5. ve sonrası','Safir · Önceki sonuç %95 altındaysa','Safir · Son iki sonuç %95 altındaysa','Safir · Mevcut item +5–+8 ise','Safir · Mevcut item +9 ve üzeriyse','Safir · Itemde %95+ zümrüt varsa','Zümrüt · Genel kalite şansı','Zümrüt · Seride 3. ve sonrası','Zümrüt · Seride 5. ve sonrası','Zümrüt · Önceki sonuç %95 altındaysa','Zümrüt · Son iki sonuç %95 altındaysa','Zümrüt · Mevcut item +5–+8 ise','Zümrüt · Mevcut item +9 ve üzeriyse','Zümrüt · Itemde %95+ safir varsa'];
+ // Labels describe the effect and its trigger; the separate value keeps the
+ // authoritative amount. Never strip percentages: some are trigger thresholds.
+ const effectLabels = {
+  smith:smithLabels,
+  trainer:[
+   'Trident · Kritik vuruş ihtimali',
+   'Mızrak · Verilen hasar',
+   'Kılıç saldırısı · Kondisyon tüketimi',
+   'Balta · Kritik vuruş hasarı',
+   'Teber alan saldırısı · İkinci hedef hasarı',
+   'Gürzle kalkan kırma · Kondisyon tüketimi',
+   'Çekiç · Verilen hasar',
+   'Ağ atma · Kondisyon tüketimi',
+   'Kırbaçla çekme · Kondisyon tüketimi',
+   'Büyük kalkanla başarılı blok · Kondisyon tüketimi',
+   'Küçük/orta kalkanla başarılı blok · Kondisyon tüketimi',
+   'Miğferin koruduğu baş · Alınan hasar',
+   'Göğüs zırhının koruduğu bölge · Alınan hasar',
+   'Kolluğun koruduğu kol · Alınan hasar',
+   'Bacaklığın koruduğu bölge · Alınan hasar',
+   'Kılıç · Kritik vuruş hasarı',
+   'Mızrak fırlatma · Kondisyon tüketimi',
+   'Trident fırlatma · Kondisyon tüketimi',
+   'Balta normal saldırısı · Kondisyon tüketimi',
+   'Teber normal saldırısı · Kondisyon tüketimi',
+   'Çekiçle kalkan kırma · Kondisyon tüketimi',
+   'Kalkanla itme · Kondisyon tüketimi',
+   'Trident normal saldırısı · Kondisyon tüketimi',
+   'Kırbaç normal saldırısı · Verilen hasar',
+   'Gürz normal saldırısı · Verilen hasar'
+  ],
+  cook:[
+   'Maksimum arena kondisyonu',
+   'Koşu · Kondisyon tüketimi',
+   'Normal saldırı · Kondisyon tüketimi',
+   'Başarılı blok · Kondisyon tüketimi',
+   'Yuvarlanma · Kondisyon tüketimi',
+   'Özel hareket · Kondisyon tüketimi',
+   'Kondisyon yenilenme hızı',
+   'Kondisyon %25 altındayken · Yenilenme hızı',
+   'Maksimum arena kondisyonu',
+   'Başarılı blok · Kondisyon tüketimi',
+   'Normal saldırı · Kondisyon tüketimi',
+   'Yuvarlanma · Kondisyon tüketimi',
+   'Koşu · Kondisyon tüketimi',
+   'Kondisyon yenilenme hızı',
+   'Özel hareket · Kondisyon tüketimi',
+   'Kayma · Kondisyon tüketimi',
+   'Kondisyon yenilenmesine başlama bekleme süresi',
+   'İlk ayağa kalkış · Maks. kondisyon iadesi (1/maç)',
+   'İlk rakip öldürme · Maks. kondisyon iadesi (1/maç)',
+   'Kondisyon %25 altındayken blok · Maks. kondisyon iadesi (1/maç)',
+   '3 ardışık normal isabet · Maks. kondisyon iadesi (1/maç)',
+   'Özel hamlede 2+ rakibe isabet · Maks. kondisyon iadesi',
+   '5 sn’de 2 farklı rakibi blok · Maks. kondisyon iadesi (1/maç)',
+   'İlk asist · Maks. kondisyon iadesi (1/maç)',
+   '60. saniyede hayattayken · Maks. kondisyon iadesi (1/maç)'
+  ],
+  doctor:[
+   '2+ sargılı tedavi · Bir sargı koruma ihtimali',
+   'Atelli tedavi · Bir atel koruma ihtimali',
+   'Sirkeli Sünger · Bir adet koruma ihtimali',
+   'Balmumu Merhemi · Bir doz koruma ihtimali',
+   'Defne Merhemi · Bir doz koruma ihtimali',
+   'Ballı Sirke Şurubu · Ek yorgunluk giderimi',
+   'İncir Şurubu · Taburculukta yorgunluk giderimi',
+   '3 saatlik revir · Yorgunluk azalma hızı',
+   '12 saatlik revir · Yorgunluk azalma hızı',
+   '24 saatlik revir · Yorgunluk azalma hızı',
+   'Omuzda zırh vurması ihtimali',
+   'Hafif baldır zorlanması ihtimali',
+   'Ayak bileği burkulması ihtimali',
+   'Kırık sonrası ilk maç · Aynı kemiğin yeniden kırılma ihtimali',
+   'Ağır kafa travması sonrası ilk maç · Aynı travmanın tekrarı',
+   'Maçta düşme · Diz sıyrığı ihtimali',
+   'Baş darbesi · Kaş yarılması ihtimali',
+   'Omza darbe · Omuz ezilmesi ihtimali',
+   'Derin ön kol kesiği · Bir sargı koruma ihtimali',
+   'Kaburga ezilmesi · Ballı Sirke Şurubuyla ek yorgunluk giderimi',
+   'Açık kaval kırığı → kapalı, parçalı olmayan kırık ihtimali',
+   'Sert düşüş · Leğen kemiği kırığı ihtimali',
+   'Ağır gövde darbesi · İç kanamalı karın yaralanması ihtimali',
+   'Kötü sakatlık sonrası ilk maç · Farklı kötü sakatlık ihtimali',
+   'Aynı klan savaşı · 2. ve sonraki yaralıda bir sarf malzemesi koruma'
+  ],
+  groom:[
+   'Beslenmeden gelen maksimum yarış kondisyonu',
+   'Atın kondisyon antrenmanı gelişimi',
+   'Yarış sonrası ahırda kondisyon yenilenme hızı',
+   'Yarışın ilk hızlanması · Kondisyon tüketimi',
+   'İlk tur, orta hız · Kondisyon tüketimi',
+   'Düzlükte en yüksek hız · Kondisyon tüketimi',
+   'Orta hızla girilen viraj · Kondisyon tüketimi',
+   'Viraj çıkışında ilk hızlanma · Kondisyon tüketimi',
+   '5 sn korunan hız kademesi · Kondisyon tüketimi',
+   'Düşük hız kademesi · Kondisyon yenilenme hızı',
+   'Düzlükte rakibe bir araba boyu mesafe · Hızlanma kondisyon tüketimi',
+   'Çarpışma öncesi hıza dönüş · Kondisyon tüketimi',
+   'Atın kondisyonu %25 altındayken · Yenilenme hızı',
+   '5. tura en az %50 kondisyonla giriş · Maks. kondisyon iadesi',
+   '5. turun son düzlüğü, en yüksek hız · Kondisyon tüketimi',
+   'Yarış içinde hızlanma hızı',
+   'Virajdan kaynaklanan hız kaybı',
+   'Çarpışmadan kaynaklanan hız kaybı',
+   'Virajda yön değiştirme hızı',
+   'Atın hız antrenmanı gelişimi',
+   'Atın antrenmandan kazandığı yorgunluk',
+   'Yarışın ilk hızlanmasının hızı',
+   '5. tur · Maksimum hız',
+   'Yarış sonunda ata eklenen yorgunluk',
+   '5. tur, kondisyon %25 altında · Hızlanma kondisyon tüketimi'
+  ],
+  guard:[
+   'Kervan savunması · Saldırı bonusu',
+   'Silahlı işçi · Ok hasarı',
+   'Gladyatör normal yakın dövüşü · Kondisyon tüketimi',
+   'Mızrak fırlatma · Kondisyon tüketimi',
+   'Trident fırlatma · Kondisyon tüketimi',
+   'Başarılı kalkan bloğu · Kondisyon tüketimi',
+   'Kalkanla itme · Kondisyon tüketimi',
+   'Yuvarlanma · Kondisyon tüketimi',
+   'Koşu · Kondisyon tüketimi',
+   'Savunmacı gladyatör · Kondisyon yenilenme hızı',
+   'Kondisyon %25 altındayken · Yenilenme hızı',
+   'Can %25 altındayken · Gladyatöre gelen hasar',
+   'İşçi · Gelen ok hasarı',
+   'İşçi · Gelen yakın dövüş hasarı',
+   'Yük arabası · Gelen ok hasarı',
+   'Yük arabası · Gelen yakın dövüş hasarı',
+   'Miğferin koruduğu baş · Alınan hasar',
+   'Göğüs zırhının koruduğu bölge · Alınan hasar',
+   'Kolluğun koruduğu kol · Alınan hasar',
+   'Bacaklığın koruduğu bölge · Alınan hasar',
+   '1. dalga · Savunmacı gladyatörün verdiği hasar',
+   '5. dalga · Savunmacı gladyatörün verdiği hasar',
+   'Ağ atma · Kondisyon tüketimi',
+   'Kırbaçla çekme · Kondisyon tüketimi',
+   'Gürz/çekiçle kalkan kırma · Kondisyon tüketimi'
+  ]
+ };
  function effectLabel(paper) {
-  if (paper.role === 'smith') return smithLabels[Number(paper.ordinal || paper.id?.match(/(\d+)$/)?.[1]) - 1] || plain(paper.effect_text);
-  return plain(paper.effect_text || paper.effects?.[0]?.label).replace(/[+−-]?%\s*\d+(?:[.,]\d+)?/g,'').replace(/\+\d+(?:[.,]\d+)? yüzde puan/g,'').replace(/\s+(artar|azalır)\.?$/,'').replace(/\s+/g,' ').replace(/\.$/,'').trim();
+  const ordinal=Number(paper.ordinal || (paper.content_id||paper.id)?.match(/(\d+)$/)?.[1]);
+  return effectLabels[paper.role]?.[ordinal-1] || plain(paper.effect_text || paper.effects?.[0]?.label);
  }
  function create(ctx) {
   const defs = root.LudusSpecialPeople.roles;
@@ -226,7 +374,7 @@
      const info = button('ⓘ',()=>showInfo(paper),'ss288-info');
      info.setAttribute('aria-label',effectLabel(paper)+' koşulları');
      const label = element('span','ss288-passive-label',effectLabel(paper));
-     label.title = plain(paper.effect_text);
+     label.title = effectLabel(paper)+' · '+valueOf(paper);
      row.append(marker,label,element('strong','ss288-value',valueOf(paper)),info);
      column.append(row);
     }
@@ -307,7 +455,7 @@
     row.setAttribute('aria-pressed',String(key(paper)===selected));
     const info=element('span','ss288-paper-name');
     info.append(element('strong','',paper.title),element('small','',effectLabel(paper)));
-    row.append(element('span','ss288-paper-number',String(paper.ordinal||Number(key(paper).match(/(\d+)$/)?.[1])||0).padStart(2,'0')),info,element('strong','ss288-value',valueOf(paper)),element('span','ss288-paper-status',paperState(paper)),element('span','ss288-paper-symbol','▱'));
+    row.append(element('span','ss288-paper-number',String(paper.ordinal||Number(key(paper).match(/(\d+)$/)?.[1])||0).padStart(2,'0')),info,element('strong','ss288-value',valueOf(paper)),element('span','ss288-paper-status',paperState(paper)),papyrusIcon());
     rows.append(row);
    }
    if (!visible.length) rows.append(element('p','ss288-empty',loading?'Papirüsler yükleniyor…':'Bu filtrede papirüs bulunmuyor.'));
