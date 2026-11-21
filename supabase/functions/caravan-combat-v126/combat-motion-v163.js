@@ -36,7 +36,7 @@ function install(A,M,options={}){
  P.attack=function(...args){const ok=attack.apply(this,args),f=this.fighters[args[0]];if(ok&&enabled(f)){f.authoredAttack=clipName(f);f.recoilPhase=null;reach(f,this.fighters);}return ok;};
  P.evade=function(id,x=0,z=0,kind='step'){
   const f=this.fighters[id];if(!enabled(f))return kind==='roll'?dodge.call(this,id,x,z):false;
-  const cost=kind==='duck'?18:kind==='jump'?22:kind==='roll'?25:18;
+  const cost=kind==='duck'?18:kind==='jump'?22:kind==='roll'?(root.StaffCombatV288?.cost(f,25,'roll')??25):18;
   if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stamina<cost||f.stunUntil>this.time||(f.evadeReadyAt||0)>this.time)return false;
   if(kind==='roll'){const ok=dodge.call(this,id,x,z);if(ok)f.evadeReadyAt=this.time+.71;return ok;}
   let len=Math.hypot(x,z);if(len<.02&&kind==='step'){x=-Math.sin(f.angle);z=-Math.cos(f.angle);len=1;}

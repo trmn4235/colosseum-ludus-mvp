@@ -87,7 +87,7 @@ function checkpoint(name){
  assert.equal(await page.locator('.ss288-count').first().locator('strong').innerText(),'25 / 25 ›');
  assert.equal(await page.locator('.ss288-passive').count(),1);
  assert.equal(await page.locator('.ss288-passive .ss288-value').innerText(),'+%0,01');
- assert.equal(await page.locator('.ss288-passive .ss288-value').evaluate(e=>getComputedStyle(e).color),'rgb(20, 94, 35)');
+ assert.equal(await page.locator('.ss288-passive .ss288-value').evaluate(e=>{const [r,g,b]=getComputedStyle(e).color.match(/\d+/g).map(Number);return g>r&&g>b;}),true,'The contribution stays green in the selected theme');
  await activate(page.locator('.ss288-count').filter({hasText:'Öğrenilmiş'}));
  await page.waitForFunction(()=>LudusPreview.specialStaff.archive?.paper_count===1);
  assert.equal(await page.locator('.ss288-paper-row').count(),1);assert.equal(await page.locator('.ss288-reading-status').innerText(),'✓ Öğrenildi');

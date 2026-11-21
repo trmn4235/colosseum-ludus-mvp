@@ -36,6 +36,8 @@ jobs:
         run: node tests/upgrades-layout-v112.cjs
       - name: Bottom stone dock, split title and full-height inventory
         run: node tests/upgrades-layout-v135.cjs
+      - name: Authoritative smith odds, stale responses and profile link
+        run: node tests/combat-inspector-ui-v74.cjs
       - name: Courtyard integration and beginner quest tracking
         env:
           LUDUS_COMBAT_VALUES_TEST: '1'
