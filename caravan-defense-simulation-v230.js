@@ -28,6 +28,7 @@
    if(f.archer){f.x=2.5+(id-team.length)%2*.9;f.z=6+Math.floor((id-team.length)/2)*1.2;f.maxHp=f.hp=Math.round(f.maxHp*.8);f.weapon=null;f.shield=false;}
    f.gearBase=g;f.equipment={};for(const [i,item]of (g.items||[]).entries()){const slot=root.LudusLoadout.combatSlot(item.equipped_slot,item);f.equipment[slot]={token:String(id)+':'+i,item};}f.navHeight=terrainHeight(f.x,f.z);return f;
   });
+  root.StaffCombatV288?.attachDefense(combat,ticket);
   combat.bound=f=>{f.x=clamp(f.x,-7.3,7.3);f.z=clamp(f.z,4.5,24);if(Math.abs(f.x)<1.3&&f.z<7.4){f.x=f.x<0?-1.3:1.3;}};
   const originalAI=combat.botStep.bind(combat);combat.arrows=[];
   combat.botStep=(f,dt)=>{

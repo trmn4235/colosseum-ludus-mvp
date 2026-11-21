@@ -3,7 +3,22 @@ const {chromium,webkit}=require('playwright');
 const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||fs.mkdtempSync(path.join(os.tmpdir(),'staff-v284-'));
 const base=fs.readFileSync(path.join(__dirname,'daily-kitchen-ui-v265.cjs'),'utf8'),sandbox={};
 vm.runInNewContext(base.slice(base.indexOf("const user="),base.indexOf('(async()=>{'))+';this.fixture=mock+foodMock;',sandbox);
-const mock=sandbox.fixture+require('./special-staff-fixture-v284.cjs')();
+const {catalog,script:papyrusScript}=require('./special-staff-fixture-v288.cjs');
+assert.equal(catalog.length,150,'The world fixture uses the released 150-paper catalog');
+// Keep the existing world RPCs and use the same V288 contract as the isolated UI
+// suite. This scenario starts with 25 unread guard papers and no learned powers.
+const worldCatalogFixture=String.raw`
+__papyrusSetMode('empty');__papyrusFailOnce=true;
+for(const paper of __papyrusRows){paper.owned_quantity=paper.role==='guard'?1:0;paper.runtime_status=paper.content_id==='guard_001'?'active':'pending_feature';}
+const staffWorldVaultRPC=__testClient.rpc;__testClient.rpc=async(name,args={})=>{
+ if(name==='ludus_personal_vault'){
+  const all=__papyrusRows.filter(p=>p.owned_quantity>0&&(!args.p_role||p.role===args.p_role)),page=Math.min(args.p_page||0,Math.max(0,Math.ceil(all.length/8)-1));
+  const rows=all.slice(page*8,page*8+8).map(p=>({...p,type:'papyrus',key:p.content_id,name:p.title,quantity:p.owned_quantity,available:!p.learned&&p.owned_quantity>0,role_name:LudusSpecialPeople.roles.find(r=>r.id===p.role).name,role_title:LudusSpecialPeople.roles.find(r=>r.id===p.role).title,effects:[{key:p.effect.metric,label:p.effect_text,percent:p.effect.value*100}]}));
+  return{data:structuredClone({user_id:testUser.id,gold:12345,category:args.p_category,page,role:args.p_role,total:all.length,counts:{papyrus:all.reduce((n,p)=>n+p.owned_quantity,0)},rows}),error:null};
+ }
+ return staffWorldVaultRPC(name,args);
+};`;
+const mock=sandbox.fixture+require('./special-staff-fixture-v284.cjs')()+papyrusScript()+worldCatalogFixture;
 let watchdog;
 function checkpoint(name){
  clearTimeout(watchdog);console.log('Staff UI checkpoint',name);
@@ -28,48 +43,59 @@ function checkpoint(name){
  assert.equal(await page.evaluate(()=>LudusPreview.staffStations.entries.filter(e=>e.group.visible).length),2);
  await activate(page.getByRole('button',{name:/^Özel çalışanlar/}));
  await page.locator('#specialStaffModal[data-directory=true]').waitFor();
- await page.getByText('26 papirüs okunabilir',{exact:true}).waitFor();
+ await page.getByText('25 / 25 bilgi',{exact:true}).waitFor();
  await page.screenshot({path:out+'/directory.png'});
- assert.equal(await page.locator('.staff-directory-person:visible').count(),6);
+ assert.equal(await page.locator('.ss288-person:visible').count(),6);
  assert.equal(await page.locator('#ludusLevelBadge').evaluate(n=>n.nextElementSibling.id),'specialStaffHud');
  const portraits=new Set();
- for(const [role,name] of [['trainer','Varro'],['cook','Gaius'],['doctor','Aulus'],['smith','Lucius'],['groom','Titus'],['guard','Marcus']]){
-  checkpoint('directory '+role);await activate(page.locator('.staff-directory-person[data-role="'+role+'"]'));
-  await page.waitForFunction(id=>LudusPreview.specialStaff.state?.role===id&&document.querySelector('.staff-art-status').hidden,role,{timeout:90000});
-  assert.equal(await page.locator('.staff-info h2').innerText(),name);assert.equal(await page.locator('.staff-portrait canvas').getAttribute('data-staff-role'),role);
-  const pixels=await page.locator('.staff-portrait canvas').evaluate(c=>{const data=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let opaque=0,hash=2166136261;for(let i=0;i<data.length;i++){hash=Math.imul(hash^data[i],16777619);if(i%4===3&&data[i]>128)opaque++;}return {opaque,hash:hash>>>0};});assert(pixels.opaque>100,'Visible portrait for '+role);portraits.add(pixels.hash);await page.screenshot({path:out+'/profile-'+role+'.png'});
+ for(const [role,title] of [['trainer','Doctore'],['cook','Aşçı'],['doctor','Doktor'],['smith','Demirci'],['groom','Seyis'],['guard','Kapı muhafızı']]){
+  checkpoint('directory '+role);await activate(page.locator('.ss288-person[data-role="'+role+'"]'));
+  await page.waitForFunction(id=>LudusPreview.specialStaff.state?.role===id&&document.querySelector('.ss288-portrait img')?.complete&&document.querySelector('.ss288-portrait img')?.naturalWidth>0,role,{timeout:90000});
+  assert.equal(await page.locator('.ss288-summary h2').innerText(),title);
+  const portrait=await page.locator('.ss288-portrait img').evaluate(img=>({src:new URL(img.src).pathname,width:img.naturalWidth,height:img.naturalHeight}));
+  assert.equal(portrait.src,'/assets/staff-v288/'+role+'.webp');assert.deepEqual([portrait.width,portrait.height],[300,400]);portraits.add(portrait.src);
+  assert.equal(await page.locator('#specialStaffModal canvas').count(),0,'Profile uses the approved photographic asset');
+  assert.equal(await page.locator('.ss288-person').count(),0,'Employee is selected once, before the profile');
+  await page.screenshot({path:out+'/profile-'+role+'.png'});
   if(role!=='guard')await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));
  }
- assert.equal(portraits.size,6,'Six distinct rendered staff portraits');
- assert.equal(await page.evaluate(()=>__staffContexts.size),worldContexts,'Profiles reuse the world context');
- await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});
- assert.equal(await page.locator('.staff-overall strong').innerText(),'0');assert.equal(await page.locator('.staff-collection strong').innerText(),'0 / 500');assert.equal(await page.locator('.staff-paper').count(),0);
+ assert.equal(portraits.size,6,'Six distinct photographic staff portraits');
+ assert.equal(await page.evaluate(()=>__staffContexts.size),worldContexts,'Photographic profiles do not allocate another WebGL context');
+ await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.ss288-portrait img')?.naturalWidth>0,null,{timeout:90000});
+ assert.equal(await page.locator('.ss288-overall strong').innerText(),'100 / 100');assert.equal(await page.locator('.ss288-count').first().locator('strong').innerText(),'25 / 25 ›');assert.equal(await page.locator('.ss288-passive').count(),0);
  const layoutErrors=[];
- async function checkLayout(width,height){for(const theme of ['blue','black','white']){await page.evaluate(t=>LudusTheme.set(t),theme);await page.waitForTimeout(100);const bad=await page.evaluate(()=>[...document.querySelectorAll('#specialStaffModal,.staff-header,.staff-nav,.staff-body,.staff-identity,.staff-info,.staff-content,.staff-benefits,.staff-papers,.staff-paper,.staff-read')].filter(n=>{const r=n.getBoundingClientRect();return n.scrollWidth>n.clientWidth+2||n.scrollHeight>n.clientHeight+2||r.left<0||r.top<0||r.right>innerWidth+1||r.bottom>innerHeight+1;}).map(n=>n.className));if(bad.length)layoutErrors.push({theme,width,height,bad});}}
- checkpoint('read from personal chest');await checkLayout(874,402);assert.deepEqual(layoutErrors,[]);
- await activate(page.getByRole('button',{name:'Kasadaki papirüsler',exact:true}));
- await page.getByText('26 okunmamış papirüs',{exact:true}).waitFor();
+ async function checkLayout(width,height){for(const theme of ['blue','black','white']){await page.evaluate(t=>LudusTheme.set(t),theme);await page.waitForTimeout(100);const bad=await page.evaluate(()=>[...document.querySelectorAll('#specialStaffModal,.ss288-header,.ss288-tabs,.ss288-body,.ss288-summary,.ss288-summary-text,.ss288-home-columns,.ss288-sidebar,.ss288-benefits,.ss288-passive-grid')].filter(n=>{const r=n.getBoundingClientRect();return n.scrollWidth>n.clientWidth+2||n.scrollHeight>n.clientHeight+2||r.left<0||r.top<0||r.right>innerWidth+1||r.bottom>innerHeight+1;}).map(n=>n.className));if(bad.length)layoutErrors.push({theme,width,height,bad});}}
+ checkpoint('read catalog paper from personal chest');await checkLayout(874,402);assert.deepEqual(layoutErrors,[]);
+ await page.evaluate(()=>{LudusPreview.specialStaff.close();return LudusPreview.personalVault.open('papyrus');});
+ await page.getByText('25 okunmamış papirüs',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Kasayı kapat'}).waitFor({state:'visible'});
  const vaultLayout=await page.evaluate(()=>[...document.querySelectorAll('#personalVaultModal,.personal-vault-header,.personal-vault-tabs,.personal-vault-grid,.personal-vault-card,.personal-vault-footer')].filter(e=>{const r=e.getBoundingClientRect();return e.scrollWidth>e.clientWidth+2||e.scrollHeight>e.clientHeight+2||r.left<0||r.top<0||r.right>innerWidth+1||r.bottom>innerHeight+1;}).map(e=>e.className));assert.deepEqual(vaultLayout,[]);
  await page.screenshot({path:out+'/personal-chest.png'});
  await activate(page.locator('.personal-vault-card').first());
  await activate(page.getByRole('button',{name:'Papirüsü okut',exact:true}));
  await page.locator('#personalVaultModal').getByText('Bağlantı kesildi. Yeniden dene.').waitFor();
- assert.equal(await page.evaluate(()=>LudusPreview.specialStaff.state.staff.find(s=>s.id==='guard').overall),0,'wait for acknowledgement');
+ assert.equal(await page.evaluate(()=>LudusPreview.specialStaff.state.staff.find(s=>s.id==='guard').read),0,'Wait for acknowledgement before displaying knowledge');
  await activate(page.getByRole('button',{name:'Yeniden dene',exact:true}));
- await page.getByText('25 okunmamış papirüs',{exact:true}).waitFor();
- assert.equal(await page.locator('.hud-staff-unread').innerText(),'25');
- assert.equal(await page.evaluate(()=>__staffReads[0].p_request===__staffReads[1].p_request),true);
+ await page.getByText('24 okunmamış papirüs',{exact:true}).waitFor();
+ assert.equal(await page.locator('.hud-staff-unread').innerText(),'24');
+ assert.equal(await page.evaluate(()=>__papyrusReads.length===2&&__papyrusReads[0].p_request===__papyrusReads[1].p_request&&__papyrusReads[0].p_content_id==='guard_001'),true,'Retry reuses the same catalog read receipt');
  await activate(page.getByRole('button',{name:'Kasayı kapat'}));
  await activate(page.getByRole('button',{name:/^Özel çalışanlar/}));
- await activate(page.locator('.staff-directory-person[data-role="guard"]'));
- await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&!document.querySelector('.staff-collection').disabled);
- assert.equal(await page.locator('.staff-overall strong').innerText(),'0,2');assert.equal(await page.locator('.staff-bonus strong').innerText(),'+%0,03');
- assert.equal(await page.locator('.staff-collection strong').innerText(),'1 / 500');
- await activate(page.getByRole('button',{name:'Okunan papirüsleri göster'}));
+ await activate(page.locator('.ss288-person[data-role="guard"]'));
+ await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&!document.querySelector('.ss288-count').disabled);
+ assert.equal(await page.locator('.ss288-overall strong').innerText(),'100 / 100','Reading preserves collection-based overall');
+ assert.equal(await page.locator('.ss288-count').first().locator('strong').innerText(),'25 / 25 ›');
+ assert.equal(await page.locator('.ss288-passive').count(),1);
+ assert.equal(await page.locator('.ss288-passive .ss288-value').innerText(),'+%0,01');
+ assert.equal(await page.locator('.ss288-passive .ss288-value').evaluate(e=>getComputedStyle(e).color),'rgb(20, 94, 35)');
+ await activate(page.locator('.ss288-count').filter({hasText:'Öğrenilmiş'}));
  await page.waitForFunction(()=>LudusPreview.specialStaff.archive?.paper_count===1);
- assert.equal(await page.locator('.staff-paper').count(),1);assert.equal(await page.locator('.staff-learned').innerText(),'Öğrenildi');
- await page.screenshot({path:out+'/profile.png'});checkpoint('switch to cook and return');await activate(page.getByRole('button',{name:'Aşçı',exact:true}));await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='cook'&&document.querySelector('.staff-art-status').hidden);assert.equal(await page.locator('.staff-overall strong').innerText(),'0');checkpoint('return to directory');await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));await page.locator('#specialStaffModal[data-directory=true]').waitFor();checkpoint('close directory');await activate(page.getByRole('button',{name:'Özel çalışanları kapat'}));assert.equal(await page.evaluate(()=>LudusPreview.paused),false);
+ assert.equal(await page.locator('.ss288-paper-row').count(),1);assert.equal(await page.locator('.ss288-reading-status').innerText(),'✓ Öğrenildi');
+ await page.screenshot({path:out+'/profile.png'});
+ checkpoint('switch to cook through directory');await activate(page.getByRole('button',{name:'Çalışan ana sayfasına dön'}));await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));await activate(page.locator('.ss288-person[data-role="cook"]'));
+ await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='cook'&&document.querySelector('.ss288-portrait img')?.naturalWidth>0);
+ assert.equal(await page.locator('.ss288-overall strong').innerText(),'0 / 100');
+ checkpoint('return to directory');await activate(page.getByRole('button',{name:'Çalışan listesine dön'}));await page.locator('#specialStaffModal[data-directory=true]').waitFor();checkpoint('close directory');await activate(page.getByRole('button',{name:'Özel çalışanları kapat'}));assert.equal(await page.evaluate(()=>LudusPreview.paused),false);
  if(safari)await page.evaluate(()=>{
   for(const [label,object,method]of [['world',LudusPreview.renderer,'render'],['staff',LudusPreview.staffStations,'tick'],['imperial',LudusPreview.imperial,'tick'],['kitchen',LudusPreview.foodSystem,'tick'],['stable',LudusPreview.stableRoom,'tick']]){let count=0;const fn=object[method];object[method]=function(...args){const log=++count<=3;if(log)console.log('STAFF_TRACE before '+label);const value=fn.apply(this,args);if(log)console.log('STAFF_TRACE after '+label);return value;};}
   requestAnimationFrame(()=>console.log('STAFF_TRACE animation callback resumed'));
@@ -80,7 +106,7 @@ function checkpoint(name){
  checkpoint('visit stable');await page.evaluate(()=>{LudusPreview.leaveRoom();LudusPreview.enterRoom(LudusPreview.rooms.find(r=>r.kind==='stable'));});await page.waitForFunction(()=>LudusPreview.stableRoom.groom?.userData.staffRole==='groom',null,{timeout:60000});
  checkpoint('kitchen portions');await page.evaluate(()=>{LudusPreview.leaveRoom();LudusPreview.enterRoom(LudusPreview.rooms.find(r=>r.kind==='dining'));});await page.waitForFunction(()=>LudusPreview.diningRoom.ready);await page.evaluate(()=>LudusPreview.foodSystem.open());await page.getByLabel('Yemek verilen kişiler').waitFor();assert.match(await page.getByLabel('Yemek verilen kişiler').innerText(),/10 gladyatör · 8 kervan işçisi · 6 özel çalışan/);assert.match(await page.locator('.kitchen-date').innerText(),/24 kişi/);
  // Open each viewport separately; repeated resizing of the live courtyard can stall software WebGL.
- for(const [width,height]of [[1280,588],[568,320]]){checkpoint('viewport '+width);await page.close();await openViewport(width,height);await page.evaluate(()=>LudusPreview.specialStaff.open('guard'));await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.staff-art-status').hidden,null,{timeout:90000});await checkLayout(width,height);}
- assert.deepEqual(layoutErrors,[]);assert.deepEqual(errors,[]);console.log(JSON.stringify({pass:true,layoutChecks:9,models:6,serverReadRetry:true,percentPrecision:true,kitchenPeople:true,errors}));
- }catch(error){console.error(error);let timer;try{if(page&&!page.isClosed()){const info=await Promise.race([page.evaluate(()=>({visibility:document.visibilityState,role:window.LudusPreview?.specialStaff?.state?.role,modal:document.querySelector('#specialStaffModal')?.getAttribute('aria-busy'),portrait:document.querySelector('.staff-art-status')?.outerHTML,canvas:document.querySelector('.staff-portrait canvas')?.dataset.staffRole,selected:document.querySelector('.staff-tab[aria-pressed=true]')?.textContent,footer:document.querySelector('.staff-footer')?.textContent})),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('diagnostic timeout')),5000);})]);console.error('Staff failure state',JSON.stringify(info));await page.screenshot({path:out+'/failure.png',timeout:5000});}}catch(e){console.error('Staff failure diagnostics',e.message);}finally{clearTimeout(timer);}throw error;}finally{checkpoint('close browser');await browser.close();clearTimeout(watchdog);}
+ for(const [width,height]of [[1280,588],[568,320]]){checkpoint('viewport '+width);await page.close();await openViewport(width,height);await page.evaluate(()=>LudusPreview.specialStaff.open('guard'));await page.waitForFunction(()=>LudusPreview.specialStaff.state?.role==='guard'&&document.querySelector('.ss288-portrait img')?.naturalWidth>0,null,{timeout:90000});await checkLayout(width,height);}
+ assert.deepEqual(layoutErrors,[]);assert.deepEqual(errors,[]);console.log(JSON.stringify({pass:true,layoutChecks:9,models:6,catalogVersion:288,catalogReadRetry:true,collectionOverall:true,photographicPortraits:6,percentPrecision:true,kitchenPeople:true,errors}));
+ }catch(error){console.error(error);let timer;try{if(page&&!page.isClosed()){const info=await Promise.race([page.evaluate(()=>({visibility:document.visibilityState,role:window.LudusPreview?.specialStaff?.state?.role,modal:document.querySelector('#specialStaffModal')?.getAttribute('aria-busy'),portrait:document.querySelector('.ss288-portrait img')?.outerHTML,screen:document.querySelector('#specialStaffModal')?.dataset.screen,selected:document.querySelector('.ss288-tab[aria-current=page]')?.textContent,footer:document.querySelector('.ss288-footer')?.textContent})),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('diagnostic timeout')),5000);})]);console.error('Staff failure state',JSON.stringify(info));await page.screenshot({path:out+'/failure.png',timeout:5000});}}catch(e){console.error('Staff failure diagnostics',e.message);}finally{clearTimeout(timer);}throw error;}finally{checkpoint('close browser');await browser.close();clearTimeout(watchdog);}
 })().catch(e=>{console.error(e);process.exitCode=1;});

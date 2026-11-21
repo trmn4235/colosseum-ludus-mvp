@@ -230,7 +230,7 @@ class ArenaCombat {
  wearEquipment(f,slot,amount){if(!f[slot])return;f.wear[slot]=Math.max(0,f.wear[slot]-amount);if(f.wear[slot]===0)this.dropEquipment(f,slot,true);}
  damage(attacker,victim,base,region='chest',heavy=false,point=null){
   if(!this.enemy(attacker,victim))return false;base*=(attacker.team===0?.5:.55)*(attacker.attackBonus??1)/(victim.defenseBonus??1);const slot=region==='head'?'helmet':region==='chest'?'chest':['legs','leftLeg','rightLeg'].includes(region)?'greaves':null,protectedPart=slot&&victim[slot],weak=victim.body[region]<30;
-  const damage=Math.max(1,Math.round(base*(protectedPart?.8:1.12)*(weak?1.5:1)));victim.lastRegion=region;victim.reaction=.32;
+  const rawDamage=base*(protectedPart?.8:1.12)*(weak?1.5:1),damage=Math.max(1,Math.round(globalThis.StaffCombatV288?.damage(attacker,victim,rawDamage,region)??rawDamage));victim.lastRegion=region;victim.reaction=.32;
   victim.body[region]=Math.max(0,(victim.body[region]??100)-base*(heavy?1.7:1.1));if(region==='leftLeg'||region==='rightLeg')victim.body.legs=Math.min(victim.body.leftLeg,victim.body.rightLeg);
   if(protectedPart)this.wearEquipment(victim,slot,base*(heavy?1.8:.65));
   if(region==='rightArm')this.wearEquipment(victim,'weapon',base*(heavy?1.65:.5));
@@ -272,7 +272,7 @@ class ArenaCombat {
   if(victim.guardRegion&&!victim._automaticGuard&&victim.guardRegion!==attacker.attackRegion)return false;
   if(!victim.guardRegion&&attacker._meleeContact&&!attacker._shieldContact&&!victim._automaticGuard)return false;
   const perfect=attacker.action==='attack'&&!victim._automaticGuard&&victim.id===0&&this.time-victim.guardPressedAt<=.20&&victim.guardPressedAt>=0;
-  const cost=perfect?6:heavy?34:20;if(victim.stamina<cost){victim.stamina=0;victim.blocking=false;victim.guardPressedAt=-99;this.wearEquipment(victim,'shield',25);this.emit('break',{id:victim.id,source:attacker.id});return false;}
+  const cost=globalThis.StaffCombatV288?.cost(victim,perfect?6:heavy?34:20,'block')??(perfect?6:heavy?34:20);if(victim.stamina<cost){victim.stamina=0;victim.blocking=false;victim.guardPressedAt=-99;this.wearEquipment(victim,'shield',25);this.emit('break',{id:victim.id,source:attacker.id});return false;}
   const breaker=this.shieldBreakerHit(attacker,victim);
   victim.stamina-=cost;victim.regenDelay=.9;victim.guardFlash=.20;victim.guardImpact=heavy?1:.65;if(victim.id===0)this.stats.blocks++;
   const gp=Motion.guardPoint(victim),c=Math.cos(victim.angle),s=Math.sin(victim.angle);victim.guardImpactX=point?clamp(((point.x-victim.x)*c-(point.z-victim.z)*s-gp.x)/.4,-1,1):0;victim.guardImpactY=point?clamp((point.y-(victim.navHeight||0)-gp.y)/.56,-1,1):0;
@@ -300,7 +300,7 @@ class ArenaCombat {
   const f=this.fighters[id];if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.cooldown>0||f.stunUntil>this.time)return false;
   const counterTarget=this.fighters[f.counterTarget],lockedTarget=id===0?this.fighters[this.lockedTarget]:null;
   const counter=!heavy&&f.counterUntil>this.time&&this.enemy(f,counterTarget)&&distance(f,counterTarget)<=(Weapons[f.weapon]?.range||1.2)+.15&&(!this.enemy(f,lockedTarget)||lockedTarget.id===counterTarget.id);
-  const cost=heavy?27:13;if(f.stamina<cost){if(id===0)this.emit('tired');return false;}
+  const cost=globalThis.StaffCombatV288?.attackCost(this,f,heavy?27:13,heavy)??(heavy?27:13);if(f.stamina<cost){if(id===0)this.emit('tired');return false;}
   f.chain=!heavy&&this.time-f.lastAttack<1.4?f.chain%3+1:1;f.lastAttack=this.time;f.attackLeft=!!f.offhand&&(f.chain===2||!f.weapon);f.attackWeapon=f.attackLeft?f.offhand:f.weapon;
   f.attackRegion=Motion.regions[region]?region:'chest';f.attackProfile=Motion.profile(f.attackWeapon,heavy,id!==0);
   f.attackCounterTarget=counter?counterTarget.id:null;f.recoilSample=null;
@@ -310,8 +310,8 @@ class ArenaCombat {
   const locked=id===0?this.fighters[this.lockedTarget]:null,target=counter?counterTarget:this.enemy(f,locked)&&distance(f,locked)<3.5?locked:this.nearest(f,3.5);if(target)f.angle=Math.atan2(target.x-f.x,target.z-f.z);
   this.emit('swing',{id,heavy,kind:f.attackWeapon});return true;
  }
- dodge(id,x,z){const f=this.fighters[id];if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stamina<25||f.stunUntil>this.time)return false;
-  f.stamina-=25;f.regenDelay=.8;f.blocking=false;f.action='dodge';f.timer=0;f.duration=.46;const len=Math.hypot(x,z);f.dx=len>.01?x/len:-Math.sin(f.angle);f.dz=len>.01?z/len:-Math.cos(f.angle);this.emit('dodge',{id});return true;
+ dodge(id,x,z){const f=this.fighters[id],cost=globalThis.StaffCombatV288?.cost(f,25,'roll')??25;if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stamina<cost||f.stunUntil>this.time)return false;
+  f.stamina-=cost;f.regenDelay=.8;f.blocking=false;f.action='dodge';f.timer=0;f.duration=.46;const len=Math.hypot(x,z);f.dx=len>.01?x/len:-Math.sin(f.angle);f.dz=len>.01?z/len:-Math.cos(f.angle);this.emit('dodge',{id});return true;
  }
  throwNet(id,targetId){const f=this.fighters[id],t=this.fighters[targetId];if(this.finished||!this.enemy(f,t)||f.hp<=0||f.leftGear!=='net'||f.action!=='idle'||f.stunUntil>this.time||this.time+1e-8<f.nextNet||f.netBusy||distance(f,t)>6.2)return false;
   f.angle=Math.atan2(t.x-f.x,t.z-f.z);f.action='netcast';f.timer=0;f.duration=.9;f.blocking=false;f.nextNet=this.time+5;f.netBusy=true;
@@ -453,7 +453,7 @@ class ArenaCombat {
    const wasBlocking=f.blocking;f.blocking=f.id===0?!!input.block&&f.action==='idle'&&f.stamina>0&&this.canBlock(f):false;
    if(f.id===0&&f.action==='idle'){const mx=input.x||0,mz=input.z||0,len=Math.hypot(mx,mz);if(len>.03){const speed=(f.blocking?1.8:4.2)*(f.body.legs<30?.75:1)*(f.speedBonus||1);f.x+=mx/Math.max(1,len)*speed*dt;f.z+=mz/Math.max(1,len)*speed*dt;if(!f.blocking&&input.faceAngle===undefined)f.angle+=delta(Math.atan2(mx,mz),f.angle)*Math.min(1,dt*16);f.move=Math.min(1,len);}if(input.faceAngle!==undefined)f.angle+=delta(input.faceAngle,f.angle)*Math.min(1,dt*12);}
    else if(f.id!==0&&f.action==='idle')this.botStep(f,dt);
-   f.blockAge=f.id===0?(f.blocking?this.time-f.guardPressedAt:99):f.blocking?(wasBlocking?f.blockAge+dt:0):99;if(f.regenDelay===0&&f.action==='idle')f.stamina=Math.min(f.maxStamina||100,f.stamina+dt*(f.blocking?4:21)*.75*.65*(1+Math.min(12,Math.max(0,Number(f.combatStaminaBonus)||0))/100)*(1+(Math.min(100,Math.max(0,Number(f.combatMorale??50)))-50)/1000));if(f.blocking)f.stamina=Math.max(0,f.stamina-dt*3);f.walk+=dt*f.move*9;this.bound(f);
+   f.blockAge=f.id===0?(f.blocking?this.time-f.guardPressedAt:99):f.blocking?(wasBlocking?f.blockAge+dt:0):99;if(f.regenDelay===0&&f.action==='idle')f.stamina=Math.min(f.maxStamina||100,f.stamina+(globalThis.StaffCombatV288?.regeneration(f,dt*(f.blocking?4:21)*.75*.65*(1+Math.min(12,Math.max(0,Number(f.combatStaminaBonus)||0))/100)*(1+(Math.min(100,Math.max(0,Number(f.combatMorale??50)))-50)/1000))??(dt*(f.blocking?4:21)*.75*.65*(1+Math.min(12,Math.max(0,Number(f.combatStaminaBonus)||0))/100)*(1+(Math.min(100,Math.max(0,Number(f.combatMorale??50)))-50)/1000))));if(f.blocking)f.stamina=Math.max(0,f.stamina-dt*3);f.walk+=dt*f.move*9;this.bound(f);
   }
   for(let i=0;i<this.fighters.length;i++)for(let j=i+1;j<this.fighters.length;j++){const a=this.fighters[i],b=this.fighters[j];if(a.hp<=0||b.hp<=0||a.navJump?.airborne||b.navJump?.airborne)continue;const d=distance(a,b);if(d<.82){const x=d>.001?(a.x-b.x)/d:1,z=d>.001?(a.z-b.z)/d:0,k=(.82-d)*.5;a.x+=x*k;a.z+=z*k;b.x-=x*k;b.z-=z*k;this.bound(a);this.bound(b);}}
   if(this.alive(0)===0||(this.mode!=='survival'&&!this.fighters.some(f=>f.team!==0&&f.hp>0))){this.finished=true;this.result=this.alive(0)>0?'win':'loss';this.emit('finish',{result:this.result});}
@@ -479,7 +479,8 @@ const install=(Combat,Classes)=>{
   const f=this.fighters[id];if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stunUntil>this.time)return false;
   index=index===undefined?(f.pickupHand==='offhand'?1:0):index;if(index!==0&&index!==1)return false;
   const kind=this.specialKind(f,index),slot=index?'offhand':'weapon',w=f[slot];
-  if(!kind||f.stamina<26||(f.skillReady?.[index]||0)>this.time)return false;
+  const staffSpecialCost288=globalThis.StaffCombatV288?.specialCost(f,26,kind,w,index)??26;
+  if(!kind||f.stamina<staffSpecialCost288||(f.skillReady?.[index]||0)>this.time)return false;
   const range=kind==='net'?6.2:kind==='throw'?(['gladius','sica'].includes(w)?4.5:9):kind==='pull'?Infinity:2.2;
   const locked=this.fighters[id===0?this.lockedTarget:f.target];
   const t=this.enemy(f,locked)&&distance(f,locked)<=range?locked:kind==='pull'?null:this.nearest(f,range);
@@ -488,13 +489,13 @@ const install=(Combat,Classes)=>{
   if(kind==='net'){if(!net.call(this,id,t.id))return false;f.nextNet=this.time+8;}
   else if(kind==='throw'){
    // Pay before removing stamina-granting gear changes the capacity.
-   f.stamina=Math.max(0,f.stamina-26);
+   f.stamina=Math.max(0,f.stamina-staffSpecialCost288);
    const sword=['gladius','sica'].includes(w),base=(id===0?20:this.difficulty==='easy'?11:15.5)*(f.body[index?'leftArm':'rightArm']<30?.8:1);
    this.projectiles.push({id:++this.projectileSequence,owner:id,kind:w,itemEntry:f.equipment?.[slot],durability:f.wear[slot],x:f.x,z:f.z,dx:Math.sin(f.angle),dz:Math.cos(f.angle),age:0,launched:false,maxAge:.27+range/12,baseDamage:sword?base:(id===0?30:20),attackBonus:f.attackBonus});
    f[slot]=null;if(f.equipment)delete f.equipment[slot];root.LudusLoadout?.refresh(f);f.action='spearcast';f.timer=0;f.duration=.7;f.attackLeft=!!index;
   }else if(kind==='bash'){f.action='bash';f.timer=0;f.duration=.6;f.specialTarget=t.id;f.specialDone=false;}
   else {f.action='hook';f.timer=0;f.duration=kind==='pull'?4:.45;f.attackLeft=!!index;f.skillMotion={kind,target:t.id,age:0,slot,done:false};}
-  f.blocking=false;if(kind!=='throw')f.stamina=Math.max(0,f.stamina-26);f.regenDelay=.9;f.skillReady??=[0,0];f.skillReady[index]=this.time+8;this.emit('special',{id,target:t.id,kind});return true;
+  f.blocking=false;if(kind!=='throw')f.stamina=Math.max(0,f.stamina-staffSpecialCost288);f.regenDelay=.9;f.skillReady??=[0,0];f.skillReady[index]=this.time+8;this.emit('special',{id,target:t.id,kind});return true;
  };
  p.throwNet=function(id,target){const f=this.fighters[id];if(!f||f.leftGear!=='net')return false;if(id===0)this.lockedTarget=target;else f.target=target;return this.special(id,1);};
  p.tick=function(dt,input={}){
@@ -763,7 +764,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
    base*=attack/Math.max(.000001,a.attackBonus??1)*Math.max(.01,power/reference);
   }
   if(v.action==='idle'&&this.random()<clamp((t.dodge_rate||0)/100,0,.2)){v.passiveEvade=.36;this.emit('evade',{id:v.id,source:a.id,passive:true});if(v.id===0)this.stats.dodges++;return true;}
-  const critical=this.random()<clamp(((s.critical_rate||0)-(t.critical_resistance||0))/100,0,.35);
+  const rawCritical=clamp(((s.critical_rate||0)-(t.critical_resistance||0))/100,0,.35),critical=this.random()<(globalThis.StaffCombatV288?.criticalChance(a,rawCritical)??rawCritical);
   const piercing=['spear','trident','trident_gladiator','scissor','halberd'].includes(a.attackWeapon||a.weapon),projectile=['spearcast','swordcast','throw'].includes(a.action)||a.itemProjectile;
   let resistance=(t.damage_reduction||0)+(projectile?t.projectile_resistance||0:piercing?t.pierce_resistance||0:t.slash_resistance||0);
   base*=1-clamp(resistance/100,0,.55);
@@ -772,7 +773,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
   base*=defense/Math.max(.1,defense-itemDefense*clamp((s.armor_penetration||0)/100,0,.6));
   base*=clamp(.8+this.random()*.2+(s.minimum_damage||0)/100,.8,1);
   if(critical){base*=1+clamp(.5+((s.critical_damage||0)-(t.critical_damage_reduction||0))/100,.1,1.2);this.emit('critical',{id:v.id,source:a.id});}
-  const hit=damage.call(this,a,v,base,region,heavy,point);
+  let hit;const oldCritical288=a.staffCriticalHitV288;a.staffCriticalHitV288=critical;try{hit=damage.call(this,a,v,base,region,heavy,point);}finally{if(oldCritical288===undefined)delete a.staffCriticalHitV288;else a.staffCriticalHitV288=oldCritical288;}
   if(hit&&v.hp>0&&['hurt','knocked'].includes(v.action))v.duration/=1+clamp((v.itemStats?.recovery_speed||0)/100,0,.3);
   return hit;
  };
@@ -797,7 +798,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=LudusItemSystem;
   const before=this.fighters.map(f=>({x:f.x,z:f.z,angle:f.angle,action:f.action,delay:f.regenDelay}));tick.call(this,dt,input);
   if(this.finished)return;
   for(const f of this.fighters){if(f.hp<=0)continue;const s=f.itemStats||{},b=before[f.id];
-   if(f.action==='idle'&&f.regenDelay===0){f.hp=Math.min(f.maxHp,f.hp+dt*clamp(s.hp_regeneration||0,0,2));f.stamina=Math.min(f.maxStamina||100,f.stamina+dt*clamp(s.stamina_regeneration||0,0,8)*.65*(1+Math.min(12,Math.max(0,Number(f.combatStaminaBonus)||0))/100)*(1+(Math.min(100,Math.max(0,Number(f.combatMorale??50)))-50)/1000));}
+   if(f.action==='idle'&&f.regenDelay===0){f.hp=Math.min(f.maxHp,f.hp+dt*clamp(s.hp_regeneration||0,0,2));f.stamina=Math.min(f.maxStamina||100,f.stamina+(globalThis.StaffCombatV288?.regeneration(f,dt*clamp(s.stamina_regeneration||0,0,8)*.65*(1+Math.min(12,Math.max(0,Number(f.combatStaminaBonus)||0))/100)*(1+(Math.min(100,Math.max(0,Number(f.combatMorale??50)))-50)/1000))??(dt*clamp(s.stamina_regeneration||0,0,8)*.65*(1+Math.min(12,Math.max(0,Number(f.combatStaminaBonus)||0))/100)*(1+(Math.min(100,Math.max(0,Number(f.combatMorale??50)))-50)/1000))));}
    if(b.action==='dodge'&&f.action==='dodge'){const k=clamp((s.dodge_distance||0)/100,0,.25);f.x+=(f.x-b.x)*k;f.z+=(f.z-b.z)*k;}
    if(f.action==='idle'&&b.action==='idle'){const moving=Math.hypot(f.x-b.x,f.z-b.z)>.001;f.itemAcceleration=moving?Math.min(1,(f.itemAcceleration||0)+dt*(3+clamp(s.acceleration||0,0,30)/5)):0;
     if(moving){const k=.85+.15*f.itemAcceleration;f.x=b.x+(f.x-b.x)*k;f.z=b.z+(f.z-b.z)*k;}

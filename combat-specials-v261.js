@@ -31,11 +31,11 @@
     if(ok&&k==='net'){f.activeNetHand261=index;f.attackLeft=!!index;this.nets.at(-1).hand=index;}
     return ok;
    }
-   if(this.finished||f.hp<=0||f.action!=='idle'||f.cooldown>0||f.stunUntil>this.time||f.stamina<cost(k)||(f.skillReady?.[index]||0)>this.time)return false;
+   if(this.finished||f.hp<=0||f.action!=='idle'||f.cooldown>0||f.stunUntil>this.time||f.stamina<(root.StaffCombatV288?.specialCost(f,cost(k),k,index?f.offhand:f.weapon,index)??cost(k))||(f.skillReady?.[index]||0)>this.time)return false;
    const w=index?f.offhand:f.weapon,r=range(k,w),locked=this.fighters[id===0?this.lockedTarget:f.target];
    const t=this.enemy(f,locked)&&Math.hypot(locked.x-f.x,locked.z-f.z)<=r?locked:this.nearest(f,r);if(!t)return false;
-   if(!this.attack(id,false,'chest'))return false;
-   f.stamina-=k==='double'?0:13;f.angle=Math.atan2(t.x-f.x,t.z-f.z);f.attackLeft=!!index;f.attackWeapon=w;f.attackCounterTarget=null;
+   let started;f.staffSpecialPreparingV288=true;try{started=this.attack(id,false,'chest');}finally{delete f.staffSpecialPreparingV288;}if(!started)return false;
+   f.stamina+=13-(root.StaffCombatV288?.specialCost(f,k==='double'?13:26,k,w,index)??(k==='double'?13:26));f.angle=Math.atan2(t.x-f.x,t.z-f.z);f.attackLeft=!!index;f.attackWeapon=w;f.attackCounterTarget=null;
    f.handSpecial261={kind:k,index,weapon:w,target:t.id,start:this.time,stage:0};
    f.skillReady??=[0,0];f.skillReady[index]=this.time+8;
    const p=root.ArenaMotion.profile(w,false,id!==0);f.attackProfile={...p,wind:k==='double'?.12:.30,active:.10,recover:.12,duration:k==='double'?.34:.52};
@@ -48,8 +48,8 @@
     if(a.hp<=0||a.stunUntil>this.time||!['attack','idle'].includes(a.action)||(s.index?a.offhand:a.weapon)!==s.weapon){delete a.handSpecial261;continue;}
     const elapsed=this.time-s.start;
     if(s.kind==='double'&&s.stage===1&&elapsed>=.34){
-     if(a.stamina<6.5){delete a.handSpecial261;continue;}
-     a.stamina-=6.5;a.action='attack';a.timer=0;a.chain=2;a.hitVictims=new Set(this.fighters.map(v=>v.id));a.hitDone=false;a.attackSettled=true;a.duration=.34;s.stage=2;
+     const followCost288=root.StaffCombatV288?.specialCost(a,6.5,'double',s.weapon,s.index)??6.5;if(a.stamina<followCost288){delete a.handSpecial261;continue;}
+     a.stamina-=followCost288;a.action='attack';a.timer=0;a.chain=2;a.hitVictims=new Set(this.fighters.map(v=>v.id));a.hitDone=false;a.attackSettled=true;a.duration=.34;s.stage=2;
     }
     const due=s.kind==='double'?(s.stage===0?.17:s.stage===2?.51:Infinity):.35;
     if(elapsed>=due){

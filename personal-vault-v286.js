@@ -20,12 +20,12 @@
   img.onerror=()=>{img.remove();box.append(el('span','personal-vault-art-fallback',nameOf(row)));};box.append(img);return box;
  }
  function locationOf(row){
-  if(row.type==='papyrus')return (rarity[row.rarity]||'Papirüs')+' · '+row.role_name;
+  if(row.type==='papyrus')return (rarity[row.rarity]||'Papirüs')+' · '+(row.role_title||row.role_name);
   if(row.type==='equipment')return row.on_market?'Pazarda':row.in_battle?'Savaşta':row.equipped_by?'Takılı · '+(row.equipped_name||'Gladyatör'):row.in_clan_roster?'Klan kadrosunda':'Kasada';
   if(row.retired)return 'Eski stok';
   return row.type==='resource'?(row.stage==='raw'?'Hammadde':'İşlenmiş malzeme'):row.type==='food'?'Erzak':row.type==='stone'?'Taş kesesi':'Bakiye';
  }
- function bonusPreview(row){return (row.effects||[]).map(e=>{const before=Number(row.bonuses?.find(b=>b.key===e.key)?.percent)||0;return e.label+': +%'+fmt(before)+' → +%'+fmt(before+Number(e.percent));}).join(' · ');}
+ function bonusPreview(row){if(row.content_id)return row.effect_text||'';return (row.effects||[]).map(e=>{const before=Number(row.bonuses?.find(b=>b.key===e.key)?.percent)||0;return e.label+': +%'+fmt(before)+' → +%'+fmt(before+Number(e.percent));}).join(' · ');}
  function create(ctx){
   let state=null,category='all',page=0,role=null,loading=false,busy=false,serial=0,owner=null,previousFocus=null,selected=null,detailPage=0;
   const modal=el('section','personal-vault');modal.id='personalVaultModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','personalVaultTitle');
@@ -78,8 +78,11 @@
    text.append(el('p','',locationOf(row)),el('p','',fmt(row.quantity)+(row.type==='money'?' denarius':' adet')));
    if(row.type==='papyrus'){
     text.append(el('p','vault-bonus-preview',bonusPreview(row)||'Bu çalışanın papirüs bonusu henüz belirlenmedi.'));
-    if(row.unique_id)text.append(el('p','','Sunucuda tek nüsha · İlk bulan: '+row.finder+' · '+new Date(row.found_at).toLocaleDateString('tr-TR',{timeZone:'Europe/Istanbul'})));
-    if(row.effects?.length)text.append(el('p','',row.unique_id?'Öğrenildiğinde pasif bonus kazanılır.':'Öğrenildiğinde +0,2 overall kazanılır.'));
+    if(row.unique_id||row.rarity==='unique')text.append(el('p','','Sunucuda tek nüsha · İlk bulan: '+(row.finder||'—')+(row.found_at?' · '+new Date(row.found_at).toLocaleDateString('tr-TR',{timeZone:'Europe/Istanbul'}):'')));
+    if(row.content_id){
+     text.append(el('p','',row.learned?'Bu bilgi zaten öğrenildi.':'Okutulduğunda bir nüsha tüketilir; bilgi kalıcı olarak öğrenilir.'));
+     if(row.runtime_status&&row.runtime_status!=='active')text.append(el('p','','Bu etkinin ilgili oyun özelliği henüz kullanıma açılmadı.'));
+    }else if(row.effects?.length)text.append(el('p','',row.unique_id?'Öğrenildiğinde pasif bonus kazanılır.':'Öğrenildiğinde +0,2 overall kazanılır.'));
    }
    if(row.type==='equipment'){
     const natural=row.natural_stats&&Object.keys(row.natural_stats).length?row.natural_stats:row.base_stats;
@@ -90,8 +93,9 @@
    }
    const actions=el('div','personal-vault-detail-actions');actions.append(button('Kapat',()=>detail.close()));
    if(row.type==='papyrus'){
-    actions.append(button(row.role_name+' profili',()=>{detail.close();close();ctx.staff.open(row.role);}));
-    const read=button(row.effects?.length?'Papirüsü okut':'Henüz okunamaz',()=>learn(row),'personal-vault-learn');read.disabled=!row.effects?.length||busy||!!ctx.staff.pendingRead;actions.append(read);
+    actions.append(button((row.role_title||row.role_name)+' profili',()=>{detail.close();close();ctx.staff.open(row.role);}));
+    const readable=row.content_id?row.available:!!row.effects?.length;
+    const read=button(row.learned?'Zaten öğrenildi':readable?'Papirüsü okut':'Henüz okunamaz',()=>learn(row),'personal-vault-learn');read.disabled=!readable||busy||!!ctx.staff.pendingRead;actions.append(read);
    }
    detail.append(actions);if(!detail.open)detail.showModal();actions.firstElementChild.focus({preventScroll:true});
   }
