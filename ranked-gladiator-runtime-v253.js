@@ -298,7 +298,7 @@ class ArenaCombat {
   else if(kind==='hook'){if(!t.shield||t.shieldHeldBy!==null||t.action==='dodge')return false;f.hookTarget=t.id;t.shieldHeldBy=f.id;t.blocking=false;f.action='hook';f.duration=2;}
   else if(kind==='bash'){if(!this.canBlock(f))return false;f.action='bash';f.duration=.6;f.specialTarget=t.id;f.specialDone=false;}
   else{if(!this.attack(id,true,'chest'))return false;f.lunging=true;f.specialUntil=this.time+6;return true;}
-  f.timer=0;f.blocking=false;f.stamina-=20;f.regenDelay=.9;f.specialUntil=this.time+6;this.emit('special',{id,target:t.id,kind});return true;
+  f.timer=0;f.blocking=false;f.stamina-=20;f.regenDelay=f.staffChefV288?f.staffChefV288.delay(.9):.9;f.specialUntil=this.time+6;this.emit('special',{id,target:t.id,kind});return true;
  }
  wearEquipment(f,slot,amount){if(!f[slot])return;f.wear[slot]=Math.max(0,f.wear[slot]-amount);if(f.wear[slot]===0)this.dropEquipment(f,slot,true);}
  damage(attacker,victim,base,region='chest',heavy=false,point=null){
@@ -345,7 +345,7 @@ class ArenaCombat {
   const perfect=attacker.action==='attack'&&!victim._automaticGuard&&victim.id===0&&this.time-victim.guardPressedAt<=.20&&victim.guardPressedAt>=0;
   const cost=perfect?6:heavy?34:20;if(victim.stamina<cost){victim.stamina=0;victim.blocking=false;victim.guardPressedAt=-99;this.wearEquipment(victim,'shield',25);this.emit('break',{id:victim.id,source:attacker.id});return false;}
   const breaker=this.shieldBreakerHit(attacker,victim);
-  victim.stamina-=cost;victim.regenDelay=.9;victim.guardFlash=.20;victim.guardImpact=heavy?1:.65;if(victim.id===0)this.stats.blocks++;
+  victim.stamina-=cost;victim.regenDelay=victim.staffChefV288?victim.staffChefV288.delay(.9):.9;victim.guardFlash=.20;victim.guardImpact=heavy?1:.65;if(victim.id===0)this.stats.blocks++;
   const gp=Motion.guardPoint(victim),c=Math.cos(victim.angle),s=Math.sin(victim.angle);victim.guardImpactX=point?clamp(((point.x-victim.x)*c-(point.z-victim.z)*s-gp.x)/.4,-1,1):0;victim.guardImpactY=point?clamp((point.y-(victim.navHeight||0)-gp.y)/.56,-1,1):0;
   attacker.strikeConnected=true;this.deflectAttack(attacker,victim,perfect);
   if(perfect){victim.guardPressedAt=-99;this.stats.parries++;this.wearEquipment(attacker,attacker.attackLeft?'offhand':'weapon',heavy?26:15);this.emit('parry',{id:victim.id,source:attacker.id,point,perfect:true});}
@@ -377,12 +377,12 @@ class ArenaCombat {
   f.attackCounterTarget=counter?counterTarget.id:null;f.recoilSample=null;
   if(counter){f.attackProfile.wind*=.55;f.attackProfile.recover*=.85;f.attackProfile.duration=f.attackProfile.wind+f.attackProfile.active+f.attackProfile.recover;f.counterUntil=0;f.counterTarget=null;}
   f.duration=f.attackProfile.duration;f.hitTime=f.attackProfile.wind;f.hitDone=false;f.hitVictims=new Set();f.strikeConnected=false;f.attackSettled=false;f.lunging=false;
-  f.stamina-=cost;f.regenDelay=.9;f.blocking=false;f.action='attack';f.attackKind=heavy?'heavy':'light';f.timer=0;
+  f.stamina-=cost;f.regenDelay=f.staffChefV288?f.staffChefV288.delay(.9):.9;f.blocking=false;f.action='attack';f.attackKind=heavy?'heavy':'light';f.timer=0;
   const locked=id===0?this.fighters[this.lockedTarget]:null,target=counter?counterTarget:this.enemy(f,locked)&&distance(f,locked)<3.5?locked:this.nearest(f,3.5);if(target)f.angle=Math.atan2(target.x-f.x,target.z-f.z);
   this.emit('swing',{id,heavy,kind:f.attackWeapon});return true;
  }
  dodge(id,x,z){const f=this.fighters[id];if(this.finished||!f||f.hp<=0||f.action!=='idle'||f.stamina<25||f.stunUntil>this.time)return false;
-  f.stamina-=25;f.regenDelay=.8;f.blocking=false;f.action='dodge';f.timer=0;f.duration=.46;const len=Math.hypot(x,z);f.dx=len>.01?x/len:-Math.sin(f.angle);f.dz=len>.01?z/len:-Math.cos(f.angle);this.emit('dodge',{id});return true;
+  f.stamina-=25;f.regenDelay=f.staffChefV288?f.staffChefV288.delay(.8):.8;f.blocking=false;f.action='dodge';f.timer=0;f.duration=.46;const len=Math.hypot(x,z);f.dx=len>.01?x/len:-Math.sin(f.angle);f.dz=len>.01?z/len:-Math.cos(f.angle);this.emit('dodge',{id});return true;
  }
  throwNet(id,targetId){const f=this.fighters[id],t=this.fighters[targetId];if(this.finished||!this.enemy(f,t)||f.hp<=0||f.leftGear!=='net'||f.action!=='idle'||f.stunUntil>this.time||this.time+1e-8<f.nextNet||f.netBusy||distance(f,t)>6.2)return false;
   f.angle=Math.atan2(t.x-f.x,t.z-f.z);f.action='netcast';f.timer=0;f.duration=.9;f.blocking=false;f.nextNet=this.time+5;f.netBusy=true;
@@ -565,7 +565,7 @@ const install=(Combat,Classes)=>{
    f[slot]=null;if(f.equipment)delete f.equipment[slot];root.LudusLoadout?.refresh(f);f.action='spearcast';f.timer=0;f.duration=.7;f.attackLeft=!!index;
   }else if(kind==='bash'){f.action='bash';f.timer=0;f.duration=.6;f.specialTarget=t.id;f.specialDone=false;}
   else {f.action='hook';f.timer=0;f.duration=kind==='pull'?4:.45;f.attackLeft=!!index;f.skillMotion={kind,target:t.id,age:0,slot,done:false};}
-  f.blocking=false;if(kind!=='throw')f.stamina=Math.max(0,f.stamina-26);f.regenDelay=.9;f.skillReady??=[0,0];f.skillReady[index]=this.time+8;this.emit('special',{id,target:t.id,kind});return true;
+  f.blocking=false;if(kind!=='throw')f.stamina=Math.max(0,f.stamina-26);f.regenDelay=f.staffChefV288?f.staffChefV288.delay(.9):.9;f.skillReady??=[0,0];f.skillReady[index]=this.time+8;this.emit('special',{id,target:t.id,kind});return true;
  };
  p.throwNet=function(id,target){const f=this.fighters[id];if(!f||f.leftGear!=='net')return false;if(id===0)this.lockedTarget=target;else f.target=target;return this.special(id,1);};
  p.tick=function(dt,input={}){
