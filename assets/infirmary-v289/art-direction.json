@@ -1,0 +1,88 @@
+{
+  "version": "infirmary-photo289",
+  "generator": "OpenAI built-in image_gen, one independent generation per item",
+  "format": "WebP, 320 × 320, alpha preserved, quality 84",
+  "style": "Photoreal studio product photography matching resource-icons-v95; complete compact objects centered with transparent margins; three-quarter view; neutral soft light from upper left; restrained contact shadow; Roman AD80 natural materials and unornamented handmade containers. No text, labels, UI, modern props, or fantasy effects.",
+  "processing": "Only proportional resizing and WebP encoding; no cropping or programmatic content edits. Original generated PNGs preserved outside the repository.",
+  "assets": [
+    {
+      "file": "beeswax-ointment.webp",
+      "label": "Balmumu Merhemi",
+      "subject": "Open terracotta jar of golden beeswax salve with two raw wax pieces.",
+      "bytes": 21570
+    },
+    {
+      "file": "laurel-ointment.webp",
+      "label": "Defne Merhemi",
+      "subject": "Open terracotta jar of muted olive-green salve with bay leaves.",
+      "bytes": 21434
+    },
+    {
+      "file": "honey-vinegar-syrup.webp",
+      "label": "Ballı Sirke Şurubu",
+      "subject": "Ancient glass flask of golden syrup with a small honeycomb piece.",
+      "bytes": 18906
+    },
+    {
+      "file": "fig-syrup.webp",
+      "label": "İncir Şurubu",
+      "subject": "Ancient glass flask of dark reddish-brown fig syrup with a cut fig.",
+      "bytes": 19576
+    },
+    {
+      "file": "wood-splint.webp",
+      "label": "Tahta Atel",
+      "subject": "Two smooth ash-wood splints with rounded ends and two flax ties.",
+      "bytes": 14114
+    },
+    {
+      "file": "linen-bandage.webp",
+      "label": "Sargı Bezi",
+      "subject": "Unbleached ivory linen bandage roll with visible woven layers and a short loose end.",
+      "bytes": 25056
+    },
+    {
+      "file": "vinegar-sponge.webp",
+      "label": "Sirkeli Sünger",
+      "subject": "Lightly damp natural sponge in a terracotta saucer with a small vinegar cruet.",
+      "bytes": 21492
+    },
+    {
+      "file": "beeswax.webp",
+      "label": "Balmumu",
+      "subject": "Three irregular golden raw beeswax chunks, no liquid or container.",
+      "bytes": 24538
+    },
+    {
+      "file": "laurel.webp",
+      "label": "Defne Yaprağı",
+      "subject": "A natural five-leaf bay laurel sprig.",
+      "bytes": 21134
+    },
+    {
+      "file": "honey.webp",
+      "label": "Bal",
+      "subject": "Terracotta bowl of amber honey with honeycomb and a short wooden spoon.",
+      "bytes": 26894
+    },
+    {
+      "file": "fig.webp",
+      "label": "İncir",
+      "subject": "A whole fresh purple fig and a cut half showing rosy seeded flesh.",
+      "bytes": 23264
+    },
+    {
+      "file": "wine-vinegar.webp",
+      "label": "Şarap Sirkesi",
+      "subject": "Plain terracotta vinegar cruet with one handle and a tiny cup of reddish-brown vinegar.",
+      "bytes": 19328
+    },
+    {
+      "file": "sponge.webp",
+      "label": "Doğal Sünger",
+      "subject": "One dry natural tan Mediterranean sea sponge, without any container.",
+      "bytes": 27682
+    }
+  ],
+  "bytes": 284988
+}

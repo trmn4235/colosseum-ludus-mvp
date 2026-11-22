@@ -108,7 +108,7 @@
     if(window.CaravanVictory?.show(result))overlay.hidden=true;
     else show('Kervan baskını başarılı','Ganimetin '+(result.delivered_at?'depomuza taşındı.':'güvende; depoda yer açılınca taşınacak.')+' Yeni baskın 1 saat sonra.',[returnLink()],'assets/caravan-v124/success.webp');
    }
-   else show('Kervan baskını başarısız','Gladyatörlerin 12 saat revirde dinlenecek. Yeni baskın 1 saat sonra.',[returnLink()],'assets/caravan-v124/failure.webp');
+   else show('Kervan baskını başarısız','Yaralanan gladyatörlerin için Revir’i kontrol et. Yeni baskın 1 saat sonra.',[returnLink()],'assets/caravan-v124/failure.webp');
   }catch(e){show('Sonuç kaydedilemedi','Savaş kaydı cihazında saklandı. '+(e.message||'Bağlantını kontrol et.'),[action('Sonucu yeniden kaydet',finish,'primary'),returnLink()],art);}finally{saving=false;}
  }
  async function init(){

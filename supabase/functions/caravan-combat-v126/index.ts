@@ -6,6 +6,8 @@ import './combat-curves-v163.js';
 import './combat-motion-v163.js';
 import './caravan-simulation-v163.js';
 import './caravan-simulation-v168.js';
+import './injury-events-v289.js';
+(globalThis as any).InjuryEventsV289.install((globalThis as any).ArenaCombat);
 
 const cors = {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info','Content-Type':'application/json'};
 const url = Deno.env.get('SUPABASE_URL')!;
@@ -35,9 +37,11 @@ Deno.serve(async req=>{
   const engine=ticket.encounter?.rules===168?(globalThis as any).CaravanSimulationV168:ticket.encounter?.rules===163?(globalThis as any).CaravanSimulationV163:ticket.encounter?.rules===127?(globalThis as any).CaravanSimulationV127:(globalThis as any).CaravanSimulation;
   const sim=engine.replay(ticket,body.commands,body.steps);
   if(!sim.combat.finished&&body.abandon!==true)throw Error('Savaş henüz bitmedi.');
-  const result=await request('/rest/v1/rpc/ludus_caravan_verified_v162','Bearer '+service,service,{
+  const result=await request('/rest/v1/rpc/ludus_caravan_verified_v289','Bearer '+service,service,{
    p_owner:user.id,p_raid:ticket.id,p_won:body.abandon!==true&&sim.combat.result==='win',p_seconds:sim.steps/30,
-   p_stats:(globalThis as any).CaravanCareer.participants(sim)
+   p_stats:(globalThis as any).CaravanCareer.participants(sim),
+   p_evidence:(globalThis as any).InjuryEventsV289.participants(sim),
+   p_completed:body.abandon!==true&&sim.combat.finished
   });
   return reply({result});
  }catch(e){return reply({error:e instanceof Error?e.message:'Savaş doğrulanamadı.'},400);}

@@ -1,0 +1,177 @@
+#infirmaryModal[hidden],#infirmaryModal [hidden]{display:none!important}
+#infirmaryModal{position:fixed;inset:0;z-index:192;display:grid;grid-template-rows:50px 52px minmax(0,1fr) 30px;padding:0 max(20px,env(safe-area-inset-right)) max(3px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));box-sizing:border-box;overflow:hidden;background:var(--theme-canvas,#f7f6f2);color:var(--theme-text,#30232a);font:clamp(12px,1.05vw,17px)/1.3 Arial,sans-serif}
+#infirmaryModal *{box-sizing:border-box;min-width:0}
+#infirmaryModal button{font:inherit;color:inherit;cursor:pointer;min-height:0;padding:0;border:0;box-shadow:none;text-shadow:none;background:transparent}
+#infirmaryModal button:disabled{cursor:default;opacity:.5}
+#infirmaryModal button:focus-visible{outline:2px solid var(--theme-accent,#b38b43);outline-offset:-2px}
+#infirmaryModal h1,#infirmaryModal h2,#infirmaryModal h3,#infirmaryModal p{margin:0;letter-spacing:normal;text-transform:none}
+#infirmaryModal .inf289-header{display:flex!important;position:relative!important;inset:auto!important;align-items:center;gap:16px;height:auto!important;min-height:0!important;margin:0 -20px;padding:0 20px;background:var(--theme-header,#591823)!important;color:var(--theme-header-ink,#ead294)!important;box-shadow:none!important;transform:none!important;pointer-events:auto}
+#infirmaryModal .inf289-header h1{display:block!important;color:inherit!important;font:600 22px/1.1 Arial,sans-serif!important;white-space:nowrap}
+/* The shared theme gives headings an important color inside this layer. */
+@layer ludus-theme-v275{#infirmaryModal .inf289-header h1{color:var(--theme-header-ink,#ead294)!important}}
+#infirmaryModal .inf289-back{font:28px/1 Arial,sans-serif!important;width:36px;height:30px;border-right:1px solid #ffffff55!important;border-radius:0!important;color:inherit!important;flex:none}
+#infirmaryModal .inf289-brand{font-size:.7em;letter-spacing:2px;margin-left:auto}
+#infirmaryModal .inf289-production{border:1px solid #ffffff66!important;border-radius:4px;padding:6px 12px!important;color:inherit!important;white-space:nowrap}
+#infirmaryModal .inf289-filters{display:flex;align-items:stretch;gap:16px;border-bottom:1px solid var(--theme-border,#b8a27d);min-height:0}
+#infirmaryModal .inf289-filters button{padding:0 6px;border-bottom:3px solid transparent!important;border-radius:0;white-space:nowrap}
+#infirmaryModal .inf289-filters button[aria-pressed=true]{font-weight:700;color:var(--theme-title,#591823);border-bottom-color:var(--theme-title,#591823)!important}
+#infirmaryModal .inf289-duration-key{margin-left:auto;align-self:center;font-size:.76em;white-space:nowrap;color:var(--theme-muted,#74656c)}
+#infirmaryModal .inf289-body{display:grid;grid-template-columns:minmax(0,30%) minmax(0,1fr);gap:22px;padding:18px 0;min-height:0;overflow:hidden}
+#infirmaryModal .inf289-list{display:grid;grid-template-rows:28px minmax(0,1fr) 28px;gap:8px;border-right:1px solid var(--theme-border,#b8a27d);padding-right:20px;min-height:0}
+#infirmaryModal h2{font:700 1.15em/1.2 Arial,sans-serif}
+#infirmaryModal h3{font:700 1em/1.2 Arial,sans-serif}
+#infirmaryModal .inf289-patients{display:grid;grid-template-rows:repeat(var(--patient-rows),minmax(0,1fr));gap:5px;min-height:0}
+#infirmaryModal .inf289-patient{width:100%;text-align:left;border:1px solid var(--theme-border,#b8a27d)!important;border-radius:4px;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:0;overflow:hidden}
+#infirmaryModal .inf289-patient[aria-pressed=true]{background:var(--theme-selected,#f2e9e8);border-color:var(--theme-title,#591823)!important}
+#infirmaryModal .inf289-patient>strong,#infirmaryModal .inf289-patient>span,#infirmaryModal .inf289-patient>small{flex:none;line-height:1.2}
+#infirmaryModal .inf289-patient strong{font-size:1em;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+#infirmaryModal .inf289-injury-name{font-size:.85em;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+#infirmaryModal .inf289-patient-state{font-size:.72em;color:var(--theme-muted,#74656c);white-space:nowrap}
+#infirmaryModal .inf289-pager{display:flex;align-items:center;justify-content:center;gap:14px;font-size:.78em;min-height:0}
+#infirmaryModal .inf289-pager button{border:1px solid var(--theme-border,#b8a27d)!important;border-radius:4px;width:25px;height:22px;padding:0;font-size:18px;line-height:1}
+#infirmaryModal .inf289-detail{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-height:0;gap:18px}
+#infirmaryModal .inf289-patient-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid var(--theme-border,#b8a27d);padding-bottom:16px}
+#infirmaryModal .inf289-patient-heading h2{font-size:1.5em}
+#infirmaryModal .inf289-patient-heading p{font-size:.92em;margin-top:5px}
+#infirmaryModal .inf289-recovery{display:block;font-size:.75em;color:var(--theme-gem-text,#285f43);line-height:1.25;margin-top:5px}
+#infirmaryModal .inf289-severity{border:1px solid var(--theme-border,#b8a27d);border-radius:4px;padding:6px 10px;white-space:nowrap;font-weight:700;font-size:.86em}
+#infirmaryModal [data-severity=heavy]{color:var(--theme-title,#591823)}
+#infirmaryModal .inf289-preview-columns{display:grid;grid-template-columns:minmax(0,52%) minmax(0,1fr);gap:22px;min-height:0}
+#infirmaryModal .inf289-materials,#infirmaryModal .inf289-effects{min-height:0;display:flex;flex-direction:column;gap:12px}
+#infirmaryModal .inf289-effects{border-left:1px solid var(--theme-border,#b8a27d);padding-left:20px}
+#infirmaryModal .inf289-material-table{display:flex;flex-direction:column;gap:0}
+#infirmaryModal .inf289-material-row{display:grid;grid-template-columns:minmax(0,1fr) 60px 60px;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #8b7c7b44;font-size:.88em}
+#infirmaryModal .inf289-material-row>span:not(:first-child){text-align:right;font-weight:700}
+#infirmaryModal .inf289-material-head{font-size:.72em;color:var(--theme-muted,#74656c);padding:5px 0}
+#infirmaryModal .inf289-material-row[data-missing=true]>span:last-child{color:var(--theme-title,#591823);text-decoration:underline}
+#infirmaryModal .inf289-material-note{margin-top:auto;font-size:.75em;line-height:1.3;color:var(--theme-muted,#74656c)}
+#infirmaryModal .inf289-effect-rows{display:flex;flex-direction:column;gap:12px;min-height:0;flex:1}
+#infirmaryModal .inf289-effect{display:grid;gap:5px;border-bottom:1px solid #8b7c7b44;padding-bottom:10px;font-size:.85em;line-height:1.25}
+#infirmaryModal .inf289-effect span{color:var(--theme-gem-text,#285f43)}
+#infirmaryModal .inf289-note{font-size:.86em;line-height:1.3;color:var(--theme-muted,#74656c)}
+#infirmaryModal .inf289-actions{display:flex;gap:16px;align-items:center;justify-content:space-between;border-top:1px solid var(--theme-border,#b8a27d);padding-top:14px;min-height:0}
+#infirmaryModal .inf289-action-note{font-size:.83em}
+#infirmaryModal .inf289-start,#infirmaryModal .inf289-finish{font-weight:700;background:#175f25!important;color:#fff!important;border-radius:5px;padding:11px 20px;white-space:nowrap;flex:none}
+#infirmaryModal .inf289-treatment{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:18px;min-height:0}
+#infirmaryModal .inf289-countdown{font-size:clamp(32px,4vw,58px);font-variant-numeric:tabular-nums;line-height:1;color:var(--theme-title,#591823)}
+#infirmaryModal .inf289-progress{width:100%;height:10px;accent-color:#285f43}
+#infirmaryModal .inf289-treatment-dates{font-size:.84em}
+#infirmaryModal .inf289-used,#infirmaryModal .inf289-saved{font-size:.8em;line-height:1.3}
+#infirmaryModal .inf289-saved{color:var(--theme-gem-text,#285f43)}
+#infirmaryModal .inf289-complete{align-self:center;display:grid;gap:12px}
+#infirmaryModal .inf289-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.8em;border-top:1px solid var(--theme-border,#b8a27d);min-height:0;overflow:hidden}
+#infirmaryModal .inf289-footer [data-error=true]{color:var(--theme-title,#591823)}
+#infirmaryModal .inf289-retry{border:1px solid var(--theme-border,#b8a27d)!important;border-radius:3px;padding:2px 8px;white-space:nowrap}
+#infirmaryModal .inf289-empty{grid-row:1 / -1;align-self:center;text-align:center;font-size:.9em;color:var(--theme-muted,#74656c)}
+#infirmaryModal .inf289-empty-detail{grid-row:1 / -1;align-self:center;text-align:center;color:var(--theme-muted,#74656c)}
+.inf289-world-action{font:12px Georgia,serif!important;width:auto!important;min-height:0!important;padding:7px 12px!important;border:1px solid #b6aa86!important;border-radius:4px!important;background:#24383ce8!important;color:#efe6cf!important;white-space:nowrap}
+#specialStaffModal .inf289-staff-action{margin-left:auto;border:1px solid var(--theme-border,#b8a27d)!important;border-radius:4px;padding:4px 9px;font-size:.85em;white-space:nowrap}
+@media(max-height:600px){
+ #infirmaryModal{grid-template-rows:34px 34px minmax(0,1fr) 23px;font-size:11px;padding-left:12px;padding-right:12px}
+ #infirmaryModal .inf289-header{margin:0 -12px;padding:0 12px;gap:10px}
+ #infirmaryModal .inf289-header h1{font-size:17px!important}
+ #infirmaryModal .inf289-back{font-size:24px!important;width:28px;height:24px}
+ #infirmaryModal .inf289-production{padding:4px 8px!important;font-size:10px}
+ #infirmaryModal .inf289-brand{font-size:8px;letter-spacing:1px}
+ #infirmaryModal .inf289-filters{gap:10px}
+ #infirmaryModal .inf289-filters button{font-size:11px;padding:0 4px}
+ #infirmaryModal .inf289-duration-key{font-size:9px}
+ #infirmaryModal .inf289-body{gap:12px;padding:10px 0}
+ #infirmaryModal .inf289-list{grid-template-rows:18px minmax(0,1fr) 19px;gap:5px;padding-right:12px}
+ #infirmaryModal .inf289-patients{gap:4px}
+ #infirmaryModal .inf289-patient{padding:4px 6px;gap:1px}
+ #infirmaryModal .inf289-patient strong{font-size:11px}
+ #infirmaryModal .inf289-pager{font-size:9px;gap:10px}
+ #infirmaryModal .inf289-pager button{width:22px;height:18px;font-size:16px}
+ #infirmaryModal .inf289-detail{gap:10px}
+ #infirmaryModal .inf289-patient-heading{gap:9px;padding-bottom:8px}
+ #infirmaryModal .inf289-patient-heading h2{font-size:16px}
+ #infirmaryModal .inf289-patient-heading p{font-size:10px;margin-top:3px}
+ #infirmaryModal .inf289-severity{font-size:10px;padding:4px 6px}
+ #infirmaryModal .inf289-preview-columns{gap:12px}
+ #infirmaryModal .inf289-materials,#infirmaryModal .inf289-effects{gap:7px}
+ #infirmaryModal .inf289-effects{padding-left:12px}
+ #infirmaryModal .inf289-material-row{grid-template-columns:minmax(0,1fr) 42px 37px;gap:5px;padding:5px 0;font-size:10px}
+ #infirmaryModal .inf289-material-head{font-size:9px;padding:3px 0}
+ #infirmaryModal .inf289-material-note{display:none}
+ #infirmaryModal .inf289-effect-rows{gap:7px}
+ #infirmaryModal .inf289-effect{font-size:10px;gap:3px;padding-bottom:5px;line-height:1.2}
+ #infirmaryModal .inf289-note{font-size:10px}
+ #infirmaryModal .inf289-actions{gap:10px;padding-top:8px}
+ #infirmaryModal .inf289-action-note{font-size:9px}
+ #infirmaryModal .inf289-start,#infirmaryModal .inf289-finish{padding:8px 12px;font-size:11px}
+ #infirmaryModal .inf289-treatment{gap:5px}
+ #infirmaryModal .inf289-countdown{font-size:32px}
+ #infirmaryModal .inf289-treatment-dates{font-size:8px}
+ #infirmaryModal .inf289-recovery{font-size:8px;margin-top:3px}
+ #infirmaryModal .inf289-progress{height:6px}
+ #infirmaryModal .inf289-used,#infirmaryModal .inf289-saved{font-size:9px}
+}
+@media(max-width:700px){
+ #infirmaryModal .inf289-brand,#infirmaryModal .inf289-duration-key{display:none}
+ #infirmaryModal .inf289-production{margin-left:auto}
+ #infirmaryModal .inf289-filters{gap:5px}
+ #infirmaryModal .inf289-filters button{font-size:10px;padding:0 3px}
+ #infirmaryModal .inf289-body{grid-template-columns:28% minmax(0,1fr);gap:8px}
+ #infirmaryModal .inf289-list{padding-right:8px}
+ #infirmaryModal .inf289-preview-columns{gap:8px;grid-template-columns:53% minmax(0,1fr)}
+ #infirmaryModal .inf289-effects{padding-left:8px}
+ #infirmaryModal .inf289-material-row{grid-template-columns:minmax(0,1fr) 42px 37px;gap:5px}
+ #infirmaryModal .inf289-severity{font-size:9px}
+ #infirmaryModal .inf289-action-note{font-size:8px}
+}
+@media(max-height:360px) and (orientation:landscape){
+ #infirmaryModal{grid-template-rows:30px 29px minmax(0,1fr) 21px;font-size:10px}
+ #infirmaryModal .inf289-body{padding:6px 0}
+ #infirmaryModal .inf289-list{grid-template-rows:15px minmax(0,1fr) 16px;gap:4px}
+ #infirmaryModal .inf289-detail{gap:7px}
+ #infirmaryModal .inf289-patient-heading{padding-bottom:6px}
+ #infirmaryModal .inf289-patient-heading h2{font-size:14px}
+ #infirmaryModal .inf289-patient-heading p{font-size:9px}
+ #infirmaryModal .inf289-material-row{font-size:9px;padding:3px 0}
+ #infirmaryModal .inf289-material-head{font-size:8px}
+ #infirmaryModal .inf289-effect{font-size:9px;gap:2px}
+ #infirmaryModal .inf289-note{font-size:9px}
+ #infirmaryModal .inf289-material-note{display:none}
+ #infirmaryModal .inf289-materials,#infirmaryModal .inf289-effects{gap:5px}
+ #infirmaryModal .inf289-actions{padding-top:6px;gap:6px}
+ #infirmaryModal .inf289-start,#infirmaryModal .inf289-finish{padding:6px 8px;font-size:10px}
+ #infirmaryModal .inf289-pager button{height:16px;font-size:14px}
+ #infirmaryModal .inf289-countdown{font-size:28px}
+ #infirmaryModal .inf289-treatment{gap:4px}
+ #infirmaryModal .inf289-treatment>h3{display:none}
+ #infirmaryModal .inf289-used,#infirmaryModal .inf289-saved{font-size:8px;line-height:1.15}
+ #infirmaryModal .inf289-treatment-dates{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+}
+@media(orientation:portrait){
+ #infirmaryModal{grid-template-rows:42px 38px minmax(0,1fr) 30px;padding-left:12px;padding-right:12px;font-size:12px}
+ #infirmaryModal .inf289-header{margin:0 -12px;padding:0 12px;gap:10px}
+ #infirmaryModal .inf289-header h1{font-size:19px!important}
+ #infirmaryModal .inf289-production{font-size:11px;padding:5px 8px!important}
+ #infirmaryModal .inf289-body{grid-template-columns:1fr;grid-template-rows:30% minmax(0,1fr);gap:12px;padding:10px 0}
+ #infirmaryModal .inf289-list{grid-template-rows:18px minmax(0,1fr) 20px;padding:0 0 8px;border-right:0;border-bottom:1px solid var(--theme-border,#b8a27d);gap:4px}
+ #infirmaryModal .inf289-patients{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:4px}
+ #infirmaryModal .inf289-patient{padding:4px 6px;gap:1px}
+ #infirmaryModal .inf289-patient strong{font-size:11px}
+ #infirmaryModal .inf289-injury-name{font-size:10px}
+ #infirmaryModal .inf289-pager{font-size:9px;gap:10px}
+ #infirmaryModal .inf289-pager button{height:18px;font-size:16px}
+ #infirmaryModal .inf289-detail{gap:10px}
+ #infirmaryModal .inf289-patient-heading{padding-bottom:8px;gap:8px}
+ #infirmaryModal .inf289-patient-heading h2{font-size:16px}
+ #infirmaryModal .inf289-patient-heading p{font-size:11px;margin-top:3px}
+ #infirmaryModal .inf289-severity{font-size:9px;padding:4px 6px}
+ #infirmaryModal .inf289-preview-columns{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:9px}
+ #infirmaryModal .inf289-materials,#infirmaryModal .inf289-effects{gap:6px}
+ #infirmaryModal .inf289-material-row{font-size:10px;padding:4px 0;grid-template-columns:minmax(0,1fr) 48px 48px}
+ #infirmaryModal .inf289-material-head{font-size:9px;padding:2px 0}
+ #infirmaryModal .inf289-material-note{font-size:9px}
+ #infirmaryModal .inf289-effects{border-left:0;border-top:1px solid var(--theme-border,#b8a27d);padding:7px 0 0}
+ #infirmaryModal .inf289-effect-rows{gap:5px}
+ #infirmaryModal .inf289-effect{font-size:10px;gap:2px;padding-bottom:4px}
+ #infirmaryModal .inf289-actions{padding-top:7px;gap:9px}
+ #infirmaryModal .inf289-action-note{font-size:10px}
+ #infirmaryModal .inf289-start,#infirmaryModal .inf289-finish{padding:8px 10px;font-size:11px}
+ #infirmaryModal .inf289-countdown{font-size:38px}
+ #infirmaryModal .inf289-active-columns{grid-template-rows:minmax(0,1fr) auto}
+}

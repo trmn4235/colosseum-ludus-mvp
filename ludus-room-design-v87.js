@@ -139,13 +139,13 @@ var LudusRoomDesign=(()=>{
      for(const z of [-2.7,2.0])put(g.plane,clanMat('fresco'),side*4.715,2.95,z,1.75,2.50,1,0,-side*Math.PI/2);
      put(g.plane,clanMat('fresco'),side*3.03,2.98,4.285,2.15,2.50,1,0,Math.PI);
     }
-    // Reuse the caravan room's actual artwork, including the same 16 resource markers.
+    // Reuse the caravan room's actual artwork, including the same 22 resource markers.
     const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=1024;
     const context=canvas.getContext('2d');context.fillStyle='#a68b63';context.fillRect(0,0,2048,1024);
     const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=2;
     const mapMaterial=new T.MeshBasicMaterial({map:texture,toneMapped:false});
     const map=put(g.plane,mapMaterial,0,2.58,back+.50,6.8,3.4);
-    map.name='Kervan kaynak haritası';map.userData={source:'assets/supply-v91/rome-panorama.webp',pointCount:16,ready:false};
+    map.name='Kervan kaynak haritası';map.userData={source:'assets/supply-v91/rome-panorama.webp',pointCount:22,ready:false};
     box(timber,0,2.58,back+.43,7.04,3.64,.10);
     for(const x of [-3.49,3.49])box(m.gold,x,2.58,back+.52,.035,3.64,.04);
     for(const y of [.78,4.38])box(m.gold,0,y,back+.52,7.04,.035,.04);

@@ -6,21 +6,23 @@ const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||'/tmp
 const user={id:'00000000-0000-4000-8000-000000000001',is_anonymous:false};
 const wallet={ludus_name:'Aquila',gold:3660,diamonds:12};
 const daily={day:'2026-10-11',server_now:new Date().toISOString(),reset_at:new Date(Date.now()+18*3600000).toISOString(),wallet,claimed_count:1,bonus_claimed:false,bonus_exp:300,missions:[['visit','Ludus’a dönüş','Ludus’unu ziyaret et.',1,1],['battle','Arena zaferi','Arenada bir savaş kazan.',0,1],['training','Disiplinli antrenman','Gladyatörlerine antrenman yaptır.',1,3],['market','Pazar alışverişi','Pazardan bir eşya al.',0,1]].map(([key,title,description,progress,target],i)=>({key,title,description,progress,target,gold:100,ludus_exp:150,claimed:i===0,destination:'ludus.html'}))};
-const clan={wallet,clan:{name:'Legio Aurea',level:3,gold:8750,member_count:2,capacity:12,emblem:2,emblem_color:'#c7a967',background:'#591823',experience:1500,exp_cost:5000,coin_cost:6000,lifetime_experience:12000},leader:true,members:[{name:'Aquila',username:'aquila',leader:true,online:true},{name:'Invicta',username:'invicta',online:false}],requests:[],trophies:{league:1,cup:2},inventory:[],vault:[],ledger:[],gladiators:[],roster:null};
+const clan={wallet,clan:{id:'clan-fixture',name:'Legio Aurea',level:3,gold:8750,member_count:2,capacity:12,emblem:2,emblem_color:'#c7a967',background:'#591823',experience:1500,exp_cost:5000,coin_cost:6000,lifetime_experience:12000},leader:true,members:[{name:'Aquila',username:'aquila',leader:true,online:true},{name:'Invicta',username:'invicta',online:false}],requests:[],trophies:{league:1,cup:2},inventory:[],vault:[],ledger:[],gladiators:[],roster:null};
+const medicalSources=['beeswax','laurel','honey','fig','wine_vinegar','sponge'];
+const caravans={user_id:user.id,clan_id:clan.clan.id,is_leader:true,enabled:true,rules_version:268,server_now:new Date().toISOString(),professions:medicalSources.map(sku=>({sku})),workers:[],jobs:medicalSources.map((sku,i)=>({id:'medical-trip-'+i,sku,status:'collecting',worker_count:10,owner_name:'Ludus Aquila',started_at:new Date().toISOString(),ends_at:new Date(Date.now()+21600000).toISOString(),participants:[]}))};
 const level={wallet,level:6,current_exp:1500,next_exp:4500,granted_gladiators:4,owned_gladiators:4,battle_exp_today:300,claimable_count:0,pending_gladiator_count:0,rewards:Array.from({length:49},(_,i)=>({level:i+2,diamonds:2,sapphire:1,emerald:0,ruby:0,denarius:250,items:1,gladiators:i===0||i===4?1:0,unlocked:i+2<=6,claimed:i+2<=6,claimable:false}))};
 function fixtureClient(data,user,wallet){return {
  auth:{getUser:async()=>({data:{user},error:null}),getSession:async()=>({data:{session:null},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},
  rpc:(name,p={})=>{
   const result=(async()=>{
    if(p.p_action&&!['state','list','heartbeat','ping'].includes(p.p_action))throw Error('Theme fixture refuses mutation '+p.p_action);
-   return {data:structuredClone(name==='ludus_daily_state'?data.daily:name==='ludus_clan'?data.clan:name==='ludus_progress'?data.level:{friends:[],pending:[],requests:[],messages:[]}),error:null};
+   return {data:structuredClone(name==='ludus_daily_state'?data.daily:name==='ludus_clan'?data.clan:name==='ludus_clan_work_v232'?data.caravans:name==='ludus_progress'?data.level:{friends:[],pending:[],requests:[],messages:[]}),error:null};
   })();
   // Match the awaitable builder used by the clan renderer.
   result.abortSignal=()=>result;return result;
  },
  from:()=>{const b={select:()=>b,eq:()=>b,single:async()=>({data:wallet,error:null}),then:(r,j)=>Promise.resolve({data:[],error:null}).then(r,j)};return b;}
 };}
-const fixtureBootstrap=`window.__themeClient=(${fixtureClient.toString()})(${JSON.stringify({daily,clan,level})},${JSON.stringify(user)},${JSON.stringify(wallet)});`;
+const fixtureBootstrap=`window.__themeClient=(${fixtureClient.toString()})(${JSON.stringify({daily,clan,caravans,level})},${JSON.stringify(user)},${JSON.stringify(wallet)});`;
 const pages=[
  {file:'gorevler.html',ready:'.quest-card'},
  {file:'klan.html',ready:'.clan-identity-v276'},
@@ -52,7 +54,12 @@ const pages=[
    const bounds=await page.evaluate(()=>{const issues=[];for(const e of document.querySelectorAll('h1,h2,h3,button')){if(!e.getClientRects().length||e.closest('[hidden]'))continue;const r=e.getBoundingClientRect();if(r.right>innerWidth+1||r.bottom>innerHeight+1||r.left< -1||r.top< -1)issues.push({text:e.textContent.slice(0,45),class:e.className,bounds:[r.x,r.y,r.width,r.height]});}if(document.documentElement.scrollWidth>innerWidth+1||document.documentElement.scrollHeight>innerHeight+1)issues.push({pageScroll:true});return issues;});assert.deepEqual(bounds,[],entry.file+' '+width+' viewport bounds');
    await page.screenshot({path:path.join(out,entry.file.replace('.html','')+'-'+width+'.png')});
    if(entry.file==='arena.html'){await page.locator('.pause-help summary').click();for(const selector of ['#resume','#restart','#menu']){const r=await page.locator(selector).boundingBox();assert.ok(r.y+r.height<=height+1,'pause actions remain visible with the guide open '+width);}await page.screenshot({path:path.join(out,'pause-help-'+width+'.png')});await page.locator('.pause-help summary').click();}
-   if(entry.file==='klan.html'){for(const tab of ['members','roster','vault','trophies','manage']){await page.locator('.clan-navigation [data-view="'+tab+'"]').click();await page.screenshot({path:path.join(out,'klan-'+tab+'-'+width+'.png')});}await page.locator('.clan-navigation [data-view="home"]').click();}reports.push({page:entry.file,width,height,mode:entry.static?'static markup / CSS':'real renderer / fixture RPC'});
+   if(entry.file==='klan.html'){
+    for(const theme of ['white','black','blue']){await page.evaluate(theme=>LudusTheme.set(theme),theme);assert.equal(await page.locator('.clan-map-node').count(),22);await page.waitForFunction(()=>[...document.querySelectorAll('.clan-map-resource img')].every(e=>e.complete&&e.naturalWidth>0));const boxes=await page.locator('.clan-map-node').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{sku:n.dataset.sku,x:r.left,y:r.top,r:r.right,b:r.bottom};}));for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){const a=boxes[i],b=boxes[j];assert.ok(Math.min(a.r,b.r)-Math.max(a.x,b.x)<=1||Math.min(a.b,b.b)-Math.max(a.y,b.y)<=1,'clan map nodes overlap '+JSON.stringify({theme,width,a,b}));}await page.screenshot({path:path.join(out,'klan-map-'+theme+'-'+width+'.png')});}
+    await page.evaluate(()=>LudusTheme.set('white'));await page.waitForFunction(()=>document.querySelector('#clanActiveCaravans')?.textContent==='6 ekip çalışıyor');
+    if(width===874){for(const sku of medicalSources){await page.locator('.clan-map-node[data-sku="'+sku+'"]').click();await page.locator('.cv-job').waitFor();assert.equal(await page.locator('.cv-job').count(),1,'source filter '+sku);assert.equal(await page.locator('.cv-job').getAttribute('data-job-id'),'medical-trip-'+medicalSources.indexOf(sku));await page.locator('.clan-navigation [data-view="home"]').click();}}
+    for(const tab of ['members','roster','vault','trophies','manage']){await page.locator('.clan-navigation [data-view="'+tab+'"]').click();await page.screenshot({path:path.join(out,'klan-'+tab+'-'+width+'.png')});}await page.locator('.clan-navigation [data-view="home"]').click();
+   }reports.push({page:entry.file,width,height,mode:entry.static?'static markup / CSS':'real renderer / fixture RPC'});
   }
 
   assert.deepEqual(errors,[],entry.file+' JavaScript errors');await page.close();

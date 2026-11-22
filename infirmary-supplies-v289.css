@@ -1,0 +1,76 @@
+/* The medicine catalogue shares the game's theme and keeps independent scroll regions. */
+#medicalSuppliesModal.medsup289{position:fixed;inset:0;z-index:2147481100;box-sizing:border-box;width:100vw;height:100dvh;display:grid;grid-template-rows:52px 34px minmax(0,1fr) 40px;gap:0;padding:0 max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:var(--theme-surface,#fff9ed);color:var(--theme-text,#44282c);font:14px/1.3 Arial,sans-serif;overflow:hidden}
+#medicalSuppliesModal[hidden]{display:none!important}
+#medicalSuppliesModal *{box-sizing:border-box;min-width:0}
+#medicalSuppliesModal h1,#medicalSuppliesModal h2,#medicalSuppliesModal p{margin:0}
+#medicalSuppliesModal button,#medicalSuppliesModal input{font:inherit;color:inherit;border:1px solid var(--theme-border,#bba477);border-radius:5px;background:var(--theme-surface,#fff9ed);box-shadow:none;letter-spacing:normal;text-transform:none;cursor:pointer}
+#medicalSuppliesModal button:disabled{opacity:.5;cursor:default}
+#medicalSuppliesModal button:focus-visible,#medicalSuppliesModal input:focus-visible{outline:3px solid var(--theme-title,#741d2c);outline-offset:2px}
+#medicalSuppliesModal .medsup289-head{position:relative!important;inset:auto!important;display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;pointer-events:auto;align-items:center;gap:15px;background:var(--theme-header,#741d2c);color:var(--theme-header-ink,#fff9ed);margin:0 -16px;padding:0 16px;box-shadow:none!important;text-shadow:none!important}
+#medicalSuppliesModal .medsup289-head h1{position:static!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none!important;color:inherit!important;font:600 19px/1.15 Arial,sans-serif;letter-spacing:normal!important;flex:1}
+#medicalSuppliesModal .medsup289-head button{color:inherit;background:transparent;border-color:currentColor;min-height:32px;padding:3px 10px}
+#medicalSuppliesModal .medsup289-back{font-size:28px!important;line-height:1;min-width:34px}
+#medicalSuppliesModal .medsup289-intro{display:flex;align-items:center;font-size:12px;color:var(--theme-muted,#75636a)}
+#medicalSuppliesModal .medsup289-body{min-height:0;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:18px;padding:6px 0 10px}
+#medicalSuppliesModal .medsup289-catalog{min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(72px,1fr);gap:8px;overflow:auto;overscroll-behavior:contain;padding:2px}
+#medicalSuppliesModal .medsup289-recipe{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;padding:8px;min-height:0}
+#medicalSuppliesModal .medsup289-recipe[aria-pressed=true]{border:2px solid var(--theme-title,#741d2c);background:var(--theme-selected,#f0e2c4)}
+#medicalSuppliesModal .medsup289-recipe strong{font-size:14px;line-height:1.15;overflow-wrap:anywhere}
+#medicalSuppliesModal .medsup289-recipe span{font-size:11px;color:var(--theme-muted,#75636a)}
+#medicalSuppliesModal .medsup289-art{width:55px;height:55px;object-fit:contain;flex:none}
+#medicalSuppliesModal .medsup289-detail{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:12px;min-height:0;border-left:1px solid var(--theme-border,#bba477);padding-left:18px}
+#medicalSuppliesModal .medsup289-heading h2{font-size:22px;color:var(--theme-title,#741d2c);line-height:1.2}
+#medicalSuppliesModal .medsup289-heading p{font-size:12px;margin-top:3px}
+#medicalSuppliesModal .medsup289-quantity{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#medicalSuppliesModal .medsup289-quantity label{margin-right:auto}
+#medicalSuppliesModal .medsup289-quantity button{width:30px;min-height:30px;font-size:20px}
+#medicalSuppliesModal .medsup289-quantity input{width:66px;height:32px;text-align:center;padding:2px}
+#medicalSuppliesModal .medsup289-quantity small{font-size:11px;flex-basis:100%;text-align:right;color:var(--theme-muted,#75636a)}
+#medicalSuppliesModal .medsup289-materials{min-height:0;overflow:auto;overscroll-behavior:contain}
+#medicalSuppliesModal table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+#medicalSuppliesModal th,#medicalSuppliesModal td{text-align:right;padding:10px 5px;border-bottom:1px solid var(--theme-border,#c9b997);overflow-wrap:anywhere}
+#medicalSuppliesModal th:first-child,#medicalSuppliesModal td:first-child{text-align:left;width:40%}
+#medicalSuppliesModal th{font-size:11px;color:var(--theme-muted,#75636a);font-weight:600}
+#medicalSuppliesModal tr[data-enough=false] td:last-child{color:#a32239;font-weight:700}
+#medicalSuppliesModal .medsup289-destination{font-size:12px;color:var(--theme-muted,#75636a)}
+#medicalSuppliesModal .medsup289-primary{padding:8px 12px;min-height:38px;background:var(--theme-header,#741d2c);color:var(--theme-header-ink,#fff9ed);font-weight:700}
+#medicalSuppliesModal .medsup289-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--theme-border,#bba477);font-size:12px;min-height:0;overflow:auto}
+#medicalSuppliesModal .medsup289-footer p[data-error=true]{color:#a32239}
+#medicalSuppliesModal .medsup289-retry{white-space:nowrap;padding:5px 9px;flex:none}
+#medicalSuppliesModal .medsup289-empty{align-self:center;text-align:center;color:var(--theme-muted,#75636a)}
+@media(max-height:520px){
+ #medicalSuppliesModal.medsup289{grid-template-rows:42px 26px minmax(0,1fr) 31px;padding-bottom:5px;font-size:12px}
+ #medicalSuppliesModal .medsup289-head h1{font-size:17px}
+ #medicalSuppliesModal .medsup289-body{gap:10px;padding:2px 0 5px}
+ #medicalSuppliesModal .medsup289-catalog{grid-auto-rows:minmax(44px,1fr);gap:5px}
+ #medicalSuppliesModal .medsup289-recipe{padding:5px;gap:3px}
+ #medicalSuppliesModal .medsup289-recipe strong{font-size:11px}
+ #medicalSuppliesModal .medsup289-recipe span{font-size:10px}
+ #medicalSuppliesModal .medsup289-art{display:none}
+ #medicalSuppliesModal .medsup289-detail{gap:6px;padding-left:10px}
+ #medicalSuppliesModal .medsup289-heading h2{font-size:17px}
+ #medicalSuppliesModal .medsup289-heading p,#medicalSuppliesModal .medsup289-intro,#medicalSuppliesModal .medsup289-destination{font-size:10px}
+ #medicalSuppliesModal .medsup289-quantity{gap:5px}
+ #medicalSuppliesModal .medsup289-quantity small{flex-basis:auto;margin-left:auto;font-size:9px}
+ #medicalSuppliesModal .medsup289-quantity input{height:28px;width:47px}
+ #medicalSuppliesModal .medsup289-quantity button{min-height:28px;width:26px}
+ #medicalSuppliesModal table{font-size:11px}#medicalSuppliesModal th,#medicalSuppliesModal td{padding:5px 3px}#medicalSuppliesModal th{font-size:10px}
+ #medicalSuppliesModal .medsup289-primary{min-height:30px;padding:4px 8px}
+ #medicalSuppliesModal .medsup289-footer{font-size:10px}
+}
+@media(max-width:620px){
+ #medicalSuppliesModal.medsup289{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+ #medicalSuppliesModal .medsup289-head{margin:0 -8px;padding:0 8px;gap:8px}
+ #medicalSuppliesModal .medsup289-body{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr)}
+ #medicalSuppliesModal .medsup289-quantity label{flex-basis:100%}
+ #medicalSuppliesModal .medsup289-recipe strong{font-size:10px}
+}
+@media(orientation:portrait){
+ #medicalSuppliesModal .medsup289-body{grid-template-columns:1fr;grid-template-rows:minmax(145px,.7fr) minmax(0,1.3fr)}
+ #medicalSuppliesModal .medsup289-catalog{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:48px}
+ #medicalSuppliesModal .medsup289-art{display:none}
+ #medicalSuppliesModal .medsup289-detail{border-left:0;border-top:1px solid var(--theme-border,#bba477);padding:10px 0 0;gap:7px}
+}
+@layer ludus-theme-v275{
+ html[data-ui-theme] #medicalSuppliesModal .medsup289-head h1{color:var(--theme-header-ink,#fff9ed)!important}
+}

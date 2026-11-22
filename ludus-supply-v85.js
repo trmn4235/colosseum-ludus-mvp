@@ -9,7 +9,7 @@ var LudusSupply=(()=>{
  function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
  function button(text,fn,cls=''){const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;}
  const artRoot='assets/supply-v86/';
- const sourceScenes={iron_ore:artRoot+'iron.webp',copper_ore:artRoot+'copper.webp',wood:artRoot+'wood.webp',flax:artRoot+'linen.webp',tin_ore:'assets/supply-v120/tin_ore.webp',lead_ore:'assets/supply-v120/lead_ore.webp',hide:'assets/supply-v120/hide.webp',wool:'assets/supply-v120/wool.webp',resin:'assets/supply-v120/resin.webp'};
+ const sourceScenes={iron_ore:artRoot+'iron.webp',copper_ore:artRoot+'copper.webp',wood:artRoot+'wood.webp',flax:artRoot+'linen.webp',tin_ore:'assets/supply-v120/tin_ore.webp',lead_ore:'assets/supply-v120/lead_ore.webp',hide:'assets/supply-v120/hide.webp',wool:'assets/supply-v120/wool.webp',resin:'assets/supply-v120/resin.webp',beeswax:'assets/infirmary-v289/beeswax.webp',laurel:'assets/infirmary-v289/laurel.webp',honey:'assets/infirmary-v289/honey.webp',fig:'assets/infirmary-v289/fig.webp',wine_vinegar:'assets/infirmary-v289/wine-vinegar.webp',sponge:'assets/infirmary-v289/sponge.webp'};
  const artURL=id=>sourceScenes[id]||(id==='roman-world'?'assets/caravan-v117/roman-atlas.svg':id==='rome-map'?'assets/supply-v91/rome-panorama.webp':artRoot+id+'.webp');
  // Illustrated game supply locations, not a geological map. Alloys remain crafted ingots.
  const atlas=[
@@ -28,8 +28,16 @@ var LudusSupply=(()=>{
   {id:'iron_ore',name:'Demir cevheri',at:[90,64],description:'Demir ocağında çıkarılan ham cevher, demir külçesine işlenir.'},
   {id:'wine',name:'Bağ',at:[10,88],food:true,sku:'beer'},
   {id:'egg',name:'Çiftlik',at:[48,88],food:true},
-  {id:'apple',name:'Elma',at:[82,88],food:true}
+  {id:'apple',name:'Elma',at:[82,88],food:true},
+  {id:'beeswax',name:'Balmumu arılığı',description:'Revir merhemleri için balmumu toplanır.'},
+  {id:'laurel',name:'Defne bahçesi',description:'Defne merhemi için yapraklar toplanır.'},
+  {id:'honey',name:'Bal arılığı',description:'Revir şurupları için bal toplanır.'},
+  {id:'fig',name:'İncir bahçesi',description:'İncir Şurubu için meyveler toplanır.'},
+  {id:'wine_vinegar',name:'Sirke atölyesi',description:'Şurup ve sirkeli sünger üretimi için şarap sirkesi hazırlanır.'},
+  {id:'sponge',name:'Sünger kıyısı',description:'Revirde kullanılacak doğal süngerler toplanır.'}
  ];
+ // Keep all 22 sources on one screen, six columns and four compact rows.
+ atlas.forEach((d,i)=>{d.at=[7+(i%6)*17,11+Math.floor(i/6)*23];});
  const positions=Object.fromEntries(atlas.map(d=>[d.id,d.at]));
  const shortNames=Object.fromEntries(atlas.map(d=>[d.id,d.name]));
  let mapArtwork=null;
@@ -65,7 +73,7 @@ var LudusSupply=(()=>{
   const priceHistory=new Map();
   let escortSelection=[],escortPage=0;
   let workerRoster=null,workerSelection=[],workerDeparture=null;
-  const professions={iron_ore:'Demir madenciliği',copper_ore:'Bakır madenciliği',tin_ore:'Kalay madenciliği',lead_ore:'Kurşun madenciliği',wood:'Odunculuk',flax:'Keten yetiştiriciliği',hide:'Dericilik',wool:'Yüncülük',resin:'Reçine toplayıcılığı',grain:'Buğday yetiştiriciliği',apple:'Elma yetiştiriciliği',fish:'Balıkçılık',meat:'Avcılık',egg:'Yumurta üretimi',beer:'Bağcılık',olive_oil:'Zeytincilik'};
+  const professions={iron_ore:'Demir madenciliği',copper_ore:'Bakır madenciliği',tin_ore:'Kalay madenciliği',lead_ore:'Kurşun madenciliği',wood:'Odunculuk',flax:'Keten yetiştiriciliği',hide:'Dericilik',wool:'Yüncülük',resin:'Reçine toplayıcılığı',grain:'Buğday yetiştiriciliği',apple:'Elma yetiştiriciliği',fish:'Balıkçılık',meat:'Avcılık',egg:'Yumurta üretimi',beer:'Bağcılık',olive_oil:'Zeytincilik',beeswax:'Balmumu toplama',laurel:'Defne toplama',honey:'Bal toplama',fig:'İncir yetiştiriciliği',wine_vinegar:'Sirke üretimi',sponge:'Sünger toplama'};
   function adoptWorkers(data){workerRoster=data?.user_id===owner&&Array.isArray(data.workers)?data:null;workerSelection=workerSelection.filter(id=>workerRoster?.workers.some(w=>w.id===id&&!w.job_id));}
   function prepareWorkers(n){workerSelection=workerSelection.filter(id=>workerRoster?.workers.some(w=>w.id===id&&!w.job_id)).slice(0,n);}
   function enoughWorkers(n){return !!workerRoster&&workerRoster.workers.filter(w=>!w.job_id).length>=n;}
@@ -144,8 +152,8 @@ var LudusSupply=(()=>{
    if(!state){content.append(el('p','supply-empty',loading?'Toplama defteri açılıyor…':'Toplama bilgileri henüz yüklenmedi.'));return;}
    for(const [label,value]of [['Boş kervan',state.free_workers+' / '+state.workers],['Seferde',state.busy_workers],['Ludus seviyesi',state.level]]){const box=el('div');box.append(el('small','',label),el('strong','',value));summary.append(box);}
    const refreshButton=button('Yenile',tab==='work'?()=>workMap?.load():refresh,'supply-secondary');refreshButton.disabled=disabled();summary.append(refreshButton);
-   const choices=mode==='forge'?[['craft','Basic üretim'],['stock','Malzemeler']]:tab==='hunt'?[['hunt','Av ekibi'],['map','Harita'],['stock','Kasa']]:[['map','Harita'],...(workMap?[['work','Ekip çıkar']]:[]),['jobs','Seferler · '+state.jobs.length],['stock','Kasa']];
-   for(const [value,label]of choices){const b=button(label,()=>{gearView=false;tab=value;page=0;selected=null;if(value==='work')openWork();else render();tabs.querySelector('[aria-pressed=true]')?.focus()});b.setAttribute('aria-pressed',String(tab===value));b.disabled=!!workMap?.busy;tabs.append(b);}
+   const choices=mode==='forge'?[['craft','Basic üretim'],['stock','Malzemeler'],...(ctx.openMedicalSupplies?[['medical','Revir malzemeleri']]:[])]:tab==='hunt'?[['hunt','Av ekibi'],['map','Harita'],['stock','Kasa']]:[['map','Harita'],...(workMap?[['work','Ekip çıkar']]:[]),['jobs','Seferler · '+state.jobs.length],['stock','Kasa']];
+   for(const [value,label]of choices){const b=button(label,()=>{if(value==='medical'){if(disabled())return;close();ctx.openMedicalSupplies({returnTo:()=>open('craft')});return;}gearView=false;tab=value;page=0;selected=null;if(value==='work')openWork();else render();tabs.querySelector('[aria-pressed=true]')?.focus()});b.setAttribute('aria-pressed',String(tab===value));b.disabled=!!workMap?.busy||(value==='medical'&&disabled());tabs.append(b);}
    if(gearView==='workers')renderWorkers();else if(gearView==='escort')renderEscort();else if(gearView)renderLoadout();else if(tab==='hunt')renderHunt();else if(tab==='cities')renderCities();else if(tab==='map')selected?renderDestination():renderMap();else if(tab==='work')selected?workMap.draw(content):renderMap(true);else if(tab==='jobs')renderJobs();else if(tab==='craft')renderCraft();else renderStock();
    if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
   }
@@ -194,7 +202,7 @@ var LudusSupply=(()=>{
    for(const d of routes){const node=button('',()=>working?openWork(d.sku||d.id):choose(d.id),'supply-node'),p=positions[d.id]||[d.x,d.y];node.dataset.destination=d.id;node.dataset.source=String(!atlas.find(a=>a.id===d.id)?.food);node.style.left=p[0]+'%';node.style.top=p[1]+'%';node.title=working?LudusWorkMapV260.labels[d.sku||d.id]:d.name;node.setAttribute('aria-label',node.title+(working?' · Ekip kur':' · Bölgeyi aç'));const glyph=el('span','supply-node-icon');glyph.append(resourceArt({hunt:'meat',wine:'beer'}[d.id]||d.id,'supply-node-photo'));node.append(glyph,el('span','supply-node-name',working?node.title:shortNames[d.id]||d.name));if(working){const count=workMap.activeJobs.filter(j=>j.sku===(d.sku||d.id)).length;if(count){const badge=el('b','workmap-active',count);badge.setAttribute('aria-label',count+' çalışma ekibi');node.append(badge);}}map.append(node);}
    area.append(map);const controls=el('div','supply-map-controls'),label=el('label','supply-region-picker','Bölge'),select=el('select');select.setAttribute('aria-label','Gıda veya hammadde bölgesi seç');select.id='supplyRegion';const empty=el('option','','Bölge seç…');empty.value='';select.append(empty);for(const [name,items]of [['Gıda',foodRoutes()],['Hammaddeler',rawRoutes()]]){const group=el('optgroup');group.label=name;for(const d of items){const o=el('option','',shortNames[d.id]||d.name);o.value=d.id;group.append(o);}select.append(group);}select.onchange=()=>{if(select.value)working?openWork(atlas.find(d=>d.id===select.value)?.sku||select.value):choose(select.value)};label.append(select);
    const ingots=button('Külçeler',()=>{tab='stock';stockCategory='materials';stockStage='processed';page=0;render();},'supply-secondary supply-ingots');
-   if(working){controls.append(label,button('Çalışma ekipleri · '+workMap.activeJobs.length,workJobs,'supply-primary supply-work-jobs'),el('small','supply-map-caravans',globalThis.LudusClanCaravansV268?'10 işçi · 6 saat · %20 devlet payı':'5 işçi · 6 saat · %20 devlet payı'));}else{controls.append(label,button('Haritayı büyüt',()=>showArt('rome-map','Roma ve çevresi · 16 kaynak'),'supply-secondary supply-map-expand'),ingots);if(workMap)controls.append(button(globalThis.LudusClanCaravansV268?'Toplama kervanları':'Klan ekibi kur',()=>openWork(),'supply-primary supply-work-open'));else controls.append(el('small','supply-map-caravans','Boş kervan '+state.free_workers+' / '+state.workers));}overview.append(area,controls);content.append(overview);
+   if(working){controls.append(label,button('Çalışma ekipleri · '+workMap.activeJobs.length,workJobs,'supply-primary supply-work-jobs'),el('small','supply-map-caravans',globalThis.LudusClanCaravansV268?'10 işçi · 6 saat · %20 devlet payı':'5 işçi · 6 saat · %20 devlet payı'));}else{controls.append(label,button('Haritayı büyüt',()=>showArt('rome-map','Roma ve çevresi · 22 kaynak'),'supply-secondary supply-map-expand'),ingots);if(workMap)controls.append(button(globalThis.LudusClanCaravansV268?'Toplama kervanları':'Klan ekibi kur',()=>openWork(),'supply-primary supply-work-open'));else controls.append(el('small','supply-map-caravans','Boş kervan '+state.free_workers+' / '+state.workers));}overview.append(area,controls);content.append(overview);
   }
   function renderDestination(){
    const source=sourceFor(selected);if(source){renderSource(source);return;}

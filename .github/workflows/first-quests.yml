@@ -37,6 +37,15 @@ jobs:
           LUDUS_WEBKIT_TEST: '1'
           LUDUS_TEST_OUTPUT: /tmp/staff-v284-webkit/papyrus-v288
         run: node tests/special-staff-ui-v288.cjs
+      - name: V289 infirmary and medical production layouts in Safari
+        env:
+          LUDUS_WEBKIT_TEST: '1'
+          LUDUS_TEST_OUTPUT: /tmp/staff-v284-webkit/infirmary-v289
+        run: |
+          medical_test_status=0
+          node tests/infirmary-ui-v289.cjs || medical_test_status=1
+          node tests/infirmary-supplies-ui-v289.cjs || medical_test_status=1
+          exit "$medical_test_status"
       - name: Upload Safari staff screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -109,6 +118,22 @@ jobs:
           node tests/staff-combat-v288.cjs
           node tests/staff-combat-snapshot-v288.cjs
           node tests/special-staff-contract-v288.cjs
+      - name: V289 medical supplies, injury treatment and owner isolation
+        run: |
+          node tests/infirmary-inputs-v289.cjs
+          node tests/infirmary-supplies-v289.cjs
+          node tests/infirmary-contract-v289.cjs
+          node tests/infirmary-v289.cjs
+          node tests/injury-events-v289.cjs
+          node tests/injury-events-sql-v289.cjs
+      - name: V289 infirmary and medical production layouts
+        env:
+          LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/infirmary-v289
+        run: |
+          medical_test_status=0
+          node tests/infirmary-ui-v289.cjs || medical_test_status=1
+          node tests/infirmary-supplies-ui-v289.cjs || medical_test_status=1
+          exit "$medical_test_status"
       - name: Approved staff home and papyrus layouts
         env:
           LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/papyrus-v288

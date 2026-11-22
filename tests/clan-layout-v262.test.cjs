@@ -11,7 +11,7 @@ function setup(){
 }
 test('clan uses the existing caravan artwork, without trophies or added lights',async()=>{
  const {design,paints}=setup(),room=design.enter('clan');await Promise.resolve();
- const map=room.getObjectByName('Kervan kaynak haritası');assert.ok(map);assert.equal(map.userData.source,'assets/supply-v91/rome-panorama.webp');assert.equal(map.userData.pointCount,16);assert.equal(map.userData.ready,true);assert.equal(paints(),1);
+ const map=room.getObjectByName('Kervan kaynak haritası');assert.ok(map);assert.equal(map.userData.source,'assets/supply-v91/rome-panorama.webp');assert.equal(map.userData.pointCount,22);assert.equal(map.userData.ready,true);assert.equal(paints(),1);
  assert.ok(!room.userData.features.some(x=>/trophy/.test(x)));let lights=0;room.traverse(n=>{if(n.isLight)lights++;});assert.equal(lights,0);
  assert.ok(map.position.z< -3.9);assert.ok(Math.abs(map.scale.x/map.scale.y-2)<1e-6);
 });
