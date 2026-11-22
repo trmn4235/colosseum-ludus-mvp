@@ -42,8 +42,10 @@ jobs:
           LUDUS_WEBKIT_TEST: '1'
           LUDUS_TEST_OUTPUT: /tmp/staff-v284-webkit/infirmary-v289
         run: |
-          node tests/infirmary-ui-v289.cjs
-          node tests/infirmary-supplies-ui-v289.cjs
+          medical_test_status=0
+          node tests/infirmary-ui-v289.cjs || medical_test_status=1
+          node tests/infirmary-supplies-ui-v289.cjs || medical_test_status=1
+          exit "$medical_test_status"
       - name: Upload Safari staff screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -128,8 +130,10 @@ jobs:
         env:
           LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/infirmary-v289
         run: |
-          node tests/infirmary-ui-v289.cjs
-          node tests/infirmary-supplies-ui-v289.cjs
+          medical_test_status=0
+          node tests/infirmary-ui-v289.cjs || medical_test_status=1
+          node tests/infirmary-supplies-ui-v289.cjs || medical_test_status=1
+          exit "$medical_test_status"
       - name: Approved staff home and papyrus layouts
         env:
           LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/papyrus-v288

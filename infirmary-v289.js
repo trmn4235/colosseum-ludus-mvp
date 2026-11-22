@@ -9,7 +9,7 @@
  const time=milliseconds=>{const total=Math.max(0,Math.ceil(milliseconds/1000)),hours=Math.floor(total/3600),minutes=Math.floor(total%3600/60),seconds=total%60;return [hours,minutes,seconds].map(value=>String(value).padStart(2,'0')).join(':');};
  function create(ctx){
   let owner=null,data=null,opened=false,loading=false,busy=false,previewLoading=false,selected=null,preview=null,filter='all',page=0,effectPage=0,materialPage=0;
-  let sequence=0,previewSequence=0,pending=null,lastFocus=null,serverAt=0,clockAt=0,timer=null;
+  let sequence=0,previewSequence=0,pending=null,lastFocus=null,serverAt=0,clockAt=0,timer=null,materialCapacity=0;
   const monotonic=()=>root.performance?.now?.()??Date.now();
   const now=()=>serverAt+Math.max(0,monotonic()-clockAt);
   const modal=el('section','infirmary-v289');modal.id='infirmaryModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','infirmaryTitle');
@@ -60,7 +60,7 @@
    finally{if(request===sequence){loading=false;render();if(selected)loadPreview();}}
   }
   async function loadPreview(){
-   const injury=current(),request=++previewSequence;preview=null;effectPage=0;materialPage=0;
+   const injury=current(),request=++previewSequence;preview=null;effectPage=0;materialPage=0;materialCapacity=0;
    if(!injury||injury.status!=='untreated'){previewLoading=false;render();return;}
    previewLoading=true;render();
    try{const result=await rpc('preview',{injury_id:injury.id});if(request!==previewSequence||selected!==injury.id)return;
@@ -102,7 +102,8 @@
    const section=el('section','inf289-materials');section.append(el('h3','','Gereken malzemeler'));
    const table=el('div','inf289-material-table');table.setAttribute('role','table');table.setAttribute('aria-label','Tedavi malzemeleri');
    const head=el('div','inf289-material-row inf289-material-head');head.setAttribute('role','row');for(const text of ['Malzeme','Gereken','Kasada']){const cell=el('span','',text);cell.setAttribute('role','columnheader');head.append(cell);}table.append(head);
-   const required=preview?.required||[],size=root.innerHeight<=360?3:root.innerHeight<=600||root.innerHeight>root.innerWidth?4:6,pages=Math.max(1,Math.ceil(required.length/size));materialPage=Math.min(materialPage,pages-1);
+   if(!materialCapacity)materialCapacity=root.innerHeight<=360?3:root.innerHeight<=600||root.innerHeight>root.innerWidth?4:6;
+   const required=preview?.required||[],size=materialCapacity,pages=Math.max(1,Math.ceil(required.length/size));materialPage=Math.min(materialPage,pages-1);
    for(const material of required.slice(materialPage*size,(materialPage+1)*size)){
     const row=el('div','inf289-material-row');row.setAttribute('role','row');row.dataset.sku=material.sku;row.dataset.missing=String(Number(material.owned)<Number(material.required));
     for(const value of [material.name||material.sku,number(material.required),number(material.owned)]){const cell=el('span','',value);cell.setAttribute('role','cell');row.append(cell);}table.append(row);
@@ -167,7 +168,18 @@
    if(bar)bar.value=Math.max(0,Math.min(1,(now()-starts)/Math.max(1,ends-starts)));
    if(finish){finish.textContent=remaining>0?'Tedavi sürüyor':'Tedavi sonucunu kontrol et';finish.disabled=remaining>0||busy||loading||!!pending;}
   }
-  function render(){if(!opened)return;modal.setAttribute('aria-busy',String(loading||busy));renderFilters();body.replaceChildren(renderList(),renderDetail());closeButton.disabled=busy;production.disabled=busy||!ctx.openProduction;updateClock();}
+  function fitMaterials(){
+   // Measure the actual heading, wrapped names and pager, not only viewport height.
+   // Keep the fitted capacity between pages so every material stays reachable.
+   while(materialCapacity>1&&preview?.required?.length){
+    const materials=modal.querySelector('.inf289-materials'),columns=modal.querySelector('.inf289-preview-columns');
+    if(!(materials?.clientHeight>0)||!(columns?.clientHeight>0))break;
+    if(materials.scrollHeight<=materials.clientHeight+1&&columns.scrollHeight<=columns.clientHeight+1)break;
+    const first=materialPage*materialCapacity;materialCapacity--;materialPage=Math.floor(first/materialCapacity);
+    body.replaceChildren(renderList(),renderDetail());
+   }
+  }
+  function render(){if(!opened)return;modal.setAttribute('aria-busy',String(loading||busy));renderFilters();body.replaceChildren(renderList(),renderDetail());fitMaterials();closeButton.disabled=busy;production.disabled=busy||!ctx.openProduction;updateClock();}
   async function command(action,args){
    await identify();if(busy)throw Error('Önceki işlem sürüyor.');
    if(pending&&(pending.action!==action||JSON.stringify(pending.args)!==JSON.stringify(args)))throw Error('Önceki işlemin sonucunu önce doğrula.');
@@ -191,7 +203,7 @@
   function tick(){if(point&&root.LudusRoomActions)root.LudusRoomActions.place(marker,point,ctx,!opened&&!!ctx.inRoom?.(),5);}
   modal.addEventListener('pointerdown',event=>event.stopPropagation());
   modal.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();}if(event.key==='Tab'){const items=[...modal.querySelectorAll('button:not(:disabled)')].filter(node=>node.getClientRects().length);if(event.shiftKey&&document.activeElement===items[0]){event.preventDefault();items.at(-1)?.focus();}else if(!event.shiftKey&&document.activeElement===items.at(-1)){event.preventDefault();items[0]?.focus();}}});
-  root.addEventListener('resize',()=>{if(opened){chooseVisible(selected);render();}});
+  root.addEventListener('resize',()=>{materialCapacity=0;materialPage=0;if(opened){chooseVisible(selected);render();}});
   return {open,close,refresh,tick,start:startTreatment,finish:finishTreatment,retry:async()=>{await identify();if(!pending)throw Error('Bekleyen revir işlemi yok.');return submit();},get visible(){return opened;},get state(){return data;},get preview(){return preview;},get pending(){return pending;}};
  }
  root.LudusInfirmaryV289={create};
