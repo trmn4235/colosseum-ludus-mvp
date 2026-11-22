@@ -6,8 +6,8 @@
 #medicalSuppliesModal button,#medicalSuppliesModal input{font:inherit;color:inherit;border:1px solid var(--theme-border,#bba477);border-radius:5px;background:var(--theme-surface,#fff9ed);box-shadow:none;letter-spacing:normal;text-transform:none;cursor:pointer}
 #medicalSuppliesModal button:disabled{opacity:.5;cursor:default}
 #medicalSuppliesModal button:focus-visible,#medicalSuppliesModal input:focus-visible{outline:3px solid var(--theme-title,#741d2c);outline-offset:2px}
-#medicalSuppliesModal .medsup289-head{position:static!important;display:flex;align-items:center;gap:15px;background:var(--theme-header,#741d2c);color:var(--theme-header-ink,#fff9ed);margin:0 -16px;padding:0 16px;box-shadow:none!important}
-#medicalSuppliesModal .medsup289-head h1{font-size:19px;line-height:1.15;flex:1}
+#medicalSuppliesModal .medsup289-head{position:relative!important;inset:auto!important;display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;pointer-events:auto;align-items:center;gap:15px;background:var(--theme-header,#741d2c);color:var(--theme-header-ink,#fff9ed);margin:0 -16px;padding:0 16px;box-shadow:none!important;text-shadow:none!important}
+#medicalSuppliesModal .medsup289-head h1{position:static!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none!important;color:inherit!important;font:600 19px/1.15 Arial,sans-serif;letter-spacing:normal!important;flex:1}
 #medicalSuppliesModal .medsup289-head button{color:inherit;background:transparent;border-color:currentColor;min-height:32px;padding:3px 10px}
 #medicalSuppliesModal .medsup289-back{font-size:28px!important;line-height:1;min-width:34px}
 #medicalSuppliesModal .medsup289-intro{display:flex;align-items:center;font-size:12px;color:var(--theme-muted,#75636a)}
@@ -70,4 +70,7 @@
  #medicalSuppliesModal .medsup289-catalog{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:48px}
  #medicalSuppliesModal .medsup289-art{display:none}
  #medicalSuppliesModal .medsup289-detail{border-left:0;border-top:1px solid var(--theme-border,#bba477);padding:10px 0 0;gap:7px}
+}
+@layer ludus-theme-v275{
+ html[data-ui-theme] #medicalSuppliesModal .medsup289-head h1{color:var(--theme-header-ink,#fff9ed)!important}
 }

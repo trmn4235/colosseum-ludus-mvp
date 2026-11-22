@@ -4,7 +4,7 @@
 
 .createColors{gap:2px;padding:18px}.createColors .customColor input{height:30px}
 </style><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision269"><script src="ludus-client-v84.js?v=revision84"></script><script src="item-visuals-v199.js?v=revision276"></script><script src="ludus-production-v119.js?v=revision289"></script><script src="equipment-groups-v168.js?v=revision274"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
-<link rel="stylesheet" href="game-panels-v123.css?v=revision123"><link rel="stylesheet" href="rankings-entry-v201.css?v=revision201"><link rel="stylesheet" href="clan-power-v231.css?v=revision231"><link rel="stylesheet" href="clan-bot-admin-v233.css?v=revision233"><link rel="stylesheet" href="clan-navigation-v257.css?v=revision259"><link rel="stylesheet" href="ludus-workers-v226.css?v=revision226"><link rel="stylesheet" href="ludus-clan-workers-v232.css?v=revision232"><link rel="stylesheet" href="ludus-clan-caravans-v268.css?v=revision268"><link rel="stylesheet" href="clan-dashboard-v276.css?v=revision281"><link rel="stylesheet" href="clan-members-v283.css?v=revision283"></head><body data-art-direction="136" data-roman-screen="clan"><div id="clanStage">
+<link rel="stylesheet" href="game-panels-v123.css?v=revision123"><link rel="stylesheet" href="rankings-entry-v201.css?v=revision201"><link rel="stylesheet" href="clan-power-v231.css?v=revision231"><link rel="stylesheet" href="clan-bot-admin-v233.css?v=revision233"><link rel="stylesheet" href="clan-navigation-v257.css?v=revision259"><link rel="stylesheet" href="ludus-workers-v226.css?v=revision226"><link rel="stylesheet" href="ludus-clan-workers-v232.css?v=revision232"><link rel="stylesheet" href="ludus-clan-caravans-v268.css?v=revision268"><link rel="stylesheet" href="clan-dashboard-v276.css?v=revision289"><link rel="stylesheet" href="clan-members-v283.css?v=revision283"></head><body data-art-direction="136" data-roman-screen="clan"><div id="clanStage">
  <header class="clan-topbar">
   <button id="back" class="back" aria-label="Geri dön"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18"/></svg></button>
   <nav class="clan-navigation" aria-label="Klan bölümleri"><div id="navigation"></div><div class="sideBottom"></div></nav>
@@ -196,7 +196,7 @@ function banner(id,color,bg){color=safeColor(color,'#d8b36d');bg=safeColor(bg,'#
 return{rows:rows.map((r,i)=>({id:i+1,name:r[0]})),colors,symbol,banner};
 })();
 </script>
-<script src="clan-dashboard-v276.js?v=revision287"></script><script src="ludus-clan-caravans-v268.js?v=revision289"></script><script src="clan-power-v231.js?v=revision231"></script><script src="clan-bot-admin-v233.js?v=revision233"></script>
+<script src="clan-dashboard-v276.js?v=revision289"></script><script src="ludus-clan-caravans-v268.js?v=revision289"></script><script src="clan-power-v231.js?v=revision231"></script><script src="clan-bot-admin-v233.js?v=revision233"></script>
 <script>(()=>{
 'use strict';
 const $=id=>document.getElementById(id),E=LudusClanEmblems,esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),num=n=>Number(n||0).toLocaleString('tr-TR');

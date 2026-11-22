@@ -31,7 +31,7 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
  c.ImportedGladiator.dispose(m);
 });
 test('browser entry points load visual identities before production and invalidate changed scripts',()=>{
- for(const f of ['ludus.html','savas.html','multiplayer.html','pazar.html','gelistirmeler.html','klan.html']){const s=read(f);assert.ok(s.includes('item-visuals-v199.js?v=revision276'),f);assert.ok(s.indexOf('item-visuals-v199.js')<s.indexOf('ludus-production-v119.js'));assert.ok(s.includes('ludus-production-v119.js?v=revision269'));}
+ for(const f of ['ludus.html','savas.html','multiplayer.html','pazar.html','gelistirmeler.html','klan.html']){const s=read(f);assert.ok(s.includes('item-visuals-v199.js?v=revision276'),f);assert.ok(s.indexOf('item-visuals-v199.js')<s.indexOf('ludus-production-v119.js'));assert.ok(s.includes('ludus-production-v119.js?v=revision289'));}
  for(const f of ['caravan-battle-v126.js','pit-visit-v172.js'])assert.ok(read(f).includes('revision199'));
  assert.equal((read('san-avlusu.html').match(/assets\/items-v199\/bow.webp/g)||[]).length,2);
 });

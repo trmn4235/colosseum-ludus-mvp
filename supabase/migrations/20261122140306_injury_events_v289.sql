@@ -1,5 +1,15 @@
 -- V289: server-owned injury evidence and one outcome per existing exercise event.
 -- The existing fatigue gate (0 or .25) and raid defeat gate (1) are unchanged.
+-- Deployment gate: the administrator enables new typed events only after the V289 UI is live.
+-- Missing/disabled state stays on legacy healing; already frozen events retain their outcome contract.
+create table ludus_infirmary_private.deployment_v289(
+ singleton boolean primary key default true check(singleton),
+ enabled boolean not null default false
+);
+insert into ludus_infirmary_private.deployment_v289 default values;
+alter table ludus_infirmary_private.deployment_v289 enable row level security;
+revoke all on ludus_infirmary_private.deployment_v289 from public,anon,authenticated,service_role;
+
 create table ludus_infirmary_private.event_contexts_v289(
  source_type text not null,source_id uuid not null,gladiator_id uuid not null references public.ludus_gladiators(id)on delete cascade,
  owner_id uuid not null references public.ludus_accounts(user_id)on delete cascade,
@@ -22,6 +32,7 @@ returns void language plpgsql set search_path='' as $$
 declare known text[];prior jsonb;flags jsonb:='{"exertion":true}';
 begin
  if p_source not in('training','mission','battle','match','duel','caravan','clan')or p_id is null or p_at is null then raise exception 'Sakatlık kaynağı geçersiz.';end if;
+ if not exists(select 1 from ludus_infirmary_private.deployment_v289 where singleton and enabled)then return;end if;
  -- Autonomous bot accounts retain legacy healing until their medical AI exists.
  if exists(select 1 from ludus_bot_private.members_v233 where user_id=p_owner)then return;end if;
  perform 1 from public.ludus_gladiators where id=p_gladiator and owner_id=p_owner for update;if not found then raise exception 'Gladyatör sahibi doğrulanamadı.';end if;

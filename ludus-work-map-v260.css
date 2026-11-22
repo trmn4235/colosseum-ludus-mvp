@@ -70,8 +70,5 @@
  #supplyModal .workmap-primary{background:#681e32!important;color:#fff4db!important;border-color:#ac894c!important}
  #supplyModal .workmap-worker[aria-pressed="true"],#supplyModal .workmap-slot[data-picked-worker]{background:#fff4db!important;color:#591823!important;border-color:#ac894c!important;box-shadow:inset 3px 0 #681e32!important}
 }
-/* Work-site names are single labels, including the bottom map row. */
-#supplyModal[data-view="work"] .supply-node .supply-node-name{max-width:120px;white-space:nowrap}
-@media(max-height:360px){
- #supplyModal[data-view="work"] .supply-node:is([data-destination="wine"],[data-destination="egg"],[data-destination="apple"]){top:calc(88% - 8px)!important}
-}
+/* Six columns share the atlas coordinates at every size; names wrap within a column. */
+#supplyModal[data-view="work"] .supply-node .supply-node-name{max-width:min(90px,14cqw,28cqh);white-space:normal}

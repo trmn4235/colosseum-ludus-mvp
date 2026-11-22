@@ -37,7 +37,7 @@ var LudusSupply=(()=>{
   {id:'sponge',name:'Sünger kıyısı',description:'Revirde kullanılacak doğal süngerler toplanır.'}
  ];
  // Keep all 22 sources on one screen, six columns and four compact rows.
- atlas.forEach((d,i)=>{d.at=[7+(i%6)*17,11+Math.floor(i/6)*25];});
+ atlas.forEach((d,i)=>{d.at=[7+(i%6)*17,11+Math.floor(i/6)*23];});
  const positions=Object.fromEntries(atlas.map(d=>[d.id,d.at]));
  const shortNames=Object.fromEntries(atlas.map(d=>[d.id,d.name]));
  let mapArtwork=null;

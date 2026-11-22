@@ -5,8 +5,10 @@
 #infirmaryModal button:disabled{cursor:default;opacity:.5}
 #infirmaryModal button:focus-visible{outline:2px solid var(--theme-accent,#b38b43);outline-offset:-2px}
 #infirmaryModal h1,#infirmaryModal h2,#infirmaryModal h3,#infirmaryModal p{margin:0;letter-spacing:normal;text-transform:none}
-#infirmaryModal .inf289-header{display:flex!important;position:relative!important;inset:auto!important;align-items:center;gap:16px;height:auto!important;min-height:0!important;margin:0 -20px;padding:0 20px;background:var(--theme-header,#591823)!important;color:var(--theme-header-ink,#ead294)!important;box-shadow:none!important;transform:none!important}
+#infirmaryModal .inf289-header{display:flex!important;position:relative!important;inset:auto!important;align-items:center;gap:16px;height:auto!important;min-height:0!important;margin:0 -20px;padding:0 20px;background:var(--theme-header,#591823)!important;color:var(--theme-header-ink,#ead294)!important;box-shadow:none!important;transform:none!important;pointer-events:auto}
 #infirmaryModal .inf289-header h1{display:block!important;color:inherit!important;font:600 22px/1.1 Arial,sans-serif!important;white-space:nowrap}
+/* The shared theme gives headings an important color inside this layer. */
+@layer ludus-theme-v275{#infirmaryModal .inf289-header h1{color:var(--theme-header-ink,#ead294)!important}}
 #infirmaryModal .inf289-back{font:28px/1 Arial,sans-serif!important;width:36px;height:30px;border-right:1px solid #ffffff55!important;border-radius:0!important;color:inherit!important;flex:none}
 #infirmaryModal .inf289-brand{font-size:.7em;letter-spacing:2px;margin-left:auto}
 #infirmaryModal .inf289-production{border:1px solid #ffffff66!important;border-radius:4px;padding:6px 12px!important;color:inherit!important;white-space:nowrap}
@@ -21,7 +23,8 @@
 #infirmaryModal .inf289-patients{display:grid;grid-template-rows:repeat(var(--patient-rows),minmax(0,1fr));gap:5px;min-height:0}
 #infirmaryModal .inf289-patient{width:100%;text-align:left;border:1px solid var(--theme-border,#b8a27d)!important;border-radius:4px;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:0;overflow:hidden}
 #infirmaryModal .inf289-patient[aria-pressed=true]{background:var(--theme-selected,#f2e9e8);border-color:var(--theme-title,#591823)!important}
-#infirmaryModal .inf289-patient strong{font-size:1em}
+#infirmaryModal .inf289-patient>strong,#infirmaryModal .inf289-patient>span,#infirmaryModal .inf289-patient>small{flex:none;line-height:1.2}
+#infirmaryModal .inf289-patient strong{font-size:1em;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
 #infirmaryModal .inf289-injury-name{font-size:.85em;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
 #infirmaryModal .inf289-patient-state{font-size:.72em;color:var(--theme-muted,#74656c);white-space:nowrap}
 #infirmaryModal .inf289-pager{display:flex;align-items:center;justify-content:center;gap:14px;font-size:.78em;min-height:0}
@@ -113,7 +116,7 @@
  #infirmaryModal .inf289-list{padding-right:8px}
  #infirmaryModal .inf289-preview-columns{gap:8px;grid-template-columns:53% minmax(0,1fr)}
  #infirmaryModal .inf289-effects{padding-left:8px}
- #infirmaryModal .inf289-material-row{grid-template-columns:minmax(0,1fr) 32px 29px;gap:3px}
+ #infirmaryModal .inf289-material-row{grid-template-columns:minmax(0,1fr) 42px 37px;gap:5px}
  #infirmaryModal .inf289-severity{font-size:9px}
  #infirmaryModal .inf289-action-note{font-size:8px}
 }

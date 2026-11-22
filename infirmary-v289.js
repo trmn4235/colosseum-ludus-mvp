@@ -28,7 +28,8 @@
   const treatmentFor=injury=>(data?.treatments||[]).find(treatment=>treatment.id===injury?.treatment_id||treatment.injury_id===injury?.id&&treatment.status==='active');
   const liveInjuries=()=>data?.injuries?.filter(injury=>injury.status!=='healed')||[];
   const records=()=>filter==='legacy'?data?.legacy_injuries||[]:filter==='healed'?data?.injuries?.filter(injury=>injury.status==='healed')||[]:liveInjuries().filter(injury=>filter==='all'||filter==='untreated'&&injury.status==='untreated'||filter==='treating'&&injury.status==='treating');
-  const pageSize=()=>root.innerHeight>root.innerWidth?4:Math.max(3,Math.min(8,Math.floor((root.innerHeight-150)/48)));
+  // Reserve the header, filters, footer and pager before budgeting three-line patient rows.
+  const pageSize=()=>{const height=root.innerHeight;if(height>root.innerWidth)return 4;const reserved=height<=360?134:height<=600?158:238,rowHeight=height<=600?48:62;return Math.max(3,Math.min(8,Math.floor((height-reserved)/rowHeight)));};
   function message(text,error=false){status.textContent=text;status.dataset.error=String(error);}
   function savePending(){if(pending)localStorage.setItem('ludus-infirmary-v289:'+owner,JSON.stringify(pending));else localStorage.removeItem('ludus-infirmary-v289:'+owner);}
   async function identify(){
@@ -90,7 +91,7 @@
    const rows=el('div','inf289-patients'),all=records(),visible=all.slice(page*pageSize(),(page+1)*pageSize());rows.style.setProperty('--patient-rows',String(pageSize()));
    for(const injury of visible){
     const row=button('',()=>setSelection(injury.id),'inf289-patient');row.dataset.injuryId=injury.id;row.setAttribute('aria-pressed',String(injury.id===selected));row.disabled=busy||filter==='legacy';
-    const name=el('strong','',injury.gladiator_name||injury.name||'Gladyatör');const description=el('span','inf289-injury-name',injury.injury_name||'Önceki sakatlık');description.title=description.textContent;
+    const name=el('strong','',injury.gladiator_name||injury.name||'Gladyatör');name.title=name.textContent;const description=el('span','inf289-injury-name',injury.injury_name||'Önceki sakatlık');description.title=description.textContent;
     const line=el('small','inf289-patient-state');line.dataset.severity=injury.severity||'';line.textContent=filter==='legacy'?'İyileşme · '+new Intl.DateTimeFormat('tr-TR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(injury.injured_until)):(severityNames[injury.severity]||'Önceki kayıt')+' · '+(injury.status==='treating'?'Tedavide':injury.status==='healed'?'Tamamlandı':'Tedavi bekliyor');
     row.append(name,description,line);rows.append(row);
    }

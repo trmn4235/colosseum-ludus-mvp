@@ -1,12 +1,22 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const dashboard=require('../clan-dashboard-v276.js');
 const state={clan:{id:'c1',level:1,experience:40,exp_cost:100,capacity:10,member_count:10,gold:0},members:[],applications:[]};
-test('all 16 map locations preserve the existing supply map coordinates and aliases',()=>{
+test('all 22 map locations preserve the supply map coordinates, legacy aliases and real icons',()=>{
  const c={};vm.runInNewContext(fs.readFileSync('ludus-supply-v85.js','utf8'),c);
  const actual=dashboard.locations.map(l=>[l.sku,l.x,l.y]);
- assert.equal(actual.length,16);assert.equal(new Set(actual.map(l=>l[0])).size,16);
+ assert.equal(actual.length,22);assert.equal(new Set(actual.map(l=>l[0])).size,22);
  assert.deepEqual(actual,JSON.parse(JSON.stringify(c.LudusSupply.atlas.map(l=>[l.sku||l.id,...l.at]))));
- for(const l of dashboard.locations){const path=(['wood','grain','apple','fish','meat','egg','beer','olive_oil'].includes(l.sku)?'assets/resource-icons-v95/':'assets/items-v118/')+l.sku+'.webp';assert.ok(fs.existsSync(path),path);}
+ assert.deepEqual(dashboard.locations.slice(0,16).map(l=>l.sku),['wood','meat','lead_ore','tin_ore','copper_ore','flax','hide','wool','grain','resin','fish','olive_oil','iron_ore','beer','egg','apple']);
+ assert.deepEqual(dashboard.locations.slice(16).map(l=>[l.sku,l.name]),[['beeswax','Balmumu arılığı'],['laurel','Defne bahçesi'],['honey','Bal arılığı'],['fig','İncir bahçesi'],['wine_vinegar','Sirke atölyesi'],['sponge','Sünger kıyısı']]);
+ const html=dashboard.render(state,{status:'loading'},'me',''),images=[...html.matchAll(/class="clan-map-resource"><img src="([^"]+)"/g)].map(m=>m[1]);
+ assert.equal(images.length,22);for(const path of images)assert.ok(fs.existsSync(path),path);
+ for(const l of dashboard.locations.slice(16))assert.ok(html.includes('src="assets/infirmary-v289/'+l.sku.replaceAll('_','-')+'.webp"'),l.sku+' uses the shipped medical-source icon');
+});
+test('medical-source teams contribute to map badges and totals, excluding forming/completed jobs',()=>{
+ const work={status:'loaded',data:{clan_id:'c1',jobs:[{sku:'honey',status:'collecting'},{sku:'honey',status:'collecting'},{sku:'wine_vinegar',status:'collecting'},{sku:'sponge',status:'forming'},{sku:'fig',status:'completed'}]}};
+ const counts=dashboard.workCounts(state,work);assert.equal(counts.honey,2);assert.equal(counts.wine_vinegar,1);assert.equal(counts.sponge,0);assert.equal(counts.fig,0);
+ const html=dashboard.render(state,work,'me','');assert.ok(html.includes('Bal arılığı · 2 çalışan ekip'));assert.ok(html.includes('Sirke atölyesi · 1 çalışan ekip'));assert.ok(html.includes('3 ekip çalışıyor'));
+ for(const sku of ['beeswax','laurel','honey','fig','wine_vinegar','sponge'])assert.ok(html.includes('data-action="site" data-sku="'+sku+'"'));
 });
 test('map aggregates only working teams by source, with unknown data kept distinct from zero',()=>{
  const work={status:'loaded',data:{clan_id:'c1',jobs:[{sku:'iron_ore',status:'collecting'},{sku:'iron_ore',status:'collecting'},{sku:'apple',status:'collecting'},{sku:'apple',status:'forming'},{sku:'iron_ore',status:'completed'}]}};

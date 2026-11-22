@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),vm=r
 const {chromium,webkit}=require('playwright');
 const {script}=require('./infirmary-fixture-v289.cjs');
 const root=path.resolve(__dirname,'..'),out=process.env.LUDUS_TEST_OUTPUT||fs.mkdtempSync(path.join(os.tmpdir(),'infirmary-v289-'));
-const selectors='#infirmaryModal,.inf289-header,.inf289-filters,.inf289-body,.inf289-list,.inf289-patients,.inf289-patient,.inf289-detail,.inf289-patient-heading,.inf289-preview-columns,.inf289-materials,.inf289-material-table,.inf289-effects,.inf289-effect-rows,.inf289-effect,.inf289-actions,.inf289-treatment,.inf289-footer';
+const selectors='#infirmaryModal,.inf289-header,#infirmaryTitle,.inf289-filters,.inf289-body,.inf289-list,.inf289-patients,.inf289-patient,.inf289-detail,.inf289-patient-heading,.inf289-preview-columns,.inf289-materials,.inf289-material-table,.inf289-material-row,.inf289-material-row>span,.inf289-effects,.inf289-effect-rows,.inf289-effect,.inf289-actions,.inf289-treatment,.inf289-footer';
 const html=`<!doctype html><html lang="tr" data-ui-theme="white"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script src="/ui-theme-v275.js"></script><link rel="stylesheet" href="/ui-theme-v275.css"><link rel="stylesheet" href="/infirmary-v289.css"><link rel="stylesheet" href="/infirmary-supplies-v289.css"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden}button{font:inherit;min-height:42px;padding:9px 16px}</style></head><body data-roman-screen="ludus"><button id="entry">Reviri aç</button><script src="/infirmary-v289.js"></script><script src="/infirmary-supplies-v289.js"></script><script>
 window.testUser={id:'ui-owner'};window.__testClient={rpc:async()=>({error:{message:'Unexpected RPC'}})};
 ${script()}
@@ -14,6 +14,17 @@ document.querySelector('#entry').onclick=()=>infirmary.open();
 async function checkLayout(page,label){
  const bad=await page.evaluate(selectors=>[...document.querySelectorAll(selectors)].filter(node=>node.getClientRects().length).flatMap(node=>{const r=node.getBoundingClientRect();return node.scrollHeight>node.clientHeight+2||node.scrollWidth>node.clientWidth+2||r.left<-.5||r.top<-.5||r.right>innerWidth+.5||r.bottom>innerHeight+.5?[{class:node.className,height:node.clientHeight,scrollHeight:node.scrollHeight,width:node.clientWidth,scrollWidth:node.scrollWidth,rect:[r.x,r.y,r.width,r.height]}]:[];}),selectors);
  assert.deepEqual(bad,[],label);
+ const readability=await page.evaluate(()=>{
+  const failures=[],title=document.querySelector('#infirmaryTitle'),header=document.querySelector('.inf289-header'),titleStyle=getComputedStyle(title),headerStyle=getComputedStyle(header),titleRect=title.getBoundingClientRect();
+  if(title.textContent!=='Revir'||titleStyle.display==='none'||titleStyle.visibility!=='visible'||Number(titleStyle.opacity)===0||titleRect.height<parseFloat(titleStyle.fontSize)||titleRect.width<30||titleStyle.color!==headerStyle.color||titleStyle.color===headerStyle.backgroundColor)failures.push({part:'title',text:title.textContent,color:titleStyle.color,headerColor:headerStyle.color,background:headerStyle.backgroundColor,rect:[titleRect.width,titleRect.height]});
+  if(headerStyle.pointerEvents!=='auto')failures.push({part:'header controls',pointerEvents:headerStyle.pointerEvents});
+  for(const patient of document.querySelectorAll('.inf289-patient')){
+   const row=patient.getBoundingClientRect();let previousBottom=row.top;
+   for(const child of patient.children){const box=child.getBoundingClientRect(),range=document.createRange();range.selectNodeContents(child);const text=range.getBoundingClientRect();if(box.height<text.height-.5||box.top<previousBottom-.5||text.top<row.top+1||text.bottom>row.bottom-1)failures.push({part:'patient line',text:child.textContent,row:[row.top,row.bottom],box:[box.top,box.bottom],textRect:[text.top,text.bottom]});previousBottom=box.bottom;}
+  }
+  return failures;
+ });
+ assert.deepEqual(readability,[],label+' readable title and patient lines');
 }
 async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({injuryId:id}),id);await page.waitForFunction(id=>infirmary.preview?.injury_id===id&&!document.querySelector('.inf289-start')?.disabled,id);}
 (async()=>{

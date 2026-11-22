@@ -19,6 +19,14 @@ const assert=require('node:assert/strict'),{randomUUID}=require('node:crypto'),{
  await db.exec(`create table test_injury_rng(n integer default 1,values_ double precision[]);insert into test_injury_rng values(1,'{}');
  create or replace function ludus_infirmary_private.roll_v289()returns double precision language plpgsql as $$declare answer double precision;begin update public.test_injury_rng set n=n+1 returning values_[n-1]into answer;if answer is null then raise exception 'unexpected RNG draw';end if;return answer;end$$;`);
  const rng=values=>q('update test_injury_rng set n=1,values_=$1',[values]);
+ // Database-first deployment defaults to legacy injuries until an administrator enables the live UI.
+ assert.deepEqual(await q('select singleton,enabled from ludus_infirmary_private.deployment_v289'),[{singleton:true,enabled:false}]);
+ for(const role of ['anon','authenticated','service_role']){await db.exec('set role '+role);await assert.rejects(()=>q('select * from ludus_infirmary_private.deployment_v289'),/permission denied/);await assert.rejects(()=>q('update ludus_infirmary_private.deployment_v289 set enabled=true'),/permission denied/);await db.exec('reset role');}
+ const rolloutG=await glad(),rolloutBattle=randomUUID();await q("insert into ludus_battles(id,owner_id,gladiator_id,mode,snapshot,started_at)values($1,$2,$3,'solo20','{}',clock_timestamp()-interval '20 seconds')",[rolloutBattle,A,rolloutG]);
+ assert.equal((await q('select count(*)::int n from ludus_infirmary_private.event_contexts_v289 where gladiator_id=$1',[rolloutG]))[0].n,0);
+ await rng([0]);await q('update ludus_battles set finished_at=clock_timestamp(),won=false where id=$1',[rolloutBattle]);assert.equal((await q('select count(*)::int n from ludus_infirmary_private.injuries where gladiator_id=$1',[rolloutG]))[0].n,0);
+ const rollout=(await q('select injury_level,extract(epoch from(injured_until-clock_timestamp())) seconds from ludus_gladiators where id=$1',[rolloutG]))[0];assert.equal(rollout.injury_level,1);assert(Number(rollout.seconds)>43190&&Number(rollout.seconds)<=43200);
+ await q('update ludus_infirmary_private.deployment_v289 set enabled=true where singleton');
  const flags={exertion:true,armor_chafe:true,movement:true,fall:true,head_hit:true,shoulder_hit:true,arm_hit:true,torso_hit:true,leg_hit:true,heavy_leg_hit:true,hard_fall:true,heavy_torso_hit:true};
  const candidates=(await q('select ludus_infirmary_private.candidates_v289($1)x',[flags]))[0].x;assert.equal(candidates.length,15);assert.equal(new Set(candidates).size,15);
  assert.deepEqual((await q("select ludus_infirmary_private.candidates_v289('{\"exertion\":true}')x"))[0].x,['mild_calf_strain']);
@@ -79,5 +87,5 @@ const assert=require('node:assert/strict'),{randomUUID}=require('node:crypto'),{
  assert.equal((await q('select count(*)::int n from ludus_infirmary_private.event_contexts_v289 where gladiator_id=$1',[botG]))[0].n,0);
  await rng([0]);await q('update ludus_battles set finished_at=clock_timestamp(),won=false where id=$1',[botBattle]);assert.equal((await q('select count(*)::int n from ludus_infirmary_private.injuries where gladiator_id=$1',[botG]))[0].n,0);
  const bot=(await q('select injury_level,extract(epoch from(injured_until-clock_timestamp())) seconds from ludus_gladiators where id=$1',[botG]))[0];assert.equal(bot.injury_level,1);assert(Number(bot.seconds)>43190&&Number(bot.seconds)<=43200);
- console.log('PASS V289 injury SQL: actual V51/.25 risk and penalty, typed immutable outcomes, all15 eligibility/24 active doctors, first-return claims, frozen learning, exact prevention/conversion, final PvP hit ordering, original raid time validation and owner/ACL isolation.');
+ console.log('PASS V289 injury SQL: disabled-by-default admin-only rollout gate, actual V51/.25 risk and penalty, typed immutable outcomes, all15 eligibility/24 active doctors, first-return claims, frozen learning, exact prevention/conversion, final PvP hit ordering, original raid time validation and owner/ACL isolation.');
 }finally{await db.close();}})().catch(e=>{console.error(e.message,e.where,e.detail);process.exitCode=1;});

@@ -108,7 +108,7 @@ body[data-roman-screen=clan] #clanStage{grid-template-rows:78px minmax(0,1fr) 30
 .clan-map-canvas{position:relative;width:min(100%,calc(100cqh * 2));aspect-ratio:2/1;isolation:isolate}
 .clan-map-background{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
 .clan-map-canvas:after{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,#13222c20,#13222c08 55%,#13222c25)}
-.clan-map-node{position:absolute;transform:translate(-50%,-50%);z-index:1;width:140px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;background:none;border:0;color:#f7f6e8;cursor:pointer}
+.clan-map-node{position:absolute;transform:translate(-50%,-50%);z-index:1;width:min(140px,14%);display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;background:none;border:0;color:#f7f6e8;cursor:pointer}
 .clan-map-resource{display:block;position:relative;width:38px;height:38px;border:1px solid #a7b3af;border-radius:50%;background:#253a40e8;box-shadow:0 2px 9px #0008;opacity:.84}
 .clan-map-resource img{width:100%;height:100%;object-fit:contain;padding:3px;border-radius:50%}
 .clan-map-label{max-width:100%;white-space:nowrap;display:block;font:15px/1.1 Arial;padding:4px 6px;background:#182d35e8;border:1px solid #a1b4ae66;border-radius:3px;box-shadow:0 2px 6px #0005}

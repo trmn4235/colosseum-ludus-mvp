@@ -34,4 +34,6 @@ Yeni malzemeli tedavi oyuncu hesaplarına uygulanır. Botların tıbbi malzeme �
 
 ## Doğrulama
 
+Veritabanı kurulumu yeni sakatlık atamasını başlangıçta kapalı tutar. Özel yayın anahtarı yalnız yönetici tarafından, güncel Revir ekranının canlı dosyaları doğrulandıktan sonra açılır. Bu sırada eski iyileşme akışı çalışmayı sürdürür.
+
 Test kapsamı; stokların ve eski hesapların korunması, altı kaynağın gerçek toplama ve alışveriş teslimatları, 15 sakatlık ve üç süre, sahiplik, yetkisiz çağrıların reddi, tekrar güvenliği, çevrimdışı toparlanma, dondurulmuş Doktor katkıları, gerçek savaş tekrarının değişmemesi ve farklı ekran boyutlarında Revir/üretim/harita düzenidir. Tarayıcı kontrolleri Chromium ve WebKit üzerinde çalıştırılır. Gerçek iPhone testi ayrıca değerlendirilir.

@@ -14,13 +14,15 @@
   if(!notes.length)notes.push({title:'Bekleyen işlem bulunmuyor',detail:'Birliğinin gücünü ve savaş hazırlığını incele.',view:'power'});
   return {active,online:(state.members||[]).filter(m=>m.online).length,rosterCount:entries.length,rosterState:r?(r.state==='locked'?'Kadro kilitli':'Hazırlık sürüyor'):'Henüz kadro kurulmadı',notes:notes.slice(0,work?.status==='error'?2:3)};
  }
- // Coordinates and resource identities match the existing Roma supply map.
+ // Coordinates and resource identities match the 22-source Roma supply map.
+ const medicalSources=new Set(['beeswax','laurel','honey','fig','wine_vinegar','sponge']);
  const locations=[
-  ['wood','Odun sahası',10,13],['meat','Av sahası',30,13],['lead_ore','Kurşun ocağı',52,13],['tin_ore','Kalay ocağı',73,13],['copper_ore','Bakır ocağı',91,13],
-  ['flax','Keten tarlası',10,39],['hide','Deri sahası',33,39],['wool','Yün çiftliği',65,39],['grain','Buğday tarlası',90,39],
-  ['resin','Reçine ormanı',10,63],['fish','Balıkçılık',30,64],['olive_oil','Zeytinlik',61,65],['iron_ore','Demir ocağı',90,64],
-  ['beer','Üzüm bağı',10,88],['egg','Yumurta çiftliği',48,88],['apple','Elma bahçesi',82,88]
- ].map(([sku,name,x,y])=>Object.freeze({sku,name,x,y}));
+  ['wood','Odun sahası'],['meat','Av sahası'],['lead_ore','Kurşun ocağı'],['tin_ore','Kalay ocağı'],['copper_ore','Bakır ocağı'],
+  ['flax','Keten tarlası'],['hide','Deri sahası'],['wool','Yün çiftliği'],['grain','Buğday tarlası'],
+  ['resin','Reçine ormanı'],['fish','Balıkçılık'],['olive_oil','Zeytinlik'],['iron_ore','Demir ocağı'],
+  ['beer','Üzüm bağı'],['egg','Yumurta çiftliği'],['apple','Elma bahçesi'],
+  ['beeswax','Balmumu arılığı'],['laurel','Defne bahçesi'],['honey','Bal arılığı'],['fig','İncir bahçesi'],['wine_vinegar','Sirke atölyesi'],['sponge','Sünger kıyısı']
+ ].map(([sku,name],i)=>Object.freeze({sku,name,x:7+(i%6)*17,y:11+Math.floor(i/6)*23,photo:medicalSources.has(sku)?'assets/infirmary-v289/'+sku.replaceAll('_','-')+'.webp':(['wood','grain','apple','fish','meat','egg','beer','olive_oil'].includes(sku)?'assets/resource-icons-v95/':'assets/items-v118/')+sku+'.webp'}));
  function workCounts(state,work){
   if(work?.status!=='loaded'||work.data?.clan_id!==state.clan?.id||!Array.isArray(work.data.jobs))return null;
   const counts=Object.fromEntries(locations.map(l=>[l.sku,0]));
@@ -56,7 +58,7 @@
  function warCards(state){return '<div class="clan-war-pair-v280" aria-label="Önümüzdeki iki klan savaşı">'+upcomingWars(state).map(w=>'<section class="clan-war-v277" data-war-key="'+esc(w.key)+'"><div class="clan-war-heading"><h2>'+w.position+'. Klan Savaşı</h2></div><div class="clan-war-details-v281"><strong class="clan-war-format">'+w.format+'</strong><span class="clan-war-label" data-war-label>'+w.label+'</span><time class="clan-war-countdown" data-war-countdown'+(w.countdown.length>8?' data-long':'')+'>'+w.countdown+'</time></div><button class="clan-war-enter" data-action="war_roster" data-war-key="'+esc(w.key)+'" aria-label="'+w.position+'. klan savaşının kadrosuna gir">Savaş kadrosuna gir</button></section>').join('')+'</div>';}
  function map(state,work){
   const counts=workCounts(state,work),active=counts?Object.values(counts).reduce((n,v)=>n+v,0):null;
-  const nodes=locations.map(l=>{const count=counts?.[l.sku],photo=(['wood','grain','apple','fish','meat','egg','beer','olive_oil'].includes(l.sku)?'assets/resource-icons-v95/':'assets/items-v118/')+l.sku+'.webp';return '<button class="clan-map-node'+(count?' has-teams':'')+'" data-action="site" data-sku="'+l.sku+'" style="left:'+l.x+'%;top:'+l.y+'%" aria-label="'+esc(l.name)+(count==null?' · Ekip bilgisi yüklenmedi':' · '+num(count)+' çalışan ekip')+'"><span class="clan-map-resource"><img src="'+photo+'" alt="" draggable="false">'+(count?'<b>'+num(count)+'</b>':'')+'</span><span class="clan-map-label">'+esc(l.name)+'</span></button>';}).join('');
+  const nodes=locations.map(l=>{const count=counts?.[l.sku];return '<button class="clan-map-node'+(count?' has-teams':'')+'" data-action="site" data-sku="'+l.sku+'" style="left:'+l.x+'%;top:'+l.y+'%" aria-label="'+esc(l.name)+(count==null?' · Ekip bilgisi yüklenmedi':' · '+num(count)+' çalışan ekip')+'"><span class="clan-map-resource"><img src="'+l.photo+'" alt="" draggable="false">'+(count?'<b>'+num(count)+'</b>':'')+'</span><span class="clan-map-label">'+esc(l.name)+'</span></button>';}).join('');
   return '<section class="clan-map-v277"><div class="clan-map-heading"><div><h2>Çalışan ekipler</h2><span>Roma · Madenler ve bahçeler</span></div><button class="clan-map-all" data-action="view" data-view="caravans">Tüm kervanlar '+icon('arrow')+'</button></div><div class="clan-map-stage"><div class="clan-map-canvas"><img class="clan-map-background" src="assets/supply-v91/rome-panorama.webp" alt="Roma ve çevresindeki maden, tarla ve bahçeler" draggable="false">'+nodes+'</div></div><div class="clan-map-legend"><span><i></i> Rakamlar bölgedeki ekip sayısıdır.</span><strong id="clanActiveCaravans" aria-live="polite">'+(active==null?'Ekip bilgisi bekleniyor':num(active)+' ekip çalışıyor')+'</strong></div></section>';
  }
  function render(state,work,owner,banner){
