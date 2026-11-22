@@ -30,6 +30,13 @@ async function checkLayout(page,label,collect=false){
  else assert.deepEqual(failures,[],label+' geometry and readable text');
 }
 async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({injuryId:id}),id);await page.waitForFunction(id=>infirmary.preview?.injury_id===id&&!document.querySelector('.inf289-start')?.disabled,id);}
+async function setViewport(page,width,height){
+ await page.setViewportSize({width,height});
+ // WebKit can acknowledge the viewport before dispatching its resize event.
+ // Measure only after the controller and the following layout frame have run.
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+ assert.deepEqual(await page.evaluate(()=>[innerWidth,innerHeight]),[width,height]);
+}
 (async()=>{
  fs.mkdirSync(out,{recursive:true});const safari=!!process.env.LUDUS_WEBKIT_TEST;
  const browser=await(safari?webkit:chromium).launch({headless:true,...(!safari?{args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']}:{}),...(process.env.LUDUS_BROWSER_PATH&&!safari?{executablePath:process.env.LUDUS_BROWSER_PATH}:{})});
@@ -42,7 +49,7 @@ async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({inj
   assert.match(await page.locator('.inf289-patient-heading').innerText(),/Yorgunluk 45,5\/100/);assert.match(await page.locator('.inf289-recovery').innerText(),/10,04 puan\/saat/);
   const sizes=[[1280,720],[874,402],[852,393],[667,375],[568,320],[390,844]];
   for(const [width,height]of sizes){
-   await page.setViewportSize({width,height});
+   await setViewport(page,width,height);
    for(let index=0;index<15;index++){
     await selectInjury(page,'injury-'+index);await checkLayout(page,JSON.stringify({width,height,injury:index,screen:'preview'}),true);
     const seenMaterials=new Set(await page.locator('.inf289-material-row[data-sku]').evaluateAll(rows=>rows.map(row=>row.dataset.sku)));
@@ -57,16 +64,15 @@ async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({inj
    }
    for(const theme of ['blue','black','white']){await page.evaluate(theme=>LudusTheme.set(theme),theme);await checkLayout(page,theme+' '+width+' heavy',true);}
   }
-  assert.deepEqual(layoutFailures,[],'All fifteen injury previews, all six sizes and all pages must fit');
-  await page.setViewportSize({width:874,height:402});await selectInjury(page,'injury-5');await page.evaluate(()=>__infDropNext=true);await page.locator('.inf289-start').click();
+  await setViewport(page,874,402);await selectInjury(page,'injury-5');await page.evaluate(()=>__infDropNext=true);await page.locator('.inf289-start').click();
   await page.getByRole('button',{name:'Yeniden dene',exact:true}).waitFor();assert.equal(await page.evaluate(()=>infirmary.state.injuries[5].status),'untreated');
   await page.getByRole('button',{name:'Yeniden dene',exact:true}).click();await page.locator('.inf289-countdown').waitFor();assert.equal(await page.evaluate(()=>__infCommits),1);
   assert.equal(await page.evaluate(()=>{const calls=__infReads.filter(call=>call.p_action==='start');return calls.length===2&&calls[0].p_request===calls[1].p_request;}),true);
   assert.match(await page.locator('.inf289-saved').innerText(),/Keten Sargı Bezi × 1/);assert.equal(await page.locator('.inf289-finish').isDisabled(),true);
-  for(const[width,height]of sizes){await page.setViewportSize({width,height});await checkLayout(page,width+' active treatment');await page.screenshot({path:path.join(out,`revir-${width}-tedavide.png`)});const next=page.locator('.inf289-effect-pager button:last-child');while(await next.count()&&await next.isEnabled()){await next.click();await checkLayout(page,width+' active treatment doctor effects');}}
-  await page.setViewportSize({width:874,height:402});await page.locator('.inf289-production').click();await page.locator('#medicalSuppliesModal').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>paused),true);assert.equal(await page.locator('#infirmaryModal').isVisible(),false);
+  for(const[width,height]of sizes){await setViewport(page,width,height);await checkLayout(page,width+' active treatment',true);await page.screenshot({path:path.join(out,`revir-${width}-tedavide.png`)});const next=page.locator('.inf289-effect-pager button:last-child');while(await next.count()&&await next.isEnabled()){await next.click();await checkLayout(page,width+' active treatment doctor effects',true);}}
+  await setViewport(page,874,402);await page.locator('.inf289-production').click();await page.locator('#medicalSuppliesModal').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>paused),true);assert.equal(await page.locator('#infirmaryModal').isVisible(),false);
   await page.locator('[data-recipe="linen_bandage"]').click();await page.locator('[data-craft]').click();await page.waitForFunction(()=>medical.state.inventory.find(i=>i.sku==='linen_bandage').quantity===20);
-  await page.getByRole('button',{name:'Geri dön',exact:true}).click();await page.locator('#infirmaryModal').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>paused),true);
+  await page.getByRole('button',{name:'Geri dön',exact:true}).click();await page.locator('#infirmaryModal[aria-busy="false"]').waitFor({state:'visible'});await page.waitForFunction(()=>infirmary.preview?.can_start);assert.equal(await page.evaluate(()=>paused),true);
   await page.evaluate(()=>{__infNow+=43200000;return infirmary.refresh();});await page.waitForFunction(()=>infirmary.state.injuries[5].status==='healed');
   await page.getByRole('button',{name:'Tamamlanan · 1',exact:true}).click();assert.match(await page.locator('.inf289-complete').innerText(),/Tedavi tamamlandı/);assert.equal(await page.locator('.inf289-start').count(),0);
   await page.getByRole('button',{name:'Önceki kayıtlar · 1',exact:true}).click();assert.match(await page.locator('.inf289-list').innerText(),/Eski kayıtlı gladyatör/);assert.equal(await page.locator('.inf289-start').count(),0);
@@ -80,7 +86,7 @@ async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({inj
   await page.route('http://127.0.0.1:8765/**',route=>{const file=path.join(root,new URL(route.request().url()).pathname);if(!fs.existsSync(file))return route.fulfill({status:404});let body=fs.readFileSync(file);if(file.endsWith('ludus.html'))body=Buffer.from(body.toString().replace('const accountClient=LudusClient.create','let accountClient=LudusClient.create').replace('const accountReady=(async()=>{',fixture+'\nconst accountReady=(async()=>{accountClient=window.__testClient;'));return route.fulfill({body,contentType:file.endsWith('.html')?'text/html':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'application/octet-stream'});});await page.route('https://**',route=>route.abort());
   await page.goto('http://127.0.0.1:8765/ludus.html');await page.waitForFunction(()=>window.LudusPreview?.exploring&&LudusPreview.infirmary.state?.injuries.length===15,null,{timeout:90000});await page.bringToFront();
   await page.evaluate(()=>{LudusPreview.enterRoom(LudusPreview.rooms.find(room=>room.kind==='infirmary'));Object.assign(LudusPreview.player,{x:-2.54,z:2.6,yaw:0,pitch:0});});
-  await page.locator('#infirmaryAction').waitFor({state:'visible',timeout:30000});await page.locator('#infirmaryAction').click();await page.waitForFunction(()=>LudusPreview.infirmary.preview?.can_start);assert.equal(await page.evaluate(()=>LudusPreview.paused),true);await checkLayout(page,'actual ludus infirmary');
+  await page.locator('#infirmaryAction').waitFor({state:'visible',timeout:30000});await page.locator('#infirmaryAction').click();await page.waitForFunction(()=>LudusPreview.infirmary.preview?.can_start);assert.equal(await page.evaluate(()=>LudusPreview.paused),true);await checkLayout(page,'actual ludus infirmary',true);
   await page.locator('.inf289-production').click();await page.locator('#medicalSuppliesModal').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
   await page.getByRole('button',{name:'Geri dön',exact:true}).click();await page.locator('#infirmaryModal').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
   await page.getByRole('button',{name:'Reviri kapat',exact:true}).click();assert.equal(await page.evaluate(()=>LudusPreview.paused),false);
@@ -88,6 +94,7 @@ async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({inj
   await page.evaluate(()=>{LudusPreview.leaveRoom();LudusPreview.enterRoom(LudusPreview.rooms.find(room=>room.kind==='upgrades'));return LudusPreview.supplySystem.open('craft');});await page.getByRole('button',{name:'Revir malzemeleri',exact:true}).click();await page.locator('#medicalSuppliesModal').waitFor({state:'visible'});assert.equal(await page.locator('#supplyModal').isVisible(),false);assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
   await page.getByRole('button',{name:'Geri dön',exact:true}).click();await page.locator('#supplyModal[data-view="craft"]').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
   await page.evaluate(()=>LudusPreview.supplySystem.close());assert.equal(await page.evaluate(()=>LudusPreview.paused),false);assert.deepEqual(errors,[]);
+  assert.deepEqual(layoutFailures,[],'All injury previews, active treatments and actual Ludus panels must fit at every tested size');
   console.log('PASS V289 revir UI: fifteen injuries/six sizes/three themes, material and fatigue previews, saved receipt/idempotent start, server timer, legacy/completed records, real room and doctor entry, forge production and pause-safe return.');
  }catch(error){if(page&&!page.isClosed())await page.screenshot({path:path.join(out,'infirmary-failure.png')}).catch(()=>{});throw error;}finally{fs.writeFileSync(path.join(out,'layout-matrix.json'),JSON.stringify(layoutResults,null,2)+'\n');await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -63,25 +63,33 @@
  }
  function create(ctx){
   const store=createStore(ctx),doc=ctx.document||root.document;
-  let opened=false,selection=null,quantity=1,returnTo=null,lastFocus=null;
+  let opened=false,selection=null,quantity=1,returnTo=null,lastFocus=null,renderFocus=null;
   const el=(tag,cls,text)=>{const node=doc.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
   const btn=(text,action,cls='')=>{const node=el('button',cls,text);node.type='button';node.addEventListener('click',action);return node;};
   const modal=el('section','medsup289');modal.id='medicalSuppliesModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','medicalSuppliesTitle');
   const head=el('header','medsup289-head'),back=btn('‹',()=>close(),'medsup289-back');back.setAttribute('aria-label','Geri dön');const title=el('h1','','Demirci · Tıbbi malzeme');title.id='medicalSuppliesTitle';const reload=btn('Yenile',()=>store.refresh(),'medsup289-reload');head.append(back,title,reload);
   const intro=el('p','medsup289-intro','Demirci üretir, Ludus deposu saklar, Doktor tedavide kullanır.');
-  const body=el('div','medsup289-body'),catalog=el('nav','medsup289-catalog');catalog.setAttribute('aria-label','Tıbbi üretim tarifleri');const detail=el('section','medsup289-detail');detail.setAttribute('aria-label','Seçili tarif ve üretim miktarı');body.append(catalog,detail);
+  const body=el('div','medsup289-body'),catalog=el('nav','medsup289-catalog');catalog.setAttribute('aria-label','Tıbbi üretim tarifleri');const detail=el('section','medsup289-detail');detail.setAttribute('aria-label','Seçili tarif ve üretim miktarı');detail.tabIndex=-1;body.append(catalog,detail);
   const footer=el('footer','medsup289-footer'),status=el('p');status.setAttribute('role','status');status.setAttribute('aria-live','polite');const retry=btn('Yeniden kontrol et',()=>{const s=store.snapshot();s.pending?store.craft(s.pending.sku,s.pending.quantity):store.refresh();},'medsup289-retry');footer.append(status,retry);modal.append(head,intro,body,footer);doc.body.append(modal);
   const num=n=>Number(n).toLocaleString('tr-TR');
   function art(sku){const path=root.LudusProduction?.photo(sku);if(!path)return null;const img=el('img','medsup289-art');img.src=path;img.alt='';img.loading='lazy';img.addEventListener('error',()=>img.hidden=true,{once:true});return img;}
   function render(){
    if(!opened)return;const s=store.snapshot(),recipes=s.data?.recipes||[],locked=s.busy||!!s.pending;
+   const focused=doc.activeElement;
+   if(focused!==detail)renderFocus=focused&&(catalog.contains(focused)||detail.contains(focused))?{id:focused.id,recipe:focused.dataset.recipe,craft:focused.dataset.craft,label:focused.getAttribute('aria-label')}:null;
+   function restoreFocus(){
+    if(!opened||!renderFocus)return;
+    const candidates=[...modal.querySelectorAll('button,input')],key=renderFocus,target=candidates.find(n=>key.id?n.id===key.id:key.recipe?n.dataset.recipe===key.recipe:key.craft?n.dataset.craft===key.craft:key.label&&n.getAttribute('aria-label')===key.label);
+    const next=target&&!target.disabled?target:detail.querySelector('[data-craft]:not(:disabled)')||detail;
+    next.focus({preventScroll:true});if(next!==detail)renderFocus=null;
+   }
    if(s.pending){selection=s.pending.sku;quantity=s.pending.quantity;}
    if(!recipes.some(r=>r.sku===selection))selection=recipes[0]?.sku||null;
    modal.setAttribute('aria-busy',String(s.loading||s.busy));catalog.replaceChildren();detail.replaceChildren();reload.disabled=s.busy||s.loading;retry.hidden=!s.error&&!s.pending;retry.disabled=s.busy||s.loading;
    status.textContent=s.busy?'Üretim işleniyor…':s.error||s.notice||(s.pending?'Bekleyen üretimin sonucunu kontrol et.':s.loading?'Depo ve tarifler yükleniyor…':'Malzemeler yalnızca Üret düğmesine bastığında tüketilir.');status.dataset.error=String(!!s.error);
-   if(!s.data){detail.append(el('p','medsup289-empty',s.loading?'Üretim defteri açılıyor…':'Üretim bilgileri henüz alınamadı.'));return;}
+   if(!s.data){detail.append(el('p','medsup289-empty',s.loading?'Üretim defteri açılıyor…':'Üretim bilgileri henüz alınamadı.'));restoreFocus();return;}
    for(const recipe of recipes){const card=btn('',()=>{selection=recipe.sku;quantity=1;render();},'medsup289-recipe');card.dataset.recipe=recipe.sku;card.disabled=locked;card.setAttribute('aria-pressed',String(recipe.sku===selection));const image=art(recipe.sku);if(image)card.append(image);card.append(el('strong','',recipe.name),el('span','',num(s.data.inventory.find(i=>i.sku===recipe.sku)?.quantity||0)+' depoda'));catalog.append(card);}
-   const recipe=recipes.find(r=>r.sku===selection);if(!recipe){detail.append(el('p','medsup289-empty','Bu bölümde üretim tarifi bulunmuyor.'));return;}
+   const recipe=recipes.find(r=>r.sku===selection);if(!recipe){detail.append(el('p','medsup289-empty','Bu bölümde üretim tarifi bulunmuyor.'));restoreFocus();return;}
    const p=preview(recipe,quantity,s.data.inventory),heading=el('div','medsup289-heading');heading.append(el('h2','',recipe.name),el('p','',s.pending?num(p.owned)+' depoda · '+num(quantity)+' adet üretim kontrol ediliyor':num(p.owned)+' depoda → '+num(p.after)+' depoda'));
    const controls=el('div','medsup289-quantity'),label=el('label','','Üretim adedi'),input=el('input');input.id='medicalCraftQuantity';input.type='number';input.min='1';input.max=String(LIMIT);input.step='1';input.inputMode='numeric';input.value=String(quantity);input.disabled=locked;label.htmlFor=input.id;
    const minus=btn('−',()=>changeQuantity(quantity-1)),plus=btn('+',()=>changeQuantity(quantity+1));minus.setAttribute('aria-label','Üretim adedini azalt');plus.setAttribute('aria-label','Üretim adedini artır');minus.disabled=locked||quantity<=1;plus.disabled=locked||quantity>=LIMIT;
@@ -92,13 +100,14 @@
    const note=el('p','medsup289-destination',s.pending?'Sonuç kontrolü aynı üretimi ikinci kez tüketmez.':'Çıktı: '+num(p.output)+' '+recipe.name+' · Ludus deposuna');detail.append(heading,controls,wrap,note,action);
    // Update the preview in place so typing and the first subsequent click keep their targets.
    function updateQuantity(){
-    if(locked)return;quantity=Number(input.value);const next=preview(recipe,quantity,s.data.inventory);
+    if(locked||!input.isConnected||store.snapshot().busy||store.snapshot().pending)return;quantity=Number(input.value);const next=preview(recipe,quantity,s.data.inventory);
     heading.querySelector('p').textContent=num(next.owned)+' depoda → '+num(next.after)+' depoda';
     tbody.replaceChildren();for(const ingredient of next.ingredients){const row=el('tr');row.dataset.enough=String(ingredient.enough);for(const value of [ingredient.name,num(ingredient.owned),num(ingredient.required),ingredient.enough?num(ingredient.remaining):num(-ingredient.remaining)+' eksik'])row.append(el('td','',value));tbody.append(row);}
     minus.disabled=quantity<=1;plus.disabled=quantity>=LIMIT;action.disabled=s.busy||s.loading||!next.canCraft;action.textContent=!next.valid?'1–100 arasında adet gir':next.canCraft?num(next.output)+' adet üret':'Malzeme yetersiz';
     note.textContent='Çıktı: '+num(next.output)+' '+recipe.name+' · Ludus deposuna';
    }
    input.addEventListener('input',updateQuantity);input.addEventListener('change',updateQuantity);
+   restoreFocus();
   }
   function changeQuantity(value){if(store.snapshot().busy||store.snapshot().pending)return;quantity=Number.isSafeInteger(value)?Math.max(1,Math.min(LIMIT,value)):1;render();doc.getElementById('medicalCraftQuantity')?.focus();}
   async function open(options={}){returnTo=typeof options.returnTo==='function'?options.returnTo:null;if(!opened){lastFocus=doc.activeElement;opened=true;modal.hidden=false;ctx.onOpen?.();}render();back.focus();await store.refresh();return store.snapshot().data;}
