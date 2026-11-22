@@ -1,8 +1,8 @@
 /* Shared caravans: each Ludus contributes only its own server-owned workers. */
 (function(root){
  'use strict';
- const labels={iron_ore:'Demir cevheri',copper_ore:'Bakır cevheri',tin_ore:'Kalay cevheri',lead_ore:'Kurşun cevheri',wood:'Odun',flax:'Ham keten',hide:'Ham deri',wool:'Yün',resin:'Reçine',grain:'Buğday',apple:'Elma',fish:'Balık',meat:'Et',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı'};
- const places={iron_ore:'Demir madeni',copper_ore:'Bakır madeni',tin_ore:'Kalay madeni',lead_ore:'Kurşun madeni',wood:'Odun toplama alanı',flax:'Keten tarlası',hide:'Deri toplama alanı',wool:'Yün toplama alanı',resin:'Reçine ormanı',grain:'Buğday tarlası',apple:'Elma bahçesi',fish:'Balıkçılık alanı',meat:'Et üretim sahası',egg:'Yumurta çiftliği',beer:'Bağ ve şaraphane',olive_oil:'Zeytinlik'};
+ const labels={iron_ore:'Demir cevheri',copper_ore:'Bakır cevheri',tin_ore:'Kalay cevheri',lead_ore:'Kurşun cevheri',wood:'Odun',flax:'Ham keten',hide:'Ham deri',wool:'Yün',resin:'Reçine',grain:'Buğday',apple:'Elma',fish:'Balık',meat:'Et',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı',beeswax:'Balmumu',laurel:'Defne',honey:'Bal',fig:'İncir',wine_vinegar:'Şarap sirkesi',sponge:'Doğal sünger'};
+ const places={iron_ore:'Demir madeni',copper_ore:'Bakır madeni',tin_ore:'Kalay madeni',lead_ore:'Kurşun madeni',wood:'Odun toplama alanı',flax:'Keten tarlası',hide:'Deri toplama alanı',wool:'Yün toplama alanı',resin:'Reçine ormanı',grain:'Buğday tarlası',apple:'Elma bahçesi',fish:'Balıkçılık alanı',meat:'Et üretim sahası',egg:'Yumurta çiftliği',beer:'Bağ ve şaraphane',olive_oil:'Zeytinlik',beeswax:'Balmumu arılığı',laurel:'Defne bahçesi',honey:'Bal arılığı',fig:'İncir bahçesi',wine_vinegar:'Sirke atölyesi',sponge:'Sünger kıyısı'};
  const num=n=>new Intl.NumberFormat('tr-TR').format(Number(n)||0);
  const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!==undefined)n.textContent=text;return n;};
  const time=t=>t?new Date(t).toLocaleString('tr-TR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'}):'—';

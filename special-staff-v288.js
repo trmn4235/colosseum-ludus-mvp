@@ -361,6 +361,7 @@
    const benefitsHeading = element('div','ss288-benefits-heading');
    benefitsHeading.append(element('h3','','Etkin pasifler · '+learnedPapers.length));
    if (role === 'smith') benefitsHeading.append(element('span','ss288-unit-note','Katkılar yüzde puandır'),button('İşlem hesabı',calculation,'ss288-calculation'));
+   if (role === 'doctor' && ctx.openInfirmary) benefitsHeading.append(button('Reviri aç',()=>{close();ctx.openInfirmary();},'inf289-staff-action'));
    benefits.append(benefitsHeading);
    const current = learnedPapers.slice(homePage*25,homePage*25+25);
    const grid = element('div','ss288-passive-grid');

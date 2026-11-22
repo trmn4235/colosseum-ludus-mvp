@@ -1,7 +1,7 @@
 /* Shared imperial work sites. Rates are server-owned and explicitly marked as test balance. */
 (function(root){
  'use strict';
- const labels={iron_ore:'Demir cevheri',copper_ore:'Bakır cevheri',tin_ore:'Kalay cevheri',lead_ore:'Kurşun cevheri',wood:'Odun',flax:'Ham keten',hide:'Ham deri',wool:'Yün',resin:'Reçine',grain:'Buğday',apple:'Elma',fish:'Balık',meat:'Et',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı'};
+ const labels={iron_ore:'Demir cevheri',copper_ore:'Bakır cevheri',tin_ore:'Kalay cevheri',lead_ore:'Kurşun cevheri',wood:'Odun',flax:'Ham keten',hide:'Ham deri',wool:'Yün',resin:'Reçine',grain:'Buğday',apple:'Elma',fish:'Balık',meat:'Et',egg:'Yumurta',beer:'Şarap',olive_oil:'Zeytinyağı',beeswax:'Balmumu',laurel:'Defne',honey:'Bal',fig:'İncir',wine_vinegar:'Şarap sirkesi',sponge:'Doğal sünger'};
  const awards=[.50,.46,.42,.38,.36,.32,.28,.24,.22,.18];
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;};
  const num=n=>new Intl.NumberFormat('tr-TR').format(Number(n)||0);

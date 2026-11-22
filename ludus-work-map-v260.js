@@ -1,7 +1,7 @@
 /* Map-based clan expeditions. The existing RPC owns eligibility, reservations and delivery. */
 (function(root){
  'use strict';
- const labels={iron_ore:'Demir ocağı',copper_ore:'Bakır ocağı',tin_ore:'Kalay ocağı',lead_ore:'Kurşun ocağı',wood:'Odun sahası',flax:'Keten tarlası',hide:'Deri sahası',wool:'Yün çiftliği',resin:'Reçine ormanı',grain:'Buğday tarlası',apple:'Elma bahçesi',fish:'Balıkçılık alanı',meat:'Av sahası',egg:'Yumurta çiftliği',beer:'Üzüm bağı',olive_oil:'Zeytinlik'};
+ const labels={iron_ore:'Demir ocağı',copper_ore:'Bakır ocağı',tin_ore:'Kalay ocağı',lead_ore:'Kurşun ocağı',wood:'Odun sahası',flax:'Keten tarlası',hide:'Deri sahası',wool:'Yün çiftliği',resin:'Reçine ormanı',grain:'Buğday tarlası',apple:'Elma bahçesi',fish:'Balıkçılık alanı',meat:'Av sahası',egg:'Yumurta çiftliği',beer:'Üzüm bağı',olive_oil:'Zeytinlik',beeswax:'Balmumu arılığı',laurel:'Defne bahçesi',honey:'Bal arılığı',fig:'İncir bahçesi',wine_vinegar:'Sirke atölyesi',sponge:'Sünger kıyısı'};
  const number=n=>Number(n||0).toLocaleString('tr-TR');
  const element=(tag,cls,text)=>{const e=document.createElement(tag);e.className=cls||'';if(text!==undefined)e.textContent=String(text);return e;};
  const button=(text,fn,cls='workmap-button')=>{const b=element('button',cls,text);b.type='button';b.onclick=fn;return b;};
