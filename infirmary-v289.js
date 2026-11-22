@@ -9,7 +9,7 @@
  const time=milliseconds=>{const total=Math.max(0,Math.ceil(milliseconds/1000)),hours=Math.floor(total/3600),minutes=Math.floor(total%3600/60),seconds=total%60;return [hours,minutes,seconds].map(value=>String(value).padStart(2,'0')).join(':');};
  function create(ctx){
   let owner=null,data=null,opened=false,loading=false,busy=false,previewLoading=false,selected=null,preview=null,filter='all',page=0,effectPage=0,materialPage=0;
-  let sequence=0,previewSequence=0,pending=null,lastFocus=null,serverAt=0,clockAt=0,timer=null,materialCapacity=0;
+  let sequence=0,previewSequence=0,pending=null,lastFocus=null,serverAt=0,clockAt=0,timer=null,materialCapacity=0,effectCapacity=0;
   const monotonic=()=>root.performance?.now?.()??Date.now();
   const now=()=>serverAt+Math.max(0,monotonic()-clockAt);
   const modal=el('section','infirmary-v289');modal.id='infirmaryModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','infirmaryTitle');
@@ -60,7 +60,7 @@
    finally{if(request===sequence){loading=false;render();if(selected)loadPreview();}}
   }
   async function loadPreview(){
-   const injury=current(),request=++previewSequence;preview=null;effectPage=0;materialPage=0;materialCapacity=0;
+   const injury=current(),request=++previewSequence;preview=null;effectPage=0;materialPage=0;materialCapacity=0;effectCapacity=0;
    if(!injury||injury.status!=='untreated'){previewLoading=false;render();return;}
    previewLoading=true;render();
    try{const result=await rpc('preview',{injury_id:injury.id});if(request!==previewSequence||selected!==injury.id)return;
@@ -116,7 +116,8 @@
   }
   function renderEffects(effects=preview?.doctor_effects||[]){
    const section=el('section','inf289-effects');section.append(el('h3','','Doktorun bilgileri'));
-   const size=root.innerHeight>root.innerWidth?1:root.innerHeight<=600?2:3,total=Math.max(1,Math.ceil(effects.length/size));effectPage=Math.min(effectPage,total-1);
+   if(!effectCapacity)effectCapacity=root.innerHeight>root.innerWidth?1:root.innerHeight<=600?2:3;
+   const size=effectCapacity,total=Math.max(1,Math.ceil(effects.length/size));effectPage=Math.min(effectPage,total-1);
    const rows=el('div','inf289-effect-rows');
    for(const effect of effects.slice(effectPage*size,(effectPage+1)*size)){
     const row=el('div','inf289-effect');row.dataset.contentId=effect.content_id||'';
@@ -179,7 +180,16 @@
     body.replaceChildren(renderList(),renderDetail());
    }
   }
-  function render(){if(!opened)return;modal.setAttribute('aria-busy',String(loading||busy));renderFilters();body.replaceChildren(renderList(),renderDetail());fitMaterials();closeButton.disabled=busy;production.disabled=busy||!ctx.openProduction;updateClock();}
+  function fitEffects(){
+   while(effectCapacity>1){
+    const effects=modal.querySelector('.inf289-effects'),rows=modal.querySelector('.inf289-effect-rows');
+    if(!(effects?.clientHeight>0)||!(rows?.clientHeight>0))break;
+    if(effects.scrollHeight<=effects.clientHeight+1&&rows.scrollHeight<=rows.clientHeight+1)break;
+    const first=effectPage*effectCapacity;effectCapacity--;effectPage=Math.floor(first/effectCapacity);
+    body.replaceChildren(renderList(),renderDetail());
+   }
+  }
+  function render(){if(!opened)return;modal.setAttribute('aria-busy',String(loading||busy));renderFilters();body.replaceChildren(renderList(),renderDetail());fitEffects();fitMaterials();fitEffects();closeButton.disabled=busy;production.disabled=busy||!ctx.openProduction;updateClock();}
   async function command(action,args){
    await identify();if(busy)throw Error('Önceki işlem sürüyor.');
    if(pending&&(pending.action!==action||JSON.stringify(pending.args)!==JSON.stringify(args)))throw Error('Önceki işlemin sonucunu önce doğrula.');
@@ -203,7 +213,7 @@
   function tick(){if(point&&root.LudusRoomActions)root.LudusRoomActions.place(marker,point,ctx,!opened&&!!ctx.inRoom?.(),5);}
   modal.addEventListener('pointerdown',event=>event.stopPropagation());
   modal.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();}if(event.key==='Tab'){const items=[...modal.querySelectorAll('button:not(:disabled)')].filter(node=>node.getClientRects().length);if(event.shiftKey&&document.activeElement===items[0]){event.preventDefault();items.at(-1)?.focus();}else if(!event.shiftKey&&document.activeElement===items.at(-1)){event.preventDefault();items[0]?.focus();}}});
-  root.addEventListener('resize',()=>{materialCapacity=0;materialPage=0;if(opened){chooseVisible(selected);render();}});
+  root.addEventListener('resize',()=>{materialCapacity=0;materialPage=0;effectCapacity=0;effectPage=0;if(opened){chooseVisible(selected);render();}});
   return {open,close,refresh,tick,start:startTreatment,finish:finishTreatment,retry:async()=>{await identify();if(!pending)throw Error('Bekleyen revir işlemi yok.');return submit();},get visible(){return opened;},get state(){return data;},get preview(){return preview;},get pending(){return pending;}};
  }
  root.LudusInfirmaryV289={create};

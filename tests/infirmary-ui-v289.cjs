@@ -11,7 +11,7 @@ window.infirmary=LudusInfirmaryV289.create({client:__testClient,ready:Promise.re
 window.medical=LudusInfirmarySuppliesV289.create({client:__testClient,ready:Promise.resolve({user_id:testUser.id}),onCraft:()=>infirmary.refresh(),onOpen(){medPause=paused;paused=true;},onClose(){paused=medPause;}});
 document.querySelector('#entry').onclick=()=>infirmary.open();
 </script></body></html>`;
-const layoutFailures=[];
+const layoutFailures=[],layoutResults=[];
 async function checkLayout(page,label,collect=false){
  const bad=await page.evaluate(selectors=>[...document.querySelectorAll(selectors)].filter(node=>node.getClientRects().length).flatMap(node=>{const r=node.getBoundingClientRect();return node.scrollHeight>node.clientHeight+2||node.scrollWidth>node.clientWidth+2||r.left<-.5||r.top<-.5||r.right>innerWidth+.5||r.bottom>innerHeight+.5?[{class:node.className,height:node.clientHeight,scrollHeight:node.scrollHeight,width:node.clientWidth,scrollWidth:node.scrollWidth,rect:[r.x,r.y,r.width,r.height]}]:[];}),selectors);
  const readability=await page.evaluate(()=>{
@@ -25,6 +25,7 @@ async function checkLayout(page,label,collect=false){
   return failures;
  });
  const failures=[...bad,...readability];
+ layoutResults.push({label,passed:failures.length===0,failures});
  if(collect){if(failures.length)layoutFailures.push({label,failures});}
  else assert.deepEqual(failures,[],label+' geometry and readable text');
 }
@@ -45,11 +46,13 @@ async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({inj
    for(let index=0;index<15;index++){
     await selectInjury(page,'injury-'+index);await checkLayout(page,JSON.stringify({width,height,injury:index,screen:'preview'}),true);
     const seenMaterials=new Set(await page.locator('.inf289-material-row[data-sku]').evaluateAll(rows=>rows.map(row=>row.dataset.sku)));
+    const seenEffects=new Set(await page.locator('.inf289-effect').evaluateAll(rows=>rows.map(row=>row.dataset.contentId)));
     for(const pager of ['.inf289-material-pager','.inf289-effect-pager']){
-     const next=page.locator(pager+' button:last-child');while(await next.count()&&await next.isEnabled()){await next.click();await checkLayout(page,JSON.stringify({width,height,injury:index,pager}),true);for(const sku of await page.locator('.inf289-material-row[data-sku]').evaluateAll(rows=>rows.map(row=>row.dataset.sku)))seenMaterials.add(sku);}
+     const next=page.locator(pager+' button:last-child');while(await next.count()&&await next.isEnabled()){await next.click();await checkLayout(page,JSON.stringify({width,height,injury:index,pager}),true);for(const sku of await page.locator('.inf289-material-row[data-sku]').evaluateAll(rows=>rows.map(row=>row.dataset.sku)))seenMaterials.add(sku);for(const id of await page.locator('.inf289-effect').evaluateAll(rows=>rows.map(row=>row.dataset.contentId)))seenEffects.add(id);}
      const previous=page.locator(pager+' button:first-child');while(await previous.count()&&await previous.isEnabled())await previous.click();
     }
     assert.deepEqual([...seenMaterials].sort(),await page.evaluate(()=>infirmary.preview.required.map(row=>row.sku).sort()),'Every required material remains reachable at '+width+'×'+height+' injury '+index);
+    assert.deepEqual([...seenEffects].sort(),await page.evaluate(()=>infirmary.preview.doctor_effects.map(row=>row.content_id).sort()),'Every doctor effect remains reachable at '+width+'×'+height+' injury '+index);
     if([0,5,10].includes(index))await page.screenshot({path:path.join(out,`revir-${width}-${['hafif','orta','kotu'][Math.floor(index/5)]}.png`)});
    }
    for(const theme of ['blue','black','white']){await page.evaluate(theme=>LudusTheme.set(theme),theme);await checkLayout(page,theme+' '+width+' heavy',true);}
@@ -60,7 +63,7 @@ async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({inj
   await page.getByRole('button',{name:'Yeniden dene',exact:true}).click();await page.locator('.inf289-countdown').waitFor();assert.equal(await page.evaluate(()=>__infCommits),1);
   assert.equal(await page.evaluate(()=>{const calls=__infReads.filter(call=>call.p_action==='start');return calls.length===2&&calls[0].p_request===calls[1].p_request;}),true);
   assert.match(await page.locator('.inf289-saved').innerText(),/Keten Sargı Bezi × 1/);assert.equal(await page.locator('.inf289-finish').isDisabled(),true);
-  for(const[width,height]of sizes){await page.setViewportSize({width,height});await checkLayout(page,width+' active treatment');await page.screenshot({path:path.join(out,`revir-${width}-tedavide.png`)});}
+  for(const[width,height]of sizes){await page.setViewportSize({width,height});await checkLayout(page,width+' active treatment');await page.screenshot({path:path.join(out,`revir-${width}-tedavide.png`)});const next=page.locator('.inf289-effect-pager button:last-child');while(await next.count()&&await next.isEnabled()){await next.click();await checkLayout(page,width+' active treatment doctor effects');}}
   await page.setViewportSize({width:874,height:402});await page.locator('.inf289-production').click();await page.locator('#medicalSuppliesModal').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>paused),true);assert.equal(await page.locator('#infirmaryModal').isVisible(),false);
   await page.locator('[data-recipe="linen_bandage"]').click();await page.locator('[data-craft]').click();await page.waitForFunction(()=>medical.state.inventory.find(i=>i.sku==='linen_bandage').quantity===20);
   await page.getByRole('button',{name:'Geri dön',exact:true}).click();await page.locator('#infirmaryModal').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>paused),true);
@@ -86,5 +89,5 @@ async function selectInjury(page,id){await page.evaluate(id=>infirmary.open({inj
   await page.getByRole('button',{name:'Geri dön',exact:true}).click();await page.locator('#supplyModal[data-view="craft"]').waitFor({state:'visible'});assert.equal(await page.evaluate(()=>LudusPreview.paused),true);
   await page.evaluate(()=>LudusPreview.supplySystem.close());assert.equal(await page.evaluate(()=>LudusPreview.paused),false);assert.deepEqual(errors,[]);
   console.log('PASS V289 revir UI: fifteen injuries/six sizes/three themes, material and fatigue previews, saved receipt/idempotent start, server timer, legacy/completed records, real room and doctor entry, forge production and pause-safe return.');
- }catch(error){if(page&&!page.isClosed())await page.screenshot({path:path.join(out,'infirmary-failure.png')}).catch(()=>{});throw error;}finally{await browser.close();}
+ }catch(error){if(page&&!page.isClosed())await page.screenshot({path:path.join(out,'infirmary-failure.png')}).catch(()=>{});throw error;}finally{fs.writeFileSync(path.join(out,'layout-matrix.json'),JSON.stringify(layoutResults,null,2)+'\n');await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
