@@ -100,7 +100,9 @@
    const note=el('p','medsup289-destination',s.pending?'Sonuç kontrolü aynı üretimi ikinci kez tüketmez.':'Çıktı: '+num(p.output)+' '+recipe.name+' · Ludus deposuna');detail.append(heading,controls,wrap,note,action);
    // Update the preview in place so typing and the first subsequent click keep their targets.
    function updateQuantity(){
-    if(locked||!input.isConnected||store.snapshot().busy||store.snapshot().pending)return;quantity=Number(input.value);const next=preview(recipe,quantity,s.data.inventory);
+    if(locked||!input.isConnected||store.snapshot().busy||store.snapshot().pending)return;
+    const value=Number(input.value);if(Object.is(value,quantity))return;quantity=value;
+    const next=preview(recipe,quantity,s.data.inventory);
     heading.querySelector('p').textContent=num(next.owned)+' depoda → '+num(next.after)+' depoda';
     tbody.replaceChildren();for(const ingredient of next.ingredients){const row=el('tr');row.dataset.enough=String(ingredient.enough);for(const value of [ingredient.name,num(ingredient.owned),num(ingredient.required),ingredient.enough?num(ingredient.remaining):num(-ingredient.remaining)+' eksik'])row.append(el('td','',value));tbody.append(row);}
     minus.disabled=quantity<=1;plus.disabled=quantity>=LIMIT;action.disabled=s.busy||s.loading||!next.canCraft;action.textContent=!next.valid?'1–100 arasında adet gir':next.canCraft?num(next.output)+' adet üret':'Malzeme yetersiz';
