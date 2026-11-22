@@ -55,6 +55,24 @@ test('representative old path filters and target branch rules are retained', () 
   assert.ok(selectSuites(config, [file('pit-new.js')], 'release').includes('pit_v174'));
 });
 
+test('ranked SQL, its integration test, and its database fixture require the ranked suite', () => {
+  for (const filename of [
+    'supabase/migrations/20261122150342_ranked_papyrus_v290.sql',
+    'tests/ranked-staff-v290.cjs',
+    'tests/fixtures/ranked-staff-v290.cjs'
+  ]) {
+    const selected = selectSuites(config, [file(filename)], 'main');
+    assert.ok(selected.includes('render_performance_v187'), filename);
+    const needs = validNeeds(selected);
+    needs.render_performance_v187.result = 'failure';
+    assert.throws(() => checkGate(config, selected, needs), /expected success/);
+  }
+  const workflow = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/render-performance-v187.yml'), 'utf8');
+  assert.match(workflow, /node tests\/ranked-staff-v290\.cjs/);
+  assert.match(workflow, /node tests\/ranked-client-v290\.cjs/);
+  assert.ok(!workflow.includes('continue-on-error'));
+});
+
 test('renames match old and new paths, deletion matches its former path', () => {
   const selected = selectSuites(config, [file('docs/retired.txt', {status: 'renamed', previous_filename: 'arena.html'})], 'main');
   assert.ok(selected.includes('arena_realism'));
