@@ -515,6 +515,8 @@
         ".github/workflows/render-performance-v187.yml",
         "ranked-*",
         "tests/ranked-*",
+        "tests/fixtures/ranked-*",
+        "supabase/migrations/*ranked*",
         "scripts/build-ranked-runtime-v253.cjs"
       ]
     },

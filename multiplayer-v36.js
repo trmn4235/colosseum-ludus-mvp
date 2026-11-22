@@ -107,6 +107,13 @@ return {load,prepare};
  function throwable(){return(room?.controls_version||0)>=76&&['spear','trident','trident_gladiator'].includes(selectedWeapon()?.model);}
  function canAct(cost){if(!active())return false;if(enhanced()&&(me().stamina??100)<cost){message('Kondisyonun dolmasını bekle.');return false;}return true;}
  function me(){return room?.players.find(p=>p.owner===owner);}
+ function actionCost(action,key,fallback){
+  const p=me(),quote=p?.action_costs_v290;
+  if(!rankedRequested||quote?.version!==290||quote.owner!==owner||quote.gear_serial!==(p.gear_serial??0))return fallback;
+  if(action==='special'&&quote.special_kind?.[key]!==HandSpecials.kind(p.items?.find(i=>i.equipped_slot===key)))return fallback;
+  const value=quote[action]?.[key];return typeof value==='number'&&Number.isFinite(value)&&value>=0?value:fallback;
+ }
+ const costLabel=value=>Number(value.toFixed(4)).toLocaleString('tr-TR',{maximumFractionDigits:4});
  function rivals(){const own=me();return (room?.players||[]).filter(p=>p.owner!==owner&&p.hp>0&&(!rankedRequested||(own?.ranked_team&&p.ranked_team&&p.ranked_team!==own.ranked_team)));}
  function target(){const p=me(),alive=rivals();if(!p||!alive.length)return null;if(locked)return alive.find(x=>x.owner===locked)||null;return alive.sort((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(b.x-p.x,b.z-p.z))[0];}
  function syncModels(){if(!ready||!room||room.status==='waiting')return;for(const p of room.players){if(models.has(p.owner))continue;const i=models.size,m=ImportedGladiator.create(i,p.class);models.set(p.owner,m);scene.add(m.root);const f=new ArenaCombat().reset('normal',p.class).fighters[0];LudusLoadout.apply(f,p.gladiator,p.items);if(pitRequested&&room.pit_version===173)PitArena.equip(f,p.items?.find(i=>i.equipped_slot==='main_hand'));Object.assign(f,{id:i,team:rankedRequested?(p.ranked_team===me()?.ranked_team?0:1):i,name:p.name,x:p.x,z:p.z,angle:p.angle,action:'idle',hp:p.hp,maxHp:p.maxHp??100,maxStamina:p.maxStamina??100,stamina:p.stamina??100,timer:0,deadTime:0,_serial:p.serial,_defenseSerial:p.defense_serial||0,_hp:p.hp,_gearSerial:p.gear_serial||0});states.set(p.owner,f);m.teamMark.visible=false;}}
@@ -127,11 +134,12 @@ return {load,prepare};
   const waiting=room.status==='waiting';$('matchLobby').hidden=!waiting;$('mpBattleHud').hidden=waiting;$('duelControls').hidden=waiting||p?.hp<=0;
   $('queueCount').textContent=String(rankedRequested?room.players.filter(x=>x.ranked_joined).length:room.players.length);$('queueMessage').textContent=rankedRequested?'10 oyuncu bağlanınca arena açılacak.':pitRequested?`${room.players.length} / 4 gladyatör · Dört kişi tamamlanınca kapılar açılır.`:room.players.length<2?'İlk gladyatör sensin. En az iki oyuncuyla kapılar açılır.':'Bu geri sayım bitmeden katılan herkes aynı arenaya girer.';
   if(!weapons().some(i=>i.equipped_slot===hand))hand=weapons()[0]?.equipped_slot||'main_hand';
-  for(const [slot,id,side] of [['main_hand','duelSpecial','SAĞ'],['off_hand','duelSpecialLeft','SOL']]){const item=p?.items?.find(i=>i.equipped_slot===slot),k=HandSpecials.kind(item),wait=Math.max(0,(Date.parse(p?.special_ready_v261?.[slot])-Date.now()-clockOffset)/1000)||0,label=HandSpecials.labels[k]||'BOŞ',button=$(id);button.hidden=false;button.disabled=!k||(p?.stamina??0)<HandSpecials.cost(k)||wait>0;button.querySelector('small').textContent=side+' · '+label+(wait>0?' '+Math.ceil(wait):'');button.setAttribute('aria-label',side+' EL · '+label);button.title=label+' · '+HandSpecials.cost(k)+' kondisyon';}$('duelDodge').hidden=!enhanced();
+  for(const [slot,id,side] of [['main_hand','duelSpecial','SAĞ'],['off_hand','duelSpecialLeft','SOL']]){const item=p?.items?.find(i=>i.equipped_slot===slot),k=HandSpecials.kind(item),cost=actionCost('special',slot,HandSpecials.cost(k)),wait=Math.max(0,(Date.parse(p?.special_ready_v261?.[slot])-Date.now()-clockOffset)/1000)||0,label=HandSpecials.labels[k]||'BOŞ',button=$(id);button.hidden=false;button.disabled=!k||(p?.stamina??0)<cost||wait>0;button.querySelector('small').textContent=side+' · '+label+(wait>0?' '+Math.ceil(wait):'');button.setAttribute('aria-label',side+' EL · '+label);button.title=label+' · '+(rankedRequested?costLabel(cost):cost)+' kondisyon';}$('duelDodge').hidden=!enhanced();
   $('duelBlock').disabled=!(p?.items||[]).some(i=>i.kind==='shield'&&i.equipped_slot==='off_hand');$('duelBlock').setAttribute('aria-pressed',String(block));
   for(const [id,f] of [['self',p],['rival',t]]){$(id+'Hp').max=f?.maxHp||100;$(id+'Stamina').max=f?.maxStamina||100;$(id+'Stamina').value=f?.stamina??100;$(id+'Stamina').hidden=!enhanced();}
   const foodBonus=Math.min(12,Math.max(0,Number(p?.gladiator?.combat_stamina_bonus)||0));const morale=Math.min(100,Math.max(0,Number(p?.gladiator?.combat_morale??50)));foodBonusLabel.hidden=!enhanced()||(!foodBonus&&morale===50)||p?.hp<=0||room.status!=='playing';foodBonusLabel.textContent='Beslenme +%'+foodBonus+' · Moral '+morale;foodBonusLabel.title='Kondisyon yenilenmesi: beslenme ×'+(1+foodBonus/100).toFixed(2)+' · moral ×'+(1+(morale-50)/1000).toFixed(3);
-  $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<18;
+  $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<actionCost('dodge','step',18);
+  if(rankedRequested){$('duelAttack').title='Saldır; kaydırarak vuruş bölgesi seç · '+costLabel(actionCost('attack',hand,13))+' kondisyon';$('duelDodge').title='Kaçın · '+costLabel(actionCost('dodge','step',18))+' kondisyon';}
   document.querySelector('.mp-rule').textContent=rankedRequested?'Takım mavi · Rakip kırmızı · +10 / −5':pitRequested?'Galibiyet +1 Şan · Avlu silahları · Zırhsız':room.bot_match?'Geçerli zafer: 100 altın · 1 elmas · 1 taş · EXP':throwable()?'Fırlat: 26 kondisyon · Silah maç sonuna kadar elden çıkar.':'Multiplayer Beta · Ödül ve kalıcı eşya kaybı yok';
   $('duelTarget').classList.toggle('locked',!!locked);$('duelTarget').setAttribute('aria-pressed',String(!!locked));
   $('queueNames').textContent=room.players.slice(0,6).map(x=>x.name).join(' · ')+(room.players.length>6?' · +'+(room.players.length-6):'');
@@ -140,11 +148,11 @@ return {load,prepare};
  }
  async function rpc(args){let timer;const started=performance.now();try{const result=await Promise.race([client.rpc(rankedRequested?'ludus_ranked_match_v252':'ludus_match',args),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Bağlantı zaman aşımı')),10000);})]);if(result.data?.server_now)clockOffset=Date.parse(result.data.server_now)+(performance.now()-started)/2-Date.now();return result;}finally{clearTimeout(timer);}}
  function queueStep(){inputDirty=true;if(!pending&&!stopped&&room){clearTimeout(nextStep);step();}}
- function queueAttack(region=selectedRegion){if(!canAct(13)||attacks)return;attackRegion=region;attackHand=hand;attackId=crypto.randomUUID();attacks=1;queueStep();}
+ function queueAttack(region=selectedRegion){if(!canAct(actionCost('attack',hand,13))||attacks)return;attackRegion=region;attackHand=hand;attackId=crypto.randomUUID();attacks=1;queueStep();}
  let dodgeKind='step';
- function queueDodge(kind='step'){if(!enhanced()||!canAct(kind==='roll'?25:kind==='jump'?22:18)||dodge)return;dodgeKind=kind;dodgeId=crypto.randomUUID();dodge=true;queueStep();}
+ function queueDodge(kind='step'){if(!enhanced()||!canAct(actionCost('dodge',kind,kind==='roll'?25:kind==='jump'?22:18))||dodge)return;dodgeKind=kind;dodgeId=crypto.randomUUID();dodge=true;queueStep();}
  function castSpecial(slot='main_hand'){
-  const p=me(),t=target(),item=p?.items?.find(i=>i.equipped_slot===slot),k=HandSpecials.kind(item);if(special||!k||!canAct(HandSpecials.cost(k)))return;
+  const p=me(),t=target(),item=p?.items?.find(i=>i.equipped_slot===slot),k=HandSpecials.kind(item);if(special||!k||!canAct(actionCost('special',slot,HandSpecials.cost(k))))return;
   if(!t){message('Özel hareket için bir rakip gerekli.');return;}
   if(Math.hypot(t.x-p.x,t.z-p.z)>HandSpecials.range(k,item.model)){message('Hedef menzil dışında. Biraz yaklaş.');return;}
   if(Date.parse(p.cooldown_until)>Date.now()+clockOffset||Date.parse(p.special_ready_v261?.[slot])>Date.now()+clockOffset){message('Bu elin özel hareketinin hazır olmasını bekle.');return;}

@@ -4,14 +4,14 @@ module.exports=async function(context,base,out){
  const root=path.resolve(__dirname,'..'),owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000252';
  const classes=['provocator','murmillo','retiarius','murmillo','thraex','retiarius','secutor','murmillo','thraex','scissor'];
  const players=classes.map((type,i)=>({owner:i?'00000000-0000-4000-8000-'+String(i+1).padStart(12,'0'):owner,name:'Roma-'+(i+1),class:type,ranked_team:i<5?'a':'b',bot_v249:i>0,ranked_joined:true,
-  gladiator:{class:type,overall:50},combat_stats:{speed:1},items:[
+  gladiator:{class:type,overall:50,...(i===0?{combat_stamina_bonus:12,combat_morale:80}:{})},combat_stats:{speed:1},items:[
    {kind:'weapon',model:type==='retiarius'?'trident':type==='thraex'?'sica':'gladius',equipped_slot:'main_hand',enhancement:5},
    {kind:type==='retiarius'||type==='scissor'?'weapon':'shield',model:type==='retiarius'?'net':type==='scissor'?'scissor':type==='thraex'?'small':'large',equipped_slot:'off_hand',enhancement:5},
    {kind:'helmet',model:i===0?'viking_helmet':type,equipped_slot:'helmet',enhancement:0},
    {kind:'gloves',model:i===0?'manica_lion':'starter',equipped_slot:'gloves',enhancement:0},
    {kind:'legs',model:'starter',equipped_slot:'legs',enhancement:0},
    ...(['provocator','murmillo','scissor'].includes(type)?[{kind:'chest',model:i===0?'chest_plate':type,equipped_slot:'chest',enhancement:0}]:[])],
-  x:(i%5-2)*1.6,z:i<5?-3:3,angle:i<5?0:Math.PI,hp:100,maxHp:100,stamina:100,maxStamina:100,serial:0,gear_serial:0,move:1,block:false}));
+  x:(i%5-2)*1.6,z:i<5?-3:3,angle:i<5?0:Math.PI,hp:100,maxHp:100,stamina:i===0?91.25:100,maxStamina:i===0?137.5:100,serial:0,gear_serial:0,move:1,block:false}));
  const fixture=`window.__mpFixture={hold:false,held:0,responses:0,releases:[]};
  const fixtureRoom={id:${JSON.stringify(id)},status:'playing',players:${JSON.stringify(players)},combat_version:23,controls_version:77,server_now:new Date().toISOString()};
  LudusClient.create=()=>({auth:{getUser:async()=>({data:{user:{id:${JSON.stringify(owner)},is_anonymous:false}}})},rpc:async(name,args)=>{
@@ -32,6 +32,12 @@ module.exports=async function(context,base,out){
  await page.goto(base+'/multiplayer.html?venue=ranked&v=252',{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>window.__mpTest?.ready&&__mpTest.models.size===10&&__mpFixture.responses>2,null,{timeout:90000});
  assert.equal(await page.locator('#duelControls').isVisible(),true);
+ const serverStamina=await page.evaluate(()=>({
+  modelMax:__mpTest.self.maxStamina,modelValue:__mpTest.self.stamina,
+  hudMax:document.getElementById('selfStamina').max,hudValue:document.getElementById('selfStamina').value,
+  food:document.getElementById('selfFoodBonus').textContent
+ }));
+ assert.deepEqual(serverStamina,{modelMax:137.5,modelValue:91.25,hudMax:137.5,hudValue:91.25,food:'Beslenme +%12 · Moral 80'},'full and compact server snapshots retain fractional capacity without adding food or staff bonuses again');
  await page.evaluate(()=>{__mpFixture.hold=true;});
  await page.waitForFunction(()=>__mpFixture.held>0);
  const start=await page.evaluate(()=>{
