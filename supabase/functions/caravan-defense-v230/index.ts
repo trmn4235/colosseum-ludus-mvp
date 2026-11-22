@@ -1,3 +1,4 @@
+import './staff-combat-v288.js';
 import './caravan-core-v126.js';
 import './combat-curves-v163.js';
 import './combat-motion-v163.js';

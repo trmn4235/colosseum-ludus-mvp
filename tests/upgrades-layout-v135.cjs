@@ -42,7 +42,13 @@ async function checkLayout(page,label){
   const stones=['sapphire','emerald','ruby'].flatMap(family=>Array.from({length:family==='ruby'?4:family==='emerald'?15:18},(_,i)=>({family,stone_id:i+1,quantity:999999})));
   window.fixtureItems=items;window.calls=[];window.upgradeMode='success';window.upgradeResults={};window.releaseUpgrade=null;
   window.fixtureClient={auth:{getUser:async()=>({data:{user}}),onAuthStateChange:()=>{}},rpc:async(name,args)=>{
-   calls.push({name,args:structuredClone(args)});if(name!=='ludus_upgrade_item_v10')return{data:{friends:[]}};
+   calls.push({name,args:structuredClone(args)});
+   if(name==='ludus_smith_preview_v288'){
+    const item=items.find(i=>i.id===args.p_item);let base;
+    try{base=args.p_action==='enhance'?LudusItemSystem.enhancementChance(item,args.p_stone):.6/365.6;}catch(error){return{error:{message:error.message}};}
+    return{data:{action:args.p_action,item_id:item.id,base_chance:base,chance:base,general_bonus:0,conditional_bonus:0,bonus:0,effective_bonus:0,series:{next_attempt:1,completed:0,low_streak:0},applied:[],...(args.p_action==='enhance'?{}:{quality_distribution:LudusItemSystem.percentageChances.map(p=>({value:p.value,probability:p.chance/100}))})}};
+   }
+   if(name!=='ludus_upgrade_item_v10')return{data:{friends:[]}};
    await new Promise(resolve=>{window.releaseUpgrade=resolve;});
    if(upgradeMode==='network')return{error:{code:'08006',message:'Test bağlantı kesintisi'}};
    if(!upgradeResults[args.p_request]){const item=items.find(i=>i.id===args.p_item);if(args.p_action==='enhance'){account.diamonds--;item.enhancement++;upgradeResults[args.p_request]={action:'enhance',success:true,plus:item.enhancement};}else{const stone=stones.find(s=>s.family===args.p_action&&s.stone_id===args.p_stone);stone.quantity--;upgradeResults[args.p_request]={action:args.p_action,percentage:50};}}

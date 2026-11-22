@@ -41,18 +41,30 @@
   const add=(tag,text)=>{const node=document.createElement(tag);node.textContent=text;content.append(node);return node;};
   function table(headers,rows){const t=document.createElement('table'),head=t.createTHead().insertRow();for(const label of headers){const h=document.createElement('th');h.scope='col';h.textContent=label;head.append(h);}const body=t.createTBody();for(const row of rows){const tr=body.insertRow();for(const value of row)tr.insertCell().textContent=value;}content.append(t);}
   function render(){
-   const {rules,selected,items,action,material}=getContext();content.replaceChildren();
+   const {rules,selected,items,action,material,smith}=getContext();content.replaceChildren();
    for(const b of dialog.querySelectorAll('[data-tab]'))b.setAttribute('aria-pressed',String(b.dataset.tab===tab));
    if(tab==='odds'){
+    const live=smith?.status==='ready'?smith.data:null;
+    if(smith){
+     add('h3','Demirci işlem hesabı');
+     if(live){
+      const label=live.action==='enhance'?'Başarı':'%95 ve üzeri kalite';
+      add('p',label+' %'+fmt(live.chance*100)+' · Taban %'+fmt(live.base_chance*100)+' · Demirci +'+fmt(live.effective_bonus*100)+' yüzde puan'+(live.ruby_bonus?' · Yakut +'+fmt(live.ruby_bonus*100)+' yüzde puan':''));
+      add('p',live.guaranteed?'CERTUS kesin başarı sağlar; bu denemede Demirci bonusu ek şans vermez.':'Öğrenilmiş genel bonus +'+fmt(live.general_bonus*100)+' ve uygun koşulların en yükseği +'+fmt(live.conditional_bonus*100)+' yüzde puan.');
+      add('p','Aynı ekipman ve işlem ailesinde '+live.series.next_attempt+'. deneme · Tamamlanan '+live.series.completed+' · Son düşük/başarısız sonuç sayısı '+live.series.low_streak+'.');
+      for(const knowledge of live.applied||[])add('p',knowledge.title+' · +'+fmt(knowledge.bonus*100)+' yüzde puan');
+     }else add('p',smith.status==='error'?smith.error:smith.status==='loading'?'İşlem hesabı yükleniyor…':smith.status==='working'?'İşlem tamamlanınca hesap yenilenecek.':'Hesap için bir ekipman ve işlem seç.');
+    }
     add('h3','Elmas ve Yakut');
-    if(selected){try{const ruby=action==='enhance'?material:null,chance=rules.enhancementChance(selected,ruby),risk=selected.enhancement>=6?(1-chance)*.13:0;
-     add('p','Seçili ekipman +'+selected.enhancement+' → +'+(selected.enhancement+1)+' · Başarı %'+fmt(chance*100)+' · Deneme başına patlama %'+fmt(risk*100));
+    if(selected){try{const ruby=action==='enhance'?material:null,chance=live?.action==='enhance'?live.chance:rules.enhancementChance(selected,ruby),risk=selected.enhancement>=6?(1-chance)*.13:0;
+     add('p',(live?.action==='enhance'?'Seçili ekipman +':'Temel geliştirme hesabı +')+selected.enhancement+' → +'+(selected.enhancement+1)+' · Başarı %'+fmt(chance*100)+' · Deneme başına patlama %'+fmt(risk*100));
      add('p',ruby===2?'TENAX patlamada eşyayı ve + seviyesini korur.':ruby===3?'VESPER patlamada eşyayı korur, +4’e döndürür.':ruby===4?'CERTUS bu ekipmanda bir kez kesin başarı verir.':'Koruma yoksa patlama eşyayı yok eder.');
     }catch(e){add('p',e.message);}}else add('p','Seçili denemenin ihtimalini görmek için bir ekipman seç.');
     add('p','+6 ve üzerinde: başarısız denemelerin %13’ü patlar. Bu, her denemenin %13’ü değildir. FELIX başarıya 2 yüzde puanı ekler. TENAX ve VESPER yalnızca patlamada tüketilir.');
     add('h3','Safir ve Zümrüt');
     add('p','Her basım mevcut yüzdeyi yeni sonuçla değiştirir; yüzde düşebilir. Aşağıdaki ihtimaller sunucudaki ağırlıkların toplamına göre hesaplanır. Yuvarlama nedeniyle gösterilen toplam %100’den çok az sapabilir.');
-    table(['Basılacak yüzde','Çıkma ihtimali'],rules.percentageChances.map(p=>['%'+p.value,'%'+fmt(p.chance)]));
+    if(!live?.quality_distribution)add('p','Temel dağılım gösteriliyor. Demirci dahil dağılım için safir veya zümrüt seç.');
+    table(['Basılacak yüzde','Çıkma ihtimali'],(live?.quality_distribution?live.quality_distribution.map(p=>({value:p.value,chance:p.probability*100})):rules.percentageChances).map(p=>['%'+p.value,'%'+fmt(p.chance)]));
     add('p','Safir: başlangıç statı × (1 + 0,1 × geliştirme seviyesi) × (1 + Safir yüzdesi / 100). Safir %100, geliştirilmiş doğal statı ikiye katlar. Zümrüt: taş gücü × basılan yüzde; + seviyesi Zümrüt gücünü artırmaz.');
    }else{
     const result=inspect(rules,selected,items);
@@ -65,6 +77,7 @@
     add('p','Refleks saldırı zamanlarını kısaltır: 0 → ×0,70; 50 → ×1,00; 65 → ×1,09; 80 → ×1,18; 100 → ×1,30. Celeritas ayrıca uygulanır.');
    }
   }
+  root.addEventListener?.('ludus:smith-preview',()=>{if(dialog.open)render();});
   button.onclick=()=>{render();dialog.showModal();};dialog.querySelector('header button').onclick=()=>dialog.close();
   for(const b of dialog.querySelectorAll('[data-tab]'))b.onclick=()=>{tab=b.dataset.tab;render();};
  }

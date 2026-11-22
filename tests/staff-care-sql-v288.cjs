@@ -1,0 +1,48 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{randomUUID}=require('node:crypto');
+const {PGlite}=require(process.env.LUDUS_PGLITE_MODULE||'@electric-sql/pglite');
+const near=(a,b)=>assert.ok(Math.abs(Number(a)-b)<1e-8,`${a} != ${b}`);
+(async()=>{
+ const db=new PGlite(),q=async(sql,args=[])=>(await db.query(sql,args)).rows;
+ const migration=s=>fs.readFileSync(path.join(__dirname,'../supabase/migrations',fs.readdirSync(path.join(__dirname,'../supabase/migrations')).find(f=>f.endsWith(s+'.sql'))),'utf8');
+ await db.exec(`create role anon;create role authenticated;create schema auth;create schema ludus_private;
+ create function auth.uid()returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create function auth.jwt()returns jsonb language sql stable as $$select '{}'::jsonb$$;
+ grant usage on schema auth to authenticated;grant execute on function auth.uid(),auth.jwt()to authenticated;
+ create table ludus_accounts(user_id uuid primary key,gold bigint default 10000,ludus_name text default 'Test');
+ create table ludus_gladiators(id uuid primary key,owner_id uuid);
+ create table ludus_progression(owner_id uuid primary key,experience bigint default 0,legacy_slots integer default 2);`);
+ const level=fs.readFileSync(path.join(__dirname,'../ludus-level-v37.sql'),'utf8');
+ for(const name of ['level_threshold','level_from_exp','level_ensure'])await db.exec(level.match(new RegExp('create or replace function ludus_private\\.'+name+'\\([^;]+?\\$\\$[\\s\\S]+?\\$\\$;','i'))[0]);
+ await db.exec(migration('stable_v129'));await db.exec(migration('stable_rls_guards_v129'));await db.exec(migration('stable_coats_v130'));
+ await db.exec(`create schema ludus_staff_private;
+ create table ludus_staff_private.papyrus_catalog_v288(content_id text primary key,effect jsonb,runtime_status text default 'pending_feature',runtime_reason text);
+ create table ludus_staff_private.knowledge_v288(owner_id uuid,content_id text,primary key(owner_id,content_id));
+ create view ludus_staff_private.learned_papyrus_v288 as select k.owner_id,c.content_id,c.effect from ludus_staff_private.knowledge_v288 k join ludus_staff_private.papyrus_catalog_v288 c using(content_id) where c.runtime_status='active';
+ insert into ludus_staff_private.papyrus_catalog_v288(content_id,effect)select id,'{"value":0.004,"unit":"fraction"}'::jsonb from unnest(array['groom_002','groom_020','groom_021'])id;`);
+ await db.exec(migration('staff_care_v288'));
+ const [a,b]=[randomUUID(),randomUUID()];await q('insert into ludus_accounts(user_id)values($1),($2)',[a,b]);
+ const create=async owner=>{await q("select set_config('request.jwt.claim.sub',$1,false)",[owner]);await db.exec('set role authenticated');const s=(await q("select ludus_stable('buy_founder','{\"sex\":\"male\"}',gen_random_uuid())s"))[0].s;await db.exec('reset role');return s.horses[0].id;};
+ const ha=await create(a),hb=await create(b),at='2028-01-01T12:00:00Z';
+ await q("insert into ludus_staff_private.knowledge_v288 select $1,content_id from ludus_staff_private.papyrus_catalog_v288",[a]);
+ const prepare=async(id,stat,training={})=>q(`update ludus_stable_private.horses set energy=80,last_tick=$2::timestamptz-interval'30 minutes',training_started=$2::timestamptz-interval'30 minutes',training_until=$2,training_stat=$3,training=$4,sessions=0,care_points=0,lifetime_seconds=0 where id=$1`,[id,at,stat,JSON.stringify(training)]);
+ const settle=async(owner)=>q('select ludus_stable_private.settle($1,$2)',[owner,at]);
+ const horse=async(id)=>(await q('select energy,training,sessions from ludus_stable_private.horses where id=$1',[id]))[0];
+ await prepare(ha,'stamina');await prepare(hb,'stamina');await settle(a);await settle(b);
+ let h=await horse(ha);near(h.energy,85.08);near(h.training.stamina,10.04);assert.equal(h.sessions,1);
+ let baseline=await horse(hb);near(baseline.energy,85);near(baseline.training.stamina,10);
+ await settle(a);const repeated=await horse(ha);near(repeated.energy,Number(h.energy));assert.deepEqual(repeated.training,h.training);assert.equal(repeated.sessions,h.sessions,'completed training is settled once');
+ await prepare(ha,'speed',{speed:10.04});await settle(a);h=await horse(ha);near(h.training.speed,20.08);
+ await prepare(ha,'power');await settle(a);h=await horse(ha);near(h.training.power,10);near(h.energy,85.08);
+ await prepare(ha,'stamina',{stamina:99.99});await settle(a);near((await horse(ha)).training.stamina,100);
+ // Fractional progress survives each subsequent training. Card rounding is only
+ // presentation and can cross its normal boundary; the contribution isn't lost.
+ await q(`update ludus_stable_private.horses set training='{"stamina":90.36}',genes=jsonb_build_object('stamina',60),lifetime_seconds=100,nutrition_points=6000,care_points=10040,sessions=100,eligible_seconds=100,matches=0,elite_ancestor=false where id=$1`,[ha]);
+ const improved=(await q("select (ludus_stable_private.card(h,$2)->'stats'->>'stamina')::numeric value from ludus_stable_private.horses h where id=$1",[ha,at]))[0].value;
+ await q("update ludus_stable_private.horses set training='{\"stamina\":90}' where id=$1",[ha]);
+ const plain=(await q("select (ludus_stable_private.card(h,$2)->'stats'->>'stamina')::numeric value from ludus_stable_private.horses h where id=$1",[ha,at]))[0].value;
+ assert.ok(Number(improved)>Number(plain),`persistent fractional training changes the actual card stat: ${improved} vs ${plain}`);
+ await q("select set_config('request.jwt.claim.sub',$1,false)",[b]);await db.exec('set role authenticated');
+ await assert.rejects(()=>q("select ludus_staff_private.care_value_v288($1,'groom_002')",[a]),/permission denied/);
+ await assert.rejects(()=>q("select ludus_stable('train',jsonb_build_object('horse',$1::text,'stat','speed'),gen_random_uuid())",[ha]),/ahırında/);
+ await db.close();console.log('V288 care SQL: actual stable settlement, owner isolation, decimal persistence, stat boundary, completion-only refund, caps and replay passed.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

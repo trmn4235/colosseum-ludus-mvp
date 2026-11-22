@@ -32,6 +32,11 @@ jobs:
           LUDUS_WEBKIT_TEST: '1'
           LUDUS_TEST_OUTPUT: /tmp/staff-v284-webkit/loot-v285
         run: node tests/special-staff-loot-ui-v285.cjs
+      - name: Approved staff home and papyrus layouts in Safari
+        env:
+          LUDUS_WEBKIT_TEST: '1'
+          LUDUS_TEST_OUTPUT: /tmp/staff-v284-webkit/papyrus-v288
+        run: node tests/special-staff-ui-v288.cjs
       - name: Upload Safari staff screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -93,6 +98,21 @@ jobs:
         env:
           LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/loot-v285
         run: node tests/special-staff-loot-ui-v285.cjs
+      - name: V288 catalogue, inventory, learning and server effects
+        run: |
+          node tests/papyrus-catalog-v288.cjs
+          node tests/smith-effects-v288.cjs
+          node tests/smith-preview-v288.cjs
+          node tests/special-staff-care-v288.cjs
+          node tests/staff-care-sql-v288.cjs
+          node tests/staff-care-combat-v288.cjs
+          node tests/staff-combat-v288.cjs
+          node tests/staff-combat-snapshot-v288.cjs
+          node tests/special-staff-contract-v288.cjs
+      - name: Approved staff home and papyrus layouts
+        env:
+          LUDUS_TEST_OUTPUT: /tmp/kitchen-v265/papyrus-v288
+        run: node tests/special-staff-ui-v288.cjs
       - name: Papyrus learning and all-worker kitchen accounting
         run: node tests/special-staff-v284.cjs
       - name: Special staff models, profiles and mobile layouts

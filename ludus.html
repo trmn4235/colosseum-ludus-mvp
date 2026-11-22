@@ -198,7 +198,7 @@ body[data-roman-screen="ludus"] .tools #explore{display:none!important}
 <div id="labels"></div><button id="interact" hidden></button><button id="roomExit" hidden aria-label="Avluya dön"></button><section id="orders" hidden><div><h2 id="ordersTitle"></h2><p id="ordersText"></p><div id="orderButtons"></div><button id="ordersClose">Kapat</button></div></section>
 <button id="residentStatus" style="position:absolute;left:50%;top:18px;transform:translateX(-50%);font:11px Arial;max-width:35%" disabled>Başlangıç gladyatörleri yükleniyor…</button>
 <script src="owner-three-r160.js?v=revision26"></script><script src="arena-runtime-v96.js?v=revision188"></script><script src="assets/runtime/supabase-59d39487c358.js"></script>
-<script src="owner-gait-v30.js?v=revision39"></script><script src="owner-avatar.js?v=revision95"></script><script src="special-staff-people-v284.js?v=284"></script><link rel="stylesheet" href="special-staff-v284.css?v=revision286"><script src="special-staff-v284.js?v=revision286"></script><link rel="stylesheet" href="personal-vault-v286.css?v=revision286"><script src="personal-vault-v286.js?v=revision286"></script>
+<script src="owner-gait-v30.js?v=revision39"></script><script src="owner-avatar.js?v=revision95"></script><script src="special-staff-people-v284.js?v=284"></script><link rel="stylesheet" href="special-staff-v288.css?v=revision288"><script src="special-staff-v288.js?v=revision288"></script><link rel="stylesheet" href="personal-vault-v286.css?v=revision286"><script src="personal-vault-v286.js?v=revision288"></script>
 <script src="combat-control-settings-v44.js?v=revision180"></script><script src="ludus-settings-v29.js?v=revision275"></script>
 <script src="ludus-city-v29.js?v=revision39"></script>
 <script>const LUDUS_TEXTURES={};
@@ -1272,7 +1272,7 @@ const stoneWallet=await accountClient.from('ludus_stones').select('family,quanti
  return playerAccount;
 })();
 accountReady.catch(error=>{$('loading').hidden=false;$('loading').textContent=error.message;window.RomeTravel?.fail(error.message);$('residentStatus').hidden=true;});
-let specialPause=false;const specialStaff=LudusSpecialStaff.create({T,renderer,client:accountClient,ready:accountReady,onState:rows=>ludusHud.setStaff(rows),openVault:(tab,id)=>personalVault.open(tab,id),onOpen(){specialPause=paused;clear();paused=true;},onClose(){clear();paused=specialPause;}});
+let specialPause=false;const specialStaff=LudusSpecialStaff.create({T,renderer,client:accountClient,ready:accountReady,portraits:Object.fromEntries(['trainer','smith','cook','groom','guard','doctor'].map(role=>[role,'assets/staff-v288/'+role+'.webp'])),openCalculation:()=>{location.href='gelistirmeler.html?smith=1';},onState:rows=>ludusHud.setStaff(rows),openVault:(tab,id)=>personalVault.open(tab,id),onOpen(){specialPause=paused;clear();paused=true;},onClose(){clear();paused=specialPause;}});
 let personalVaultPause=false;
 const personalVault=LudusPersonalVault.create({...worldActionContext,T,client:accountClient,ready:accountReady,staff:specialStaff,props:roomProps,colliders:roomColliders,inRoom:()=>activeRoom?.kind==='office'&&exploring,invalidate:()=>{renderer.shadowMap.needsUpdate=true;},onOpen(){personalVaultPause=paused;clear();paused=true;},onClose(){clear();paused=personalVaultPause;}});
 accountReady.then(()=>{if(!specialStaff.openFromLink())specialStaff.refresh();}).catch(()=>{});

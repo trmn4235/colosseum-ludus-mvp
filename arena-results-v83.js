@@ -29,7 +29,7 @@ var ArenaBattleResult=(()=>{
   for(const row of rewardRows(reward)){const line=doc.createElement('div'),icon=doc.createElement('i'),label=doc.createElement('span'),value=doc.createElement('b');line.className='result-reward-row';icon.className='result-reward-icon '+row.icon;icon.innerHTML=glyph(row.icon);label.textContent=row.label;if(row.detail){line.dataset.rarity=row.rarity;const detail=doc.createElement('small');detail.className='result-reward-detail';detail.textContent=row.detail;label.append(detail);line.title=row.discovery||row.detail;
    if(row.staff){
     const profile=doc.createElement('a');profile.className='result-staff-link';
-    profile.href='ludus.html?staff='+encodeURIComponent(row.staff)+'&v=revision286';
+    profile.href='ludus.html?staff='+encodeURIComponent(row.staff)+'&v=revision288';
     profile.textContent=staffNames[row.staff]+' profiline git ›';
     label.append(profile);
    }

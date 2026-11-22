@@ -141,7 +141,7 @@ body[data-roman-screen="ludus"] #accountLink:after{content:none!important}
 body[data-roman-screen="ludus"] #accountLink[hidden]{display:none!important}
 body[data-roman-screen="ludus"] #friendCount{font:11px Arial!important;color:#ebce89}
 body[data-roman-screen="ludus"] #explore.active{border-color:#edd59c!important;background:#672c35ca!important}
-</style><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision269"><link rel="stylesheet" href="combat-inspector-v74.css?v=revision77"><script src="combat-inspector-v74.js?v=revision114"></script><script src="ludus-client-v84.js?v=revision84"></script><script src="ludus-quest-events-v111.js?v=revision111"></script><link rel="stylesheet" href="upgrades-layout-v112.css?v=revision112"><script src="item-visuals-v199.js?v=revision276"></script><script src="ludus-production-v119.js?v=revision269"></script><script src="equipment-groups-v168.js?v=revision274"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
+</style><link rel="stylesheet" href="roman-ui-v56.css?v=revision68"><link rel="stylesheet" href="roman-theme-v68.css?v=revision269"><link rel="stylesheet" href="combat-inspector-v74.css?v=revision77"><script src="combat-inspector-v74.js?v=revision288"></script><script src="ludus-client-v84.js?v=revision84"></script><script src="smith-knowledge-v288.js?v=revision288"></script><script src="ludus-quest-events-v111.js?v=revision111"></script><link rel="stylesheet" href="upgrades-layout-v112.css?v=revision112"><script src="item-visuals-v199.js?v=revision276"></script><script src="ludus-production-v119.js?v=revision269"></script><script src="equipment-groups-v168.js?v=revision274"></script><link rel="stylesheet" href="equipment-groups-v168.css?v=revision168">
 <link rel="stylesheet" href="game-panels-v123.css?v=revision123"><link rel="stylesheet" href="upgrades-layout-v134.css?v=revision134"><link rel="stylesheet" href="upgrades-layout-v135.css?v=revision135"><script src="ludus-workshop-art-v135.js?v=revision135"></script></head>
 <body data-art-direction="136" data-roman-screen="gelistirmeler" class="workshop-v134 workshop-v135" id="workshopRoot"><div class="game-shell"><header class="top"><a data-game-back href="ludus.html?v=revision132">‹ Geri dön</a><strong>Colosseum<span class="brand-amp">&amp;</span>Magnus</strong><span id="wallet">Hesap yükleniyor…</span></header>
 <div class="workspace">
@@ -313,7 +313,8 @@ const LUDUS_STONE_IMAGES={};
  const materialPageSize=()=>4,inventoryPageSize=()=>8;
  let items=[],account=null,category='weapon',selected=null,family='diamond',stoneCounts=null,loadSequence=0,returnFocus=null,owner=null,action='enhance',material=null,pouchStone=null,busy=false,pending=null,inventoryPage=0,restored=false,materialFamily='sapphire',materialPage=0;
  globalThis.LudusNavigation?.register(()=>({category,selected:selected?.id,inventoryPage}));
-  LudusCombatInspector.mount(()=>({rules,selected,items,action,material}));
+ const smithCalculation=LudusSmithV288.create(client);let smithOpened=false;
+  LudusCombatInspector.mount(()=>({rules,selected,items,action,material,smith:smithCalculation.snapshot()}));
  function renderOperation(){
   let error='';try{if(selected)rules.enhancementChance(selected,action==='enhance'?material:null);}catch(e){error=e.message;}
   const stone=material?rules.stone(action==='enhance'?'ruby':action,material):null,name=stone?.name;
@@ -333,6 +334,7 @@ const LUDUS_STONE_IMAGES={};
   $('enhance').disabled=busy||!owner||(!pending&&(!selected||selected.stat_version!==10||selected.locked_battle_id||!stoneCounts||error||!count||!rubyOk||invalidSapphire||fullEmerald));
   $('resetMaterial').disabled=busy||!!pending;$('resetMaterial').hidden=enhancing&&!material;
   renderMaterials();
+  smithCalculation.update({item:selected,action,stone:material,owner,busy});
  }
  function itemName(i){if(LudusArmourName(i))return LudusArmourName(i);if(i?.kind==='helmet'&&LUDUS_HELMET_NAMES[i.model])return LUDUS_HELMET_NAMES[i.model];return names[i.model]||categories.find(c=>c[0]===i.kind)?.[1]||'Ekipman';}
  function icon(stone){const src=LudusGems.image(stone);const img=document.createElement('img');img.src=src;img.alt=stone.name;img.loading='eager';return img;}
@@ -397,6 +399,7 @@ const LUDUS_STONE_IMAGES={};
  $('previousItems').onclick=()=>{inventoryPage=Math.max(0,inventoryPage-1);renderInventory();};$('nextItems').onclick=()=>{inventoryPage++;renderInventory();};
  document.addEventListener('keydown',e=>{if($('pouchOverlay').hidden)return;if(e.key==='Escape'){e.preventDefault();closePouch();}if(e.key==='Tab'){const controls=[...$('pouchOverlay').querySelectorAll('button')],first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
  async function load(){
+  smithCalculation.invalidate();
   const n=++loadSequence;$('retry').hidden=true;$('status').textContent='Envanter yükleniyor…';
   try{const u=await client.auth.getUser();if(n!==loadSequence)return;if(u.error||!u.data.user||u.data.user.is_anonymous){$('status').textContent='Envanterini görmek için Ludus hesabına giriş yap. Taş kataloğunu inceleyebilirsin.';$('wallet').textContent='Giriş yapılmadı';return;}
    owner=u.data.user.id;try{pending=JSON.parse(localStorage.getItem('ludus-upgrade-v10:'+owner)||'null');}catch{pending=null;}
@@ -410,6 +413,7 @@ const LUDUS_STONE_IMAGES={};
     for(const s of stones.data||[])if(rules.stone(s.family,s.stone_id)&&stoneCounts[s.family])stoneCounts[s.family][s.stone_id]=s.quantity;
    }
    renderOperation();if(!$('pouchOverlay').hidden)renderPouch();
+   if(!smithOpened&&new URL(location.href).searchParams.get('smith')==='1'){smithOpened=true;$('openCombatInfo').click();}
   }catch(e){if(n!==loadSequence)return;$('status').textContent='Envanter yüklenemedi. Tekrar deneyebilirsin.';$('retry').hidden=false;}
  }
  $('resetMaterial').onclick=()=>{action='enhance';material=null;renderOperation();};
