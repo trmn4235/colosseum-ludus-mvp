@@ -12,6 +12,25 @@ var MultiplayerMotion=(()=>{
   if(!visible)return Infinity;
   return distance<5?50:100;
  }
+ // A throttled rig keeps its authored root transform between full poses.
+ // Rolls face their travel direction; deaths keep the captured fall heading.
+ function capturePoseRoot(f,m){
+  const p=m.poseRootV291||(m.poseRootV291={});
+  p.x=m.root.position.x-f.x;p.y=m.root.position.y;p.z=m.root.position.z-f.z;
+  p.heading=m.root.rotation.y;p.angle=f.angle;p.action=f.action;p.chain=f.chain;
+  p.dead=f.hp<=0;p.timer=f.timer;
+ }
+ function poseChanged(f,m){
+  const p=m.poseRootV291;
+  return !p||p.action!==f.action||p.chain!==f.chain||p.dead!==(f.hp<=0)||
+   f.action!=='idle'&&Number.isFinite(f.timer)&&f.timer+.001<p.timer;
+ }
+ function updatePoseRoot(f,m){
+  const p=m.poseRootV291;
+  if(!p||poseChanged(f,m)){m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;return;}
+  m.root.position.set(f.x+p.x,p.y,f.z+p.z);
+  m.root.rotation.y=p.dead?p.heading:p.heading+Math.atan2(Math.sin(f.angle-p.angle),Math.cos(f.angle-p.angle));
+ }
  // A compact packet is a complete dynamic snapshot, not a merge of old effects.
  // Only immutable roster/equipment data survives between snapshots.
  function expandState(data,previous){
@@ -37,6 +56,6 @@ var MultiplayerMotion=(()=>{
   }
   return {x,z};
  }
- return {worldDirection,poseInterval,expandState,predictedPosition};
+ return {worldDirection,poseInterval,capturePoseRoot,poseChanged,updatePoseRoot,expandState,predictedPosition};
 })();
 if(typeof module!=='undefined')module.exports=MultiplayerMotion;
