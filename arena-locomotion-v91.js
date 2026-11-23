@@ -61,6 +61,10 @@ var ArenaLocomotion=(function(){
   const sideHeading=Math.max(-.7,Math.min(.7,heading))*(1-directional);
   for(const suffix of Object.keys(links))for(const side of ['Left','Right']){
    const arm=suffix==='Arm'||suffix==='ForeArm';
+   // The repaired grip solver owns weapon-bearing arms after locomotion. Its
+   // fixed palm target re-solves both joints, so an unarmed swing here is wasted.
+   // Keep shield/free arms and the independent archer/naval poses unchanged.
+   if(arm&&m.bones.RightHand?.userData.anatomy166&&!f.navJump&&!f.archer&&(side==='Right'?f.weapon:f.offhand))continue;
    if(arm&&(f.blocking||f.guardFlash>0||f.absoluteBlockUntil>time||f.shieldHeldBy!=null))continue;
    const key=side+suffix,bone=m.bones[key],child=m.bones[side+links[suffix]];if(!bone||!child)continue;
    sample(first,key,phase,v);sample(second,key,phase,end);v.lerp(end,amount).normalize();
