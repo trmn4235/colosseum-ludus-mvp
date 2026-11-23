@@ -2,12 +2,12 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const root=path.resolve(process.env.LUDUS_TIMING_ROOT||path.join(__dirname,'..'));
 const source=fs.readFileSync(path.join(root,'arena.html'),'utf8');
 function block(start){let depth=0;const first=source.indexOf('{',start);for(let i=first;i<source.length;i++){if(source[i]==='{')depth++;else if(source[i]==='}'&&!--depth)return source.slice(start,i+1);}throw Error('Unclosed source block');}
-const animation=block(source.indexOf('function animateCharacter('));
-function fixture(distance=10,id=1){
+const animation=block(source.indexOf('function updateCharacterRoot('))+';'+block(source.indexOf('function animateCharacter('));
+function fixture(distance=10,id=1,afterPose=()=>{}){
  const model={root:{position:{x:0,y:0,z:0,set(x,y,z){Object.assign(this,{x,y,z});}},rotation:{y:0}}};
  const fighter={id,x:distance,z:0,angle:0,hp:100,action:'idle',move:1};
  const poses=[];
- const context=vm.createContext({naval:null,NavalPerformance:{...require('../naval-performance-v106.js'),character(){},shadow(){return true;}},combat:{fighters:[{x:0,z:0}]},GamePerformance:{characterShadows(){}},ImportedGladiator:{animate(f,m,t,dt){poses.push({t,dt,action:f.action});m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;}}});
+ const context=vm.createContext({naval:null,NavalPerformance:{...require('../naval-performance-v106.js'),character(){},shadow(){return true;}},combat:{fighters:[{x:0,z:0}]},GamePerformance:{characterShadows(){}},ImportedGladiator:{animate(f,m,t,dt){poses.push({t,dt,action:f.action});m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;afterPose(f,m);}}});
  vm.runInContext(fs.readFileSync(path.join(root,'arena-anatomy-v166.js'),'utf8'),context);
  vm.runInContext(animation,context);return{model,fighter,poses,animate:context.animateCharacter};
 }
@@ -36,9 +36,33 @@ test('attack, guard, reaction, movement and death transitions render immediately
  const f=fixture();let t=0;const frame=()=>f.animate(f.fighter,f.model,t+=.005,.005);frame();
  for(const change of [{action:'attack'},{blocking:true},{reaction:.32},{move:0},{hp:0}]){const before=f.poses.length;Object.assign(f.fighter,change);frame();assert.equal(f.poses.length,before+1,JSON.stringify(change));}
 });
-test('a skipped pose does not overwrite authored roll or fall transforms',()=>{
- for(const action of ['dodge','knocked']){const f=fixture();f.fighter.action=action;f.animate(f.fighter,f.model,0,1/120);f.model.root.position.set(17,.4,3);f.model.root.rotation.y=2;f.animate(f.fighter,f.model,1/120,1/120);assert.deepEqual({...f.model.root.position,set:undefined},{x:17,y:.4,z:3,set:undefined});assert.equal(f.model.root.rotation.y,2);}
+for(const fps of [60,120])test('distant rolls and falls retain authored offsets and advance each display frame at '+fps+' Hz',()=>{
+ for(const action of ['dodge','knocked']){
+  let authoredHeading;
+  const f=fixture(10,1,(fighter,model)=>{model.root.position.set(fighter.x+.3,.4,fighter.z-.2);model.root.rotation.y=authoredHeading=fighter.angle+Math.PI/2;});
+  f.fighter.action=action;
+  for(let n=0;n<fps;n++){
+   f.fighter.z+=3/fps;f.fighter.angle+=.2/fps;f.animate(f.fighter,f.model,n/fps,1/fps);
+   assert.ok(Math.abs(f.model.root.position.x-(f.fighter.x+.3))<1e-8);
+   assert.ok(Math.abs(f.model.root.position.z-(f.fighter.z-.2))<1e-8,'roll/fall world translation must not freeze between skeleton poses');
+   assert.equal(f.model.root.position.y,.4);
+   assert.equal(f.model.root.rotation.y,authoredHeading,'roll/fall heading stays captured even while combat facing turns');
+  }
+  assert.ok(f.poses.length<=31,'full skeleton pose budget stays at 30 Hz');
+ }
 });
+test('skipped death poses retain their captured heading',()=>{
+ const f=fixture(10,1,(fighter,model)=>{model.root.rotation.y=.6;});
+ Object.assign(f.fighter,{hp:0,action:'dead',angle:1.2});f.animate(f.fighter,f.model,0,1/120);
+ f.fighter.angle=1.8;f.animate(f.fighter,f.model,1/120,1/120);
+ assert.equal(f.poses.length,1);assert.equal(f.model.root.rotation.y,.6);
+});
+test('combo changes and restarted actions render before the distant pose deadline',()=>{
+ const f=fixture();Object.assign(f.fighter,{action:'attack',timer:.3,chain:1});f.animate(f.fighter,f.model,0,1/120);
+ f.fighter.chain=2;f.animate(f.fighter,f.model,1/120,1/120);assert.equal(f.poses.length,2);
+ f.fighter.timer=.01;f.animate(f.fighter,f.model,2/120,1/120);assert.equal(f.poses.length,3);
+});
+
 function simulation(fps,withImpacts){
  const frameStart=source.indexOf('function frame(now)'),activeBlock=block(source.indexOf('if(active()){',frameStart)),events=block(source.indexOf('function events(){'));
  const context=vm.createContext({performance:{now:()=>0},active:()=>true,worldInput:()=>({}),syncSurvivalWave(){},floating(){},burst(){},audio(){},Math,combat:{time:0,ticks:0,fighters:[{id:0,x:0}],pending:[],tick(dt){this.time+=dt;this.ticks++;this.fighters[0].x+=dt*4.2;},drain(){return this.pending.splice(0);}}});

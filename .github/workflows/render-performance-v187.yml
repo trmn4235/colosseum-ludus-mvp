@@ -27,7 +27,13 @@ jobs:
         run: node tests/render-runtime-v187.cjs
       - name: Existing pose scheduling and body detail regressions
         run: node --test tests/arena-timing-v94.test.cjs tests/naval-performance-v106.test.cjs tests/adaptive-quality-v96.test.cjs tests/render-scale-v188.test.cjs
-      - run: npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10
+      - run: npm install --no-save --no-package-lock playwright@1.64.1 @electric-sql/pglite@0.5.10 jsdom@26.1.0
+      - name: Ranked motion continuity and responsive target selection
+        run: |
+          node tests/ranked-motion-v291.cjs
+          node tests/ranked-camera-v291.cjs
+          node tests/ranked-controls-performance-v251.cjs
+          node tests/ranked-latency-v252.cjs
       - name: Ranked staff passives through real server actions
         run: |
           node tests/ranked-staff-v290.cjs

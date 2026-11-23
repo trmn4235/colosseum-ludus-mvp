@@ -1942,6 +1942,15 @@ window.addEventListener('keydown',e=>{if(/^(Key[WASDJKLIEFQHRTGCVB]|Digit[1-6]|A
 window.addEventListener('blur',()=>{clearInput();setPaused(true);});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();setPaused(true);}});app.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
 for(const event of ['gesturestart','gesturechange'])app.addEventListener(event,e=>e.preventDefault(),{passive:false});
 document.addEventListener('contextmenu',e=>e.preventDefault());
+function updateCharacterRoot(f,m){
+ const p=m.poseRoot291;
+ if(p&&p.action===f.action&&p.dead===(f.hp<=0)){
+  m.root.position.set(f.x+p.x,p.y,f.z+p.z);
+  m.root.rotation.y=p.dead||p.action==='dodge'||p.action==='knocked'?p.heading:p.heading===p.angle?f.angle:p.heading+Math.atan2(Math.sin(f.angle-p.angle),Math.cos(f.angle-p.angle));
+ }else if(f.hp>0&&f.action!=='knocked'&&f.action!=='dodge'){
+  m.root.position.set(f.x,f.navHeight||0,f.z);m.root.rotation.y=f.angle;
+ }
+}
 function animateCharacter(f,m,t,dt){
  if(combat.naval)combat.naval.carryPose(f,m);
  const distance=Math.hypot(f.x-combat.fighters[0].x,f.z-combat.fighters[0].z),near=f.id===0||distance<7;
@@ -1949,24 +1958,26 @@ function animateCharacter(f,m,t,dt){
  GamePerformance.characterShadows(m,f.hp>0&&near&&NavalPerformance.shadow(f.id));
  const live=f.hp>0?combat.fighters[f.id]||f:f,heldThrow=ArenaAnatomy.pendingThrow(live,combat.projectiles);
  const alive=f.hp>0,moving=f.move>.025,reacting=f.reaction>0,guarding=!!(f.blocking||f.guardFlash>0||f.absoluteBlockUntil>t);
- const changed=m.poseAction!==f.action||m.poseAlive!==alive||m.poseMoving!==moving||m.poseReacting!==reacting||m.poseGuarding!==guarding||m.poseHeldThrow!==heldThrow;
+ const changed=m.poseAction!==f.action||m.poseChain!==f.chain||f.action!=='idle'&&Number.isFinite(f.timer)&&f.timer+.001<m.poseTimer||m.poseAlive!==alive||m.poseMoving!==moving||m.poseReacting!==reacting||m.poseGuarding!==guarding||m.poseHeldThrow!==heldThrow;
  m.poseDelta=(m.poseDelta||0)+dt;m.poseBudget=(m.poseBudget||0)+dt;
  const deathComplete=m.lastFall?.entry>=1&&m.lastFall.down.a===m.lastFall.down.c.frames-1;
  const dormant=(!near&&m.root.visible===false)||(!alive&&!changed&&(m.corpseSettled||naval&&deathComplete));
- if(dormant){if((alive||naval&&deathComplete)&&f.action!=='knocked'&&f.action!=='dodge'){m.root.position.set(f.x,f.navHeight||0,f.z);m.root.rotation.y=f.angle;}m.poseWasHidden=true;return;}
+ if(dormant){if(!naval)updateCharacterRoot(f,m);else if((alive||deathComplete)&&f.action!=='knocked'&&f.action!=='dodge'){m.root.position.set(f.x,f.navHeight||0,f.z);m.root.rotation.y=f.angle;}m.poseWasHidden=true;return;}
  if(m.poseWasHidden){m.poseDelta=Math.min(m.poseDelta,.05);m.poseBudget=1/30;m.poseWasHidden=false;}
  const interval=naval?NavalPerformance.interval(distance,$('quality').value==='high'):1/30;
  if(!near&&!changed&&m.poseBudget+1e-6<interval){
   // World movement stays at display cadence even when the distant skeleton rests for a frame.
-  // Falling/rolling own their root heading and offsets; never overwrite those authored poses.
-  if(alive&&f.action!=='knocked'&&f.action!=='dodge'){m.root.position.set(f.x,f.navHeight||0,f.z);m.root.rotation.y=f.angle;}
+  // Keep authored roll/fall offsets while following the interpolated world position.
+  // Naval carryPose already transports these cached roots with the moving deck.
+  if(!naval)updateCharacterRoot(f,m);else if(alive&&f.action!=='knocked'&&f.action!=='dodge'){m.root.position.set(f.x,f.navHeight||0,f.z);m.root.rotation.y=f.angle;}
   return;
  }
  const poseDt=m.poseDelta;m.poseDelta=0;
  // Keep the remainder: resetting this clock caused 30 Hz to collapse to 15 or 20 Hz.
  m.poseBudget=near?0:changed?NavalPerformance.phase(f.id,interval):Math.max(0,m.poseBudget-interval*Math.floor((m.poseBudget+1e-6)/interval));
- m.poseAction=f.action;m.poseAlive=alive;m.poseMoving=moving;m.poseReacting=reacting;m.poseGuarding=guarding;m.poseHeldThrow=heldThrow;
+ m.poseAction=f.action;m.poseChain=f.chain;m.poseTimer=f.timer;m.poseAlive=alive;m.poseMoving=moving;m.poseReacting=reacting;m.poseGuarding=guarding;m.poseHeldThrow=heldThrow;
  ImportedGladiator.animate(ArenaAnatomy.throwPose(f,heldThrow,live.attackLeft),m,t,poseDt);
+ if(!naval){const root=m.poseRoot291||(m.poseRoot291={});root.x=m.root.position.x-f.x;root.y=m.root.position.y;root.z=m.root.position.z-f.z;root.heading=m.root.rotation.y;root.angle=f.angle;root.action=f.action;root.dead=!alive;}
  // Never freeze by wall-clock death age: a culled fighter may not have fallen yet.
  const fall=m.lastFall;
  if(!alive&&!naval&&fall&&fall.entry>=1&&fall.down.a===fall.down.c.frames-1){ArenaRuntime.settleCorpse(m);}

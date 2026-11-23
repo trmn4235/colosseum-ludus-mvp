@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {JSDOM}=require('jsdom');
 const root=path.resolve(__dirname,'..');
-const ids=['duelControls','mpBack','selfHp','rivalHp','selfName','rivalName','aliveCount','matchLobby','mpBattleHud','queueCount','queueMessage','queueSeconds','queueCaption','queueRing','queueProgress','queueNames','duelCanvas','duelResult','resultTitle','mpRetry','queueCancel','resultBack','mpStatus'];
+const ids=['duelControls','mpBack','selfHp','rivalHp','selfName','rivalName','aliveCount','matchLobby','mpBattleHud','queueCount','queueMessage','queueSeconds','queueCaption','queueRing','queueProgress','queueNames','duelCanvas','duelResult','resultTitle','mpRetry','queueCancel','resultBack','mpStatus','duelLoot','duelLootRetry','duelLootStatus','duelPapyrusRewards'];
 const html='<div class="queue-sky"></div><div class="queue-colosseum"></div><b class="queue-beta"></b><div class="queue-title"><h1></h1><span></span></div><div class="mp-top"><strong></strong></div><div class="mp-rule"></div>'+ids.map(id=>id==='selfHp'||id==='rivalHp'?`<progress id="${id}"></progress>`:id==='duelResult'?'<div id="duelResult"><p></p></div>':`<div id="${id}"></div>`).join('');
 async function main(){
  const dom=new JSDOM(html,{url:'https://fixture.invalid/multiplayer.html?venue=ranked',runScripts:'outside-only',pretendToBeVisual:true});
@@ -12,16 +12,17 @@ async function main(){
  w.eval(fs.readFileSync(root+'/multiplayer-motion-v251.js','utf8'));
  w.eval(fs.readFileSync(root+'/combat-specials-v261.js','utf8'));
  const T=w.THREE,owner='human',match='fixture',players=Array.from({length:10},(_,i)=>({owner:i?String(i):owner,bot_v249:i>0,name:'G'+i,class:'murmillo',ranked_team:i<5?'a':'b',ranked_joined:true,gladiator:{},items:[{kind:'weapon',model:'gladius',equipped_slot:'main_hand'}],x:0,z:i<5?-1:6+i,angle:0,hp:100,maxHp:100,stamina:100,maxStamina:100,serial:0,block:false}));
- const room={id:match,status:'playing',players,combat_version:23,controls_version:77};let frames=[],clock=0,lastInput=null;const poseCounts=Array(10).fill(0),models=[],timeouts=[];
+ const room={id:match,status:'playing',players,combat_version:23,controls_version:77};let frames=[],clock=0,lastInput=null,deferRpc=false,releaseRpc=null;const poseCounts=Array(10).fill(0),models=[],timeouts=[];
+ Object.defineProperty(w.performance,'now',{value:()=>clock});
  w.requestAnimationFrame=fn=>{frames.push(fn);return frames.length};
  w.setTimeout=(fn,ms)=>{timeouts.push(ms);return timeouts.length};w.clearTimeout=()=>{};
  w.sessionStorage.setItem('ludus-ranked-room',match);
- const client={auth:{getUser:async()=>({data:{user:{id:owner,is_anonymous:false}}})},rpc:async(name,args)=>{if(args.p_input)lastInput=args.p_input;return {data:room,error:null}}};
+ const client={auth:{getUser:async()=>({data:{user:{id:owner,is_anonymous:false}}})},rpc:async(name,args)=>{if(args.p_input)lastInput=args.p_input;if(deferRpc)return new Promise(resolve=>{releaseRpc=()=>resolve({data:room,error:null})});return {data:room,error:null}}};
  w.LudusClient={create:()=>client};w.supabase={createClient:()=>client};w.ARENA_SUPABASE_CONFIG={};
  w.ArenaCreateRenderer=()=>({setSize(){},setPixelRatio(){},getPixelRatio(){return 1},render(scene,camera){w.fixtureCamera=camera},capabilities:{getMaxAnisotropy(){return 1}}});
  w.ArenaRuntime={frameDelta:(t,last)=>Math.min(.25,Math.max(0,(t-last)/1000)),RenderScale:class{resize(width,height,ratio){this.width=width;this.height=height;this.sourceRatio=ratio}reset(){}sample(){}}};
  w.RomanVisualAssets={environment(){},material(){}};
- w.ImportedGladiator={load:async()=>{},create(i){const model={id:i,root:new T.Group(),teamMark:new T.Group()};models[i]=model;return model},animate(f,m){poseCounts[m.id]++;m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle}};
+ w.ImportedGladiator={load:async()=>{},create(i){const model={id:i,root:new T.Group(),teamMark:new T.Group()};models[i]=model;return model},animate(f,m){poseCounts[m.id]++;m.root.position.set(f.x+(f.action==='dodge'?.2:0),0,f.z);m.root.rotation.y=f.angle+(f.action==='dodge'?Math.PI/2:0)}};
  w.ArenaCombat=class{reset(){return {fighters:[{}]}}};w.LudusLoadout={apply(f){f.weapon='gladius'}};
  w.ArenaMotion={regions:{chest:{name:'Gövde'}},profile:()=>({length:1,duration:1}),impactQuality:()=>1,authored:{reach(){}}};
  w.GamePerformance={beginVisibility(){},characterVisibility(m,keep){m.root.visible=keep||m.id%2===0}};
@@ -51,13 +52,38 @@ async function main(){
  assert.ok(deltas.filter((n,i)=>i>0&&i%2===0).every(n=>n>0&&n<=21),'visible fighters use the mobile pose budget');
  players[2].serial++;const old=poseCounts[2];frame();assert.equal(poseCounts[2],old+1,'a new visible attack is posed immediately');
  players[1].x=2;frame();assert.ok(models[1].root.position.x>0,'an offscreen fighter still tracks its current position');
+ // Real rigs rotate their root toward a roll (covered by ranked-motion-v291).
+ // Verify that the actual controller preserves that pose on its skipped frame.
+ Object.assign(players[2],{dodge_kind:'roll',dodge_at:new Date(Date.now()-150).toISOString(),dodge_until:new Date(Date.now()+1000).toISOString(),dodge_dx:1,dodge_dz:0});
+ frame();const rollingPoseCount=poseCounts[2],rollingPosition=models[2].root.position.clone(),rollingHeading=models[2].root.rotation.y;
+ assert.ok(Math.abs(rollingHeading-Math.PI/2)<1e-7,'roll starts immediately between scheduled poses');
+ frame();assert.equal(poseCounts[2],rollingPoseCount,'continuity does not force an extra full pose');
+ assert.ok(models[2].root.position.distanceTo(rollingPosition)<1e-7,'skipped frame keeps the sampled root offset');
+ assert.ok(Math.abs(models[2].root.rotation.y-rollingHeading)<1e-7,'skipped frame keeps the authored root heading');
+ delete players[2].dodge_at;delete players[2].dodge_until;
+ frame();assert.equal(poseCounts[2],rollingPoseCount+1,'roll end gets one immediate fresh pose');
+ assert.ok(Math.abs(models[2].root.rotation.y)<1e-7,'normal facing returns when the roll ends');
  players[0].items.push({kind:'shield',equipped_slot:'off_hand',model:'large'});players[5].x=0;players[5].z=0;players[0].x=0;players[0].z=-1;
  w.fixtureStick.change(.01,0);for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
  assert.equal(w.document.getElementById('duelHand'),null);
  assert.match(w.document.getElementById('duelSpecial').textContent,/SAĞ.*İKİ VURUŞ/);
  assert.match(w.document.getElementById('duelSpecialLeft').textContent,/SOL.*İTTİR/);
  for(const [id,hand]of [['duelSpecial','main_hand'],['duelSpecialLeft','off_hand']]){lastInput=null;w.document.getElementById(id).click();for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));assert.equal(lastInput.special,true);assert.equal(lastInput.hand,hand);assert.ok(lastInput.special_id);}
+ // A target UI refresh is not a new network snapshot. Keep moving while the
+ // target-selection request is in flight; resetting prediction would pull the
+ // rendered fighter back toward its unchanged authoritative position.
+ w.fixtureStick.change(0,0);for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+ for(let i=0;i<90;i++)frame();
+ w.fixtureStick.change(1,0);for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
+ for(let i=0;i<12;i++)frame();
+ const movingBefore=models[0].root.position.clone(),away=movingBefore.clone().sub(new T.Vector3(players[0].x,0,players[0].z)).normalize();
+ assert.ok(movingBefore.distanceTo(new T.Vector3(players[0].x,0,players[0].z))>.2,'fixture has visible movement ahead of the last server snapshot');
+ deferRpc=true;w.document.getElementById('duelTarget').click();assert.ok(releaseRpc,'target change waits for a real server reply');
+ frame();
+ assert.ok(models[0].root.position.clone().sub(movingBefore).dot(away)>=-1e-6,'target UI refresh must not drag the moving fighter backward while its server reply is pending');
+ deferRpc=false;releaseRpc();for(let i=0;i<4;i++)await new Promise(resolve=>setImmediate(resolve));
  console.log('PASS V261: actual right/left button events send separate equipped hands; no switch button.');
+ console.log('PASS V291: target UI refresh preserves movement prediction until a fresh network snapshot arrives.');
  console.log('PASS V251: real game loop maps touch left/right/forward/back to four camera headings; mobile self, visible and offscreen animation scheduling, immediate attacks, and position tracking.');
  dom.window.close();
 }
