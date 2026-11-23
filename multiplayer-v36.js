@@ -142,8 +142,9 @@ return {load,prepare};
   $('duelBlock').disabled=!(p?.items||[]).some(i=>i.kind==='shield'&&i.equipped_slot==='off_hand');$('duelBlock').setAttribute('aria-pressed',String(block));
   for(const [id,f] of [['self',p],['rival',t]]){$(id+'Hp').max=f?.maxHp||100;$(id+'Stamina').max=f?.maxStamina||100;$(id+'Stamina').value=f?.stamina??100;$(id+'Stamina').hidden=!enhanced();}
   const foodBonus=Math.min(12,Math.max(0,Number(p?.gladiator?.combat_stamina_bonus)||0));const morale=Math.min(100,Math.max(0,Number(p?.gladiator?.combat_morale??50)));foodBonusLabel.hidden=!enhanced()||(!foodBonus&&morale===50)||p?.hp<=0||room.status!=='playing';foodBonusLabel.textContent='Beslenme +%'+foodBonus+' · Moral '+morale;foodBonusLabel.title='Kondisyon yenilenmesi: beslenme ×'+(1+foodBonus/100).toFixed(2)+' · moral ×'+(1+(morale-50)/1000).toFixed(3);
-  $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<actionCost('dodge','step',18);
-  if(rankedRequested){$('duelAttack').title='Saldır; kaydırarak vuruş bölgesi seç · '+costLabel(actionCost('attack',hand,13))+' kondisyon';$('duelDodge').title='Kaçın · '+costLabel(actionCost('dodge','step',18))+' kondisyon';}
+  $('duelDodge').disabled=enhanced()&&(p?.stamina??100)<actionCost('dodge','roll',25);
+  $('duelDodge').title='Yuvarlan · '+costLabel(actionCost('dodge','roll',25))+' kondisyon';
+  if(rankedRequested)$('duelAttack').title='Saldır; kaydırarak vuruş bölgesi seç · '+costLabel(actionCost('attack',hand,13))+' kondisyon';
   document.querySelector('.mp-rule').textContent=rankedRequested?'Takım mavi · Rakip kırmızı · +10 / −5':pitRequested?'Galibiyet +1 Şan · Avlu silahları · Zırhsız':room.bot_match?'Geçerli zafer: 100 altın · 1 elmas · 1 taş · EXP':throwable()?'Fırlat: 26 kondisyon · Silah maç sonuna kadar elden çıkar.':'Multiplayer Beta · Ödül ve kalıcı eşya kaybı yok';
   $('duelTarget').classList.toggle('locked',!!locked);$('duelTarget').setAttribute('aria-pressed',String(!!locked));
   $('queueNames').textContent=room.players.slice(0,6).map(x=>x.name).join(' · ')+(room.players.length>6?' · +'+(room.players.length-6):'');
@@ -153,8 +154,8 @@ return {load,prepare};
  async function rpc(args){let timer;const started=performance.now();try{const result=await Promise.race([client.rpc(rankedRequested?'ludus_ranked_match_v252':'ludus_match',args),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Bağlantı zaman aşımı')),10000);})]);if(result.data?.server_now)clockOffset=Date.parse(result.data.server_now)+(performance.now()-started)/2-Date.now();return result;}finally{clearTimeout(timer);}}
  function queueStep(){inputDirty=true;if(!pending&&!stopped&&room){clearTimeout(nextStep);step();}}
  function queueAttack(region=selectedRegion){if(!canAct(actionCost('attack',hand,13))||attacks)return;attackRegion=region;attackHand=hand;attackId=crypto.randomUUID();attacks=1;queueStep();}
- let dodgeKind='step';
- function queueDodge(kind='step'){if(!enhanced()||!canAct(actionCost('dodge',kind,kind==='roll'?25:kind==='jump'?22:18))||dodge)return;dodgeKind=kind;dodgeId=crypto.randomUUID();dodge=true;queueStep();}
+ let dodgeKind='roll';
+ function queueDodge(kind='roll'){if(!enhanced()||!canAct(actionCost('dodge',kind,kind==='roll'?25:kind==='jump'?22:18))||dodge)return;dodgeKind=kind;dodgeId=crypto.randomUUID();dodge=true;queueStep();}
  function castSpecial(slot='main_hand'){
   const p=me(),t=target(),item=p?.items?.find(i=>i.equipped_slot===slot),k=HandSpecials.kind(item);if(special||!k||!canAct(actionCost('special',slot,HandSpecials.cost(k))))return;
   if(!t){message('Özel hareket için bir rakip gerekli.');return;}
@@ -188,7 +189,7 @@ return {load,prepare};
  for(const type of ['pointercancel','lostpointercapture'])$('duelAttack').addEventListener(type,e=>{if(attackGesture?.id===e.pointerId){attackGesture=null;$('duelRegionHint').hidden=true;}});
  $('duelAttack').onclick=e=>{if(e.detail===0)queueAttack();};
  CombatEvasionControls.mount({parent:$('duelControls'),active,perform:queueDodge});
- $('duelDodge').setAttribute('aria-label','Kaçın · L');if($('duelDodge').querySelector('small'))$('duelDodge').querySelector('small').textContent='KAÇIN';
+ $('duelDodge').setAttribute('aria-label','Yuvarlanarak kaçın · L / B');if($('duelDodge').querySelector('small'))$('duelDodge').querySelector('small').textContent='YUVARLAN';
  $('duelDodge').onpointerdown=e=>{e.preventDefault();queueDodge();};$('duelDodge').onclick=e=>{if(e.detail===0)queueDodge();};
  $('duelSpecial').onclick=()=>castSpecial('main_hand');$('duelSpecialLeft').onclick=()=>castSpecial('off_hand');
  $('duelBlock').onpointerdown=e=>{if(!active()||e.currentTarget.disabled)return;e.preventDefault();blockPointers.add(e.pointerId);e.currentTarget.setPointerCapture(e.pointerId);setBlock(true);};

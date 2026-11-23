@@ -34,6 +34,7 @@ function controller(data,venue='ranked'){
  sandbox.controllerTest.state(structuredClone(data));
  return{nodes,requests,state:data=>sandbox.controllerTest.state(structuredClone(data)),cost:sandbox.controllerTest.cost,
   attack:()=>node('duelAttack').onclick({detail:0}),special:slot=>node(slot==='off_hand'?'duelSpecialLeft':'duelSpecial').onclick(),
+  dodge:()=>node('duelDodge').onpointerdown({preventDefault(){}}),dodgeAccessible:()=>node('duelDodge').onclick({detail:0}),
   key:code=>events.get('keydown')({code,repeat:false,target:{matches:()=>false},preventDefault(){}})};
 }
 function sent(ui,key){return ui.requests.find(r=>r.args.p_input?.[key]);}
@@ -46,10 +47,16 @@ function sent(ui,key){return ui.requests.find(r=>r.args.p_input?.[key]);}
 {
  const ui=controller(room(12.843));ui.attack();assert.equal(sent(ui,'attack'),undefined,'fractional quote is not rounded down for eligibility');
 }
-{
- const ui=controller(room(24.71));ui.key('KeyB');assert.equal(sent(ui,'dodge').args.p_input.dodge_kind,'roll');
+for(const [label,perform] of [['touch',ui=>ui.dodge()],['accessible click',ui=>ui.dodgeAccessible()],['KeyL',ui=>ui.key('KeyL')],['KeyB',ui=>ui.key('KeyB')]]){
+ const ready=controller(room(24.7)),button=ready.nodes.get('duelDodge');
+ assert.equal(button.disabled,false,label+' accepts the exact fractional roll quote');
+ assert.match(button.title,/24,7 kondisyon/,'primary control quotes roll, not the 18-stamina step');
+ perform(ready);assert.equal(sent(ready,'dodge')?.name,'ludus_ranked_match_v252',label+' submits through the Ranked RPC');
+ assert.equal(sent(ready,'dodge').args.p_input.dodge_kind,'roll',label+' requests the actual roll animation/action');
+ const short=controller(room(24.699));assert.equal(short.nodes.get('duelDodge').disabled,true,label+' rejects stamina below the exact quote');
+ perform(short);assert.equal(sent(short,'dodge'),undefined,label+' cannot bypass the fractional roll threshold');
 }
-for(const [code,cost,kind] of [['KeyL',18,'step'],['KeyC',18,'duck'],['KeyV',22,'jump']]){
+for(const [code,cost,kind] of [['KeyC',18,'duck'],['KeyV',22,'jump']]){
  const ui=controller(room(cost));ui.key(code);assert.equal(sent(ui,'dodge').args.p_input.dodge_kind,kind);
 }
 {
@@ -81,4 +88,4 @@ for(const venue of ['ranked','colosseum','pit']){
  delete packet.players[0].action_costs_v290;ui.state(packet);assert.equal(ui.cost('attack','main_hand',13),13,'missing compact quote never reuses an old discount');
  assert.equal(ui.nodes.get('selfStamina').max,137.5,'repeated snapshots do not apply staff/food capacity again');
 }
-console.log('PASS V290 Ranked client: authoritative fractional action quotes, two-stage double total, hand/gear/owner guards, legacy fallback, dynamic quote expiry, and unchanged server stamina capacity.');
+console.log('PASS V290/V293 Ranked client: authoritative fractional action quotes, primary touch/accessible/KeyL/KeyB roll at24.7 stamina, two-stage double total, hand/gear/owner guards, legacy fallback, dynamic quote expiry, and unchanged server stamina capacity.');
