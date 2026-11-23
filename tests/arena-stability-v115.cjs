@@ -3,7 +3,7 @@ const {rigRuntime,inspectScripts}=require('./performance-v84.cjs');
 async function main(){
  inspectScripts();const c=await rigRuntime(),T=c.THREE;
  vm.runInContext(fs.readFileSync('naval-performance-v106.js','utf8'),c);await c.NavalPerformance.load(c.ArenaAssetLoad);
- const source=fs.readFileSync('arena.html','utf8'),start=source.indexOf('function animateCharacter('),end=source.indexOf('// Reusable rope',start);
+ const source=fs.readFileSync('arena.html','utf8'),start=source.indexOf('function updateCharacterRoot('),end=source.indexOf('// Reusable rope',start);
  c.combat={fighters:[{x:0,z:0}]};c.naval=null;c.GamePerformance={characterShadows(){}};vm.runInContext(source.slice(start,end),c);
  let deaths=0;
  for(const type of Object.keys(c.ArenaClasses))for(const hidden of [false,true]){
