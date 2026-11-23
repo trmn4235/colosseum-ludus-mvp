@@ -20,7 +20,10 @@ var ArenaRoll = (() => {
   if(!state || f.hp<=0 || f.action!=='dodge') { m.authoredRoll=null; return false; }
   const T=THREE,c=LUDUS_ROLL_MOTION.clip,u=clamp(f.timer/Math.max(.01,f.duration));
   const entry=ease(u/.16),exit=ease((u-.84)/.16),weight=1-exit;
-  const frame=u*(c.frames-1),a=Math.floor(frame),b=Math.min(c.frames-1,a+1),t=frame-a;
+  // The source ends with a long settle. Give the tucked rotation more of the
+  // existing action window, then return to guard without extending combat time.
+  const phase=.7*u+.3*u*u*u*u*u;
+  const frame=phase*(c.frames-1),a=Math.floor(frame),b=Math.min(c.frames-1,a+1),t=frame-a;
   const scratchV84=math(),qa=scratchV84.q[1],qb=scratchV84.q[2],v=scratchV84.v[0];
   const heading=f.angle+Math.atan2(Math.sin(state.heading-f.angle),Math.cos(state.heading-f.angle))*entry*weight;
   m.root.rotation.y=heading;
@@ -53,11 +56,14 @@ var ArenaRoll = (() => {
    const local=bone.parent.getWorldQuaternion(scratchV84.q[5]).invert().multiply(world);
    bone.quaternion.slerp(local,entry*weight);bone.updateWorldMatrix(false,true);
   }
-  // Keep the actual head, torso and limbs clear of the arena floor while tucked.
-  const radii={Head:.14,Hips:.14,Spine2:.17,LeftHand:.05,RightHand:.05,LeftLeg:.075,RightLeg:.075,LeftFoot:.045,RightFoot:.045};
+  // Keep the roll on its supporting hand, shoulder/back or foot. The source is
+  // a diving roll; retaining its airborne hips made the short combat action
+  // read as a floating somersault. Settle down as well as correcting penetration.
+  const radii={Head:.14,Hips:.14,Spine2:.17,LeftHand:.05,RightHand:.05,LeftHandIndex2:.035,RightHandIndex2:.035,LeftHandIndex3:.035,RightHandIndex3:.035,LeftLeg:.075,RightLeg:.075,LeftFoot:.125,RightFoot:.125,LeftToeBase:.015,RightToeBase:.015};
+  const floor=m.root.getWorldPosition(v).y+.015;
   let low=Infinity;
   for(const [key,r]of Object.entries(radii))if(m.bones[key])low=Math.min(low,m.bones[key].getWorldPosition(v).y-r);
-  if(Number.isFinite(low)&&low<.015)m.body.position.y+=(.015-low)*entry*weight;
+  if(Number.isFinite(low))m.body.position.y+=(floor-low)*entry*weight;
   m.root.updateMatrixWorld(true);m.authoredRoll='Roll';
   return true;
  }

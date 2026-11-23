@@ -51,15 +51,21 @@ async function main(){
  // Both fixture players remain connected while the headless renderer loads their models.
  bootHeartbeat=setInterval(()=>serialized(async()=>{await call(db,A,'state');await call(db,B,'state');}).catch(()=>{}),2000);
  const a=await open(A),b=await open(B);clearInterval(bootHeartbeat);
- for(const kind of ['duck','jump','step','roll']){
+ for(const [kind,key] of [['duck','KeyC'],['jump','KeyV'],['roll',null],['roll','KeyL'],['roll','KeyB']]){
   await serialized(async()=>{const rows=await players(db,'spear');rows[1].z=8;await setMatch(db,rows);});
-  await a.waitForFunction(()=>window.fixtureLastMatch?.players[0].stamina===100);if(kind==='step')await a.locator('#duelDodge').dispatchEvent('pointerdown',{pointerId:45});else await a.keyboard.press({duck:'KeyC',jump:'KeyV',roll:'KeyB'}[kind]);
-  await b.waitForFunction(kind=>window.fixtureLastMatch?.players[0].dodge_kind===kind,kind);const sent=inputs.filter(x=>x.owner===A&&x.dodge).at(-1);assert.equal(sent.dodge_kind,kind);
+  // Repeated roll inputs must be acknowledged anew, not pass on the preceding
+  // roll's remote snapshot. Observe the reset on both clients before each input.
+  await a.waitForFunction(()=>window.fixtureLastMatch?.players[0].stamina===100);
+  await b.waitForFunction(()=>window.fixtureLastMatch?.players[0].stamina===100);
+  const before=inputs.length;
+  if(key)await a.keyboard.press(key);else await a.locator('#duelDodge').dispatchEvent('pointerdown',{pointerId:45});
+  await b.waitForFunction(kind=>window.fixtureLastMatch?.players[0].dodge_kind===kind&&window.fixtureLastMatch.players[0].stamina<100,kind);
+  const sent=inputs.slice(before).filter(x=>x.owner===A&&x.dodge).at(-1);assert.ok(sent,'new '+(key||'touch')+' evade request');assert.equal(sent.dodge_kind,kind);
   await b.waitForFunction(()=>Date.parse(window.fixtureLastMatch.players[0].dodge_until)<Date.now());
  }
  for(const [width,height]of [[667,375],[844,390],[932,430]]){await a.setViewportSize({width,height});const boxes=await a.locator('.evasion163 button,.duel-action,#duelStick').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return{name:e.id||e.dataset.evasion,x:b.x,y:b.y,w:b.width,h:b.height};}));assert.equal(await a.locator('.evasion163').count(),0);for(const a of boxes.filter(b=>b.name==='duelStick')){assert.ok(a.x>=0&&a.y>=0&&a.x+a.w<=width&&a.y+a.h<=height);for(const b of boxes.filter(b=>b.name!==a.name))assert.ok(!(Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>1&&Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)>1),a.name+' overlaps '+b.name);}}
  if(process.env.LUDUS_RENDER_SCALE_TEST==='1'){await a.setViewportSize({width:931,height:429});await require('./render-scale-browser-v188.cjs')(a,'online');}
- await a.screenshot({path:path.join(out,'online-motion-v163.png')});assert.deepEqual(errors,[]);console.log(JSON.stringify({sessions:2,realModels:true,touchActions:1,keyboardActions:3,serverAcknowledged:true,viewports:3,errors}));
+ await a.screenshot({path:path.join(out,'online-motion-v163.png')});assert.deepEqual(errors,[]);console.log(JSON.stringify({sessions:2,realModels:true,touchActions:1,keyboardActions:4,primaryRollInputs:['touch','KeyL','KeyB'],serverAcknowledged:true,viewports:3,errors}));
  await cleanup();
 }
 main().catch(async e=>{console.error(e);await cleanup();process.exitCode=1;});
