@@ -30,21 +30,39 @@ var ArenaAuthoredMotion=(()=>{
   if(f.action==='idle'&&['spear','trident','trident_gladiator','halberd'].includes(f.weapon)&&f.move<.1)return ['poleIdle',(time%clips.poleIdle.duration)/clips.poleIdle.duration,.65];
   return null;
  }
+ // A pose interval can include time before a newly observed action began.
+ // Only that action/clip's elapsed time belongs to its first transition frame.
+ function entryElapsed(f,choice,dt){
+  let elapsed=0;
+  if(choice){
+   if(choice[0]==='guardHit')elapsed=.20-f.guardFlash;
+   else if(choice[0]==='hitHead'||choice[0]==='hitChest')elapsed=.32-f.reaction;
+   else if(['attack','recoil','stagger','netcast','spearcast','bash','hook','evade'].includes(f.action)){
+    elapsed=Number.isFinite(f.timer)?f.timer:0;
+    if(f.action==='evade'&&f.evadeKind==='jump'){
+     if(choice[0]==='jumpAir')elapsed-=f.duration*.16;
+     else if(choice[0]==='jumpLand')elapsed-=f.duration*.79;
+    }
+   }
+  }
+  return Math.min(Math.max(0,dt),Number.isFinite(elapsed)?Math.max(0,elapsed):0);
+ }
  function begin(f,m,time,dt){
   if(typeof LUDUS_AUTHORED_MOTION==='undefined')return;
   if(m.headHeight163===undefined){m.root.updateMatrixWorld(true);m.headHeight163=m.root.worldToLocal(m.bones.Head.getWorldPosition(math().v[0])).y;}
   const choice=choose(f,time),key=choice?f.action+':'+choice[0]:null;
-  if(m.authored163?.key!==key||f.timer+.001<(m.authored163?.timer||0)&&f.action!=='idle'){
+  const changed=m.authored163?.key!==key||f.timer+.001<(m.authored163?.timer||0)&&f.action!=='idle';
+  if(changed){
    m.authored163={key,exit:!!f.pitWeapon&&!choice&&!!m.authored163?.key,age:0,timer:f.timer,body:m.body.position.clone(),...(f.pitWeapon?{anchors:[m.weaponAnchor,m.offhandAnchor].map(a=>({position:a.position.clone(),quaternion:a.quaternion.clone()}))}:{}),entry:Object.fromEntries(m.boneEntries.map(([n,b])=>[n,b.quaternion.clone()]))};
   }
-  if(m.authored163){m.authored163.age+=Math.max(0,dt);m.authored163.timer=f.timer;}
+  if(m.authored163){m.authored163.age+=changed?entryElapsed(f,choice,dt):Math.max(0,dt);m.authored163.timer=f.timer;}
  }
  function apply(f,m,time){
   m.authoredStep=null;
   const choice=typeof LUDUS_AUTHORED_MOTION==='undefined'?null:choose(f,time);
   if(!choice){m.authored163Clip=null;return false;}
   const [name,phase,weight]=choice,c=LUDUS_AUTHORED_MOTION.clips[name];if(!c)return false;
-  const at=clamp(phase)*(c.frames-1),a=Math.floor(at),b=Math.min(a+1,c.frames-1),t=at-a,s=math(),q=s.q,v=s.v,entry=smooth((m.authored163?.age||1)/.085),mirror=f.action==='netcast'||!!f.attackLeft&&['attack','recoil','stagger','spearcast','hook'].includes(f.action);
+  const at=clamp(phase)*(c.frames-1),a=Math.floor(at),b=Math.min(a+1,c.frames-1),t=at-a,s=math(),q=s.q,v=s.v,entry=smooth((m.authored163?.age??1)/.085),mirror=f.action==='netcast'||!!f.attackLeft&&['attack','recoil','stagger','spearcast','hook'].includes(f.action);
   const sample=(arr,out)=>out.fromArray(arr[a]).lerp(v[4].fromArray(arr[b]),t);
   // Moving guards own the upper body; locomotion keeps the hips and foot contacts.
   const movingGuard=f.action==='idle'&&['guard','block','guardHit'].includes(name)&&m.locomotionWeight>.005;

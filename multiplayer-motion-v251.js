@@ -19,11 +19,32 @@ var MultiplayerMotion=(()=>{
   p.x=m.root.position.x-f.x;p.y=m.root.position.y;p.z=m.root.position.z-f.z;
   p.heading=m.root.rotation.y;p.angle=f.angle;p.action=f.action;p.chain=f.chain;
   p.dead=f.hp<=0;p.timer=f.timer;
+  p.moving=f.move>.025;p.blocking=!!f.blocking;p.reacting=f.reaction>0;
+  p.guarding=f.guardFlash>0;p.evading=f.passiveEvade>0;
  }
  function poseChanged(f,m){
   const p=m.poseRootV291;
   return !p||p.action!==f.action||p.chain!==f.chain||p.dead!==(f.hp<=0)||
+   p.moving!==(f.move>.025)||p.blocking!==!!f.blocking||p.reacting!==(f.reaction>0)||
+   p.guarding!==(f.guardFlash>0)||p.evading!==(f.passiveEvade>0)||
    f.action!=='idle'&&Number.isFinite(f.timer)&&f.timer+.001<p.timer;
+ }
+ // Keep the clock remainder so a late display frame does not lower the pose rate.
+ // Stable fighter phases spread routine skeleton work across display frames.
+ function shouldPose(f,m,time,interval,forced=false){
+  if(!Number.isFinite(interval)){m.rankedPoseHidden=true;return false;}
+  const reset=forced||m.rankedPoseHidden||m.rankedPoseInterval!==interval||
+   !Number.isFinite(m.nextRankedPose)||poseChanged(f,m);
+  m.rankedPoseHidden=false;m.rankedPoseInterval=interval;
+  if(interval<=0){m.nextRankedPose=time;return true;}
+  if(reset){
+   const phase=(((Number(f.id)||0)*.61803398875)%1+1)%1;
+   m.nextRankedPose=time+interval*(1-phase);return true;
+  }
+  const deadline=m.nextRankedPose;
+  if(time+.0001<deadline)return false;
+  m.nextRankedPose=deadline+interval*Math.max(1,Math.floor((time-deadline)/interval)+1);
+  return true;
  }
  function updatePoseRoot(f,m){
   const p=m.poseRootV291;
@@ -56,6 +77,6 @@ var MultiplayerMotion=(()=>{
   }
   return {x,z};
  }
- return {worldDirection,poseInterval,capturePoseRoot,poseChanged,updatePoseRoot,expandState,predictedPosition};
+ return {worldDirection,poseInterval,capturePoseRoot,poseChanged,shouldPose,updatePoseRoot,expandState,predictedPosition};
 })();
 if(typeof module!=='undefined')module.exports=MultiplayerMotion;
