@@ -23,6 +23,10 @@ async function main(){
   motion.capturePoseRoot(f,m);m.root.rotation.y=f.angle;
   assert.ok(angle(authored,m.root.rotation.y)>1.5,'old root reset visibly reverses the roll');
   motion.updatePoseRoot(f,m);near(angle(authored,m.root.rotation.y),0,'skipped pose retains sideways heading');
+  f.angle+=.12;motion.updatePoseRoot(f,m);
+  near(angle(authored,m.root.rotation.y),0,'network-facing reconciliation cannot turn a travel-directed roll on skipped frames');
+  c.ImportedGladiator.animate(f,m,.16,.01);
+  near(angle(authored,m.root.rotation.y),0,'next full roll pose has no facing sawtooth');
   c.ImportedGladiator.dispose(m);
  }
  const reports=[];

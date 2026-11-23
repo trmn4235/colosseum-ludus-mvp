@@ -31,6 +31,7 @@ jobs:
       - name: Ranked motion continuity and responsive target selection
         run: |
           node tests/ranked-motion-v291.cjs
+          node tests/ranked-camera-v291.cjs
           node tests/ranked-controls-performance-v251.cjs
           node tests/ranked-latency-v252.cjs
       - name: Ranked staff passives through real server actions

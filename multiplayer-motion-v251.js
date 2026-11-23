@@ -29,7 +29,7 @@ var MultiplayerMotion=(()=>{
   const p=m.poseRootV291;
   if(!p||poseChanged(f,m)){m.root.position.set(f.x,0,f.z);m.root.rotation.y=f.angle;return;}
   m.root.position.set(f.x+p.x,p.y,f.z+p.z);
-  m.root.rotation.y=p.dead?p.heading:p.heading+Math.atan2(Math.sin(f.angle-p.angle),Math.cos(f.angle-p.angle));
+  m.root.rotation.y=p.dead||p.action==='dodge'?p.heading:p.heading+Math.atan2(Math.sin(f.angle-p.angle),Math.cos(f.angle-p.angle));
  }
  // A compact packet is a complete dynamic snapshot, not a merge of old effects.
  // Only immutable roster/equipment data survives between snapshots.
