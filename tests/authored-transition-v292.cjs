@@ -66,4 +66,4 @@ async function main(){
  }
  console.log('PASS V292 authored entry continuity: '+JSON.stringify({scenarios,maxEarlyBodyStep,poseIntervalsMs:[8.33,16.67,33.33,50,100,250],checks:'early/restarted attacks, exact grip, zero-time entry, guards, reactions, pit exit, jump phase boundaries'}));
 }
-main().catch(e=>{console.error(e);process.exitCode=1;});
+main().then(()=>require('./weapon-motion-v294.cjs')()).catch(e=>{console.error(e);process.exitCode=1;});
