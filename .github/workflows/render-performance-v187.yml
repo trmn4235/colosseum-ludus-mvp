@@ -32,6 +32,10 @@ jobs:
         run: |
           node tests/ranked-motion-v291.cjs
           node tests/ranked-camera-v291.cjs
+          node tests/ranked-cadence-v292.cjs
+          node tests/authored-transition-v292.cjs
+          node tests/equipment-grip-v292.cjs
+          node tests/locomotion-grip-budget-v292.cjs
           node tests/ranked-controls-performance-v251.cjs
           node tests/ranked-latency-v252.cjs
       - name: Ranked staff passives through real server actions
