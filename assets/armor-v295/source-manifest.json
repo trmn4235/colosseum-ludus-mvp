@@ -1,0 +1,61 @@
+{
+  "version": 295,
+  "status": "awaiting_official_source_downloads",
+  "runtimeReady": false,
+  "checkedAt": "2026-11-23",
+  "license": "CC-BY-4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "note": "Public source metadata verified; no original source archive downloaded, optimized or rig-validated yet. Counts below are source-reported and targets, not achieved outputs.",
+  "models": [
+    {
+      "id": "aegis",
+      "title": "Aegis Sentinel Ancient Blue Hoplite Warrior V1",
+      "author": "PixForge",
+      "sourceUid": "a2619fc3c48a420e9b6fe6091031a401",
+      "sourceUrl": "https://sketchfab.com/3d-models/aegis-sentinel-ancient-blue-hoplite-warrior-v1-a2619fc3c48a420e9b6fe6091031a401",
+      "sourceReportedTriangles": 92572,
+      "targetTriangles": 12000,
+      "qualityFallbackTriangles": 15000,
+      "use": "whole_character_special_enemy",
+      "sourceSha256": null,
+      "outputPath": null,
+      "actualOutputTriangles": null,
+      "rigVerified": false,
+      "ready": false
+    },
+    {
+      "id": "hoplomachus",
+      "title": "Hoplomachus Gladiator",
+      "author": "DavidGWork (David Gonzalez Diez)",
+      "sourceUid": "3cd1e1a6a87749df82161fbed96d50f7",
+      "sourceUrl": "https://sketchfab.com/3d-models/hoplomachus-gladiator-3cd1e1a6a87749df82161fbed96d50f7",
+      "sourceReportedTriangles": 19703,
+      "targetTriangles": 8000,
+      "qualityFallbackTriangles": 10000,
+      "use": "whole_character_special_enemy",
+      "sourceSha256": null,
+      "outputPath": null,
+      "actualOutputTriangles": null,
+      "rigVerified": false,
+      "ready": false
+    },
+    {
+      "id": "officer_chest",
+      "title": "Roman officer - body armour",
+      "author": "Andy Woodhead",
+      "sourceUid": "f643a3129a9f4b15b9e5abe220020af7",
+      "sourceUrl": "https://sketchfab.com/3d-models/roman-officer-body-armour-f643a3129a9f4b15b9e5abe220020af7",
+      "additionalCredits": ["Griffin: noe-ed at.", "Lion head: GSXNet", "Eagle: SpleenVision", "Lion sitting: Thomas Flynn"],
+      "sourceReportedTriangles": 37151,
+      "targetTriangles": 3000,
+      "qualityFallbackTriangles": 4000,
+      "use": "chest_item_original_and_black_shared_geometry",
+      "downloadNote": "Author identifies FBX in additional file; retain attribution from downloaded archive too.",
+      "sourceSha256": null,
+      "outputPath": null,
+      "actualOutputTriangles": null,
+      "fitVerified": false,
+      "ready": false
+    }
+  ]
+}
