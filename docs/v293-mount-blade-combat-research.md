@@ -14,7 +14,7 @@
 
 Kod incelemesi, sistemin sıfırdan kurulması gerekmediğini gösteriyor. Saldırının hazırlık, etkin vuruş ve toparlanma evreleri; bölgesel darbe tepkileri; yönlü kalkan tepkisi ve el–silah temasını koruyan düzenekler zaten mevcut. Sorunları “bunların hiçbiri yok” diye açıklamak yanlış olur. Geliştirme, bu parçaların doğru eylemde çalışması ve birbirini bozmadan görünmesi üzerine kurulmalı.
 
-En somut yuvarlanma sorunu giriş bağlantısında: incelenen ana savaş düğmeleri `step` eylemini gönderiyor. Oyuncu yuvarlanma beklerken kısa kaçınma adımı görüyor. Ayrıca gerçek `roll` eylemi ve ona ait bir hareket klibi zaten var. Dolayısıyla çözüm yalnız yeni bir dosya eklemek değil; düğme, eylem ve görüntüyü aynı hareket üzerinde birleştirmek.
+En somut yuvarlanma sorunu giriş bağlantısındaydı: V292’de incelenen ana savaş düğmeleri `step` eylemini gönderiyordu. Oyuncu yuvarlanma beklerken kısa kaçınma adımı görüyordu. Ayrıca gerçek `roll` eylemi ve ona ait bir hareket klibi zaten vardı. Dolayısıyla çözüm yalnız yeni bir dosya eklemek değil; düğme, eylem ve görüntüyü aynı hareket üzerinde birleştirmek.
 
 Mevcut yuvarlanmanın savaş süresi **0,46 saniye**. Daha önceki klibin bütününü bu dar zaman aralığına yerleştirmek, hazırlık ve ayağa kalkmayı çok hızlı gösterebilir. V293 çalışması, mevcut süre içinde daha anlaşılır yer teması ve hareket evreleri hazırlıyor. Süreyi artırmak, mesafeyi azaltmak veya dokunulmazlığı uzatmak bu görsel düzeltmenin kendiliğinden bir parçası değildir.
 
@@ -27,6 +27,8 @@ Arena tarafında hareket ve blok için `idle` koşulları bulunuyor. Bu, Bannerl
 Uygulama kapsamı, yuvarlanma düğmesinin gerçekten `roll` göndermesi ve hareketin okunabilir bir bütün oluşturmasıdır: dizleri bükerek ağırlığı indirme, gövdeyi toplama, omuz/sırt üzerinden dönme, ayakları altına getirme ve savaş duruşuna dönme. Bu, gerçek tarihî gladyatör tekniği iddiası değil; kullanıcının istediği oyun hareketinin görsel hedefidir.
 
 Gövde dönüşü sırasında yürüyüş katmanı bacakları yeniden dikleştirmemeli. Baş, gövde ve ayakların zemin ilişkisi tutarlı olmalı; modelin yukarıda dönmesi veya son bölümde dik halde kayması önlenmeli. Silah ve kalkan, ellerden kopmadan taşınmalı. Tamamlanma değerlendirmesi yalnız “karakter ters döndü” kontrolüne dayanmamalı; giriş, yerde dönüş, çıkış ve ilk sonraki eylem birlikte incelenmeli.
+
+Gerçek karakter geometrisiyle yapılan kare karşılaştırması ayrıca büyük kalkanın dönüş sırasında zemine girdiğini gösterdi. V293 bu yüzden silah ve kalkan için gövdeye yakın taşıma duruşu da içeriyor: ekipmanın boyutu hesaba katılıyor, kol gerçek avuç temasına uzanıyor ve normal tutuşa geçiş yumuşatılıyor. Bu bulgu, silahsız kaynak hareketin ekipmanlı gladyatöre doğrudan uygulanmasının sınırını gösteriyor: gövde için doğru görünen bir hareket, uzun mızrak veya büyük kalkan için uygun olmayabilir. Kare karşılaştırmaları doku ve GPU ışıklandırması içermeyen gerçek geometri görüntüleridir; telefondaki hareket akıcılığını veya FPS’yi ölçmez.
 
 Saldırıdan yuvarlanmaya, yuvarlanmadan savunmaya ve yön değiştirerek yuvarlanmaya geçişler de önemlidir. Son karede duruşu bir anda sıfırlamak, düzgün görünen hareketin ardından yeni bir sıçrama üretebilir. Kamera ise başın bütün dönüşünü taklit etmemeli; oyuncu hareket sırasında çevresini ve rakibini izleyebilmeli.
 

@@ -19,6 +19,11 @@ function skinBounds(T,m,step=71){
   }
  });return {low,high,samples};
 }
+function equipmentFloor(T,group){
+ let low=Infinity;const p=new T.Vector3();
+ group.traverse(mesh=>{if(!mesh.isMesh||!mesh.visible||!mesh.geometry?.attributes.position)return;for(let i=0;i<mesh.geometry.attributes.position.count;i++){mesh.getVertexPosition(i,p).applyMatrix4(mesh.matrixWorld);low=Math.min(low,p.y);}});
+ return low;
+}
 test('equipped rolls tuck near the floor, invert and recover in the unchanged action time',async()=>{
  const c=await rigRuntime('arena.html'),T=c.THREE,p=new T.Vector3(),q=new T.Vector3(),s=new T.Vector3();
  let cases=0,skinSamples=0;
@@ -52,16 +57,56 @@ test('equipped rolls tuck near the floor, invert and recover in the unchanged ac
  }
  assert.equal(cases,28);console.log(JSON.stringify({cases,skinSamples,simulationUnchanged:true}));
 });
+test('large and small shields, gladius and polearms stay carried above the floor across frame rates',async()=>{
+ const c=await rigRuntime('arena.html'),T=c.THREE,p=new T.Vector3();let frames=0,minClearance=Infinity,maxHandSpeed=0;
+ for(const type of ['murmillo','thraex','hoplomachus','retiarius'])for(const fps of [30,60,120]){
+  const {f,m}=make(c,type),count=Math.ceil(.46*fps),dt=.46/count,previous={};let shieldCache,weaponCache;
+  for(let n=0;n<=count;n++){
+   Object.assign(f,{action:'dodge',duration:.46,timer:n*dt,dx:.6,dz:.8});c.ImportedGladiator.animate(f,m,f.timer,dt);frames++;
+   for(const name of ['LeftHand','RightHand']){
+    const current=m.bones[name].getWorldPosition(p).clone();if(previous[name]){const speed=current.distanceTo(previous[name])/dt;maxHandSpeed=Math.max(maxHandSpeed,speed);assert.ok(speed<35,`${type} ${fps} ${n}: ${name} snapped at ${speed}m/s`);}previous[name]=current;
+   }
+   for(const group of [m.weaponAnchor,...(f.shield?[m.gear.shield.group]:[])]){const height=equipmentFloor(T,group);minClearance=Math.min(minClearance,height);assert.ok(height>-.025,`${type} ${fps} ${n}: carried equipment penetrates ground by ${-height}m`);}
+   if(n>1&&n<count-1){
+    if(weaponCache)assert.equal(m.weaponAnchor.userData.rollBounds293,weaponCache,'weapon bounds stay cached');weaponCache=m.weaponAnchor.userData.rollBounds293;
+    if(f.shield){if(shieldCache)assert.equal(m.gear.shield.anchor.userData.rollBounds293,shieldCache,'shield bounds stay cached');shieldCache=m.gear.shield.anchor.userData.rollBounds293;}
+   }
+  }
+  const rested=make(c,type);
+  Object.assign(f,{action:'idle',timer:0});
+  for(let n=0;n<Math.ceil(.35*fps);n++){c.ImportedGladiator.animate(f,m,.46+n/fps,1/fps);c.ImportedGladiator.animate(rested.f,rested.m,.46+n/fps,1/fps);}
+  for(const side of ['Right','Left']){
+   const a=side==='Right'?m.weaponAnchor:m.gear.shield?.anchor,b=side==='Right'?rested.m.weaponAnchor:rested.m.gear.shield?.anchor;
+   if(!a||!b)continue;assert.ok(a.getWorldPosition(p).distanceTo(b.getWorldPosition(new T.Vector3()))<.03,`${type} ${fps}: ${side} carry does not recover after roll`);
+  }
+  c.ImportedGladiator.dispose(rested.m);c.ImportedGladiator.dispose(m);
+ }
+ console.log(JSON.stringify({equipmentFrames:frames,minClearance,maxHandSpeed}));
+});
 test('roll support follows a raised or lowered scene floor',async()=>{
  const c=await rigRuntime('arena.html',{skipEquipment:true}),T=c.THREE,p=new T.Vector3(),q=new T.Vector3();
  for(const height of [-1.5,2.75])for(const u of [.2,.4,.6,.8]){
   const ground=make(c),raised=make(c);
+  const deck=new T.Group();deck.position.y=height;deck.add(raised.m.root);deck.updateMatrixWorld(true);
   for(const {f,m}of [ground,raised]){Object.assign(f,{action:'dodge',duration:.46,timer:u*.46,dx:0,dz:1});c.ImportedGladiator.animate(f,m,f.timer,1/60);}
-  raised.m.root.position.y=height;raised.m.root.updateMatrixWorld(true);c.ArenaRoll.apply(raised.f,raised.m);
-  for(const name of ['Head','Hips','LeftFoot','RightFoot']){
+  for(const name of ['Head','Hips','LeftFoot','RightFoot','LeftHand','RightHand']){
    ground.m.bones[name].getWorldPosition(p);raised.m.bones[name].getWorldPosition(q);q.y-=height;
-   assert.ok(p.distanceTo(q)<.025,`${height}m ${u}: ${name} grounded against a global floor`);
+   assert.ok(p.distanceTo(q)<1e-5,`${height}m ${u}: ${name} grounded against a global floor`);
   }
   c.ImportedGladiator.dispose(ground.m);c.ImportedGladiator.dispose(raised.m);
+ }
+});
+test('asynchronously loading empty equipment cannot corrupt a roll pose',async()=>{
+ const c=await rigRuntime('arena.html',{skipEquipment:true}),T=c.THREE;
+ for(const part of ['weapon','shield']){
+  const {f,m}=make(c),anchor=part==='weapon'?m.weaponAnchor:m.gear.shield.anchor,original=part==='weapon'?anchor.children[0]:m.gear.shield.group,placeholder=new T.Group();
+  placeholder.name='Ekipman yükleniyor';anchor.remove(original);anchor.add(placeholder);if(part==='shield')m.gear.shield.group=placeholder;
+  Object.assign(f,{action:'dodge',duration:.46,timer:.2,dx:0,dz:1});c.ImportedGladiator.animate(f,m,.2,1/60);
+  for(const [name,bone]of m.boneEntries)assert.ok(bone.matrixWorld.elements.every(Number.isFinite),`${part} placeholder corrupted ${name}`);
+  anchor.remove(placeholder);anchor.add(original);if(part==='shield')m.gear.shield.group=original;
+  f.timer=.21;c.ImportedGladiator.animate(f,m,.21,1/60);
+  assert.equal(anchor.userData.rollBounds293?.group,original,'loaded equipment receives finite bounds');
+  for(const [name,bone]of m.boneEntries)assert.ok(bone.matrixWorld.elements.every(Number.isFinite),`${part} loaded equipment corrupted ${name}`);
+  c.ImportedGladiator.dispose(m);
  }
 });
