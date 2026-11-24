@@ -53,6 +53,8 @@
   ['helmet-roman','Roma miğferi','helmet','roman',{bronze:4,leather:2,linen:3,wool_cloth:1}],
   ['helmet-silver','Şövalye miğferi','helmet','silver',{iron:12,leather:4,linen:3,wool_cloth:1}],
   ['helmet-winged','Kanatlı miğfer','helmet','winged',{iron:10,bronze:1,leather:4,linen:3,wool_cloth:1}],
+  ['chest-officer','Roma subayı göğüs zırhı','chest','officer_chest',{iron:18,leather:8,linen:5,wool_cloth:3}],
+  ['chest-officer-black','Siyah Roma subayı göğüs zırhı','chest','officer_chest_black',{iron:18,leather:8,linen:5,wool_cloth:3}],
   ['chest','Gladyatör göğüs zırhı','chest','gladiator_chest',{iron:14,leather:7,linen:4,wool_cloth:2}],
   ['chest-plate','İşlemeli göğüs zırhı','chest','chest_plate',{iron:18,leather:8,linen:5,wool_cloth:3}],
   ['gloves','İşlemeli çift omuzluk','gloves','armor_shoulder',{leather:2,bronze:1,wool_cloth:1}],
@@ -87,7 +89,7 @@
   if(k==='shield')return equipment.find(x=>x[2]===k&&x[3]===m)?.[0]||(m==='large'?'shield-large':'shield-medium');
   if(k==='helmet'){const exact=equipment.find(x=>x[2]===k&&x[3]===m);if(exact)return exact[0];}
   if(k==='helmet')return ['roman','roman_helmet'].includes(m)?'helmet-roman':['silver','knights','knights_helm'].includes(m)?'helmet-silver':['winged','winged_helmet_gameready'].includes(m)?'helmet-winged':'helmet-gold';
-  if(k==='chest')return m==='chest_plate'?'chest-plate':'chest';
+  if(k==='chest')return equipment.find(x=>x[2]===k&&x[3]===m)?.[0]||'chest';
   if(k==='gloves'){const exact=equipment.find(x=>x[2]===k&&x[3]===m);if(exact)return exact[0];}
   if(k==='gloves')return m==='manica'?'manica':m==='shoulder_armor'?'shoulder-armor':'gloves';
   if(k==='legs')return 'legs';

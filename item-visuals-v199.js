@@ -2,6 +2,8 @@
 (function(root){
  'use strict';
  const rows=[
+  {sku:'chest-officer', kind:'chest', model:'officer_chest', name:'Roma subayı göğüs zırhı', icon:'assets/items-v295/officer_chest.webp'},
+  {sku:'chest-officer-black', kind:'chest', model:'officer_chest_black', name:'Siyah Roma subayı göğüs zırhı', icon:'assets/items-v295/officer_chest_black.webp'},
   {
     "sku": "shield-dura",
     "kind": "shield",

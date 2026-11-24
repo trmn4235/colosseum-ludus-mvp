@@ -73,3 +73,6 @@ test('early input cannot reset a strike, and the late input buffer stores only o
  vm.runInContext('let queuedAttack=null;'+html.slice(start,end),context);context.strike();assert.equal(vm.runInContext('queuedAttack',context),null);
  f.timer=.7;context.strike(false,'head');const queued=vm.runInContext('queuedAttack',context);context.strike(true,'chest');assert.equal(vm.runInContext('queuedAttack',context),queued);assert.equal(queued.region,'head');
 });
+
+// Exercise the single-player special opponents with the shipped combat and loadout code.
+require('./elite-bots-v295.cjs');

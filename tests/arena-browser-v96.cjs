@@ -33,6 +33,10 @@ async function main(){
  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});
  if(current){assert.equal(await page.locator('#intro').count(),0);assert.ok(!await page.getByText('Arena hazırlanıyor',{exact:false}).count());}
  await page.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:60000});await page.evaluate(()=>__arena.freeze());
+ if(process.env.LUDUS_V295_TEST==='1'){
+  await require('./free-armour-browser-v295.cjs')(page,out);
+  assert.deepEqual(errors,[]);await cleanup();return;
+ }
  if(process.env.LUDUS_CHARACTER_TEST==='1'){
   const source=require('./character-motion-v213.cjs').runMotionCases.toString();
   const character=await page.evaluate(source=>new Function('return ('+source+')(window,{rates:[30,60],directions:8,hands:[false]})')(),source);
@@ -41,7 +45,7 @@ async function main(){
  if(process.env.LUDUS_V214_TEST==='1'){await require('./character-browser-v214.cjs')(page,out);if(process.env.LUDUS_V214_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  if(process.env.LUDUS_V215_TEST==='1'){await require('./character-browser-v215.cjs')(page,out);if(process.env.LUDUS_V215_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  if(process.env.LUDUS_V216_TEST==='1'){await require('./character-browser-v216.cjs')(page,out);if(process.env.LUDUS_V216_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
- if(process.env.LUDUS_V217_TEST==='1'){await require('./character-browser-v217.cjs')(page,out);if(process.env.LUDUS_V217_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
+ if(process.env.LUDUS_V217_TEST==='1'){await require('./character-browser-v217.cjs')(page,out);await require('./free-armour-browser-v295.cjs')(page,out);if(process.env.LUDUS_V217_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  if(process.env.LUDUS_V218_TEST==='1'){await require('./character-browser-v218.cjs')(page,out);if(process.env.LUDUS_V218_ONLY==='1'){assert.deepEqual(errors,[]);await cleanup();return;}}
  if(process.env.LUDUS_PERFORMANCE_TEST==='1')await require('./arena-budget-v187.cjs')(page);
  if(process.env.LUDUS_RENDER_SCALE_TEST==='1')await require('./render-scale-browser-v188.cjs')(page,'arena');
@@ -50,20 +54,31 @@ async function main(){
  const comparison=await page.evaluate(()=>{
   const a=__arena;a.renderer.setPixelRatio(1.25);a.renderer.shadowMap.enabled=true;a.renderer.shadowMap.autoUpdate=true;
   a.camera.position.set(0,6,12);a.camera.lookAt(0,1,0);
-  let bodyMeshes=0,skeletons=0,poses=0;
+  let bodyMeshes=0,skeletons=0,poses=0;const bodies=[];
   const originalAnimate=ImportedGladiator.animate;ImportedGladiator.animate=function(...args){poses++;return originalAnimate.apply(this,args)};
   for(let i=0;i<a.models.length;i++){
    const f=a.combat.fighters[i],m=a.models[i];f.x=(i%5-2)*2.8;f.z=(Math.floor(i/5)-2)*3;f.action='idle';f.move=0;f.angle=0;
-   ImportedGladiator.animate(f,m,0,1/60);m.root.visible=true;m.visual.traverse(o=>{if(o.isSkinnedMesh&&!o.userData.wornEquipment164){skeletons++;if(o.visible)bodyMeshes++;}});
+   ImportedGladiator.animate(f,m,0,1/60);m.root.visible=true;
+   const own={elite:!!f.eliteBotV295,meshes:0,visible:0,rigs:new Set()};
+   m.visual.traverse(o=>{if(o.isSkinnedMesh&&!o.userData.wornEquipment164){own.meshes++;own.rigs.add(o.skeleton.bones[0]);if(o.visible)own.visible++;}});
+   skeletons+=own.rigs.size;bodyMeshes+=own.visible;bodies.push({elite:own.elite,meshes:own.meshes,visible:own.visible,rigs:own.rigs.size});
   }
   a.renderer.render(a.scene,a.camera);const info={calls:a.renderer.info.render.calls,triangles:a.renderer.info.render.triangles,bodyMeshes,skeletons,geometries:a.renderer.info.memory.geometries,textures:a.renderer.info.memory.textures};
   const actual=a.renderer.render;a.renderer.render=()=>{};poses=0;
   for(let i=0;i<120;i++)a.step(1/60,false);
   const pausedPoses=poses;a.renderer.render=actual;ImportedGladiator.animate=originalAnimate;
-  return {...info,pausedPoses};
+  return {...info,bodies,pausedPoses};
  });
  console.log(JSON.stringify({current,comparison}));
- if(current){assert.equal(comparison.bodyMeshes,20);assert.equal(comparison.skeletons,20);assert.equal(comparison.pausedPoses,0);}
+ if(current){
+  assert.equal(comparison.bodies.length,20);assert.equal(comparison.skeletons,20);
+  for(const body of comparison.bodies){
+   assert.equal(body.rigs,1);
+   if(body.elite)assert.ok(body.visible>=1 && body.visible===body.meshes);
+   else {assert.equal(body.visible,1);assert.equal(body.meshes,1);}
+  }
+  assert.equal(comparison.pausedPoses,0);
+ }
  await page.screenshot({path:out+'/arena-844.png'});
  for(const [w,h]of [[667,375],[932,430],[1024,768]]){await page.setViewportSize({width:w,height:h});await page.evaluate(()=>__arena.step(1/60));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/arena-'+w+'.png'});}
  await page.setViewportSize({width:844,height:390});

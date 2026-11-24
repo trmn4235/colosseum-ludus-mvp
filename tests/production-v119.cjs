@@ -58,12 +58,15 @@ function fn(text,name){const escaped=name.replaceAll('.','\\.');const m=text.mat
  await db.exec(migration('helmet_identity_v194'));await db.exec(migration('helmet_identity_v194'));
  await db.exec(migration('arm_equipment_v196').split('-- Combat registration:')[0]);
  await db.exec(migration('selected_shields_v198'));await db.exec(migration('selected_shields_v198'));
+ await db.exec(migration('officer_chest_v295'));await db.exec(migration('officer_chest_v295'));
+ const officerRows=await q("select sku,category,price from ludus_shop_catalog where model in ('officer_chest','officer_chest_black')");
+ assert.equal(officerRows.length,2);assert.ok(officerRows.every(row=>row.category==='Göğüs Zırhı'&&row.price===100));
  const catalog=require('../ludus-production-v119.js');
  if(process.env.LUDUS_EQUIPMENT_TEST){const extra=migration('equipment_groups_v168').split('-- Expand only')[0];await db.exec(extra);globalThis.LudusProduction=catalog;require('../equipment-groups-v168.js');}
  const call=async(action='state',key=null,id=randomUUID())=>(await q('select ludus_supply($1,$2,1,$3)as s',[action,key,id]))[0].s;
  const stock=async(sku)=>(await call()).resources.find(r=>r.sku===sku).quantity;
  await db.exec('set role authenticated');let s=await call();
- assert.equal(s.resources.length,29);assert.equal(s.recipes.length,process.env.LUDUS_EQUIPMENT_TEST?49:47);
+ assert.equal(s.resources.length,29);assert.equal(s.recipes.length,process.env.LUDUS_EQUIPMENT_TEST?51:49);
  assert.equal(s.jobs[0].cargo.iron,24,'old cargo is unchanged');
  assert.equal(Number(s.gold),Number(before),'no money minted');
  assert.equal(s.recipes.filter(r=>r.sku==='gladius').length,1);

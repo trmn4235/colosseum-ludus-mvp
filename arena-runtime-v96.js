@@ -103,14 +103,16 @@ var ArenaRuntime = (() => {
   // Share the original geometry/material; one GPU draw per compatible mesh,
   // even when many identical pieces of loot accumulate. IDs still belong to combat.
   class DropBatch {
-    constructor(T, scene) { this.T=T; this.scene=scene; this.ids=''; this.meshes=[]; }
-    clear() { for(const mesh of this.meshes){this.scene.remove(mesh);mesh.dispose();} this.meshes=[];this.ids=''; }
+    constructor(T, scene) { this.T=T; this.scene=scene; this.ids=''; this.meshes=[]; this.pending=[]; }
+    clear() { for(const mesh of this.meshes){this.scene.remove(mesh);mesh.dispose();} this.meshes=[];this.pending=[];this.ids=''; }
     update(drops, template, visible) {
       const ids=drops.map(d=>d.id).join(',');
-      if(ids!==this.ids){
+      if(ids!==this.ids || this.pending.some(d=>!template(d).userData.pendingEquipment)){
         this.clear();this.ids=ids;const T=this.T,buckets=new Map();
         for(const d of drops){
-          const item=template(d).clone(true);item.rotation.set(Math.PI/2,d.id*.71,0);item.position.set(d.x,.16,d.z);item.updateMatrixWorld(true);
+          const source=template(d);
+          if(source.userData.pendingEquipment){this.pending.push(d);continue;}
+          const item=source.clone(true);item.rotation.set(Math.PI/2,d.id*.71,0);item.position.set(d.x,.16,d.z);item.updateMatrixWorld(true);
           item.traverseVisible(o=>{
             if(!o.isMesh)return;
             const materials=Array.isArray(o.material)?o.material.map(m=>m.uuid).join(','):o.material.uuid;
