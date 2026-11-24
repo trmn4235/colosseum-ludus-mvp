@@ -5,7 +5,7 @@ const root=path.resolve(process.env.LUDUS_TEST_ROOT||path.join(__dirname,'..')),
 const fighters=Object.keys(exercise.profiles).map((type,i)=>({id:'g'+i,name:i?'Gladyatör '+i:'Cassius',class:type,owner_id:owner,overall:50,level:1,status:'available',session:null,stat_version:46,base_stats:exercise.profile(type),fatigue_value:0,exercise_units:0}));
 const receipt={gold:100,diamonds:1,stone:{name:'Safir II'},kind:'legs',ludus_exp:100,extracted:Array.from({length:6},()=>({}))};
 const fixture=`const fixtureUser={id:${JSON.stringify(owner)},is_anonymous:false,user_metadata:{}},fixtureFighters=${JSON.stringify(fighters)};window.__receipt=${JSON.stringify(receipt)};window.__finishCalls=[];
-window.__fixtureClient={auth:{getUser:async()=>({data:{user:fixtureUser}}),getSession:async()=>({data:{session:null}}),onAuthStateChange:()=>({})},from:name=>{const value=name==='ludus_accounts'?{user_id:fixtureUser.id,ludus_name:'Tırman',gold:3760,diamonds:1}:name==='ludus_gladiators'?fixtureFighters:name==='ludus_battles'?(location.pathname.endsWith('/savas.html')?[]:{id:${JSON.stringify(battle)},owner_id:fixtureUser.id,mode:'4x5',rule_version:2,snapshot:{gladiator:{...fixtureFighters[0],combat_morale:90,combat_stamina_bonus:12},items:[]},loot:Array.from({length:20},(_,actor)=>({actor,slot:'main_hand',token:'blade-'+actor,item:{kind:'weapon',model:'gladius',stat_version:7,base_stats:{}}}))}):[];const b={select:()=>b,eq:()=>b,order:()=>b,is:()=>b,limit:()=>b,single:async()=>({data:value}),then:(r,j)=>Promise.resolve({data:value}).then(r,j)};return b;},rpc:async(name,args)=>{if(name==='ludus_pit')return{data:{entry_fame:30,win_fame:10,roster:fixtureFighters.map(g=>({...g,fame:30}))}};if(name==='ludus_start_battle_v2'){sessionStorage.setItem('__fixtureStart',JSON.stringify(args));return{data:{id:${JSON.stringify(battle)},mode:'4x5',rule_version:2}};}if(name.startsWith('ludus_finish_battle')){__finishCalls.push({name,args});await new Promise(r=>setTimeout(r,700));return{data:__receipt};}return{data:name==='ludus_clan'||name==='ludus_clan_vault'?{server_now:new Date().toISOString(),clan:null,gladiators:fixtureFighters}:name==='ludus_progress'?{level:3,current_exp:0,next_exp:3000,claimable_count:0}:name==='ludus_imperial'?{server_now:new Date().toISOString(),missions:[],assignments:[],gladiators:fixtureFighters,is_admin:false,today:'2026-10-11'}:name==='ludus_daily_state'?{missions:[],claimed_count:0,bonus_claimed:false}:{server_now:new Date().toISOString(),gladiators:fixtureFighters}};}};`;
+window.__fixtureClient={auth:{getUser:async()=>({data:{user:fixtureUser}}),getSession:async()=>({data:{session:null}}),onAuthStateChange:()=>({})},from:name=>{const value=name==='ludus_accounts'?{user_id:fixtureUser.id,ludus_name:'Tırman',gold:3760,diamonds:1}:name==='ludus_gladiators'?fixtureFighters:name==='ludus_battles'?(location.pathname.endsWith('/savas.html')?[]:{id:${JSON.stringify(battle)},owner_id:fixtureUser.id,mode:'4x5',rule_version:2,snapshot:{venue:'naval',game_mode:'naval4x5',gladiator:{...fixtureFighters[0],combat_morale:90,combat_stamina_bonus:12},items:[]},loot:Array.from({length:20},(_,actor)=>({actor,slot:'main_hand',token:'blade-'+actor,item:{kind:'weapon',model:'gladius',stat_version:7,base_stats:{}}}))}):[];const b={select:()=>b,eq:()=>b,order:()=>b,is:()=>b,limit:()=>b,single:async()=>({data:value}),then:(r,j)=>Promise.resolve({data:value}).then(r,j)};return b;},rpc:async(name,args)=>{if(name==='ludus_pit')return{data:{entry_fame:30,win_fame:10,roster:fixtureFighters.map(g=>({...g,fame:30}))}};if(name==='ludus_start_battle_v296'){sessionStorage.setItem('__fixtureStart',JSON.stringify(args));return{data:{id:${JSON.stringify(battle)},mode:'4x5',rule_version:2}};}if(name.startsWith('ludus_finish_battle')){__finishCalls.push({name,args});await new Promise(r=>setTimeout(r,700));return{data:__receipt};}return{data:name==='ludus_clan'||name==='ludus_clan_vault'?{server_now:new Date().toISOString(),clan:null,gladiators:fixtureFighters}:name==='ludus_progress'?{level:3,current_exp:0,next_exp:3000,claimable_count:0}:name==='ludus_imperial'?{server_now:new Date().toISOString(),missions:[],assignments:[],gladiators:fixtureFighters,is_admin:false,today:'2026-10-11'}:name==='ludus_daily_state'?{missions:[],claimed_count:0,bonus_claimed:false}:{server_now:new Date().toISOString(),gladiators:fixtureFighters}};}};`;
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.glb':'model/gltf-binary','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'};
 let cleanup=async()=>{};
 async function main(){
@@ -34,13 +34,35 @@ async function main(){
  page.on('requestfailed',r=>{if(r.failure()?.errorText!=='net::ERR_ABORTED')console.error('Request failed:',r.url(),r.failure()?.errorText);});
  if(process.env.LUDUS_TEST_FOCUS==='performance')await page.addInitScript(()=>{let seed=106;Math.random=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);});
  page.on('request',r=>{if(r.url().includes('/assets/naval/')&&r.url().includes('.glb'))boatRequests.push(r.url());});
+ async function verifyVenueResume(){
+  const routes=await page.evaluate(id=>{
+   localStorage.clear();sessionStorage.clear();history.replaceState(null,'','/arena.html?battle='+id);
+   const legacy={id,snapshot:{}},naval={id,snapshot:{venue:'naval'}},land={id,snapshot:{venue:'colosseum'}};
+   const values={persistedNaval:NavalRoute.ticketNaval(naval),legacyWithoutHint:NavalRoute.ticketNaval(legacy)};
+   NavalRoute.remember(id);values.legacyRemembered=NavalRoute.ticketNaval(legacy);values.landOverridesRemembered=NavalRoute.ticketNaval(land);
+   localStorage.clear();history.replaceState(null,'','/arena.html?battle='+id+'&arena=naval');
+   values.legacyUrl=NavalRoute.ticketNaval(legacy);values.landOverridesUrl=NavalRoute.ticketNaval(land);
+   history.replaceState(null,'','/arena.html?battle='+id);values.noStoredRoute=!NavalRoute.saved(id)&&sessionStorage.length===0;
+   localStorage.setItem('ludus-camera-perspective','first');return values;
+  },battle);
+  assert.deepEqual(routes,{persistedNaval:true,legacyWithoutHint:false,legacyRemembered:true,landOverridesRemembered:false,legacyUrl:true,landOverridesUrl:false,noStoredRoute:true});
+  // A new device has no remembered route and opens a bare ticket URL.
+  await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>window.__arena?.started,null,{timeout:120000});
+  assert.equal(new URL(page.url()).searchParams.has('arena'),false);
+  assert.equal(await page.evaluate(()=>__arena.naval.ships.length),4);
+  await page.evaluate(()=>__arena.freeze());
+  assert.equal(await page.evaluate(()=>__arena.cameraMode),'first');
+  assert.equal(await page.inputValue('#cameraPerspective'),'first');
+  assert.deepEqual(errors,[]);return routes;
+ }
  await page.goto(base+'/savas.html?choose=1',{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>document.getElementById('fighterName').textContent==='Cassius');
  assert.equal(await page.locator('#panel-single [data-mode]').count(),4);
  await page.locator('[data-mode="naval4x5"]').click();assert.match(await page.locator('#modeTitle').innerText(),/Deniz Savaşı/);
  await page.locator('#enter').click();await page.waitForURL('**/arena.html?**');
  assert.equal(new URL(page.url()).searchParams.get('arena'),'naval');
- const start=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('__fixtureStart')));assert.equal(start.p_mode,'4x5');assert.equal(start.p_gladiator,'g0');assert.ok(start.p_request);
+ const start=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('__fixtureStart')));assert.equal(start.p_mode,'naval4x5');assert.equal(start.p_gladiator,'g0');assert.ok(start.p_request);
 
  // Software WebGL can take over a minute to compile the full arena on a cold run.
  await page.waitForFunction(()=>window.__arena?.started&&__arena.combat.time>.05,null,{timeout:120000});await page.evaluate(()=>__arena.freeze());
@@ -48,6 +70,11 @@ async function main(){
  assert.equal(await page.locator('#fatal').isVisible(),false,'the initial naval render must finish without a fatal error');
  assert.deepEqual(errors,[]);
  const initial=await page.evaluate(()=>({ships:__arena.naval.ships.length,fighters:__arena.combat.fighters.length,counts:__arena.naval.ships.map(s=>__arena.combat.fighters.filter(f=>f.team===s.team).length),calls:__arena.renderer.info.render.calls,triangles:__arena.renderer.info.render.triangles}));
+ if(process.env.LUDUS_TEST_FOCUS==='route'){
+  const routes=await verifyVenueResume();
+  fs.writeFileSync(out+'/route-report.json',JSON.stringify({initial,routes,errors},null,2));
+  console.log('V296 naval route PASS:',JSON.stringify({initial,routes,errors}));await cleanup();return;
+ }
  if(await page.evaluate(()=>typeof NavalPerformance!=='undefined')){
   const detail=await page.evaluate(()=>({ready:NavalPerformance.ready,levels:__arena.models.slice(1).map(m=>m.navalBodyLevel),casters:__arena.models.filter(m=>m.shadowEnabledV84).length}));
   assert.equal(detail.ready,true);assert.ok(detail.levels.some(n=>n===2));assert.ok(detail.casters<=4);assert.ok(initial.triangles<1000000,'20 full crew members stay below 1M rendered triangles');
@@ -232,9 +259,7 @@ async function main(){
  assert.equal(await page.evaluate(()=>{const f=__arena.naval.player(),m=__arena.models[0];return f.shipId===1&&!f.navJump&&NavalSimulation.onDeck(__arena.naval.ships[1],m.root.position,0);}),true,'the rendered corpse ends on the destination deck');
  await page.evaluate(()=>__arena.setPaused(true));assert.equal(await page.locator('#navalControls').isVisible(),false);
  assert.deepEqual(errors,[]);
- await page.evaluate(()=>localStorage.setItem('ludus-camera-perspective','first'));
- // The remembered scene survives a same-device resume URL without its arena parameter.
- await page.goto(base+'/arena.html?battle='+battle,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__arena?.started,null,{timeout:120000});assert.equal(await page.evaluate(()=>__arena.naval.ships.length),4);await page.evaluate(()=>__arena.freeze());assert.equal(await page.evaluate(()=>__arena.cameraMode),'first');assert.equal(await page.inputValue('#cameraPerspective'),'first');
+ await verifyVenueResume();
  fs.writeFileSync(out+'/report.json',JSON.stringify({initial,boatAsset,outfit,hudLayout,eyeView,wall,aim,uniformBudget,multiPort,boatRequests:boatRequests.length,errors,viewports:4,jumpApex,controls:'menu selection, server ticket, take/release, AI takeover, left/right helm, valid and invalid bridge, boarding, touch and Space jump, airborne pose, pause in flight, landing, range and control overlap, four open insignia sails, raised hulls, close camera, cirit rack stock, touch/F pickup, touch/Q throw, actual hit, original equipment, pause in flight, resume',note:'Chromium with software GPU. Not a physical phone FPS measurement.'},null,2));
  console.log(JSON.stringify({initial,boatAsset,outfit,wall,aim,uniformBudget,multiPort,errors,out}));await cleanup();
 }

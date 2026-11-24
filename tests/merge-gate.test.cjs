@@ -55,6 +55,23 @@ test('representative old path filters and target branch rules are retained', () 
   assert.ok(selectSuites(config, [file('pit-new.js')], 'release').includes('pit_v174'));
 });
 
+test('commander cycle SQL and its regression test require the arena suite', () => {
+  for (const filename of [
+    'supabase/migrations/20261124110448_elite_commander_cycle_v296.sql',
+    'tests/elite-commander-cycle-sql-v296.cjs',
+    'tests/elite-bots-v296.cjs'
+  ]) {
+    const selected = selectSuites(config, [file(filename)], 'main');
+    assert.ok(selected.includes('arena_realism'), filename);
+    const needs = validNeeds(selected);
+    needs.arena_realism.result = 'failure';
+    assert.throws(() => checkGate(config, selected, needs), /expected success/);
+  }
+  const workflow = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/arena-realism.yml'), 'utf8');
+  assert.match(workflow, /node tests\/elite-commander-cycle-sql-v296\.cjs/);
+  assert.match(workflow, /node tests\/elite-bots-v296\.cjs/);
+});
+
 test('ranked SQL, its integration test, and its database fixture require the ranked suite', () => {
   for (const filename of [
     'supabase/migrations/20261122150342_ranked_papyrus_v290.sql',

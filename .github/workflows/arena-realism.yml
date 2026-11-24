@@ -44,6 +44,10 @@ jobs:
           node tests/combat-stats-v74.cjs
           node tests/combat-stats-v75.cjs
           node tests/combat-values-v110.cjs
+      - name: Persistent Colosseum commander cycle and venue isolation
+        run: |
+          node tests/elite-bots-v296.cjs
+          node tests/elite-commander-cycle-sql-v296.cjs
       - name: Install browser
         timeout-minutes: 3
         # Hosted Ubuntu already supplies Chromium libraries; these tests are headless.
