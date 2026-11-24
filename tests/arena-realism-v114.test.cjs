@@ -2,6 +2,40 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const {runtime,fixture}=require('./combat-stats-v73.cjs');
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 const advance=(sim,seconds)=>{for(let n=0;n<Math.ceil(seconds*120);n++)sim.tick(1/120,{});};
+test('critical melee and projectile hits carry their own flag without marking later ordinary damage',()=>{
+ const c=runtime('arena.html'),{sim,a,v}=fixture(c,0);
+ a.itemStats={critical_rate:35};v.itemStats={};v.hp=v.maxHp=10000;
+ assert.equal(sim.damage(a,v,20,'chest'),true);
+ const critical=sim.drain().find(e=>e.type==='hit');
+ assert.equal(critical.critical,true);
+ assert.equal(a.staffCriticalHitV288,undefined);
+ a.itemStats={};v.action='idle';
+ assert.equal(sim.damage(a,v,20,'chest'),true);
+ const ordinary=sim.drain().find(e=>e.type==='hit');
+ assert.equal(ordinary.critical,false);
+ assert.ok(critical.damage>ordinary.damage);
+ const projectile={kind:'spear',itemEntry:{item:{id:'critical-spear',kind:'weapon',model:'spear',stat_version:10,natural_rule_version:2,enhancement:0,natural_stats:{physical_power:7,critical_rate:35},natural_percentages:{},emeralds:[]}}};
+ assert.equal(sim.damageProjectileV10(a,v,projectile,20,'chest',false),true);
+ assert.equal(sim.drain().find(e=>e.type==='hit').critical,true);
+ assert.equal(a.staffCriticalHitV288,undefined);
+ assert.equal(a.itemStats.critical_rate,undefined);
+ sim.damage(a,v,20,'chest');
+ assert.equal(sim.drain().find(e=>e.type==='hit').critical,false);
+});
+test('arena damage feedback puts C immediately before only the critical damage number',()=>{
+ const html=fs.readFileSync(path.join(__dirname,'../arena.html'),'utf8');
+ const start=html.indexOf('function events(){'),end=html.indexOf('\nlet rewardSaved=',start);
+ const shown=[],player={id:0,x:0,z:0},victim={id:1,x:1,z:1};
+ const queued=[{type:'critical',id:1,source:0},{type:'hit',id:1,source:0,damage:35,critical:true},
+  {type:'hit',id:1,source:0,damage:24,critical:false},{type:'hit',id:0,source:1,damage:18,critical:true},
+  {type:'hit',id:1,source:0,damage:12}];
+ const c=vm.createContext({combat:{fighters:[player,victim],drain:()=>queued.splice(0)},
+  floating:(f,text,color,source)=>shown.push({text,color,source}),burst:()=>{},audio:()=>{},performance:{now:()=>1}});
+ vm.runInContext(html.slice(start,end)+'\nevents();',c);
+ assert.deepEqual(shown.map(r=>r.text),['C −35','−24','C −18','−12']);
+ assert.equal(shown[0].color,shown[1].color);
+ assert.equal(shown[2].source,1);
+});
 for(const page of ['arena.html','savas.html','multiplayer.html']){
  const c=runtime(page),M=c.ArenaMotion;
  test(page+': a normal gladius strike has visible preparation, contact and return to guard',()=>{

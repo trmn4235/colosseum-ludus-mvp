@@ -22,7 +22,7 @@ test('verified UI modes are in the single-player panel; naval has a distinct rou
  assert.match(panel,/data-mode="4x5"[^>]*aria-label="Takımlı Arena/);
  assert.match(panel,/data-mode="solo20"[^>]*aria-label="Solo 20/);
  assert.match(panel,/data-mode="naval4x5"/);
- assert.ok(html.includes("p_mode:mode==='naval4x5'?'4x5':mode"));
+ assert.ok(html.includes("'ludus_start_battle_v296'"));assert.ok(html.includes('p_mode:mode'));
 });
 test('default and failed asset readiness leave the actual roster unchanged',()=>{
  for(const assetsReady of [undefined,()=>false,()=>{throw Error('not loaded');}]){
@@ -85,11 +85,11 @@ test('HP bonus remains once through repeated real apply/refresh, gear changes an
  const f=fixture(),bot=f.combat.fighters[5];bot.hp=bot.maxHp*.4;
  Elite.attach(f.combat,f.ticket,f.options);near(bot.hp/bot.maxHp,.4);
  const originalMax=bot.maxHp;
- for(let i=0;i<4;i++){f.c.LudusLoadout.refresh(bot);near(bot.hp/bot.maxHp,.4);assert.equal(bot.maxHp,originalMax);assert.equal(bot.name,'Aegis Sentinel');}
+ for(let i=0;i<4;i++){f.c.LudusLoadout.refresh(bot);near(bot.hp/bot.maxHp,.4);assert.equal(bot.maxHp,originalMax);assert.equal(bot.name,'Imperator');}
  bot.equipment.chest={token:'unchanged-token',item:item(f.c,'chest',{emeralds:[{id:1,value:100}]})};
  f.c.LudusLoadout.refresh(bot);assert.equal(bot.maxHp,Math.round((originalMax/1.15+20)*1.15));near(bot.hp/bot.maxHp,.4);
  f.c.LudusLoadout.apply(bot,bot.gearBase,[]);assert.equal(bot.maxHp,originalMax);near(bot.hp/bot.maxHp,.4);
- bot.hp=0;f.c.LudusLoadout.refresh(bot);assert.equal(bot.hp,0);assert.equal(bot.name,'Aegis Sentinel');
+ bot.hp=0;f.c.LudusLoadout.refresh(bot);assert.equal(bot.hp,0);assert.equal(bot.name,'Imperator');
  const assignments=Elite.attach(f.combat,f.ticket,f.options).assignments;assert.equal(assignments[0].fighterId,bot.id);assert.equal(bot.hp,0);assert.equal(active(f).length,2);
 });
 for(const kind of ['legacy-melee','v10-melee','v10-projectile'])test(kind+': actual damage receives one 10% multiplier, including after refresh',()=>{

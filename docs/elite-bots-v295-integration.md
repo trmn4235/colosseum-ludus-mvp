@@ -1,5 +1,7 @@
 # V295 special opponents
 
+V296 updates these opponents and their selection. See [the V296 integration notes](elite-commanders-v296.md) for current names, bonuses and the persisted cycle; the asset-readiness and roster guarantees below still apply.
+
 The single-player Colosseum loads Aegis and Hoplomachus for Solo 20 and Takımlı Arena (4×5). The arena ticket sets the mode. The separate naval route flag excludes Deniz Savaşı even though its ticket also says `4x5`. Survival, Aventinus, ranked and multiplayer retain their existing fighters.
 
 Each verified model can appear once. The module replaces an existing enemy in ID order, preferring different enemy teams when both are available. It excludes the player, allies and owned characters. Fighter IDs, team and class, inventory items, pickup/drop tokens and the total roster size are preserved.

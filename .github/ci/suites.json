@@ -29,6 +29,9 @@
         "combat-inspector-*",
         "tests/arena-realism-*",
         "tests/arena-stability-*",
+        "tests/elite-commander-cycle-*",
+        "tests/elite-bots-*",
+        "supabase/migrations/*elite_commander_cycle*",
         "supabase/migrations/*arena_combat_realism*"
       ]
     },
