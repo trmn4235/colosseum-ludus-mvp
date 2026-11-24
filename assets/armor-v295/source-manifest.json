@@ -1,11 +1,11 @@
 {
   "version": 295,
-  "status": "awaiting_official_source_downloads",
-  "runtimeReady": false,
-  "checkedAt": "2026-11-23",
+  "status": "validated_assets",
+  "runtimeReady": true,
+  "checkedAt": "2026-11-24",
   "license": "CC-BY-4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-  "note": "Public source metadata verified; no original source archive downloaded, optimized or rig-validated yet. Counts below are source-reported and targets, not achieved outputs.",
+  "note": "Source measurements and hashes are from the original downloaded GLBs. Output measurements apply only to the exported files listed per model.",
   "models": [
     {
       "id": "aegis",
@@ -17,11 +17,20 @@
       "targetTriangles": 12000,
       "qualityFallbackTriangles": 15000,
       "use": "whole_character_special_enemy",
-      "sourceSha256": null,
-      "outputPath": null,
-      "actualOutputTriangles": null,
-      "rigVerified": false,
-      "ready": false
+      "sourceSha256": "5725421fdd4387d5c25b26ebe96835374255038567a76e2a0afa2eaa979978ee",
+      "outputPath": "assets/armor-v295/aegis.glb",
+      "actualOutputTriangles": 12286,
+      "rigVerified": true,
+      "ready": true,
+      "sourceFile": "Aegis-Source-8k.glb",
+      "sourceBytes": 50188652,
+      "sourceMeasuredTriangles": 92572,
+      "sourceSkins": 0,
+      "sourceAnimations": 0,
+      "outputSha256": "e40afc5d1c9ce9d835473af59117038b80e9f8269de403d89a1993321afca475",
+      "outputBytes": 1314680,
+      "jointCount": 35,
+      "animationSource": "Shared arena animation code"
     },
     {
       "id": "hoplomachus",
@@ -33,11 +42,20 @@
       "targetTriangles": 8000,
       "qualityFallbackTriangles": 10000,
       "use": "whole_character_special_enemy",
-      "sourceSha256": null,
-      "outputPath": null,
-      "actualOutputTriangles": null,
-      "rigVerified": false,
-      "ready": false
+      "sourceSha256": "ff9ea6dfce4d0d03f43ef24104e0ce99170a64b51d7d9fe5909349999b9e5d2b",
+      "outputPath": "assets/armor-v295/hoplomachus-v295.glb",
+      "actualOutputTriangles": 7997,
+      "rigVerified": true,
+      "ready": true,
+      "sourceFile": "Hoplomachus-Source-2k.glb",
+      "sourceBytes": 46504044,
+      "sourceMeasuredTriangles": 19703,
+      "sourceSkins": 0,
+      "sourceAnimations": 0,
+      "outputSha256": "ca11f1ebcf65f9315a4836406f09141d683fffb08775127cc8349b853cb330a7",
+      "outputBytes": 3140500,
+      "jointCount": 33,
+      "animationSource": "Shared arena animation code"
     },
     {
       "id": "officer_chest",
@@ -45,17 +63,40 @@
       "author": "Andy Woodhead",
       "sourceUid": "f643a3129a9f4b15b9e5abe220020af7",
       "sourceUrl": "https://sketchfab.com/3d-models/roman-officer-body-armour-f643a3129a9f4b15b9e5abe220020af7",
-      "additionalCredits": ["Griffin: noe-ed at.", "Lion head: GSXNet", "Eagle: SpleenVision", "Lion sitting: Thomas Flynn"],
+      "additionalCredits": [
+        "Griffin: noe-ed at.",
+        "Lion head: GSXNet",
+        "Eagle: SpleenVision",
+        "Lion sitting: Thomas Flynn"
+      ],
       "sourceReportedTriangles": 37151,
       "targetTriangles": 3000,
       "qualityFallbackTriangles": 4000,
       "use": "chest_item_original_and_black_shared_geometry",
       "downloadNote": "Author identifies FBX in additional file; retain attribution from downloaded archive too.",
-      "sourceSha256": null,
-      "outputPath": null,
-      "actualOutputTriangles": null,
-      "fitVerified": false,
-      "ready": false
+      "sourceSha256": "b96f11fe231d767cfe094fa8d3c963e2830d4f0115f25c63695274d10d346853",
+      "outputPath": "assets/armor-v295/officer_chest.glb",
+      "actualOutputTriangles": 2999,
+      "fitVerified": true,
+      "ready": true,
+      "sourceFile": "Roman-Officer-Source-2k.glb",
+      "sourceBytes": 31032920,
+      "sourceMeasuredTriangles": 37151,
+      "sourceSkins": 0,
+      "sourceAnimations": 0,
+      "outputSha256": "b1ebf66531bef0c5a6e8405e3078547014f018843ab09bb246b39b66fa5b7a98",
+      "outputBytes": 1066220,
+      "materialVariants": [
+        "officer_chest",
+        "officer_chest_black"
+      ],
+      "variantTextures": {
+        "officer_chest_black": "assets/armor-v295/officer_chest_black.jpg"
+      },
+      "icons": [
+        "assets/items-v295/officer_chest.webp",
+        "assets/items-v295/officer_chest_black.webp"
+      ]
     }
   ]
 }

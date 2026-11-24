@@ -1,42 +1,17 @@
-# V295 special opponents: prepared integration
+# V295 special opponents
 
-`arena-elite-bots-v295.js` is a standalone, default-off module. It is not included by an HTML page and contains no invented asset path. The Aegis and Hoplomachus source models have not yet been downloaded, processed, rigged or validated by this module. No new appearance is currently rendered.
+The single-player Colosseum loads Aegis and Hoplomachus for Solo 20 and Takımlı Arena (4×5). The arena ticket sets the mode. The separate naval route flag excludes Deniz Savaşı even though its ticket also says `4x5`. Survival, Aventinus, ranked and multiplayer retain their existing fighters.
 
-## Confirmed scope and modes
+Each verified model can appear once. The module replaces an existing enemy in ID order, preferring different enemy teams when both are available. It excludes the player, allies and owned characters. Fighter IDs, team and class, inventory items, pickup/drop tokens and the total roster size are preserved.
 
-`savas.html` puts **Takımlı Arena** (`4x5`, four teams of five) and **Solo 20** (`solo20`) in `panel-single`. These map to the requested Solo Team and Solo modes. The same panel also contains Survival and Deniz Savaşı; neither is eligible. At `savas.html`'s start RPC, `naval4x5` becomes ticket mode `4x5`, so the explicit naval route flag is essential. Ranked and multiplayer must never call this feature as single-player.
+## Source of readiness
 
-The module keeps the roster and every fighter ID/team/class/equipment object intact. It selects the first two living enemy bots in ID order, preferring different enemy teams: normally IDs 5 and 10 for `4x5`, IDs 1 and 2 for `solo20`. It adds one Aegis and one Hoplomachus identity. It excludes ID 0, allies, player/owner-marked fighters and malformed duplicate-ID rosters. Both models must be ready; partial readiness adds neither. It does not create or modify inventory, ticket loot or extraction tokens.
+`arena.html` starts loading the optional models alongside the ordinary character. `ArenaEliteBotsV295.prepare` reads `assets/armor-v295/source-manifest.json` for eligible tickets. The row must have both `ready` and `rigVerified` set to true and its `outputPath` must match the definition in `arena-elite-bots-v295.js`. The GLB must load with a skin and the named anatomical bones used by arena poses. A missing file, unsupported rig, failed fetch or load exceeding the shared ten-second budget leaves the affected enemy ordinary for that match. No optional GLB is downloaded for a model that has not passed its checks.
 
-## Intended hooks, after verified assets are available
+The renderer clones the selected GLB and its skeleton. The bot's own armour stays on its skin. The arena attaches the fighter's current weapon and shield to its real hand bones, using the same attack, guard, pickup and throw logic as the other fighters. Hidden generic armour anchors prevent duplicate equipment. The plain fighter still receives the standard anatomy corrections and armour fitting.
 
-1. Load this script only for the single-player arena, after the final `LudusLoadout` wrappers are installed. Do not alter the shared combat reset or ranked runtime to activate it.
-2. `arena.html` `begin()` currently resets combat, applies the player loadout, calls `LudusLoadout.initialize`, and attaches staff effects. After that setup and variant routing, before its `createCharacter` loop, await the real special-character loader **only** for eligible modes and routes.
-3. Call the following with an actual renderer-owned readiness function. Do not use a constant `true` in production:
+## Combat and tests
 
-   ```js
-   const elites = ArenaEliteBotsV295.attach(combat, ticket, {
-     singlePlayer: true,
-     naval: navalRequested,
-     pit: pitRequested,
-     ranked: false,
-     loadout: LudusLoadout,
-     assetsReady: key => verifiedCharacterAdapter.ready(key)
-   });
-   ```
+The bonus is 15% maximum HP and 10% damage. Loadout refresh preserves health percentage and applies the bonus once, including after picking up equipment. The combat instance scales both ordinary damage and V10 projectile damage before existing mitigation and integer rounding.
 
-4. The model creation path must consult `fighter.eliteBotV295?.key`. It currently passes only `(id, type)` into `ImportedGladiator.create`, which always clones the single `gladiator-mobile-v217.glb` template. Do not merely rename the existing model and report it as the selected asset.
-5. `ImportedGladiator.create` assumes the current Mixamo bone map, captures rest poses and calls `ArenaAnatomy.prepare`, `ClassEquipment.equip` and `ArenaEquipmentFit.capture`. A new source requires verified skeleton mapping, skin weights, dimensions, hand grips and ground contact. `ClassEquipment.sync` must avoid duplicate visual armor/weapons while keeping the actual combat loadout and drops coherent. No generic rig adapter is supplied here.
-6. Keep the two prepared models and materials cached. Check disposal, both characters together in the 20-fighter scene, mobile geometry/texture budget, locomotion, attack, block, roll and corpse poses before enabling readiness.
-
-## Stat behavior
-
-The module wraps only the supplied combat instance's damage method. Its 1.10 multiplier changes the damage input before the existing V10 weapon, resistance, critical and staff calculations and integer rounding. It does not mutate `attackBonus`, which the existing V10 wrapper compensates using `nativeAttackBonus`. Projectile damage reaches the same method.
-
-The supplied loadout object's `apply` and `refresh` methods gain pass-through wrappers that affect only fighters registered by this module. Maximum HP is recalculated as `round(unboostedMaxHp * 1.15)` on each apply; current HP percentage survives attachment and refresh. Repeated calls do not compound the bonus and dead fighters remain dead. Reinitializing or detaching the battle clears the identity and reverses the bonus, preserving HP percentage. Wrapper installation itself creates no special opponent without readiness and the explicit single-player gate.
-
-## Validation
-
-Run `node --test tests/elite-bots-v295.cjs`. Tests use the shipped arena simulation and actual V10 loadout/damage code without production credentials or a database. They cover mode/route exclusions, both-or-neither asset readiness, exact replacement counts, player/ally/owned-fighter exclusion, immutable equipment references, persistent HP percentage, non-compounding boosts, melee and projectile damage, readiness loss and combat reset.
-
-After visual integration, use `tests/performance-v84.cjs`'s `rigRuntime` helper with the verified files, plus `tests/weapon-motion-v294.cjs`, `tests/locomotion-grip-budget-v292.cjs`, `tests/roll-grounding-v293.cjs` and an actual browser check. These are pending; no claim of successful custom-character rendering is made.
+Run `node --test tests/elite-bots-v295.cjs` to check actual 20-fighter rosters, per-model and failed readiness, mode exclusions, lifecycles, HP and damage. These simulation checks are independent of real-asset tests for deformation, grip, grounding and rendering.

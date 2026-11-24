@@ -5,7 +5,7 @@ const wrappers=['savas.html','multiplayer.html','pazar.html','gelistirmeler.html
 function wrapper(file){const s=read(file);if(file==='ludus-supply-icons-v89.js')return s;const a=s.indexOf('var LudusIcons=');return s.slice(a,s.indexOf('})();',a)+5);}
 function context(){const c=vm.createContext({});for(const f of ['item-visuals-v199.js','ludus-production-v119.js','equipment-groups-v168.js'])vm.runInContext(read(f),c);return c;}
 test('all equipment cards preserve exact identity, aliases and neutral unknowns in every UI wrapper',()=>{
- const rows=Object.values(visuals.records).filter(r=>r.kind!=='supply');assert.equal(rows.length,36);
+ const rows=Object.values(visuals.records).filter(r=>r.kind!=='supply');assert.equal(rows.length,38);
  for(const file of wrappers){const c=context();vm.runInContext(wrapper(file),c);const api=c.LudusIcons||c.LudusSupplyIcons;
   for(const available of [true,false]){if(!available)c.LudusProduction=undefined;
    for(const r of rows)for(const model of [r.model,...r.aliases])for(const staleSku of ['sica','heavy_mace']){const item={kind:r.kind,model,sku:staleSku,enhancement:7,emeralds:[{id:2,value:80}]},before=JSON.stringify(item);assert.ok(api.svg(item).includes(r.icon),file+' '+model);assert.ok(api.svg(item).includes('class="item-enhancement-v269"'),file+' '+model+' has separate enhancement header');assert.equal(JSON.stringify(item),before);}
@@ -16,7 +16,7 @@ test('all equipment cards preserve exact identity, aliases and neutral unknowns 
  assert.equal(visuals.entry({kind:'chest',model:'starter'}).model,'chest_plate');assert.equal(visuals.entry({kind:'chest'}).model,'chest_plate');assert.equal(visuals.entry({kind:'helmet',model:'secutor'}).model,'gold');assert.equal(visuals.entry({kind:'gloves',model:'starter'}).model,'armor_shoulder');
 });
 test('recipes, enhancements, Sica and Gladius assets remain unchanged',()=>{
- const c=context();assert.equal(hash(JSON.stringify(c.LudusProduction.recipes)),'d1f52fa1e01ec4316a481766b9eb28016193cb413dcf0f6073d065832424e3b2');
+ const c=context();assert.equal(hash(JSON.stringify(c.LudusProduction.recipes.filter(r=>!['chest-officer','chest-officer-black'].includes(r.sku)))),'d1f52fa1e01ec4316a481766b9eb28016193cb413dcf0f6073d065832424e3b2');
  for(const [sku,sha]of [['sica','6e4fb7ab8a4dca6bcb4c270229bbe3722c6c8b84ff5d32240f0ea9a5b354e772'],['gladius','af2cc23aff60ed5f9a9d762c06ad4ec445ac20c44db2ac1270af63d35cebae35']]){assert.equal(c.LudusProduction.photo(sku),'assets/items-v118/'+sku+'.webp');assert.equal(hash(fs.readFileSync(c.LudusProduction.photo(sku))),sha);assert.equal(visuals.nameForItem({kind:'weapon',model:sku}),null);}
 });
 test('22 exact model renders and optimized original chest stay within budgets',()=>{
@@ -31,8 +31,11 @@ for(const page of ['arena.html','savas.html','multiplayer.html','ludus.html','ca
  c.ImportedGladiator.dispose(m);
 });
 test('browser entry points load visual identities before production and invalidate changed scripts',()=>{
- for(const f of ['ludus.html','savas.html','multiplayer.html','pazar.html','gelistirmeler.html','klan.html']){const s=read(f);assert.ok(s.includes('item-visuals-v199.js?v=revision276'),f);assert.ok(s.indexOf('item-visuals-v199.js')<s.indexOf('ludus-production-v119.js'));assert.ok(s.includes('ludus-production-v119.js?v=revision289'));}
+ for(const f of ['ludus.html','savas.html','multiplayer.html','pazar.html','gelistirmeler.html','klan.html']){const s=read(f);assert.ok(s.includes('item-visuals-v199.js?v=revision295'),f);assert.ok(s.indexOf('item-visuals-v199.js')<s.indexOf('ludus-production-v119.js'));assert.ok(s.includes('ludus-production-v119.js?v=revision295'));}
  for(const f of ['caravan-battle-v126.js','pit-visit-v172.js'])assert.ok(read(f).includes('revision199'));
  assert.equal((read('san-avlusu.html').match(/assets\/items-v199\/bow.webp/g)||[]).length,2);
 });
 module.exports={wrapper,wrappers};
+
+// The equipment suite exercises both shared-geometry Officer variants on all renderers.
+require('./officer-chest-v295.cjs');

@@ -78,7 +78,7 @@ var ArenaEquipmentFit = (() => {
     }
     const trunkId=body.skeleton.bones.findIndex(b=>/^(?:mixamorig:?)?Spine2(?:_\d+)?$/.test(b.name));
     const torsoIds=body.skeleton.bones.map((b,i)=>/(Left|Right)(Shoulder|Arm)/.test(b.name)&&trunkId>=0?trunkId:i);
-    m.equipmentFit164 = { body, surface, anchors, restBones, shell, torsoIds, bind:new T.Matrix4() };
+    m.equipmentFit164 = { body, restGeometry:body.geometry, surface, anchors, restBones, shell, torsoIds, bind:new T.Matrix4() };
   }
   function chestSurface(p,data){
     const T=THREE,s=data.shell,key=p.x.toFixed(4)+':'+p.y.toFixed(4);
@@ -111,7 +111,7 @@ var ArenaEquipmentFit = (() => {
   function fitGeometry(source, transform, data, slot) {
     const T = THREE;
     let variants = fitted.get(source); if (!variants) fitted.set(source, variants = new Map());
-    const key = data.body.geometry.uuid+':'+slot+':'+transform.elements.map(x => x.toFixed(6)).join(',');
+    const key = data.restGeometry.uuid+':'+slot+':'+transform.elements.map(x => x.toFixed(6)).join(',');
     if (variants.has(key)) return variants.get(key);
     const geometry = source.clone().applyMatrix4(transform), pos = geometry.attributes.position;
     const indices = new Uint16Array(pos.count*4), weights = new Float32Array(pos.count*4), p = new T.Vector3(), n = new T.Vector3();
@@ -188,7 +188,7 @@ var ArenaEquipmentFit = (() => {
       // also had 7 cm of excess depth. Keep these corrections out of item previews.
       if (name === 'shoulder' || name === 'otherShoulder') placement.elements[14] -= .05;
       if (name === 'collar') placement.elements[14] -= .045;
-      if (name === 'chest' && m.chestModel !== 'chest_plate') placement.multiply(new T.Matrix4().makeScale(1,1,.84));
+      if (name === 'chest' && m.chestModel === 'gladiator_chest') placement.multiply(new T.Matrix4().makeScale(1,1,.84));
       const base = data.anchors[name].clone().multiply(placement), meshes = [];
       group.traverse(o => { if (o.isMesh && !o.isSkinnedMesh) meshes.push(o); });
       for (const old of meshes) {
@@ -211,5 +211,94 @@ var ArenaEquipmentFit = (() => {
       group.userData.fitted164 = true;
     }
   }
-  return { capture, sync };
+  const officerNames = Object.freeze({
+    officer_chest: 'Roma subayı göğüs zırhı',
+    officer_chest_black: 'Siyah Roma subayı göğüs zırhı'
+  });
+  const officerTemplates = new Map(), officerLoads = new Map(), officerFailures = new Map();
+  let pendingChest;
+  async function makeOfficer(id) {
+    const T = THREE;
+    if (id === 'officer_chest_black') {
+      const [base, map] = await Promise.all([
+        loadOfficer('officer_chest'),
+        new T.TextureLoader().loadAsync('assets/armor-v295/officer_chest_black.jpg')
+      ]);
+      const variant = base.clone(true);
+      map.colorSpace = T.SRGBColorSpace;
+      map.flipY = false;
+      variant.traverse(mesh => {
+        if (!mesh.isMesh) return;
+        const material = mesh.material.clone();
+        material.name = 'OfficerBlack';
+        material.map = map;
+        mesh.material = material;
+      });
+      return variant;
+    }
+    const bytes = await ArenaAssetLoad('assets/armor-v295/officer_chest.glb');
+    const {scene} = await new T.GLTFLoader().parseAsync(bytes, '');
+    // The exported mesh is centred and faces +Z. Size the worn shell once;
+    // the black material reuses these same immutable geometry buffers.
+    const size = new T.Box3().setFromObject(scene).getSize(new T.Vector3());
+    const target = new T.Vector3(.88,.605,.425);
+    const scale = new T.Matrix4().makeScale(target.x/size.x,target.y/size.y,target.z/size.z);
+    scene.traverse(mesh => {
+      if (!mesh.isMesh) return;
+      mesh.geometry.applyMatrix4(scale);
+      mesh.geometry.computeBoundingBox();
+      mesh.geometry.computeBoundingSphere();
+      mesh.material.envMapIntensity = .8;
+      mesh.castShadow = mesh.receiveShadow = true;
+    });
+    return scene;
+  }
+  function loadOfficer(id) {
+    if (!Object.hasOwn(officerNames,id)) return Promise.reject(Error('Bilinmeyen subay zırhı'));
+    if (officerTemplates.has(id)) return Promise.resolve(officerTemplates.get(id));
+    if (!officerLoads.has(id)) {
+      const task = makeOfficer(id).then(group => {
+        group.name = officerNames[id];
+        group.userData.armourModel = id;
+        officerTemplates.set(id,group);
+        officerFailures.delete(id);
+        return group;
+      }).catch(error => {
+        const delay = Math.min(60000,(officerFailures.get(id)?.delay || 2500)*2);
+        officerFailures.set(id,{delay,retryAt:Date.now()+delay});
+        throw error;
+      }).finally(() => officerLoads.delete(id));
+      officerLoads.set(id,task);
+    }
+    return officerLoads.get(id);
+  }
+  function requestOfficerIfDue(id) {
+    if (officerLoads.has(id)) return;
+    const failure = officerFailures.get(id);
+    if (failure && Date.now() < failure.retryAt) return;
+    loadOfficer(id).catch(error=>console.warn('Subay zırhı yüklenemedi',error));
+  }
+  const officer = Object.freeze({
+    names:officerNames, has:id=>Object.hasOwn(officerNames,id),
+    peek(id) {
+      if (officerFailures.has(id)) requestOfficerIfDue(id);
+      return officerTemplates.get(id);
+    },
+    load:loadOfficer,
+    request(id) {
+      const template = officerTemplates.get(id);
+      if (template) return template;
+      requestOfficerIfDue(id);
+      if (!pendingChest) {
+        pendingChest = new THREE.Group();
+        pendingChest.userData.pendingEquipment = true;
+      }
+      return pendingChest;
+    }
+  });
+  function placeChest(group,id) {
+    if (officer.has(id)) group.position.set(-.010,-.078,.039);
+    else group.position.set(-.025,-.09,id === 'chest_plate' ? .17 : .04);
+  }
+  return { capture, sync, officer, placeChest };
 })();

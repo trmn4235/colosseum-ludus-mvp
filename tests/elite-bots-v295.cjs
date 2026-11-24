@@ -24,12 +24,35 @@ test('verified UI modes are in the single-player panel; naval has a distinct rou
  assert.match(panel,/data-mode="naval4x5"/);
  assert.ok(html.includes("p_mode:mode==='naval4x5'?'4x5':mode"));
 });
-test('default, partial and failed asset readiness leave the actual roster unchanged',()=>{
- for(const assetsReady of [undefined,()=>false,key=>key==='aegis',()=>{throw Error('not loaded');}]){
+test('default and failed asset readiness leave the actual roster unchanged',()=>{
+ for(const assetsReady of [undefined,()=>false,()=>{throw Error('not loaded');}]){
   const f=fixture(),before=JSON.stringify(f.combat.fighters),damage=f.combat.damage;
   const result=Elite.attach(f.combat,f.ticket,{...f.options,assetsReady});
   assert.equal(result.reason,'assets-not-ready');assert.equal(JSON.stringify(f.combat.fighters),before);assert.equal(f.combat.damage,damage);
  }
+});
+for(const key of ['aegis','hoplomachus'])test('independent readiness for '+key+' leaves all other enemies unchanged',()=>{
+ const f=fixture(),before=f.combat.fighters.map(x=>[x.name,x.maxHp,x.hp]);
+ const options={...f.options,assetsReady:k=>k===key};
+ const result=Elite.attach(f.combat,f.ticket,options);
+ assert.equal(result.active,true);assert.deepEqual(result.assignments,[{key,fighterId:5}]);
+ for(const x of f.combat.fighters)if(x.id!==5)assert.deepEqual([x.name,x.maxHp,x.hp],before[x.id]);
+ assert.equal(f.combat.fighters[5].maxHp,Math.round(before[5][1]*1.15));
+ assert.deepEqual(Elite.attach(f.combat,f.ticket,options),result);
+});
+test('unverified, ineligible or failed models never become special opponents',async()=>{
+ const rows=Elite.definitions.map(d=>({id:d.key,ready:true,rigVerified:false,outputPath:d.file}));
+ const options={singlePlayer:true},ticket={mode:'4x5'};let read=0,parsed=0;
+ const loadManifest=async()=>{read++;return {version:295,models:rows};};
+ const loadModel=async()=>{parsed++;return {traverse(){}};};
+ assert.equal((await Elite.prepare(ticket,{...options,naval:true},loadManifest,loadModel)).size,0);
+ assert.equal(read,0);
+ assert.equal((await Elite.prepare(ticket,options,loadManifest,loadModel)).size,0);
+ assert.equal(parsed,0);
+ rows[0].rigVerified=true;rows[1].rigVerified=true;rows[1].outputPath='unrelated.glb';
+ assert.equal((await Elite.prepare(ticket,options,loadManifest,loadModel)).size,0);
+ assert.equal(parsed,1);
+ assert.equal((await Elite.prepare(ticket,options,async()=>{throw Error('404');},loadModel)).size,0);
 });
 for(const mode of ['4x5','solo20'])test(mode+': replace exactly two enemy slots, one of each, preserving roster, allies and loot',()=>{
  const f=fixture(mode),refs=[...f.combat.fighters],before=f.combat.fighters.map(x=>({id:x.id,team:x.team,type:x.type,hp:x.hp,maxHp:x.maxHp,name:x.name,equipment:x.equipment,gearBase:x.gearBase}));
@@ -62,11 +85,11 @@ test('HP bonus remains once through repeated real apply/refresh, gear changes an
  const f=fixture(),bot=f.combat.fighters[5];bot.hp=bot.maxHp*.4;
  Elite.attach(f.combat,f.ticket,f.options);near(bot.hp/bot.maxHp,.4);
  const originalMax=bot.maxHp;
- for(let i=0;i<4;i++){f.c.LudusLoadout.refresh(bot);near(bot.hp/bot.maxHp,.4);assert.equal(bot.maxHp,originalMax);assert.equal(bot.name,'Aegis');}
+ for(let i=0;i<4;i++){f.c.LudusLoadout.refresh(bot);near(bot.hp/bot.maxHp,.4);assert.equal(bot.maxHp,originalMax);assert.equal(bot.name,'Aegis Sentinel');}
  bot.equipment.chest={token:'unchanged-token',item:item(f.c,'chest',{emeralds:[{id:1,value:100}]})};
  f.c.LudusLoadout.refresh(bot);assert.equal(bot.maxHp,Math.round((originalMax/1.15+20)*1.15));near(bot.hp/bot.maxHp,.4);
  f.c.LudusLoadout.apply(bot,bot.gearBase,[]);assert.equal(bot.maxHp,originalMax);near(bot.hp/bot.maxHp,.4);
- bot.hp=0;f.c.LudusLoadout.refresh(bot);assert.equal(bot.hp,0);assert.equal(bot.name,'Aegis');
+ bot.hp=0;f.c.LudusLoadout.refresh(bot);assert.equal(bot.hp,0);assert.equal(bot.name,'Aegis Sentinel');
  const assignments=Elite.attach(f.combat,f.ticket,f.options).assignments;assert.equal(assignments[0].fighterId,bot.id);assert.equal(bot.hp,0);assert.equal(active(f).length,2);
 });
 for(const kind of ['legacy-melee','v10-melee','v10-projectile'])test(kind+': actual damage receives one 10% multiplier, including after refresh',()=>{

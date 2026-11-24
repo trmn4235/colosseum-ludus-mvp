@@ -1,13 +1,63 @@
 /* V295: two asset-gated opponents for the single-player Colosseum only.
- * No model URLs, downloads, inventory items, loot tokens or global prototype changes.
+ * A verified skin replaces an enemy body; the original item/drop records stay on that fighter.
  */
 (function(root){
  'use strict';
  const definitions=Object.freeze([
-  Object.freeze({key:'aegis',name:'Aegis',health:1.15,damage:1.10}),
-  Object.freeze({key:'hoplomachus',name:'Hoplomachus',health:1.15,damage:1.10})
+  Object.freeze({key:'aegis',name:'Aegis Sentinel',file:'assets/armor-v295/aegis.glb',health:1.15,damage:1.10}),
+  Object.freeze({key:'hoplomachus',name:'Hoplomachus Gladiator',file:'assets/armor-v295/hoplomachus-v295.glb',health:1.15,damage:1.10})
  ]);
  const fighters=new WeakMap(),battles=new WeakMap(),loadouts=new WeakSet(),damageHooks=new WeakSet();
+ const requiredBones=['Hips','Spine','Spine1','Spine2','Neck','Head'];
+ for(const side of ['Left','Right']){
+  for(const part of ['Shoulder','Arm','ForeArm','Hand','HandIndex1','HandIndex2','HandIndex3','HandIndex4','UpLeg','Leg','Foot']){
+   requiredBones.push(side+part);
+  }
+ }
+ function eligible(ticket,options){
+  return options.singlePlayer===true && ['solo20','4x5'].includes(ticket?.mode) &&
+   !options.naval && !options.pit && !options.ranked;
+ }
+ async function readManifest(signal){
+  const res=await fetch('assets/armor-v295/source-manifest.json?v=295',{signal,cache:'no-cache'});
+  if(!res.ok)throw Error('Missing special opponent manifest');
+  return res.json();
+ }
+ async function readModel(path,signal){
+  const res=await fetch(path,{signal});
+  if(!res.ok)throw Error('Missing special opponent model');
+  const gltf=await new THREE.GLTFLoader().parseAsync(await res.arrayBuffer(),'');
+  return gltf.scene;
+ }
+ function compatible(scene){
+  const bones=new Set();let skins=0;
+  scene.traverse(node=>{
+   if(node.isBone)bones.add(node.name.replace(/^mixamorig:?/,'').replace(/_\d+$/,''));
+   if(node.isSkinnedMesh && node.geometry?.attributes.skinIndex && node.geometry?.attributes.skinWeight)skins++;
+  });
+  return skins>0 && requiredBones.every(name=>bones.has(name));
+ }
+ async function prepare(ticket,options,loadManifest=readManifest,loadModel=readModel){
+  const templates=new Map();
+  if(!eligible(ticket,options))return templates;
+  const controller=new AbortController();
+  // Optional enemies share a fixed loading budget. The base game can always start.
+  let deadline;
+  const timeout=new Promise(resolve=>{deadline=setTimeout(()=>{controller.abort();resolve();},10000);});
+  const load=(async()=>{
+   const manifest=await loadManifest(controller.signal);
+   if(manifest.version!==295||!Array.isArray(manifest.models))return;
+   await Promise.allSettled(definitions.map(async definition=>{
+    const row=manifest.models.find(m=>m.id===definition.key);
+    if(row?.ready!==true||row.rigVerified!==true||row.outputPath!==definition.file)return;
+    const model=await loadModel(definition.file,controller.signal);
+    if(!controller.signal.aborted && compatible(model))templates.set(definition.key,model);
+   }));
+  })();
+  try{await Promise.race([load,timeout]);}catch(_){/* Ordinary enemies fill missing slots. */}
+  finally{clearTimeout(deadline);}
+  return templates;
+ }
  function healthRatio(f){return Number.isFinite(f.hp)&&Number.isFinite(f.maxHp)&&f.maxHp>0?Math.max(0,Math.min(1,f.hp/f.maxHp)):0;}
  function restoreHealth(f,ratio){f.hp=ratio*f.maxHp;}
  function applyHealth(f,state,ratio){
@@ -54,12 +104,12 @@
  function reject(combat,reason){detach(combat);return {active:false,reason,assignments:[]};}
  function attach(combat,ticket,options={}){
   if(!combat||!Array.isArray(combat.fighters))return {active:false,reason:'invalid-combat',assignments:[]};
-  if(options.singlePlayer!==true||!['solo20','4x5'].includes(ticket?.mode)||combat.mode!==ticket.mode||
-   options.naval||options.pit||options.ranked||combat.naval||combat.pitRound||combat.survival)
+  if(!eligible(ticket,options)||combat.mode!==ticket.mode||combat.naval||combat.pitRound||combat.survival)
    return reject(combat,'ineligible-mode');
-  // Both verified, rigged models must already be loaded. Missing/failed adapters stay off.
-  try{if(typeof options.assetsReady!=='function'||!definitions.every(d=>options.assetsReady(d.key)===true))return reject(combat,'assets-not-ready');}
-  catch(_){return reject(combat,'assets-not-ready');}
+  const ready=definitions.filter(definition=>{
+   try{return options.assetsReady?.(definition.key)===true;}catch(_){return false;}
+  });
+  if(!ready.length)return reject(combat,'assets-not-ready');
   const loadout=options.loadout;
   if(typeof loadout?.apply!=='function'||typeof loadout?.refresh!=='function'||typeof combat.damage!=='function')return reject(combat,'missing-hooks');
   const player=combat.fighters.find(f=>f.id===0);
@@ -67,16 +117,16 @@
   if(!player||unique.size!==combat.fighters.length)return reject(combat,'invalid-roster');
   const old=battles.get(combat);
   // Reattaching an existing battle never replaces a defeated special opponent.
-  if(old?.roster===combat.fighters&&old.fighters.every(f=>combat.fighters.includes(f)&&f.team!==player.team&&!f.player&&!f.owner&&!f.owner_id))
+  if(old?.roster===combat.fighters&&old.assignments.length===ready.length&&old.assignments.every((a,i)=>a.key===ready[i].key)&&old.fighters.every(f=>combat.fighters.includes(f)&&f.team!==player.team&&!f.player&&!f.owner&&!f.owner_id))
    return {active:true,assignments:old.assignments};
   const candidates=combat.fighters.filter(f=>Number.isInteger(f.id)&&f.id>0&&!f.player&&!f.owner&&!f.owner_id&&
    f.team!==player.team&&Number.isFinite(f.maxHp)&&f.maxHp>0&&Number.isFinite(f.hp)&&f.hp>0).sort((a,b)=>a.id-b.id);
-  const first=candidates[0],second=candidates.find(f=>f!==first&&f.team!==first.team)||candidates[1];
-  if(!first||!second)return reject(combat,'insufficient-enemies');
-  const selected=[first,second];
+  if(candidates.length<ready.length)return reject(combat,'insufficient-enemies');
+  const first=candidates[0],selected=[first];
+  if(ready.length>1)selected.push(candidates.find(f=>f.team!==first.team)||candidates[1]);
   detach(combat);wrapLoadout(loadout);wrapDamage(combat);
   const assignments=selected.map((f,i)=>{
-   const definition=definitions[i],state={combat,definition,baseMaxHp:f.maxHp,originalName:f.name};
+   const definition=ready[i],state={combat,definition,baseMaxHp:f.maxHp,originalName:f.name};
    fighters.set(f,state);f.eliteBotV295=Object.freeze({key:definition.key,name:definition.name});
    applyHealth(f,state,healthRatio(f));
    return Object.freeze({fighterId:f.id,key:definition.key});
@@ -84,7 +134,7 @@
   Object.freeze(assignments);battles.set(combat,{roster:combat.fighters,fighters:selected,assignments});
   return {active:true,assignments};
  }
- const api=Object.freeze({definitions,attach,detach});
+ const api=Object.freeze({definitions,prepare,readManifest,readModel,attach,detach});
  root.ArenaEliteBotsV295=api;
  if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -31,3 +31,23 @@ Wooden Gate — Amal Kumar / Poly Haven
 CC0-1.0 — https://polyhaven.com/a/wooden_gate
 Existing 512px optimized diffuse, OpenGL normal and roughness maps reused on
 the V102 ship deck, raised strakes, mast and boarding planks. Colour and UV scale adapted.
+
+Roman officer - body armour — Andy Woodhead
+https://sketchfab.com/3d-models/roman-officer-body-armour-f643a3129a9f4b15b9e5abe220020af7
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+Decorative elements credited by the artist: Griffin — noe-ed at.; Lion head — GSXNet;
+Eagle — SpleenVision; Lion sitting — Thomas Flynn.
+Game adaptation: simplified geometry, combined material and textures, alternate
+black finish retaining the original gold ornaments, and rendered inventory icons.
+
+Hoplomachus Gladiator — DavidGWork (David Gonzalez Diez)
+https://sketchfab.com/3d-models/hoplomachus-gladiator-3cd1e1a6a87749df82161fbed96d50f7
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+Game adaptation: simplified mesh and textures, removed the original spear
+and shield, added an articulated skeleton and fitted the mesh to arena animations.
+
+Aegis Sentinel Ancient Blue Hoplite Warrior V1 — PixForge
+https://sketchfab.com/3d-models/aegis-sentinel-ancient-blue-hoplite-warrior-v1-a2619fc3c48a420e9b6fe6091031a401
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+Game adaptation: removed the integrated weapon and shield, repaired the cut
+surfaces, simplified the mesh and textures, and rigged the character and cape.

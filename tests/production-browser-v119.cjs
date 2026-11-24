@@ -81,6 +81,6 @@ const server=http.createServer((req,res)=>{if(req.url==='/caravan-ui'){res.setHe
    const gear=await page.evaluate(()=>{const g=LudusPreview.roster.find(g=>g.model?.gear);g.state.shoulders=true;g.state.shoulderModel='manica';ImportedGladiator.animate(g.state,g.model,0,0);const manica=g.model.gear.Leftmanica.group.visible&&g.model.gear.Rightmanica.group.visible;const shouldersEmpty=g.model.gear.shoulder.group.children.length===0;g.state.shoulderModel='armor_shoulder';ImportedGladiator.animate(g.state,g.model,0,0);return{manica,shouldersEmpty,switched:!g.model.gear.Leftmanica.group.visible,heights:[...['Left','Right'].map(s=>new THREE.Box3().setFromObject(g.model.gear[s+'manica'].group).getSize(new THREE.Vector3()).length())]};});
    assert.ok(gear.manica&&gear.shouldersEmpty&&gear.switched,JSON.stringify(gear));assert.ok(gear.heights.every(h=>h>0));
   }
-  assert.deepEqual(errors,[]);console.log('V189 browser PASS: symmetric photo cards, 7 food items, 22 production resources, 36 recipes, integer outputs, paginated city stock; 5 landscape viewports.');
+  assert.deepEqual(errors,[]);console.log('Production browser PASS: symmetric photo cards, 7 food items, 22 production resources, '+supply.recipes.length+' recipes, integer outputs, paginated city stock; 5 landscape viewports.');
  }catch(e){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});console.error({errors});throw e;}finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
